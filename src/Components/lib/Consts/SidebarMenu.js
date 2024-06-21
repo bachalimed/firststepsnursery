@@ -1,31 +1,25 @@
-//we splitted the menu into two to allow opening and closing of submenu that was performed to all
 
-
-import React from 'react'
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { VscDashboard } from "react-icons/vsc";
 import { PiStudent, PiStudentBold } from "react-icons/pi";
-import { BsChevronDown } from "react-icons/bs";
-import { GrSchedules } from "react-icons/gr";
+import { GrSchedules, GrUserAdmin } from "react-icons/gr";
 import { LuCircleDollarSign } from "react-icons/lu";
 import { GiHumanPyramid } from "react-icons/gi";
 import { FaMailBulk } from "react-icons/fa";
 import { SiWebmoney } from "react-icons/si";
 import { SlSettings } from "react-icons/sl";
 import { BiHome } from "react-icons/bi";
-import { CiMenuKebab } from "react-icons/ci";
 
+import { TbLogout } from "react-icons/tb";
 
-const menus=[
-	{title:"Home",
+export const sidebarMenuUp=[
+	{title:"home",
 	icon: <BiHome/>,
 	path:"/",
 	spaced:false
 	 },
 	{title:"Dashboard",
 	icon: <VscDashboard/>,
-	path:"/",
+	path:"/dashboard",
 	spaced:false
 	 },
 	 
@@ -37,17 +31,17 @@ const menus=[
 	submenuItems:
 		[{title:"Students & Parents",
 			icon: <PiStudent/>,
-			path:"/",
+			path:"/students",
 			spaced:false
 			},
 			{title:"Admissions",
 			icon: "",
-			path:"",
+			path:"/students/admissions",
 			spaced:false
 			},
 			{title:"Enrolments",
 			icon: "",
-			path:"",
+			path:"/students/enrolments",
 			spaced:false
 			}
 		]
@@ -58,19 +52,19 @@ const menus=[
 		submenu:true,
 		subOpen:false,
 		submenuItems:
-		[{title:"School Plan",
+		[{title:"School Planings",
 			icon: "",
-			path:"/",
+			path:"/academics/planings",
 			spaced:false
 			},
-			{title:"Nursery Plan",
+			{title:"Nursery Planings",
 			icon: "",
-			path:"",
+			path:"/academics/nurseryPlanings",
 			spaced:false
 			},
 			{title:"Collection",
 				icon: "",
-				path:"",
+				path:"/academics/collection",
 				spaced:false
 			}
 			]
@@ -84,21 +78,20 @@ const menus=[
 	submenuItems:
 		[{title:"Invoices",
 			icon: "",
-			path:"/",
+			path:"/finances/invoices",
 			spaced:false
 			},
 			{title:"Payments",
 			icon: "",
-			path:"",
+			path:"/finances/payments",
 			spaced:false
 			},
 			{title:"Expenses",
 				icon: "",
-				path:"",
+				path:"/finances/expenses",
 				spaced:false
 			}
 			]
-
 		},
 	
 	{title:"HR",
@@ -110,17 +103,17 @@ const menus=[
 	submenuItems:
 		[{title:"Staff",
 			icon: "",
-			path:"/",
+			path:"/hr/staff",
 			spaced:false
 			},
 			{title:"Payroll",
 			icon: "",
-			path:"",
+			path:"/hr/payroll",
 			spaced:false
 			},
 			{title:"Leave",
 				icon: "",
-				path:"",
+				path:"/hr/leave",
 				spaced:false
 			}
 			]
@@ -134,77 +127,76 @@ const menus=[
 	submenuItems:
 		[{title:"Inquiries",
 			icon: "",
-			path:"/",
+			path:"/desk/inquiries",
 			spaced:false
 			},
 			{title:"Tasks",
 			icon: "",
-			path:"",
+			path:"/desk/tasks",
 			spaced:false
 			},
 			{title:"Communication",
 				icon: "",
-				path:"",
+				path:"/desk/communication",
 				spaced:false
 			
 			},
 			{title:"Mailing",
 				icon: "",
-				path:"",
+				path:"/desk/mailing",
 				spaced:false
 			}
 			]
 	},
 	{title:"CMS",
 	icon: <SiWebmoney/>,
-	path:"",
+	path:"/cms",
 	spaced:false
 	},
 	{title:"Settings",
 		icon: <SlSettings/>,
-		path:"/StudentAffairs",
+		path:"",
 		submenu:true,
 		subOpen:false,
-		spaced:false,
 		submenuItems:
 		[{title:"Dashboard",
 			icon: <PiStudentBold/>,
-			path:"/Student",
+			path:"/settings/dashboard",
 			
 			 },
 			 {title:"Students",
 				icon: "",
-				path:"",
+				path:"/settings/students",
 				spaced:false
 				 },
 			 
 				 {title:"Academics",
 					icon: "",
-					path:"",
+					path:"/settings/academics",
 					spaced:false
 					 },
 			 
 				 {title:"Finances",
 					icon: "",
-					path:"",
+					path:"/settings/finances",
 					spaced:false
 					 },
 			 
 				 {title:"HR",
 					icon: "",
-					path:"",
+					path:"/settings/hr",
 					spaced:false
 					 },
 			 
 				 {title:"Desk",
 					icon: "",
-					path:"",
+					path:"/settings/desk",
 					spaced:false
 					 },
 			 
 				 {title:"CMS",
 					icon: "",
-					path:"",
+					path:"/settings/cms",
 					spaced:false
 					 }
 		]
@@ -212,46 +204,16 @@ const menus=[
 	
 ]
 
-const NavbarSidebarUp = (props) => {
-	const [submenuOpen, setSubmenuOpen] = useState(false);
-	const  handleTheClick = (event) => {
-		const itemId = event.target.id;
-		alert(`Clicked item with ID: ${itemId}`);
-		setSubmenuOpen(!submenuOpen)
-	 };
-	return (
-		<nav   >
-		<ul className='pt-2'> {Menus.map((menu, index)=>(
-			<>
-				{/* the menu items are mapped from the menu list */}
-				<li key={index} className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md ${menu.spaced ? "mt-8" : "mt-0" } `}>
-					{/* the icon is put before the menu title */}
-					<span className='text-2xl block float-left'> {menu.icon? menu.icon:<CiMenuKebab/>}</span>
-					{/* if the side bar is open it will show the title or it will be hidden */}
-					<span className={`text-base font-medium flex-1 ${!props.open && "hidden"} duration-200`}> {menu.title}</span>
-					{/* if the menu has submenu and the side bar is open it shows the chevron to open close submenu */}
-					{menu.submenu && props.open &&(
-					<BsChevronDown className={`${submenuOpen && "rotate-180"}`} onClick={()=>
-						setSubmenuOpen(!submenuOpen)}/>
-					
-					)}
-				</li>
-				{/* if menu has sub and the side bar open and submenu state is open, it will show the submenum  */}
-				{menu.submenu && submenuOpen && props.open  && (
-					<ul>
-						{menu.submenuItems.map((submenuItem, index)=>(
-							<li key={index} className='text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md'>
-								<span className='text-1xl block float-left'> {<CiMenuKebab/>}</span>
-								{submenuItem.title}
-
-							</li>
-						))	}
-					</ul>
-				)}
-			</>
-			))}
-		</ul>
-	</nav>)
-  }
-
-export default NavbarSidebarUp;
+export const sidebarMenuDown=[
+	
+	{title:"Admin",
+	   icon: <GrUserAdmin/>,
+	   path:"/admin",
+	   spaced:false
+	   },	 	 		 
+		{title:"Logout",
+		   icon: <TbLogout/>,
+		   path:"/logout",
+		   spaced:false
+			}
+]

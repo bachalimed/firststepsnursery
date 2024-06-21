@@ -23,13 +23,14 @@ const Sidebar = () => {
 	<div className={`bg-gray-900 ${open?"w-56":"w-20" } p-3 flex flex-col text-white h-full duration-300 relative`}> 
 		<div className='inline-flex items-center '>
 			<img  src = {logo} className='h-14 w-14 rounded block float-left mr-2 mt-4 ' alt='logo image' />
-			<span className={`origin-left duration-300 ${!open&&"scale-0"  }`}>{company.label} <br/>{company.type}</span>
+			<span className={`origin-left font-medium duration-300 ${!open&&"scale-0"  }`}>{company.label} <br/>{company.type}</span>
 		</div>
 		<CgPushChevronLeftR className={` text-black text-3xl  ${!open&&"rotate-180" } absolute -right-9 top-7 cursor-pointer`} onClick={()=>setOpen(!open)}/>
-		
-		<div className='flex-1'><NavbarSidebarUp open={open}/></div>
+		<br/>
+		<div className='flex-1 border-t border-neutral-600'><NavbarSidebarUp open={open}/></div>
 		<div><NavbarSidebarDown open={open}/></div>
 	</div>
   )}
 
+  
 export default Sidebar;

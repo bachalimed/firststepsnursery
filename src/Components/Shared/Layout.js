@@ -2,7 +2,8 @@ import React from 'react';
 import { Outlet} from "react-router-dom";
 import Sidebar from "./../Sidebar";
 import Header from "./../Header";
-// Header from "././Header";
+import Footer from "./../Footer";
+
 
 const Layout = () => {
   	return (
@@ -11,7 +12,7 @@ const Layout = () => {
 			<div className='p-4'>
 				<div className='bg-teal-200'>{<Header/>}</div>
 				<div>{<Outlet/>}</div>
-				<div className='bg-teal-200'>Footer</div>
+				<div className='bg-teal-200'>{<Footer/>}</div>
 			</div>	
 			
 			
