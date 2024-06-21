@@ -1,82 +1,193 @@
 [
-    {
-        "title": "Dashboard",
-        "icon": "RiDashboard2Line"
-        
-    },
-    {
-        "title": "Student Affairs",
-        "icon": "PiStudentBold",
-        "childrens": [
-            {
-                "title": "Student & Parent",
-                "icon": "PiStudentBold",
-                "path": ""
-            },
-            {
-                "title": "Admission",
-                "icon": "PiStudentBold",
-                "path": ""
-            },
-            {
-                "title": "Enrolment",
-                "icon": "PiStudentBold",
-                "path": ""
-            },
-            {
-                "title": "Setup Student Affairs",
-                "icon": "PiStudentBold",
-                "path": ""
-            }
-        ]
-    },
-    {
-        "title": "Finances",
-        "icon": "FaSackDollar",
-        "childrens": [
-            {
-                "title": "Invoices",
-                "icon": "PiStudentBold",
-                "path": ""
-            },
-            {
-                "title": "Payment",
-                "icon": "PiStudentBold",
-                "path": ""
-            },
-            {
-                "title": "Expenses",
-                "icon": "PiStudentBold",
-                "childrens": [
-                    {
-                        "title": "Add Expense",
-                        "icon": "PiStudentBold",
-                        "path": ""
-                    },
-                    {
-                        "title": "Billing",
-                        "icon": "PiStudentBold",
-                        "childrens": [
-                            {
-                                "title": "Payment",
-                                "icon": "PiStudentBold",
-                                "path": ""
-                            },
-                            {
-                                "title": "Subscription",
-                                "icon": "PiStudentBold",
-                                "path": ""
-                            }
-                        ]
-                    },
-                    {
-                        "title": "Setup Finanaces",
-                        "icon": "PiStudentBold",
-                        "path": ""
-                    }
-                ]
-            }
-        ]
-    }
-    
-]
+	{"title":"Home",
+	"icon": "<BiHome/>",
+	"path":"/",
+	"spaced":false
+	 },
+	{"title":"Dashboard",
+	"icon": "<VscDashboard/>",
+	"path":"/",
+	"spaced":false
+	 },
+	 
+	{"title":"Students",
+	"icon": "<PiStudent/>",
+	"path":"",
+	"submenu":true,
+	"subOpen":false,
+	"submenuItems":
+		[{"title":"Students & Parents",
+			"icon": "<PiStudent/>",
+			"path":"/",
+			"spaced":false
+			},
+			{"title":"Admissions",
+			"icon": "",
+			"path":"",
+			"spaced":false
+			},
+			{"title":"Enrolments",
+			"icon": "",
+			"path":"",
+			"spaced":false
+			}
+		]
+	},
+	{"title":"Academics",
+		"icon": "<GrSchedules/>",
+		"path":"",
+		"submenu":true,
+		"subOpen":false,
+		"submenuItems":
+		[{"title":"School Plan",
+			"icon": "",
+			"path":"/",
+			"spaced":false
+			},
+			{"title":"Nursery Plan",
+			"icon": "",
+			"path":"",
+			"spaced":false
+			},
+			{"title":"Collection",
+				"icon": "",
+				"path":"",
+				"spaced":false
+			}
+			]
+	},
+	{"title":"Finances",
+	"icon":"<LuCircleDollarSign/>",
+	"path":"",
+	"spaced":false,
+	"submenu":true,
+	"subOpen":false,
+	"submenuItems":
+		[{"title":"Invoices",
+			"icon": "",
+			"path":"/",
+			"spaced":false
+			},
+			{"title":"Payments",
+			"icon": "",
+			"path":"",
+			"spaced":false
+			},
+			{"title":"Expenses",
+				"icon": "",
+				"path":"",
+				"spaced":false
+			}
+			]
+
+		},
+	
+	{"title":"HR",
+	"icon":"<GiHumanPyramid/>",
+	"path":"",
+	"spaced":false,
+	"submenu":true,
+	"subOpen":false,
+	"submenuItems":
+		[{"title":"Staff",
+			"icon": "",
+			"path":"/",
+			"spaced":false
+			},
+			{"title":"Payroll",
+			"icon": "",
+			"path":"",
+			"spaced":false
+			},
+			{"title":"Leave",
+				"icon": "",
+				"path":"",
+				"spaced":false
+			}
+			]
+		},
+	{"title":"Desk",
+	"icon": "<FaMailBulk/>",
+	"path":"",
+	"spaced":false,
+	"submenu":true,
+	"subOpen":false,
+	"submenuItems":
+		[{"title":"Inquiries",
+			"icon": "",
+			"path":"/",
+			"spaced":false
+			},
+			{"title":"Tasks",
+			"icon": "",
+			"path":"",
+			"spaced":false
+			},
+			{"title":"Communication",
+				"icon": "",
+				"path":"",
+				"spaced":false
+			
+			},
+			{"title":"Mailing",
+				"icon": "",
+				"path":"",
+				"spaced":false
+			}
+			]
+	},
+	{"title":"CMS",
+	"icon": "<SiWebmoney/>",
+	"path":"",
+	"spaced":false
+	},
+	{"title":"Settings",
+		"icon": "<SlSettings/>",
+		"path":"/StudentAffairs",
+		"submenu":true,
+		"subOpen":false,
+		"submenuItems":
+		[{"title":"Dashboard",
+			"icon": "<PiStudentBold/>",
+			"path":"/Student"
+			
+			 },
+			 {"title":"Students",
+				"icon": "",
+				"path":"",
+				"spaced":false
+				 },
+			 
+				 {"title":"Academics",
+					"icon": "",
+					"path":"",
+					"spaced":false
+					 },
+			 
+				 {"title":"Finances",
+					"icon": "",
+					"path":"",
+					"spaced":false
+					 },
+			 
+				 {"title":"HR",
+					"icon": "",
+					"path":"",
+					"spaced":false
+					 },
+			 
+				 {"title":"Desk",
+					"icon": "",
+					"path":"",
+					"spaced":false
+					 },
+			 
+				 {"title":"CMS",
+					"icon": "",
+					"path":"",
+					"spaced":false
+					 }
+		]
+		 }
+	
+		]
