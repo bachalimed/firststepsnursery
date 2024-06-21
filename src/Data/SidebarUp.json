@@ -1,0 +1,82 @@
+[
+    {
+        "title": "Dashboard",
+        "icon": "RiDashboard2Line"
+        
+    },
+    {
+        "title": "Student Affairs",
+        "icon": "PiStudentBold",
+        "childrens": [
+            {
+                "title": "Student & Parent",
+                "icon": "PiStudentBold",
+                "path": ""
+            },
+            {
+                "title": "Admission",
+                "icon": "PiStudentBold",
+                "path": ""
+            },
+            {
+                "title": "Enrolment",
+                "icon": "PiStudentBold",
+                "path": ""
+            },
+            {
+                "title": "Setup Student Affairs",
+                "icon": "PiStudentBold",
+                "path": ""
+            }
+        ]
+    },
+    {
+        "title": "Finances",
+        "icon": "FaSackDollar",
+        "childrens": [
+            {
+                "title": "Invoices",
+                "icon": "PiStudentBold",
+                "path": ""
+            },
+            {
+                "title": "Payment",
+                "icon": "PiStudentBold",
+                "path": ""
+            },
+            {
+                "title": "Expenses",
+                "icon": "PiStudentBold",
+                "childrens": [
+                    {
+                        "title": "Add Expense",
+                        "icon": "PiStudentBold",
+                        "path": ""
+                    },
+                    {
+                        "title": "Billing",
+                        "icon": "PiStudentBold",
+                        "childrens": [
+                            {
+                                "title": "Payment",
+                                "icon": "PiStudentBold",
+                                "path": ""
+                            },
+                            {
+                                "title": "Subscription",
+                                "icon": "PiStudentBold",
+                                "path": ""
+                            }
+                        ]
+                    },
+                    {
+                        "title": "Setup Finanaces",
+                        "icon": "PiStudentBold",
+                        "path": ""
+                    }
+                ]
+            }
+        ]
+    }
+    
+]
