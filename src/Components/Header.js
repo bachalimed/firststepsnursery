@@ -3,23 +3,19 @@ import NavbarHeader from "./Shared/NavbarHeader";
 
 const Header = () => {
   return (
-    <>
-      <nav>this is the Header
-        <NavbarHeader/>
+    
+      <div className="bg-white h-14 px-10 flex justify-between items-center ">
         <div>
-          <ul>
-          
-          <li>
-            hello
-          </li>
-          <li>
-           hi
-          </li>
-          </ul>
+			dropdown active year
         </div>
-      </nav>
+        <div className="">
+         welcome back Mr your name
 
-    </>
+        </div >
+        <NavbarHeader />
+      </div>
+
+    
   )
 };
 

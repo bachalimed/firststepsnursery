@@ -20,7 +20,8 @@ export const sidebarMenuUp=[
 	{title:"Dashboard",
 	icon: <VscDashboard/>,
 	path:"/dashboard",
-	spaced:false
+	spaced:false,
+	allowedRoles:["04","05"]
 	 },
 	 
 	{title:"Students",

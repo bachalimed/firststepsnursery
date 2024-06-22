@@ -10,7 +10,7 @@ const NavbarSidebarDown = (props) => {
 	return (
 		<div  className='border-t border-neutral-600' >
 		<ul  className='pt-2' >
-		 { sidebarMenuDown.map((menu, index) => <SidebarItem key={index} menu={menu} open={props.open}/>) }	
+		 { sidebarMenuDown.map((menu, index) => <SidebarItem key={index} menu={menu} open={props.open} setOpen={props.setOpen}/>) }	
 		</ul>
 	</div>)
   }

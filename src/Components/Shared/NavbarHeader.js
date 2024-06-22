@@ -1,32 +1,17 @@
-import { Link } from "react-router-dom";
+//import { Link } from "react-router-dom";
 
 const NavbarHeader = () => {
   return (
-    <>
+    <div className='flex'>
      
-     <h1 className="text-3xl font-bold underline">
-      Hello Mr Smith!
-    </h1>
-      
-        <ul>
-          
-        <li>
-            <Link to="/">to Home</Link>
-          </li>
-          <li>
-            2024/2025
-          </li>
-          <li>
-            <Link to="/Login">Login</Link>
-          </li>
-          <li>
-            <Link to="/Notifications">Notifications</Link>
-          </li>
-          
-        </ul>
         
-      
-    </>
+            <div>Notifications</div>
+            
+         
+            <div>profile</div>
+         
+               
+    </div>
     
   )
 };
