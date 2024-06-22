@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <div className='flex justify-between h-24 items-center border-b border-gray-200'>
       This is the footer component
-      <div className='relative'>
+      <div className='relative mr-2'>
       <HiOutlineSearch fontSize={20} className='text-gray-400 absolute top-1/2 -translate-y-1/2 left-3'/>
         <input
         type='text'

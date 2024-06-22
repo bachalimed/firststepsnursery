@@ -26,7 +26,7 @@ const {pathname} = useLocation();//to know which liink is selected and then set 
 				{props.menu.submenuItems.map((submenuItem, index)=>(
 					<Link to={submenuItem.path} className={pathname===submenuItem.path? 'text-teal-200':''}> 
 					<li key={index} className='text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md'>
-						<span className='text-2xl block float-left'> {<PiDotsThreeVerticalLight/>}</span>
+						<span className='text-1xl block float-left'> {submenuItem.icon}</span>
 						{submenuItem.title}
 
 					</li>

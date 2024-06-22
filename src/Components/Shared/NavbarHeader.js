@@ -9,22 +9,16 @@ const NavbarHeader = () => {
     <div className='flex items-center gap-2 mr-2'>
      
         
-            <div className="">
-              <HiOutlineChatAlt fontSize={24}/>
-            </div>
-            <div>
-              <HiOutlineBell fontSize={24}/>
-            </div>
-            <div>
-              <LuUserCircle2 fontSize={24}/>
-            </div>
-            
-         
-            <div>dropdwn</div>
-         
-               
-    </div>
-    
+		<div className="">
+			<HiOutlineChatAlt fontSize={24}/>
+		</div>
+		<div>
+			<HiOutlineBell fontSize={24}/>
+		</div>
+		<div>
+			<LuUserCircle2 fontSize={24}/>
+		</div>         
+    </div>  
   )
 };
 

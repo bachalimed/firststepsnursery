@@ -8,6 +8,26 @@ import { FaMailBulk } from "react-icons/fa";
 import { SiWebmoney } from "react-icons/si";
 import { SlSettings } from "react-icons/sl";
 import { BiHome } from "react-icons/bi";
+import { RiParentLine } from "react-icons/ri";
+import { IoFileTrayStackedOutline } from "react-icons/io5";
+import { MdOutlineAttachFile } from "react-icons/md";
+import { IoSchoolOutline } from "react-icons/io5";
+import { LuSchool } from "react-icons/lu";
+import { IoBusinessOutline } from "react-icons/io5";
+import { MdOutlineBusinessCenter } from "react-icons/md";
+import { BiBus } from "react-icons/bi";
+import { LiaFileInvoiceDollarSolid } from "react-icons/lia";
+import { GiReceiveMoney } from "react-icons/gi";
+import { GiPayMoney } from "react-icons/gi";
+
+
+
+
+
+
+
+
+
 
 import { TbLogout } from "react-icons/tb";
 
@@ -31,40 +51,40 @@ export const sidebarMenuUp=[
 	subOpen:false,
 	submenuItems:
 		[{title:"Students & Parents",
-			icon: <PiStudent/>,
+			icon: <RiParentLine/>,
 			path:"/students",
 			spaced:false
 			},
 			{title:"Admissions",
-			icon: "",
+			icon: <IoFileTrayStackedOutline/>,
 			path:"/students/admissions",
 			spaced:false
 			},
 			{title:"Enrolments",
-			icon: "",
+			icon: <MdOutlineAttachFile/>,
 			path:"/students/enrolments",
 			spaced:false
 			}
 		]
 	},
 	{title:"Academics",
-		icon: <GrSchedules/>,
+		icon: <IoSchoolOutline/>,
 		path:"",
 		submenu:true,
 		subOpen:false,
 		submenuItems:
 		[{title:"School Planings",
-			icon: "",
+			icon: <MdOutlineBusinessCenter/>,
 			path:"/academics/planings",
 			spaced:false
 			},
 			{title:"Nursery Planings",
-			icon: "",
+			icon: <LuSchool/>,
 			path:"/academics/nurseryPlanings",
 			spaced:false
 			},
 			{title:"Collection",
-				icon: "",
+				icon: <BiBus/>,
 				path:"/academics/collection",
 				spaced:false
 			}
@@ -78,17 +98,17 @@ export const sidebarMenuUp=[
 	subOpen:false,
 	submenuItems:
 		[{title:"Invoices",
-			icon: "",
+			icon: <LiaFileInvoiceDollarSolid/>,
 			path:"/finances/invoices",
 			spaced:false
 			},
 			{title:"Payments",
-			icon: "",
+			icon: <GiReceiveMoney/>,
 			path:"/finances/payments",
 			spaced:false
 			},
 			{title:"Expenses",
-				icon: "",
+				icon: <GiPayMoney/>,
 				path:"/finances/expenses",
 				spaced:false
 			}
