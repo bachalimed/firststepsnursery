@@ -1,16 +1,16 @@
 //import { Link } from "react-router-dom";
 
 import { HiOutlineBell } from "react-icons/hi2";
-import { HiOutlineChatAlt } from "react-icons/hi";
 import { LuUserCircle2 } from "react-icons/lu";
-
+import HeaderChat from "./HeaderChat"
 const NavbarHeader = () => {
   return (
     <div className='flex items-center gap-2 mr-2'>
      
         
 		<div className="">
-			<HiOutlineChatAlt fontSize={24}/>
+			<HeaderChat/>
+			
 		</div>
 		<div>
 			<HiOutlineBell fontSize={24}/>

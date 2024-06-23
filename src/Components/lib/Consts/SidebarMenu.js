@@ -1,35 +1,25 @@
 
-import { VscDashboard } from "react-icons/vsc";
-import { PiStudent, PiStudentBold } from "react-icons/pi";
-import { GrSchedules, GrUserAdmin } from "react-icons/gr";
-import { LuCircleDollarSign } from "react-icons/lu";
-import { GiHumanPyramid } from "react-icons/gi";
+import { VscDashboard, VscPerson } from "react-icons/vsc";
+import { PiStudent } from "react-icons/pi";
+import { GrUserAdmin, GrTask } from "react-icons/gr";
+import { LuCircleDollarSign, LuSchool, LuMail } from "react-icons/lu";
+import { GiHumanPyramid, GiReceiveMoney, GiPayMoney } from "react-icons/gi";
 import { FaMailBulk } from "react-icons/fa";
 import { SiWebmoney } from "react-icons/si";
 import { SlSettings } from "react-icons/sl";
 import { BiHome } from "react-icons/bi";
 import { RiParentLine } from "react-icons/ri";
-import { IoFileTrayStackedOutline } from "react-icons/io5";
-import { MdOutlineAttachFile } from "react-icons/md";
-import { IoSchoolOutline } from "react-icons/io5";
-import { LuSchool } from "react-icons/lu";
-import { IoBusinessOutline } from "react-icons/io5";
+import { IoFileTrayStackedOutline, IoSchoolOutline } from "react-icons/io5";
 import { MdOutlineBusinessCenter } from "react-icons/md";
-import { BiBus } from "react-icons/bi";
 import { LiaFileInvoiceDollarSolid } from "react-icons/lia";
-import { GiReceiveMoney } from "react-icons/gi";
-import { GiPayMoney } from "react-icons/gi";
+import { FaListCheck } from "react-icons/fa6";
+import { HiMiniArrowsUpDown } from "react-icons/hi2";
+import { TbCreditCardPay, TbLogout } from "react-icons/tb";
+import { MdOutlinePermContactCalendar } from "react-icons/md";
+import { BsQuestionSquare } from "react-icons/bs";
+import { HiOutlineChatAlt } from "react-icons/hi";
 
 
-
-
-
-
-
-
-
-
-import { TbLogout } from "react-icons/tb";
 
 export const sidebarMenuUp=[
 	{title:"home",
@@ -61,7 +51,7 @@ export const sidebarMenuUp=[
 			spaced:false
 			},
 			{title:"Enrolments",
-			icon: <MdOutlineAttachFile/>,
+			icon: <FaListCheck/>,
 			path:"/students/enrolments",
 			spaced:false
 			}
@@ -84,7 +74,7 @@ export const sidebarMenuUp=[
 			spaced:false
 			},
 			{title:"Collection",
-				icon: <BiBus/>,
+				icon: <HiMiniArrowsUpDown/>,
 				path:"/academics/collection",
 				spaced:false
 			}
@@ -123,17 +113,17 @@ export const sidebarMenuUp=[
 	subOpen:false,
 	submenuItems:
 		[{title:"Staff",
-			icon: "",
+			icon: <VscPerson/>,
 			path:"/hr/staff",
 			spaced:false
 			},
 			{title:"Payroll",
-			icon: "",
+			icon: <TbCreditCardPay/>,
 			path:"/hr/payroll",
 			spaced:false
 			},
 			{title:"Leave",
-				icon: "",
+				icon: <MdOutlinePermContactCalendar/>,
 				path:"/hr/leave",
 				spaced:false
 			}
@@ -147,23 +137,23 @@ export const sidebarMenuUp=[
 	subOpen:false,
 	submenuItems:
 		[{title:"Inquiries",
-			icon: "",
+			icon: <BsQuestionSquare/>,
 			path:"/desk/inquiries",
 			spaced:false
 			},
 			{title:"Tasks",
-			icon: "",
+			icon: <GrTask/>,
 			path:"/desk/tasks",
 			spaced:false
 			},
-			{title:"Communication",
-				icon: "",
-				path:"/desk/communication",
+			{title:"Chat",
+				icon: <HiOutlineChatAlt/>,
+				path:"/desk/Chat",
 				spaced:false
 			
 			},
 			{title:"Mailing",
-				icon: "",
+				icon: <LuMail/>,
 				path:"/desk/mailing",
 				spaced:false
 			}
@@ -181,42 +171,42 @@ export const sidebarMenuUp=[
 		subOpen:false,
 		submenuItems:
 		[{title:"Dashboard",
-			icon: <PiStudentBold/>,
+			icon: <VscDashboard/>,
 			path:"/settings/dashboard",
 			
 			 },
 			 {title:"Students",
-				icon: "",
+				icon: <PiStudent/>,
 				path:"/settings/students",
 				spaced:false
 				 },
 			 
 				 {title:"Academics",
-					icon: "",
+					icon: <IoSchoolOutline/>,
 					path:"/settings/academics",
 					spaced:false
 					 },
 			 
 				 {title:"Finances",
-					icon: "",
+					icon: <LiaFileInvoiceDollarSolid/>,
 					path:"/settings/finances",
 					spaced:false
 					 },
 			 
 				 {title:"HR",
-					icon: "",
+					icon: <GiHumanPyramid/>,
 					path:"/settings/hr",
 					spaced:false
 					 },
 			 
 				 {title:"Desk",
-					icon: "",
+					icon: <FaMailBulk/>,
 					path:"/settings/desk",
 					spaced:false
 					 },
 			 
 				 {title:"CMS",
-					icon: "",
+					icon: <SiWebmoney/>,
 					path:"/settings/cms",
 					spaced:false
 					 }

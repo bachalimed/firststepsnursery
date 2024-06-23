@@ -11,7 +11,7 @@ const Layout = () => {
 			<div className=''>{<Sidebar/>}</div>
 			<div className='flex-1'>
 				<div className=''>{<Header/>}</div>
-				<div className='p-4'>{<Outlet/>}</div>
+				<div className=' flex p-4'>{<Outlet/>}</div>
 				<div className='bg-teal-200'>{<Footer/>}</div>
 			</div>	
 			
