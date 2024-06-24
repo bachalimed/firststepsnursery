@@ -42,7 +42,7 @@ export const sidebarMenuUp=[
 	submenuItems:
 		[{title:"Students & Parents",
 			icon: <RiParentLine/>,
-			path:"/students",
+			path:"/studentsParents",
 			spaced:false
 			},
 			{title:"Admissions",

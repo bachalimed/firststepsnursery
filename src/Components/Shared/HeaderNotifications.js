@@ -15,7 +15,8 @@ const HeaderNotifications = () => {
       anchor="bottom end"
       className=" origin-top-right rounded-md border bg-sky-100 p-1 text-sm/6 text-gray-800 transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
     >
-       {HeaderNotificationSample.slice(0, 5).map((Notif, index )=>(
+      <strong>Notifications</strong>
+       {HeaderNotificationSample.slice(0, 10).map((Notif, index )=>(
       <MenuItem>
         <button key = {index} className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10" href="/target 1">
           {Notif.type} {Notif.student}{Notif.object}

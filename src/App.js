@@ -8,7 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import NoPage from "./pages/NoPage";
 import Academics from "./pages/Academics";
-import Students from "./pages/Students";
+import StudentsParents from "./pages/StudentsParents";
 import HumanResources from "./pages/HumanResources";
 import Desk from "./pages/Desk";
 import Cms from "./pages/Cms";
@@ -43,7 +43,7 @@ const App = () => {
         	<Route path="/" element={<Layout/>}>
           	<Route index element={<Home />} /> 
           	<Route path="dashboard" element={<Dashboard />} />
-          	<Route path="students" element={<Students />} />
+          	<Route path="studentsParents" element={<StudentsParents />} />
           	<Route path="desk" element={<Desk />} />
           	<Route path="academics" element={<Academics />} />
           	<Route path="hr" element={<HumanResources />} />
