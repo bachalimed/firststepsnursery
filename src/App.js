@@ -15,6 +15,10 @@ import Cms from "./pages/Cms";
 import Finances from "./pages/Finances";
 import Settings from "./pages/Settings";
 import Layout from "./Components/Shared/Layout";
+import Login from "./pages/Login";
+import ResetPassword from "./pages/ResetPassword";
+import ForgotPassword from "./pages/ForgotPassword";
+import Logout from "./pages/Logout";
 
 //in case we need not to show the header in some pages, we create another route
 //after </Route> start another <Route path="Login" element={<Login />} />
@@ -50,9 +54,13 @@ const App = () => {
           	<Route path="finances" element={<Finances />} />
           	<Route path="cms" element={<Cms />} />
           	<Route path="settings" element={<Settings />} />
+          	<Route path="User/Login" element={<Login />} />
+          	<Route path="User/ResetPassword" element={<ResetPassword />} />
+          	<Route path="User/ForgotPassword" element={<ForgotPassword />} />
+          	<Route path="User/Logout" element={<Logout />} />
           	<Route path="*" element={<NoPage />} /> 
-          </Route>
-        
+          </Route> 
+		  
       </Routes>
     </BrowserRouter>
   )

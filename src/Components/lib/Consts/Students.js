@@ -1,0 +1,53 @@
+
+export const Students=[
+	{_id:{$oid:"6659f238a97535bbec6ac92e"},
+    studentName:{
+        firstName:"Sadok",
+        middleName:"ali",
+        lastName:"nebli"},
+    studentDob:{$date:{$numberLong:"1420059600000"}},
+    studentState:"active",
+    studentPhoto:{
+        photoLabel:"sadok",
+        photoSize:{$numberInt:"8"},
+        photoLocation:"./public/sadok.png",
+        photoType:"png"},
+    studentSex:"male",
+    studentParent:{
+        studentMother:{
+            $oid:"6659f3b97cabf8d5d11e4b30"},
+        studentFather:{
+            $oid:"6659f4207cabf8d5d11e4b31"},
+            studentPhone:{
+                fatherPhone:"59484848",
+                motherPhone:"74464546"},
+            studentJointFamil:true},
+    studentGardien:[
+        {gardienFirstName:"malek",
+            gardienMiddleName:"amine",
+            gardienlastName:"berrishe",
+            gardienPhone:"98987678"},
+        {garidenFirstName:"hfidk",
+            gardienMiddleName:"dfdf",
+            gardienLastName:"dfsdfd",
+            gardienPhone:"222333"}],
+    studentEducation:[
+        {schoolyear:"2324",
+        attendedSchool:"hedi chaker",
+        note:""},
+        {schoolyear:"2425",
+        attendedSchool:"hedi chaker",
+        note:"passed"}],
+    lastModified:{
+        date:{$date:{$numberLong:"1709499600000"}},
+        operator:{$oid:"665aa557b27a97b0efc6a686"}},
+    document:[
+        {1:"665ab8c1b27a97b0efc6a68b"},
+        {2:"665ab8c9b27a97b0efc6a68c"},
+        {3:"665ab8d2b27a97b0efc6a68d"}],
+    admissions:[
+        {2223:"665ac0bdb27a97b0efc6a691"},
+        {2324:"665ac0b4b27a97b0efc6a690"}],
+    studentYear:"2324"
+}
+	]

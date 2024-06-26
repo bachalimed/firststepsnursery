@@ -22,25 +22,25 @@ const HeaderUserProfile = () => {
           <strong>Manage user profile</strong>
           <MenuItem>
             
-            <button onClick={()=>Navigate('/Login')} className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10" href="link1target1StudentsParents">
+            <button onClick={()=>Navigate('/User/Login')} className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10" href="link1target1StudentsParents">
               Login
             </button>
             
           </MenuItem>
           <MenuItem>
-            <button className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10" href="/target 1">        
+            <button onClick={()=>Navigate('/User/ForgotPassword')} className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10" href="/target 1">        
               Forgot Password 
             </button>
           </MenuItem>
           <MenuItem>
-            <button className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10" href="/target 1">
+            <button onClick={()=>Navigate('/User/ResetPassword')} className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10" href="/target 1">
               {/* <LuUserCircle2 className="size-4 fill-white/30" /> */}
               Reset Password        
             </button>    
           </MenuItem>
           <div className="my-1 h-px bg-gray-500" />
           <MenuItem>
-            <button className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10">          
+            <button onClick={()=>Navigate('/User/Logout')} className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10">          
               Logout
             </button>
           </MenuItem>
