@@ -21,7 +21,7 @@ const Sidebar = () => {
 	
   return (
     
-	<div className={`bg-gray-900 ${open?"w-56":"w-20" } p-3 flex flex-col text-white h-full duration-300 relative`}> 
+	<div className={`bg-gray-900 ${open?"w-56":"w-20" } p-3 flex flex-1 flex-col h-full text-white  duration-300 relative`}> 
 		<div className='inline-flex items-center '>
 			<img  src = {logo} className='h-14 w-14 rounded block float-left mr-2 mt-4 ' alt='logo image' />
 			<span className={`origin-left font-medium duration-300 ${!open&&"scale-0"  }`}>{company.label} <br/>{company.type}</span>

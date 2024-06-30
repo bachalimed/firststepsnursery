@@ -10,36 +10,36 @@ import { Description, Field, Label, Select } from '@headlessui/react';
 const StudentsParents = () => {
   return (
   
-    <div className="flex flex-col w-full  justify-left  ">
-      <div className="w-full max-w-md">
-        <TabGroup>
-          <TabList className="flex gap-1">       
+    <div className="flex bg-gray-300 justify-left  ">
+      <div className="flex-1 w-full  h-full ">
+        <TabGroup  defaultIndex={0} >
+          <TabList className=" gap-1">       
               <Tab  className="rounded-sm  bg-sky-100 px-2 text-sm/6 font-semibold text-gray-800 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white" >
                 Students		 
               </Tab>
               <Tab  className="rounded-sm  bg-sky-100 px-2 text-sm/6 font-semibold text-gray-800 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white" >
                Parents
               </Tab>
-              <Tab  className="rounded-full  bg-sky-100 px-2 text-sm/6 font-semibold text-gray-800 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white" >
+              <Tab  className="rounded-sm  bg-sky-100 px-2 text-sm/6 font-semibold text-gray-800 focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white" >
                 New Student
               </Tab>
             
           </TabList>
-          <TabPanels className=" flex">
+          <TabPanels className="flex-1 w-full">
            
-              <TabPanel   className="  rounded-md bg-white/5 p-3  "> 
+              <TabPanel   className=" flex-1 w-full rounded-md bg-white/5 p-3  "> 
 				  		<SearchBar className=""/> 
 				  		<Students/>
-				  </TabPanel>
-              <TabPanel   className="rounded-md bg-white/5 p-3"> 
-				  <SearchBar className=""/>
-				  <Parents/>
-				  </TabPanel>
-              <TabPanel   className="rounded-md bg-white/5 p-3">
-				  <SearchBar className=""/>
-				   <NewStudent/>
-				  </TabPanel>
-                
+				    </TabPanel>
+              <TabPanel   className="flex-1 w-full rounded-md bg-white/5 p-3"> 
+            <SearchBar className=""/>
+            <Parents/>
+            </TabPanel>
+                <TabPanel   className="flex-1 w-full rounded-md bg-white/5 p-3">
+            <SearchBar className=""/>
+            <NewStudent/>
+            </TabPanel>
+                  
           </TabPanels>
         </TabGroup>
       

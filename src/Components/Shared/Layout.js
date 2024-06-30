@@ -12,12 +12,13 @@ import Footer from "./../Footer";
 
 const Layout = () => {
   	return (
-		<div className='flex flex-row bg-neutral-100 h-screen w-screen overflow-hidden'>
-			<div className=''>{<Sidebar/>}</div>
+		<div className='flex bg-neutral-100 h-screen w-screen '>
+			<div className='h-full '>{<Sidebar/>}</div>
 			<div className='flex-1'>
-				<div className='flex-1'>{<Header/>}</div>
-				<div className=' flex-1 p-1'>{<Outlet/>}</div>
-				<div className=' flex-1 bg-teal-200'>{<Footer/>}</div>
+				<div className='flex-1 '>{<Header/>}</div>
+				<div className=' flex-1 p-1 h-screen '>{<Outlet className=''/>}</div>
+				{/* <div className=' flex-1 p-1 h-screen'>{<Outlet/>}</div> */}
+				<div className=' flex-1 bg-teal-200 '>{<Footer/>}</div>
 			</div>	
 			
 			

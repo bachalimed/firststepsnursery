@@ -11,7 +11,7 @@ const SearchBar = () => {
 				<input type='text' placeholder='search' className='text-sm focus:outline-none active:outline-none h-10 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4'   />
 			</div>
         
-        <Field className=' flex flex-col items-center'>
+        {/* <Field className=' flex flex-col items-center'>
           	<div className="inline-flex relative">
 					<BsChevronDown className="absolute right-2 top-2" aria-hidden="true" />
 					<Select name="SearchItem"  className= ' relative mt-1  w-32 data-[hover]:shadow block data-[focus]:bg-blue-200 appearance-none rounded-sm border-gray-600 bg-white/5 py-0 px-3 text-md/6 text-gray-900 border '>
@@ -21,7 +21,7 @@ const SearchBar = () => {
 					
 					</Select>
           	</div>
-        </Field>
+        </Field> */}
       </div>
 
 
@@ -36,4 +36,4 @@ const SearchBar = () => {
   )
 }
 
-export default SearchBar
+export default SearchBar;

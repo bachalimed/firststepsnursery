@@ -2,7 +2,7 @@ import React from 'react'
 
 const Parents = () => {
   return (
-    <div>Parents tab</div>
+    <div  className='bg-gray-300'>Parents tab</div>
   )
 }
 
