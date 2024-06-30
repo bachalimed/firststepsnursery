@@ -3,12 +3,15 @@ import { HiOutlineSearch } from 'react-icons/hi';
 
 
 const Footer = () => {
+  const today= new Date();
   return (
-    <div className='flex justify-between h-24 items-center border-b border-gray-200'>
-      This is the footer component
+    <footer className='flex  h-24 place-content-center border-b border-gray-200'>
+      <p>
+        {today.getFullYear()}
+      </p>
       
       
-    </div>
+    </footer>
   )
 };
 export default Footer;

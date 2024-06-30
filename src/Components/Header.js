@@ -5,7 +5,7 @@ import ActiveYearSelect from "./Shared/ActiveYearSelect";
 const Header = () => {
   return (
     
-      <div className="bg-white h-14 px-10 flex justify-between items-center ">
+      <header className="bg-white h-14 px-10 flex justify-between items-center ">
         
         <ActiveYearSelect/>
         
@@ -14,7 +14,7 @@ const Header = () => {
 
         </div >
         <NavbarHeader />
-      </div>
+      </header>
 
     
   )
