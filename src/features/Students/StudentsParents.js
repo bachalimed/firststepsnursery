@@ -1,9 +1,9 @@
 import React from 'react';
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react';
-import SearchBar from '../Components/Shared/SearchBar';
+import SearchBar from '../../Components/Shared/SearchBar';
 import Students from './Students';
-import Parents from './Parents';
-import NewStudent from './NewStudent';
+import Parents from '../StudentsParents/Parents';
+import NewStudent from '../StudentsParents/NewStudent';
 import { Description, Field, Label, Select } from '@headlessui/react';
 
 

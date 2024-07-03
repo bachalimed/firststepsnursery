@@ -12,7 +12,7 @@ import { LuChevronLeft } from "react-icons/lu";
 
 
 
-const Sidebar = () => {
+const DashboardSidebar = () => {
 	//to set the open close of side bar
 	const [open, setOpen]= useState(true);
 	
@@ -34,4 +34,4 @@ const Sidebar = () => {
   )}
 
   
-export default Sidebar;
+export default DashboardSidebar;

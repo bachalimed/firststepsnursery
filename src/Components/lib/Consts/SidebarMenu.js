@@ -22,11 +22,7 @@ import { HiOutlineChatAlt } from "react-icons/hi";
 
 
 export const sidebarMenuUp=[
-	{title:"home",
-	icon: <BiHome/>,
-	path:"/",
-	spaced:false
-	 },
+	
 	{title:"Dashboard",
 	icon: <VscDashboard/>,
 	path:"/dashboard",
@@ -160,10 +156,15 @@ export const sidebarMenuUp=[
 			]
 	},
 	{title:"CMS",
-	icon: <SiWebmoney/>,
-	path:"/cms",
-	spaced:false
+		icon: <SiWebmoney/>,
+		path:"/cms",
+		spaced:false
 	},
+	{title:"Public",
+		icon: <BiHome/>,
+		path:"/",
+		spaced:false
+		 },
 	{title:"Settings",
 		icon: <SlSettings/>,
 		path:"",

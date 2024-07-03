@@ -2,7 +2,7 @@ import React from 'react'
 import { LuUserCircle2 } from "react-icons/lu";
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Link, useNavigate } from 'react-router-dom';
-import Login from '../../pages/Login';
+import Login from '../../features/auth/Login';
 import { Navigate } from 'react-router-dom';
 
 const HeaderUserProfile = () => {
@@ -22,7 +22,7 @@ const HeaderUserProfile = () => {
           <strong>Manage user profile</strong>
           <MenuItem>
             
-            <button onClick={()=>Navigate('/User/Login')} className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10" href="link1target1StudentsParents">
+            <button onClick={()=>Navigate('/Login')} className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10" href="link1target1StudentsParents">
               Login
             </button>
             

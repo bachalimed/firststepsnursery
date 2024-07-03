@@ -1,6 +1,6 @@
 import React from 'react'
-import DashboardStatsGrid from '../Components/Shared/DashboardStatsGrid';
-import PaymentPie from '../Components/lib/PaymentPie';
+import DashboardStatsGrid from '../../Components/Shared/DashboardStatsGrid'
+import PaymentPie from '../../Components/lib/PaymentPie'
 
 const Dashboard = () => {
   return (
@@ -13,4 +13,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard;
+export default Dashboard
