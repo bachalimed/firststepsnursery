@@ -1,26 +1,47 @@
 import React from 'react'
-import { Routes, Route } from "react-router-dom"
-import PublicLayout from "./Components/PublicLayout"
-import DashboardLayout from "./Components/DashboardLayout"
-import Public from "./pages/Public"
-import Login from "./features/auth/Login"
-import Dashboard from "./features/auth/Dashboard"
-
-import ReactDOM from "react-dom/client"
+import { Routes, Route } from 'react-router-dom'
+import PublicLayout from './Components/PublicLayout'
+import DashboardLayout from './Components/DashboardLayout'
+import Public from './pages/Public'
+import Login from './features/auth/Login'
+import Dashboard from './features/Dashboard/Dashboard'
 
 
+import StudentsParents from './features/Students/StudentsParents'
+import Admissions from "./features/Students/Admissions"
+import Enrolments from "./features/Students/Enrolments"
+import NurseryPlannings from './features/Academics/NurseryPlannings'
+import SchoolPlannings from './features/Academics/SchoolPlannings'
+import CollectionDrop from './features/Academics/CollectionDrop'
+import Invoices from './features/Finances/Invoices'
+import Payments from './features/Finances/Payments'
+import Expenses from './features/Finances/Expenses'
+import Staff from './features/HR/Staff'
+import Payroll from './features/HR/Payroll'
+import Leave from './features/HR/Leave'
+import Chat from './features/Desk/Chat'
+import Inquiries from './features/Desk/Inquiries'
+import Mailing from './features/Desk/Mailing'
+import Tasks from './features/Desk/Tasks'
+import Cms from './features/CMS/Cms'
+import DashboardSet from './features/AppSettings/DashboardSet'
+import AcademicsSet from './features/AppSettings/AcademicsSet'
+import CmsSet from './features/AppSettings/CmsSet'
+import FinancesSet from './features/AppSettings/FinancesSet'
+import StudentsSet from './features/AppSettings/StudentsSet'
+import HRSet from './features/AppSettings/HRSet'
+import DeskSet from './features/AppSettings/DeskSet'
+import Admin from './features/Admin/Admin'
+import Logout from './features/auth/Logout'
 
-import NoPage from "./pages/NoPage"
-import Academics from "./features/Academics/Academics"
-import StudentsParents from "./features/StudentsParents/StudentsParents"
-import HumanResources from "./pages/HumanResources"
-import Desk from "./pages/Desk"
-import Cms from "./pages/Cms"
-import Finances from "./pages/Finances"
-import Settings from "./pages/Settings"
-import ResetPassword from "./pages/ResetPassword"
-import ForgotPassword from "./pages/ForgotPassword"
-import Logout from "./pages/Logout"
+
+import ReactDOM from 'react-dom/client'
+
+import NoPage from './pages/NoPage'
+import Parents from './features/Students/Parents'
+import NewStudent from './features/Students/NewStudent'
+import ResetPassword from './features/auth/ResetPassword'
+import ForgotPassword from './features/auth/ForgotPassword'
 
 //in case we need not to show the header in some pages, we create another route
 //after </Route> start another <Route path="Login" element={<Login />} />
@@ -48,34 +69,143 @@ const App = () => {
       <Routes>
         	<Route path="/" element={<PublicLayout/>}>       {/*the parent of all the other routes*/}
 				<Route index element={<Public />} />   {/*  index will show as a default in the public layout*/}
-					<Route path="login" element={<Login />} />
+				<Route path="login" element={<Login />} />
 
-					<Route path="dashboard" element={<DashboardLayout />} >	 {/*this will wrap around componenets that are protected by this route*/}				
+				<Route path="dashboard" element={<DashboardLayout />} >	 {/*this will wrap around components that are protected by this route*/}				
 					<Route index element={<Dashboard />} />   {/*  index will show as a default in the dashboard layout*/}
-						<Route path="studentsParents" > 
-						<Route path="students" element={<Students />} >   {/*  index will show as a default in the dashboard layout*/}
-						<Route path="parents" element={<Parents />} >   
-						<Route path="newStudent" element={<NewStudent />} />   
-						</Route> 
+				</Route> {/* end of dashboard route */}
 
-					</Route> 
+				<Route path="students" element={<DashboardLayout />} >	 				
+					<Route index element={<StudentsParents />} />   
+
+					<Route path="studentsParents" > 					
+					<Route index element={<StudentsParents />} /> 
+					</Route> {/* end of studentsParents route */}
+
+					<Route path="admissions" > 					
+					<Route index element={<Admissions />} /> 
+					</Route> {/* end of Admissions route */}
+
+					<Route path="enrolments" > 					
+					<Route index element={<Enrolments />} /> 
+					</Route> {/* end of Enrolments route */}
+				</Route> {/* end of Students route */}
 
 
+				<Route path="academics" element={<DashboardLayout />} >	 				
+					<Route index element={<SchoolPlannings />} />   
+
+					<Route path="schoolPlannings" > 					
+					<Route index element={<SchoolPlannings />} /> 
+					</Route> {/* end of schoolPlannings route */}
+
+					<Route path="nurseryPlannings" > 					
+					<Route index element={<NurseryPlannings />} /> 
+					</Route> {/* end of nurseryPlannings route */}
+
+					<Route path="collectionDrop" > 					
+					<Route index element={<CollectionDrop />} /> 
+					</Route> {/* end of collectionDrop route */}
+				</Route> {/* end of academics route */}
+
+				<Route path="finances" element={<DashboardLayout />} >	 				
+					<Route index element={<SchoolPlannings />} />   
+
+					<Route path="invoices" > 					
+					<Route index element={<Invoices />} /> 
+					</Route> {/* end of invoices route */}
+
+					<Route path="payments" > 					
+					<Route index element={<Payments />} /> 
+					</Route> {/* end of payments route */}
+
+					<Route path="expenses" > 					
+					<Route index element={<Expenses />} /> 
+					</Route> {/* end of expenses route */}
+				</Route> {/* end of finances route */}
+
+				<Route path="HR" element={<DashboardLayout />} >	 				
+					<Route index element={<Staff />} />   
+
+					<Route path="staff" > 					
+					<Route index element={<Staff />} /> 
+					</Route> {/* end of staff route */}
+
+					<Route path="payroll" > 					
+					<Route index element={<Payroll />} /> 
+					</Route> {/* end of payroll route */}
+
+					<Route path="leave" > 					
+					<Route index element={<Leave />} /> 
+					</Route> {/* end of leave route */}
+				</Route> {/* end of HR route */}
+
+				<Route path="desk" element={<DashboardLayout />} >	 				
+					<Route index element={<Inquiries />} />   
+
+					<Route path="inquiries" > 					
+					<Route index element={<Inquiries />} /> 
+					</Route> {/* end of inquiries route */}
+
+					<Route path="tasks" > 					
+					<Route index element={<Tasks />} /> 
+					</Route> {/* end of tasks route */}
+
+					<Route path="chat" > 					
+					<Route index element={<Chat />} /> 
+					</Route> {/* end of chat route */}
+
+					<Route path="mailing" > 					
+					<Route index element={<Mailing />} /> 
+					</Route> {/* end of mailing route */}
+				</Route> {/* end of Desk route */}
+
+				<Route path="cms" element={<DashboardLayout />} >	 				
+				<Route index element={<Cms />} />   
+				</Route> {/* end of CMS route */}
 				
-			</Route> 
-				{/* <Route path="studentsParents" element={<StudentsParents />} />
-				<Route path="desk" element={<Desk />} />
-				<Route path="academics" element={<Academics />} />
-				<Route path="hr" element={<HumanResources />} />
-				<Route path="finances" element={<Finances />} />
-				<Route path="cms" element={<Cms />} />
-				<Route path="settings" element={<Settings />} />
-				<Route path="User/ResetPassword" element={<ResetPassword />} />
-				<Route path="User/ForgotPassword" element={<ForgotPassword />} />
-				<Route path="User/Logout" element={<Logout />} />
-				<Route path="*" element={<NoPage />} /> 
-          </Route>  */}
-		  
+				<Route path="settings" element={<DashboardLayout />} >	 				
+					<Route index element={<DashboardSet />} />   
+
+					<Route path="dashboardSet" > 					
+					<Route index element={<DashboardSet />} /> 
+					</Route> {/* end of dashboardSet route */}
+
+					<Route path="studentsSet" > 					
+					<Route index element={<StudentsSet />} /> 
+					</Route> {/* end of studentsSet route */}
+
+					<Route path="academicsSet" > 					
+					<Route index element={<AcademicsSet />} /> 
+					</Route> {/* end of academicsSet route */}
+
+					<Route path="financesSet" > 					
+					<Route index element={<FinancesSet />} /> 
+					</Route> {/* end of financesSet route */}
+
+					<Route path="HRSet" > 					
+					<Route index element={<HRSet />} /> 
+					</Route> {/* end of HRSet route */}
+
+					<Route path="deskSet" > 					
+					<Route index element={<DeskSet />} /> 
+					</Route> {/* end of financedeskSetsdeskSetSet route */}
+
+					<Route path="cmsSet" > 					
+					<Route index element={<CmsSet />} /> 
+					</Route> {/* end of cmsSet route */}
+				</Route> {/* end of settings route */}
+							
+				<Route path="admin" element={<DashboardLayout />} >	 				
+				<Route index element={<Admin />} />   
+				</Route> {/* end of admin route */}
+
+				<Route path="logout" element={<DashboardLayout />} >	 				
+				<Route index element={<Logout />} />   
+				</Route> {/* end of logout route */}	
+			
+			</Route>   {/* end of Public route */} 
+								 
       </Routes>
     
   )

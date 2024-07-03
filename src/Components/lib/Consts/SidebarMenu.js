@@ -38,7 +38,7 @@ export const sidebarMenuUp=[
 	submenuItems:
 		[{title:"Students & Parents",
 			icon: <RiParentLine/>,
-			path:"/studentsParents",
+			path:"/students/studentsParents",
 			spaced:false
 			},
 			{title:"Admissions",
@@ -59,19 +59,19 @@ export const sidebarMenuUp=[
 		submenu:true,
 		subOpen:false,
 		submenuItems:
-		[{title:"School Planings",
+		[{title:"School Plannings",
 			icon: <MdOutlineBusinessCenter/>,
-			path:"/academics/planings",
+			path:"/academics/schoolPlannings",
 			spaced:false
 			},
-			{title:"Nursery Planings",
+			{title:"Nursery Plannings",
 			icon: <LuSchool/>,
-			path:"/academics/nurseryPlanings",
+			path:"/academics/nurseryPlannings",
 			spaced:false
 			},
-			{title:"Collection",
+			{title:"Collection&Drop",
 				icon: <HiMiniArrowsUpDown/>,
-				path:"/academics/collection",
+				path:"/academics/collectionDrop",
 				spaced:false
 			}
 			]
@@ -173,42 +173,42 @@ export const sidebarMenuUp=[
 		submenuItems:
 		[{title:"Dashboard",
 			icon: <VscDashboard/>,
-			path:"/settings/dashboard",
+			path:"/settings/dashboardSet",
 			
 			 },
 			 {title:"Students",
 				icon: <PiStudent/>,
-				path:"/settings/students",
+				path:"/settings/studentsSet",
 				spaced:false
 				 },
 			 
 				 {title:"Academics",
 					icon: <IoSchoolOutline/>,
-					path:"/settings/academics",
+					path:"/settings/academicsSet",
 					spaced:false
 					 },
 			 
 				 {title:"Finances",
 					icon: <LiaFileInvoiceDollarSolid/>,
-					path:"/settings/finances",
+					path:"/settings/financesSet",
 					spaced:false
 					 },
 			 
 				 {title:"HR",
 					icon: <GiHumanPyramid/>,
-					path:"/settings/hr",
+					path:"/settings/HRSet",
 					spaced:false
 					 },
 			 
 				 {title:"Desk",
 					icon: <FaMailBulk/>,
-					path:"/settings/desk",
+					path:"/settings/deskSet",
 					spaced:false
 					 },
 			 
 				 {title:"CMS",
 					icon: <SiWebmoney/>,
-					path:"/settings/cms",
+					path:"/settings/cmsSet",
 					spaced:false
 					 }
 		]
