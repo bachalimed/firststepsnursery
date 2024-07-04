@@ -1,9 +1,9 @@
 //the public facing webpage when not logged in
 
-import { Link } from 'react-router-dom';
 import PublicHeader from '../Components/PublicHeader';
 import PublicFooter from '../Components/PublicFooter';
-import { Outlet } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
+// import { Outlet } from 'react-router-dom';
 
 const Public = () => {
    const content =(

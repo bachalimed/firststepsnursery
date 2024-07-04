@@ -6,8 +6,8 @@ import NavbarSidebarUp from './Shared/NavbarSidebarUp'
 import NavbarSidebarDown from './Shared/NavbarSidebarDown'
 import logo from './../Data/logo.jpg'
 
-import { CgPushChevronLeftR } from "react-icons/cg";
 import { LuChevronLeft } from "react-icons/lu";
+// import { CgPushChevronLeftR } from "react-icons/cg";
 
 
 

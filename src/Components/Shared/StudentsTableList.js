@@ -1,8 +1,8 @@
 import React from 'react';
 import { Students } from '../lib/Consts/Students';
-import { Link } from 'react-router-dom';
-import {useEffect, useState} from 'react';
 import DataTable from 'react-data-table-component';
+// import { Link } from 'react-router-dom';
+// import {useEffect, useState} from 'react';
 
 const StudentsTableList = () => {
 

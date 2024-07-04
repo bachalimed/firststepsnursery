@@ -1,9 +1,10 @@
 import React from 'react'
 import { LuUserCircle2 } from "react-icons/lu";
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import { Link, useNavigate } from 'react-router-dom';
-import Login from '../../features/auth/Login';
-import { Navigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
+// import { Link} from 'react-router-dom';
+// import Login from '../../features/auth/Login';
+// import { Navigate } from 'react-router-dom';
 
 const HeaderUserProfile = () => {
   const Navigate = useNavigate();

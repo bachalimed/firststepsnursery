@@ -1,7 +1,7 @@
 import React from 'react'
 import { HiOutlineSearch } from 'react-icons/hi';
-import { Description, Field, Label, Select } from '@headlessui/react';
-import { BsChevronDown } from "react-icons/bs";
+// import { Description, Field, Label, Select } from '@headlessui/react';
+// import { BsChevronDown } from "react-icons/bs";
 
 const SearchBar = () => {
   	return (

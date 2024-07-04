@@ -1,4 +1,5 @@
 
+//this is the menu of the side barm the path should correspond to the App.js paths used in the routes
 import { VscDashboard, VscPerson } from "react-icons/vsc";
 import { PiStudent } from "react-icons/pi";
 import { GrUserAdmin, GrTask } from "react-icons/gr";

@@ -4,7 +4,7 @@ import SearchBar from '../../Components/Shared/SearchBar';
 import Students from './Students';
 import Parents from './Parents';
 import NewStudent from './NewStudent';
-import { Description, Field, Label, Select } from '@headlessui/react';
+// import { Description, Field, Label, Select } from '@headlessui/react';
 
 
 const StudentsParents = () => {

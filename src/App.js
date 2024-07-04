@@ -35,31 +35,31 @@ import Admin from './features/Admin/Admin'
 import Logout from './features/auth/Logout'
 
 
-import ReactDOM from 'react-dom/client'
+// import ReactDOM from 'react-dom/client'
 
-import NoPage from './pages/NoPage'
-import Parents from './features/Students/Parents'
-import NewStudent from './features/Students/NewStudent'
-import ResetPassword from './features/auth/ResetPassword'
-import ForgotPassword from './features/auth/ForgotPassword'
+// import NoPage from './pages/NoPage'
+// import Parents from './features/Students/Parents'
+// import NewStudent from './features/Students/NewStudent'
+// import ResetPassword from './features/auth/ResetPassword'
+// import ForgotPassword from './features/auth/ForgotPassword'
 
 //in case we need not to show the header in some pages, we create another route
 //after </Route> start another <Route path="Login" element={<Login />} />
 
 
 //define user types fro access rights
-const USER_TYPES ={
-	PUBLIC_USER:"Public User",
-	PARENT:"Parent",
-	STAFF:"Staff",
-	ANIMATOR:"Animator",
-	FINANCE:"Finance",
-	HUMAN_RESOURCE:"Human Resource",
-	DIRECTOR:"Director",
-	OWNER:"Owner",
-	ADMIN:"Admin"
-	}
-const CURRENT_USER_TYPE=USER_TYPES.PUBLIC_USER;
+// const USER_TYPES ={
+// 	PUBLIC_USER:"Public User",
+// 	PARENT:"Parent",
+// 	STAFF:"Staff",
+// 	ANIMATOR:"Animator",
+// 	FINANCE:"Finance",
+// 	HUMAN_RESOURCE:"Human Resource",
+// 	DIRECTOR:"Director",
+// 	OWNER:"Owner",
+// 	ADMIN:"Admin"
+// 	}
+// const CURRENT_USER_TYPE=USER_TYPES.PUBLIC_USER;
 
 
 

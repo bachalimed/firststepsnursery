@@ -1,5 +1,5 @@
 import React from 'react'
-import { HiOutlineSearch } from 'react-icons/hi';
+// import { HiOutlineSearch } from 'react-icons/hi';
 
 
 const PublicFooter = () => {
