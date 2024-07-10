@@ -109,9 +109,9 @@ export const sidebarMenuUp=[
 	submenu:true,
 	subOpen:false,
 	submenuItems:
-		[{title:"Staff",
+		[{title:"Employees",
 			icon: <VscPerson/>,
-			path:"/hr/staff",
+			path:"/hr/employees",
 			spaced:false
 			},
 			{title:"Payroll",
@@ -149,9 +149,9 @@ export const sidebarMenuUp=[
 				spaced:false
 			
 			},
-			{title:"Mailing",
+			{title:"Mails",
 				icon: <LuMail/>,
-				path:"/desk/mailing",
+				path:"/desk/mails",
 				spaced:false
 			}
 			]
@@ -222,11 +222,24 @@ export const sidebarMenuDown=[
 	{title:"Admin",
 	   icon: <GrUserAdmin/>,
 	   path:"/admin",
-	   spaced:false
+	   spaced:false,
+	   submenu:true,
+	   subOpen:false,
+	   submenuItems:
+		   [{title:"Users",
+			   icon: <BsQuestionSquare/>,
+			   path:"/admin/users",
+			   spaced:false
+			},
+			{title:"blabla",
+			icon: <GrTask/>,
+			path:"/admin/blabla",
+			spaced:false
+			}]
 	   },	 	 		 
-		{title:"Logout",
-		   icon: <TbLogout/>,
-		   path:"/logout",
-		   spaced:false
-			}
+	{title:"Logout",
+		icon: <TbLogout/>,
+		path:"/logout",
+		spaced:false
+		}
 ]

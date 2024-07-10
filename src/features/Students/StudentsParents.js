@@ -4,6 +4,7 @@ import SearchBar from '../../Components/Shared/SearchBar';
 import Students from './Students';
 import Parents from './Parents';
 import NewStudent from './NewStudent';
+import { Link } from 'react-router-dom';
 // import { Description, Field, Label, Select } from '@headlessui/react';
 
 
@@ -29,11 +30,12 @@ const StudentsParents = () => {
            
               <TabPanel   className=" flex-1 w-full rounded-md bg-white/5 p-3  "> 
 				  		<SearchBar className=""/> 
-				  		<Students/>
+				  		<Students />
 				    </TabPanel>
               <TabPanel   className="flex-1 w-full rounded-md bg-white/5 p-3"> 
             <SearchBar className=""/>
-            <Parents/>
+            {/* we need to add a link or navigate to to show the parent route  */}
+             <Parents/> 
             </TabPanel>
                 <TabPanel   className="flex-1 w-full rounded-md bg-white/5 p-3">
             <SearchBar className=""/>

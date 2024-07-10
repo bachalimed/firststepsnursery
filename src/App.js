@@ -8,6 +8,8 @@ import Dashboard from './features/Dashboard/Dashboard'
 
 
 import StudentsParents from './features/Students/StudentsParents'
+import Parents from './features/Students/Parents'
+import Students from './features/Students/Students'
 import Admissions from "./features/Students/Admissions"
 import Enrolments from "./features/Students/Enrolments"
 import NurseryPlannings from './features/Academics/NurseryPlannings'
@@ -16,12 +18,13 @@ import CollectionDrop from './features/Academics/CollectionDrop'
 import Invoices from './features/Finances/Invoices'
 import Payments from './features/Finances/Payments'
 import Expenses from './features/Finances/Expenses'
-import Staff from './features/HR/Staff'
+import Employees from './features/HR/Employees'
 import Payroll from './features/HR/Payroll'
 import Leave from './features/HR/Leave'
 import Chat from './features/Desk/Chat'
+
 import Inquiries from './features/Desk/Inquiries'
-import Mailing from './features/Desk/Mailing'
+import Mails from './features/Desk/Mails'
 import Tasks from './features/Desk/Tasks'
 import Cms from './features/CMS/Cms'
 import DashboardSet from './features/AppSettings/DashboardSet'
@@ -31,7 +34,7 @@ import FinancesSet from './features/AppSettings/FinancesSet'
 import StudentsSet from './features/AppSettings/StudentsSet'
 import HRSet from './features/AppSettings/HRSet'
 import DeskSet from './features/AppSettings/DeskSet'
-import Admin from './features/Admin/Admin'
+import User from './features/Admin/User'
 import Logout from './features/auth/Logout'
 
 
@@ -80,6 +83,15 @@ const App = () => {
 
 					<Route path="studentsParents" > 					
 					<Route index element={<StudentsParents />} /> 
+						<Route path="parents" >
+						<Route index element={<Parents />} />
+						</Route> {/* end of Parents route */}
+					
+						<Route path="students" >
+						<Route index element={<Students />} />
+						</Route> {/* end of Students route */}
+					
+					
 					</Route> {/* end of studentsParents route */}
 
 					<Route path="admissions" > 					
@@ -125,10 +137,10 @@ const App = () => {
 				</Route> {/* end of finances route */}
 
 				<Route path="HR" element={<DashboardLayout />} >	 				
-					<Route index element={<Staff />} />   
+					<Route index element={<Employees />} />   
 
-					<Route path="staff" > 					
-					<Route index element={<Staff />} /> 
+					<Route path="employees" > 					
+					<Route index element={<Employees />} /> 
 					</Route> {/* end of staff route */}
 
 					<Route path="payroll" > 					
@@ -155,9 +167,9 @@ const App = () => {
 					<Route index element={<Chat />} /> 
 					</Route> {/* end of chat route */}
 
-					<Route path="mailing" > 					
-					<Route index element={<Mailing />} /> 
-					</Route> {/* end of mailing route */}
+					<Route path="mails" > 					
+					<Route index element={<Mails />} /> 
+					</Route> {/* end of mails route */}
 				</Route> {/* end of Desk route */}
 
 				<Route path="cms" element={<DashboardLayout />} >	 				
@@ -197,7 +209,16 @@ const App = () => {
 				</Route> {/* end of settings route */}
 							
 				<Route path="admin" element={<DashboardLayout />} >	 				
-				<Route index element={<Admin />} />   
+				<Route index element={<User />} /> 
+
+					<Route path="users" > 					
+					<Route index element={<User />} /> 
+					</Route> {/* end of users route */} 
+
+					<Route path="blabla" > 					
+					<Route index element={<User />} /> 
+					</Route> {/* end of blabla route */}  
+
 				</Route> {/* end of admin route */}
 
 				<Route path="logout" element={<DashboardLayout />} >	 				
