@@ -1,13 +1,13 @@
 
-import NavbarHeader from "./Shared/NavbarHeader";
-import ActiveYearSelect from "./Shared/ActiveYearSelect";
+import NavbarHeader from "./NavbarHeader";
+import ActiveYearSelect from "./ActiveYearSelect";
 // import { useNavigate, useLocation } from "react-router";
 
 const DashboardHeader = () => {
   const content =(
     
-    <header className="bg-white h-14 px-10 flex justify-between items-center ">
-        
+    <header >
+        <div className="bg-white h-14 px-10 flex justify-between items-center ">
         <ActiveYearSelect/>
         
         <p className="">
@@ -15,6 +15,11 @@ const DashboardHeader = () => {
 
         </p >
         <NavbarHeader />
+        </div>
+        <div className="ml-4">
+          tabs will be relative to the menu displayed
+        </div>
+
       </header>
 
 

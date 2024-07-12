@@ -1,8 +1,11 @@
 import React from 'react'
 
+
 const Mails = () => {
   return (
-    <div>Mails</div>
+    <div>Mails
+   
+    </div>
   )
 }
 

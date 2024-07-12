@@ -8,7 +8,8 @@ import HeaderUserProfile from "./HeaderUserProfile"
 
 const NavbarHeader = () => {
   return (
-    <div className='flex items-center gap-2 mr-2'>
+    
+	<div className='flex items-center gap-2 mr-2'>
      
         
 		<div className="">
@@ -21,7 +22,7 @@ const NavbarHeader = () => {
 			<HeaderUserProfile/>
 		</div>         
          
-    </div>  
+   </div>
   )
 };
 

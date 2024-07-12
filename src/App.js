@@ -10,6 +10,7 @@ import Dashboard from './features/Dashboard/Dashboard'
 import StudentsParents from './features/Students/StudentsParents'
 import Parents from './features/Students/Parents'
 import Students from './features/Students/Students'
+import NewStudent from './features/Students/NewStudent'
 import Admissions from "./features/Students/Admissions"
 import Enrolments from "./features/Students/Enrolments"
 import NurseryPlannings from './features/Academics/NurseryPlannings'
@@ -79,17 +80,26 @@ const App = () => {
 				</Route> {/* end of dashboard route */}
 
 				<Route path="students" element={<DashboardLayout />} >	 				
-					<Route index element={<StudentsParents />} />   
+					<Route  element={<StudentsParents />} />   
 
 					<Route path="studentsParents" > 					
 					<Route index element={<StudentsParents />} /> 
-						<Route path="parents" >
-						<Route index element={<Parents />} />
-						</Route> {/* end of Parents route */}
-					
-						<Route path="students" >
-						<Route index element={<Students />} />
+
+						<Route path="students" element={<Students />}>
+						
+
 						</Route> {/* end of Students route */}
+
+						<Route path="parents" element={<Parents />}>
+						
+
+						</Route> {/* end of Parents route */}
+
+						<Route path="newStudent" element={<NewStudent />}>
+						
+						
+						</Route> {/* end of newStudent route */}
+					
 					
 					
 					</Route> {/* end of studentsParents route */}

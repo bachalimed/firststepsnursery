@@ -1,8 +1,18 @@
 import React from 'react'
 
-const Tasks = () => {
+import { useSelector } from 'react-redux'
+
+
+function Tasks ()  {
+  const tasks = useSelector(state=>state.tasks)//this function will read the data from the store 
+  
   return (
-    <div>Tasks</div>
+    <>
+      
+     
+      
+    
+      </>
   )
 }
 

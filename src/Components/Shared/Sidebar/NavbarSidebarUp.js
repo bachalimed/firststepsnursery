@@ -1,8 +1,8 @@
 
-import SidebarItem from './SidebarItem';
+import SidebarItem from './SidebarItem.js';
 // import { Link } from 'react-router-dom';
 
-import {sidebarMenuUp} from '../lib/Consts/SidebarMenu.js';
+import {sidebarMenuUp} from './SidebarMenu.js';
 
 
 const NavbarSidebarUp = (props) => {	

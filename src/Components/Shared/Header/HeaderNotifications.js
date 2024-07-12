@@ -1,7 +1,7 @@
 import React from 'react'
 import { HiOutlineBell } from "react-icons/hi2";
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import {HeaderNotificationSample} from '../lib/Consts/HeaderNotificationSample.js';
+import {HeaderNotificationSample} from '../../lib/Consts/HeaderNotificationSample.js';
 
 const HeaderNotifications = () => {
   return (

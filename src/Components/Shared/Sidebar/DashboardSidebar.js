@@ -1,10 +1,8 @@
 import React from 'react'
 import { useState } from 'react'
-
-
-import NavbarSidebarUp from './Shared/NavbarSidebarUp'
-import NavbarSidebarDown from './Shared/NavbarSidebarDown'
-import logo from './../Data/logo.jpg'
+import NavbarSidebarUp from './NavbarSidebarUp'
+import NavbarSidebarDown from './NavbarSidebarDown'
+import logo from './../../../Data/logo.jpg'
 
 import { LuChevronLeft } from "react-icons/lu";
 // import { CgPushChevronLeftR } from "react-icons/cg";
