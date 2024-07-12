@@ -1,8 +1,10 @@
 import React from 'react'
+import SectionTabs from '../../Components/Shared/Tabs/SectionTabs'
 
 const Admissions = () => {
   return (
-    <div>this is Admissions</div>
+    <div>
+      <SectionTabs/>this is Admissions</div>
   )
 }
 

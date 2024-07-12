@@ -16,9 +16,7 @@ const DashboardHeader = () => {
         </p >
         <NavbarHeader />
         </div>
-        <div className="ml-4">
-          tabs will be relative to the menu displayed
-        </div>
+       
 
       </header>
 

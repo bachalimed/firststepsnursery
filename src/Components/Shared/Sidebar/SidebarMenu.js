@@ -40,17 +40,41 @@ export const sidebarMenuUp=[
 		[{title:"Students & Parents",
 			icon: <RiParentLine/>,
 			path:"/students/studentsParents",
-			spaced:false
+			spaced:false,
+			sectionTabs:[
+				{title:"Students",
+				path:"/students/studentsParents/students"},
+				{title:"Parents",
+				path:"/students/studentsParents/parents"},
+				{title:"New Student",
+				path:"/students/studentsParents/newStudent"}
+			]
 			},
 			{title:"Admissions",
 			icon: <IoFileTrayStackedOutline/>,
 			path:"/students/admissions",
-			spaced:false
+			spaced:false,
+			sectionTabs:[
+				{title:"Find",
+				path:"/students/admissions/find"},
+				{title:"New Admission",
+				path:"/students/admissions/newAdmission"},
+				{title:"blabla",
+				path:"/students/admissions/blablabla"}
+			]
 			},
 			{title:"Enrolments",
 			icon: <FaListCheck/>,
 			path:"/students/enrolments",
-			spaced:false
+			spaced:false,
+			sectionTabs:[
+				{title:"ff",
+				path:"/students/admissions/ff"},
+				{title:"New enrr",
+				path:"/students/admissions/nqwenr"},
+				{title:"ffffff",
+				path:"/students/admissions/ffefef"}
+			]
 			}
 		]
 	},
