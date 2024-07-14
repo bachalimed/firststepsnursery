@@ -164,7 +164,7 @@ export const sidebarMenuUp=[
 			},
 			{title:"Tasks",
 			icon: <GrTask/>,
-			path:"/desk/tasks/",
+			path:"/desk/tasks",
 			spaced:false
 			},
 			{title:"Chat",

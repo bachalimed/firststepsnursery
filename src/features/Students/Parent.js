@@ -1,10 +1,10 @@
 import React from 'react';
-import { Students } from '../lib/Consts/Students';
+import { Parents } from '../../Components/lib/Consts/Parents';
 import DataTable from 'react-data-table-component';
 // import { Link } from 'react-router-dom';
 // import {useEffect, useState} from 'react';
 
-const StudentsTableList = () => {
+const ParentsList = () => {
 
   const column =[
     	{ 
@@ -14,28 +14,28 @@ const StudentsTableList = () => {
 		 }, 
     	{ 
 		name: "First Name",
-		selector:row=>row.studentName.firstName+" " +row.studentName.middleName,
+		selector:row=>row.parentName.firstName+" " +row.parentName.middleName,
 		sortable:true
 		 }, 
     	{ 
 		name: "Last Name",
-		selector:row=>row.studentName.lastName,
+		selector:row=>row.parentName.lastName,
 		sortable:true
 		 }, 
 		{name: "DOB",
-			selector:row=>row.studentDob.$date.$numberLong,
+			selector:row=>row.parentDob.$date.$numberLong,
 			sortable:true
 		}, 
 		{name: "Father",
-			selector:row=>row.studentParent.studentFather.$oid,
+			selector:row=>row.parentParent.parentFather.$oid,
 			sortable:true
 		}, 
 		{name: "Mother",
-			selector:row=>row.studentParent.studentMother.$oid,
+			selector:row=>row.parentParent.parentMother.$oid,
 			sortable:true
 		}, 
 		{name: "Sex",
-			selector:row=>row.studentSex,
+			selector:row=>row.parentSex,
 			sortable:true,
 			removableRows:true
 		}
@@ -43,10 +43,10 @@ const StudentsTableList = () => {
 //fetching the data
  
 	// const [records, setRecords] = useState([]);
-	// const ()=>{setRecords=Students};
+	// const ()=>{setRecords=Parents};
 //setting the filter
 	// const handleFilter=(event)=>{
-	// 	const newData =Students.filter(row=>row.name.toLowerCase().includes(event.target.value.toLowerCase()));
+	// 	const newData =Parents.filter(row=>row.name.toLowerCase().includes(event.target.value.toLowerCase()));
 	// 	setRecords=newData;
 	// }
   return (
@@ -57,7 +57,7 @@ const StudentsTableList = () => {
 		 
 		 <DataTable
 			columns={column}
-			data={Students}
+			data={Parents}
 			pagination
 			selectableRows
 			removableRows
@@ -68,5 +68,5 @@ const StudentsTableList = () => {
   )
 }
 
-export default StudentsTableList;
+export default ParentsList;
 

@@ -8,8 +8,8 @@ import Dashboard from './features/Dashboard/Dashboard'
 
 
 import StudentsParents from './features/Students/StudentsParents'
-import Parents from './features/Students/Parents'
-import Students from './features/Students/Students'
+import ParentsList from './features/Students/ParentsList'
+import StudentsList from './features/Students/StudentsList'
 import StudentDetails from './features/Students/StudentDetails'
 import NewStudent from './features/Students/NewStudent'
 import Admissions from "./features/Students/Admissions"
@@ -86,7 +86,7 @@ const App = () => {
 					<Route path="studentsParents" > 					
 					<Route index element={<StudentsParents />} /> 
 
-						<Route path="students/" element={<Students />}>
+						<Route path="students/" element={<StudentsList />}>
 						
 							
 							<Route path=":studentId" element={<StudentDetails />}/>
@@ -96,7 +96,7 @@ const App = () => {
 
 						</Route> {/* end of Students route */}
 
-						<Route path="parents" element={<Parents />}>
+						<Route path="parents" element={<ParentsList />}>
 						
 
 						</Route> {/* end of Parents route */}

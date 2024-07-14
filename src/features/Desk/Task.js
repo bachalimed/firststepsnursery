@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { selectTaskById } from './tasksApiSlice'
 
-const Task = ({ taskId }) => {
+const TaskList = ({ taskId }) => {
 
     const task = useSelector(state => selectTaskById(state, taskId))
 
@@ -52,4 +52,4 @@ const Task = ({ taskId }) => {
 
     } else return null
 }
-export default Task
+export default TaskList
