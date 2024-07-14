@@ -10,6 +10,7 @@ import Dashboard from './features/Dashboard/Dashboard'
 import StudentsParents from './features/Students/StudentsParents'
 import Parents from './features/Students/Parents'
 import Students from './features/Students/Students'
+import StudentDetails from './features/Students/StudentDetails'
 import NewStudent from './features/Students/NewStudent'
 import Admissions from "./features/Students/Admissions"
 import Enrolments from "./features/Students/Enrolments"
@@ -26,7 +27,7 @@ import Chat from './features/Desk/Chat'
 
 import Inquiries from './features/Desk/Inquiries'
 import Mails from './features/Desk/Mails'
-import Tasks from './features/Desk/Tasks'
+import TasksList from './features/Desk/TasksList'
 import Cms from './features/CMS/Cms'
 import DashboardSet from './features/AppSettings/DashboardSet'
 import AcademicsSet from './features/AppSettings/AcademicsSet'
@@ -35,13 +36,13 @@ import FinancesSet from './features/AppSettings/FinancesSet'
 import StudentsSet from './features/AppSettings/StudentsSet'
 import HRSet from './features/AppSettings/HRSet'
 import DeskSet from './features/AppSettings/DeskSet'
-import User from './features/Admin/User'
+import UsersList from './features/Admin/UsersList'
 import Logout from './features/auth/Logout'
 
 
 // import ReactDOM from 'react-dom/client'
 
-// import NoPage from './pages/NoPage'
+import NoPage from './pages/NoPage'
 // import Parents from './features/Students/Parents'
 // import NewStudent from './features/Students/NewStudent'
 // import ResetPassword from './features/auth/ResetPassword'
@@ -85,7 +86,12 @@ const App = () => {
 					<Route path="studentsParents" > 					
 					<Route index element={<StudentsParents />} /> 
 
-						<Route path="students" element={<Students />}>
+						<Route path="students/" element={<Students />}>
+						
+							
+							<Route path=":studentId" element={<StudentDetails />}/>
+
+							
 						
 
 						</Route> {/* end of Students route */}
@@ -170,7 +176,7 @@ const App = () => {
 					</Route> {/* end of inquiries route */}
 
 					<Route path="tasks" > 					
-					<Route index element={<Tasks />} /> 
+					<Route index element={<TasksList />} /> 
 					</Route> {/* end of tasks route */}
 
 					<Route path="chat" > 					
@@ -219,14 +225,15 @@ const App = () => {
 				</Route> {/* end of settings route */}
 							
 				<Route path="admin" element={<DashboardLayout />} >	 				
-				<Route index element={<User />} /> 
+				<Route index element={<UsersList />} /> 
 
-					<Route path="users" > 					
-					<Route index element={<User />} /> 
+					<Route path="users/" element={<UsersList />}> 					
+					<Route path=":userId" element={<UsersList />}/> 		{/*this will be chekced later*/}			
+					 
 					</Route> {/* end of users route */} 
 
 					<Route path="blabla" > 					
-					<Route index element={<User />} /> 
+					<Route index element={<UsersList />} /> 
 					</Route> {/* end of blabla route */}  
 
 				</Route> {/* end of admin route */}
@@ -236,7 +243,7 @@ const App = () => {
 				</Route> {/* end of logout route */}	
 			
 			</Route>   {/* end of Public route */} 
-								 
+			<Route path="*" element={<NoPage />} />				 
       </Routes>
     
   )

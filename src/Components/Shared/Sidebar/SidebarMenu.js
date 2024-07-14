@@ -43,9 +43,9 @@ export const sidebarMenuUp=[
 			spaced:false,
 			sectionTabs:[
 				{title:"Students",
-				path:"/students/studentsParents/students"},
+				path:"/students/studentsParents/students/"},
 				{title:"Parents",
-				path:"/students/studentsParents/parents"},
+				path:"/students/studentsParents/parents/"},
 				{title:"New Student",
 				path:"/students/studentsParents/newStudent"}
 			]
@@ -164,7 +164,7 @@ export const sidebarMenuUp=[
 			},
 			{title:"Tasks",
 			icon: <GrTask/>,
-			path:"/desk/tasks",
+			path:"/desk/tasks/",
 			spaced:false
 			},
 			{title:"Chat",
@@ -252,7 +252,7 @@ export const sidebarMenuDown=[
 	   submenuItems:
 		   [{title:"Users",
 			   icon: <BsQuestionSquare/>,
-			   path:"/admin/users",
+			   path:"/admin/users/",
 			   spaced:false
 			},
 			{title:"blabla",

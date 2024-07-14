@@ -4,54 +4,54 @@ import {
 } from "@reduxjs/toolkit";
 import { apiSlice } from "../../app/api/apiSlice"
 
-const usersAdapter = createEntityAdapter({})
+const parentsAdapter = createEntityAdapter({})
 
-const initialState = usersAdapter.getInitialState()
+const initialState = parentsAdapter.getInitialState()
 
-export const usersApiSlice = apiSlice.injectEndpoints({
+export const parentsApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
-        getUsers: builder.query({
-            query: () => '/users',
+        getParents: builder.query({
+            query: () => '/students/studentsParents/parents',//as defined in server.js
             validateStatus: (response, result) => {
                 return response.status === 200 && !result.isError
             },
             keepUnusedDataFor: 5,//default when app is deployed is 60seconds
             transformResponse: responseData => {
-                const loadedUsers = responseData.map(user => {
-                    user.id = user._id
-                    return user
+                const loadedParents = responseData.map(parent => {
+                    parent.id = parent._id
+                    return parent
                 });
-                return usersAdapter.setAll(initialState, loadedUsers)
+                return parentsAdapter.setAll(initialState, loadedParents)
             },
             providesTags: (result, error, arg) => {
                 if (result?.ids) {
                     return [
-                        { type: 'User', id: 'LIST' },
-                        ...result.ids.map(id => ({ type: 'User', id }))
+                        { type: 'Parent', id: 'LIST' },
+                        ...result.ids.map(id => ({ type: 'Parent', id }))
                     ]
-                } else return [{ type: 'User', id: 'LIST' }]
+                } else return [{ type: 'Parent', id: 'LIST' }]
             }
         }),
     }),
 })
 
 export const {
-    useGetUsersQuery,
-} = usersApiSlice
+    useGetParentsQuery,
+} = parentsApiSlice
 
 // returns the query result object
-export const selectUsersResult = usersApiSlice.endpoints.getUsers.select()
+export const selectParentsResult = parentsApiSlice.endpoints.getParents.select()
 
 // creates memoized selector
-const selectUsersData = createSelector(
-    selectUsersResult,
-    usersResult => usersResult.data // normalized state object with ids & entities
+const selectParentsData = createSelector(
+    selectParentsResult,
+    parentsResult => parentsResult.data // normalized state object with ids & entities
 )
 
 //getSelectors creates these selectors and we rename them with aliases using destructuring
 export const {
-    selectAll: selectAllUsers,
-    selectById: selectUserById,
-    selectIds: selectUserIds
-    // Pass in a selector that returns the users slice of state
-} = usersAdapter.getSelectors(state => selectUsersData(state) ?? initialState)
+    selectAll: selectAllParents,
+    selectById: selectParentById,
+    selectIds: selectParentIds
+    // Pass in a selector that returns the parents slice of state
+} = parentsAdapter.getSelectors(state => selectParentsData(state) ?? initialState)
