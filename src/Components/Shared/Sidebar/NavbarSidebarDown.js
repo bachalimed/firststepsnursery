@@ -2,7 +2,7 @@ import React from 'react'
 // import { useState } from 'react';
 // import { Link } from 'react-router-dom';
 import SidebarItem from './SidebarItem.js';
-import {sidebarMenuDown} from './SidebarMenu.js';
+import {sidebarMenuDown} from '../../lib/Consts/SidebarMenu.js';
 
 
 const NavbarSidebarDown = (props) => {

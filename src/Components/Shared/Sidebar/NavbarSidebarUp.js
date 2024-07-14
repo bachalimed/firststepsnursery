@@ -1,8 +1,8 @@
 
-import SidebarItem from './SidebarItem.js';
+import SidebarItem from './SidebarItem.js'
 // import { Link } from 'react-router-dom';
 
-import {sidebarMenuUp} from './SidebarMenu.js';
+import {sidebarMenuUp} from '../../lib/Consts/SidebarMenu'
 
 
 const NavbarSidebarUp = (props) => {	
@@ -13,4 +13,4 @@ const NavbarSidebarUp = (props) => {
 	)
   }
 
-export default NavbarSidebarUp;
+export default NavbarSidebarUp

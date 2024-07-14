@@ -16,8 +16,8 @@ const {
         isError,
         error
 } = useGetStudentsQuery()
-const MyStudents = useSelector(state => selectAllStudents(state))
-console.log(students)
+const allStudents = useSelector(state => selectAllStudents(state))
+
 //define the content to be conditionally rendered
 
 const column =[
@@ -78,7 +78,7 @@ return (
    {console.log("success3")} 
    <DataTable
     columns={column}
-    data={MyStudents}
+    data={allStudents}
     pagination
     selectableRows
     removableRows

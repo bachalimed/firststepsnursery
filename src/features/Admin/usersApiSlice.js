@@ -24,14 +24,14 @@ export const usersApiSlice = apiSlice.injectEndpoints({//inject the ends points 
                 });
                 return usersAdapter.setAll(initialState, loadedUsers)//loaded the users into usersadapter
             },
-            // providesTags: (result, error, arg) => {//not relevant, related to tags on blogs messages
-            //     if (result?.ids) {
-            //         return [
-            //             { type: 'User', id: 'LIST' },
-            //             ...result.ids.map(id => ({ type: 'User', id }))
-            //         ]
-            //     } else return [{ type: 'User', id: 'LIST' }]
-            // }
+            providesTags: (result, error, arg) => {//not relevant, related to tags on blogs messages
+                if (result?.ids) {
+                    return [
+                        { type: 'User', id: 'LIST' },
+                        ...result.ids.map(id => ({ type: 'User', id }))
+                    ]
+                } else return [{ type: 'User', id: 'LIST' }]
+            }
         }),
     }),
 })

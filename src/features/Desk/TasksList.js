@@ -1,5 +1,14 @@
+
+
+//the page has to have sections in the file sidebarMenu or it will generate an error
+
+
 import { useGetTasksQuery } from "./tasksApiSlice"
 import Task from "./Task"
+import SectionTabs from '../../Components/Shared/Tabs/SectionTabs'
+
+
+
 
 const TasksList = () => {
     const {
@@ -26,6 +35,7 @@ const TasksList = () => {
             : null
 
         content = (
+            <><SectionTabs/>
             <table className="table table--tasks">
                 <thead className="table__thead">
                     <tr>
@@ -48,6 +58,7 @@ const TasksList = () => {
                     {tableContent}
                 </tbody>
             </table>
+            </>
         )
     }
 

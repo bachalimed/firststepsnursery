@@ -11,6 +11,7 @@ import StudentsParents from './features/Students/StudentsParents'
 import ParentsList from './features/Students/ParentsList'
 import StudentsList from './features/Students/StudentsList'
 import StudentDetails from './features/Students/StudentDetails'
+import ParentDetails from './features/Students/ParentDetails'
 import NewStudent from './features/Students/NewStudent'
 import Admissions from "./features/Students/Admissions"
 import Enrolments from "./features/Students/Enrolments"
@@ -21,6 +22,7 @@ import Invoices from './features/Finances/Invoices'
 import Payments from './features/Finances/Payments'
 import Expenses from './features/Finances/Expenses'
 import Employees from './features/HR/Employees'
+import EmployeeDetails from './features/HR/EmployeeDetails'
 import Payroll from './features/HR/Payroll'
 import Leave from './features/HR/Leave'
 import Chat from './features/Desk/Chat'
@@ -97,7 +99,7 @@ const App = () => {
 						</Route> {/* end of Students route */}
 
 						<Route path="parents" element={<ParentsList />}>
-						
+						<Route path=":parentId" element={<ParentDetails />}/>
 
 						</Route> {/* end of Parents route */}
 
@@ -155,9 +157,11 @@ const App = () => {
 				<Route path="HR" element={<DashboardLayout />} >	 				
 					<Route index element={<Employees />} />   
 
-					<Route path="employees" > 					
-					<Route index element={<Employees />} /> 
-					</Route> {/* end of staff route */}
+					<Route path="employees/" element={<Employees />} > 					
+					
+					<Route path=":employeeId" element={<EmployeeDetails />}/>
+
+					</Route> {/* end of employees route */}
 
 					<Route path="payroll" > 					
 					<Route index element={<Payroll />} /> 

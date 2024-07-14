@@ -39,7 +39,7 @@ export const sidebarMenuUp=[
 	submenuItems:
 		[{title:"Students & Parents",
 			icon: <RiParentLine/>,
-			path:"/students/studentsParents",
+			path:"/students/studentsParents/students/",
 			spaced:false,
 			sectionTabs:[
 				{title:"Students",
@@ -47,7 +47,7 @@ export const sidebarMenuUp=[
 				{title:"Parents",
 				path:"/students/studentsParents/parents/"},
 				{title:"New Student",
-				path:"/students/studentsParents/newStudent"}
+				path:"/students/studentsParents/newStudent/"}
 			]
 			},
 			{title:"Admissions",
@@ -136,7 +136,14 @@ export const sidebarMenuUp=[
 		[{title:"Employees",
 			icon: <VscPerson/>,
 			path:"/hr/employees",
-			spaced:false
+			spaced:false,
+			sectionTabs:[
+				{title:"Employees",
+				path:"/hr/employees/"},
+				
+				{title:"New Employee",
+				path:"/hr/newEmployee/"}
+			]
 			},
 			{title:"Payroll",
 			icon: <TbCreditCardPay/>,
@@ -165,7 +172,14 @@ export const sidebarMenuUp=[
 			{title:"Tasks",
 			icon: <GrTask/>,
 			path:"/desk/tasks",
-			spaced:false
+			spaced:false,
+			sectionTabs:[
+				{title:"Tasks",
+				path:"/desk/tasks"},
+				
+				{title:"New Task",
+				path:"/desk/tasks/newTask/"}
+			]
 			},
 			{title:"Chat",
 				icon: <HiOutlineChatAlt/>,

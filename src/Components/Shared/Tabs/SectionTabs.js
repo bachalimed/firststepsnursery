@@ -1,8 +1,8 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
-import { sidebarMenuUp } from '../Sidebar/SidebarMenu';
-import { useState, useEffect } from 'react';
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
+import { sidebarMenuUp } from '../../lib/Consts/SidebarMenu.js'
+import { useState, useEffect } from 'react'
 
 
 const SectionTabs = () => {
