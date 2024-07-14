@@ -16,20 +16,9 @@ const StudentsParents = () => {
 
   return (
   
-    <div className="flex bg-gray-300 justify-left  ">
-      
+    <div className="flex bg-gray-300 justify-left  ">  
 	  <SectionTabs/>
-
-
-	
-	
-
-
-
-
     </div>
-      
- 
   )
 }
 

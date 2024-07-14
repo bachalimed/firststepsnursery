@@ -32,11 +32,48 @@ export const parentsApiSlice = apiSlice.injectEndpoints({
                 } else return [{ type: 'Parent', id: 'LIST' }]
             }
         }),
+        addNewParent: builder.mutation({
+            query: initialParentData => ({
+                url: '/desk/parents',
+                method: 'POST',
+                body: {
+                    ...initialParentData,
+                }
+            }),
+            invalidatesTags: [//forces the cache in RTK query to update
+                { type: 'Parent', id: "LIST" }//the parent list will be unvalidated and updated
+            ]
+        }),
+        updateParent: builder.mutation({
+            query: initialParentData => ({
+                url: '/desk/parents',
+                method: 'PATCH',
+                body: {
+                    ...initialParentData,
+                }
+            }),
+            invalidatesTags: (result, error, arg) => [//we re not updating all the list, butonly update the parent in the cache by using the arg.id
+                { type: 'Parent', id: arg.id }
+            ]
+        }),
+        deleteParent: builder.mutation({
+            query: ({ id }) => ({
+                url: '/desk/parents',
+                method: 'DELETE',
+                body: { id }
+            }),
+            invalidatesTags: (result, error, arg) => [
+                { type: 'Parent', id: arg.id }
+            ]
+        }),
     }),
 })
 
 export const {
     useGetParentsQuery,
+    useAddNewParentMutation,
+    useUpdateParentMutation,
+    useDeleteParentMutation,
 } = parentsApiSlice
 
 // returns the query result object

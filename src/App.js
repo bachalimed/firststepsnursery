@@ -21,7 +21,7 @@ import CollectionDrop from './features/Academics/CollectionDrop'
 import Invoices from './features/Finances/Invoices'
 import Payments from './features/Finances/Payments'
 import Expenses from './features/Finances/Expenses'
-import Employees from './features/HR/Employees'
+import EmployeesList from './features/HR/EmployeesList'
 import EmployeeDetails from './features/HR/EmployeeDetails'
 import Payroll from './features/HR/Payroll'
 import Leave from './features/HR/Leave'
@@ -83,15 +83,16 @@ const App = () => {
 				</Route> {/* end of dashboard route */}
 
 				<Route path="students" element={<DashboardLayout />} >	 				
-					<Route  element={<StudentsParents />} />   
+					  
 
 					<Route path="studentsParents" > 					
-					<Route index element={<StudentsParents />} /> 
+					<Route index element={<StudentsParents />} /> {/*the path link is in sidebarmenu*/ }
 
 						<Route path="students/" element={<StudentsList />}>
 						
 							
 							<Route path=":studentId" element={<StudentDetails />}/>
+							<Route path="new" element={<NewStudent />}/>
 
 							
 						
@@ -155,9 +156,9 @@ const App = () => {
 				</Route> {/* end of finances route */}
 
 				<Route path="HR" element={<DashboardLayout />} >	 				
-					<Route index element={<Employees />} />   
+					<Route index element={<EmployeesList />} />   
 
-					<Route path="employees/" element={<Employees />} > 					
+					<Route path="employees/" element={<EmployeesList />} > 					
 					
 					<Route path=":employeeId" element={<EmployeeDetails />}/>
 

@@ -135,7 +135,7 @@ export const sidebarMenuUp=[
 	submenuItems:
 		[{title:"Employees",
 			icon: <VscPerson/>,
-			path:"/hr/employees",
+			path:"/hr/employees/",
 			spaced:false,
 			sectionTabs:[
 				{title:"Employees",

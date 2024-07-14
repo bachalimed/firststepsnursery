@@ -32,11 +32,48 @@ export const studentsApiSlice = apiSlice.injectEndpoints({
                 } else return [{ type: 'Student', id: 'LIST' }]
             }
         }),
+        addNewStudent: builder.mutation({
+            query: initialStudentData => ({
+                url: '/desk/students',
+                method: 'POST',
+                body: {
+                    ...initialStudentData,
+                }
+            }),
+            invalidatesTags: [//forces the cache in RTK query to update
+                { type: 'Student', id: "LIST" }//the student list will be unvalidated and updated
+            ]
+        }),
+        updateStudent: builder.mutation({
+            query: initialStudentData => ({
+                url: '/desk/students',
+                method: 'PATCH',
+                body: {
+                    ...initialStudentData,
+                }
+            }),
+            invalidatesTags: (result, error, arg) => [//we re not updating all the list, butonly update the student in the cache by using the arg.id
+                { type: 'Student', id: arg.id }
+            ]
+        }),
+        deleteStudent: builder.mutation({
+            query: ({ id }) => ({
+                url: '/desk/students',
+                method: 'DELETE',
+                body: { id }
+            }),
+            invalidatesTags: (result, error, arg) => [
+                { type: 'Student', id: arg.id }
+            ]
+        }),
     }),
 })
 
 export const {
     useGetStudentsQuery,
+    useAddNewStudentMutation,
+    useUpdateStudentMutation,
+    useDeleteStudentMutation,
 } = studentsApiSlice
 
 // returns the query result object

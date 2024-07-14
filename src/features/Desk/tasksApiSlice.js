@@ -36,11 +36,48 @@ export const tasksApiSlice = apiSlice.injectEndpoints({
               } else return [{ type: 'Task', id: 'LIST' }]
           }
       }),
+      addNewTask: builder.mutation({
+        query: initialTaskData => ({
+            url: '/desk/tasks',
+            method: 'POST',
+            body: {
+                ...initialTaskData,
+            }
+        }),
+        invalidatesTags: [//forces the cache in RTK query to update
+            { type: 'Task', id: "LIST" }//the task list will be unvalidated and updated
+        ]
+    }),
+    updateTask: builder.mutation({
+        query: initialTaskData => ({
+            url: '/desk/tasks',
+            method: 'PATCH',
+            body: {
+                ...initialTaskData,
+            }
+        }),
+        invalidatesTags: (result, error, arg) => [//we re not updating all the list, butonly update the task in the cache by using the arg.id
+            { type: 'Task', id: arg.id }
+        ]
+    }),
+    deleteTask: builder.mutation({
+        query: ({ id }) => ({
+            url: '/desk/tasks',
+            method: 'DELETE',
+            body: { id }
+        }),
+        invalidatesTags: (result, error, arg) => [
+            { type: 'Task', id: arg.id }
+        ]
+    }),
   }),
 })
 
 export const {
   useGetTasksQuery,
+  useAddNewTaskMutation,
+  useUpdateTaskMutation,
+  useDeleteTaskMutation,
 } = tasksApiSlice
 
 // returns the query result object

@@ -1,22 +1,35 @@
 import React from 'react';
 
-import { useGetStudentsQuery } from "./studentsApiSlice"
+import { useGetEmployeesQuery } from "./employeesApiSlice"
+import { useGetUsersQuery} from "../Admin/usersApiSlice"
 import SectionTabs from '../../Components/Shared/Tabs/SectionTabs'
 import DataTable from 'react-data-table-component'
-import { useSelector } from 'react-redux';
-import { selectStudentById, selectAllStudents } from './studentsApiSlice'//use the memoized selector 
+import { useSelector } from 'react-redux'
+import { selectEmployeeById, selectAllEmployees } from './employeesApiSlice'//use the memoized selector 
+import { selectAllUsers, selectUserById } from '../Admin/usersApiSlice'//use the memoized selector 
 
-const StudentsList = () => {
+
+const EmployeesList = () => {
 
 //get several things from the query
 const {
-  data: students,//the data is renamed students
+  data: employees,//the data is renamed employees
         isLoading,//monitor several situations is loading...
         isSuccess,
         isError,
         error
-} = useGetStudentsQuery()
-const allStudents = useSelector(state => selectAllStudents(state))
+} = useGetEmployeesQuery()
+const allEmployees = useSelector(state => selectAllEmployees(state))
+
+// const {
+//   data: users,//the data is renamed employees
+      
+// } = useGetUsersQuery()
+// const allUsers = useSelector(state => selectAllUsers(state))
+
+
+
+
 
 //define the content to be conditionally rendered
 
@@ -26,34 +39,17 @@ name: "ID",
 selector:row=>row._id,
 sortable:true
  }, 
-  { 
-name: "First Name",
-selector:row=>row.studentName.firstName+" " +row.studentName.middleName,
-sortable:true
- }, 
-  { 
-name: "Last Name",
-selector:row=>row.studentName.lastName,
-sortable:true
- }, 
-{name: "DOB",
-  selector:row=>row.studentDob,
-  
+ 
+{name: "joining Date",
+  selector:row=>row.employeeJoinDate,
   sortable:true
-}, 
-{name: "Father",
-  selector:row=>row.studentParent.studentFather,
+},
+{name: "Children",
+  selector:row=>row.employeeContractType,
   sortable:true
-}, 
-{name: "Mother",
-  selector:row=>row.studentParent.studentMother,
-  sortable:true
-}, 
-{name: "Sex",
-  selector:row=>row.studentSex,
-  sortable:true,
-  removableRows:true
 }
+
+
 ]
 let content
 
@@ -75,10 +71,10 @@ return (
      {/* <div>
     <input type="text" placeholder="search" onChange={handleFilter}/>
    </div> */}
-   {console.log("success3")} 
+   
    <DataTable
     columns={column}
-    data={allStudents}
+    data={allEmployees}
     pagination
     selectableRows
     removableRows
@@ -92,4 +88,4 @@ return (
 
 
 }
-export default StudentsList
+export default EmployeesList

@@ -24,7 +24,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({//inject the ends points 
                 });
                 return usersAdapter.setAll(initialState, loadedUsers)//loaded the users into usersadapter
             },
-            providesTags: (result, error, arg) => {//not relevant, related to tags on blogs messages
+            providesTags: (result, error, arg) => {
                 if (result?.ids) {
                     return [
                         { type: 'User', id: 'LIST' },
@@ -33,12 +33,49 @@ export const usersApiSlice = apiSlice.injectEndpoints({//inject the ends points 
                 } else return [{ type: 'User', id: 'LIST' }]
             }
         }),
+        addNewUser: builder.mutation({
+            query: initialUserData => ({
+                url: '/admin/users',
+                method: 'POST',
+                body: {
+                    ...initialUserData,
+                }
+            }),
+            invalidatesTags: [//forces the cache in RTK query to update
+                { type: 'User', id: "LIST" }//the user list will be unvalidated and updated
+            ]
+        }),
+        updateUser: builder.mutation({
+            query: initialUserData => ({
+                url: '/admin/users',
+                method: 'PATCH',
+                body: {
+                    ...initialUserData,
+                }
+            }),
+            invalidatesTags: (result, error, arg) => [//we re not updating all the list, butonly update the user in the cache by using the arg.id
+                { type: 'User', id: arg.id }
+            ]
+        }),
+        deleteUser: builder.mutation({
+            query: ({ id }) => ({
+                url: '/admin/users',
+                method: 'DELETE',
+                body: { id }
+            }),
+            invalidatesTags: (result, error, arg) => [
+                { type: 'User', id: arg.id }
+            ]
+        }),
     }),
 })
 
 
-export const {
-    useGetUsersQuery,//hook created automatically from endpoint
+export const {//hooks created automatically from endpoint
+    useGetUsersQuery,
+    useAddNewUserMutation,
+    useUpdateUserMutation,
+    useDeleteUserMutation,
 } = usersApiSlice
 
 // returns the query result object by using the endpoint already defined above and .select method
