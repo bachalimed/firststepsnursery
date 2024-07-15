@@ -29,7 +29,6 @@ useEffect(() => {
            break;
     }}}
   }
-
   setSectionTabs(foundSectionTabs)
 }, [location.pathname]);
 

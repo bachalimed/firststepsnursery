@@ -67,7 +67,7 @@ if (isSuccess) {
 
 
 
-}
+
 return (
   <>
   <SectionTabs/>
@@ -75,7 +75,7 @@ return (
      {/* <div>
     <input type="text" placeholder="search" onChange={handleFilter}/>
    </div> */}
-   {console.log("success3")} 
+   
    <DataTable
     columns={column}
     data={allStudents}
@@ -89,7 +89,7 @@ return (
   </>
 )
 
-
+}
 
 }
 export default StudentsList

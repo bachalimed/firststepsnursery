@@ -39,7 +39,7 @@ export const sidebarMenuUp=[
 	submenuItems:
 		[{title:"Students & Parents",
 			icon: <RiParentLine/>,
-			path:"/students/studentsParents/students/",
+			path:"/students/studentsParents/",//needs to finish with this path and not /students so that section tabs could work
 			spaced:false,
 			sectionTabs:[
 				{title:"Students",

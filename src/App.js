@@ -92,19 +92,17 @@ const App = () => {
 						
 							
 							<Route path=":studentId" element={<StudentDetails />}/>
-							<Route path="new" element={<NewStudent />}/>
+							<Route path="newStudent" element={<NewStudent />}/>
 
-							
-						
 
 						</Route> {/* end of Students route */}
 
-						<Route path="parents" element={<ParentsList />}>
+						<Route path="parents/" element={<ParentsList />}>
 						<Route path=":parentId" element={<ParentDetails />}/>
 
 						</Route> {/* end of Parents route */}
 
-						<Route path="newStudent" element={<NewStudent />}>
+						<Route path="newStudent/" element={<NewStudent />}>
 						
 						
 						</Route> {/* end of newStudent route */}
