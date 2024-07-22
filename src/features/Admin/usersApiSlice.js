@@ -12,7 +12,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({//inject the ends points 
     //define endpoints
     endpoints: builder => ({//a hook will be created automatically based on the end point :getusers
         getUsers: builder.query({
-            query: () => '/admin/users',//this route is as defined in the backend server.js
+            query: () => '/admin/usersManagement/users',//this route is as defined in the backend server.js
             validateStatus: (response, result) => {//to validate the status as per documentation
                 return response.status === 200 && !result.isError
             },
@@ -35,7 +35,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({//inject the ends points 
         }),
         addNewUser: builder.mutation({
             query: initialUserData => ({
-                url: '/admin/users',
+                url: '/admin/usersManagement/users',
                 method: 'POST',
                 body: {
                     ...initialUserData,
@@ -47,7 +47,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({//inject the ends points 
         }),
         updateUser: builder.mutation({
             query: initialUserData => ({
-                url: '/admin/users',
+                url: '/admin/usersManagement/users',
                 method: 'PATCH',
                 body: {
                     ...initialUserData,
@@ -59,7 +59,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({//inject the ends points 
         }),
         deleteUser: builder.mutation({
             query: ({ id }) => ({
-                url: '/admin/users',
+                url: '/admin/usersManagement/users',
                 method: 'DELETE',
                 body: { id }
             }),

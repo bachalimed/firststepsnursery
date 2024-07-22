@@ -34,7 +34,7 @@ export const studentsApiSlice = apiSlice.injectEndpoints({
         }),
         addNewStudent: builder.mutation({
             query: initialStudentData => ({
-                url: '/desk/students',
+                url: '/students/studentsParents/students',
                 method: 'POST',
                 body: {
                     ...initialStudentData,
@@ -46,7 +46,7 @@ export const studentsApiSlice = apiSlice.injectEndpoints({
         }),
         updateStudent: builder.mutation({
             query: initialStudentData => ({
-                url: '/desk/students',
+                url: '/students/studentsParents/students',
                 method: 'PATCH',
                 body: {
                     ...initialStudentData,
@@ -58,7 +58,7 @@ export const studentsApiSlice = apiSlice.injectEndpoints({
         }),
         deleteStudent: builder.mutation({
             query: ({ id }) => ({
-                url: '/desk/students',
+                url: '/students/studentsParents/students',
                 method: 'DELETE',
                 body: { id }
             }),

@@ -1,7 +1,7 @@
 import React from 'react'
 import SectionTabs from '../../Components/Shared/Tabs/SectionTabs'
 
-const NewStudent = () => {
+const NewStudentForm = () => {
   return (
     <div>
       <SectionTabs/>
@@ -10,4 +10,4 @@ const NewStudent = () => {
   )
 }
 
-export default NewStudent
+export default NewStudentForm

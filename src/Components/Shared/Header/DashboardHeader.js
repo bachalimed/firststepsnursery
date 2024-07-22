@@ -1,6 +1,6 @@
 
 import NavbarHeader from "./NavbarHeader";
-import ActiveYearSelect from "./ActiveYearSelect";
+import AcademicYear from "./AcademicYear";
 // import { useNavigate, useLocation } from "react-router";
 
 const DashboardHeader = () => {
@@ -8,7 +8,7 @@ const DashboardHeader = () => {
     
     <header >
         <div className="bg-white h-14 px-10 flex justify-between items-center ">
-        <ActiveYearSelect/>
+        <AcademicYear/>
         
         <p className="">
          welcome back Mr your name

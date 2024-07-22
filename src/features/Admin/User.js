@@ -11,7 +11,7 @@ const User = ({ userId }) => {//userId is used in UsersList from the get query
     const navigate = useNavigate()
 
     if (user) {//if user exists we get all the data 
-        const handleEdit = () => navigate(`/admin/users/${userId}`)//the path to be set in app.js and to be checked with server.js in backend, this is editing page of user
+        const handleEdit = () => navigate(`/admin/usersManagement/${userId}`)//the path to be set in app.js and to be checked with server.js in backend, this is editing page of user
  
         const userRolesString = user.userRoles.toString().replaceAll(',', ', ')//replace the commas with space commas in the roles array
 

@@ -20,6 +20,7 @@ const allStudents = useSelector(state => selectAllStudents(state))
 
 //define the content to be conditionally rendered
 
+
 const column =[
   { 
 name: "ID",

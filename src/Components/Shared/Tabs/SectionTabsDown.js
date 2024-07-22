@@ -1,11 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { useLocation } from 'react-router-dom'
-import { sidebarMenuUp } from '../../lib/Consts/SidebarMenu'
+import { sidebarMenuDown } from '../../lib/Consts/SidebarMenu'
 import { useState, useEffect } from 'react'
 
 
-const SectionTabs = () => {
+const SectionTabsDown = () => {
   const location = useLocation()
   const [sectionTabs, setSectionTabs] = useState([]);
 //find the submenu corresponding to the path we are in and get the sections from it
@@ -17,7 +17,7 @@ useEffect(() => {
   //console.log(currentPath)
   let foundSectionTabs = []
 
-  for (const menuItem of sidebarMenuUp) {
+  for (const menuItem of sidebarMenuDown) {
     //console.log(`menuItem ${menuItem}`)
     if(currentPath.startsWith(menuItem.path)) {
 
@@ -40,7 +40,7 @@ return (
     </ul>
 )}
 
-export default SectionTabs
+export default SectionTabsDown
 
  
     

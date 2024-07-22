@@ -1,5 +1,6 @@
 import { useGetUsersQuery } from "./usersApiSlice"
 import User from './User'
+import SectionTabsDown from "../../Components/Shared/Tabs/SectionTabsDown"
 
 const UsersList = () => {
 //get several things from the query
@@ -28,6 +29,10 @@ const UsersList = () => {
             : null//if no length to the ids it will be null
 
         content = (//create a table, the classes are in the css tailored
+            <>
+            <SectionTabsDown />
+          
+            
             <table className="table table--users">{/*//flattened the table to display grid, check css file*/}
                 <thead className="table__thead">
                     <tr>
@@ -44,6 +49,7 @@ const UsersList = () => {
                     {tableContent}
                 </tbody>
             </table>
+            </>
         )
     }
 

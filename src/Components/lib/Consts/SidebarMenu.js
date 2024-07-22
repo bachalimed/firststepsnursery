@@ -215,41 +215,48 @@ export const sidebarMenuUp=[
 			path:"/settings/dashboardSet",
 			
 			 },
-			 {title:"Students",
-				icon: <PiStudent/>,
-				path:"/settings/studentsSet",
-				spaced:false
-				 },
+		{title:"Students",
+		icon: <PiStudent/>,
+		path:"/settings/studentsSet",
+		spaced:false
+			},
 			 
-				 {title:"Academics",
-					icon: <IoSchoolOutline/>,
-					path:"/settings/academicsSet",
-					spaced:false
-					 },
+		{title:"Academics",
+		icon: <IoSchoolOutline/>,
+		path:"/settings/academicsSet",
+		spaced:false,
+		sectionTabs:[
+			{title:"Academic Years",
+			path:"/academicYears/"},
+			
+			{title:"bloblo",
+			path:"/settings/bloblo/"}
+		]
+			},
+	
+		{title:"Finances",
+		icon: <LiaFileInvoiceDollarSolid/>,
+		path:"/settings/financesSet",
+		spaced:false
+			},
 			 
-				 {title:"Finances",
-					icon: <LiaFileInvoiceDollarSolid/>,
-					path:"/settings/financesSet",
-					spaced:false
-					 },
-			 
-				 {title:"HR",
-					icon: <GiHumanPyramid/>,
-					path:"/settings/HRSet",
-					spaced:false
-					 },
-			 
-				 {title:"Desk",
-					icon: <FaMailBulk/>,
-					path:"/settings/deskSet",
-					spaced:false
-					 },
-			 
-				 {title:"CMS",
-					icon: <SiWebmoney/>,
-					path:"/settings/cmsSet",
-					spaced:false
-					 }
+		{title:"HR",
+		icon: <GiHumanPyramid/>,
+		path:"/settings/HRSet",
+		spaced:false
+			},
+	
+		{title:"Desk",
+		icon: <FaMailBulk/>,
+		path:"/settings/deskSet",
+		spaced:false
+			},
+	
+		{title:"CMS",
+		icon: <SiWebmoney/>,
+		path:"/settings/cmsSet",
+		spaced:false
+			}
 		]
 		 }
 	
@@ -257,17 +264,25 @@ export const sidebarMenuUp=[
 
 export const sidebarMenuDown=[
 	
+
 	{title:"Admin",
 	   icon: <GrUserAdmin/>,
-	   path:"/admin",
+	   path:"",
 	   spaced:false,
 	   submenu:true,
 	   subOpen:false,
 	   submenuItems:
-		   [{title:"Users",
-			   icon: <BsQuestionSquare/>,
-			   path:"/admin/users/",
-			   spaced:false
+		   [{title:"Users Management",
+				icon: <BsQuestionSquare/>,
+				path:"/admin/usersManagement/",
+				spaced:false,
+				sectionTabs:[
+					{title:"All Users",
+					path:"/admin/usersManagement/users/"},
+					
+					{title:"New User",
+					path:"/admin/usersManagement/newUser/"}
+				]
 			},
 			{title:"blabla",
 			icon: <GrTask/>,

@@ -12,7 +12,7 @@ import ParentsList from './features/Students/ParentsList'
 import StudentsList from './features/Students/StudentsList'
 import StudentDetails from './features/Students/StudentDetails'
 import ParentDetails from './features/Students/ParentDetails'
-import NewStudent from './features/Students/NewStudent'
+import NewStudentForm from './features/Students/NewStudentForm'
 import Admissions from "./features/Students/Admissions"
 import Enrolments from "./features/Students/Enrolments"
 import NurseryPlannings from './features/Academics/NurseryPlannings'
@@ -33,12 +33,18 @@ import TasksList from './features/Desk/TasksList'
 import Cms from './features/CMS/Cms'
 import DashboardSet from './features/AppSettings/DashboardSet'
 import AcademicsSet from './features/AppSettings/AcademicsSet'
+import AcademicYear from './Components/Shared/Header/AcademicYear'
 import CmsSet from './features/AppSettings/CmsSet'
 import FinancesSet from './features/AppSettings/FinancesSet'
 import StudentsSet from './features/AppSettings/StudentsSet'
 import HRSet from './features/AppSettings/HRSet'
 import DeskSet from './features/AppSettings/DeskSet'
 import UsersList from './features/Admin/UsersList'
+import EditUser from './features/Admin/EditUser'
+import NewUserForm from './features/Admin/NewUserForm'
+import UsersManagement from './features/Admin/UsersManagement'
+import EditTask from './features/Desk/EditTask'
+import NewTask from './features/Desk/NewTask'
 import Logout from './features/auth/Logout'
 
 
@@ -88,21 +94,17 @@ const App = () => {
 					<Route path="studentsParents" > 					
 					<Route index element={<StudentsParents />} /> {/*the path link is in sidebarmenu*/ }
 
-						<Route path="students/" element={<StudentsList />}>
-						
-							
+						<Route path="students/" element={<StudentsList />}>												
 							<Route path=":studentId" element={<StudentDetails />}/>
-							<Route path="newStudent" element={<NewStudent />}/>
-
-
+							<Route path="newStudent" element={<NewStudentForm />}/>
 						</Route> {/* end of Students route */}
 
 						<Route path="parents/" element={<ParentsList />}>
-						<Route path=":parentId" element={<ParentDetails />}/>
+							<Route path=":parentId" element={<ParentDetails />}/>
 
 						</Route> {/* end of Parents route */}
 
-						<Route path="newStudent/" element={<NewStudent />}>
+						<Route path="newStudent/" element={<NewStudentForm />}>
 						
 						
 						</Route> {/* end of newStudent route */}
@@ -206,8 +208,11 @@ const App = () => {
 					<Route index element={<StudentsSet />} /> 
 					</Route> {/* end of studentsSet route */}
 
-					<Route path="academicsSet" > 					
-					<Route index element={<AcademicsSet />} /> 
+					<Route path="academicsSet" element={<AcademicsSet />} > 					
+					<Route path="academicYears" element={<AcademicYear />} /> 
+					
+
+
 					</Route> {/* end of academicsSet route */}
 
 					<Route path="financesSet" > 					
@@ -226,20 +231,28 @@ const App = () => {
 					<Route index element={<CmsSet />} /> 
 					</Route> {/* end of cmsSet route */}
 				</Route> {/* end of settings route */}
+				
 							
-				<Route path="admin" element={<DashboardLayout />} >	 				
-				<Route index element={<UsersList />} /> 
+				<Route path="admin" element={<DashboardLayout />} >	 
 
-					<Route path="users/" element={<UsersList />}> 					
-					<Route path=":userId" element={<UsersList />}/> 		{/*this will be chekced later*/}			
+					<Route path="usersManagement"	>		
+						<Route  index element={<UsersManagement />} />  {/*the path link is in sidebarmenu*/ }
+
+
+						<Route path="users/" element={<UsersList />}/> 						
+							<Route path=":userId" element={<EditUser />}/> 		{/*id is part of the path*/}			
+							<Route path="newUser" element={<NewUserForm />}/> 		{/*id is part of the path*/}			
 					 
-					</Route> {/* end of users route */} 
-
+					
+					</Route>{/*end of usersManagement route*/}
+					
 					<Route path="blabla" > 					
-					<Route index element={<UsersList />} /> 
+						<Route index element={<UsersList />} /> 
 					</Route> {/* end of blabla route */}  
-
+					
 				</Route> {/* end of admin route */}
+
+
 
 				<Route path="logout" element={<DashboardLayout />} >	 				
 				<Route index element={<Logout />} />   

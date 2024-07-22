@@ -34,7 +34,7 @@ export const parentsApiSlice = apiSlice.injectEndpoints({
         }),
         addNewParent: builder.mutation({
             query: initialParentData => ({
-                url: '/desk/parents',
+                url: '/students/studentsParents/parents',
                 method: 'POST',
                 body: {
                     ...initialParentData,
@@ -46,7 +46,7 @@ export const parentsApiSlice = apiSlice.injectEndpoints({
         }),
         updateParent: builder.mutation({
             query: initialParentData => ({
-                url: '/desk/parents',
+                url: '/students/studentsParents/parents',
                 method: 'PATCH',
                 body: {
                     ...initialParentData,
@@ -58,7 +58,7 @@ export const parentsApiSlice = apiSlice.injectEndpoints({
         }),
         deleteParent: builder.mutation({
             query: ({ id }) => ({
-                url: '/desk/parents',
+                url: '/students/studentsParents/parents',
                 method: 'DELETE',
                 body: { id }
             }),
