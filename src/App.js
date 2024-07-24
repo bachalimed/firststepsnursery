@@ -181,8 +181,13 @@ const App = () => {
 							<Route index element={<Inquiries />} /> 
 							</Route> {/* end of inquiries route */}
 
-							<Route path="tasks" > 					
-							<Route index element={<TasksList />} /> 
+							<Route path="tasks/" > 					
+							<Route index element={<TasksList />} /> {/*the path link is in sidebarmenu*/ }
+							
+								<Route path="tasks/" element={<TasksList />}/> 						
+								<Route path="newTask/" element={<NewTask />}/> 		{/*is part of the path*/}			
+								<Route path=":id/" element={<EditTask />}/> 		{/*id is part of the path*/}			
+
 							</Route> {/* end of tasks route */}
 
 							<Route path="chat" > 					

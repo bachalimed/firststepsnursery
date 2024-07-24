@@ -33,10 +33,10 @@ const TaskList = ({ taskId }) => {
                 <td className="table__cell task__created">{task.taskPriority}</td>
                 <td className="table__cell task__created">{task.taskDescription}</td>
                 <td className="table__cell task__created">{task.taskCreator}</td>
-                <td className="table__cell task__created">{task.taskDueDate}</td>
+                <td className="table__cell task__created">{task.taskDueDate.split('T')[0]}</td>
                 <td className="table__cell task__created">{task.taskResponsible}</td>
                 <td className="table__cell task__created">{task.taskReference}</td>
-                <td className="table__cell task__updated">{task.taskCompletionDate}</td>
+                <td className="table__cell task__updated">{task.taskCompletionDate.split('T')[0]}</td>
                 <td className="table__cell task__title">{task.taskAction.actionDescription}</td>
                 <td className="table__cell task__username">{updated}</td>
 

@@ -30,24 +30,25 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
 
     const navigate = useNavigate()
 
+
     //const [id, setId] = useState(user.id)
     const [username, setUsername] = useState(user.username)
     const [validUsername, setValidUsername] = useState(false)
     const [password, setPassword] = useState('')
     const [validPassword, setValidPassword] = useState(false)
     const [userRoles, setUserRoles] = useState(user.userRoles)
-    const [active, setActive] = useState(user.active)
     const [userFirstName, setUserFirstName] = useState(user.userFullName.userFirstName)
     const [validUserFirstName, setValidUserFirstName] = useState(false)
     const [userMiddleName, setUserMiddleName] = useState(user.userFullName.userMiddleName)
-    const [validUserMiddleName, setValidUserMiddleName] = useState(false)
+ 
     const [userLastName, setUserLastName] = useState(user.userFullName.userLastName)
     const [validUserLastName, setValidUserLastName] = useState(false)
-    const [userFullName, setUserFullName] = useState(user.userFullName)
+    const [userFullName, setUserFullName] = useState({userFirstName:user.userFullName.userFirstName, userMiddleName:user.userFullName.userMiddleName, userLastName:user.userFullName.userLastName})
     const [validUserFullName, setValidUserFullName] = useState(false)
     const[ isParent,setIsParent ]= useState(user.isParent)
     const[ isEmployee,setIsEmployee ]= useState(user.isEmployee)
-    const[ userDob,setUserDob ]= useState(user.userDob)
+//change date format from mongo db
+    const[ userDob,setUserDob ]= useState(user.userDob.split('T')[0])
     const[ validUserDob,setValidUserDob ]= useState(false)
     const[ userIsActive,setUserIsActive ]= useState(user.userIsActive)
     const[ userPhoto,setUserPhoto ]= useState(user.userPhoto)
@@ -72,12 +73,10 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
     const[primaryPhone, setPrimaryPhone ]= useState(user.userContact.primaryPhone)
     const[validPrimaryPhone, setValidPrimaryPhone ]= useState(false)
     const[secondaryPhone, setSecondaryPhone ]= useState(user.userContact.secondaryPhone)
-    const[validSecondaryPhone, setValidSecondaryPhone ]= useState(false)
+    
     const[email, setEmail ]= useState(user.userContact.email)
     const[validEmail, setValidEmail ]= useState(false)
-
-
-
+    
     useEffect(() => {
         setValidUsername(USER_REGEX.test(username))
     }, [username])
@@ -148,6 +147,9 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
      //handlers to get the individual states from the input
      const onUsernameChanged = e => setUsername(e.target.value)
      const onPasswordChanged = e => setPassword(e.target.value)
+     //const onUserFirstNameChanged = e => setUserFullName({userFirstName:e.target.value,userMiddleName:userMiddleName, userLastName:userLastName }) 
+     //const onUserMiddleNameChanged = e => setUserFullName({userMiddleName:e.target.value})
+     //const onUserLastNameChanged = e => setUserFullName({userLastName:e.target.value})
      const onUserFirstNameChanged = e => setUserFirstName(e.target.value) 
      const onUserMiddleNameChanged = e => setUserMiddleName(e.target.value)
      const onUserLastNameChanged = e => setUserLastName(e.target.value)
@@ -160,17 +162,17 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
      const onLocationChanged = e => setLocation(e.target.value)
      const onSizeChanged = e => setSize(e.target.value)
      const onFormatChanged = e => setFormat(e.target.value)
-     //const onUserPhotoChanged = e => setUserPhoto(e.target.value)
+    
      const onHouseChanged = e => setHouse(e.target.value)
      const onStreetChanged = e => setStreet(e.target.value)
      const onAreaChanged = e => setArea(e.target.value)
      const onPostCodeChanged = e => setPostCode(e.target.value)
      const onCityChanged = e => setCity(e.target.value)
-    // const onUserAddressChanged = e => setUserAddress(e.target.value)
+    
      const onPrimaryPhoneChanged = e => setPrimaryPhone(e.target.value)
      const onSecondaryPhoneChanged = e => setSecondaryPhone(e.target.value)
      const onEmailChanged = e => setEmail(e.target.value)
-     //const onUserContactChanged = e => setUserContact(e.target.value)
+    
  
     //  const onUserRolesChanged = e => {//because the roles is a select and allows multiple selections, we get an array from
     //      const values = Array.from(
@@ -180,28 +182,33 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
     //      setUserRoles(values)
     //  }
 
-    const onUserRolesChanged = (e) => {
+
+    
+
+    const onUserRolesChanged =  (e) => {
         const { value, checked } = e.target    
         setUserRoles((prevRoles) =>
           checked ? [...prevRoles, value] : prevRoles.filter((role) => role !== value)
         )
     }
     //check if the parent and employee id is available or delete the variable
-    if (isParent===''){ setIsParent(null)}
-    if (isEmployee===''){ setIsEmployee(null)}
-    
-  
+    if (isParent===''){ setIsParent(undefined)}
+    if (isEmployee===''){ setIsEmployee(undefined)}
+   
+
+//this will ensure the update of the states
+    useEffect(() => {
+        setUserFullName({userFirstName:userFirstName, userMiddleName:userMiddleName, userLastName:userLastName})
+        setUserPhoto({label:label, location:location, size:size, format:format})
+        setUserAddress({house:house, street:street, area:area, postCode:postCode, city:city})
+        setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:email}) 
+      }, [userFullName, userPhoto, userAddress, userContact])
+
      //console.log( validUserFirstName,userFirstName, validUserLastName, validUsername, validPassword, validUserDob, 
         //validStreet,  validPrimaryPhone, userRoles, validEmail, userRoles.length, isParent, isEmployee, userIsActive )
      
-        const onSaveUserClicked = async (e) => {  
-              
-       
-             setUserFullName({userFirstName:userFirstName, userMiddleName:userMiddleName, userLastName:userLastName})
-             setUserPhoto({label:label, location:location, size:size, format:format})
-             setUserAddress({house:house, street:street, area:area, postCode:postCode, city:city})
-              setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:email})  
-            console.log(` 'first name' ${userFirstName}', fullfirstname is , ${userFullName.userFirstName}` )
+        const onSaveUserClicked = async (e) => {        
+            console.log(` 'first name' ${userFirstName}', fullfirstname,' ${userFullName.userFirstName}', house: '${house}', usercontact house' ${userContact.house},    ${userRoles.length},${isParent}, ${isEmployee}` )
      
         if (password) {
            
@@ -211,6 +218,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
             await updateUser({ id: user.id, userFullName, username, isParent, isEmployee, userDob, userIsActive, userRoles, userPhoto, userAddress, userContact })
         }
     }
+
 
     const onDeleteUserClicked = async () => {
         
@@ -429,17 +437,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     value={email}
                     onChange={onEmailChanged}
                 />
-                <label className="form__label" htmlFor="postCode">
-                    Post Code: <span className="nowrap">[3-12 letters]</span></label>
-                <input
-                    className={`form__input ${validUserClass}`}
-                    id="postCode"
-                    name="postCode"
-                    type="text"
-                    autoComplete="off"
-                    value={postCode}
-                    onChange={onPostCodeChanged}
-                />
+               
                 <label className="form__label" htmlFor="label">
                     Photo: <span className="nowrap">[3-12 letters]</span></label>
                 <input

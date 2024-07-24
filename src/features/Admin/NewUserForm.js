@@ -35,7 +35,6 @@ const NewUserForm = () => {//an add user function that can be called inside the 
     const [userFirstName, setUserFirstName] = useState('')
     const [validUserFirstName, setValidUserFirstName] = useState(false)
     const [userMiddleName, setUserMiddleName] = useState('')
-    const [validUserMiddleName, setValidUserMiddleName] = useState(false)
     const [userLastName, setUserLastName] = useState('')
     const [validUserLastName, setValidUserLastName] = useState(false)
     const[ isParent,setIsParent ]= useState('')
@@ -65,7 +64,6 @@ const NewUserForm = () => {//an add user function that can be called inside the 
     const[primaryPhone, setPrimaryPhone ]= useState()
     const[validPrimaryPhone, setValidPrimaryPhone ]= useState(false)
     const[secondaryPhone, setSecondaryPhone ]= useState()
-    const[validSecondaryPhone, setValidSecondaryPhone ]= useState(false)
     const[email, setEmail ]= useState('')
     const[validEmail, setValidEmail ]= useState(false)
 
@@ -151,17 +149,17 @@ const NewUserForm = () => {//an add user function that can be called inside the 
     const onLocationChanged = e => setLocation(e.target.value)
     const onSizeChanged = e => setSize(e.target.value)
     const onFormatChanged = e => setFormat(e.target.value)
-    const onUserPhotoChanged = e => setUserPhoto(e.target.value)
+    
     const onHouseChanged = e => setHouse(e.target.value)
     const onStreetChanged = e => setStreet(e.target.value)
     const onAreaChanged = e => setArea(e.target.value)
     const onPostCodeChanged = e => setPostCode(e.target.value)
     const onCityChanged = e => setCity(e.target.value)
-    const onUserAddressChanged = e => setUserAddress(e.target.value)
+ 
     const onPrimaryPhoneChanged = e => setPrimaryPhone(e.target.value)
     const onSecondaryPhoneChanged = e => setSecondaryPhone(e.target.value)
     const onEmailChanged = e => setEmail(e.target.value)
-    const onUserContactChanged = e => setUserContact(e.target.value)
+    
 
     const onUserRolesChanged = (e) => {
         const { value, checked } = e.target;
@@ -180,8 +178,8 @@ const NewUserForm = () => {//an add user function that can be called inside the 
     // }
 //we do not  need to retriev the employee and parent ids from the DB ans set their state because they are saved before the user
 //check if the parent and employee id is available or delete the variable
-if (isParent===''){ setIsParent(null)}
-if (isEmployee===''){ setIsEmployee(null)}
+if (isParent===''){ setIsParent(undefined)}
+if (isEmployee===''){ setIsEmployee(undefined)}
 
 
 //to check if we can save before onsave, if every one is true, and also if we are not loading status
@@ -196,8 +194,8 @@ console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validP
             setUserPhoto({label:label, location:location, size:size, format:format})
             setUserAddress({house:house, street:street, area:area, postCode:postCode, city:city})
             setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:email})
-            console.log(` 'first name' ${userFirstName}', fullfirstname,' ${userFullName.userFirstName}, ${validUserLastName}, ${validUsername}, ${validPassword}, ${validUserDob},    ${ validStreet},  ${validPrimaryPhone}, ${validEmail}, ${userRoles.length}, ${isParent}, ${isEmployee}, ${userIsActive}` )
-            await addNewUser({ username, password, userRoles, userFullName, isParent, isEmployee, userDob, userIsActive, userRoles, userPhoto, userAddress, userContact })//we call the add new user mutation and set the arguments to be saved
+            console.log(` 'first name' ${userFirstName}', fullfirstname,' ${userFullName.userFirstName}', house: '${house}', usercontact house' ${userContact.house},    ${userRoles.length},${isParent}, ${isEmployee}` )
+            await addNewUser({ username, password,  userFullName, isParent, isEmployee, userDob, userIsActive, userRoles, userPhoto, userAddress, userContact })//we call the add new user mutation and set the arguments to be saved
         }
     }
 
