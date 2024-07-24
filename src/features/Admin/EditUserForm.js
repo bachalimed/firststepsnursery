@@ -1,77 +1,83 @@
 import { useState, useEffect } from "react"
-import { useAddNewUserMutation } from "./usersApiSlice"
+import { useUpdateUserMutation, useDeleteUserMutation } from "./usersApiSlice"
 import { useNavigate } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSave } from "@fortawesome/free-solid-svg-icons"
+import { faSave, faTrashCan } from "@fortawesome/free-solid-svg-icons"
 import { ROLES } from "../../config/UserRoles"
-import SectionTabsDown from '../../Components/Shared/Tabs/SectionTabsDown'
+import SectionTabsDown from "../../Components/Shared/Tabs/SectionTabsDown"
 
-//constrains on inputs when creating new user
-const USER_REGEX = /^[A-z]{3,20}$/
-const PWD_REGEX = /^[A-z0-9!@#-_$%]{4,12}$/
+const USER_REGEX = /^[A-z]{6,20}$/
+const PWD_REGEX = /^[A-z0-9!@#-_$%]{8,20}$/
 const NAME_REGEX= /^[A-z 0-9]{3,20}$/
 const PHONE_REGEX= /^[0-9]{6,15}$/
 const DOB_REGEX = /^[0-9/-]{4,10}$/
-const EMAIL_REGEX = /^[A-z0-9.@-_]{6,20}$/
+const EMAIL_REGEX = /^[A-z0-9.@-_]{8,20}$/
 
-const NewUserForm = () => {//an add user function that can be called inside the component
+const EditUserForm = ({ user }) => {//user was passed as prop in editUser
 
-    const [addNewUser, {//an object that calls the status when we execute the newUserForm function
+    const [updateUser, {
         isLoading,
         isSuccess,
         isError,
         error
-    }] = useAddNewUserMutation()//it will not execute now but when called
+    }] = useUpdateUserMutation()
+
+    const [deleteUser, {
+        isSuccess: isDelSuccess,
+        isError: isDelError,
+        error: delerror
+    }] = useDeleteUserMutation()
 
     const navigate = useNavigate()
 
-    const [username, setUsername] = useState('')
-    const [validUsername, setValidUsername] = useState(false)//will be true when the username is validated
+    //const [id, setId] = useState(user.id)
+    const [username, setUsername] = useState(user.username)
+    const [validUsername, setValidUsername] = useState(false)
     const [password, setPassword] = useState('')
-    const [validPassword, setValidPassword] = useState(false)//will be true when the passwrod is validated
-    const [userRoles, setUserRoles] = useState(["Employee"])//the roles array is defaulted to employee
-    const [userFullName, setUserFullName] = useState('')
-    const [validUserFullName, setValidUserFullName] = useState(false)
-    const [userFirstName, setUserFirstName] = useState('')
+    const [validPassword, setValidPassword] = useState(false)
+    const [userRoles, setUserRoles] = useState(user.userRoles)
+    const [active, setActive] = useState(user.active)
+    const [userFirstName, setUserFirstName] = useState(user.userFullName.userFirstName)
     const [validUserFirstName, setValidUserFirstName] = useState(false)
-    const [userMiddleName, setUserMiddleName] = useState('')
+    const [userMiddleName, setUserMiddleName] = useState(user.userFullName.userMiddleName)
     const [validUserMiddleName, setValidUserMiddleName] = useState(false)
-    const [userLastName, setUserLastName] = useState('')
+    const [userLastName, setUserLastName] = useState(user.userFullName.userLastName)
     const [validUserLastName, setValidUserLastName] = useState(false)
-    const[ isParent,setIsParent ]= useState('')
-    const[ isEmployee,setIsEmployee ]= useState('')
-    const[ userDob,setUserDob ]= useState('')
+    const [userFullName, setUserFullName] = useState(user.userFullName)
+    const [validUserFullName, setValidUserFullName] = useState(false)
+    const[ isParent,setIsParent ]= useState(user.isParent)
+    const[ isEmployee,setIsEmployee ]= useState(user.isEmployee)
+    const[ userDob,setUserDob ]= useState(user.userDob)
     const[ validUserDob,setValidUserDob ]= useState(false)
-    const[ userIsActive,setUserIsActive ]= useState(false)
-    const[ userPhoto,setUserPhoto ]= useState('')
-    const[ label,setLabel ]= useState('')
-    const[ location,setLocation ]= useState('')
-    const[ size,setSize ]= useState()
-    const[ format,setFormat ]= useState('')
-    const[ userAddress,setUserAddress ]= useState('')
+    const[ userIsActive,setUserIsActive ]= useState(user.userIsActive)
+    const[ userPhoto,setUserPhoto ]= useState(user.userPhoto)
+    const[ label,setLabel ]= useState(user.userPhoto.label)
+    const[ location,setLocation ]= useState(user.userPhoto.location)
+    const[ size,setSize ]= useState(user.userPhoto.size)
+    const[ format,setFormat ]= useState(user.userPhoto.format)
+    const[ userAddress,setUserAddress ]= useState(user.userAddress)
     const[ validUserAddress,setValidUserAddress ]= useState(false)
-    const[ house,setHouse ]= useState('')
+    const[ house,setHouse ]= useState(user.userAddress.house)
     const[ validHouse,setValidHouse ]= useState(false)
-    const[ street,setStreet ]= useState('')
+    const[ street,setStreet ]= useState(user.userAddress.street)
     const[ validStreet,setValidStreet ]= useState(false)
-    const[ area,setArea ]= useState('')
+    const[ area,setArea ]= useState(user.userAddress.area)
     const[ validArea,setValidArea ]= useState(false)
-    const[ postCode,setPostCode ]= useState('')
+    const[ postCode,setPostCode ]= useState(user.userAddress.postCode)
     const[ validPostCode,setValidPostCode ]= useState(false)
-    const[ city,setCity ]= useState('')
+    const[ city,setCity ]= useState(user.userAddress.city)
     const[ validCity,setValidCity ]= useState(false)
-    const[userContact, setUserContact ]= useState('')
+    const[userContact, setUserContact ]= useState(user.userContact)
     const[validUserContact, setValidUserContact ]= useState(false)
-    const[primaryPhone, setPrimaryPhone ]= useState()
+    const[primaryPhone, setPrimaryPhone ]= useState(user.userContact.primaryPhone)
     const[validPrimaryPhone, setValidPrimaryPhone ]= useState(false)
-    const[secondaryPhone, setSecondaryPhone ]= useState()
+    const[secondaryPhone, setSecondaryPhone ]= useState(user.userContact.secondaryPhone)
     const[validSecondaryPhone, setValidSecondaryPhone ]= useState(false)
-    const[email, setEmail ]= useState('')
+    const[email, setEmail ]= useState(user.userContact.email)
     const[validEmail, setValidEmail ]= useState(false)
 
- 
- 
-//use effect is used to validate the inputs against the defined REGEX above
+
+
     useEffect(() => {
         setValidUsername(USER_REGEX.test(username))
     }, [username])
@@ -106,7 +112,8 @@ const NewUserForm = () => {//an add user function that can be called inside the 
     }, [email])
 
     useEffect(() => {
-        if (isSuccess) {//if it is success, empty all the individual states and navigaet back to the users list
+        console.log(isSuccess)
+        if (isSuccess || isDelSuccess) {
             setUsername('')
             setPassword('')
             setUserRoles([])
@@ -129,79 +136,88 @@ const NewUserForm = () => {//an add user function that can be called inside the 
             setPostCode('')
             setCity('')
             setUserAddress({house:'', street:'', area:'', postcode:'', city:''})
-            setPrimaryPhone()
-            setSecondaryPhone()
+            setPrimaryPhone('')
+            setSecondaryPhone('')
             setEmail('')
             setUserContact({primaryPhone:'', secondaryPhone:'', email:'' })
             navigate('/admin/usersManagement/users/')//will navigate here after saving
         }
-    }, [isSuccess, navigate])//even if no success it will navigate and not show any warning if failed or success
 
-    //handlers to get the individual states from the input
-    const onUsernameChanged = e => setUsername(e.target.value)
-    const onPasswordChanged = e => setPassword(e.target.value)
-    const onUserFirstNameChanged = e => setUserFirstName(e.target.value)
-    const onUserMiddleNameChanged = e => setUserMiddleName(e.target.value)
-    const onUserLastNameChanged = e => setUserLastName(e.target.value)
-    const onIsParentChanged = e => setIsParent(e.target.value)
-    const onIsEmployeeChanged = e => setIsEmployee(e.target.value)
-    const onUserDobChanged = e => setUserDob(e.target.value)
-    const onUserIsActiveChanged = e => setUserIsActive(prev => !prev)//will invert the previous state
-    const onLabelChanged = e => setLabel(e.target.value)
-    const onLocationChanged = e => setLocation(e.target.value)
-    const onSizeChanged = e => setSize(e.target.value)
-    const onFormatChanged = e => setFormat(e.target.value)
-    const onUserPhotoChanged = e => setUserPhoto(e.target.value)
-    const onHouseChanged = e => setHouse(e.target.value)
-    const onStreetChanged = e => setStreet(e.target.value)
-    const onAreaChanged = e => setArea(e.target.value)
-    const onPostCodeChanged = e => setPostCode(e.target.value)
-    const onCityChanged = e => setCity(e.target.value)
-    const onUserAddressChanged = e => setUserAddress(e.target.value)
-    const onPrimaryPhoneChanged = e => setPrimaryPhone(e.target.value)
-    const onSecondaryPhoneChanged = e => setSecondaryPhone(e.target.value)
-    const onEmailChanged = e => setEmail(e.target.value)
-    const onUserContactChanged = e => setUserContact(e.target.value)
+    }, [isSuccess, isDelSuccess, navigate])
+
+     //handlers to get the individual states from the input
+     const onUsernameChanged = e => setUsername(e.target.value)
+     const onPasswordChanged = e => setPassword(e.target.value)
+     const onUserFirstNameChanged = e => setUserFirstName(e.target.value) 
+     const onUserMiddleNameChanged = e => setUserMiddleName(e.target.value)
+     const onUserLastNameChanged = e => setUserLastName(e.target.value)
+
+     const onIsParentChanged = e => setIsParent(e.target.value)
+     const onIsEmployeeChanged = e => setIsEmployee(e.target.value)
+     const onUserDobChanged = e => setUserDob(e.target.value)
+     const onUserIsActiveChanged = e => setUserIsActive(prev => !prev)
+     const onLabelChanged = e => setLabel(e.target.value)
+     const onLocationChanged = e => setLocation(e.target.value)
+     const onSizeChanged = e => setSize(e.target.value)
+     const onFormatChanged = e => setFormat(e.target.value)
+     //const onUserPhotoChanged = e => setUserPhoto(e.target.value)
+     const onHouseChanged = e => setHouse(e.target.value)
+     const onStreetChanged = e => setStreet(e.target.value)
+     const onAreaChanged = e => setArea(e.target.value)
+     const onPostCodeChanged = e => setPostCode(e.target.value)
+     const onCityChanged = e => setCity(e.target.value)
+    // const onUserAddressChanged = e => setUserAddress(e.target.value)
+     const onPrimaryPhoneChanged = e => setPrimaryPhone(e.target.value)
+     const onSecondaryPhoneChanged = e => setSecondaryPhone(e.target.value)
+     const onEmailChanged = e => setEmail(e.target.value)
+     //const onUserContactChanged = e => setUserContact(e.target.value)
+ 
+    //  const onUserRolesChanged = e => {//because the roles is a select and allows multiple selections, we get an array from
+    //      const values = Array.from(
+    //          e.target.selectedOptions, //HTMLCollection that s why we have array from
+    //          (option) => option.value// we get the values from options and we put them into Roles array
+    //      )
+    //      setUserRoles(values)
+    //  }
 
     const onUserRolesChanged = (e) => {
-        const { value, checked } = e.target;
+        const { value, checked } = e.target    
         setUserRoles((prevRoles) =>
           checked ? [...prevRoles, value] : prevRoles.filter((role) => role !== value)
         )
-      }
-
-
-    // const onUserRolesChanged = e => {//because the roles is a select and allows multiple selections, we get an array from
-    //     const values = Array.from(
-    //         e.target.selectedOptions, //HTMLCollection that s why we have array from
-    //         (option) => option.value// we get the values from options and we put them into Roles array
-    //     )
-    //     setUserRoles(values)
-    // }
-//we do not  need to retriev the employee and parent ids from the DB ans set their state because they are saved before the user
-//check if the parent and employee id is available or delete the variable
-if (isParent===''){ setIsParent(null)}
-if (isEmployee===''){ setIsEmployee(null)}
-
-
-//to check if we can save before onsave, if every one is true, and also if we are not loading status
-    const canSave = [validUserFirstName, validUserLastName, validUsername, validPassword, validUserDob,     validStreet,  validPrimaryPhone, validEmail, userRoles.length ].every(Boolean) && !isLoading
-console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validPassword}, ${validUserDob},    ${ validStreet},  ${validPrimaryPhone}, ${validEmail}, ${userRoles.length}, ${isParent}, ${isEmployee}, ${userIsActive}` )
-    const onSaveUserClicked = async (e) => {
-        e.preventDefault()
-        
-        if (canSave) {//if cansave is true
-            //generate the objects before saving
-            setUserFullName({userFirstName:userFirstName, userMiddleName:userMiddleName, userLastName:userLastName})
-            setUserPhoto({label:label, location:location, size:size, format:format})
-            setUserAddress({house:house, street:street, area:area, postCode:postCode, city:city})
-            setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:email})
-            console.log(` 'first name' ${userFirstName}', fullfirstname,' ${userFullName.userFirstName}, ${validUserLastName}, ${validUsername}, ${validPassword}, ${validUserDob},    ${ validStreet},  ${validPrimaryPhone}, ${validEmail}, ${userRoles.length}, ${isParent}, ${isEmployee}, ${userIsActive}` )
-            await addNewUser({ username, password, userRoles, userFullName, isParent, isEmployee, userDob, userIsActive, userRoles, userPhoto, userAddress, userContact })//we call the add new user mutation and set the arguments to be saved
+    }
+    //check if the parent and employee id is available or delete the variable
+    if (isParent===''){ setIsParent(null)}
+    if (isEmployee===''){ setIsEmployee(null)}
+    
+  
+     //console.log( validUserFirstName,userFirstName, validUserLastName, validUsername, validPassword, validUserDob, 
+        //validStreet,  validPrimaryPhone, userRoles, validEmail, userRoles.length, isParent, isEmployee, userIsActive )
+     
+        const onSaveUserClicked = async (e) => {  
+              
+       
+             setUserFullName({userFirstName:userFirstName, userMiddleName:userMiddleName, userLastName:userLastName})
+             setUserPhoto({label:label, location:location, size:size, format:format})
+             setUserAddress({house:house, street:street, area:area, postCode:postCode, city:city})
+              setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:email})  
+            console.log(` 'first name' ${userFirstName}', fullfirstname is , ${userFullName.userFirstName}` )
+     
+        if (password) {
+           
+            await updateUser({ id: user.id, userFullName, username, password, isParent, isEmployee, userDob, userIsActive, userRoles, userPhoto, userAddress, userContact })
+        } else {
+           
+            await updateUser({ id: user.id, userFullName, username, isParent, isEmployee, userDob, userIsActive, userRoles, userPhoto, userAddress, userContact })
         }
     }
 
-    // const options = Object.values(ROLES).map(role => {//the options for the roles in the select menu
+    const onDeleteUserClicked = async () => {
+        
+        await deleteUser({ id: user.id })
+    }
+
+    // const options = Object.values(ROLES).map(role => {
     //     return (
     //         <option
     //             key={role}
@@ -210,28 +226,45 @@ console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validP
     //         > {role}</option >
     //     )
     // })
-//the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
-    const errClass = isError ? "errmsg" : "offscreen"
+
+    let canSave
+    if (password) {
+        canSave = [validUserFirstName, validUserLastName, validUsername, validPassword, validUserDob,     validStreet,  validPrimaryPhone, validEmail, userRoles.length].every(Boolean) && !isLoading
+    } else {
+        canSave = [validUserFirstName, validUserLastName, validUsername, validUserDob,     validStreet,  validPrimaryPhone, validEmail, userRoles.length].every(Boolean) && !isLoading
+    }
+
+    const errClass = (isError || isDelError) ? "errmsg" : "offscreen"
     const validUserClass = !validUsername ? 'form__input--incomplete' : ''
-    const validPwdClass = !validPassword ? 'form__input--incomplete' : ''
+    const validPwdClass = password && !validPassword ? 'form__input--incomplete' : ''//to avoid the red square around the input
     const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
+
+    const errContent = (error?.data?.message || delerror?.data?.message) ?? ''
 
 
     const content = (
         <>
-        <SectionTabsDown/>
-            <p className={errClass}>{error?.data?.message}</p>  {/*will display if there is an error message, some of the error messagees are defined in the back end responses*/}
+            <SectionTabsDown />
+            <p className={errClass}>{errContent}</p>{/*if no error message will not show any on the screen*/}
 
-            <form className="form" onSubmit={onSaveUserClicked}>
+            <form className="form" onSubmit={e => e.preventDefault()}>
                 <div className="form__title-row">
-                    <h2>New User Form</h2>
+                    <h2>Edit User</h2>
                     <div className="form__action-buttons">
                         <button
                             className="icon-button"
                             title="Save"
-                            disabled={!canSave}//if can save is false, the save button is disabled
+                            onClick={onSaveUserClicked}
+                            disabled={!canSave}
                         >
                             <FontAwesomeIcon icon={faSave} />
+                        </button>
+                        <button
+                            className="icon-button"
+                            title="Delete"
+                            onClick={onDeleteUserClicked}
+                        >
+                            <FontAwesomeIcon icon={faTrashCan} />
                         </button>
                     </div>
                 </div>
@@ -270,8 +303,8 @@ console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validP
                     value={userLastName}
                     onChange={onUserLastNameChanged}
                 />
-                
-                <label className="form__label" htmlFor="username">
+               
+               <label className="form__label" htmlFor="username">
                     Username: <span className="nowrap">[3-20 letters]</span></label>
                 <input
                     className={`form__input ${validUserClass}`}
@@ -408,7 +441,7 @@ console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validP
                     onChange={onPostCodeChanged}
                 />
                 <label className="form__label" htmlFor="label">
-                    Photo label: <span className="nowrap">[3-12 letters]</span></label>
+                    Photo: <span className="nowrap">[3-12 letters]</span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="label"
@@ -418,7 +451,7 @@ console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validP
                     value={label}
                     onChange={onLabelChanged}
                 />
-                <label className="form__label" htmlFor="location">
+                 <label className="form__label" htmlFor="location">
                     Photo location : <span className="nowrap">[3-12 letters]</span></label>
                 <input
                     className={`form__input ${validUserClass}`}
@@ -451,7 +484,8 @@ console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validP
                     value={format}
                     onChange={onFormatChanged}
                 />
-                 <label className="form__label" htmlFor="isParent">
+
+<label className="form__label" htmlFor="label">
                     User Is Parent: <span className="nowrap">[24 digits]</span></label>
                 <input
                     className={`form__input ${validUserClass}`}
@@ -462,7 +496,7 @@ console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validP
                     value={isParent}
                     onChange={onIsParentChanged}
                 />
-                 <label className="form__label" htmlFor="isEmployee">
+                 <label className="form__label" htmlFor="label">
                  User Is Employee: <span className="nowrap">[24 digits]</span></label>
                 <input
                     className={`form__input ${validUserClass}`}
@@ -475,7 +509,6 @@ console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validP
                 />
 
 
-
                     <label>
                     <input
                     type="checkbox"
@@ -485,13 +518,13 @@ console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validP
                     />
                     User Is Active
                     </label>
-                    
-
 
                     {Object.keys(ROLES).map((key) => (
                     <div key={key}>
                     <label>
                         <input
+                       
+                        className={`form__select ${validRolesClass}`}
                         type="checkbox"
                         value={ROLES[key]}
                         checked={userRoles.includes(ROLES[key])}
@@ -501,13 +534,13 @@ console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validP
                     </label>
                     </div>
                 ))}
-              
 
-                {/* <label className="form__label" htmlFor="roles">
+               
+                {/* <label className="form__label" htmlFor="userRoles">
                     ASSIGNED ROLES:</label>
                 <select
-                    id="roles"
-                    name="roles"
+                    id="userRoles"
+                    name="userRoles"
                     className={`form__select ${validRolesClass}`}
                     multiple={true}
                     size="7"
@@ -523,4 +556,4 @@ console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validP
 
     return content
 }
-export default NewUserForm
+export default EditUserForm

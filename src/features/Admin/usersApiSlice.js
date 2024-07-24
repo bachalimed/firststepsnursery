@@ -12,11 +12,11 @@ export const usersApiSlice = apiSlice.injectEndpoints({//inject the ends points 
     //define endpoints
     endpoints: builder => ({//a hook will be created automatically based on the end point :getusers
         getUsers: builder.query({
-            query: () => '/admin/usersManagement/users',//this route is as defined in the backend server.js
+            query: () => '/admin/usersManagement/users/',//this route is as defined in the backend server.js
             validateStatus: (response, result) => {//to validate the status as per documentation
                 return response.status === 200 && !result.isError
             },
-            keepUnusedDataFor: 5,//default is 60seconds or data will be removed from the cache
+            //keepUnusedDataFor: 5,//default is 60seconds or data will be removed from the cache, this will make the page keeps reloading while editing the user after that time, this is solved by keeping an active subscription
             transformResponse: responseData => {
                 const loadedUsers = responseData.map(user => {
                     user.id = user._id//changed the _id from mongoDB to id
@@ -35,7 +35,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({//inject the ends points 
         }),
         addNewUser: builder.mutation({
             query: initialUserData => ({
-                url: '/admin/usersManagement/users',
+                url: '/admin/usersManagement/newUser/',
                 method: 'POST',
                 body: {
                     ...initialUserData,
@@ -47,7 +47,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({//inject the ends points 
         }),
         updateUser: builder.mutation({
             query: initialUserData => ({
-                url: '/admin/usersManagement/users',
+                url: '/admin/usersManagement/:id',
                 method: 'PATCH',
                 body: {
                     ...initialUserData,

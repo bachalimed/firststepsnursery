@@ -15,7 +15,7 @@ export const parentsApiSlice = apiSlice.injectEndpoints({
             validateStatus: (response, result) => {
                 return response.status === 200 && !result.isError
             },
-            keepUnusedDataFor: 5,//default when app is deployed is 60seconds
+            //keepUnusedDataFor: 5,//default when app is deployed is 60seconds
             transformResponse: responseData => {
                 const loadedParents = responseData.map(parent => {
                     parent.id = parent._id

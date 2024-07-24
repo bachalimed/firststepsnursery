@@ -13,8 +13,8 @@ import DashboardFooter from "./DashboardFooter";
 const DashboardLayout = () => {
   	return (
 		
-			<div className='flex bg-neutral-100 h-screen w-screen '>
-				<div className='overflow-visible min-h-screen'>{<DashboardSidebar/>}</div>
+			<div className='flex bg-neutral-100 min-h-screen w-screen '>
+				<div className='overflow-visible h-screen'>{<DashboardSidebar/>}</div>
 				<div className='flex-1'>
 					<div className='flex-1 '>{<DashboardHeader/>}</div>
 					<main className=' flex-1 p-1 min-h-screen '>{<Outlet className=''/>}</main>

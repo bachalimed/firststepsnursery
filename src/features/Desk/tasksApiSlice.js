@@ -19,7 +19,7 @@ export const tasksApiSlice = apiSlice.injectEndpoints({
           validateStatus: (response, result) => {
               return response.status === 200 && !result.isError
           },
-          keepUnusedDataFor: 5,//default when app is deployed is 60seconds
+          //keepUnusedDataFor: 5,//default when app is deployed is 60seconds
           transformResponse: responseData => {
               const loadedTasks = responseData.map(task => {
                   task.id = task._id

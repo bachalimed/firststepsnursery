@@ -15,7 +15,7 @@ export const studentsApiSlice = apiSlice.injectEndpoints({
             validateStatus: (response, result) => {
                 return response.status === 200 && !result.isError
             },
-            keepUnusedDataFor: 5,//default when app is deployed is 60seconds
+            //keepUnusedDataFor: 5,//default when app is deployed is 60seconds
             transformResponse: responseData => {
                 const loadedStudents = responseData.map(student => {
                     student.id = student._id

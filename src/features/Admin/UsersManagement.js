@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { Link } from 'react-router-dom';
+
 import SectionTabsDown from '../../Components/Shared/Tabs/SectionTabsDown'
 
 const UsersManagement = () => {

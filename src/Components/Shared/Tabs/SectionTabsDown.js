@@ -25,7 +25,7 @@ useEffect(() => {
     if (submenu) {
       foundSectionTabs = submenu.sectionTabs
       
-      console.log(`foundSectionTabs ${foundSectionTabs}`)
+      //console.log(`foundSectionTabs ${foundSectionTabs}`)
            break;
     }}}
   }
