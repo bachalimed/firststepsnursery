@@ -75,4 +75,38 @@
     flex-flow: column nowrap;
     gap: 0.5em;
   }
-  
+  /* || UTILITY CLASSES */
+.errmsg {
+  display: inline-block;
+  background-color: var(--TABLE-BGCOLOR);
+  color: var(--ERROR);
+  padding: 0.25em;
+  margin-bottom: 0.5em;
+}
+
+.errmsg a:any-link {
+  color: var(--ERROR);
+  text-decoration: underline;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.icon-button {
+  width: 48px;
+  height: 48px;
+  font-size: 2.5rem;
+  background-color: transparent;
+  border: none;
+  color: var(--COLOR);
+  display: grid;
+  place-content: center;
+}
+
+.icon-button:hover,
+.icon-button:focus-visible {
+  transform: scale(1.2);
+}
+
+

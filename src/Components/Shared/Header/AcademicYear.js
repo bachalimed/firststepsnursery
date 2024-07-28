@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Field, Label, Select } from '@headlessui/react'
 // import { Description } from '@headlessui/react';
-import { useGetAcademicYearsQuery, selectAllAcademicYears } from "./academicsYearsApiSlice"
+import { useGetAcademicYearsQuery, selectAllAcademicYears } from "./academicYearsApiSlice"
 
 import { BsChevronDown } from "react-icons/bs"
 import { useSelector, useDispatch } from 'react-redux'
@@ -31,8 +31,6 @@ let content
     if (isSuccess) {
       
      
-      
-
   return (
     
     

@@ -9,7 +9,6 @@ export const ROLES={
     Finance:'Finance',
     HR:'HR',
     Desk:'Desk',
-    CMS:'CMS',
     Manager:'Manager',
     Admin:'Admin'
 

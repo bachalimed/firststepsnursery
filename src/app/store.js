@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit"
 import { apiSlice } from './api/apiSlice'
 import { setupListeners } from "@reduxjs/toolkit/query"
+import authReducer from "../features/auth/authSlice"
 
 export const store = configureStore({
     reducer: {// Add the generated reducer as a specific top-level slice
         [apiSlice.reducerPath]: apiSlice.reducer,
+        auth:authReducer,
         //imported from taskSlice
         
     },

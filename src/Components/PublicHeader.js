@@ -1,20 +1,74 @@
-import React from 'react';
-import {  useNavigate, useLocation } from 'react-router';
-import { VscDashboard } from "react-icons/vsc";
+import React from 'react'
 
-import { LuUserCircle2 } from "react-icons/lu";
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import logo from './../Data/logo.jpg';
-// import { Link} from 'react-router';
+import { VscDashboard } from "react-icons/vsc"
+
+import { LuUserCircle2 } from "react-icons/lu"
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
+import logo from './../Data/logo.jpg'
+// import { Link} from 'react-router'
+
+import { useEffect } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons"
+import { useNavigate, Link, useLocation } from 'react-router-dom'
+import { useSendLogoutMutation } from '../features/auth/authApiSlice'
 
 
+//these will be used to compare to the location in the url
+const DASH_REGEX = /^\/dashboard(\/)?$/
+const TASKS_REGEX = /^\/desk\/tasks(\/)?$/
+const USERS_REGEX = /^\/admin\/users(\/)?$/
 
 const PublicHeader = () => {
-	const navigate = useNavigate();
-	const {pathname} = useLocation();
+	
+	const navigate = useNavigate()
+	const {pathname} = useLocation()
+	
+	
+	  const [sendLogout, {
+		  isLoading,
+		  isSuccess,
+		  isError,
+		  error
+	  }] = useSendLogoutMutation()
+	
+	  useEffect(() => {
+		  if (isSuccess) navigate('/')
+	  }, [isSuccess, navigate])
+	
+	  if (isLoading) return <p>Logging Out...</p>
+	
+	  if (isError) return <p>Error: {error.data?.message}</p>
+	
+	  // let dashClass = null
+	  // if (!DASH_REGEX.test(pathname) && !TASKS_REGEX.test(pathname) && !USERS_REGEX.test(pathname)) {
+	  //     dashClass = "dash-header__container--small"
+	  // }
+	
+	  const logoutButton = (
+		  <button
+			  className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
+			  title="Logout"
+			  onClick={sendLogout}
+		  > Logout 
+			  <FontAwesomeIcon icon={faRightFromBracket}  className='right'/>
+		  </button>
+	  )
+
+
+
+
+
+
+
+
+
+
+
+
+
 	//will show the dashboard button  icon in the header when not in dashboard page
 	const onGoHomeClicked = () => navigate('/dashboard')
-
     let goHomeButton = null
     if (pathname !== '/dashboard') {
         goHomeButton = (
@@ -27,6 +81,11 @@ const PublicHeader = () => {
             </button>
         )
     }
+
+
+
+
+	
 	const content = (
 		<div className='flex  items-center place-content-stretch  bg-gray-100 h-20'>
       	 	<div className='mr-2 '> <img  src = {logo} className='h-14 w-14 rounded block float-left  ' alt='logo image' /></div>
@@ -43,16 +102,19 @@ const PublicHeader = () => {
 				<strong>User profile</strong>
 				<MenuItem>
 					
-					<button onClick={()=>navigate('/User/Login')} className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10" href="link1target1StudentsParents">
+					<button onClick={()=>navigate('/login')} className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10" href="link1target1StudentsParents">
 					Login
 					</button>				
 				</MenuItem>
 				<MenuItem>
-					<button onClick={()=>navigate('/User/ForgotPassword')} className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10" href="/target 1">        
+					<button onClick={()=>navigate('/users/ForgotPassword')} className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10" href="/target 1">        
 					Forgot Password 
 					</button>
 				</MenuItem>		
 				<div className="my-1 h-px bg-gray-500" />			
+				<MenuItem>
+					{logoutButton}
+				</MenuItem>		
 				</MenuItems>
 			</Menu>
 
