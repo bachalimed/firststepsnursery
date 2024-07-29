@@ -28,31 +28,37 @@ export const sidebarMenuUp=[
 	icon: <VscDashboard/>,
 	path:"/dashboard",
 	spaced:false,
-	allowedRoles:["04","05"]
+	allowedRoles:["Parent","ContentManager", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"]
 	 },
 	 
 	{title:"Students",
 	icon: <PiStudent/>,
 	path:"",
+	allowedRoles:["Parent", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
 	submenu:true,
 	subOpen:false,
 	submenuItems:
 		[{title:"Students & Parents",
 			icon: <RiParentLine/>,
 			path:"/students/studentsParents/",//needs to finish with this path and not /students so that section tabs could work
+			allowedRoles:["Parent", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
 			spaced:false,
 			sectionTabs:[
 				{title:"Students",
-				path:"/students/studentsParents/students/"},
+				path:"/students/studentsParents/students/"
+				},
 				{title:"Parents",
-				path:"/students/studentsParents/parents/"},
+				path:"/students/studentsParents/parents/"
+				},
 				{title:"New Student",
-				path:"/students/studentsParents/newStudent/"}
-			]
+				path:"/students/studentsParents/newStudent/"
+				}
+				]
 			},
 			{title:"Admissions",
 			icon: <IoFileTrayStackedOutline/>,
 			path:"/students/admissions",
+			allowedRoles:["Parent", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
 			spaced:false,
 			sectionTabs:[
 				{title:"Find",
@@ -66,6 +72,7 @@ export const sidebarMenuUp=[
 			{title:"Enrolments",
 			icon: <FaListCheck/>,
 			path:"/students/enrolments",
+			allowedRoles:["Parent", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
 			spaced:false,
 			sectionTabs:[
 				{title:"ff",
@@ -81,22 +88,26 @@ export const sidebarMenuUp=[
 	{title:"Academics",
 		icon: <IoSchoolOutline/>,
 		path:"",
+		allowedRoles:["Parent","ContentManager", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
 		submenu:true,
 		subOpen:false,
 		submenuItems:
 		[{title:"School Plannings",
 			icon: <MdOutlineBusinessCenter/>,
 			path:"/academics/schoolPlannings",
+			allowedRoles:["Parent","ContentManager", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
 			spaced:false
 			},
 			{title:"Nursery Plannings",
 			icon: <LuSchool/>,
 			path:"/academics/nurseryPlannings",
+			allowedRoles:["Parent","ContentManager", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
 			spaced:false
 			},
 			{title:"Collection&Drop",
 				icon: <HiMiniArrowsUpDown/>,
 				path:"/academics/collectionDrop",
+				allowedRoles:["Parent","ContentManager", "Animator", "Academic", "Director",  "Desk", "Manager", "Admin"],
 				spaced:false
 			}
 			]
@@ -104,6 +115,7 @@ export const sidebarMenuUp=[
 	{title:"Finances",
 	icon: <LuCircleDollarSign/>,
 	path:"",
+	allowedRoles:["Academic", "Director", "Finance", "HR",  "Manager", "Admin"],
 	spaced:false,
 	submenu:true,
 	subOpen:false,
@@ -111,16 +123,19 @@ export const sidebarMenuUp=[
 		[{title:"Invoices",
 			icon: <LiaFileInvoiceDollarSolid/>,
 			path:"/finances/invoices",
+			allowedRoles:["Academic", "Director", "Finance", "HR",   "Manager", "Admin"],
 			spaced:false
 			},
 			{title:"Payments",
 			icon: <GiReceiveMoney/>,
 			path:"/finances/payments",
+			allowedRoles:["Academic", "Director", "Finance",   "Manager", "Admin"],
 			spaced:false
 			},
 			{title:"Expenses",
 				icon: <GiPayMoney/>,
 				path:"/finances/expenses",
+				allowedRoles:["Academic", "Director", "Finance",   "Manager", "Admin"],
 				spaced:false
 			}
 			]
@@ -129,6 +144,7 @@ export const sidebarMenuUp=[
 	{title:"HR",
 	icon: <GiHumanPyramid/>,
 	path:"",
+	allowedRoles:["Employee","Animator", "Academic", "Director", "HR", "Desk", "Manager", "Admin"],
 	spaced:false,
 	submenu:true,
 	subOpen:false,
@@ -136,6 +152,7 @@ export const sidebarMenuUp=[
 		[{title:"Employees",
 			icon: <VscPerson/>,
 			path:"/hr/employees/",
+			allowedRoles:["Employee","Animator", "Academic", "Director", "HR", "Desk", "Manager", "Admin"],
 			spaced:false,
 			sectionTabs:[
 				{title:"Employees",
@@ -148,11 +165,13 @@ export const sidebarMenuUp=[
 			{title:"Payroll",
 			icon: <TbCreditCardPay/>,
 			path:"/hr/payroll",
+			allowedRoles:["Employee","Animator", "Academic", "Director", "HR", "Desk", "Manager", "Admin"],
 			spaced:false
 			},
 			{title:"Leave",
 				icon: <MdOutlinePermContactCalendar/>,
 				path:"/hr/leave",
+				allowedRoles:["Employee","Animator", "Academic", "Director", "HR", "Desk", "Manager", "Admin"],
 				spaced:false
 			}
 			]
@@ -160,6 +179,7 @@ export const sidebarMenuUp=[
 	{title:"Desk",
 	icon: <FaMailBulk/>,
 	path:"",
+	allowedRoles:["Employee", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
 	spaced:false,
 	submenu:true,
 	subOpen:false,
@@ -167,11 +187,13 @@ export const sidebarMenuUp=[
 		[{title:"Inquiries",
 			icon: <BsQuestionSquare/>,
 			path:"/desk/inquiries",
+			allowedRoles:["Employee", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
 			spaced:false
 			},
 			{title:"Tasks",
 			icon: <GrTask/>,
 			path:"/desk/tasks",
+			allowedRoles:["Employee", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
 			spaced:false,
 			sectionTabs:[
 				{title:"Tasks",
@@ -184,12 +206,14 @@ export const sidebarMenuUp=[
 			{title:"Chat",
 				icon: <HiOutlineChatAlt/>,
 				path:"/desk/Chat",
+				allowedRoles:["Employee", "Animator", "Academic", "Director",  "Desk", "Manager", "Admin"],
 				spaced:false
 			
 			},
 			{title:"Mails",
 				icon: <LuMail/>,
 				path:"/desk/mails",
+				allowedRoles:["Employee", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
 				spaced:false
 			}
 			]
@@ -197,64 +221,79 @@ export const sidebarMenuUp=[
 	{title:"CMS",
 		icon: <SiWebmoney/>,
 		path:"/cms",
+		allowedRoles:["ContentManager", "Director",  "Manager", "Admin"],
 		spaced:false
 	},
 	{title:"Public",
 		icon: <BiHome/>,
 		path:"/",
+		allowedRoles:["Employee","Parent","ContentManager", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
 		spaced:false
 		 },
 	{title:"Settings",
 		icon: <SlSettings/>,
 		path:"",
+		allowedRoles:["Employee","Parent","ContentManager", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
 		submenu:true,
 		subOpen:false,
 		submenuItems:
 		[{title:"Dashboard",
 			icon: <VscDashboard/>,
 			path:"/settings/dashboardSet",
+			allowedRoles:["Employee","Parent","ContentManager", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
 			
 			 },
 		{title:"Students",
 		icon: <PiStudent/>,
 		path:"/settings/studentsSet",
+		allowedRoles:["Employee","Parent","ContentManager", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
 		spaced:false
 			},
 			 
 		{title:"Academics",
 		icon: <IoSchoolOutline/>,
 		path:"/settings/academicsSet",
+		allowedRoles:["Employee","Parent","ContentManager", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
 		spaced:false,
 		sectionTabs:[
 			{title:"Academic Years",
-			path:"/academicYears/"},
+			path:"/academicYears/",
+			allowedRoles:["Employee","Parent","ContentManager", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"]
+			},
 			
 			{title:"bloblo",
-			path:"/settings/bloblo/"}
+			path:"/settings/bloblo/",
+			allowedRoles:["Employee","Parent","ContentManager", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"]
+		}
+			
 		]
 			},
 	
 		{title:"Finances",
 		icon: <LiaFileInvoiceDollarSolid/>,
 		path:"/settings/financesSet",
+		allowedRoles:["Employee","Parent","ContentManager", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
 		spaced:false
 			},
 			 
 		{title:"HR",
 		icon: <GiHumanPyramid/>,
 		path:"/settings/HRSet",
+		allowedRoles:["Employee","Parent","ContentManager", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
 		spaced:false
 			},
 	
 		{title:"Desk",
 		icon: <FaMailBulk/>,
 		path:"/settings/deskSet",
+		allowedRoles:["Employee","Parent","ContentManager", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
 		spaced:false
 			},
 	
 		{title:"CMS",
 		icon: <SiWebmoney/>,
 		path:"/settings/cmsSet",
+		allowedRoles:["Employee","Parent","ContentManager", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
 		spaced:false
 			}
 		]
@@ -268,6 +307,7 @@ export const sidebarMenuDown=[
 	{title:"Admin",
 	   icon: <GrUserAdmin/>,
 	   path:"",
+	   allowedRoles:[ "Admin"],
 	   spaced:false,
 	   submenu:true,
 	   subOpen:false,
@@ -275,6 +315,7 @@ export const sidebarMenuDown=[
 		   [{title:"Users Management",
 				icon: <BsQuestionSquare/>,
 				path:"/admin/usersManagement/",
+				allowedRoles:[ "Admin"],
 				spaced:false,
 				sectionTabs:[
 					{title:"All Users",
@@ -287,12 +328,14 @@ export const sidebarMenuDown=[
 			{title:"blabla",
 			icon: <GrTask/>,
 			path:"/admin/blabla",
+			allowedRoles:[ "Admin"],
 			spaced:false
 			}]
 	   },	 	 		 
 	{title:"Logout",
 		icon: <TbLogout/>,
 		path:"/logout",
+		allowedRoles:["Employee","Parent","ContentManager", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
 		spaced:false
 		}
 ]

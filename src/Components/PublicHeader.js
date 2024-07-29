@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons"
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { useSendLogoutMutation } from '../features/auth/authApiSlice'
+import useAuth from '../hooks/useAuth'
 
 
 //these will be used to compare to the location in the url
@@ -20,7 +21,7 @@ const TASKS_REGEX = /^\/desk\/tasks(\/)?$/
 const USERS_REGEX = /^\/admin\/users(\/)?$/
 
 const PublicHeader = () => {
-	
+	const {username} = useAuth()
 	const navigate = useNavigate()
 	const {pathname} = useLocation()
 	
@@ -56,30 +57,19 @@ const PublicHeader = () => {
 	  )
 
 
-
-
-
-
-
-
-
-
-
-
-
 	//will show the dashboard button  icon in the header when not in dashboard page
-	const onGoHomeClicked = () => navigate('/dashboard')
-    let goHomeButton = null
-    if (pathname !== '/dashboard') {
-        goHomeButton = (
+	const onGoDashClicked = () => navigate('/dashboard')
+    let goDashButton = null
+    if (pathname !== '/dashboard' ) {
+        goDashButton = 
             <button
                 className="" 
-                title="Home"
-                onClick={onGoHomeClicked}
+                title="Dashboard"
+                onClick={onGoDashClicked}
             >
-                <VscDashboard />
+              <VscDashboard />
             </button>
-        )
+        
     }
 
 
@@ -89,7 +79,7 @@ const PublicHeader = () => {
 	const content = (
 		<div className='flex  items-center place-content-stretch  bg-gray-100 h-20'>
       	 	<div className='mr-2 '> <img  src = {logo} className='h-14 w-14 rounded block float-left  ' alt='logo image' /></div>
-			<div  className='flex-1 '>{goHomeButton }</div>
+			<div  className='flex-1 '>{goDashButton }</div>
 			<Menu>
 				<MenuButton className="mr-4 ">  
 				<LuUserCircle2 fontSize={24} />

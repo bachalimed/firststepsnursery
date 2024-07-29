@@ -5,7 +5,7 @@ import useAuth from "../../../hooks/useAuth"
 // import { useNavigate, useLocation } from "react-router";
 
 const DashboardHeader = () => {
-  const {username, status1, status2}=useAuth()
+  const {username, userRoles}=useAuth()
   const content =(
     
     <header >
@@ -14,7 +14,7 @@ const DashboardHeader = () => {
         
         <p className="">
          welcome back Mr {username}<br/>
-         current Status {status1} & {status2}
+         current Status {userRoles}
 
         </p >
         <NavbarHeader />
