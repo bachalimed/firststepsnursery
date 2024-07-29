@@ -1,10 +1,11 @@
 import React from 'react'
 import { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link,useNavigate, useLocation } from 'react-router-dom'
 import { BsChevronDown } from 'react-icons/bs'
 import { PiDotsThreeVerticalLight } from 'react-icons/pi'
 
 import useAuth from '../../../hooks/useAuth'
+
 
 const SidebarItem = (props) => {
 const [submenuOpen, setSubmenuOpen] = useState(false)
@@ -14,7 +15,7 @@ const {pathname} = useLocation();//to know which link is selected and then set t
 const {username, userRoles}=useAuth()
 const isAnyValueInMenu = userRoles.some(value => props.menu.allowedRoles.includes(value))
 //const isAnyValueInSubmenu = userRoles.some(value => props.menu.submenuItem.allowedRoles.includes(value))
-
+//for the logout button:
 
 
 	return (   
@@ -30,7 +31,7 @@ const isAnyValueInMenu = userRoles.some(value => props.menu.allowedRoles.include
 				)}
 			</li>
 		</Link>):null}
-		{console.log(userRoles)}
+		
 		{props.menu.submenu && submenuOpen && props.open  && (
 			<ul>
 				{props.menu.submenuItems.map((submenuItem, index)=>(
@@ -47,7 +48,9 @@ const isAnyValueInMenu = userRoles.some(value => props.menu.allowedRoles.include
 
 				))}
 			</ul>
+
 			)}
+			
 			
 		</>	
   )

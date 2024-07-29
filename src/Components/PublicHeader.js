@@ -63,7 +63,7 @@ const PublicHeader = () => {
     if (pathname !== '/dashboard' ) {
         goDashButton = 
             <button
-                className="" 
+                className={username?"":"hidden"} 
                 title="Dashboard"
                 onClick={onGoDashClicked}
             >

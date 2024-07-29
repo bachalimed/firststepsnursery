@@ -331,11 +331,7 @@ export const sidebarMenuDown=[
 			allowedRoles:[ "Admin"],
 			spaced:false
 			}]
-	   },	 	 		 
-	{title:"Logout",
-		icon: <TbLogout/>,
-		path:"/logout",
-		allowedRoles:["Employee","Parent","ContentManager", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
-		spaced:false
-		}
+	   }
+	 
 ]
+
