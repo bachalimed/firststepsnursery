@@ -1,26 +1,26 @@
 
 
-import { useGetStudentsQuery } from "./studentsApiSlice"
-import SectionTabs from '../../Components/Shared/Tabs/SectionTabs'
+import { useGetAcademicYearsQuery } from "./academicYearsApiSlice"
+import SectionTabs from '../../../Components/Shared/Tabs/SectionTabs'
 import DataTable from 'react-data-table-component'
 import { useSelector } from 'react-redux';
-import { selectStudentById, selectAllStudents } from './studentsApiSlice'//use the memoized selector 
+import { selectAcademicYearById, selectAllAcademicYears } from './academicYearsApiSlice'//use the memoized selector 
 
-const StudentsList = () => {
+const AcademicYearsList = () => {
 
 //get several things from the query
 const {
-  data: students,//the data is renamed students
+  data: academicYears,//the data is renamed academicYears
         isLoading,//monitor several situations is loading...
         isSuccess,
         isError,
         error
-} = useGetStudentsQuery('studentsList', {//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+} = useGetAcademicYearsQuery('academicYearsList', {//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
   pollingInterval: 60000,//will refetch data every 60seconds
   refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
   refetchOnMountOrArgChange: true//refetch when we remount the component
 })
-const allStudents = useSelector(state => selectAllStudents(state))
+const allAcademicYears = useSelector(state => selectAllAcademicYears(state))
 
 //define the content to be conditionally rendered
 
@@ -32,31 +32,31 @@ selector:row=>row._id,
 sortable:true
  }, 
   { 
-name: "First Name",
-selector:row=>row.studentName.firstName+" " +row.studentName.middleName,
+name: "Title",
+selector:row=>row.title,
 sortable:true
  }, 
   { 
-name: "Last Name",
-selector:row=>row.studentName.lastName,
+name: "Academic Year start",
+selector:row=>new Date(row.yearStart).toLocaleString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' }),
 sortable:true
  }, 
-{name: "DOB",
-  selector:row=>row.studentDob,
+{name: "Academic Year End",
+  selector:row=>new Date(row.yearEnd).toLocaleString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' }),
   
   sortable:true
 }, 
-{name: "Father",
-  selector:row=>row.studentParent.studentFather,
+{name: "Current Year",
+  selector:row=>row.currentYear === true ? 'Yes' : 'No',
   sortable:true
 }, 
-{name: "Mother",
-  selector:row=>row.studentParent.studentMother,
+{name: "Creator",
+  selector:row=>row.academicYearCreator,
   sortable:true
 }, 
-{name: "Sex",
-  selector:row=>row.studentSex,
-  sortable:true,
+{name: "Action",
+  selector:null,
+  
   removableRows:true
 }
 ]
@@ -83,7 +83,7 @@ return (
    
    <DataTable
     columns={column}
-    data={allStudents}
+    data={allAcademicYears}
     pagination
     selectableRows
     removableRows
@@ -97,4 +97,4 @@ return (
 }
 
 }
-export default StudentsList
+export default AcademicYearsList

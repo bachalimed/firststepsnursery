@@ -7,7 +7,6 @@ import { selectUserById } from './usersApiSlice'//use the memoized selector
 
 const User = ({ userId }) => {//userId is used in UsersList from the get query
     const user = useSelector(state => selectUserById(state, userId))
-
     const navigate = useNavigate()
 
     if (user) {//if user exists we get all the data 

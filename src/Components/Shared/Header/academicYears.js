@@ -2,24 +2,29 @@ import React from 'react'
 
 import { Field, Label, Select } from '@headlessui/react'
 // import { Description } from '@headlessui/react';
-import { useGetAcademicYearsQuery, selectAllAcademicYears } from "./academicYearsApiSlice"
+import { useGetAcademicYearsQuery, selectAllAcademicYears } from "../../../features/AppSettings/Academics/academicYearsApiSlice"
 
 import { BsChevronDown } from "react-icons/bs"
 import { useSelector, useDispatch } from 'react-redux'
+import useAcademicYears from '../../../hooks/useAcademicYears'
 
 
 
-const AcademicYear = () => {
+const AcademicYears = () => {
   //get several things from the query
   const {
-    data: academicYears,//the data is renamed academicYears
+    data: AcademicYears,//the data is renamed academicYears
     isLoading,//monitor several situations is loading...
     isSuccess,
     isError,
     error
 } = useGetAcademicYearsQuery()
 const allAcademicYears = useSelector(state => selectAllAcademicYears(state))
-console.log(allAcademicYears)
+
+
+const { currentAcademicYear, academicYears, selectedAcademicYear}= useAcademicYears()
+
+
 let content
 
     if (isLoading) content = <p>Loading...</p>
@@ -29,8 +34,6 @@ let content
     }
 
     if (isSuccess) {
-      
-     
   return (
     
     
@@ -40,7 +43,7 @@ let content
         {/* <Description className="text-sm/6 text-white/50"> clients on the project.</Description> */}
         <div className="inline-flex relative">
           <BsChevronDown className="absolute right-2 top-2" aria-hidden="true" />
-          <Select name="CurrentAcademicYear"  className= ' relative mt-1  w-32 data-[hover]:shadow block data-[focus]:bg-blue-200 appearance-none rounded-sm border-gray-600 bg-white/5 py-0 px-3 text-md/6 text-gray-900 border '>
+          <Select name="SlectedAcademicYear"  className= ' relative mt-1  w-32 data-[hover]:shadow block data-[focus]:bg-blue-200 appearance-none rounded-sm border-gray-600 bg-white/5 py-0 px-3 text-md/6 text-gray-900 border '>
           {allAcademicYears.map((option, index)=> (<option key= {index} value ={option.title} className=''> {option.title} </option> ))}
           </Select>
         </div>
@@ -50,7 +53,7 @@ let content
   )
 }}
 
-export default AcademicYear
+export default AcademicYears
 
 
 

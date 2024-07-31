@@ -2,13 +2,14 @@
 
 import { store } from '../../app/store'
 //import { notesApiSlice } from '../notes/notesApiSlice'
-import { usersApiSlice } from '../Admin/usersApiSlice';
-import { employeesApiSlice } from '../HR/employeesApiSlice';
-import { studentsApiSlice } from '../Students/studentsApiSlice';
-import { parentsApiSlice } from '../Students/parentsApiSlice';
-import { tasksApiSlice } from '../Desk/tasksApiSlice';
-import { useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { usersApiSlice } from '../Admin/usersApiSlice'
+import { employeesApiSlice } from '../HR/employeesApiSlice'
+import { studentsApiSlice } from '../Students/studentsApiSlice'
+import { parentsApiSlice } from '../Students/parentsApiSlice'
+import { tasksApiSlice } from '../Desk/tasksApiSlice'
+import { academicYearsApiSlice } from '../AppSettings/Academics/academicYearsApiSlice'
+import { useEffect } from 'react'
+import { Outlet } from 'react-router-dom'
 
 const Prefetch = () => {
     useEffect(() => {//will run when the component mounts
@@ -18,6 +19,7 @@ const Prefetch = () => {
         const parents = store.dispatch(parentsApiSlice.endpoints.getParents.initiate())
         const employees = store.dispatch(employeesApiSlice.endpoints.getEmployees.initiate())
         const tasks = store.dispatch(tasksApiSlice.endpoints.getTasks.initiate())
+        const academicYears = store.dispatch(academicYearsApiSlice.endpoints.getAcademicYears.initiate())
 
         return () => {
             console.log('unsubscribing')
@@ -26,6 +28,7 @@ const Prefetch = () => {
             parents.unsubscribe()
             employees.unsubscribe()
             tasks.unsubscribe()
+            academicYears.unsubscribe()
         }
     }, [])
 

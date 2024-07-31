@@ -1,10 +1,10 @@
 // import React from 'react'
-// import { Students } from '../../Components/lib/Consts/Students'
+// import { AcademicYears } from '../../Components/lib/Consts/AcademicYears'
 // import DataTable from 'react-data-table-component'
 // // import { Link } from 'react-router-dom';
 // // import {useEffect, useState} from 'react';
 
-// const StudentsTableList = () => {
+// const AcademicYearsTableList = () => {
 
 //   const column =[
 //     	{ 
@@ -14,28 +14,28 @@
 // 		 }, 
 //     	{ 
 // 		name: "First Name",
-// 		selector:row=>row.studentName.firstName+" " +row.studentName.middleName,
+// 		selector:row=>row.academicYearName.firstName+" " +row.academicYearName.middleName,
 // 		sortable:true
 // 		 }, 
 //     	{ 
 // 		name: "Last Name",
-// 		selector:row=>row.studentName.lastName,
+// 		selector:row=>row.academicYearName.lastName,
 // 		sortable:true
 // 		 }, 
 // 		{name: "DOB",
-// 			selector:row=>row.studentDob.$date.$numberLong,
+// 			selector:row=>row.academicYearDob.$date.$numberLong,
 // 			sortable:true
 // 		}, 
 // 		{name: "Father",
-// 			selector:row=>row.studentParent.studentFather.$oid,
+// 			selector:row=>row.academicYearParent.academicYearFather.$oid,
 // 			sortable:true
 // 		}, 
 // 		{name: "Mother",
-// 			selector:row=>row.studentParent.studentMother.$oid,
+// 			selector:row=>row.academicYearParent.academicYearMother.$oid,
 // 			sortable:true
 // 		}, 
 // 		{name: "Sex",
-// 			selector:row=>row.studentSex,
+// 			selector:row=>row.academicYearSex,
 // 			sortable:true,
 // 			removableRows:true
 // 		}
@@ -43,10 +43,10 @@
 // //fetching the data
  
 // 	// const [records, setRecords] = useState([]);
-// 	// const ()=>{setRecords=Students};
+// 	// const ()=>{setRecords=AcademicYears};
 // //setting the filter
 // 	// const handleFilter=(event)=>{
-// 	// 	const newData =Students.filter(row=>row.name.toLowerCase().includes(event.target.value.toLowerCase()));
+// 	// 	const newData =AcademicYears.filter(row=>row.name.toLowerCase().includes(event.target.value.toLowerCase()));
 // 	// 	setRecords=newData;
 // 	// }
 //   return (
@@ -57,7 +57,7 @@
 		 
 // 		 <DataTable
 // 			columns={column}
-// 			data={Students}
+// 			data={AcademicYears}
 // 			pagination
 // 			selectableRows
 // 			removableRows
@@ -68,4 +68,4 @@
 //   )
 // }
 
-// export default StudentsTableList;
+// export default AcademicYearsTableList;

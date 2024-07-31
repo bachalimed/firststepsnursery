@@ -27,7 +27,7 @@ const TaskList = ({ taskId }) => {
                         : <span className="task__status--open">Open</span>
                     }
                 </td> */}
-            
+        
                 <td className="table__cell task__created">{task.taskState}</td>
                 <td className="table__cell task__created">{task.taskSubject}</td>
                 <td className="table__cell task__created">{task.taskPriority}</td>

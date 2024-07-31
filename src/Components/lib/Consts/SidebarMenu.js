@@ -257,8 +257,13 @@ export const sidebarMenuUp=[
 		spaced:false,
 		sectionTabs:[
 			{title:"Academic Years",
-			path:"/academicYears/",
-			allowedRoles:["Employee","Parent","ContentManager", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"]
+			path:"academicYears/",
+			allowedRoles:[ "Academic", "Director","Manager", "Admin"]
+			},
+
+			{title:"option2",
+			path:"academicYears/",
+			allowedRoles:[ "Academic", "Director","Manager", "Admin"]
 			},
 			
 			{title:"bloblo",

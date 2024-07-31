@@ -32,8 +32,8 @@ import Mails from './features/Desk/Mails'
 import TasksList from './features/Desk/TasksList'
 import Cms from './features/CMS/Cms'
 import DashboardSet from './features/AppSettings/DashboardSet'
-import AcademicsSet from './features/AppSettings/AcademicsSet'
-import AcademicYear from './Components/Shared/Header/AcademicYear'
+import AcademicsSet from './features/AppSettings/Academics/AcademicsSet'
+import AcademicYears from './Components/Shared/Header/academicYears'
 import CmsSet from './features/AppSettings/CmsSet'
 import FinancesSet from './features/AppSettings/FinancesSet'
 import StudentsSet from './features/AppSettings/StudentsSet'
@@ -45,12 +45,15 @@ import NewUserForm from './features/Admin/NewUserForm'
 import UsersManagement from './features/Admin/UsersManagement'
 import EditTask from './features/Desk/EditTask'
 import NewTask from './features/Desk/NewTask'
-import Logout from './features/auth/Logout'
+
 import Prefetch from './features/auth/Prefetch'// this will keep a subscription to the states and prevend the expiry of cached data, we will wrap it around the protected pages 
 import PersistLogin from './features/auth/PersistLogin'
 // import ReactDOM from 'react-dom/client'
 
 import NoPage from './pages/NoPage'
+import AcademicYearsList from './features/AppSettings/Academics/AcademicYearsList'
+import AcademicYearDetails from './features/AppSettings/Academics/AcademicYearDetails'
+import NewAcademicYear from './features/AppSettings/Academics/NewAcademicYear'
 // import Parents from './features/Students/Parents'
 // import NewStudent from './features/Students/NewStudent'
 // import ResetPassword from './features/auth/ResetPassword'
@@ -215,12 +218,18 @@ const App = () => {
 								<Route index element={<StudentsSet />} /> 
 								</Route> {/* end of studentsSet route */}
 
-								<Route path="academicsSet" element={<AcademicsSet />} > 					
-								<Route path="academicYears" element={<AcademicYear />} /> 
-								
+								<Route path="academicsSet">
+								<Route index  element={<AcademicsSet />} /> 	{/*the path link is in sidebarmenu*/ }				
+									
+									<Route path="academicYears/" element={<AcademicYearsList />} > 
+									<Route path=":academicYearId" element={<AcademicYearDetails />}/>
+									<Route path="newAcademicYear" element={<NewAcademicYear />}/>
 
 
+								</Route> {/* end of academicYears route */}
 								</Route> {/* end of academicsSet route */}
+
+
 
 								<Route path="financesSet" > 					
 								<Route index element={<FinancesSet />} /> 
@@ -261,9 +270,7 @@ const App = () => {
 
 
 
-							<Route path="logout" element={<DashboardLayout />} >	 				
-							<Route index element={<Logout />} />   
-							</Route> {/* end of logout route */}	
+								
 							</Route>{/*end of the prefetch protected routes */}
 						</Route>{/*end of the persist login protected routes */}
 			</Route>   {/* end of Public route */} 
