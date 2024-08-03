@@ -10,7 +10,7 @@ import useAcademicYears from '../../../hooks/useAcademicYears'
 
 
 
-const AcademicYears = () => {
+const AcademicYearsSelection = () => {
   //get several things from the query
   const {
     data: AcademicYears,//the data is renamed academicYears
@@ -20,9 +20,11 @@ const AcademicYears = () => {
     error
 } = useGetAcademicYearsQuery()
 const allAcademicYears = useSelector(state => selectAllAcademicYears(state))
+console.log('state')
 
 
 const { currentAcademicYear, academicYears, selectedAcademicYear}= useAcademicYears()
+
 
 
 let content
@@ -43,7 +45,7 @@ let content
         {/* <Description className="text-sm/6 text-white/50"> clients on the project.</Description> */}
         <div className="inline-flex relative">
           <BsChevronDown className="absolute right-2 top-2" aria-hidden="true" />
-          <Select name="SlectedAcademicYear"  className= ' relative mt-1  w-32 data-[hover]:shadow block data-[focus]:bg-blue-200 appearance-none rounded-sm border-gray-600 bg-white/5 py-0 px-3 text-md/6 text-gray-900 border '>
+          <Select name="SelectedAcademicYear"  className= ' relative mt-1  w-32 data-[hover]:shadow block data-[focus]:bg-blue-200 appearance-none rounded-sm border-gray-600 bg-white/5 py-0 px-3 text-md/6 text-gray-900 border '>
           {allAcademicYears.map((option, index)=> (<option key= {index} value ={option.title} className=''> {option.title} </option> ))}
           </Select>
         </div>
@@ -53,7 +55,7 @@ let content
   )
 }}
 
-export default AcademicYears
+export default AcademicYearsSelection
 
 
 

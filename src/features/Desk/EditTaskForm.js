@@ -4,8 +4,11 @@ import { useNavigate } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave, faTrashCan } from "@fortawesome/free-solid-svg-icons"
 import SectionTabs from "../../Components/Shared/Tabs/SectionTabs"
+import useAuth from '../../hooks/useAuth'
 
 const EditTaskForm = ({ task, users }) => {
+
+    const {isManager, isAcademic,  isDirector,  isAdmin}=useAuth()
 
     const [updateTask, {
         isLoading,
@@ -74,6 +77,22 @@ const EditTaskForm = ({ task, users }) => {
 
     const errContent = (error?.data?.message || delerror?.data?.message) ?? ''
 
+    // define the delete button that will only be visible if user is in the allowed roles above
+    
+    let deleteButton = null
+    if (isManager || isAdmin || isAcademic || isDirector) {
+        deleteButton = (
+            <button
+                className="icon-button"
+                title="Delete"
+                onClick={onDeleteTaskClicked}
+            >
+                <FontAwesomeIcon icon={faTrashCan} />
+            </button>
+        )
+    }
+
+
     const content = (
         <>
             <SectionTabs/>
@@ -91,13 +110,7 @@ const EditTaskForm = ({ task, users }) => {
                         >
                             <FontAwesomeIcon icon={faSave} />
                         </button>
-                        <button
-                            className="icon-button"
-                            title="Delete"
-                            onClick={onDeleteTaskClicked}
-                        >
-                            <FontAwesomeIcon icon={faTrashCan} />
-                        </button>
+                        {deleteButton}
                     </div>
                 </div>
                 <label className="form__label" htmlFor="task-title">

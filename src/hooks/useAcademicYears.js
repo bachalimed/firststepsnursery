@@ -9,11 +9,11 @@ const useAcademicYears = () => {
    
 
     if (academicYears) {
+        //here we will specify the academic years
         
         console.log('currentAcademicYearsList')
-        console.log(currentAcademicYearsList)
+        console.log(typeof(currentAcademicYearsList))
         //const currentAcademicYear = academicYears.find(item => item.currentYear === "true")
-
 
 
 

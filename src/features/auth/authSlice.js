@@ -16,6 +16,7 @@ const authSlice = createSlice({
     }
 })
 
+
 export const { setCredentials, logOut } = authSlice.actions
 
 export default authSlice.reducer//to be sent to the store

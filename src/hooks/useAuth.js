@@ -24,7 +24,7 @@ const useAuth = () => {
         const { username, userRoles } = decoded.UserInfo//coming from the backend in the token.userInfo
 
        
-        isEmployee= userRoles.includes('Employee')
+        isEmployee= userRoles.includes('Employee')//this will return a boolean
         isParent= userRoles.includes('Parent')
         isContentManager= userRoles.includes('ContentManager')
         isAnimator= userRoles.includes('Animator')

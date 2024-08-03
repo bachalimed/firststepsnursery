@@ -33,7 +33,7 @@ import TasksList from './features/Desk/TasksList'
 import Cms from './features/CMS/Cms'
 import DashboardSet from './features/AppSettings/DashboardSet'
 import AcademicsSet from './features/AppSettings/Academics/AcademicsSet'
-import AcademicYears from './Components/Shared/Header/academicYears'
+//import AcademicYearsSelection from './Components/Shared/Header/AcademicYearsSelection'
 import CmsSet from './features/AppSettings/CmsSet'
 import FinancesSet from './features/AppSettings/FinancesSet'
 import StudentsSet from './features/AppSettings/StudentsSet'
@@ -48,6 +48,8 @@ import NewTask from './features/Desk/NewTask'
 
 import Prefetch from './features/auth/Prefetch'// this will keep a subscription to the states and prevend the expiry of cached data, we will wrap it around the protected pages 
 import PersistLogin from './features/auth/PersistLogin'
+import RequireAuth from'./features/auth/RequireAuth'
+import {ROLES} from  './config/UserRoles'
 // import ReactDOM from 'react-dom/client'
 
 import NoPage from './pages/NoPage'
@@ -86,7 +88,13 @@ const App = () => {
         	<Route path="/" element={<PublicLayout/>}>       {/*the parent of all the other routes*/}
 				<Route index element={<Public />} />   {/*  index will show as a default in the public layout*/}
 				<Route path="login" element={<Login />} />
+
+
+				{/*protected routes after this */}
+
+
 					<Route element={<PersistLogin/>}>{/*this wrapper will persist login  for all inside routes */}
+					<Route element={<RequireAuth allowedRoles={[...Object.values(ROLES)]}/>}>{/*this wrapper will RequireAuth and protect all routes below, any role allowed to the protected routes */}
 						<Route element={<Prefetch/>}>{/*this wrapper will prefetch for all inside routes */}
 
 							<Route path="dashboard" element={<DashboardLayout />} >	 {/*this will wrap around components that are protected by this route*/}				
@@ -248,7 +256,7 @@ const App = () => {
 								</Route> {/* end of cmsSet route */}
 							</Route> {/* end of settings route */}
 							
-										
+							<Route element={<RequireAuth allowedRoles={[ROLES.Admin, ROLES.Manager]}/>}>{/*this wrapper will RequireAuth and protect all admin routes  below,  */}			
 							<Route path="admin" element={<DashboardLayout />} >	 
 
 								<Route path="usersManagement/"	>		
@@ -267,12 +275,17 @@ const App = () => {
 								</Route> {/* end of blabla route */}  
 								
 							</Route> {/* end of admin route */}
+							</Route> {/* end of RequireAuth to protect admin routes */}
 
 
 
 								
 							</Route>{/*end of the prefetch protected routes */}
 						</Route>{/*end of the persist login protected routes */}
+			
+			</Route> {/*end of protected routes*/}
+
+
 			</Route>   {/* end of Public route */} 
 			<Route path="*" element={<NoPage />} />				 
       </Routes>
