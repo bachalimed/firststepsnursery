@@ -1,11 +1,18 @@
 
-import NavbarHeader from "./NavbarHeader"
-import AcademicYearsSelection from "./AcademicYearsSelection"
-import useAuth from "../../../hooks/useAuth"
-// import { useNavigate, useLocation } from "react-router";
+import NavbarHeader from './NavbarHeader'
+import useAuth from '../../../hooks/useAuth'
+import AcademicYearsSelection from './AcademicYearsSelection'
+// import { useNavigate, useLocation } from "react-router"
+import useAcademicYears from '../../../hooks/useAcademicYears'
 
 const DashboardHeader = () => {
   const {username, userRoles}=useAuth()
+
+
+  const { academicYears, currentAcademicYear } = useAcademicYears()
+
+ 
+
   
   const content =(
     
@@ -17,7 +24,9 @@ const DashboardHeader = () => {
          welcome back Mr {username}<br/>
          current Status {userRoles}
 
-        </p >
+        </p > current 
+       {currentAcademicYear}
+        
         <NavbarHeader />
         </div>
        

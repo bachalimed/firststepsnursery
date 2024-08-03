@@ -72,7 +72,6 @@ export const academicYearsApiSlice = apiSlice.injectEndpoints({//inject the ends
     }),
 })
 
-
 export const {//hooks created automatically from endpoint
     useGetAcademicYearsQuery,
     useAddNewAcademicYearMutation,

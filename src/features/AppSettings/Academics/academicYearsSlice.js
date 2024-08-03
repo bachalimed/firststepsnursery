@@ -4,7 +4,8 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const academicYearsSlice = createSlice({
     name: 'academicYears',
-    initialState: { academicYears: [] },
+    //initialState: { academicYears: [] },
+    initialState: { },
     reducers: {
         getAcademicYears: (state, action) => {//replaces setCredentials of authslice
             const { academicYears } = action.payload
@@ -23,4 +24,4 @@ export const { getAcademicYears } = academicYearsSlice.actions
 export default academicYearsSlice.reducer//to be sent to the store
 
 // export const selectCurrentToken = (state) => state.academicYear.token
-export const currentAcademicYearsList = (state) => state.academicYears.academicYears
+export const currentAcademicYearsList = (state) => state.academicYears

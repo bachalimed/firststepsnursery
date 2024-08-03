@@ -1,25 +1,25 @@
 import { useSelector } from 'react-redux'
-import { currentAcademicYearsList,  } from "../features/AppSettings/Academics/academicYearsSlice"
+import { selectAllAcademicYears,  useGetAcademicYearsQuery } from "../features/AppSettings/Academics/academicYearsApiSlice"
 
 
 const useAcademicYears = () => {
-    const academicYears = useSelector(currentAcademicYearsList)
-    let currentAcademicYear= ''
-    let selectedAcademicYear= ''
-   
-
+    const { data, error, isLoading } = useGetAcademicYearsQuery()
+    const academicYears = useSelector(selectAllAcademicYears)
     if (academicYears) {
         //here we will specify the academic years
         
-        console.log('currentAcademicYearsList')
-        console.log(typeof(currentAcademicYearsList))
-        //const currentAcademicYear = academicYears.find(item => item.currentYear === "true")
+        //this will come from the backend where it specidfies which is the current year
+        const currentAcademicYear = academicYears.map(year=> year.currentYear?year:'')/////////////////
+       
+        console.log('currentAcademicYear')
+        console.log(currentAcademicYear)
+        console.log('academicYears')
+        console.log(academicYears)
 
 
-
-        return { currentAcademicYear, academicYears, selectedAcademicYear}
+        return {  academicYears, currentAcademicYear }
     }
 
-    return { currentAcademicYear: '', academicYears: [], selectedAcademicYear  }
-}
+    return { academicYears: [] , currentAcademicYear:[] }}
+
 export default useAcademicYears

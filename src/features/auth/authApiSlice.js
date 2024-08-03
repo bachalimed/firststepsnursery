@@ -1,6 +1,5 @@
 
 
-
 import { apiSlice } from "../../app/api/apiSlice"
 import { logOut, setCredentials} from "./authSlice"//logOut is called action creator since it is exported from .actions
 
