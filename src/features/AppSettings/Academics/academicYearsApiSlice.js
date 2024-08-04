@@ -26,6 +26,7 @@ export const academicYearsApiSlice = apiSlice.injectEndpoints({
                     return academicYear
                 });
                 return academicYearsAdapter.setAll(initialState, loadedAcademicYears)//loaded the academicYears into academicYearsadapter
+                
             },
             providesTags: (result, error, arg) => {
                 if (result?.ids) {
@@ -34,7 +35,7 @@ export const academicYearsApiSlice = apiSlice.injectEndpoints({
                         ...result.ids.map(id => ({ type: 'AcademicYear', id }))
                     ]
                 } else return [{ type: 'AcademicYear', id: 'LIST' }]
-            }
+            }, 
         }),
         addNewAcademicYear: builder.mutation({
             query: initialAcademicYearData => ({

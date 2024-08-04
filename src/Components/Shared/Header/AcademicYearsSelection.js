@@ -6,7 +6,7 @@ import { useGetAcademicYearsQuery, selectAllAcademicYears } from "../../../featu
 
 import { BsChevronDown } from "react-icons/bs"
 import { useSelector, useDispatch } from 'react-redux'
-// import useAcademicYears from '../../../hooks/useAcademicYears'
+
 
 
 
@@ -19,11 +19,11 @@ const AcademicYearsSelection = () => {
     isError,
     error
 } = useGetAcademicYearsQuery()
+//this using the query
 const allAcademicYears = useSelector(state => selectAllAcademicYears(state))
 
 
 
-//const { newAcademicYears,allAcademicYears}= useAcademicYears()
 
 
 

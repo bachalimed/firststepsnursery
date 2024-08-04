@@ -9,7 +9,7 @@ const DashboardHeader = () => {
   const {username, userRoles}=useAuth()
 
 
-  const { academicYears, currentAcademicYear } = useAcademicYears()
+  //const { allAcademicYears, currentAcademicYear } = useAcademicYears()
 
  
 
@@ -25,7 +25,7 @@ const DashboardHeader = () => {
          current Status {userRoles}
 
         </p > current 
-       {currentAcademicYear}
+       
         
         <NavbarHeader />
         </div>
