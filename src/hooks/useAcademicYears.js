@@ -9,17 +9,15 @@ const useAcademicYears = () => {
         //here we will specify the academic years
         
         //this will come from the backend where it specidfies which is the current year
-        const currentAcademicYear = academicYears.map(year=> year.currentYear?year:'')/////////////////
+        const currentAcademicYear = academicYears.find(year=> year.currentYear===true)/////////////////
        
         console.log('currentAcademicYear')
-        console.log(currentAcademicYear)
+       //console.log(currentAcademicYear)
         console.log('academicYears')
-        console.log(academicYears)
+        //console.log(academicYears)
 
-
-        return {  academicYears, currentAcademicYear }
+        return {  academicYears }
+        //return {  academicYears, currentAcademicYear }
     }
-
     return { academicYears: [] , currentAcademicYear:[] }}
-
 export default useAcademicYears

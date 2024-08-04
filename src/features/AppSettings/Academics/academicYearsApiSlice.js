@@ -4,13 +4,14 @@ import {
 } from "@reduxjs/toolkit";
 import { apiSlice } from "../../../app/api/apiSlice"
 
+// Initialize the entity adapter
 const academicYearsAdapter = createEntityAdapter({})//we can iterate on the id but not on the entities
-
+// Initial state using the adapter
 const initialState = academicYearsAdapter.getInitialState()
 
 
-
-export const academicYearsApiSlice = apiSlice.injectEndpoints({//inject the ends points into apislice
+// Inject endpoints into the apiSlice
+export const academicYearsApiSlice = apiSlice.injectEndpoints({
     //define endpoints
     endpoints: builder => ({//a hook will be created automatically based on the end point :getacademicYears
         getAcademicYears: builder.query({
@@ -18,7 +19,7 @@ export const academicYearsApiSlice = apiSlice.injectEndpoints({//inject the ends
             validateStatus: (response, result) => {//to validate the status as per documentation
                 return response.status === 200 && !result.isError
             },
-            keepUnusedDataFor: 5,//default is 60seconds or data will be removed from the cache
+            //keepUnusedDataFor: 5,//default is 60seconds or data will be removed from the cache
             transformResponse: responseData => {
                 const loadedAcademicYears = responseData.map(academicYear => {
                     academicYear.id = academicYear._id//changed the _id from mongoDB to id

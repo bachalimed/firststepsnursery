@@ -20,7 +20,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {//auery called inside the endpoint
                 try {
                     const { data } = await queryFulfilled
-                    console.log(data)
+                    //console.log(data)
                     dispatch(logOut())
                     setTimeout(() => {//this will let the time to unsubscribe the components when it unmounts but if we logout from users page it takes time compared to othe rpages so we give it time to do it
                         dispatch(apiSlice.util.resetApiState())//clear the cache and query subscriptions
@@ -48,6 +48,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         }),
     })
 })
+
 
 export const {
     useLoginMutation,
