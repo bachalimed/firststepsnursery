@@ -15,17 +15,18 @@ export const academicYearsApiSlice = apiSlice.injectEndpoints({
     //define endpoints
     endpoints: builder => ({//a hook will be created automatically based on the end point :getacademicYears
         getAcademicYears: builder.query({
-            query: () => '/settings/academicsSet/academicYears/',//this route is as defined in the backend server.js
+            query: () => '/settings/academicsSet/academicYears/',//this route is as defined in the backend server.js to give all academicYears
             validateStatus: (response, result) => {//to validate the status as per documentation
                 return response.status === 200 && !result.isError
             },
             //keepUnusedDataFor: 5,//default is 60seconds or data will be removed from the cache
             transformResponse: responseData => {
-                const loadedAcademicYears = responseData.map(academicYear => {
+                const academicYears = responseData.map(academicYear => {
                     academicYear.id = academicYear._id//changed the _id from mongoDB to id
                     return academicYear
                 });
-                return academicYearsAdapter.setAll(initialState, loadedAcademicYears)//loaded the academicYears into academicYearsadapter
+                return academicYearsAdapter.setAll(initialState, academicYears)//loaded the academicYears into academicYearsadapter
+               
                 
             },
             providesTags: (result, error, arg) => {
@@ -75,7 +76,7 @@ export const academicYearsApiSlice = apiSlice.injectEndpoints({
 })
 
 export const {//hooks created automatically from endpoint
-    useGetAcademicYearsQuery,
+    useGetAcademicYearsQuery,//this can be used whereven we want to fetch the data
     useAddNewAcademicYearMutation,
     useUpdateAcademicYearMutation,
     useDeleteAcademicYearMutation,

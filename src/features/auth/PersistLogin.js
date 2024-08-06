@@ -51,13 +51,13 @@ const PersistLogin = () => {
 
     let content
     if (!persist) { // persist: no
-        console.log('no persist')
+        //console.log('no persist in persist file')
         content = <Outlet />
     } else if (isLoading) { //persist: yes, token: no
-        console.log('loading')
+        //console.log('loading in persist file')
         content = <p>Loading...</p>
     } else if (isError) { //persist: yes, token: no
-        console.log('error')
+        //console.log('error in persist file')
         content = (
             <p className='errmsg'>
                 {`${error?.data?.message} - `}
@@ -65,11 +65,11 @@ const PersistLogin = () => {
             </p>
         )
     } else if (isSuccess && trueSuccess) { //persist: yes, token: yes
-        console.log('success')
+        //console.log('success persist & token in persist file')
         content = <Outlet />
     } else if (token && isUninitialized) { //persist: yes, token: yes
-        console.log('token and uninit')
-        console.log(isUninitialized)
+        //console.log('token and isUninitialized')
+        //console.log(isUninitialized)
         content = <Outlet />
     }
 
