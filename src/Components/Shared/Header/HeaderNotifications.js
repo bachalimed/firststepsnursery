@@ -18,7 +18,7 @@ const HeaderNotifications = () => {
       <strong>Notifications</strong>
        {HeaderNotificationSample.slice(0, 10).map((Notif, index )=>(
       <MenuItem>
-        <button key = {index} className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10" href="/target 1">
+        <button key = {Notif.id}  className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10" href="/target 1">
           {Notif.type} {Notif.student}{Notif.object}
         </button>
       </MenuItem>

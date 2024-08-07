@@ -28,7 +28,7 @@ const PersistLogin = () => {
         if (effectRan.current === true || process.env.NODE_ENV !== 'development') { // React 18 Strict Mode, first condition is because it runs two times first mount and then again, but we want to send the refresh token once at the second run 
 
             const verifyRefreshToken = async () => {
-                console.log('verifying refresh token')
+                //console.log('verifying refresh token')
                 try {
                     //const response = 
                     await refresh()

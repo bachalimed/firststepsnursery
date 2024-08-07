@@ -18,16 +18,24 @@ export const academicYearsApiSlice = apiSlice.injectEndpoints({
             query: () => '/settings/academicsSet/academicYears/',//this route is as defined in the backend server.js to give all academicYears
             validateStatus: (response, result) => {//to validate the status as per documentation
                 return response.status === 200 && !result.isError
+                
             },
             //keepUnusedDataFor: 5,//default is 60seconds or data will be removed from the cache
             transformResponse: responseData => {
-                const academicYears = responseData.map(academicYear => {
-                    academicYear.id = academicYear._id//changed the _id from mongoDB to id
-                    return academicYear
-                });
-                return academicYearsAdapter.setAll(initialState, academicYears)//loaded the academicYears into academicYearsadapter
-               
+                const{academicYears}=responseData
                 
+                //console.log('academicYears length  in the APIslice',responseData.total)
+                //console.log('academicYears in the APIslice', academicYears)
+                const newAcademicYears = academicYears.map(academicYear => { 
+                    
+                    academicYear.id = academicYear._id//changed the _id from mongoDB to id
+                    delete academicYear._id//added to delete the extra original _id from mongo but careful when planning to save to db again
+                    return academicYear
+                })
+                //console.log('modifiedacademicYears in the APIslice', newAcademicYears)
+                
+               return academicYearsAdapter.setAll(initialState, newAcademicYears)//loaded the academicYears into academicYearsadapter, setAll is responsible of creating ids and entities
+             
             },
             providesTags: (result, error, arg) => {
                 if (result?.ids) {

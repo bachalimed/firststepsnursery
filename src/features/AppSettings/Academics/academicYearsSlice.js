@@ -14,7 +14,7 @@ const academicYearsSlice = createSlice({
         setAcademicYears: (state, action) => {
             
             academicYearsAdapter.setAll(state, action.payload)
-            
+        
         },        
         selectAcademicYear: (state, action) => {
             const { id } = action.payload //get the id from the payload that was passed in from the component selection

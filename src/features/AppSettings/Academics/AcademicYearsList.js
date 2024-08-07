@@ -1,31 +1,55 @@
 
 
-import { useGetAcademicYearsQuery } from "./academicYearsApiSlice"
+import { useGetAcademicYearsQuery} from "./academicYearsApiSlice"
 import SectionTabs from '../../../Components/Shared/Tabs/SectionTabs'
 import DataTable from 'react-data-table-component'
-import { useSelector } from 'react-redux';
-import { selectAcademicYearById, selectAllAcademicYears } from './academicYearsApiSlice'//use the memoized selector 
-import AcademicYears from "./AcademicYears";
+
+import {    setAcademicYears} from './academicYearsSlice'//use the memoized selector 
+
+import { useSelector, useDispatch } from 'react-redux'
+import { useState , useEffect} from 'react'
 
 const AcademicYearsList = () => {
-
+  const dispatch = useDispatch()
 //get several things from the query
 const {
-  data: academicYears,//the data is renamed academicYears
+  data: academicYearsData,//the data is renamed academicYearsData
         isLoading,//monitor several situations is loading...
         isSuccess,
         isError,
         error
-} = useGetAcademicYearsQuery('academicYearsList')
-const allAcademicYears = useSelector(state => selectAllAcademicYears(state))//do we need to put state inside??
+} = useGetAcademicYearsQuery('newAcademicYears')//this should match the endpoint defined in your API slice.!! what does it mean?
+//we do not want to import from state but from DB
+
+//console.log(academicYearsData)
+const [academicYears, setAcademicYearsState] = useState([])
+useEffect(()=>{
+  // console.log('isLoading:', isLoading)
+  // console.log('isSuccess:', isSuccess)
+  // console.log('isError:', isError)
+  if (isError) {
+    console.log('error:', error)
+  }
+  if (isSuccess ) {
+    //console.log('academicYearsData',academicYearsData)
+    //transform into an array
+    const {entities}=academicYearsData
+    const academicYearsArray =Object.values(entities)
+    setAcademicYearsState(academicYearsArray)
+    //console.log('academic years from list call', academicYears)
+    dispatch(setAcademicYears(entities)); // Dispatch to state  using setALL which will create the ids and entities automatically
+    //console.log('academicYears',academicYears)
+  } else {
+    //console.log('academicYearsData is not an array')
+  }
+}, [isSuccess, academicYearsData, isError, error, dispatch])
+
 
 //define the content to be conditionally rendered
-
-
 const column =[
   { 
 name: "ID",
-selector:row=>row._id,
+selector:row=>row.id,
 sortable:true
  }, 
   { 
@@ -43,10 +67,7 @@ sortable:true
   
   sortable:true
 }, 
-{name: "Current Year",
-  selector:row=>row.currentYear === true ? 'Yes' : 'No',
-  sortable:true
-}, 
+
 {name: "Creator",
   selector:row=>row.academicYearCreator,
   sortable:true
@@ -65,15 +86,15 @@ if (isError) {
     content = <p className="errmsg">{error?.data?.message}</p>//errormessage class defined in the css, the error has data and inside we have message of error
 }
 
-if (isSuccess) {
+if (isSuccess ) {
 
 
-
+  
 
 return (
   <>
   <SectionTabs/>
-  <AcademicYears />{/*just to test teh component */}
+ 
   <div className=' flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200' >
      {/* <div>
     <input type="text" placeholder="search" onChange={handleFilter}/>
@@ -81,7 +102,7 @@ return (
    
    <DataTable
     columns={column}
-    data={allAcademicYears}
+    data={academicYears}
     pagination
     selectableRows
     removableRows

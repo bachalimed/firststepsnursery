@@ -22,14 +22,10 @@ const academicYears = useSelector(selectAllAcademicYears)//this works
 //const academicYears = Object.values(initialAcademicYears.entities)
 
 //default selection is the year selcted if exists or current year
-const [defaultYear, setDefaultYear] =useState('')
-useEffect(()=>{
-  dispatch(setAcademicYears(academicYears))//dispatch list to state,this only shows tehn redux state not empty in the browser tools
-  const selectedYear =  academicYears.find((year)=>year.isSelected===true)
-  const currentYear =  academicYears.find((year)=>year.currentYear===true)
 
-  if (selectedYear) {  setDefaultYear(selectedYear)}
-  else{setDefaultYear(currentYear)}
+useEffect(()=>{
+  dispatch(setAcademicYears(academicYears))//dispatch list to state,this only shows tehn redux state not empty in the browser tools, check later if this is needed as the query updated the state in apislice
+ 
 },[academicYears])
 
 //update the state when we select a year using the reducer from slice
@@ -49,7 +45,7 @@ let content
         <div className="inline-flex relative">
           <BsChevronDown className="absolute right-2 top-2" aria-hidden="true" />
           {/*add defaultvalue the curretn  academic year to select */}
-          <Select name="SelectedAcademicYear"   onChange={handleSelectedAcademicYear} defaultValue={defaultYear} className= ' relative mt-1  w-32 data-[hover]:shadow block data-[focus]:bg-blue-200 appearance-none rounded-sm border-gray-600 bg-white/5 py-0 px-3 text-md/6 text-gray-900 border '>
+          <Select name="SelectedAcademicYear"   onChange={handleSelectedAcademicYear}  className= ' relative mt-1  w-32 data-[hover]:shadow block data-[focus]:bg-blue-200 appearance-none rounded-sm border-gray-600 bg-white/5 py-0 px-3 text-md/6 text-gray-900 border '>
           {sortedAcademicYears.map(year=> (<option key= {year.id} value ={year.id}  className=''> {year.title} </option> ))}
           </Select>
         </div>
