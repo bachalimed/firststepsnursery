@@ -32,14 +32,13 @@ useEffect(()=>{
   else{setDefaultYear(currentYear)}
 },[academicYears])
 
-
 //update the state when we select a year using the reducer from slice
 const handleSelectedAcademicYear =(e) =>{
   const  id = e.target.value
  //console.log(selectedTitle)
   dispatch(selectAcademicYear({id:id}))
 }
-
+const sortedAcademicYears = [...academicYears].sort((a, b) => b.title.localeCompare(a.title))//will sort the selection options 
 let content
 
   return (
@@ -51,7 +50,7 @@ let content
           <BsChevronDown className="absolute right-2 top-2" aria-hidden="true" />
           {/*add defaultvalue the curretn  academic year to select */}
           <Select name="SelectedAcademicYear"   onChange={handleSelectedAcademicYear} defaultValue={defaultYear} className= ' relative mt-1  w-32 data-[hover]:shadow block data-[focus]:bg-blue-200 appearance-none rounded-sm border-gray-600 bg-white/5 py-0 px-3 text-md/6 text-gray-900 border '>
-          {academicYears.map(year=> (<option key= {year.id} value ={year.id}  className=''> {year.title} </option> ))}
+          {sortedAcademicYears.map(year=> (<option key= {year.id} value ={year.id}  className=''> {year.title} </option> ))}
           </Select>
         </div>
       </Field>
