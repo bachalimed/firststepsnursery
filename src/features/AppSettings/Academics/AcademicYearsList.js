@@ -5,6 +5,7 @@ import SectionTabs from '../../../Components/Shared/Tabs/SectionTabs'
 import DataTable from 'react-data-table-component'
 import { useSelector } from 'react-redux';
 import { selectAcademicYearById, selectAllAcademicYears } from './academicYearsApiSlice'//use the memoized selector 
+import AcademicYears from "./AcademicYears";
 
 const AcademicYearsList = () => {
 
@@ -15,11 +16,7 @@ const {
         isSuccess,
         isError,
         error
-} = useGetAcademicYearsQuery('academicYearsList', {//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-  pollingInterval: 60000,//will refetch data every 60seconds
-  refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
-  refetchOnMountOrArgChange: true//refetch when we remount the component
-})
+} = useGetAcademicYearsQuery('academicYearsList')
 const allAcademicYears = useSelector(state => selectAllAcademicYears(state))//do we need to put state inside??
 
 //define the content to be conditionally rendered
@@ -76,6 +73,7 @@ if (isSuccess) {
 return (
   <>
   <SectionTabs/>
+  <AcademicYears />{/*just to test teh component */}
   <div className=' flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200' >
      {/* <div>
     <input type="text" placeholder="search" onChange={handleFilter}/>

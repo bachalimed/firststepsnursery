@@ -7,8 +7,8 @@ import academicYearsReducer from "../features/AppSettings/Academics/academicYear
 export const store = configureStore({
     reducer: {// Add the generated reducer as a specific top-level slice
         [apiSlice.reducerPath]: apiSlice.reducer,
-        auth:authReducer,
-        academicYears:academicYearsReducer,
+        auth: authReducer,
+        academicYears: academicYearsReducer,
         //imported from taskSlice
         
     },

@@ -1,4 +1,4 @@
-//not an API slice but a traditional slice to work with redux
+//not an API slice but a traditional slice to work with redux this where we devide our state for the academic years
 
 import { createSlice, createEntityAdapter  } from '@reduxjs/toolkit'
 
@@ -9,36 +9,35 @@ const initialState= academicYearsAdapter.getInitialState()
 const academicYearsSlice = createSlice({
     name: 'academicYears',
     initialState,
-   
+
     reducers: {
         setAcademicYears: (state, action) => {
-            console.log('State:', state)
+            
             academicYearsAdapter.setAll(state, action.payload)
-            console.log('State:', state)
-        },
-        updateAcademicYear: (state, action) => {
-            academicYearsAdapter.updateOne(state, action.payload)
-        },
+            
+        },        
         selectAcademicYear: (state, action) => {
-            const { selectedTitle } = action.payload
-            console.log('selectedTitle')
-            console.log(selectedTitle)
+            const { id } = action.payload //get the id from the payload that was passed in from the component selection
+            // console.log('selectedTitle')
+            // console.log(id)
             //Reset isSelected for all academic years
-            //const oldSelected = state.filter(year=>year.isSelected)
-            //console.log(oldSelected)
-            Object.values(state.entities).forEach(entity => {//Converts the entities object from the state into an array of its values. Each value is an entity, Iterates over each entity in the array.
-                if (entity) {//Checks if the entity is not null or undefined.
-                    console.log(entity)
-                    entity.isSelected = false}//Sets the isSelected property of the entity to false
+            const newAcademicYears=Object.values(state.entities).map(item  => {//Converts the entities object from the state into an array of its values. Each value is an entity, Iterates over each entity in the array.
+                if (item.id === id){//Checks if the entity is not null or undefined.
+                    
+                    return { ...item, isSelected: true }//Sets the isSelected property of the entity to true
+                } else {
+                    return { ...item, isSelected: false }
+                }
             })
-            const SelectedAcademicYear = state.entities[selectedTitle]
-            if (SelectedAcademicYear) {
-                SelectedAcademicYear.isSelected = true
-            }
-             console.log(SelectedAcademicYear)
-            //const selectedYear = state.academicYears.find((year)=> year.title===selectedTitle)
-            //return academicYears
+            const newEntities = {}
+            newAcademicYears.forEach(item => {newEntities[item.id] = item
+            })
+            state.entities = newEntities
+            state.ids = Object.keys(newEntities)
 
+            },
+            updateAcademicYear: (state, action) => {
+                academicYearsAdapter.updateOne(state, action.payload)
             },
 
 
@@ -56,5 +55,6 @@ export const { setAcademicYears, updateAcademicYear, activateAcademicYear, selec
 
 export const currentAcademicYearsList = (state) => state.academicYears
 export default academicYearsSlice.reducer//to be sent to the store
-export const { selectAll: selectAllAcademicYears } = academicYearsAdapter.getSelectors(state => state.academicYears)//added this one
+// export const { selectAll: selectAllAcademicYears } = academicYearsAdapter.getSelectors(state => state.academicYears)//added this one
+
 

@@ -13,33 +13,18 @@ import useAcademicYears from '../../../hooks/useAcademicYears'
 
 const AcademicYearsSelection = () => {
   const dispatch = useDispatch()
-  const {
-    data: academicYearsData,
-    isLoading,//monitor several situations is loading...
-    isSuccess,
-    isError,
-    error
-} = useGetAcademicYearsQuery('academicYearsListt', {//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-    //pollingInterval: 60000,//will refetch data every 60seconds
-    //refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
-    refetchOnMountOrArgChange: true//refetch when we remount the component
-})
+
 
 
 //const listOfAcademicYears = useSelector(state => selectAllAcademicYears(state))//this is original
 const academicYears = useSelector(selectAllAcademicYears)//this works
-//dispatch list to state
-
-useEffect(() => {
-  if (isSuccess) {
-    dispatch(setAcademicYears(academicYears))
-  }
-},[isSuccess, dispatch, academicYearsData])
-  // dispatch(setAcademicYears({ academicYears }))},[dispatch])
+//const initialAcademicYears = useSelector(state=>state.academicYears)//this is new
+//const academicYears = Object.values(initialAcademicYears.entities)
 
 //default selection is the year selcted if exists or current year
-const [defaultYear, setDefaultYear] =useState({})
+const [defaultYear, setDefaultYear] =useState('')
 useEffect(()=>{
+  dispatch(setAcademicYears(academicYears))//dispatch list to state,this only shows tehn redux state not empty in the browser tools
   const selectedYear =  academicYears.find((year)=>year.isSelected===true)
   const currentYear =  academicYears.find((year)=>year.currentYear===true)
 
@@ -48,32 +33,17 @@ useEffect(()=>{
 },[academicYears])
 
 
-//update the state with the selected year using the reducer from slice
+//update the state when we select a year using the reducer from slice
 const handleSelectedAcademicYear =(e) =>{
-  const  selectedTitle = e.target.value
+  const  id = e.target.value
  //console.log(selectedTitle)
- 
-  dispatch(selectAcademicYear({selectedTitle:selectedTitle}))
+  dispatch(selectAcademicYear({id:id}))
 }
-// const {currentAcademicYear} = useAcademicYears
-// console.log('currentAcademicYear')
-// console.log(currentAcademicYear)
-
-
 
 let content
-// if (isLoading) content = <p>Loading...</p>
 
-// if (isError) {
-//     content = <p className="errmsg">{error?.data?.message}</p>//errormessage class defined in the css, the error has data and inside we have message of error
-// }
-
-// if (isSuccess) {
-          
   return (
-    
-    
-        
+     
       <Field className=' flex flex-col items-center'>
         <Label className="text-sm/5 font-medium text-black ">Academic Year</Label>
         {/* <Description className="text-sm/6 text-white/50"> clients on the project.</Description> */}
@@ -81,14 +51,14 @@ let content
           <BsChevronDown className="absolute right-2 top-2" aria-hidden="true" />
           {/*add defaultvalue the curretn  academic year to select */}
           <Select name="SelectedAcademicYear"   onChange={handleSelectedAcademicYear} defaultValue={defaultYear} className= ' relative mt-1  w-32 data-[hover]:shadow block data-[focus]:bg-blue-200 appearance-none rounded-sm border-gray-600 bg-white/5 py-0 px-3 text-md/6 text-gray-900 border '>
-          {academicYears.map(year=> (<option key= {year.id} value ={year.title}  className=''> {year.title} </option> ))}
+          {academicYears.map(year=> (<option key= {year.id} value ={year.id}  className=''> {year.title} </option> ))}
           </Select>
         </div>
       </Field>
  
     
       )}
-// }
+
 
 
 export default AcademicYearsSelection

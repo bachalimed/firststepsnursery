@@ -5,17 +5,11 @@ import { selectAllAcademicYears,  useGetAcademicYearsQuery } from "../features/A
 
 
 const useAcademicYears = () => {
-  const allAcademicYears = useSelector(state => selectAllAcademicYears(state))
-
-const currentAcademicYear= allAcademicYears.filter({currentYear:true})
-console.Log('urrentAcademicYear')
-console.Log(currentAcademicYear)
+ 
 
 
 
-
-
-    return {  allAcademicYears, currentAcademicYear }
+    return {   }
 }
 export default useAcademicYears
 
