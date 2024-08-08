@@ -186,18 +186,18 @@ export const sidebarMenuUp=[
 	submenuItems:
 		[{title:"Inquiries",
 			icon: <BsQuestionSquare/>,
-			path:"/desk/inquiries",
+			path:"/desk/inquiries/",
 			allowedRoles:["Employee", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
 			spaced:false
 			},
 			{title:"Tasks",
 			icon: <GrTask/>,
-			path:"/desk/tasks",
+			path:"/desk/tasks/",
 			allowedRoles:["Employee", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
 			spaced:false,
 			sectionTabs:[
 				{title:"Tasks",
-				path:"/desk/tasks"},
+				path:"/desk/tasks/tasks/"},
 				
 				{title:"New Task",
 				path:"/desk/tasks/newTask/"}

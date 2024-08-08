@@ -7,7 +7,7 @@ import { employeesApiSlice } from '../HR/employeesApiSlice'
 import { studentsApiSlice } from '../Students/StudentsAndParents/studentsApiSlice'
 import { parentsApiSlice } from '../Students/StudentsAndParents/parentsApiSlice'
 import { tasksApiSlice } from '../Desk/Tasks/tasksApiSlice'
-import { academicYearsApiSlice } from '../AppSettings/Academics/AcademicsSettings/AcademicYears/academicYearsApiSlice'
+import { academicYearsApiSlice } from '../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
 import { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 

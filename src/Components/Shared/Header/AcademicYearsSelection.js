@@ -2,13 +2,13 @@ import React from 'react'
 
 import { Field, Label, Select } from '@headlessui/react'
 // import { Description } from '@headlessui/react';
-import { useGetAcademicYearsQuery, selectAllAcademicYears } from "../../../features/AppSettings/Academics/AcademicsSettings/AcademicYears/academicYearsApiSlice"
+import { useGetAcademicYearsQuery, selectAllAcademicYears } from '../../../features/AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
 
 import { BsChevronDown } from "react-icons/bs"
 import { useSelector, useDispatch } from 'react-redux'
-import {selectAcademicYear,  setAcademicYears} from '../../../features/AppSettings/Academics/AcademicsSettings/AcademicYears/academicYearsSlice'
+import {selectAcademicYear,  setAcademicYears} from '../../../features/AppSettings/AcademicsSet/AcademicYears/academicYearsSlice'
 import { useState , useEffect} from 'react'
-import useAcademicYears from '../../../hooks/useAcademicYears'
+//import useAcademicYears from '../../../hooks/useAcademicYears'
 
 
 const AcademicYearsSelection = () => {

@@ -2,7 +2,7 @@ import {
     createSelector,
     createEntityAdapter
 } from "@reduxjs/toolkit";
-import { apiSlice } from "../../../../../app/api/apiSlice"
+import { apiSlice } from '../../../../app/api/apiSlice'
 
 // Initialize the entity adapter
 const academicYearsAdapter = createEntityAdapter({})//we can iterate on the id but not on the entities
