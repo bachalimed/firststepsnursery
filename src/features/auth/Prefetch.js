@@ -2,12 +2,12 @@
 
 import { store } from '../../app/store'
 //import { notesApiSlice } from '../notes/notesApiSlice'
-import { usersApiSlice } from '../Admin/usersApiSlice'
+import { usersApiSlice } from '../Admin/UsersManagement/usersApiSlice'
 import { employeesApiSlice } from '../HR/employeesApiSlice'
-import { studentsApiSlice } from '../Students/studentsApiSlice'
-import { parentsApiSlice } from '../Students/parentsApiSlice'
-import { tasksApiSlice } from '../Desk/tasksApiSlice'
-import { academicYearsApiSlice } from '../AppSettings/Academics/academicYearsApiSlice'
+import { studentsApiSlice } from '../Students/StudentsAndParents/studentsApiSlice'
+import { parentsApiSlice } from '../Students/StudentsAndParents/parentsApiSlice'
+import { tasksApiSlice } from '../Desk/Tasks/tasksApiSlice'
+import { academicYearsApiSlice } from '../AppSettings/Academics/AcademicsSettings/AcademicYears/academicYearsApiSlice'
 import { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 

@@ -1,12 +1,12 @@
 import React from 'react';
 
 import { useGetParentsQuery } from "./parentsApiSlice"
-import { useGetUsersQuery} from "../Admin/usersApiSlice"
-import SectionTabs from '../../Components/Shared/Tabs/SectionTabs'
+import { useGetUsersQuery} from "../../Admin/UsersManagement/usersApiSlice"
+import SectionTabs from '../../../Components/Shared/Tabs/SectionTabs'
 import DataTable from 'react-data-table-component'
 import { useSelector } from 'react-redux'
 import { selectParentById, selectAllParents } from './parentsApiSlice'//use the memoized selector 
-import { selectAllUsers, selectUserById } from '../Admin/usersApiSlice'//use the memoized selector 
+import { selectAllUsers, selectUserById } from '../../Admin/UsersManagement/usersApiSlice'//use the memoized selector 
 
 
 const ParentsList = () => {

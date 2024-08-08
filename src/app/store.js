@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit"
 import { apiSlice } from './api/apiSlice'
 import { setupListeners } from "@reduxjs/toolkit/query"
 import authReducer from "../features/auth/authSlice"
-import academicYearsReducer from "../features/AppSettings/Academics/academicYearsSlice"
+import academicYearsReducer from "../features/AppSettings/Academics/AcademicsSettings/AcademicYears/academicYearsSlice"
 
 export const store = configureStore({
     reducer: {// Add the generated reducer as a specific top-level slice

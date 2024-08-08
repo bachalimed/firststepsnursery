@@ -1,4 +1,4 @@
-import SectionTabs from '../../../Components/Shared/Tabs/SectionTabs'
+import SectionTabs from '../../Components/Shared/Tabs/SectionTabs'
 
 const AcademicsSet = () => {
   return (

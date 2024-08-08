@@ -5,7 +5,7 @@
 
 import { useGetTasksQuery } from "./tasksApiSlice"
 import Task from "./Task"
-import SectionTabs from '../../Components/Shared/Tabs/SectionTabs'
+import SectionTabs from '../../../Components/Shared/Tabs/SectionTabs'
 
 
 

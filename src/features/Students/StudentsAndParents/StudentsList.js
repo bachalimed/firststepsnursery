@@ -1,7 +1,7 @@
 
 
 import { useGetStudentsQuery } from "./studentsApiSlice"
-import SectionTabs from '../../Components/Shared/Tabs/SectionTabs'
+import SectionTabs from '../../../Components/Shared/Tabs/SectionTabs'
 import DataTable from 'react-data-table-component'
 import { useSelector } from 'react-redux';
 import { selectStudentById, selectAllStudents } from './studentsApiSlice'//use the memoized selector 

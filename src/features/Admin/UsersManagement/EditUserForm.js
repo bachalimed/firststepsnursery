@@ -3,8 +3,8 @@ import { useUpdateUserMutation, useDeleteUserMutation } from "./usersApiSlice"
 import { useNavigate } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave, faTrashCan } from "@fortawesome/free-solid-svg-icons"
-import { ROLES } from "../../config/UserRoles"
-import SectionTabsDown from "../../Components/Shared/Tabs/SectionTabsDown"
+import { ROLES } from "../../../config/UserRoles"
+import SectionTabsDown from "../../../Components/Shared/Tabs/SectionTabsDown"
 
 const USER_REGEX = /^[A-z]{4,20}$/
 const PWD_REGEX = /^[A-z0-9!@#-_$%]{8,20}$/

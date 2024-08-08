@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { useAddNewTaskMutation } from "./tasksApiSlice"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave } from "@fortawesome/free-solid-svg-icons"
-import SectionTabs from "../../Components/Shared/Tabs/SectionTabs"
+import SectionTabs from '../../../Components/Shared/Tabs/SectionTabs'
 
 const NewTaskForm = ({ users }) => {
 

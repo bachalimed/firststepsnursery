@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom'//because we need the id of the note from the url
 import { useSelector } from 'react-redux'
 import { selectTaskById } from './tasksApiSlice'
-import { selectAllUsers } from '../Admin/usersApiSlice'
+import { selectAllUsers } from '../../Admin/UsersManagement/usersApiSlice'
 import EditTaskForm from './EditTaskForm'
 
 const EditTask = () => {

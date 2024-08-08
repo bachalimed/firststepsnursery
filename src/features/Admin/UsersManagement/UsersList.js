@@ -1,6 +1,6 @@
 import { useGetUsersQuery } from "./usersApiSlice"
 import User from './User'
-import SectionTabsDown from "../../Components/Shared/Tabs/SectionTabsDown"
+import SectionTabsDown from "../../../Components/Shared/Tabs/SectionTabsDown"
 
 const UsersList = () => {
 //get several things from the query

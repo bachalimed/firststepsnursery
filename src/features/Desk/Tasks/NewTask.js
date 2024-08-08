@@ -1,7 +1,7 @@
 
 //it is not a form like new UserForm
 import { useSelector } from 'react-redux'
-import { selectAllUsers } from '../Admin/usersApiSlice'
+import { selectAllUsers } from '../../Admin/UsersManagement/usersApiSlice'
 import NewTaskForm from './NewTaskForm'
 
 const Newtask = () => {

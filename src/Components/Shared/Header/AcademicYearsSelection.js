@@ -2,11 +2,11 @@ import React from 'react'
 
 import { Field, Label, Select } from '@headlessui/react'
 // import { Description } from '@headlessui/react';
-import { useGetAcademicYearsQuery, selectAllAcademicYears } from "../../../features/AppSettings/Academics/academicYearsApiSlice"
+import { useGetAcademicYearsQuery, selectAllAcademicYears } from "../../../features/AppSettings/Academics/AcademicsSettings/AcademicYears/academicYearsApiSlice"
 
 import { BsChevronDown } from "react-icons/bs"
 import { useSelector, useDispatch } from 'react-redux'
-import {selectAcademicYear,  setAcademicYears} from '../../../features/AppSettings/Academics/academicYearsSlice'
+import {selectAcademicYear,  setAcademicYears} from '../../../features/AppSettings/Academics/AcademicsSettings/AcademicYears/academicYearsSlice'
 import { useState , useEffect} from 'react'
 import useAcademicYears from '../../../hooks/useAcademicYears'
 

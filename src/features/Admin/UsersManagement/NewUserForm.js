@@ -3,8 +3,8 @@ import { useAddNewUserMutation } from "./usersApiSlice"
 import { useNavigate } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave } from "@fortawesome/free-solid-svg-icons"
-import { ROLES } from "../../config/UserRoles"
-import SectionTabsDown from '../../Components/Shared/Tabs/SectionTabsDown'
+import { ROLES } from "../../../config/UserRoles"
+import SectionTabsDown from '../../../Components/Shared/Tabs/SectionTabsDown'
 
 //constrains on inputs when creating new user
 const USER_REGEX = /^[A-z]{3,20}$/

@@ -1,7 +1,7 @@
 
 
 import { useGetAcademicYearsQuery} from "./academicYearsApiSlice"
-import SectionTabs from '../../../Components/Shared/Tabs/SectionTabs'
+import SectionTabs from '../../../../../Components/Shared/Tabs/SectionTabs'
 import DataTable from 'react-data-table-component'
 
 import {    setAcademicYears} from './academicYearsSlice'//use the memoized selector 
