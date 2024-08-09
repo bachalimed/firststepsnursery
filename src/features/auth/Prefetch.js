@@ -3,7 +3,7 @@
 import { store } from '../../app/store'
 //import { notesApiSlice } from '../notes/notesApiSlice'
 import { usersApiSlice } from '../Admin/UsersManagement/usersApiSlice'
-import { employeesApiSlice } from '../HR/employeesApiSlice'
+import { employeesApiSlice } from '../HR/Employees/employeesApiSlice'
 import { studentsApiSlice } from '../Students/StudentsAndParents/studentsApiSlice'
 import { parentsApiSlice } from '../Students/StudentsAndParents/parentsApiSlice'
 import { tasksApiSlice } from '../Desk/Tasks/tasksApiSlice'

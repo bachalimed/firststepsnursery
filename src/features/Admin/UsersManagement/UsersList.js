@@ -28,8 +28,7 @@ const UsersList = () => {
 
         const { ids } = users//destructure the ids from users from data, id are in array now
 
-        const tableContent = ids?.length
-            ? ids.map(userId => <User key={userId} userId={userId} />)//mapping over the id, create user components starting with their id, check if id will match the User model
+        const tableContent = ids?.length? ids.map(userId => <User key={userId} userId={userId} />)//mapping over the id, create user components starting with their id, check if id will match the User model
             : null//if no length to the ids it will be null
 
         content = (//create a table, the classes are in the css tailored

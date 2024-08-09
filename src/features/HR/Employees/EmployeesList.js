@@ -1,12 +1,12 @@
 import React from 'react';
 
 import { useGetEmployeesQuery } from "./employeesApiSlice"
-import { useGetUsersQuery} from "../Admin/UsersManagement/usersApiSlice"
-import SectionTabs from '../../Components/Shared/Tabs/SectionTabs'
+import { useGetUsersQuery} from "../../Admin/UsersManagement/usersApiSlice"
+import SectionTabs from '../../../Components/Shared/Tabs/SectionTabs'
 import DataTable from 'react-data-table-component'
 import { useSelector } from 'react-redux'
 import { selectEmployeeById, selectAllEmployees } from './employeesApiSlice'//use the memoized selector 
-import { selectAllUsers, selectUserById } from '../Admin/UsersManagement/usersApiSlice'//use the memoized selector 
+import { selectAllUsers, selectUserById } from '../../Admin/UsersManagement/usersApiSlice'//use the memoized selector 
 
 
 const EmployeesList = () => {

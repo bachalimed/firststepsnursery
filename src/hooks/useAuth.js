@@ -18,10 +18,14 @@ const useAuth = () => {
     
     let status1 = ""
     let status2 = ""
+    let canEdit= false
+    let canDelete= false
+    let canAdd= false
+    let canCreate = false
 
     if (token) {
         const decoded = jwtDecode(token)
-        const { username, userRoles } = decoded.UserInfo//coming from the backend in the token.userInfo
+        const { username, userRoles, userAllowedActions } = decoded.UserInfo//coming from the backend in the token.userInfo
 
        
         isEmployee= userRoles.includes('Employee')//this will return a boolean
@@ -35,6 +39,11 @@ const useAuth = () => {
         isDirector= userRoles.includes('Director')
         isManager = userRoles.includes('Manager')
         isAdmin = userRoles.includes('Admin')
+        canEdit= userAllowedActions.includes('canEdit')
+        canDelete= userAllowedActions.includes('canDelete')
+        canAdd= userAllowedActions.includes('canAdd')
+        canCreate = userAllowedActions.includes('canCreate')
+        
 
      //will get the higher status as it is executed in order
         if (isParent) status1 = "Parent"
@@ -48,10 +57,11 @@ const useAuth = () => {
         if (isManager) status2 = "Manager"
         if (isDirector) status2 = "Director"
         if (isAdmin) status2 = "Admin"
+        
 
-        return { username, userRoles, status1, status2, isEmployee, isManager, isParent, isContentManager, isAnimator, isAcademic, isFinance, isHR, isDesk, isDirector,  isAdmin }
+        return { username, userRoles, status1, status2, canEdit, canDelete, canAdd, canCreate, isEmployee, isManager, isParent, isContentManager, isAnimator, isAcademic, isFinance, isHR, isDesk, isDirector,  isAdmin }
     }
 
-    return { username: '', userRoles: [], isEmployee, isManager, isParent, isContentManager, isAnimator, isAcademic, isFinance, isHR, isDesk, isDirector,  isAdmin, status1, status2 }
+    return { username: '', userRoles: [], status1, status2, canEdit, canDelete, canAdd, canCreate, isEmployee, isManager, isParent, isContentManager, isAnimator, isAcademic, isFinance, isHR, isDesk, isDirector,  isAdmin }
 }
 export default useAuth

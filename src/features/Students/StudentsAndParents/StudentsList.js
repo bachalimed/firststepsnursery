@@ -3,8 +3,16 @@
 import { useGetStudentsQuery } from "./studentsApiSlice"
 import SectionTabs from '../../../Components/Shared/Tabs/SectionTabs'
 import DataTable from 'react-data-table-component'
-import { useSelector } from 'react-redux';
+import { useSelector } from 'react-redux'
 import { selectStudentById, selectAllStudents } from './studentsApiSlice'//use the memoized selector 
+import { useState } from "react"
+import { Link } from 'react-router-dom'
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons"
+import { FiEdit } from "react-icons/fi"
+import { RiDeleteBin6Line } from "react-icons/ri"
+import useAuth from '../../../hooks/useAuth'
+
+
 
 const StudentsList = () => {
 
@@ -21,24 +29,92 @@ const {
   refetchOnMountOrArgChange: true//refetch when we remount the component
 })
 const allStudents = useSelector(state => selectAllStudents(state))
+const{canEdit, canDelete, canAdd, canCreate}=useAuth()
+console.log('canEdit', canEdit)
+console.log('canEdit', canEdit)
+console.log('canEdit', canEdit)
+console.log('canEdit', canEdit)
+  // State to hold selected rows
+  const [selectedRows, setSelectedRows] = useState([])
 
-//define the content to be conditionally rendered
+  // Handler for selecting rows
+  const handleRowSelected = (state) => {
+    setSelectedRows(state.selectedRows)
+    //console.log('selectedRows', selectedRows)
+  };
+//handle edit
+
+const handleEdit=()=>{
+  console.log('editing')
+}
+//handle delete
+
+const handleDelete=()=>{
+console.log('deleting')
+}
+  // Handler for deleting selected rows
+  const handleDeleteSelected = () => {
+    console.log('Selected Rows to delete:', selectedRows)
+    // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
+
+
+    setSelectedRows([]) // Clear selection after delete
+  }
+
+  // Handler for duplicating selected rows, 
+  const handleDuplicateSelected = () => {
+    console.log('Selected Rows to duplicate:', selectedRows);
+    // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
+//ensure only one can be selected: the last one
+const toDuplicate = selectedRows[-1]
+
+    setSelectedRows([]); // Clear selection after delete
+  }
+  
+  // Handler for duplicating selected rows, 
+  const handleDetailsSelected = () => {
+    console.log('Selected Rows to detail:', selectedRows)
+    // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
+//ensure only one can be selected: the last one
+const toDuplicate = selectedRows[-1]
+
+    setSelectedRows([]); // Clear selection after delete
+  }
 
 
 const column =[
   { 
+    name: "#", // New column for entry number
+    cell: (row, index) => index + 1, // Display the index + 1 (for 1-based numbering)
+    sortable: false,
+    width: '50px',
+    
+  }, 
+  { 
 name: "ID",
-selector:row=>row._id,
+selector:row=>(
+  <Link to={`/students/:${row._id}`}>
+  {row._id}
+  </Link>
+  ),
 sortable:true
  }, 
   { 
 name: "First Name",
-selector:row=>row.studentName.firstName+" " +row.studentName.middleName,
+selector:row=>(
+  <Link to={`/students/:${row._id}`}>
+  {row.studentName.firstName+" " +row.studentName.middleName}
+  </Link>
+  ),
 sortable:true
  }, 
   { 
 name: "Last Name",
-selector:row=>row.studentName.lastName,
+selector:row=>(
+  <Link to={`/students/:${row._id}`}>
+  {row.studentName.lastName}
+  </Link>
+  ),
 sortable:true
  }, 
 {name: "DOB",
@@ -58,6 +134,22 @@ sortable:true
   selector:row=>row.studentSex,
   sortable:true,
   removableRows:true
+},
+{ 
+  name: "Actions",
+  cell: row => (
+    <div className="space-x-1">
+      {canEdit?(<button   onClick={() => handleEdit(row._id)} className="" > 
+      <FiEdit fontSize={20}/> 
+      </button>):null}
+      {canDelete?(<button onClick={() => handleDelete(row._id)} className="">
+        <RiDeleteBin6Line fontSize={20}/>
+      </button>):null}
+    </div>
+  ),
+  ignoreRowClick: true,
+  allowOverflow: true,
+  button: true,
 }
 ]
 let content
@@ -87,8 +179,36 @@ return (
     pagination
     selectableRows
     removableRows
-    pageSizeControl>
-   </DataTable>
+    pageSizeControl
+    onSelectedRowsChange={handleRowSelected}
+    selectableRowsHighlight
+    >
+	</DataTable>
+	<div className="flex justify-end items-center space-x-4">
+        <button 
+            className=" px-4 py-2 bg-green-500 text-white rounded"
+            onClick={handleDetailsSelected}
+            disabled={selectedRows.length !== 1} // Disable if no rows are selected
+          	>
+            Student Details
+          </button>
+        <button 
+			className=" px-4 py-2 bg-red-500 text-white rounded"
+			onClick={handleDeleteSelected}
+			disabled={selectedRows.length === 0} // Disable if no rows are selected
+      hidden={!canDelete}
+			>
+			Delete Selected
+		</button>
+        <button 
+			className="px-3 py-2 bg-yellow-400 text-white rounded"
+			onClick={handleDuplicateSelected}
+			disabled={selectedRows.length !== 1} // Disable if no rows are selected
+      hidden={!canCreate}
+			>
+			Duplicate Selected
+		</button>
+	</div>
 
   </div>
   </>
