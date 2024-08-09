@@ -7,7 +7,7 @@ import { ROLES } from "../../../config/UserRoles"
 import SectionTabsDown from '../../../Components/Shared/Tabs/SectionTabsDown'
 
 //constrains on inputs when creating new user
-const USER_REGEX = /^[A-z]{3,20}$/
+const USER_REGEX = /^[A-z]{6,20}$/
 const PWD_REGEX = /^[A-z0-9!@#-_$%]{4,12}$/
 const NAME_REGEX= /^[A-z 0-9]{3,20}$/
 const PHONE_REGEX= /^[0-9]{6,15}$/

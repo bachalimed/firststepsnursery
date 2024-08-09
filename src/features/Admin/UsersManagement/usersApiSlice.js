@@ -22,7 +22,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({//inject the ends points 
                     user.id = user._id//changed the _id from mongoDB to id
                     return user
                 });
-                return usersAdapter.setAll(initialState, loadedUsers)//loaded the users into usersadapter
+                return usersAdapter.setAll(initialState, loadedUsers)//loaded the users into usersadapter into state
             },
             providesTags: (result, error, arg) => {
                 if (result?.ids) {

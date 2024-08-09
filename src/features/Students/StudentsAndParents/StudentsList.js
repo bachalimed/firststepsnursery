@@ -7,9 +7,11 @@ import { useSelector } from 'react-redux'
 import { selectStudentById, selectAllStudents } from './studentsApiSlice'//use the memoized selector 
 import { useState } from "react"
 import { Link } from 'react-router-dom'
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons"
+import { useNavigate } from "react-router-dom"
+
 import { FiEdit } from "react-icons/fi"
 import { RiDeleteBin6Line } from "react-icons/ri"
+
 import useAuth from '../../../hooks/useAuth'
 
 
@@ -28,12 +30,17 @@ const {
   refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
   refetchOnMountOrArgChange: true//refetch when we remount the component
 })
+const Navigate = useNavigate()
 const allStudents = useSelector(state => selectAllStudents(state))
-const{canEdit, canDelete, canAdd, canCreate}=useAuth()
-console.log('canEdit', canEdit)
-console.log('canEdit', canEdit)
-console.log('canEdit', canEdit)
-console.log('canEdit', canEdit)
+const{canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
+// console.log('canEdit', canEdit)
+// console.log('canDelete', canDelete)
+// console.log('canAdd', canAdd)
+// console.log('canCreate', canCreate)
+// console.log('isParent', isParent)
+// console.log('status2', status2)
+
+
   // State to hold selected rows
   const [selectedRows, setSelectedRows] = useState([])
 
@@ -41,11 +48,12 @@ console.log('canEdit', canEdit)
   const handleRowSelected = (state) => {
     setSelectedRows(state.selectedRows)
     //console.log('selectedRows', selectedRows)
-  };
+  }
+  
 //handle edit
 
-const handleEdit=()=>{
-  console.log('editing')
+const handleEdit=(e)=>{
+  Navigate(`/students/studentsParents/students/${e}`)//the path to be set in app.js and to be checked with server.js in backend, this is editing page of 
 }
 //handle delete
 
@@ -90,35 +98,29 @@ const column =[
     width: '50px',
     
   }, 
-  { 
+  //show this column only if user is a parent and not employee
+
+  (status2)&&{ 
 name: "ID",
-selector:row=>(
-  <Link to={`/students/:${row._id}`}>
-  {row._id}
-  </Link>
-  ),
+selector:row=>( <Link to={`/students/studentsParents/students/studentDetails/:${row._id}`} >{row._id} </Link> ),
 sortable:true
  }, 
   { 
 name: "First Name",
-selector:row=>(
-  <Link to={`/students/:${row._id}`}>
-  {row.studentName.firstName+" " +row.studentName.middleName}
-  </Link>
-  ),
+selector:row=>( <Link to={`/students/studentsParents/students/studentDetails/:${row._id}`}> {row.studentName.firstName+" " +row.studentName.middleName}</Link>),
 sortable:true
  }, 
   { 
 name: "Last Name",
 selector:row=>(
-  <Link to={`/students/:${row._id}`}>
+  <Link to={`/students/studentsParents/students/studentDetails/:${row._id}`}>
   {row.studentName.lastName}
   </Link>
   ),
 sortable:true
  }, 
 {name: "DOB",
-  selector:row=>row.studentDob,
+  selector:row=>new Date(row.studentDob).toLocaleString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' }),
   
   sortable:true
 }, 

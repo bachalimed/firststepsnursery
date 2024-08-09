@@ -39,9 +39,12 @@ import FinancesSet from './features/AppSettings/FinancesSet'
 import StudentsSet from './features/AppSettings/StudentsSet'
 import HRSet from './features/AppSettings/HRSet'
 import DeskSet from './features/AppSettings/DeskSet'
+
 import UsersList from './features/Admin/UsersManagement/UsersList'
 import EditUser from './features/Admin/UsersManagement/EditUser'
 import NewUserForm from './features/Admin/UsersManagement/NewUserForm'
+import UserDetails from './features/Admin/UsersManagement/UserDetails'
+
 import UsersManagement from './features/Admin/UsersManagement'
 import EditTask from './features/Desk/Tasks/EditTask'
 import NewTask from './features/Desk/Tasks/NewTask'
@@ -265,6 +268,7 @@ const App = () => {
 
 									<Route path="users/" element={<UsersList />}/> 						
 									<Route path="newUser/" element={<NewUserForm />}/> 		{/*is part of the path*/}			
+									<Route path="userDetails/:id" element={<UserDetails />}/> 		{/*is part of the path*/}			
 									<Route path=":id/" element={<EditUser />}/> 		{/*id is part of the path*/}			
 								
 								

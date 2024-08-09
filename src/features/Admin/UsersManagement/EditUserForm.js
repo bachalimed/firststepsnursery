@@ -4,17 +4,19 @@ import { useNavigate } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave, faTrashCan } from "@fortawesome/free-solid-svg-icons"
 import { ROLES } from "../../../config/UserRoles"
+import { ACTIONS } from "../../../config/UserActions"
 import SectionTabsDown from "../../../Components/Shared/Tabs/SectionTabsDown"
 
-const USER_REGEX = /^[A-z]{4,20}$/
+//regex to validate inputs in the form
+const USER_REGEX = /^[A-z]{6,20}$/
 const PWD_REGEX = /^[A-z0-9!@#-_$%]{8,20}$/
 const NAME_REGEX= /^[A-z 0-9]{3,20}$/
 const PHONE_REGEX= /^[0-9]{6,15}$/
 const DOB_REGEX = /^[0-9/-]{4,10}$/
 const EMAIL_REGEX = /^[A-z0-9.@-_]{8,20}$/
 
-const EditUserForm = ({ user }) => {//user was passed as prop in editUser
 
+const EditUserForm = ({ user }) => {//user was passed as prop in editUser
     const [updateUser, {
         isLoading,
         isSuccess,
@@ -37,10 +39,10 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
     const [password, setPassword] = useState('')
     const [validPassword, setValidPassword] = useState(false)
     const [userRoles, setUserRoles] = useState(user.userRoles)
+    const [userAllowedActions, setUserAllowedActions] = useState(user.userAllowedActions)
     const [userFirstName, setUserFirstName] = useState(user.userFullName.userFirstName)
     const [validUserFirstName, setValidUserFirstName] = useState(false)
     const [userMiddleName, setUserMiddleName] = useState(user.userFullName.userMiddleName)
- 
     const [userLastName, setUserLastName] = useState(user.userFullName.userLastName)
     const [validUserLastName, setValidUserLastName] = useState(false)
     const [userFullName, setUserFullName] = useState({userFirstName:user.userFullName.userFirstName, userMiddleName:user.userFullName.userMiddleName, userLastName:user.userFullName.userLastName})
@@ -116,6 +118,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
             setUsername('')
             setPassword('')
             setUserRoles([])
+            setUserAllowedActions([])
             setUserFirstName('')
             setUserMiddleName('')
             setUserLastName('')
@@ -172,6 +175,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
      const onPrimaryPhoneChanged = e => setPrimaryPhone(e.target.value)
      const onSecondaryPhoneChanged = e => setSecondaryPhone(e.target.value)
      const onEmailChanged = e => setEmail(e.target.value)
+     const onUserAllowedActionsChanged = e => setUserAllowedActions(e.target.value)
     
  
     //  const onUserRolesChanged = e => {//because the roles is a select and allows multiple selections, we get an array from
@@ -181,7 +185,13 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
     //      )
     //      setUserRoles(values)
     //  }
+    onUserAllowedActionsChanged=(e)=>{
+        const { value, checked } = e.target 
+        setUserAllowedActions((prevActions) =>
+            checked ? [...prevActions, value] : prevActions.filter((action) => action !== value)
+          )
 
+    }
 
     
 
@@ -519,7 +529,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
 
                     {Object.keys(ROLES).map((key) => (
                     <div key={key}>
-                    <label>
+                        <label>
                         <input
                        
                         className={`form__select ${validRolesClass}`}
@@ -529,7 +539,22 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                         onChange={onUserRolesChanged}
                         />
                         {ROLES[key]}
-                    </label>
+                        </label>
+                    </div>
+                    ))}
+                    {Object.keys(ACTIONS).map((key) => (
+                    <div key={key}>
+                        <label>
+                        <input
+                       
+                        className=''
+                        type="checkbox"
+                        value={ROLES[key]}
+                        checked={userAllowedActions.includes(ACTIONS[key])}
+                        onChange={onUserAllowedActionsChanged}
+                        />
+                        {ACTIONS[key]}
+                        </label>
                     </div>
                 ))}
 

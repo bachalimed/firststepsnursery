@@ -1,6 +1,17 @@
 import { useGetUsersQuery } from "./usersApiSlice"
+import DataTable from 'react-data-table-component'
+import { useSelector } from 'react-redux'
+import { selectAllUsers } from "./usersApiSlice"//use the memoized selector 
+import { useState } from "react"
+import { Link , useNavigate} from 'react-router-dom'
+
+import { FiEdit } from "react-icons/fi"
+import { RiDeleteBin6Line } from "react-icons/ri"
+import useAuth from "../../../hooks/useAuth"
+
 import User from './User'
 import SectionTabsDown from "../../../Components/Shared/Tabs/SectionTabsDown"
+
 
 const UsersList = () => {
 //get several things from the query
@@ -15,47 +26,186 @@ const UsersList = () => {
         refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
         refetchOnMountOrArgChange: true//refetch when we remount the component
     })
-//define the content to be conditionally rendered
-    let content
+const Navigate = useNavigate()
+    //get the users fromthe state
+    const allUsers = useSelector(state => selectAllUsers(state))
+    //prepare the permission variables
+    const{canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
 
-    if (isLoading) content = <p>Loading...</p>
+  // State to hold selected rows
+  const [selectedRows, setSelectedRows] = useState([])
 
-    if (isError) {
-        content = <p className="errmsg">{error?.data?.message}</p>//errormessage class defined in the css, the error has data and inside we have message of error
-    }
+  // Handler for selecting rows
+  const handleRowSelected = (state) => {
+    setSelectedRows(state.selectedRows)
+    //console.log('selectedRows', selectedRows)
+  }
+  
+//handle edit
 
-    if (isSuccess) {
-
-        const { ids } = users//destructure the ids from users from data, id are in array now
-
-        const tableContent = ids?.length? ids.map(userId => <User key={userId} userId={userId} />)//mapping over the id, create user components starting with their id, check if id will match the User model
-            : null//if no length to the ids it will be null
-
-        content = (//create a table, the classes are in the css tailored
-            <>
-            <SectionTabsDown />
-          
-            
-            <table className="table table--users">{/*//flattened the table to display grid, check css file*/}
-                <thead className="table__thead">
-                    <tr>
-                        <th scope="col" className="table__th user__username">Username</th>
-                        <th scope="col" className="table__th user__roles">Full Name</th>
-                        <th scope="col" className="table__th user__roles">DOB</th>
-                        <th scope="col" className="table__th user__roles">Employee Id</th>
-                        <th scope="col" className="table__th user__roles">Roles</th>
-                        <th scope="col" className="table__th user__roles">Parent Id</th>
-                        <th scope="col" className="table__th user__edit">Edit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {tableContent}
-                </tbody>
-            </table>
-            </>
-        )
-    }
-
-    return content
+const handleEdit=(e)=>{
+    //e.preventDefault()
+    const id= e.target.value
+    console.log(id)
+    Navigate(`/admin/usersManagement/:${id}`)//the path to be set in app.js and to be checked with server.js in backend, this is editing page of user
+    Navigate(`/admin/usersManagement/${id}`)//the path to be set in app.js and to be checked with server.js in backend, this is editing page of user
 }
+//handle delete
+
+const handleDelete=()=>{
+console.log('deleting')
+}
+  // Handler for deleting selected rows
+  const handleDeleteSelected = () => {
+    console.log('Selected Rows to delete:', selectedRows)
+    // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
+
+
+    setSelectedRows([]) // Clear selection after delete
+  }
+
+  // Handler for duplicating selected rows, 
+  const handleDuplicateSelected = () => {
+    console.log('Selected Rows to duplicate:', selectedRows);
+    // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
+//ensure only one can be selected: the last one
+const toDuplicate = selectedRows[-1]
+
+    setSelectedRows([]); // Clear selection after delete
+  }
+  
+  // Handler for duplicating selected rows, 
+  const handleDetailsSelected = () => {
+    console.log('Selected Rows to detail:', selectedRows)
+    // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
+//ensure only one can be selected: the last one
+const toDuplicate = selectedRows[-1]
+
+    setSelectedRows([]); // Clear selection after delete
+  }
+
+  const column =[
+    { 
+      name: "#", // New column for entry number
+      cell: (row, index) => index + 1, // Display the index + 1 (for 1-based numbering)
+      sortable: false,
+      width: '50px',
+      
+    }, 
+    //show this column only if user is a parent and not employee
+  
+    { 
+  name: "ID",
+  selector:row=>( <Link to={`/admin/usersManagement/userDetails/${row._id}`} >{row._id} </Link> ),
+  sortable:true
+   }, 
+    { 
+  name: "Username",
+  selector:row=>( <Link to={`/admin/usersManagement/userDetails/${row._id}`}> {row.username}</Link>),
+  sortable:true
+   }, 
+    { 
+  name: "Name",
+  selector:row=>( <Link to={`/admin/usersManagement/userDetails/${row._id}`}> {row.userFullName.userFirstName+" "+row.userFullName.userMiddleName+" "+row.userFullName.userLastName}</Link>),
+  sortable:true
+   }, 
+   
+  {name: "DOB",
+    selector:row=>new Date(row.userDob).toLocaleString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' }),
+    
+    sortable:true
+  }, 
+  {name: "Employee ?",
+    selector:row=>row.isEmployee,
+    sortable:true
+  }, 
+  {name: "Parent?",
+    selector:row=>row.isParent,
+    sortable:true
+  }, 
+  {name: "user Roles",
+    selector:row=>row.userRoles,
+    sortable:true,
+  },
+  { 
+    name: "Actions",
+    cell: row => (
+      <div className="space-x-1">
+        {/* /////////////////////condition is canEdit and not ! of it */}
+        {!canEdit?(<button   onClick={() => handleEdit(row._id)} className="" > 
+        <FiEdit fontSize={20}/> 
+        </button>):null}
+        {canDelete?(<button onClick={() => handleDelete(row._id)} className="">
+          <RiDeleteBin6Line fontSize={20}/>
+        </button>):null}
+      </div>
+    ),
+    ignoreRowClick: true,
+    allowOverflow: true,
+    button: true,
+  }
+  ]
+  let content
+  
+  if (isLoading) content = <p>Loading...</p>
+  
+  if (isError) {
+      content = <p className="errmsg">{error?.data?.message}</p>//errormessage class defined in the css, the error has data and inside we have message of error
+  }
+  
+  if (isSuccess) {
+  
+  return (
+    <>
+    <SectionTabsDown/>
+    <div className=' flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200' >
+       {/* <div>
+      <input type="text" placeholder="search" onChange={handleFilter}/>
+     </div> */}
+     
+     <DataTable
+      columns={column}
+      data={allUsers}
+      pagination
+      selectableRows
+      removableRows
+      pageSizeControl
+      onSelectedRowsChange={handleRowSelected}
+      selectableRowsHighlight
+      >
+      </DataTable>
+      <div className="flex justify-end items-center space-x-4">
+          <button 
+              className=" px-4 py-2 bg-green-500 text-white rounded"
+              onClick={handleDetailsSelected}
+              disabled={selectedRows.length !== 1} // Disable if no rows are selected
+                >
+              Student Details
+            </button>
+          <button 
+              className=" px-4 py-2 bg-red-500 text-white rounded"
+              onClick={handleDeleteSelected}
+              disabled={selectedRows.length === 0} // Disable if no rows are selected
+        hidden={!canDelete}
+              >
+              Delete Selected
+          </button>
+          <button 
+              className="px-3 py-2 bg-yellow-400 text-white rounded"
+              onClick={handleDuplicateSelected}
+              disabled={selectedRows.length !== 1} // Disable if no rows are selected
+        hidden={!canCreate}
+              >
+              Duplicate Selected
+          </button>
+      </div>
+  
+    </div>
+    </>
+  )
+  
+  }
+  
+  }
+
 export default UsersList
