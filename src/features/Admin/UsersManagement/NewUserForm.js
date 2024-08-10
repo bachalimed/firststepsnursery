@@ -4,11 +4,13 @@ import { useNavigate } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave } from "@fortawesome/free-solid-svg-icons"
 import { ROLES } from "../../../config/UserRoles"
+import { ACTIONS } from "../../../config/UserActions"
 import SectionTabsDown from '../../../Components/Shared/Tabs/SectionTabsDown'
+
 
 //constrains on inputs when creating new user
 const USER_REGEX = /^[A-z]{6,20}$/
-const PWD_REGEX = /^[A-z0-9!@#-_$%]{4,12}$/
+const PWD_REGEX = /^[A-z0-9!@#-_$%]{8,20}$/
 const NAME_REGEX= /^[A-z 0-9]{3,20}$/
 const PHONE_REGEX= /^[0-9]{6,15}$/
 const DOB_REGEX = /^[0-9/-]{4,10}$/
@@ -21,15 +23,16 @@ const NewUserForm = () => {//an add user function that can be called inside the 
         isSuccess,
         isError,
         error
-    }] = useAddNewUserMutation()//it will not execute now but when called
+    }] = useAddNewUserMutation()//it will not execute the mutation nownow but when called
 
-    const navigate = useNavigate()
-
+    const Navigate = useNavigate()
+    //initialisation of states for each input
     const [username, setUsername] = useState('')
     const [validUsername, setValidUsername] = useState(false)//will be true when the username is validated
     const [password, setPassword] = useState('')
     const [validPassword, setValidPassword] = useState(false)//will be true when the passwrod is validated
     const [userRoles, setUserRoles] = useState(["Employee"])//the roles array is defaulted to employee
+    const [userAllowedActions, setUserAllowedActions]=useState([])
     const [userFullName, setUserFullName] = useState('')
     const [validUserFullName, setValidUserFullName] = useState(false)
     const [userFirstName, setUserFirstName] = useState('')
@@ -43,9 +46,9 @@ const NewUserForm = () => {//an add user function that can be called inside the 
     const[ validUserDob,setValidUserDob ]= useState(false)
     const[ userIsActive,setUserIsActive ]= useState(false)
     const[ userPhoto,setUserPhoto ]= useState('')
-    const[ label,setLabel ]= useState('')
-    const[ location,setLocation ]= useState('')
-    const[ size,setSize ]= useState()
+    const[ userPhotoLabel,setUserPhotoLabel ]= useState('')
+    const[ userPhotoFormat,setUserPhotoFormat ]= useState('')
+    //const[ size,setSize ]= useState()
     const[ format,setFormat ]= useState('')
     const[ userAddress,setUserAddress ]= useState('')
     const[ validUserAddress,setValidUserAddress ]= useState(false)
@@ -67,9 +70,8 @@ const NewUserForm = () => {//an add user function that can be called inside the 
     const[email, setEmail ]= useState('')
     const[validEmail, setValidEmail ]= useState(false)
 
- 
- 
 //use effect is used to validate the inputs against the defined REGEX above
+//the previous constrains have to be verified on the form for teh user to know 
     useEffect(() => {
         setValidUsername(USER_REGEX.test(username))
     }, [username])
@@ -104,10 +106,11 @@ const NewUserForm = () => {//an add user function that can be called inside the 
     }, [email])
 
     useEffect(() => {
-        if (isSuccess) {//if it is success, empty all the individual states and navigaet back to the users list
+        if (isSuccess) {//if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
             setUsername('')
             setPassword('')
             setUserRoles([])
+            setUserAllowedActions([])
             setUserFirstName('')
             setUserMiddleName('')
             setUserLastName('')
@@ -115,12 +118,11 @@ const NewUserForm = () => {//an add user function that can be called inside the 
             setIsParent('')
             setIsEmployee('')
             setUserDob('')
-            setUserIsActive(false)
-            setLabel('')
-            setLocation('')
-            setSize()
-            setFormat('')
-            setUserPhoto({label:'', location:'', size:'', format:''})
+            setUserIsActive(false) 
+            //setSize() 
+            setUserPhoto('')
+            setUserPhotoLabel('')
+            setUserPhotoFormat('')
             setHouse('')
             setStreet('')
             setArea('')
@@ -131,9 +133,9 @@ const NewUserForm = () => {//an add user function that can be called inside the 
             setSecondaryPhone()
             setEmail('')
             setUserContact({primaryPhone:'', secondaryPhone:'', email:'' })
-            navigate('/admin/usersManagement/users/')//will navigate here after saving
+            Navigate('/admin/usersManagement/users/')//will navigate here after saving
         }
-    }, [isSuccess, navigate])//even if no success it will navigate and not show any warning if failed or success
+    }, [isSuccess, Navigate])//even if no success it will navigate and not show any warning if failed or success
 
     //handlers to get the individual states from the input
     const onUsernameChanged = e => setUsername(e.target.value)
@@ -145,26 +147,30 @@ const NewUserForm = () => {//an add user function that can be called inside the 
     const onIsEmployeeChanged = e => setIsEmployee(e.target.value)
     const onUserDobChanged = e => setUserDob(e.target.value)
     const onUserIsActiveChanged = e => setUserIsActive(prev => !prev)//will invert the previous state
-    const onLabelChanged = e => setLabel(e.target.value)
-    const onLocationChanged = e => setLocation(e.target.value)
-    const onSizeChanged = e => setSize(e.target.value)
-    const onFormatChanged = e => setFormat(e.target.value)
-    
+    const onUserPhotoChanged = e => {setUserPhoto(e.target.files[0])}
+    const onUserPhotoLabelChanged = e => setUserPhotoLabel(e.target.value)
+    const onUserPhotoFormatChanged = e => setUserPhotoFormat(e.target.value)
+    //const onSizeChanged = e => setSize(e.target.value)  
     const onHouseChanged = e => setHouse(e.target.value)
     const onStreetChanged = e => setStreet(e.target.value)
     const onAreaChanged = e => setArea(e.target.value)
     const onPostCodeChanged = e => setPostCode(e.target.value)
     const onCityChanged = e => setCity(e.target.value)
- 
     const onPrimaryPhoneChanged = e => setPrimaryPhone(e.target.value)
     const onSecondaryPhoneChanged = e => setSecondaryPhone(e.target.value)
     const onEmailChanged = e => setEmail(e.target.value)
     
 
     const onUserRolesChanged = (e) => {
-        const { value, checked } = e.target;
+        const { value, checked } = e.target
         setUserRoles((prevRoles) =>
           checked ? [...prevRoles, value] : prevRoles.filter((role) => role !== value)
+        )
+      }
+    const onUserAllowedActionsChanged = (e) => {
+        const { value, checked } = e.target
+        setUserAllowedActions((prevActions) =>
+          checked ? [...prevActions, value] : prevActions.filter((action) => action !== value)
         )
       }
 
@@ -181,33 +187,37 @@ const NewUserForm = () => {//an add user function that can be called inside the 
 if (isParent===''){ setIsParent(undefined)}
 if (isEmployee===''){ setIsEmployee(undefined)}
 
+useEffect(()=>{
+setUserFullName({userFirstName:userFirstName, userMiddleName:userMiddleName, userLastName:userLastName})},
+[userFirstName, userMiddleName, userLastName])
+
+useEffect(()=>{
+setUserAddress({house:house, street:street, area:area, postCode:postCode, city:city})},
+[house, street, street, area, postCode, city])
+
+useEffect(()=>{
+setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:email})},
+[primaryPhone, secondaryPhone, email])
 
 //to check if we can save before onsave, if every one is true, and also if we are not loading status
-    const canSave = [validUserFirstName, validUserLastName, validUsername, validPassword, validUserDob,     validStreet,  validPrimaryPhone, validEmail, userRoles.length ].every(Boolean) && !isLoading
-console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validPassword}, ${validUserDob},    ${ validStreet},  ${validPrimaryPhone}, ${validEmail}, ${userRoles.length}, ${isParent}, ${isEmployee}, ${userIsActive}` )
+    const canSave = [validUserFirstName, validUserLastName, validUsername, validPassword, validUserDob,     validStreet,  validPrimaryPhone, userRoles.length ].every(Boolean) && !isLoading
+//console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validPassword}, ${validUserDob},${userAllowedActions}    ${ validStreet},  ${validPrimaryPhone}, ${validEmail}, ${userRoles.length}, ${isParent}, ${isEmployee}, ${userIsActive}` )
     const onSaveUserClicked = async (e) => {
         e.preventDefault()
         
         if (canSave) {//if cansave is true
             //generate the objects before saving
-            setUserFullName({userFirstName:userFirstName, userMiddleName:userMiddleName, userLastName:userLastName})
-            setUserPhoto({label:label, location:location, size:size, format:format})
-            setUserAddress({house:house, street:street, area:area, postCode:postCode, city:city})
-            setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:email})
-            console.log(` 'first name' ${userFirstName}', fullfirstname,' ${userFullName.userFirstName}', house: '${house}', usercontact house' ${userContact.house},    ${userRoles.length},${isParent}, ${isEmployee}` )
-            await addNewUser({ username, password,  userFullName, isParent, isEmployee, userDob, userIsActive, userRoles, userPhoto, userAddress, userContact })//we call the add new user mutation and set the arguments to be saved
+            //console.log(` 'first name' ${userFirstName}', fullfirstname,' ${userFullName.userFirstName}', house: '${house}', usercontact house' ${userContact.house},    ${userRoles.length},${isParent}, ${isEmployee}` )
+            await addNewUser({ username, password,  userFullName, isParent, isEmployee, userDob, userIsActive, userRoles, userAllowedActions, userPhoto, userPhotoLabel, userPhotoFormat, userAddress, userContact })//we call the add new user mutation and set the arguments to be saved
+            //added this to confirm save
+            if (isError) {console.log('error savingg', error)//handle the error msg to be shown  in the logs??
+            }
         }
     }
-
-    // const options = Object.values(ROLES).map(role => {//the options for the roles in the select menu
-    //     return (
-    //         <option
-    //             key={role}
-    //             value={role}
-
-    //         > {role}</option >
-    //     )
-    // })
+    const handleCancel= ()=>{
+        Navigate ('/admin/usersManagement/users/')
+    }
+   
 //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
     const errClass = isError ? "errmsg" : "offscreen"
     const validUserClass = !validUsername ? 'form__input--incomplete' : ''
@@ -223,15 +233,7 @@ console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validP
             <form className="form" onSubmit={onSaveUserClicked}>
                 <div className="form__title-row">
                     <h2>New User Form</h2>
-                    <div className="form__action-buttons">
-                        <button
-                            className="icon-button"
-                            title="Save"
-                            disabled={!canSave}//if can save is false, the save button is disabled
-                        >
-                            <FontAwesomeIcon icon={faSave} />
-                        </button>
-                    </div>
+                    
                 </div>
                 
                 <label className="form__label" htmlFor="userFirstName">
@@ -246,7 +248,7 @@ console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validP
                     onChange={onUserFirstNameChanged}
                 />
                 <label className="form__label" htmlFor="userMiddleName">
-                    User Middle Name : <span className="nowrap">[3-20 letters]</span></label>
+                    User Middle Name : <span className="nowrap"></span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="userMiddleName"
@@ -270,7 +272,7 @@ console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validP
                 />
                 
                 <label className="form__label" htmlFor="username">
-                    Username: <span className="nowrap">[3-20 letters]</span></label>
+                    Username: <span className="nowrap">[6-20 Characters]</span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="username"
@@ -281,7 +283,7 @@ console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validP
                     onChange={onUsernameChanged}
                 />
                  <label className="form__label" htmlFor="password">
-                    Password: <span className="nowrap">[4-12 chars incl. !@#$-_%]</span></label>
+                    Password: <span className="nowrap">[8-20 chars incl. !@#$-_%]</span></label>
                 <input
                     className={`form__input ${validPwdClass}`}
                     id="password"
@@ -324,7 +326,7 @@ console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validP
                     onChange={onStreetChanged}
                 />
                 <label className="form__label" htmlFor="area">
-                    Area: <span className="nowrap">[3-15 letters]</span></label>
+                    Area: <span className="nowrap"></span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="area"
@@ -346,7 +348,7 @@ console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validP
                     onChange={onCityChanged}
                 />
                 <label className="form__label" htmlFor="postCode">
-                    Post Code: <span className="nowrap">[3-12 letters]</span></label>
+                    Post Code: <span className="nowrap"></span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="postCode"
@@ -368,12 +370,8 @@ console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validP
                     onChange={onPrimaryPhoneChanged}
                 />
 
-                
-
-
-
                 <label className="form__label" htmlFor="secondaryPhone">
-                    Secondary Phone: <span className="nowrap">[6 to 15 Digits]</span></label>
+                    Secondary Phone: <span className="nowrap"></span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="secondaryPhone"
@@ -394,17 +392,7 @@ console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validP
                     value={email}
                     onChange={onEmailChanged}
                 />
-                <label className="form__label" htmlFor="postCode">
-                    Post Code: <span className="nowrap">[3-12 letters]</span></label>
-                <input
-                    className={`form__input ${validUserClass}`}
-                    id="postCode"
-                    name="postCode"
-                    type="text"
-                    autoComplete="off"
-                    value={postCode}
-                    onChange={onPostCodeChanged}
-                />
+               
                 <label className="form__label" htmlFor="label">
                     Photo label: <span className="nowrap">[3-12 letters]</span></label>
                 <input
@@ -413,41 +401,34 @@ console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validP
                     name="label"
                     type="text"
                     autoComplete="off"
-                    value={label}
-                    onChange={onLabelChanged}
+                    value={userPhotoLabel}
+                    onChange={onUserPhotoLabelChanged}
                 />
                 <label className="form__label" htmlFor="location">
-                    Photo location : <span className="nowrap">[3-12 letters]</span></label>
+                    Photo : <span className="nowrap"></span></label>
                 <input
                     className={`form__input ${validUserClass}`}
-                    id="location"
-                    name="location"
-                    type="text"
+                    id="userPhoto"
+                    name="userPhoto"
+                    type="file"
                     autoComplete="off"
-                    value={location}
-                    onChange={onLocationChanged}
+                    // value={userPhoto} because it is a file
+                    onChange={onUserPhotoChanged}
                 />
-                <label className="form__label" htmlFor="size">
-                    Photo size: <span className="nowrap">[3-12 letters]</span></label>
-                <input
-                    className={`form__input ${validUserClass}`}
-                    id="size"
-                    name="size"
-                    type="number"
-                    autoComplete="off"
-                    value={size}
-                    onChange={onSizeChanged}
-                />
+                {/* will show only if status is loading */}
+                {isLoading === 'loading' && <p>Submitting...</p>}
+
+               
                 <label className="form__label" htmlFor="format">
                     Photo format: <span className="nowrap">[3-12 letters]</span></label>
                 <input
                     className={`form__input ${validUserClass}`}
-                    id="format"
-                    name="format"
+                    id="userPhotoFormat"
+                    name="userPhotoFormat"
                     type="text"
                     autoComplete="off"
-                    value={format}
-                    onChange={onFormatChanged}
+                    value={userPhotoFormat}
+                    onChange={onUserPhotoFormatChanged}
                 />
                  <label className="form__label" htmlFor="isParent">
                     User Is Parent: <span className="nowrap">[24 digits]</span></label>
@@ -472,8 +453,6 @@ console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validP
                     onChange={onIsEmployeeChanged}
                 />
 
-
-
                     <label>
                     <input
                     type="checkbox"
@@ -484,8 +463,7 @@ console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validP
                     User Is Active
                     </label>
                     
-
-
+                    <h1>User Roles: </h1>
                     {Object.keys(ROLES).map((key) => (
                     <div key={key}>
                     <label>
@@ -498,22 +476,43 @@ console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validP
                         {ROLES[key]}
                     </label>
                     </div>
+                    ))}
+                    <h1>User Actions Permissions: </h1>
+                      {Object.keys(ACTIONS).map((key) => (
+                    <div key={key}>
+                        <label>
+                        <input
+                       
+                        className=''
+                        type="checkbox"
+                        value={ACTIONS[key]}
+                        checked={userAllowedActions.includes(ACTIONS[key])}
+                        onChange={onUserAllowedActionsChanged}
+                        />
+                        {ACTIONS[key]}
+                        </label>
+                    </div>
                 ))}
               
 
-                {/* <label className="form__label" htmlFor="roles">
-                    ASSIGNED ROLES:</label>
-                <select
-                    id="roles"
-                    name="roles"
-                    className={`form__select ${validRolesClass}`}
-                    multiple={true}
-                    size="7"
-                    value={userRoles}
-                    onChange={onUserRolesChanged}
-                >
-                    {options}
-                </select> */}
+              <div className="flex justify-end items-center space-x-4">
+                    <button 
+                        className=" px-4 py-2 bg-green-500 text-white rounded"
+                        type='submit'
+                        title="Save"
+                        onClick={onSaveUserClicked}
+                        disabled={!canSave}
+                        >
+                        Save Changes
+                    </button>
+                    <button 
+                    className=" px-4 py-2 bg-red-500 text-white rounded"
+                    onClick={handleCancel }
+                    >
+                    Cancel
+                    </button>
+                </div>
+
 
             </form>
         </>

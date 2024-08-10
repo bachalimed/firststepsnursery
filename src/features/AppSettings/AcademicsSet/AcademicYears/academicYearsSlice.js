@@ -11,8 +11,7 @@ const academicYearsSlice = createSlice({
     initialState,
 
     reducers: {
-        setAcademicYears: (state, action) => {
-            
+        setAcademicYears: (state, action) => {//get and sort the items
             academicYearsAdapter.setAll(state, action.payload)
         
         },        
@@ -36,6 +35,7 @@ const academicYearsSlice = createSlice({
             state.ids = Object.keys(newEntities)
 
             },
+           
             updateAcademicYear: (state, action) => {
                 academicYearsAdapter.updateOne(state, action.payload)
             },
@@ -51,7 +51,7 @@ const academicYearsSlice = createSlice({
         
     }
 })
-export const { setAcademicYears, updateAcademicYear, activateAcademicYear, selectAcademicYear } = academicYearsSlice.actions
+export const { setAcademicYears, updateAcademicYear, activateAcademicYear,  selectAcademicYear } = academicYearsSlice.actions
 
 export const currentAcademicYearsList = (state) => state.academicYears
 export default academicYearsSlice.reducer//to be sent to the store

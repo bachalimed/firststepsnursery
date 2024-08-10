@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react"
-import { useUpdateUserMutation, useDeleteUserMutation } from "./usersApiSlice"
+import { useUpdateUserMutation } from "./usersApiSlice"
 import { useNavigate } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSave, faTrashCan } from "@fortawesome/free-solid-svg-icons"
+import { faSave } from "@fortawesome/free-solid-svg-icons"
 import { ROLES } from "../../../config/UserRoles"
 import { ACTIONS } from "../../../config/UserActions"
 import SectionTabsDown from "../../../Components/Shared/Tabs/SectionTabsDown"
+
 
 //regex to validate inputs in the form
 const USER_REGEX = /^[A-z]{6,20}$/
@@ -24,13 +25,9 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
         error
     }] = useUpdateUserMutation()
 
-    const [deleteUser, {
-        isSuccess: isDelSuccess,
-        isError: isDelError,
-        error: delerror
-    }] = useDeleteUserMutation()
+  
 
-    const navigate = useNavigate()
+    const Navigate = useNavigate()
 
 
     //const [id, setId] = useState(user.id)
@@ -39,7 +36,8 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
     const [password, setPassword] = useState('')
     const [validPassword, setValidPassword] = useState(false)
     const [userRoles, setUserRoles] = useState(user.userRoles)
-    const [userAllowedActions, setUserAllowedActions] = useState(user.userAllowedActions)
+   
+    const [userAllowedActions, setUserAllowedActions] = useState(user.userAllowedActions?(user.userAllowedActions):[])//to prevent undefined error if the variable does not exist in DB
     const [userFirstName, setUserFirstName] = useState(user.userFullName.userFirstName)
     const [validUserFirstName, setValidUserFirstName] = useState(false)
     const [userMiddleName, setUserMiddleName] = useState(user.userFullName.userMiddleName)
@@ -113,8 +111,8 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
     }, [email])
 
     useEffect(() => {
-        console.log(isSuccess)
-        if (isSuccess || isDelSuccess) {
+        console.log(isSuccess,'isSuccess in edit user form')
+        if (isSuccess ) {
             setUsername('')
             setPassword('')
             setUserRoles([])
@@ -142,10 +140,10 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
             setSecondaryPhone('')
             setEmail('')
             setUserContact({primaryPhone:'', secondaryPhone:'', email:'' })
-            navigate('/admin/usersManagement/users/')//will navigate here after saving
+            Navigate('/admin/usersManagement/users/')//will navigate here after saving
         }
 
-    }, [isSuccess, isDelSuccess, navigate])
+    }, [isSuccess,  Navigate])
 
      //handlers to get the individual states from the input
      const onUsernameChanged = e => setUsername(e.target.value)
@@ -175,32 +173,22 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
      const onPrimaryPhoneChanged = e => setPrimaryPhone(e.target.value)
      const onSecondaryPhoneChanged = e => setSecondaryPhone(e.target.value)
      const onEmailChanged = e => setEmail(e.target.value)
-     const onUserAllowedActionsChanged = e => setUserAllowedActions(e.target.value)
+     
     
  
-    //  const onUserRolesChanged = e => {//because the roles is a select and allows multiple selections, we get an array from
-    //      const values = Array.from(
-    //          e.target.selectedOptions, //HTMLCollection that s why we have array from
-    //          (option) => option.value// we get the values from options and we put them into Roles array
-    //      )
-    //      setUserRoles(values)
-    //  }
-    onUserAllowedActionsChanged=(e)=>{
-        const { value, checked } = e.target 
-        setUserAllowedActions((prevActions) =>
-            checked ? [...prevActions, value] : prevActions.filter((action) => action !== value)
-          )
-
-    }
-
-    
-
     const onUserRolesChanged =  (e) => {
         const { value, checked } = e.target    
         setUserRoles((prevRoles) =>
           checked ? [...prevRoles, value] : prevRoles.filter((role) => role !== value)
         )
     }
+    const onUserAllowedActionsChanged=(e)=>{
+        const { value, checked } = e.target
+        setUserAllowedActions((prevActions) =>
+            checked ? [...prevActions, value] : prevActions.filter((action) => action !== value)
+          )
+    }
+    
     //check if the parent and employee id is available or delete the variable
     if (isParent===''){ setIsParent(undefined)}
     if (isEmployee===''){ setIsEmployee(undefined)}
@@ -222,18 +210,19 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
      
         if (password) {
            
-            await updateUser({ id: user.id, userFullName, username, password, isParent, isEmployee, userDob, userIsActive, userRoles, userPhoto, userAddress, userContact })
+            await updateUser({ id: user.id, userFullName, userAllowedActions, username, password, isParent, isEmployee, userDob, userIsActive, userRoles, userPhoto, userAddress, userContact })
         } else {
            
-            await updateUser({ id: user.id, userFullName, username, isParent, isEmployee, userDob, userIsActive, userRoles, userPhoto, userAddress, userContact })
+            await updateUser({ id: user.id, userFullName, userAllowedActions, username, isParent, isEmployee, userDob, userIsActive, userRoles, userPhoto, userAddress, userContact })
         }
     }
 
-
-    const onDeleteUserClicked = async () => {
-        
-        await deleteUser({ id: user.id })
+    const handleCancel= ()=>{
+        Navigate ('/admin/usersManagement/users/')
     }
+
+
+    
 
     // const options = Object.values(ROLES).map(role => {
     //     return (
@@ -252,12 +241,12 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
         canSave = [validUserFirstName, validUserLastName, validUsername, validUserDob,     validStreet,  validPrimaryPhone, validEmail, userRoles.length].every(Boolean) && !isLoading
     }
 
-    const errClass = (isError || isDelError) ? "errmsg" : "offscreen"
+    const errClass = (isError ) ? "errmsg" : "offscreen"
     const validUserClass = !validUsername ? 'form__input--incomplete' : ''
     const validPwdClass = password && !validPassword ? 'form__input--incomplete' : ''//to avoid the red square around the input
     const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
 
-    const errContent = (error?.data?.message || delerror?.data?.message) ?? ''
+    const errContent = (error?.data?.message ?.data?.message) ?? ''
 
 
     const content = (
@@ -266,25 +255,9 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
             <p className={errClass}>{errContent}</p>{/*if no error message will not show any on the screen*/}
 
             <form className="form" onSubmit={e => e.preventDefault()}>
-                <div className="form__title-row">
-                    <h2>Edit User</h2>
-                    <div className="form__action-buttons">
-                        <button
-                            className="icon-button"
-                            title="Save"
-                            onClick={onSaveUserClicked}
-                            disabled={!canSave}
-                        >
-                            <FontAwesomeIcon icon={faSave} />
-                        </button>
-                        <button
-                            className="icon-button"
-                            title="Delete"
-                            onClick={onDeleteUserClicked}
-                        >
-                            <FontAwesomeIcon icon={faTrashCan} />
-                        </button>
-                    </div>
+            <div className="form__title-row">
+                    <h2>Edit User Form</h2>
+                    
                 </div>
                 
                 <label className="form__label" htmlFor="userFirstName">
@@ -299,7 +272,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     onChange={onUserFirstNameChanged}
                 />
                 <label className="form__label" htmlFor="userMiddleName">
-                    User Middle Name : <span className="nowrap">[3-20 letters]</span></label>
+                    User Middle Name : <span className="nowrap"></span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="userMiddleName"
@@ -323,7 +296,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                 />
                
                <label className="form__label" htmlFor="username">
-                    Username: <span className="nowrap">[3-20 letters]</span></label>
+                    Username: <span className="nowrap">[6-20 Characters]</span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="username"
@@ -334,7 +307,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     onChange={onUsernameChanged}
                 />
                  <label className="form__label" htmlFor="password">
-                    Password: <span className="nowrap">[4-12 chars incl. !@#$-_%]</span></label>
+                    Password: <span className="nowrap">[8-20 chars incl. !@#$-_%]</span></label>
                 <input
                     className={`form__input ${validPwdClass}`}
                     id="password"
@@ -366,7 +339,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     onChange={onHouseChanged}
                 />
                 <label className="form__label" htmlFor="street">
-                    Street: <span className="nowrap">[3-20 letters]</span></label>
+                    Street: <span className="nowrap"></span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="street"
@@ -426,7 +399,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
 
 
                 <label className="form__label" htmlFor="secondaryPhone">
-                    Secondary Phone: <span className="nowrap">[6 to 15 Digits]</span></label>
+                    Secondary Phone: <span className="nowrap"></span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="secondaryPhone"
@@ -449,7 +422,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                 />
                
                 <label className="form__label" htmlFor="label">
-                    Photo: <span className="nowrap">[3-12 letters]</span></label>
+                    Photo: <span className="nowrap"></span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="label"
@@ -460,7 +433,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     onChange={onLabelChanged}
                 />
                  <label className="form__label" htmlFor="location">
-                    Photo location : <span className="nowrap">[3-12 letters]</span></label>
+                    Photo location : <span className="nowrap"></span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="location"
@@ -471,7 +444,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     onChange={onLocationChanged}
                 />
                 <label className="form__label" htmlFor="size">
-                    Photo size: <span className="nowrap">[3-12 letters]</span></label>
+                    Photo size: <span className="nowrap"></span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="size"
@@ -482,7 +455,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     onChange={onSizeChanged}
                 />
                 <label className="form__label" htmlFor="format">
-                    Photo format: <span className="nowrap">[3-12 letters]</span></label>
+                    Photo format: <span className="nowrap"></span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="format"
@@ -526,52 +499,58 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     />
                     User Is Active
                     </label>
-
-                    {Object.keys(ROLES).map((key) => (
+                        <h1>User Roles: </h1>
+                    {Object.entries(ROLES).map(([key, value]) => (
                     <div key={key}>
                         <label>
                         <input
                        
                         className={`form__select ${validRolesClass}`}
                         type="checkbox"
-                        value={ROLES[key]}
-                        checked={userRoles.includes(ROLES[key])}
+                        value={value}
+                        checked={userRoles.includes(value)}
                         onChange={onUserRolesChanged}
                         />
-                        {ROLES[key]}
+                        {key}
                         </label>
                     </div>
                     ))}
-                    {Object.keys(ACTIONS).map((key) => (
+                    <h1>User Actions Permissions: </h1>
+                    {Object.entries(ACTIONS).map(([key, value]) => (
                     <div key={key}>
                         <label>
                         <input
                        
                         className=''
                         type="checkbox"
-                        value={ROLES[key]}
-                        checked={userAllowedActions.includes(ACTIONS[key])}
+                        value={value}
+                        checked={userAllowedActions.includes(value)}
                         onChange={onUserAllowedActionsChanged}
                         />
-                        {ACTIONS[key]}
+                        {key}
                         </label>
                     </div>
                 ))}
 
-               
-                {/* <label className="form__label" htmlFor="userRoles">
-                    ASSIGNED ROLES:</label>
-                <select
-                    id="userRoles"
-                    name="userRoles"
-                    className={`form__select ${validRolesClass}`}
-                    multiple={true}
-                    size="7"
-                    value={userRoles}
-                    onChange={onUserRolesChanged}
-                >
-                    {options}
-                </select> */}
+           
+
+                <div className="flex justify-end items-center space-x-4">
+                    <button 
+                        className=" px-4 py-2 bg-green-500 text-white rounded"
+                        type='submit'
+                        title="Save"
+                        onClick={onSaveUserClicked}
+                        disabled={!canSave}
+                        >
+                        Save Changes
+                    </button>
+                    <button 
+                    className=" px-4 py-2 bg-red-500 text-white rounded"
+                    onClick={handleCancel }
+                    >
+                    Cancel
+                    </button>
+                </div>
 
             </form>
         </>

@@ -3,15 +3,14 @@ import DataTable from 'react-data-table-component'
 import { useSelector } from 'react-redux'
 import { selectAllUsers } from "./usersApiSlice"//use the memoized selector 
 import { useState } from "react"
+import { useDeleteUserMutation } from "./usersApiSlice"
 import { Link , useNavigate} from 'react-router-dom'
 
-import { FiEdit } from "react-icons/fi"
+import { FiEdit, FiDelete  } from "react-icons/fi"
 import { RiDeleteBin6Line } from "react-icons/ri"
 import useAuth from "../../../hooks/useAuth"
-
 import User from './User'
 import SectionTabsDown from "../../../Components/Shared/Tabs/SectionTabsDown"
-
 
 const UsersList = () => {
 //get several things from the query
@@ -26,6 +25,13 @@ const UsersList = () => {
         refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
         refetchOnMountOrArgChange: true//refetch when we remount the component
     })
+
+    const [deleteUser, {
+      isSuccess: isDelSuccess,
+      isError: isDelError,
+      error: delerror
+  }] = useDeleteUserMutation()
+ 
 const Navigate = useNavigate()
     //get the users fromthe state
     const allUsers = useSelector(state => selectAllUsers(state))
@@ -42,27 +48,13 @@ const Navigate = useNavigate()
   }
   
 //handle edit
-
-const handleEdit=(e)=>{
-    //e.preventDefault()
-    const id= e.target.value
-    console.log(id)
-    Navigate(`/admin/usersManagement/:${id}`)//the path to be set in app.js and to be checked with server.js in backend, this is editing page of user
-    Navigate(`/admin/usersManagement/${id}`)//the path to be set in app.js and to be checked with server.js in backend, this is editing page of user
+const handleEdit=(id)=>{
+    Navigate(`/admin/usersManagement/${id}/`)//the path to be set in app.js and to be checked with server.js in backend, this is editing page of user
 }
-//handle delete
 
-const handleDelete=()=>{
-console.log('deleting')
+  const onDeleteUserClicked = async (id) => {    
+    await deleteUser({ id })
 }
-  // Handler for deleting selected rows
-  const handleDeleteSelected = () => {
-    console.log('Selected Rows to delete:', selectedRows)
-    // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
-
-
-    setSelectedRows([]) // Clear selection after delete
-  }
 
   // Handler for duplicating selected rows, 
   const handleDuplicateSelected = () => {
@@ -84,6 +76,7 @@ const toDuplicate = selectedRows[-1]
     setSelectedRows([]); // Clear selection after delete
   }
 
+  const errContent = (error?.data?.message || delerror?.data?.message) ?? ''
   const column =[
     { 
       name: "#", // New column for entry number
@@ -127,15 +120,19 @@ const toDuplicate = selectedRows[-1]
     selector:row=>row.userRoles,
     sortable:true,
   },
+  {name: "Actions Allowed",
+    selector:row=>row.userAllowedActions,
+    sortable:true,
+  },
   { 
     name: "Actions",
     cell: row => (
       <div className="space-x-1">
         {/* /////////////////////condition is canEdit and not ! of it */}
-        {!canEdit?(<button   onClick={() => handleEdit(row._id)} className="" > 
+        {canEdit?(<button   onClick={() => handleEdit(row._id)} className="" > 
         <FiEdit fontSize={20}/> 
         </button>):null}
-        {canDelete?(<button onClick={() => handleDelete(row._id)} className="">
+        {canDelete?(<button onClick={() => onDeleteUserClicked(row._id)} className="">
           <RiDeleteBin6Line fontSize={20}/>
         </button>):null}
       </div>
@@ -153,7 +150,7 @@ const toDuplicate = selectedRows[-1]
       content = <p className="errmsg">{error?.data?.message}</p>//errormessage class defined in the css, the error has data and inside we have message of error
   }
   
-  if (isSuccess) {
+  if (isSuccess||isDelSuccess) {
   
   return (
     <>
@@ -180,16 +177,9 @@ const toDuplicate = selectedRows[-1]
               onClick={handleDetailsSelected}
               disabled={selectedRows.length !== 1} // Disable if no rows are selected
                 >
-              Student Details
+              User Details
             </button>
-          <button 
-              className=" px-4 py-2 bg-red-500 text-white rounded"
-              onClick={handleDeleteSelected}
-              disabled={selectedRows.length === 0} // Disable if no rows are selected
-        hidden={!canDelete}
-              >
-              Delete Selected
-          </button>
+          
           <button 
               className="px-3 py-2 bg-yellow-400 text-white rounded"
               onClick={handleDuplicateSelected}

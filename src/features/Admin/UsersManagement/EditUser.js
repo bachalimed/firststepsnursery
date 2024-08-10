@@ -7,6 +7,7 @@ const EditUser = () => {
   const { id } = useParams()//pull the id from use params from the url
 
   const user = useSelector(state => selectUserById(state, id))//selectUserById is a memoized selector created in the user API
+  console.log('the user is ', user, id)
 
   const content = user ? <EditUserForm user={user} /> : <p>Loading...</p>
 

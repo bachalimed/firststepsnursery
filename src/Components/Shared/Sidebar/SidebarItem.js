@@ -17,11 +17,10 @@ const isAnyValueInMenu = userRoles.some(value => props.menu.allowedRoles.include
 //const isAnyValueInSubmenu = userRoles.some(value => props.menu.submenuItem.allowedRoles.includes(value))
 //for the logout button:
 const{canEdit, canDelete, canAdd, canCreate}=useAuth()
-console.log('canEdit', canEdit)
-console.log('canEdit', canEdit)
-console.log('canEdit', canEdit)
-console.log('canEdit', canEdit)
-
+// console.log('canEdit', canEdit)
+// console.log('canEdit', canEdit)
+// console.log('canEdit', canEdit)
+// console.log('canEdit', canEdit)
 
 	return (   
 		<>

@@ -4,7 +4,7 @@ import { useGetStudentsQuery } from "./studentsApiSlice"
 import SectionTabs from '../../../Components/Shared/Tabs/SectionTabs'
 import DataTable from 'react-data-table-component'
 import { useSelector } from 'react-redux'
-import { selectStudentById, selectAllStudents } from './studentsApiSlice'//use the memoized selector 
+import {  selectAllStudents } from './studentsApiSlice'//use the memoized selector 
 import { useState } from "react"
 import { Link } from 'react-router-dom'
 import { useNavigate } from "react-router-dom"
@@ -13,7 +13,6 @@ import { FiEdit } from "react-icons/fi"
 import { RiDeleteBin6Line } from "react-icons/ri"
 
 import useAuth from '../../../hooks/useAuth'
-
 
 
 const StudentsList = () => {
@@ -32,14 +31,13 @@ const {
 })
 const Navigate = useNavigate()
 const allStudents = useSelector(state => selectAllStudents(state))
-const{canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
-// console.log('canEdit', canEdit)
+const{canEdit, canDelete, canCreate, status2}=useAuth()
+// console.log('in student list canEdit', canEdit)
 // console.log('canDelete', canDelete)
 // console.log('canAdd', canAdd)
 // console.log('canCreate', canCreate)
 // console.log('isParent', isParent)
 // console.log('status2', status2)
-
 
   // State to hold selected rows
   const [selectedRows, setSelectedRows] = useState([])
@@ -164,10 +162,7 @@ if (isError) {
 
 if (isSuccess) {
 
-
-
-
-return (
+ content =  
   <>
   <SectionTabs/>
   <div className=' flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200' >
@@ -214,9 +209,10 @@ return (
 
   </div>
   </>
-)
+
 
 }
+return content
 
 }
 export default StudentsList
