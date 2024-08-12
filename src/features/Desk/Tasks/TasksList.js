@@ -1,7 +1,7 @@
 
 
 import { useGetTasksQuery } from "./tasksApiSlice"
-import SectionTabs from '../../../Components/Shared/Tabs/SectionTabs'
+import Tasks from "../Tasks"
 import DataTable from 'react-data-table-component'
 import { useSelector } from 'react-redux'
 import {  selectAllTasks } from './tasksApiSlice'//use the memoized selector 
@@ -190,7 +190,7 @@ if (isSuccess) {
 
  content =  
   <>
-  <SectionTabs/>
+  <Tasks/>
   <div className=' flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200' >
      {/* <div>
     <input type="text" placeholder="search" onChange={handleFilter}/>

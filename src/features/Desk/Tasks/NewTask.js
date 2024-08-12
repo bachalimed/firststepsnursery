@@ -9,7 +9,7 @@ const Newtask = () => {
     //for this reason we will check the array length 
     if (!users?.length) return <p>Not Currently Available</p>
 
-   
+
     const content = <NewTaskForm users={users} />//if we have users, the notes will use that info and we pass users in props from the new Task Form
     return content
 }

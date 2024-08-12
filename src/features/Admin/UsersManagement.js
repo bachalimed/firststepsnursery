@@ -1,21 +1,35 @@
+import { Link } from 'react-router-dom'
 
 
-import React from 'react';
+//we will  find the object corresponding to the page and extract the section tabs
+const AcademicsSet = () => {
 
-
-import SectionTabsDown from '../../Components/Shared/Tabs/SectionTabsDown'
-
-const UsersManagement = () => {
-
-
-  return (
-  
-    <div className="flex bg-gray-300 justify-left  ">  
-   
-	  <SectionTabsDown/>
-
-    </div>
-  )
+const academicsSetTabs= 
+{title:"Users Management",
+  path:"/admin/usersManagement/",
+  allowedRoles:[ "Admin"],
+  spaced:false,
+  sectionTabs:[
+    {title:"All Users",
+    path:"/admin/usersManagement/users/"},
+    
+    {title:"New User",
+    path:"/admin/usersManagement/newUser/"}
+  ]
 }
 
-export default UsersManagement
+let content
+content = (
+  
+    <div className="flex bg-gray-300 justify-left  ">  
+      <ul className='flex gap-2 px-2 py-2 bg-gray-300'>
+        <Link to={'/admin/usersManagement/users/'}><li >All Users</li></Link>
+        <Link to={'/admin/usersManagement/newUser'}><li >New User </li></Link>
+        <Link to={'/admin/usersManagement/'}><li >option3</li></Link>
+      </ul>
+    </div>
+  )
+ return content
+}
+
+export default AcademicsSet

@@ -1,7 +1,8 @@
 
 
 import { useGetStudentsQuery } from "./studentsApiSlice"
-import SectionTabs from '../../../Components/Shared/Tabs/SectionTabs'
+
+import StudentsParents from "../StudentsParents"
 import DataTable from 'react-data-table-component'
 import { useSelector } from 'react-redux'
 import {  selectAllStudents } from './studentsApiSlice'//use the memoized selector 
@@ -164,7 +165,8 @@ if (isSuccess) {
 
  content =  
   <>
-  <SectionTabs/>
+  
+  <StudentsParents/>
   <div className=' flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200' >
      {/* <div>
     <input type="text" placeholder="search" onChange={handleFilter}/>

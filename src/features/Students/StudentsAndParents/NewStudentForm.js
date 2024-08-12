@@ -1,10 +1,10 @@
 import React from 'react'
-import SectionTabs from '../../../Components/Shared/Tabs/SectionTabs'
+import StudentsParents from '../StudentsParents'
 
 const NewStudentForm = () => {
   return (
     <div>
-      <SectionTabs/>
+      <StudentsParents/>
       NewStudent tab
       </div>
   )

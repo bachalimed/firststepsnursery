@@ -8,7 +8,6 @@ import useAuth from "../../../hooks/useAuth"
 import {selectUserById} from '../../Admin/UsersManagement/usersApiSlice'
 
 const NewTaskForm = ({ users }) => {
-
     const [addNewTask, {
         isLoading,
         isSuccess,
@@ -59,7 +58,7 @@ const NewTaskForm = ({ users }) => {
 
     const content = (
         <>
-        <SectionTabs/>
+        {/* <SectionTabs/> */}
             <p className={errClass}>{error?.data?.message}</p>
 
             <form className="form" onSubmit={onSaveTaskClicked}>

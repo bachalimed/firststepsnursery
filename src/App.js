@@ -13,7 +13,12 @@ import StudentsList from './features/Students/StudentsAndParents/StudentsList'
 import StudentDetails from './features/Students/StudentsAndParents/StudentDetails'
 import ParentDetails from './features/Students/StudentsAndParents/ParentDetails'
 import NewStudentForm from './features/Students/StudentsAndParents/NewStudentForm'
+
 import Admissions from "./features/Students/Admissions"
+import AllAdmissions from "./features/Students/Admissions/AllAdmissions"
+import EditAdmission from "./features/Students/Admissions/EditAdmission"
+import NewAdmissionForm from './features/Students/Admissions/NewAdmissionForm'
+
 import Enrolments from "./features/Students/Enrolments"
 import NurseryPlannings from './features/Academics/NurseryPlannings'
 import SchoolPlannings from './features/Academics/SchoolPlannings'
@@ -30,9 +35,6 @@ import Chat from './features/Desk/Chat'
 import Inquiries from './features/Desk/Inquiries'
 import Mails from './features/Desk/Mails'
 
-import Tasks from './features/Desk/Tasks'
-import TasksList from './features/Desk/Tasks/TasksList'
-import MyTasksList from './features/Desk/Tasks/MyTasksList'
 import Cms from './features/CMS/Cms'
 import DashboardSet from './features/AppSettings/DashboardSet'
 import AcademicsSet from './features/AppSettings/AcademicsSet'
@@ -49,8 +51,13 @@ import NewUserForm from './features/Admin/UsersManagement/NewUserForm'
 import UserDetails from './features/Admin/UsersManagement/UserDetails'
 
 import UsersManagement from './features/Admin/UsersManagement'
+
+import Tasks from './features/Desk/Tasks'
+import TasksList from './features/Desk/Tasks/TasksList'
+import MyTasksList from './features/Desk/Tasks/MyTasksList'
 import EditTask from './features/Desk/Tasks/EditTask'
 import NewTask from './features/Desk/Tasks/NewTask'
+import TaskDetails from './features/Desk/Tasks/TaskDetails'
 
 import Prefetch from './features/auth/Prefetch'// this will keep a subscription to the states and prevend the expiry of cached data, we will wrap it around the protected pages 
 import PersistLogin from './features/auth/PersistLogin'
@@ -107,12 +114,9 @@ const App = () => {
 								<Route index element={<Dashboard />} />   {/*  index will show as a default in the dashboard layout*/}
 							</Route> {/* end of dashboard route */}
 
-							<Route path="students" element={<DashboardLayout />} >	 				
-								
-
+							<Route path="students" element={<DashboardLayout />} >	 												
 								<Route path="studentsParents" > 					
-								<Route index element={<StudentsParents />} /> {/*the path link is in sidebarmenu*/ }
-
+								<Route index element={<StudentsParents />} /> 
 									<Route path="students/" element={<StudentsList />}>												
 										<Route path=":studentId" element={<StudentDetails />}/>
 										<Route path="newStudent" element={<NewStudentForm />}/>
@@ -120,20 +124,19 @@ const App = () => {
 
 									<Route path="parents/" element={<ParentsList />}>
 										<Route path=":parentId" element={<ParentDetails />}/>
-
 									</Route> {/* end of Parents route */}
 
-									<Route path="newStudent/" element={<NewStudentForm />}>
-									
-									
-									</Route> {/* end of newStudent route */}
-								
-								
-								
+									<Route path="newStudent/" element={<NewStudentForm />}/>																		
+																													
 								</Route> {/* end of studentsParents route */}
 
 								<Route path="admissions" > 					
 								<Route index element={<Admissions />} /> 
+									<Route path="allAdmissions/" element={<AllAdmissions/>}>												
+									<Route path="newAdmission" element={<NewAdmissionForm/>}/>
+									<Route path=":admission" element={<EditAdmission/>}/>
+									</Route> {/* end of admissions route */}
+
 								</Route> {/* end of Admissions route */}
 
 								<Route path="enrolments" > 					
@@ -203,7 +206,7 @@ const App = () => {
 								<Route index element={<Tasks />} /> {/*the path link is in sidebarmenu*/ }							
 									<Route path="tasks/" element={<TasksList />}/> 						
 									<Route path="myTasks/" element={<MyTasksList />}/> {/*id of the user is part of the path*/}						
-									<Route path="taskDetails/:id/" element={<TasksList />}/> 						
+									<Route path="taskDetails/:id/" element={<TaskDetails />}/> 						
 									<Route path="newTask/" element={<NewTask />}/> 		{/*is part of the path*/}			
 									<Route path=":id/" element={<EditTask />}/> 		{/*id of the task is part of the path*/}		
 								</Route> {/* end of tasks route */}
