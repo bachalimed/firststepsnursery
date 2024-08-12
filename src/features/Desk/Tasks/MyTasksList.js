@@ -1,11 +1,12 @@
 
 
-import { useGetTasksQuery } from "./tasksApiSlice"
+import { useGetTasksQuery, useGetTasksByUserIdQuery } from "./tasksApiSlice"
 import SectionTabs from '../../../Components/Shared/Tabs/SectionTabs'
 import DataTable from 'react-data-table-component'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import {  selectAllTasks } from './tasksApiSlice'//use the memoized selector 
-import { useState } from "react"
+import {  filterTasks, setTasks } from './tasksSlice'//use the memoized selector 
+import { useState, useEffect } from "react"
 import { Link } from 'react-router-dom'
 import { useNavigate } from "react-router-dom"
 import { FiEdit, FiCheckSquare  } from "react-icons/fi"
@@ -13,27 +14,27 @@ import { RiDeleteBin6Line } from "react-icons/ri"
 import useAuth from '../../../hooks/useAuth'
 import {PRIORITY, ICONS} from '../../../config/PRIORITY'
 
-const TasksList = () => {
 
-//get several things from the query
-const {
-  data: tasks,//the data is renamed tasks
-        isLoading,//monitor several situations is loading...
-        isSuccess,
-        isError,
-        error
-} = useGetTasksQuery('tasksList', {//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-  pollingInterval: 60000,//will refetch data every 60seconds
-  //refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
-  //refetchOnMountOrArgChange: true//refetch when we remount the component
-})
-const Navigate = useNavigate()
-const allTasks = useSelector(state => selectAllTasks(state))
+const MyTasksList = () => {
+  const dispatch = useDispatch()
+  const{userId, username, userRoles, canEdit, canDelete, canAdd, canCreate, status1, status2, isEmployee, isManager, isParent, isContentManager, isAnimator, isAcademic, isFinance, isHR, isDesk, isDirector,  isAdmin}=useAuth()
 
-
+ 
+  const Navigate = useNavigate()
+  //const allTasks = useSelector(state => selectAllTasks(state))
+  const allTasks = useSelector(selectAllTasks)//this works
+  //const updateState = setTasks(allTasks)
+  console.log("allTasks",allTasks)
+  console.log('userId', userId)
+//filter the tasks of the user only
+useEffect(() => {
+  
+  dispatch(filterTasks({userId}))//the userId is properly passed in
+  
+}, [userId, allTasks])
 
 //control what user can see, update(modify), delete(remove), close a task 
-const{username, userRoles, canEdit, canDelete, canAdd, canCreate, status1, status2, isEmployee, isManager, isParent, isContentManager, isAnimator, isAcademic, isFinance, isHR, isDesk, isDirector,  isAdmin}=useAuth()
+
 
 
   // State to hold selected rows
@@ -180,13 +181,6 @@ sortable:true
 ]
 let content
 
-if (isLoading) content = <p>Loading...</p>
-
-if (isError) {
-    content = <p className="errmsg">{error?.data?.message}</p>//errormessage class defined in the css, the error has data and inside we have message of error
-}
-
-if (isSuccess) {
 
  content =  
   <>
@@ -230,8 +224,8 @@ if (isSuccess) {
   </>
 
 
-}
+
 return content
 
 }
-export default TasksList
+export default MyTasksList

@@ -5,7 +5,7 @@ import { sidebarMenuUp } from '../../lib/Consts/SidebarMenu'
 import { useState, useEffect } from 'react'
 
 
-const SectionTabs = () => {
+const SectionTabs = (userId) => {
   const location = useLocation()
   const [sectionTabs, setSectionTabs] = useState([]);
 //find the submenu corresponding to the path we are in and get the sections from it
@@ -35,7 +35,7 @@ useEffect(() => {
 return (  
     <ul className='flex gap-2 px-2 py-2 bg-gray-300'>
       {sectionTabs.map((tab, index) => (
-        <Link to={tab.path}><li key={index}>{tab.title}</li></Link>
+       <Link to={tab.path}concat><li key={index}>{tab.title}</li></Link>
       ))}
     </ul>
 )}

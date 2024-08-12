@@ -25,7 +25,7 @@ const useAuth = () => {
 
     if (token) {
         const decoded = jwtDecode(token)
-        const { username, userRoles, userAllowedActions } = decoded.UserInfo//coming from the backend in the token.userInfo
+        const { userId, username, userRoles, userAllowedActions } = decoded.UserInfo//coming from the backend in the token.userInfo
 
        
         isEmployee= userRoles.includes('Employee')//this will return a boolean
@@ -59,9 +59,9 @@ const useAuth = () => {
         if (isAdmin) status2 = "Admin"
         
 
-        return { username, userRoles, status1, status2, canEdit, canDelete, canAdd, canCreate, isEmployee, isManager, isParent, isContentManager, isAnimator, isAcademic, isFinance, isHR, isDesk, isDirector,  isAdmin }
+        return { userId, username, userRoles, status1, status2, canEdit, canDelete, canAdd, canCreate, isEmployee, isManager, isParent, isContentManager, isAnimator, isAcademic, isFinance, isHR, isDesk, isDirector,  isAdmin }
     }
 
-    return { username: '', userRoles: [], status1, status2, canEdit, canDelete, canAdd, canCreate, isEmployee, isManager, isParent, isContentManager, isAnimator, isAcademic, isFinance, isHR, isDesk, isDirector,  isAdmin }
+    return { userId:'', username: '', userRoles: [], status1, status2, canEdit, canDelete, canAdd, canCreate, isEmployee, isManager, isParent, isContentManager, isAnimator, isAcademic, isFinance, isHR, isDesk, isDirector,  isAdmin }
 }
 export default useAuth

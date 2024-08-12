@@ -52,10 +52,10 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
     const[ validUserDob,setValidUserDob ]= useState(false)
     const[ userIsActive,setUserIsActive ]= useState(user.userIsActive)
     const[ userPhoto,setUserPhoto ]= useState(user.userPhoto)
-    const[ label,setLabel ]= useState(user.userPhoto.label)
-    const[ location,setLocation ]= useState(user.userPhoto.location)
-    const[ size,setSize ]= useState(user.userPhoto.size)
-    const[ format,setFormat ]= useState(user.userPhoto.format)
+    //const[ label,setLabel ]= useState(user.userPhoto.label)
+    //const[ location,setLocation ]= useState(user.userPhoto.location)
+    //const[ size,setSize ]= useState(user.userPhoto.size)
+    //const[ format,setFormat ]= useState(user.userPhoto.format)
     const[ userAddress,setUserAddress ]= useState(user.userAddress)
     const[ validUserAddress,setValidUserAddress ]= useState(false)
     const[ house,setHouse ]= useState(user.userAddress.house)
@@ -125,11 +125,12 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
             setIsEmployee('')
             setUserDob('')
             setUserIsActive(false)
-            setLabel('')
-            setLocation('')
-            setSize()
-            setFormat('')
-            setUserPhoto({label:'', location:'', size:'', format:''})
+            //setLabel('')
+            //setLocation('')
+            //setSize()
+            //setFormat('')
+            setUserPhoto('')
+            //setUserPhoto({label:'', location:'', size:'', format:''})
             setHouse('')
             setStreet('')
             setArea('')
@@ -159,10 +160,11 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
      const onIsEmployeeChanged = e => setIsEmployee(e.target.value)
      const onUserDobChanged = e => setUserDob(e.target.value)
      const onUserIsActiveChanged = e => setUserIsActive(prev => !prev)
-     const onLabelChanged = e => setLabel(e.target.value)
-     const onLocationChanged = e => setLocation(e.target.value)
-     const onSizeChanged = e => setSize(e.target.value)
-     const onFormatChanged = e => setFormat(e.target.value)
+     //const onLabelChanged = e => setLabel(e.target.value)
+     //const onLocationChanged = e => setLocation(e.target.value)
+     //const onSizeChanged = e => setSize(e.target.value)
+     //const onFormatChanged = e => setFormat(e.target.value)
+     const onUserPhotoChanged = e => setUserPhoto(e.target.value)
     
      const onHouseChanged = e => setHouse(e.target.value)
      const onStreetChanged = e => setStreet(e.target.value)
@@ -197,23 +199,23 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
 //this will ensure the update of the states
     useEffect(() => {
         setUserFullName({userFirstName:userFirstName, userMiddleName:userMiddleName, userLastName:userLastName})
-        setUserPhoto({label:label, location:location, size:size, format:format})
+        //setUserPhoto({label:label, location:location, size:size, format:format})
         setUserAddress({house:house, street:street, area:area, postCode:postCode, city:city})
         setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:email}) 
-      }, [userFullName, userPhoto, userAddress, userContact])
+      }, [userFullName,  userAddress, userContact])
 
      //console.log( validUserFirstName,userFirstName, validUserLastName, validUsername, validPassword, validUserDob, 
         //validStreet,  validPrimaryPhone, userRoles, validEmail, userRoles.length, isParent, isEmployee, userIsActive )
      
         const onSaveUserClicked = async (e) => {        
-            console.log(` 'first name' ${userFirstName}', fullfirstname,' ${userFullName.userFirstName}', house: '${house}', usercontact house' ${userContact.house},    ${userRoles.length},${isParent}, ${isEmployee}` )
+            //console.log(` 'first name' ${userFirstName}', fullfirstname,' ${userFullName.userFirstName}', house: '${house}', usercontact house' ${userContact.house},    ${userRoles.length},${isParent}, ${isEmployee}` )
      
         if (password) {
            
-            await updateUser({ id: user.id, userFullName, userAllowedActions, username, password, isParent, isEmployee, userDob, userIsActive, userRoles, userPhoto, userAddress, userContact })
+            await updateUser({ id: user.id, userFullName, userAllowedActions, username, password, userPhoto, isParent, isEmployee, userDob, userIsActive, userRoles,  userAddress, userContact })
         } else {
            
-            await updateUser({ id: user.id, userFullName, userAllowedActions, username, isParent, isEmployee, userDob, userIsActive, userRoles, userPhoto, userAddress, userContact })
+            await updateUser({ id: user.id, userFullName, userAllowedActions, username, isParent, userPhoto, isEmployee, userDob, userIsActive, userRoles,  userAddress, userContact })
         }
     }
 
@@ -223,17 +225,6 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
 
 
     
-
-    // const options = Object.values(ROLES).map(role => {
-    //     return (
-    //         <option
-    //             key={role}
-    //             value={role}
-
-    //         > {role}</option >
-    //     )
-    // })
-
     let canSave
     if (password) {
         canSave = [validUserFirstName, validUserLastName, validUsername, validPassword, validUserDob,     validStreet,  validPrimaryPhone, validEmail, userRoles.length].every(Boolean) && !isLoading
@@ -420,53 +411,8 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     value={email}
                     onChange={onEmailChanged}
                 />
-               
+             
                 <label className="form__label" htmlFor="label">
-                    Photo: <span className="nowrap"></span></label>
-                <input
-                    className={`form__input ${validUserClass}`}
-                    id="label"
-                    name="label"
-                    type="text"
-                    autoComplete="off"
-                    value={label}
-                    onChange={onLabelChanged}
-                />
-                 <label className="form__label" htmlFor="location">
-                    Photo location : <span className="nowrap"></span></label>
-                <input
-                    className={`form__input ${validUserClass}`}
-                    id="location"
-                    name="location"
-                    type="text"
-                    autoComplete="off"
-                    value={location}
-                    onChange={onLocationChanged}
-                />
-                <label className="form__label" htmlFor="size">
-                    Photo size: <span className="nowrap"></span></label>
-                <input
-                    className={`form__input ${validUserClass}`}
-                    id="size"
-                    name="size"
-                    type="number"
-                    autoComplete="off"
-                    value={size}
-                    onChange={onSizeChanged}
-                />
-                <label className="form__label" htmlFor="format">
-                    Photo format: <span className="nowrap"></span></label>
-                <input
-                    className={`form__input ${validUserClass}`}
-                    id="format"
-                    name="format"
-                    type="text"
-                    autoComplete="off"
-                    value={format}
-                    onChange={onFormatChanged}
-                />
-
-<label className="form__label" htmlFor="label">
                     User Is Parent: <span className="nowrap">[24 digits]</span></label>
                 <input
                     className={`form__input ${validUserClass}`}

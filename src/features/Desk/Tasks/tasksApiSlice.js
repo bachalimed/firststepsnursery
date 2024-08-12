@@ -30,12 +30,25 @@ export const tasksApiSlice = apiSlice.injectEndpoints({
           providesTags: (result, error, arg) => {
               if (result?.ids) {
                   return [
-                      { type: 'Task', id: 'LIST' },
-                      ...result.ids.map(id => ({ type: 'Task', id }))
+                      { type: 'tasks', id: 'LIST' },
+                      ...result.ids.map(id => ({ type: 'tasks', id }))
                   ]
-              } else return [{ type: 'Task', id: 'LIST' }]
+              } else return [{ type: 'tasks', id: 'LIST' }]
           }
       }),
+      getTasksByUserId: builder.query({
+        query: id => `/desk/tasks/myTasks/`,
+        transformResponse: responseData => {
+            const loadedTasks = responseData.map(task => {
+                task.id = task._id
+                return task
+            })
+            return tasksAdapter.setAll(initialState, loadedTasks)
+        },
+        providesTags: (result, error, arg) => [
+            ...result.ids.map(id => ({ type: 'tasks', id }))
+        ]
+    }),
       addNewTask: builder.mutation({
         query: initialTaskData => ({
             url: '/desk/tasks',
@@ -45,7 +58,7 @@ export const tasksApiSlice = apiSlice.injectEndpoints({
             }
         }),
         invalidatesTags: [//forces the cache in RTK query to update
-            { type: 'Task', id: "LIST" }//the task list will be unvalidated and updated
+            { type: 'tasks', id: "LIST" }//the task list will be unvalidated and updated
         ]
     }),
     updateTask: builder.mutation({
@@ -57,7 +70,7 @@ export const tasksApiSlice = apiSlice.injectEndpoints({
             }
         }),
         invalidatesTags: (result, error, arg) => [//we re not updating all the list, butonly update the task in the cache by using the arg.id
-            { type: 'Task', id: arg.id }
+            { type: 'tasks', id: arg.id }
         ]
     }),
     deleteTask: builder.mutation({
@@ -67,7 +80,7 @@ export const tasksApiSlice = apiSlice.injectEndpoints({
             body: { id }
         }),
         invalidatesTags: (result, error, arg) => [
-            { type: 'Task', id: arg.id }
+            { type: 'tasks', id: arg.id }
         ]
     }),
   }),
@@ -75,6 +88,7 @@ export const tasksApiSlice = apiSlice.injectEndpoints({
 
 export const {
   useGetTasksQuery,
+  useGetTasksByUserIdQuery,
   useAddNewTaskMutation,
   useUpdateTaskMutation,
   useDeleteTaskMutation,

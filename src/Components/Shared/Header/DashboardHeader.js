@@ -6,12 +6,11 @@ import AcademicYearsSelection from './AcademicYearsSelection'
 import useAcademicYears from '../../../hooks/useAcademicYears'
 
 const DashboardHeader = () => {
-  const {username, userRoles, canEdit, canDelete, canAdd, canCreate}=useAuth()
+  const {userId, username, userRoles, canEdit, canDelete, canAdd, canCreate}=useAuth()
 
 
   //const { allAcademicYears, currentAcademicYear } = useAcademicYears()
 
- 
 
   
   const content =(
@@ -21,7 +20,7 @@ const DashboardHeader = () => {
         <AcademicYearsSelection/>
         
         <p className="">
-         welcome back Mr {username}<br/>
+         welcome back Mr {username} id: {userId}<br/>
          current Status: {userRoles}<br/>
          current actions:  {canEdit?'canEdit':''} ,{canDelete?'canDelete':''},{canAdd?'canAdd':''},{canCreate?'canCreate':''}
 

@@ -46,10 +46,10 @@ const NewUserForm = () => {//an add user function that can be called inside the 
     const[ validUserDob,setValidUserDob ]= useState(false)
     const[ userIsActive,setUserIsActive ]= useState(false)
     const[ userPhoto,setUserPhoto ]= useState('')
-    const[ userPhotoLabel,setUserPhotoLabel ]= useState('')
-    const[ userPhotoFormat,setUserPhotoFormat ]= useState('')
+    //const[ userPhotoLabel,setUserPhotoLabel ]= useState('')
+    //const[ userPhotoFormat,setUserPhotoFormat ]= useState('')
     //const[ size,setSize ]= useState()
-    const[ format,setFormat ]= useState('')
+    //const[ format,setFormat ]= useState('')
     const[ userAddress,setUserAddress ]= useState('')
     const[ validUserAddress,setValidUserAddress ]= useState(false)
     const[ house,setHouse ]= useState('')
@@ -121,8 +121,8 @@ const NewUserForm = () => {//an add user function that can be called inside the 
             setUserIsActive(false) 
             //setSize() 
             setUserPhoto('')
-            setUserPhotoLabel('')
-            setUserPhotoFormat('')
+            //setUserPhotoLabel('')
+            //setUserPhotoFormat('')
             setHouse('')
             setStreet('')
             setArea('')
@@ -148,8 +148,8 @@ const NewUserForm = () => {//an add user function that can be called inside the 
     const onUserDobChanged = e => setUserDob(e.target.value)
     const onUserIsActiveChanged = e => setUserIsActive(prev => !prev)//will invert the previous state
     const onUserPhotoChanged = e => {setUserPhoto(e.target.files[0])}
-    const onUserPhotoLabelChanged = e => setUserPhotoLabel(e.target.value)
-    const onUserPhotoFormatChanged = e => setUserPhotoFormat(e.target.value)
+    //const onUserPhotoLabelChanged = e => setUserPhotoLabel(e.target.value)
+    //const onUserPhotoFormatChanged = e => setUserPhotoFormat(e.target.value)
     //const onSizeChanged = e => setSize(e.target.value)  
     const onHouseChanged = e => setHouse(e.target.value)
     const onStreetChanged = e => setStreet(e.target.value)
@@ -175,13 +175,6 @@ const NewUserForm = () => {//an add user function that can be called inside the 
       }
 
 
-    // const onUserRolesChanged = e => {//because the roles is a select and allows multiple selections, we get an array from
-    //     const values = Array.from(
-    //         e.target.selectedOptions, //HTMLCollection that s why we have array from
-    //         (option) => option.value// we get the values from options and we put them into Roles array
-    //     )
-    //     setUserRoles(values)
-    // }
 //we do not  need to retriev the employee and parent ids from the DB ans set their state because they are saved before the user
 //check if the parent and employee id is available or delete the variable
 if (isParent===''){ setIsParent(undefined)}
@@ -208,7 +201,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
         if (canSave) {//if cansave is true
             //generate the objects before saving
             //console.log(` 'first name' ${userFirstName}', fullfirstname,' ${userFullName.userFirstName}', house: '${house}', usercontact house' ${userContact.house},    ${userRoles.length},${isParent}, ${isEmployee}` )
-            await addNewUser({ username, password,  userFullName, isParent, isEmployee, userDob, userIsActive, userRoles, userAllowedActions, userPhoto, userPhotoLabel, userPhotoFormat, userAddress, userContact })//we call the add new user mutation and set the arguments to be saved
+            await addNewUser({ username, password,  userFullName, isParent, isEmployee, userDob, userPhoto, userIsActive, userRoles, userAllowedActions, userAddress, userContact })//we call the add new user mutation and set the arguments to be saved
             //added this to confirm save
             if (isError) {console.log('error savingg', error)//handle the error msg to be shown  in the logs??
             }
@@ -392,45 +385,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                     value={email}
                     onChange={onEmailChanged}
                 />
-               
-                <label className="form__label" htmlFor="label">
-                    Photo label: <span className="nowrap">[3-12 letters]</span></label>
-                <input
-                    className={`form__input ${validUserClass}`}
-                    id="label"
-                    name="label"
-                    type="text"
-                    autoComplete="off"
-                    value={userPhotoLabel}
-                    onChange={onUserPhotoLabelChanged}
-                />
-                <label className="form__label" htmlFor="location">
-                    Photo : <span className="nowrap"></span></label>
-                <input
-                    className={`form__input ${validUserClass}`}
-                    id="userPhoto"
-                    name="userPhoto"
-                    type="file"
-                    autoComplete="off"
-                    // value={userPhoto} because it is a file
-                    onChange={onUserPhotoChanged}
-                />
-                {/* will show only if status is loading */}
-                {isLoading === 'loading' && <p>Submitting...</p>}
-
-               
-                <label className="form__label" htmlFor="format">
-                    Photo format: <span className="nowrap">[3-12 letters]</span></label>
-                <input
-                    className={`form__input ${validUserClass}`}
-                    id="userPhotoFormat"
-                    name="userPhotoFormat"
-                    type="text"
-                    autoComplete="off"
-                    value={userPhotoFormat}
-                    onChange={onUserPhotoFormatChanged}
-                />
-                 <label className="form__label" htmlFor="isParent">
+                <label className="form__label" htmlFor="isParent">
                     User Is Parent: <span className="nowrap">[24 digits]</span></label>
                 <input
                     className={`form__input ${validUserClass}`}

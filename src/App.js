@@ -29,7 +29,10 @@ import Chat from './features/Desk/Chat'
 
 import Inquiries from './features/Desk/Inquiries'
 import Mails from './features/Desk/Mails'
+
+import Tasks from './features/Desk/Tasks'
 import TasksList from './features/Desk/Tasks/TasksList'
+import MyTasksList from './features/Desk/Tasks/MyTasksList'
 import Cms from './features/CMS/Cms'
 import DashboardSet from './features/AppSettings/DashboardSet'
 import AcademicsSet from './features/AppSettings/AcademicsSet'
@@ -189,20 +192,20 @@ const App = () => {
 								</Route> {/* end of leave route */}
 							</Route> {/* end of HR route */}
 
-							<Route path="desk" element={<DashboardLayout />} >	 				
-								<Route index element={<Inquiries />} />   
 
-								<Route path="inquiries" > 					
+							<Route path="desk" element={<DashboardLayout />} >	 											
+								<Route path="inquiries" > 	{/* start of inquiries route */}				
 								<Route index element={<Inquiries />} /> 
+
 								</Route> {/* end of inquiries route */}
 
-								<Route path="tasks/" > 					
-								<Route index element={<TasksList />} /> {/*the path link is in sidebarmenu*/ }
-								
+								<Route path="tasks/" > 	{/* start of tasks route */}				
+								<Route index element={<Tasks />} /> {/*the path link is in sidebarmenu*/ }							
 									<Route path="tasks/" element={<TasksList />}/> 						
+									<Route path="myTasks/" element={<MyTasksList />}/> {/*id of the user is part of the path*/}						
+									<Route path="taskDetails/:id/" element={<TasksList />}/> 						
 									<Route path="newTask/" element={<NewTask />}/> 		{/*is part of the path*/}			
-									<Route path=":id/" element={<EditTask />}/> 		{/*id is part of the path*/}			
-
+									<Route path=":id/" element={<EditTask />}/> 		{/*id of the task is part of the path*/}		
 								</Route> {/* end of tasks route */}
 
 								<Route path="chat" > 					
@@ -263,15 +266,11 @@ const App = () => {
 							<Route path="admin" element={<DashboardLayout />} >	 
 
 								<Route path="usersManagement/"	>		
-									<Route  index element={<UsersManagement />} />  {/*the path link is in sidebarmenu*/ }
-
-
+								<Route  index element={<UsersManagement />} />  {/*the path link is in sidebarmenu*/ }
 									<Route path="users/" element={<UsersList />}/> 						
 									<Route path="newUser/" element={<NewUserForm />}/> 		{/*is part of the path*/}			
-									<Route path="userDetails/:id" element={<UserDetails />}/> 		{/*is part of the path*/}			
-									<Route path=":id/" element={<EditUser />}/> 		{/*id is part of the path*/}			
-								
-								
+									<Route path="userDetails/:id/" element={<UserDetails />}/> 		{/*is part of the path*/}			
+									<Route path=":id/" element={<EditUser />}/> 		{/*id is part of the path*/}																
 								</Route>{/*end of usersManagement route*/}
 								
 								<Route path="blabla" > 					

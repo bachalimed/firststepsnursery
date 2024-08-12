@@ -196,8 +196,11 @@ export const sidebarMenuUp=[
 			allowedRoles:["Employee", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"],
 			spaced:false,
 			sectionTabs:[
-				{title:"Tasks",
+				{title:"All Tasks",
 				path:"/desk/tasks/tasks/"},
+
+				{title:"My Tasks",
+				path:"/desk/tasks/myTasks/"},
 				
 				{title:"New Task",
 				path:"/desk/tasks/newTask/"}

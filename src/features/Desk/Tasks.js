@@ -1,20 +1,26 @@
 
 import React from 'react';
+import  useAuth from '../../hooks/useAuth'
 
 
-import SectionTabsDown from '../../Components/Shared/Tabs/SectionTabsDown'
+import SectionTabs from '../../Components/Shared/Tabs/SectionTabs'
 
 const Tasks = () => {
+  //const { userId } = useAuth()//pull the id from use params from the url
+
+  //const{userId}=useAuth()
 
 
-  return (
+  const content = (
   
     <div className="flex bg-gray-300 justify-left  ">  
-   
-	  <SectionTabsDown/>
+
+       
+	  <SectionTabs />
 
     </div>
   )
+  return content
 }
 
 export default Tasks

@@ -9,7 +9,6 @@ import { Link , useNavigate} from 'react-router-dom'
 import { FiEdit, FiDelete  } from "react-icons/fi"
 import { RiDeleteBin6Line } from "react-icons/ri"
 import useAuth from "../../../hooks/useAuth"
-import User from './User'
 import SectionTabsDown from "../../../Components/Shared/Tabs/SectionTabsDown"
 
 const UsersList = () => {

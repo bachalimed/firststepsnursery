@@ -35,7 +35,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({//inject the ends points 
         }),
         addNewUser: builder.mutation({
             query: initialUserData => ({
-                url: '/admin/usersManagement/photos/',//modified to target the muler route before newUser controller route
+                url: '/admin/usersManagement/newUser/',//modified to target the muler route before newUser controller route
                 method: 'POST',
                 body: {
                     ...initialUserData,
@@ -48,6 +48,18 @@ export const usersApiSlice = apiSlice.injectEndpoints({//inject the ends points 
         updateUser: builder.mutation({
             query: initialUserData => ({
                 url: '/admin/usersManagement/:id',
+                method: 'PATCH',
+                body: {
+                    ...initialUserData,
+                }
+            }),
+            invalidatesTags: (result, error, arg) => [//we re not updating all the list, butonly update the user in the cache by using the arg.id
+                { type: 'User', id: arg.id }
+            ]
+        }),
+        updateUserPhoto: builder.mutation({
+            query: initialUserData => ({
+                url: '/admin/usersManagement/photos',
                 method: 'PATCH',
                 body: {
                     ...initialUserData,
@@ -75,7 +87,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({//inject the ends points 
 export const {//hooks created automatically from endpoint
     useGetUsersQuery,
     useAddNewUserMutation,
-    
+    useUpdateUserPhotoMutation,
     useUpdateUserMutation,
     useDeleteUserMutation,
 } = usersApiSlice
