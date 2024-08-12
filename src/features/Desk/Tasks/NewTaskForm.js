@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { useAddNewTaskMutation } from "./tasksApiSlice"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave } from "@fortawesome/free-solid-svg-icons"
-import SectionTabs from '../../../Components/Shared/Tabs/SectionTabs'
+import Tasks from '../Tasks'
 import useAuth from "../../../hooks/useAuth"
 import {selectUserById} from '../../Admin/UsersManagement/usersApiSlice'
 
@@ -58,7 +58,7 @@ const NewTaskForm = ({ users }) => {
 
     const content = (
         <>
-        {/* <SectionTabs/> */}
+        <Tasks/>
             <p className={errClass}>{error?.data?.message}</p>
 
             <form className="form" onSubmit={onSaveTaskClicked}>

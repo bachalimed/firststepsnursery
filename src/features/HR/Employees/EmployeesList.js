@@ -2,12 +2,11 @@ import React from 'react';
 
 import { useGetEmployeesQuery } from "./employeesApiSlice"
 import { useGetUsersQuery} from "../../Admin/UsersManagement/usersApiSlice"
-import SectionTabs from '../../../Components/Shared/Tabs/SectionTabs'
+import Employees from'../Employees'
 import DataTable from 'react-data-table-component'
 import { useSelector } from 'react-redux'
 import { selectEmployeeById, selectAllEmployees } from './employeesApiSlice'//use the memoized selector 
 import { selectAllUsers, selectUserById } from '../../Admin/UsersManagement/usersApiSlice'//use the memoized selector 
-
 
 const EmployeesList = () => {
 
@@ -70,7 +69,7 @@ if (isSuccess) {
 }
 return (
   <>
-  <SectionTabs/>
+  <Employees/>
   <div className=' flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200' >
      {/* <div>
     <input type="text" placeholder="search" onChange={handleFilter}/>

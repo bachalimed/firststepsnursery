@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave } from "@fortawesome/free-solid-svg-icons"
 import { ROLES } from "../../../config/UserRoles"
 import { ACTIONS } from "../../../config/UserActions"
-import SectionTabsDown from "../../../Components/Shared/Tabs/SectionTabsDown"
+import UsersManagement from '../UsersManagement'
 
 
 //regex to validate inputs in the form
@@ -242,7 +242,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
 
     const content = (
         <>
-            <SectionTabsDown />
+            <UsersManagement />
             <p className={errClass}>{errContent}</p>{/*if no error message will not show any on the screen*/}
 
             <form className="form" onSubmit={e => e.preventDefault()}>
