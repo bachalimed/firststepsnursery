@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom'
 
-
+import SearchBar from '../../Components/Shared/SearchBar'
 //we will  find the object corresponding to the page and extract the section tabs
-const AcademicsSet = () => {
+const UsersManagement = () => {
 
-const academicsSetTabs= 
+const usersManagementTabs= 
 {title:"Users Management",
   path:"/admin/usersManagement/",
   allowedRoles:[ "Admin"],
@@ -27,9 +27,15 @@ content = (
         <Link to={'/admin/usersManagement/newUser'}><li >New User </li></Link>
         <Link to={'/admin/usersManagement/'}><li >option3</li></Link>
       </ul>
+      <SearchBar/>
+
     </div>
-  )
+  
+
+
+
+)
  return content
 }
 
-export default AcademicsSet
+export default UsersManagement

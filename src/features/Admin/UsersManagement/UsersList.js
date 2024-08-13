@@ -9,7 +9,7 @@ import { Link , useNavigate} from 'react-router-dom'
 import { FiEdit, FiDelete  } from "react-icons/fi"
 import { RiDeleteBin6Line } from "react-icons/ri"
 import useAuth from "../../../hooks/useAuth"
-import usersManagement from '../UsersManagement'
+import UsersManagement from '../UsersManagement'
 
 const UsersList = () => {
 //get several things from the query
@@ -151,9 +151,9 @@ const toDuplicate = selectedRows[-1]
   
   if (isSuccess||isDelSuccess) {
   
-  return (
+  content= (
     <>
-    <usersManagement/>
+    <UsersManagement/>
     <div className=' flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200' >
        {/* <div>
       <input type="text" placeholder="search" onChange={handleFilter}/>
@@ -191,9 +191,9 @@ const toDuplicate = selectedRows[-1]
   
     </div>
     </>
-  )
-  
-  }
+  ) 
+}
+  return content
   
   }
 
