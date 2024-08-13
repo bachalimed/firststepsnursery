@@ -5,7 +5,7 @@ import { selectAllUsers } from "./usersApiSlice"//use the memoized selector
 import { useState } from "react"
 import { useDeleteUserMutation } from "./usersApiSlice"
 import { Link , useNavigate} from 'react-router-dom'
-
+import { HiOutlineSearch } from 'react-icons/hi'
 import { FiEdit, FiDelete  } from "react-icons/fi"
 import { RiDeleteBin6Line } from "react-icons/ri"
 import useAuth from "../../../hooks/useAuth"
@@ -39,6 +39,22 @@ const Navigate = useNavigate()
 
   // State to hold selected rows
   const [selectedRows, setSelectedRows] = useState([])
+
+  //state to hold the search query
+    const [searchQuery, setSearchQuery] = useState('')
+    //state to hold search bar hidden
+    const [searchHidden, setSearchHidden]= useState(true)
+
+    //the serach result data
+    const filteredUsers = allUsers.filter(item => {
+      return Object.values(item).some(val =>
+          String(val).toLowerCase().includes(searchQuery.toLowerCase())
+      )})
+
+    const handleSearch = (e) => {
+        setSearchQuery(e.target.value)
+    };
+
 
   // Handler for selecting rows
   const handleRowSelected = (state) => {
@@ -154,14 +170,18 @@ const toDuplicate = selectedRows[-1]
   content= (
     <>
     <UsersManagement/>
+      <div className='relative h-10 mr-2 '>
+				<HiOutlineSearch fontSize={20} className='text-gray-400 absolute top-1/2 -translate-y-1/2 left-3'/>
+				<input type='text'  value={searchQuery} onChange= {handleSearch} className='text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4'/>
+			</div>
     <div className=' flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200' >
-       {/* <div>
-      <input type="text" placeholder="search" onChange={handleFilter}/>
-     </div> */}
+       <div>
+      <input type="text" placeholder="search" />
+     </div>
      
      <DataTable
       columns={column}
-      data={allUsers}
+      data={filteredUsers}
       pagination
       selectableRows
       removableRows
