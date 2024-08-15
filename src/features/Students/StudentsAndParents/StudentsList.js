@@ -1,7 +1,7 @@
 
 
 import { useGetStudentsQuery } from "./studentsApiSlice"
-
+import { HiOutlineSearch } from 'react-icons/hi'
 import StudentsParents from "../StudentsParents"
 import DataTable from 'react-data-table-component'
 import { useSelector } from 'react-redux'
@@ -9,7 +9,7 @@ import {  selectAllStudents } from './studentsApiSlice'//use the memoized select
 import { useState } from "react"
 import { Link } from 'react-router-dom'
 import { useNavigate } from "react-router-dom"
-
+import { ImProfile } from "react-icons/im"
 import { FiEdit } from "react-icons/fi"
 import { RiDeleteBin6Line } from "react-icons/ri"
 
@@ -42,7 +42,24 @@ const{canEdit, canDelete, canCreate, status2}=useAuth()
 
   // State to hold selected rows
   const [selectedRows, setSelectedRows] = useState([])
+//state to hold the search query
+const [searchQuery, setSearchQuery] = useState('')
+   
 
+//the serach result data
+const filteredStudents = allStudents.filter(item => {
+  //the nested objects need extra logic to separate them
+  const firstNameMatch = item.studentName.firstName.toLowerCase().includes(searchQuery)
+  const middleNameMatch = item.studentName.middleName.toLowerCase().includes(searchQuery)
+  const lastNameMatch = item.studentName.lastName.toLowerCase().includes(searchQuery)
+  return (Object.values(item).some(val =>
+      String(val).toLowerCase().includes(searchQuery.toLowerCase())
+  )||firstNameMatch||middleNameMatch||lastNameMatch)
+})
+
+const handleSearch = (e) => {
+    setSearchQuery(e.target.value)
+}
   // Handler for selecting rows
   const handleRowSelected = (state) => {
     setSelectedRows(state.selectedRows)
@@ -140,10 +157,13 @@ sortable:true
   name: "Actions",
   cell: row => (
     <div className="space-x-1">
-      {canEdit?(<button   onClick={() => handleEdit(row._id)} className="" > 
+      <button className="text-blue-500" fontSize={20}  onClick={() => Navigate(`usersDetails/${row._id}`)}  > 
+        <ImProfile fontSize={20}/> 
+        </button>
+      {canEdit?(<button  className="text-yellow-400" onClick={() => handleEdit(row._id)}  > 
       <FiEdit fontSize={20}/> 
       </button>):null}
-      {canDelete?(<button onClick={() => handleDelete(row._id)} className="">
+      {canDelete?(<button className="text-red-500"  onClick={() => handleDelete(row._id)}>
         <RiDeleteBin6Line fontSize={20}/>
       </button>):null}
     </div>
@@ -167,14 +187,16 @@ if (isSuccess) {
   <>
   
   <StudentsParents/>
+      <div className='relative h-10 mr-2 '>
+				<HiOutlineSearch fontSize={20} className='text-gray-400 absolute top-1/2 -translate-y-1/2 left-3'/>
+				<input type='text'  value={searchQuery} onChange= {handleSearch} className='text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4'/>
+			</div>
   <div className=' flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200' >
-     {/* <div>
-    <input type="text" placeholder="search" onChange={handleFilter}/>
-   </div> */}
+    
    
    <DataTable
     columns={column}
-    data={allStudents}
+    data={filteredStudents}
     pagination
     selectableRows
     removableRows
@@ -184,6 +206,7 @@ if (isSuccess) {
     >
 	</DataTable>
 	<div className="flex justify-end items-center space-x-4">
+        
         <button 
             className=" px-4 py-2 bg-green-500 text-white rounded"
             onClick={handleDetailsSelected}

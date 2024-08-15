@@ -1,21 +1,27 @@
-import { useGetUsersQuery } from "./usersApiSlice"
+import { useGetUsersQuery } from './usersApiSlice'
 import DataTable from 'react-data-table-component'
 import { useSelector } from 'react-redux'
 import { selectAllUsers } from "./usersApiSlice"//use the memoized selector 
-import { useState } from "react"
-import { useDeleteUserMutation } from "./usersApiSlice"
+import { useState } from 'react'
+import { useDeleteUserMutation } from './usersApiSlice'
 import { Link , useNavigate} from 'react-router-dom'
 import { HiOutlineSearch } from 'react-icons/hi'
-import { FiEdit, FiDelete  } from "react-icons/fi"
-import { RiDeleteBin6Line } from "react-icons/ri"
+import { FiEdit, FiDelete  } from 'react-icons/fi'
+import { RiDeleteBin6Line } from 'react-icons/ri'
 import useAuth from "../../../hooks/useAuth"
 import UsersManagement from '../UsersManagement'
+import { ImProfile } from 'react-icons/im'
+
+import { selectParentById } from '../../Students/StudentsAndParents/parentsApiSlice'
+import { IoShieldCheckmarkOutline, IoShieldOutline  } from "react-icons/io5";
+
+
 
 const UsersList = () => {
 //get several things from the query
     const {
-        data: users,//the data is renamed users
-        isLoading,//monitor several situations is loading...
+        data: users,//the data is deconstructing the  into users
+        isLoading,
         isSuccess,
         isError,
         error
@@ -42,18 +48,21 @@ const Navigate = useNavigate()
 
   //state to hold the search query
     const [searchQuery, setSearchQuery] = useState('')
-    //state to hold search bar hidden
-    const [searchHidden, setSearchHidden]= useState(true)
+   
 
     //the serach result data
     const filteredUsers = allUsers.filter(item => {
-      return Object.values(item).some(val =>
+      const firstNameMatch = item.userFullName.userFirstName.toLowerCase().includes(searchQuery)
+      const middleNameMatch = item.userFullName.userMiddleName.toLowerCase().includes(searchQuery)
+      const lastNameMatch = item.userFullName.userLastName.toLowerCase().includes(searchQuery)
+      return (Object.values(item).some(val =>
           String(val).toLowerCase().includes(searchQuery.toLowerCase())
-      )})
+      )||firstNameMatch||middleNameMatch||lastNameMatch)
+    })
 
     const handleSearch = (e) => {
         setSearchQuery(e.target.value)
-    };
+    }
 
 
   // Handler for selecting rows
@@ -103,51 +112,82 @@ const toDuplicate = selectedRows[-1]
     //show this column only if user is a parent and not employee
   
     { 
+  name: "Active",
+  selector:row=>row.userIsActive ,
+  cell: row => (
+    <span>
+      {row.userIsActive ? (
+        <IoShieldCheckmarkOutline className='text-green-500 text-2xl' />
+      ) : (
+        <IoShieldOutline  className='text-yellow-400 text-2xl' />
+      )}
+    </span>
+  ),
+  sortable:true,
+  width:'100px'
+   }, 
+    { 
   name: "ID",
   selector:row=>( <Link to={`/admin/usersManagement/userDetails/${row._id}`} >{row._id} </Link> ),
-  sortable:true
+  sortable:true,
+  width:'200px'
    }, 
     { 
   name: "Username",
   selector:row=>( <Link to={`/admin/usersManagement/userDetails/${row._id}`}> {row.username}</Link>),
-  sortable:true
+  sortable:true,
+  width:'120px'
    }, 
     { 
-  name: "Name",
-  selector:row=>( <Link to={`/admin/usersManagement/userDetails/${row._id}`}> {row.userFullName.userFirstName+" "+row.userFullName.userMiddleName+" "+row.userFullName.userLastName}</Link>),
-  sortable:true
+  name: "first Name",
+  selector:row=>( <Link to={`/admin/usersManagement/userDetails/${row._id}`}> {row.userFullName.userFirstName+" "+row.userFullName.userMiddleName}</Link>),
+  sortable:true,
+  width:'150px'
+   }, 
+    { 
+  name: "Last Name",
+  selector:row=>( <Link to={`/admin/usersManagement/userDetails/${row._id}`}> {row.userFullName.userLastName}</Link>),
+  sortable:true,
+  width:'150px'
    }, 
    
   {name: "DOB",
     selector:row=>new Date(row.userDob).toLocaleString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' }),
-    
+    width:'100px',
     sortable:true
   }, 
   {name: "Employee ?",
     selector:row=>row.isEmployee,
-    sortable:true
+    sortable:true,
+    width:'200px'
   }, 
   {name: "Parent?",
     selector:row=>row.isParent,
-    sortable:true
+    sortable:true,
+    width:'200px'
   }, 
   {name: "user Roles",
     selector:row=>row.userRoles,
     sortable:true,
+    width:'150px'
   },
   {name: "Actions Allowed",
     selector:row=>row.userAllowedActions,
     sortable:true,
+    width:'150px'
   },
   { 
-    name: "Actions",
+    name: "Manage",
     cell: row => (
       <div className="space-x-1">
+       <button className="text-blue-500" fontSize={20}  onClick={() => Navigate(`userDetails/${row._id}`)}  > 
+        <ImProfile fontSize={20}/> 
+        </button>
         {/* /////////////////////condition is canEdit and not ! of it */}
-        {canEdit?(<button   onClick={() => handleEdit(row._id)} className="" > 
+        {canEdit?(<button className="text-yellow-400"  onClick={() => handleEdit(row._id)}  > 
         <FiEdit fontSize={20}/> 
         </button>):null}
-        {canDelete?(<button onClick={() => onDeleteUserClicked(row._id)} className="">
+        {canDelete?(<button className="text-red-500" onClick={() => onDeleteUserClicked(row._id)} >
           <RiDeleteBin6Line fontSize={20}/>
         </button>):null}
       </div>
@@ -175,9 +215,6 @@ const toDuplicate = selectedRows[-1]
 				<input type='text'  value={searchQuery} onChange= {handleSearch} className='text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4'/>
 			</div>
     <div className=' flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200' >
-       <div>
-      <input type="text" placeholder="search" />
-     </div>
      
      <DataTable
       columns={column}

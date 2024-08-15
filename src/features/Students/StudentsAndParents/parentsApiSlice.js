@@ -11,7 +11,7 @@ const initialState = parentsAdapter.getInitialState()
 export const parentsApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         getParents: builder.query({
-            query: () => '/students/studentsParents/parents',//as defined in server.js
+            query: () => '/students/studentsParents/parents/',//as defined in server.js
             validateStatus: (response, result) => {
                 return response.status === 200 && !result.isError
             },
@@ -19,6 +19,7 @@ export const parentsApiSlice = apiSlice.injectEndpoints({
             transformResponse: responseData => {
                 const loadedParents = responseData.map(parent => {
                     parent.id = parent._id
+                    
                     return parent
                 });
                 return parentsAdapter.setAll(initialState, loadedParents)
@@ -34,7 +35,7 @@ export const parentsApiSlice = apiSlice.injectEndpoints({
         }),
         addNewParent: builder.mutation({
             query: initialParentData => ({
-                url: '/students/studentsParents/parents',
+                url: '/students/studentsParents/parents/',
                 method: 'POST',
                 body: {
                     ...initialParentData,
@@ -46,7 +47,7 @@ export const parentsApiSlice = apiSlice.injectEndpoints({
         }),
         updateParent: builder.mutation({
             query: initialParentData => ({
-                url: '/students/studentsParents/parents',
+                url: '/students/studentsParents/parents/',
                 method: 'PATCH',
                 body: {
                     ...initialParentData,
@@ -58,7 +59,7 @@ export const parentsApiSlice = apiSlice.injectEndpoints({
         }),
         deleteParent: builder.mutation({
             query: ({ id }) => ({
-                url: '/students/studentsParents/parents',
+                url: '/students/studentsParents/parents/',
                 method: 'DELETE',
                 body: { id }
             }),

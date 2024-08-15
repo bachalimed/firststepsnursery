@@ -104,15 +104,24 @@ const column =[
   }, 
   //show this column only if user is a parent and not employee
 
+  {name: "Priority",
+    
+    selector:row=>row.taskPriority,
+    cell: row => ICONS[row.taskPriority],
+    sortable:true,
+    width:'90px'
+  }, 
   (status2)&&{ 
 name: "ID",
 selector:row=>( <Link to={`/desk/tasks/taskDetails/:${row._id}`} >{row._id} </Link> ),
-sortable:true
+sortable:true,
+width:'200px'
  }, 
   { 
 name: "Subject",
 selector:row=>( <Link to={`/desk/tasks/taskDetails/:${row._id}`}> {row.taskSubject}</Link>),
-sortable:true
+sortable:true,
+width:'200px'
  }, 
   { 
 name: "Description",
@@ -121,45 +130,46 @@ selector:row=>(
   {row.taskDescription}
   </Link>
   ),
-sortable:true
+sortable:true,
+width:'220px'
  }, 
-{name: "Priority",
-  
-  selector:row=>row.taskPriority,
-  cell: row => ICONS[row.taskPriority],
-  sortable:true
-}, 
 {name: "Creator",
   selector:row=>row.taskCreator,
-  sortable:true
+  sortable:true,
+  width:'200px'
 }, 
 {name: "Due Date",
   selector:row=>new Date(row.taskDueDate).toLocaleString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' }),
-  sortable:true
+  sortable:true,
+  width:'100px'
 }, 
 {name: "Responsible",
   selector:row=>row.taskResponsible,
   sortable:true,
-  removableRows:true
+  removableRows:true,
+  width:'190px'
 },
 {name: "Reference",
   selector:row=>row.taskReference,
   sortable:true,
-  removableRows:true
+  removableRows:true,
+  width:'200px'
 },
 {name: "Completion Date",
   selector:row=>new Date(row.taskCompletionDate).toLocaleString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' }),
   sortable:true,
-  removableRows:true
+  removableRows:true,
+  width:'150px'
 },
 {name: "Actions performed",
   selector:row=>row.taskAction.length,
   sortable:true,
-  removableRows:true
+  removableRows:true,
+  width:'150px'
 },
 
 { 
-  name: "Actions",
+  name: "Manage",
   cell: row => (
     <div className="space-x-1">
       {canEdit?(<button   onClick={() => handleClose(row._id)} className="" > 

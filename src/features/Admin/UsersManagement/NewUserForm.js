@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave } from "@fortawesome/free-solid-svg-icons"
 import { ROLES } from "../../../config/UserRoles"
 import { ACTIONS } from "../../../config/UserActions"
-import SectionTabsDown from '../../../Components/Shared/Tabs/SectionTabsDown'
+import UsersManagement from '../UsersManagement'
 
 
 //constrains on inputs when creating new user
@@ -220,7 +220,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
 
     const content = (
         <>
-        <SectionTabsDown/>
+        <UsersManagement/>
             <p className={errClass}>{error?.data?.message}</p>  {/*will display if there is an error message, some of the error messagees are defined in the back end responses*/}
 
             <form className="form" onSubmit={onSaveUserClicked}>

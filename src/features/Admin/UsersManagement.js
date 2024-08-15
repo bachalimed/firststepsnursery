@@ -27,12 +27,10 @@ content = (
         <Link to={'/admin/usersManagement/newUser'}><li >New User </li></Link>
         <Link to={'/admin/usersManagement/'}><li >option3</li></Link>
       </ul>
-      {/* <SearchBar/> */}
+      
 
     </div>
   
-
-
 
 )
  return content

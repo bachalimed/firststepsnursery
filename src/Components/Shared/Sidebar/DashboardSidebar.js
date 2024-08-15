@@ -1,15 +1,14 @@
-import React from 'react'
+// the actual side bar operating with no need of the menu json items from the files
+
+
 import { useState } from 'react'
-
 import logo from './../../../Data/logo.jpg'
-
-
 import { Link } from 'react-router-dom'
-import { BsChevronDown } from "react-icons/bs"
 import { useLocation } from 'react-router-dom'
+import useAuth from '../../../hooks/useAuth'
+import { BsChevronDown } from "react-icons/bs"
 import { VscDashboard, VscPerson } from "react-icons/vsc"
 import { PiStudent } from "react-icons/pi"
-
 import { LuCircleDollarSign, LuSchool, LuMail } from "react-icons/lu"
 import { GiHumanPyramid, GiReceiveMoney, GiPayMoney } from "react-icons/gi"
 import { FaMailBulk } from "react-icons/fa"
@@ -28,7 +27,6 @@ import { BsQuestionSquare } from "react-icons/bs"
 import { HiOutlineChatAlt } from "react-icons/hi"
 import { PiDotsThreeVerticalLight } from 'react-icons/pi'
 import {sidebarMenuUp} from '../../lib/Consts/SidebarMenu'
-import useAuth from '../../../hooks/useAuth'
 import { LuChevronLeft } from "react-icons/lu"
 import { GrUserAdmin, GrTask } from "react-icons/gr"
 
@@ -228,9 +226,35 @@ const DashboardSidebar = () => {
 				<span className={`text-base font-light flex-1 ${!open && "hidden"} duration-200`} > Public</span>
 				</li >
 			</Link>
-			<Link to=''> 
+			
+					
+			<div  className='border-t border-neutral-600' >
+
+				<Link to=''> 
+					<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>    
+					<span className='text-2xl block float-left'onClick={()=>setOpen(true)}  ><GrUserAdmin/> </span>
+					<span className={`text-base font-light flex-1 ${!open && "hidden"} duration-200`} onClick={()=> setOpen(open)} > Admin</span>
+					{open &&(<BsChevronDown className={`${adminOpen && "rotate-180"}`} onClick={()=>setAdminOpen(!adminOpen)}/>
+				)}
+					</li >
+				</Link>
+				{open && adminOpen && (<ul>							
+						<Link to='/admin/usersManagement/' className={location.pathname==='/admin/usersManagement/'? 'text-teal-200':''}> 
+						<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md 'onClick={()=> setOpen(!open)}>
+							<span className='text-1xl block float-left'> <BsQuestionSquare/> </span>
+							Users Management
+						</li>
+						</Link>		
+						<Link to='/settings/deskSet/blabla' className={location.pathname==='/settings/deskSet/blabla'? 'text-teal-200':''}> 
+						<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md 'onClick={()=> setOpen(!open)}>
+							<span className='text-1xl block float-left'> <FaMailBulk/> </span>
+							Blabla
+						</li>
+						</Link>			
+					</ul>)}
+					<Link to=''> 
 				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>    
-				<span className='text-2xl block float-left' onClick={()=>setOpen(true)} ><FaMailBulk/> </span>
+				<span className='text-2xl block float-left' onClick={()=>setOpen(true)} ><SlSettings/> </span>
 				<span className={`text-base font-light flex-1 ${!open && "hidden"} duration-200`} onClick={()=> setOpen(open)}> Settings</span>
 				{open &&(<BsChevronDown className={`${settingsOpen && "rotate-180"}`} onClick={()=>setSettingsOpen(!settingsOpen)}/>
 				)}
@@ -280,38 +304,18 @@ const DashboardSidebar = () => {
 					</li>
 					</Link>		
 				</ul>)}
+
+
+</div>
+
+
+
+				
 				</ul>
 			</div>
 
 
 		
-			<div  className='border-t border-neutral-600' >
-
-				<Link to=''> 
-					<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>    
-					<span className='text-2xl block float-left'onClick={()=>setOpen(true)}  ><GrUserAdmin/> </span>
-					<span className={`text-base font-light flex-1 ${!open && "hidden"} duration-200`} onClick={()=> setOpen(open)} > Admin</span>
-					{open &&(<BsChevronDown className={`${adminOpen && "rotate-180"}`} onClick={()=>setAdminOpen(!adminOpen)}/>
-				)}
-					</li >
-				</Link>
-				{open && adminOpen && (<ul>							
-						<Link to='/admin/usersManagement/' className={location.pathname==='/admin/usersManagement/'? 'text-teal-200':''}> 
-						<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md 'onClick={()=> setOpen(!open)}>
-							<span className='text-1xl block float-left'> <BsQuestionSquare/> </span>
-							Users Management
-						</li>
-						</Link>		
-						<Link to='/settings/deskSet/blabla' className={location.pathname==='/settings/deskSet/blabla'? 'text-teal-200':''}> 
-						<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md 'onClick={()=> setOpen(!open)}>
-							<span className='text-1xl block float-left'> <FaMailBulk/> </span>
-							Blabla
-						</li>
-						</Link>			
-					</ul>)}
-
-
-			</div>
 		</div>
 	
   
