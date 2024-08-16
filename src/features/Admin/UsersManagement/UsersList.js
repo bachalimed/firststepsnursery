@@ -210,7 +210,7 @@ const toDuplicate = selectedRows[-1]
       </div>
     ),
     ignoreRowClick: true,
-    allowOverflow: true,
+    
     button: true,
   }
   ]

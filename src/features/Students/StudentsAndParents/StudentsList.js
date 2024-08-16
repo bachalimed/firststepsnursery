@@ -119,18 +119,18 @@ const column =[
 
   (status2)&&{ 
 name: "ID",
-selector:row=>( <Link to={`/students/studentsParents/students/studentDetails/:${row._id}`} >{row._id} </Link> ),
+selector:row=>( <Link to={`/students/studentsParents/students/studentDetails/${row._id}`} >{row._id} </Link> ),
 sortable:true
  }, 
   { 
 name: "First Name",
-selector:row=>( <Link to={`/students/studentsParents/students/studentDetails/:${row._id}`}> {row.studentName.firstName+" " +row.studentName.middleName}</Link>),
+selector:row=>( <Link to={`/students/studentsParents/students/studentDetails/${row._id}`}> {row.studentName.firstName+" " +row.studentName.middleName}</Link>),
 sortable:true
  }, 
   { 
 name: "Last Name",
 selector:row=>(
-  <Link to={`/students/studentsParents/students/studentDetails/:${row._id}`}>
+  <Link to={`/students/studentsParents/students/studentDetails/${row._id}`}>
   {row.studentName.lastName}
   </Link>
   ),
@@ -158,7 +158,7 @@ sortable:true
   name: "Actions",
   cell: row => (
     <div className="space-x-1">
-      <button className="text-blue-500" fontSize={20}  onClick={() => Navigate(`usersDetails/${row._id}`)}  > 
+      <button className="text-blue-500" fontSize={20}  onClick={() => Navigate(`studentDetails/${row.id}`)}  > 
         <ImProfile fontSize={20}/> 
         </button>
       {canEdit?(<button  className="text-yellow-400" onClick={() => handleEdit(row._id)}  > 
@@ -170,7 +170,7 @@ sortable:true
     </div>
   ),
   ignoreRowClick: true,
-  allowOverflow: true,
+  
   button: true,
 }
 ]
@@ -186,7 +186,7 @@ if (isSuccess) {
 
  content =  
   <>
-  
+
   <StudentsParents/>
       <div className='relative h-10 mr-2 '>
 				<HiOutlineSearch fontSize={20} className='text-gray-400 absolute top-1/2 -translate-y-1/2 left-3'/>

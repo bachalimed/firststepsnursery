@@ -31,7 +31,7 @@ const {
   refetchOnMountOrArgChange: true//refetch when we remount the component
 })
 const allParents = useSelector(state => selectAllParents(state))
-console.log('allParents', allParents)
+//console.log('allParents', allParents)
 
 
 
@@ -84,7 +84,7 @@ const handleSearch = (e) => {
   setSearchQuery(e.target.value)
 }
 
-console.log('filtered', filteredParents)
+//console.log('filtered', filteredParents)
 
 
 // Handler for selecting rows
@@ -114,7 +114,7 @@ setSelectedRows([]); // Clear selection after delete
 
 // Handler for duplicating selected rows, 
 const handleDetailsSelected = () => {
-console.log('Selected Rows to detail:', selectedRows)
+//console.log('Selected Rows to detail:', selectedRows)
 // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
 //ensure only one can be selected: the last one
 const toDuplicate = selectedRows[-1]
@@ -184,7 +184,7 @@ const column =[
     </div>
   ),
   ignoreRowClick: true,
-  allowOverflow: true,
+  
   button: true,
 }
 
@@ -200,7 +200,7 @@ if (isParentError|isDelError) {
 
 if (isParentSuccess||isDelSuccess) {
 
-  console.log('filtered and success', filteredParents)
+  //console.log('filtered and success', filteredParents)
 
 content= (
   <>

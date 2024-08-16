@@ -175,7 +175,7 @@ sortable:true
     </div>
   ),
   ignoreRowClick: true,
-  allowOverflow: true,
+  
   button: true,
 }
 ]

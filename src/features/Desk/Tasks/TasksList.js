@@ -184,7 +184,7 @@ width:'220px'
     </div>
   ),
   ignoreRowClick: true,
-  allowOverflow: true,
+  
   button: true,
 }
 ]

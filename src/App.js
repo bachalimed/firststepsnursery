@@ -8,11 +8,13 @@ import Dashboard from './features/Dashboard/Dashboard'
 
 
 import StudentsParents from './features/Students/StudentsParents'
-import ParentsList from './features/Students/StudentsAndParents/ParentsList'
 import StudentsList from './features/Students/StudentsAndParents/StudentsList'
+import ParentsList from './features/Students/StudentsAndParents/ParentsList'
+import EditStudent from './features/Students/StudentsAndParents/EditStudent'
+import NewStudentFormMain from './features/Students/StudentsAndParents/NewStudentFormMain'
+import NewStudentFormSecondary from './features/Students/StudentsAndParents/NewStudentFormSecondary'
 import StudentDetails from './features/Students/StudentsAndParents/StudentDetails'
 import ParentDetails from './features/Students/StudentsAndParents/ParentDetails'
-import NewStudentForm from './features/Students/StudentsAndParents/NewStudentForm'
 
 import Admissions from "./features/Students/Admissions"
 import AllAdmissions from "./features/Students/Admissions/AllAdmissions"
@@ -45,12 +47,12 @@ import StudentsSet from './features/AppSettings/StudentsSet'
 import HRSet from './features/AppSettings/HRSet'
 import DeskSet from './features/AppSettings/DeskSet'
 
+import UsersManagement from './features/Admin/UsersManagement'
 import UsersList from './features/Admin/UsersManagement/UsersList'
 import EditUser from './features/Admin/UsersManagement/EditUser'
 import NewUserForm from './features/Admin/UsersManagement/NewUserForm'
 import UserDetails from './features/Admin/UsersManagement/UserDetails'
 
-import UsersManagement from './features/Admin/UsersManagement'
 
 import Tasks from './features/Desk/Tasks'
 import TasksList from './features/Desk/Tasks/TasksList'
@@ -69,7 +71,6 @@ import NoPage from './pages/NoPage'
 import AcademicYearsList from './features/AppSettings/AcademicsSet/AcademicYears/AcademicYearsList'
 import AcademicYearDetails from './features/AppSettings/AcademicsSet/AcademicYears/AcademicYearDetails'
 import NewAcademicYear from './features/AppSettings/AcademicsSet/AcademicYears/NewAcademicYear'
-import EditStudent from './features/Students/StudentsAndParents/EditStudent'
 // import Parents from './features/Students/Parents'
 // import NewStudent from './features/Students/NewStudent'
 // import ResetPassword from './features/auth/ResetPassword'
@@ -115,22 +116,23 @@ const App = () => {
 								<Route index element={<Dashboard />} />   {/*  index will show as a default in the dashboard layout*/}
 							</Route> {/* end of dashboard route */}
 
-							
-
 							<Route path="students" element={<DashboardLayout />} >	 												
 								<Route path="studentsParents" > 					
 								<Route index element={<StudentsParents />} /> 
 									<Route path="students/" element={<StudentsList />}>												
 										<Route path=":id/" element={<EditStudent/>}/>
-										<Route path="newStudent" element={<NewStudentForm />}/>
+										<Route path="newStudent/" element={<NewStudentFormMain />}/>
+										<Route path="studentDetails/:id/" element={<StudentDetails/>}/>
+										<Route path="newStudent/:id/" element={<NewStudentFormSecondary />}/>
 									</Route> {/* end of Students route */}
 
 
 									<Route path="parents/" element={<ParentsList />}>
-										<Route path=":parentId" element={<ParentDetails />}/>
+										<Route path=":id/" element={<ParentDetails />}/>
+										<Route path="newParent/:id/" element={<NewStudentFormMain />}/>
 									</Route> {/* end of Parents route */}
 
-									<Route path="newStudent/" element={<NewStudentForm />}/>																		
+																											
 																													
 								</Route> {/* end of studentsParents route */}
 

@@ -1,12 +1,13 @@
 
-import SectionTabsDown from "../../../Components/Shared/Tabs/SectionTabsDown"
+
 import React from 'react'
 import NewUserPhotoForm from "./NewUserPhotoForm"
+import UsersManagement from '../UsersManagement'
 
 const UserDetails = () => {
   return (
     <>
-    <SectionTabsDown/>
+    <UsersManagement/>
     <div>UserDetails</div>
     {/* <NewUserPhotoForm/> */}
     </>
