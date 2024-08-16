@@ -49,6 +49,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
     const[ isEmployee,setIsEmployee ]= useState(user.isEmployee)
 //change date format from mongo db
     const[ userDob,setUserDob ]= useState(user.userDob.split('T')[0])
+    const[ userSex,setUserSex ]= useState(user.userSex)
     const[ validUserDob,setValidUserDob ]= useState(false)
     const[ userIsActive,setUserIsActive ]= useState(user.userIsActive)
     const[ userPhoto,setUserPhoto ]= useState(user.userPhoto)
@@ -124,6 +125,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
             setIsParent('')
             setIsEmployee('')
             setUserDob('')
+            setUserSex('')
             setUserIsActive(false)
             //setLabel('')
             //setLocation('')
@@ -159,6 +161,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
      const onIsParentChanged = e => setIsParent(e.target.value)
      const onIsEmployeeChanged = e => setIsEmployee(e.target.value)
      const onUserDobChanged = e => setUserDob(e.target.value)
+     const onUserSexChanged = e => setUserSex(e.target.value)
      const onUserIsActiveChanged = e => setUserIsActive(prev => !prev)
      //const onLabelChanged = e => setLabel(e.target.value)
      //const onLocationChanged = e => setLocation(e.target.value)
@@ -212,10 +215,10 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
      
         if (password) {
            
-            await updateUser({ id: user.id, userFullName, userAllowedActions, username, password, userPhoto, isParent, isEmployee, userDob, userIsActive, userRoles,  userAddress, userContact })
+            await updateUser({ id: user.id, userFullName, userAllowedActions, username, password, userPhoto, isParent, isEmployee, userDob, userSex, userIsActive, userRoles,  userAddress, userContact })
         } else {
            
-            await updateUser({ id: user.id, userFullName, userAllowedActions, username, isParent, userPhoto, isEmployee, userDob, userIsActive, userRoles,  userAddress, userContact })
+            await updateUser({ id: user.id, userFullName, userAllowedActions, username, isParent, userPhoto, isEmployee, userDob, userSex, userIsActive, userRoles,  userAddress, userContact })
         }
     }
 
@@ -227,9 +230,9 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
     
     let canSave
     if (password) {
-        canSave = [validUserFirstName, validUserLastName, validUsername, validPassword, validUserDob,     validStreet,  validPrimaryPhone, validEmail, userRoles.length].every(Boolean) && !isLoading
+        canSave = [validUserFirstName, validUserLastName, validUsername, validPassword, validUserDob, userSex,     validStreet,  validPrimaryPhone, validEmail, userRoles.length].every(Boolean) && !isLoading
     } else {
-        canSave = [validUserFirstName, validUserLastName, validUsername, validUserDob,     validStreet,  validPrimaryPhone, validEmail, userRoles.length].every(Boolean) && !isLoading
+        canSave = [validUserFirstName, validUserLastName, validUsername, validUserDob, userSex,     validStreet,  validPrimaryPhone, validEmail, userRoles.length].every(Boolean) && !isLoading
     }
 
     const errClass = (isError ) ? "errmsg" : "offscreen"
@@ -250,7 +253,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     <h2>Edit User Form</h2>
                     
                 </div>
-                
+                <div>
                 <label className="form__label" htmlFor="userFirstName">
                     User First Name: <span className="nowrap">[3-20 letters]</span></label>
                 <input
@@ -273,9 +276,10 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     value={userMiddleName}
                     onChange={onUserMiddleNameChanged}
                 />
-                
+                </div>
+                <div>
                 <label className="form__label" htmlFor="userLastName">
-                    User Last Name: <span className="nowrap">[3-20 letters]</span></label>
+                    User Last Name* : <span className="nowrap">[3-20 letters]</span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="userLastName"
@@ -285,6 +289,39 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     value={userLastName}
                     onChange={onUserLastNameChanged}
                 />
+                 <label className="form__label" htmlFor="userDob">
+                    Date Of Birth* : <span className="nowrap">[dd/mm/yyyy]</span></label>
+                <input
+                    className={`form__input ${validUserClass}`}
+                    id="userDob"
+                    name="userDob"
+                    type="date"
+                    autoComplete="off"
+                    value={userDob}
+                    onChange={onUserDobChanged}
+                />
+                </div>
+                <label> <div style={{ marginTop: '10px' }}>
+                    Selected Sex: {userSex || 'None'}
+                </div><br/>
+                    <input
+                    type="radio"
+                    value="Male"
+                    checked={userSex === 'Male'}
+                    onChange={onUserSexChanged}
+                    />
+                    Male
+                </label>
+
+                <label style={{ marginLeft: '10px' }}>
+                    <input
+                    type="radio"
+                    value="Female"
+                    checked={userSex === 'Female'}
+                    onChange={onUserSexChanged}
+                    />
+                    Female
+                </label>
                
                <label className="form__label" htmlFor="username">
                     Username: <span className="nowrap">[6-20 Characters]</span></label>
@@ -307,6 +344,8 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     value={password}
                     onChange={onPasswordChanged}
                 />
+                <div>
+                
                 <label className="form__label" htmlFor="userDob">
                     Date Of Birth: <span className="nowrap">[dd/mm/yyyy]</span></label>
                 <input
@@ -318,6 +357,8 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     value={userDob}
                     onChange={onUserDobChanged}
                 />
+                </div>
+
                 <label className="form__label" htmlFor="house">
                     House: <span className="nowrap">[3-20 letters]</span></label>
                 <input
@@ -340,8 +381,9 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     value={street}
                     onChange={onStreetChanged}
                 />
+                <div>
                 <label className="form__label" htmlFor="area">
-                    Area: <span className="nowrap">[3-15 letters]</span></label>
+                    Area: <span className="nowrap"></span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="area"
@@ -352,7 +394,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     onChange={onAreaChanged}
                 />
                 <label className="form__label" htmlFor="city">
-                    City: <span className="nowrap">[3-20 letters]</span></label>
+                    City* : <span className="nowrap">[3-20 letters]</span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="city"
@@ -362,6 +404,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     value={city}
                     onChange={onCityChanged}
                 />
+                </div>
                 <label className="form__label" htmlFor="postCode">
                     Post Code: <span className="nowrap">[3-12 letters]</span></label>
                 <input
@@ -373,8 +416,9 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     value={postCode}
                     onChange={onPostCodeChanged}
                 />
+                 <div>
                 <label className="form__label" htmlFor="primaryPhone">
-                    Primary Phone: <span className="nowrap">[6 to 15 Digits]</span></label>
+                    Primary Phone* : <span className="nowrap">[6 to 15 Digits]</span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="primaryPhone"
@@ -384,10 +428,6 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     value={primaryPhone}
                     onChange={onPrimaryPhoneChanged}
                 />
-
-                
-
-
 
                 <label className="form__label" htmlFor="secondaryPhone">
                     Secondary Phone: <span className="nowrap"></span></label>
@@ -400,6 +440,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     value={secondaryPhone}
                     onChange={onSecondaryPhoneChanged}
                 />
+                </div>
                 <label className="form__label" htmlFor="email">
                     Email: <span className="nowrap"></span></label>
                 <input
@@ -445,38 +486,40 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     />
                     User Is Active
                     </label>
-                        <h1>User Roles: </h1>
-                    {Object.entries(ROLES).map(([key, value]) => (
-                    <div key={key}>
-                        <label>
+                    <h1>User Roles: </h1>
+                    <div className="flex flex-wrap space-x-4">
+                    {Object.keys(ROLES).map((key) => (
+                    
+                    <label  key={key} className="flex items-center">
                         <input
-                       
-                        className={`form__select ${validRolesClass}`}
                         type="checkbox"
-                        value={value}
-                        checked={userRoles.includes(value)}
+                        value={ROLES[key]}
+                        checked={userRoles.includes(ROLES[key])}
                         onChange={onUserRolesChanged}
                         />
-                        {key}
-                        </label>
-                    </div>
+                        {ROLES[key]}
+                    </label>
+                    
                     ))}
+                    </div>
                     <h1>User Actions Permissions: </h1>
-                    {Object.entries(ACTIONS).map(([key, value]) => (
-                    <div key={key}>
-                        <label>
+                    <div className="flex flex-wrap space-x-4">
+                      {Object.keys(ACTIONS).map((key) => (
+                   
+                        <label key={key} className="flex items-center">
                         <input
                        
                         className=''
                         type="checkbox"
-                        value={value}
-                        checked={userAllowedActions.includes(value)}
+                        value={ACTIONS[key]}
+                        checked={userAllowedActions.includes(ACTIONS[key])}
                         onChange={onUserAllowedActionsChanged}
                         />
-                        {key}
+                        {ACTIONS[key]}
                         </label>
-                    </div>
                 ))}
+                    </div>
+               
 
            
 

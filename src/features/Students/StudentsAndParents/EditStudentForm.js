@@ -1,7 +1,7 @@
 import React from 'react'
 import StudentsParents from '../StudentsParents'
 
-const NewStudentForm = () => {
+const EditStudentForm = () => {
   
   
 
@@ -18,10 +18,10 @@ const NewStudentForm = () => {
 
 
       
-      NewStudent tab
+      editwStudent tab
       </div>
   )
   return content
 }
 
-export default NewStudentForm
+export default EditStudentForm

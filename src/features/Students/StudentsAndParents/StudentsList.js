@@ -68,8 +68,9 @@ const handleSearch = (e) => {
   
 //handle edit
 
-const handleEdit=(e)=>{
-  Navigate(`/students/studentsParents/students/${e}`)//the path to be set in app.js and to be checked with server.js in backend, this is editing page of 
+
+const handleEdit=(id)=>{
+  Navigate(`/students/studentsParents/students/${id}`)//the path to be set in app.js and to be checked with server.js in backend, this is editing page of 
 }
 //handle delete
 

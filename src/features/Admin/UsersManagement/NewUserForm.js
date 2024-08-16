@@ -43,6 +43,7 @@ const NewUserForm = () => {//an add user function that can be called inside the 
     const[ isParent,setIsParent ]= useState('')
     const[ isEmployee,setIsEmployee ]= useState('')
     const[ userDob,setUserDob ]= useState('')
+    const[ userSex,setUserSex ]= useState('')
     const[ validUserDob,setValidUserDob ]= useState(false)
     const[ userIsActive,setUserIsActive ]= useState(false)
     const[ userPhoto,setUserPhoto ]= useState('')
@@ -118,6 +119,7 @@ const NewUserForm = () => {//an add user function that can be called inside the 
             setIsParent('')
             setIsEmployee('')
             setUserDob('')
+            setUserSex('')
             setUserIsActive(false) 
             //setSize() 
             setUserPhoto('')
@@ -146,6 +148,7 @@ const NewUserForm = () => {//an add user function that can be called inside the 
     const onIsParentChanged = e => setIsParent(e.target.value)
     const onIsEmployeeChanged = e => setIsEmployee(e.target.value)
     const onUserDobChanged = e => setUserDob(e.target.value)
+    const onUserSexChanged = e => setUserSex(e.target.value)
     const onUserIsActiveChanged = e => setUserIsActive(prev => !prev)//will invert the previous state
     const onUserPhotoChanged = e => {setUserPhoto(e.target.files[0])}
     //const onUserPhotoLabelChanged = e => setUserPhotoLabel(e.target.value)
@@ -193,7 +196,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
 [primaryPhone, secondaryPhone, email])
 
 //to check if we can save before onsave, if every one is true, and also if we are not loading status
-    const canSave = [validUserFirstName, validUserLastName, validUsername, validPassword, validUserDob,     validStreet,  validPrimaryPhone, userRoles.length ].every(Boolean) && !isLoading
+    const canSave = [validUserFirstName, validUserLastName, validUsername, validPassword, validUserDob, userSex, validStreet,  validPrimaryPhone, userRoles.length ].every(Boolean) && !isLoading
 //console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validPassword}, ${validUserDob},${userAllowedActions}    ${ validStreet},  ${validPrimaryPhone}, ${validEmail}, ${userRoles.length}, ${isParent}, ${isEmployee}, ${userIsActive}` )
     const onSaveUserClicked = async (e) => {
         e.preventDefault()
@@ -201,7 +204,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
         if (canSave) {//if cansave is true
             //generate the objects before saving
             //console.log(` 'first name' ${userFirstName}', fullfirstname,' ${userFullName.userFirstName}', house: '${house}', usercontact house' ${userContact.house},    ${userRoles.length},${isParent}, ${isEmployee}` )
-            await addNewUser({ username, password,  userFullName, isParent, isEmployee, userDob, userPhoto, userIsActive, userRoles, userAllowedActions, userAddress, userContact })//we call the add new user mutation and set the arguments to be saved
+            await addNewUser({ username, password,  userFullName, isParent, isEmployee, userDob, userSex, userPhoto, userIsActive, userRoles, userAllowedActions, userAddress, userContact })//we call the add new user mutation and set the arguments to be saved
             //added this to confirm save
             if (isError) {console.log('error savingg', error)//handle the error msg to be shown  in the logs??
             }
@@ -228,9 +231,9 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                     <h2>New User Form</h2>
                     
                 </div>
-                
+                <div>
                 <label className="form__label" htmlFor="userFirstName">
-                    User First Name: <span className="nowrap">[3-20 letters]</span></label>
+                    User First Name* : <span className="nowrap">[3-20 letters]</span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="userFirstName"
@@ -251,9 +254,10 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                     value={userMiddleName}
                     onChange={onUserMiddleNameChanged}
                 />
-                
+                </div>
+                <div>
                 <label className="form__label" htmlFor="userLastName">
-                    User Last Name: <span className="nowrap">[3-20 letters]</span></label>
+                    User Last Name* : <span className="nowrap">[3-20 letters]</span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="userLastName"
@@ -263,9 +267,46 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                     value={userLastName}
                     onChange={onUserLastNameChanged}
                 />
+                 <label className="form__label" htmlFor="userDob">
+                    Date Of Birth* : <span className="nowrap">[dd/mm/yyyy]</span></label>
+                <input
+                    className={`form__input ${validUserClass}`}
+                    id="userDob"
+                    name="userDob"
+                    type="date"
+                    autoComplete="off"
+                    value={userDob}
+                    onChange={onUserDobChanged}
+                />
+                </div>
+                <div>
+                <label> <div style={{ marginTop: '10px' }}>
+                    Selected Sex: {userSex || 'None'}
+                </div><br/>
+                    <input
+                    type="radio"
+                    value="Male"
+                    checked={userSex === 'Male'}
+                    onChange={onUserSexChanged}
+                    />
+                    Male
+                </label>
+
+                <label style={{ marginLeft: '10px' }}>
+                    <input
+                    type="radio"
+                    value="Female"
+                    checked={userSex === 'Female'}
+                    onChange={onUserSexChanged}
+                    />
+                    Female
+                </label>
+
                 
+                </div>
+               
                 <label className="form__label" htmlFor="username">
-                    Username: <span className="nowrap">[6-20 Characters]</span></label>
+                    Username* : <span className="nowrap">[6-20 Characters]</span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="username"
@@ -276,7 +317,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                     onChange={onUsernameChanged}
                 />
                  <label className="form__label" htmlFor="password">
-                    Password: <span className="nowrap">[8-20 chars incl. !@#$-_%]</span></label>
+                    Password* : <span className="nowrap">[8-20 chars incl. !@#$-_%]</span></label>
                 <input
                     className={`form__input ${validPwdClass}`}
                     id="password"
@@ -285,19 +326,11 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                     value={password}
                     onChange={onPasswordChanged}
                 />
-                <label className="form__label" htmlFor="userDob">
-                    Date Of Birth: <span className="nowrap">[dd/mm/yyyy]</span></label>
-                <input
-                    className={`form__input ${validUserClass}`}
-                    id="userDob"
-                    name="userDob"
-                    type="date"
-                    autoComplete="off"
-                    value={userDob}
-                    onChange={onUserDobChanged}
-                />
+                
+               
+                
                 <label className="form__label" htmlFor="house">
-                    House: <span className="nowrap">[3-20 letters]</span></label>
+                    House* : <span className="nowrap">[3-20 letters]</span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="house"
@@ -308,7 +341,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                     onChange={onHouseChanged}
                 />
                 <label className="form__label" htmlFor="street">
-                    Street: <span className="nowrap">[3-20 letters]</span></label>
+                    Street* : <span className="nowrap">[3-20 letters]</span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="street"
@@ -318,6 +351,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                     value={street}
                     onChange={onStreetChanged}
                 />
+                <div>
                 <label className="form__label" htmlFor="area">
                     Area: <span className="nowrap"></span></label>
                 <input
@@ -330,7 +364,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                     onChange={onAreaChanged}
                 />
                 <label className="form__label" htmlFor="city">
-                    City: <span className="nowrap">[3-20 letters]</span></label>
+                    City* : <span className="nowrap">[3-20 letters]</span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="city"
@@ -340,6 +374,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                     value={city}
                     onChange={onCityChanged}
                 />
+                </div>
                 <label className="form__label" htmlFor="postCode">
                     Post Code: <span className="nowrap"></span></label>
                 <input
@@ -351,8 +386,9 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                     value={postCode}
                     onChange={onPostCodeChanged}
                 />
+                <div>
                 <label className="form__label" htmlFor="primaryPhone">
-                    Primary Phone: <span className="nowrap">[6 to 15 Digits]</span></label>
+                    Primary Phone* : <span className="nowrap">[6 to 15 Digits]</span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="primaryPhone"
@@ -374,6 +410,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                     value={secondaryPhone}
                     onChange={onSecondaryPhoneChanged}
                 />
+                </div>
                 <label className="form__label" htmlFor="email">
                     Email: <span className="nowrap"></span></label>
                 <input
@@ -385,6 +422,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                     value={email}
                     onChange={onEmailChanged}
                 />
+               
                 <label className="form__label" htmlFor="isParent">
                     User Is Parent: <span className="nowrap">[24 digits]</span></label>
                 <input
@@ -407,6 +445,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                     value={isEmployee}
                     onChange={onIsEmployeeChanged}
                 />
+               
 
                     <label>
                     <input
@@ -419,9 +458,10 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                     </label>
                     
                     <h1>User Roles: </h1>
+                    <div className="flex flex-wrap space-x-4">
                     {Object.keys(ROLES).map((key) => (
-                    <div key={key}>
-                    <label>
+                    
+                    <label  key={key} className="flex items-center">
                         <input
                         type="checkbox"
                         value={ROLES[key]}
@@ -430,12 +470,14 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                         />
                         {ROLES[key]}
                     </label>
-                    </div>
+                    
                     ))}
+                    </div>
                     <h1>User Actions Permissions: </h1>
+                    <div className="flex flex-wrap space-x-4">
                       {Object.keys(ACTIONS).map((key) => (
-                    <div key={key}>
-                        <label>
+                   
+                        <label key={key} className="flex items-center">
                         <input
                        
                         className=''
@@ -446,8 +488,8 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                         />
                         {ACTIONS[key]}
                         </label>
-                    </div>
                 ))}
+                    </div>
               
 
               <div className="flex justify-end items-center space-x-4">

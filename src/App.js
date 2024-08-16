@@ -69,6 +69,7 @@ import NoPage from './pages/NoPage'
 import AcademicYearsList from './features/AppSettings/AcademicsSet/AcademicYears/AcademicYearsList'
 import AcademicYearDetails from './features/AppSettings/AcademicsSet/AcademicYears/AcademicYearDetails'
 import NewAcademicYear from './features/AppSettings/AcademicsSet/AcademicYears/NewAcademicYear'
+import EditStudent from './features/Students/StudentsAndParents/EditStudent'
 // import Parents from './features/Students/Parents'
 // import NewStudent from './features/Students/NewStudent'
 // import ResetPassword from './features/auth/ResetPassword'
@@ -114,13 +115,16 @@ const App = () => {
 								<Route index element={<Dashboard />} />   {/*  index will show as a default in the dashboard layout*/}
 							</Route> {/* end of dashboard route */}
 
+							
+
 							<Route path="students" element={<DashboardLayout />} >	 												
 								<Route path="studentsParents" > 					
 								<Route index element={<StudentsParents />} /> 
 									<Route path="students/" element={<StudentsList />}>												
-										<Route path=":studentId" element={<StudentDetails />}/>
+										<Route path=":id/" element={<EditStudent/>}/>
 										<Route path="newStudent" element={<NewStudentForm />}/>
 									</Route> {/* end of Students route */}
+
 
 									<Route path="parents/" element={<ParentsList />}>
 										<Route path=":parentId" element={<ParentDetails />}/>

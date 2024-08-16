@@ -11,6 +11,8 @@ import { RiDeleteBin6Line } from 'react-icons/ri'
 import useAuth from "../../../hooks/useAuth"
 import UsersManagement from '../UsersManagement'
 import { ImProfile } from 'react-icons/im'
+import { LiaMaleSolid, LiaFemaleSolid  } from "react-icons/lia";
+
 
 import { selectParentById } from '../../Students/StudentsAndParents/parentsApiSlice'
 import { IoShieldCheckmarkOutline, IoShieldOutline  } from "react-icons/io5";
@@ -124,8 +126,23 @@ const toDuplicate = selectedRows[-1]
     </span>
   ),
   sortable:true,
-  width:'100px'
+  width:'80px'
    }, 
+   { 
+ name: "Sex",
+ selector:row=>row.userSex,
+ cell: row => (
+  <span>
+    {row.userSex==='Male' ? (
+      <LiaMaleSolid className='text-blue-500 text-2xl' />
+    ) : (
+      <LiaFemaleSolid  className='text-red-500 text-2xl' />
+    )}
+  </span>
+),
+ sortable:true,
+ width:'70px'
+  }, 
     { 
   name: "ID",
   selector:row=>( <Link to={`/admin/usersManagement/userDetails/${row._id}`} >{row._id} </Link> ),
