@@ -1,13 +1,14 @@
 
 
 import { useGetAcademicYearsQuery} from "./academicYearsApiSlice"
-import SectionTabs from '../../../../Components/Shared/Tabs/SectionTabs'
+
 import DataTable from 'react-data-table-component'
 
 import {    setAcademicYears} from './academicYearsSlice'//use the memoized selector 
 
 import { useSelector, useDispatch } from 'react-redux'
 import { useState , useEffect} from 'react'
+import AcademicsSet from "../../AcademicsSet"
 
 const AcademicYearsList = () => {
   const dispatch = useDispatch()
@@ -18,7 +19,7 @@ const {
         isSuccess,
         isError,
         error
-} = useGetAcademicYearsQuery('newAcademicYears')//this should match the endpoint defined in your API slice.!! what does it mean?
+} = useGetAcademicYearsQuery('academicYearsList')//this should match the endpoint defined in your API slice.!! what does it mean?
 //we do not want to import from state but from DB
 
 //console.log(academicYearsData)
@@ -93,7 +94,7 @@ if (isSuccess ) {
 
 return (
   <>
-  <SectionTabs/>
+  <AcademicsSet/>
  
   <div className=' flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200' >
      {/* <div>

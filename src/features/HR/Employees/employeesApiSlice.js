@@ -26,10 +26,10 @@ export const employeesApiSlice = apiSlice.injectEndpoints({
             providesTags: (result, error, arg) => {
                 if (result?.ids) {
                     return [
-                        { type: 'Employee', id: 'LIST' },
-                        ...result.ids.map(id => ({ type: 'Employee', id }))
+                        { type: 'employee', id: 'LIST' },
+                        ...result.ids.map(id => ({ type: 'employee', id }))
                     ]
-                } else return [{ type: 'Employee', id: 'LIST' }]
+                } else return [{ type: 'employee', id: 'LIST' }]
             }
         }),
         addNewEmployee: builder.mutation({
@@ -41,7 +41,7 @@ export const employeesApiSlice = apiSlice.injectEndpoints({
                 }
             }),
             invalidatesTags: [//forces the cache in RTK query to update
-                { type: 'Employee', id: "LIST" }//the employee list will be unvalidated and updated
+                { type: 'employee', id: "LIST" }//the employee list will be unvalidated and updated
             ]
         }),
         updateEmployee: builder.mutation({
@@ -53,7 +53,7 @@ export const employeesApiSlice = apiSlice.injectEndpoints({
                 }
             }),
             invalidatesTags: (result, error, arg) => [//we re not updating all the list, butonly update the employee in the cache by using the arg.id
-                { type: 'Employee', id: arg.id }
+                { type: 'employee', id: arg.id }
             ]
         }),
         deleteEmployee: builder.mutation({
@@ -63,7 +63,7 @@ export const employeesApiSlice = apiSlice.injectEndpoints({
                 body: { id }
             }),
             invalidatesTags: (result, error, arg) => [
-                { type: 'Employee', id: arg.id }
+                { type: 'employee', id: arg.id }
             ]
         }),
     }),

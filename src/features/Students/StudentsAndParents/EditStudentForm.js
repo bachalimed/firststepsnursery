@@ -1,5 +1,6 @@
 import React from 'react'
 import StudentsParents from '../StudentsParents'
+import useAuth from '../../../hooks/useAuth'
 
 const EditStudentForm = () => {
   
@@ -18,7 +19,7 @@ const EditStudentForm = () => {
 
 
       
-      editwStudent tab
+      editwStudent form in tab
       </div>
   )
   return content

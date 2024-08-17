@@ -32,9 +32,11 @@ export const academicYearsApiSlice = apiSlice.injectEndpoints({
                     delete academicYear._id//added to delete the extra original _id from mongo but careful when planning to save to db again
                     return academicYear
                 })
+                //sort by newst year
+                const sortedList = newAcademicYears.sort((a, b) => b.title.localeCompare(a.title))
                 //console.log('modifiedacademicYears in the APIslice', newAcademicYears)
                 
-               return academicYearsAdapter.setAll(initialState, newAcademicYears)//loaded the academicYears into academicYearsadapter, setAll is responsible of creating ids and entities
+               return academicYearsAdapter.setAll(initialState, sortedList)//loaded the academicYears into academicYearsadapter, setAll is responsible of creating ids and entities
              
             },
             providesTags: (result, error, arg) => {
@@ -82,7 +84,6 @@ export const academicYearsApiSlice = apiSlice.injectEndpoints({
         }),
     }),
 })
-
 export const {//hooks created automatically from endpoint
     useGetAcademicYearsQuery,//this can be used whereven we want to fetch the data
     useAddNewAcademicYearMutation,

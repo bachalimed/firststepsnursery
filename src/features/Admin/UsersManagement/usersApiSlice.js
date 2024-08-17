@@ -27,10 +27,10 @@ export const usersApiSlice = apiSlice.injectEndpoints({//inject the ends points 
             providesTags: (result, error, arg) => {
                 if (result?.ids) {
                     return [
-                        { type: 'User', id: 'LIST' },
-                        ...result.ids.map(id => ({ type: 'User', id }))
+                        { type: 'user', id: 'LIST' },
+                        ...result.ids.map(id => ({ type: 'user', id }))
                     ]
-                } else return [{ type: 'User', id: 'LIST' }]
+                } else return [{ type: 'user', id: 'LIST' }]
             }
         }),
         addNewUser: builder.mutation({
@@ -42,7 +42,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({//inject the ends points 
                 }
             }),
             invalidatesTags: [//forces the cache in RTK query to update
-                { type: 'User', id: "LIST" }//the user list will be unvalidated and updated
+                { type: 'user', id: "LIST" }//the user list will be unvalidated and updated
             ]
         }),
         updateUser: builder.mutation({
@@ -54,7 +54,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({//inject the ends points 
                 }
             }),
             invalidatesTags: (result, error, arg) => [//we re not updating all the list, butonly update the user in the cache by using the arg.id
-                { type: 'User', id: arg.id }
+                { type: 'user', id: arg.id }
             ]
         }),
         updateUserPhoto: builder.mutation({
@@ -66,7 +66,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({//inject the ends points 
                 }
             }),
             invalidatesTags: (result, error, arg) => [//we re not updating all the list, butonly update the user in the cache by using the arg.id
-                { type: 'User', id: arg.id }
+                { type: 'user', id: arg.id }
             ]
         }),
         deleteUser: builder.mutation({
@@ -76,7 +76,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({//inject the ends points 
                 body: { id }
             }),
             invalidatesTags: (result, error, arg) => [
-                { type: 'User', id: arg.id }
+                { type: 'user', id: arg.id }
             ]
         }),
         

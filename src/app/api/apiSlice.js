@@ -23,7 +23,8 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
     // console.log(api) // signal, dispatch, getState()
     // console.log(extraOptions) //custom like {shout: true}
 
-    let result = await baseQuery(args, api, extraOptions)//original request that might success if access token is not expired, else we try using refresh token to get another access token
+    //original request that might success if access token is not expired, else we try using refresh token to get another access token
+    let result = await baseQuery(args, api, extraOptions)
 
     // If you want, handle other status codes, too
     if (result?.error?.status === 403) {
@@ -56,6 +57,6 @@ export const apiSlice = createApi({
     // baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3500' }),//this baseurl will be changed when deploying to the backend url and port
     //it is replaced by the following since basequery is defined up in the basequery
     baseQuery: baseQueryWithReauth,
-    tagTypes: ['Student', 'User', 'Parent', 'tasks', 'employee', 'academicYears'],//will be used for cached data, maybe we need to put all the data that will be used: student...
+    tagTypes: ['student', 'user', 'parent', 'task', 'employee', 'academicYear'],//will be used for cached data, maybe we need to put all the data that will be used: student...
     endpoints: builder => ({})
 })

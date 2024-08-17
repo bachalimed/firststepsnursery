@@ -20,7 +20,7 @@ const content = (
       <ul className='flex gap-2 px-2 py-2 bg-gray-300'>
         <Link to={'/students/studentsParents/students/'}><li >Students</li></Link>
         <Link to={'/students/studentsParents/parents/'}><li >Parents</li></Link>
-        <Link to={'/students/studentsParents/students/newStudent/'}><li >New Student</li></Link>
+        <Link to={'/students/studentsParents/newStudent/'}><li >New Student</li></Link>
       </ul>
     </div>
   )

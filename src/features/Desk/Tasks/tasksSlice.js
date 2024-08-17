@@ -7,7 +7,7 @@ import { createSlice, createEntityAdapter  } from '@reduxjs/toolkit'
 const tasksAdapter = createEntityAdapter()//this was added
 const initialState= tasksAdapter.getInitialState()
 const tasksSlice = createSlice({
-    name: 'tasks',
+    name: 'task',
     initialState,
 
     reducers: {
@@ -37,25 +37,17 @@ const tasksSlice = createSlice({
             // Update the state with the new entities and ids
             state.entities = newEntities;
             state.ids = Object.keys(newEntities)
-        },
-
-           
+        },        
         updateTask: (state, action) => {
             tasksAdapter.updateOne(state, action.payload)
         },
 
 
 
-//             const selectedYear = listOfTasks.find((year)=> year.title===e.target.value)
-//   const newSelectedYear = {...selectedYear,isSelected:true}
-//   const modifiedList=  [...listOfTasks,newSelectedYear]
-//   console.log(modifiedList)
-//   console.log(selectedYear)
-
         
     }
 })
-export const { setTasks, updateTask, activateTask,   filterTasks } = tasksSlice.actions
+export const { setTasks, updateTask,    filterTasks } = tasksSlice.actions
 
 export const currentTasksList = (state) => state.tasks
 export default tasksSlice.reducer//to be sent to the store

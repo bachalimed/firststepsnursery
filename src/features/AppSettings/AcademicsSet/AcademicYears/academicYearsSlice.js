@@ -7,7 +7,7 @@ import { createSlice, createEntityAdapter  } from '@reduxjs/toolkit'
 const academicYearsAdapter = createEntityAdapter()//this was added
 const initialState= academicYearsAdapter.getInitialState()
 const academicYearsSlice = createSlice({
-    name: 'academicYears',
+    name: 'academicYear',
     initialState,
 
     reducers: {
@@ -41,7 +41,6 @@ const academicYearsSlice = createSlice({
             },
 
 
-
 //             const selectedYear = listOfAcademicYears.find((year)=> year.title===e.target.value)
 //   const newSelectedYear = {...selectedYear,isSelected:true}
 //   const modifiedList=  [...listOfAcademicYears,newSelectedYear]
@@ -53,8 +52,8 @@ const academicYearsSlice = createSlice({
 })
 export const { setAcademicYears, updateAcademicYear, activateAcademicYear,  selectAcademicYear } = academicYearsSlice.actions
 
-export const currentAcademicYearsList = (state) => state.academicYears
+export const currentAcademicYearsList = (state) => state.academicYear
 export default academicYearsSlice.reducer//to be sent to the store
-// export const { selectAll: selectAllAcademicYears } = academicYearsAdapter.getSelectors(state => state.academicYears)//added this one
+// export const { selectAll: selectAllAcademicYears } = academicYearsAdapter.getSelectors(state => state.academicYear)//added this one
 
 

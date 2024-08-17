@@ -4,20 +4,23 @@ import { setupListeners } from "@reduxjs/toolkit/query"
 import authReducer from "../features/auth/authSlice"
 import academicYearsReducer from '../features/AppSettings/AcademicsSet/AcademicYears/academicYearsSlice'
 import tasksReducer from '../features/Desk/Tasks/tasksSlice'
+import studentsReducer from  '../features/Students/StudentsAndParents/studentsSlice'
 
 export const store = configureStore({
     reducer: {// Add the generated reducer as a specific top-level slice
-        [apiSlice.reducerPath]: apiSlice.reducer,
+        [apiSlice.reducerPath]: apiSlice.reducer,//what ever we name in the reducerpath will be given the name to this apislice, the default is 'api'
         auth: authReducer,
-        academicYears: academicYearsReducer,
-        tasks: tasksReducer,
+        academicYear: academicYearsReducer,
+        //task: tasksReducer,
+        student: studentsReducer
+        
         //imported from taskSlice
         
     },
      // Adding the api middleware enables caching, invalidation, polling,
   // and other useful features of `rtk-query`.
     middleware: getDefaultMiddleware =>
-        getDefaultMiddleware().concat(apiSlice.middleware),
+        getDefaultMiddleware().concat(apiSlice.middleware),//apislice.middleeware manages cache lifitimes and expirations
     devTools: true
 })
 setupListeners(store.dispatch)//to allow refresh of data if using multiple computers so we don't use old deleted data

@@ -32,7 +32,9 @@
   
         const Navigate = useNavigate()
 
-        const {userId} = useAuth()
+         //prepare the permission variables
+    const{userId,canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
+        
         //initialisation of states for each input
         const [studentName, setStudentName] = useState({})
         const [firstName, setFirstName] = useState('')

@@ -17,8 +17,8 @@ const Prefetch = () => {
         const users = store.dispatch(usersApiSlice.endpoints.getUsers.initiate())//manual subscription to each endpoint by querying
         const students = store.dispatch(studentsApiSlice.endpoints.getStudents.initiate())
         const parents = store.dispatch(parentsApiSlice.endpoints.getParents.initiate())
-        const employees = store.dispatch(employeesApiSlice.endpoints.getEmployees.initiate())
-        const tasks = store.dispatch(tasksApiSlice.endpoints.getTasks.initiate())
+        //const employees = store.dispatch(employeesApiSlice.endpoints.getEmployees.initiate())
+        //const tasks = store.dispatch(tasksApiSlice.endpoints.getTasks.initiate())
         const academicYears = store.dispatch(academicYearsApiSlice.endpoints.getAcademicYears.initiate())
 
         return () => {
@@ -26,8 +26,8 @@ const Prefetch = () => {
             users.unsubscribe()
             students.unsubscribe()
             parents.unsubscribe()
-            employees.unsubscribe()
-            tasks.unsubscribe()
+            //employees.unsubscribe()
+            //tasks.unsubscribe()
             academicYears.unsubscribe()
         }
     }, [])

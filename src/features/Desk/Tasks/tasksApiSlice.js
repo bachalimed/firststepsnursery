@@ -30,10 +30,10 @@ export const tasksApiSlice = apiSlice.injectEndpoints({
           providesTags: (result, error, arg) => {
               if (result?.ids) {
                   return [
-                      { type: 'tasks', id: 'LIST' },
-                      ...result.ids.map(id => ({ type: 'tasks', id }))
+                      { type: 'task', id: 'LIST' },
+                      ...result.ids.map(id => ({ type: 'task', id }))
                   ]
-              } else return [{ type: 'tasks', id: 'LIST' }]
+              } else return [{ type: 'task', id: 'LIST' }]
           }
       }),
       getTasksByUserId: builder.query({
@@ -46,7 +46,7 @@ export const tasksApiSlice = apiSlice.injectEndpoints({
             return tasksAdapter.setAll(initialState, loadedTasks)
         },
         providesTags: (result, error, arg) => [
-            ...result.ids.map(id => ({ type: 'tasks', id }))
+            ...result.ids.map(id => ({ type: 'task', id }))
         ]
     }),
       addNewTask: builder.mutation({
@@ -58,7 +58,7 @@ export const tasksApiSlice = apiSlice.injectEndpoints({
             }
         }),
         invalidatesTags: [//forces the cache in RTK query to update
-            { type: 'tasks', id: "LIST" }//the task list will be unvalidated and updated
+            { type: 'task', id: "LIST" }//the task list will be unvalidated and updated
         ]
     }),
     updateTask: builder.mutation({
@@ -70,7 +70,7 @@ export const tasksApiSlice = apiSlice.injectEndpoints({
             }
         }),
         invalidatesTags: (result, error, arg) => [//we re not updating all the list, butonly update the task in the cache by using the arg.id
-            { type: 'tasks', id: arg.id }
+            { type: 'task', id: arg.id }
         ]
     }),
     deleteTask: builder.mutation({
@@ -80,7 +80,7 @@ export const tasksApiSlice = apiSlice.injectEndpoints({
             body: { id }
         }),
         invalidatesTags: (result, error, arg) => [
-            { type: 'tasks', id: arg.id }
+            { type: 'task', id: arg.id }
         ]
     }),
   }),

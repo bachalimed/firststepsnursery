@@ -53,7 +53,7 @@ const Navigate = useNavigate()
    
 
     //the serach result data
-    const filteredUsers = allUsers.filter(item => {
+    const filteredUsers = allUsers?.filter(item => {
       const firstNameMatch = item.userFullName.userFirstName.toLowerCase().includes(searchQuery)
       const middleNameMatch = item.userFullName.userMiddleName.toLowerCase().includes(searchQuery)
       const lastNameMatch = item.userFullName.userLastName.toLowerCase().includes(searchQuery)
@@ -201,7 +201,7 @@ const toDuplicate = selectedRows[-1]
         <ImProfile fontSize={20}/> 
         </button>
         {/* /////////////////////condition is canEdit and not ! of it */}
-        {canEdit?(<button className="text-yellow-400"  onClick={() => handleEdit(row._id)}  > 
+        {canEdit?(<button className="text-yellow-400"  onClick={() => Navigate(`/admin/usersManagement/${row._id}/`)}  > 
         <FiEdit fontSize={20}/> 
         </button>):null}
         {canDelete?(<button className="text-red-500" onClick={() => onDeleteUserClicked(row._id)} >

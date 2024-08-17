@@ -26,22 +26,52 @@ export const studentsApiSlice = apiSlice.injectEndpoints({
             providesTags: (result, error, arg) => {
                 if (result?.ids) {
                     return [
-                        { type: 'Student', id: 'LIST' },
-                        ...result.ids.map(id => ({ type: 'Student', id }))
+                        { type: 'student', id: 'LIST' },
+                        ...result.ids.map(id => ({ type: 'student', id }))
                     ]
-                } else return [{ type: 'Student', id: 'LIST' }]
+                } else return [{ type: 'student', id: 'LIST' }]
+            }
+        }),
+        getStudentsByYear: builder.query({
+            query: (params) =>{
+                const queryString = new URLSearchParams(params).toString() 
+                return `/students/studentsParents/students?${queryString}`;
+                },
+            
+            validateStatus: (response, result) => {
+                return response.status === 200 && !result.isError
+            },
+            //keepUnusedDataFor: 5,//default when app is deployed is 60seconds
+            transformResponse: responseData => {
+                const loadedStudents = responseData.map(student => {
+                    student.id = student._id
+                    
+                    return student
+                });
+                
+                return studentsAdapter.setAll(initialState, loadedStudents)//original
+                //return  loadedStudents.data//modified
+                
+            },
+            providesTags: (result, error, arg) => {
+                if (result?.ids) {
+                    return [
+                        { type: 'student', id: 'LIST' },
+                        ...result.ids.map(id => ({ type: 'student', id }))
+                    ]
+                } else return [{ type: 'student', id: 'LIST' }]
             }
         }),
         addNewStudent: builder.mutation({
             query: initialStudentData => ({
-                url: '/students/studentsParents/students',
+                url: '/students/studentsParents/students/newStudent/',
                 method: 'POST',
                 body: {
                     ...initialStudentData,
                 }
             }),
             invalidatesTags: [//forces the cache in RTK query to update
-                { type: 'Student', id: "LIST" }//the student list will be unvalidated and updated
+                { type: 'student', id: "LIST" }//the student list will be unvalidated and updated
             ]
         }),
         updateStudent: builder.mutation({
@@ -53,7 +83,7 @@ export const studentsApiSlice = apiSlice.injectEndpoints({
                 }
             }),
             invalidatesTags: (result, error, arg) => [//we re not updating all the list, butonly update the student in the cache by using the arg.id
-                { type: 'Student', id: arg.id }
+                { type: 'student', id: arg.id }
             ]
         }),
         deleteStudent: builder.mutation({
@@ -63,7 +93,7 @@ export const studentsApiSlice = apiSlice.injectEndpoints({
                 body: { id }
             }),
             invalidatesTags: (result, error, arg) => [
-                { type: 'Student', id: arg.id }
+                { type: 'student', id: arg.id }
             ]
         }),
     }),
@@ -74,16 +104,17 @@ export const {
     useAddNewStudentMutation,
     useUpdateStudentMutation,
     useDeleteStudentMutation,
+    useGetStudentsByYearQuery,
 } = studentsApiSlice
 
-// returns the query result object
+// returns the query result object and not only the data we need for this reason we need the createselector!!!
 export const selectStudentsResult = studentsApiSlice.endpoints.getStudents.select()
 
-// creates memoized selector
-const selectStudentsData = createSelector(
-    selectStudentsResult,
+// creates memoized selector that takes the inpput function selescStudentsREsult and gets the data from it which is ids and entities
+const selectStudentsData = createSelector(selectStudentsResult,
     studentsResult => studentsResult.data // normalized state object with ids & entities
 )
+
 
 //getSelectors creates these selectors and we rename them with aliases using destructuring
 export const {

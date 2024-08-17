@@ -119,11 +119,13 @@ const App = () => {
 							<Route path="students" element={<DashboardLayout />} >	 												
 								<Route path="studentsParents" > 					
 								<Route index element={<StudentsParents />} /> 
-									<Route path="students/" element={<StudentsList />}>												
-										<Route path=":id/" element={<EditStudent/>}/>
-										<Route path="newStudent/" element={<NewStudentFormMain />}/>
+									<Route path="students/" element={<StudentsList />}/>												
+									<Route path="newStudent/" element={<NewStudentFormMain />}/>												
+									<Route path="newStudent/:id/" element={<NewStudentFormSecondary />}/>
+									<Route path=":id/" element={<EditStudent/>}/>
+									<Route path="student/" element={<StudentsList />}>												
+										
 										<Route path="studentDetails/:id/" element={<StudentDetails/>}/>
-										<Route path="newStudent/:id/" element={<NewStudentFormSecondary />}/>
 									</Route> {/* end of Students route */}
 
 

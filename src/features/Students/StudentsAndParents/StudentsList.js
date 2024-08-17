@@ -1,37 +1,105 @@
 
 
-import { useGetStudentsQuery } from "./studentsApiSlice"
+import {  useGetStudentsQuery, useGetStudentsByYearQuery } from "./studentsApiSlice"
 import { HiOutlineSearch } from 'react-icons/hi'
 import StudentsParents from "../StudentsParents"
 import DataTable from 'react-data-table-component'
 import { useSelector } from 'react-redux'
-import {  selectAllStudents } from './studentsApiSlice'//use the memoized selector 
-import { useState } from "react"
+import {  selectAllStudentsByYear, selectAllStudents } from './studentsApiSlice'//use the memoized selector 
+import { useEffect, useState } from "react"
 import { Link } from 'react-router-dom'
 import { useNavigate } from "react-router-dom"
 import { ImProfile } from "react-icons/im"
 import { FiEdit } from "react-icons/fi"
 import { RiDeleteBin6Line } from "react-icons/ri"
-
+import { setAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice"
+import { useSelectedAcademicYear } from "../../../hooks/useSelectedAcademicYears"
 import useAuth from '../../../hooks/useAuth'
+import getCurrentAcademicYear from '../../../config/CurrentYear'
+import { setStudents, setResult } from "./studentsSlice"
+import { useDispatch } from "react-redux"
 
 
 const StudentsList = () => {
 
-//get several things from the query
-const {
-  data: students,//the data is renamed students
-        isLoading,//monitor several situations is loading...
-        isSuccess,
-        isError,
-        error
-} = useGetStudentsQuery('studentsList', {//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-  pollingInterval: 60000,//will refetch data every 60seconds
-  refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
-  refetchOnMountOrArgChange: true//refetch when we remount the component
+  const selectedAcademicYear = useSelectedAcademicYear()
+  const [selectedYear, setSelectedYear]=useState('')
+  //get several things from the query
+  const Navigate = useNavigate()
+const Dispatch = useDispatch()
+
+
+
+  // const {
+  //   data: students,//the data is renamed students
+  //         isLoading,//monitor several situations is loading...
+  //         isSuccess,
+  //         isError,
+  //         error
+  // } = useGetStudentsByYearQuery({selectedYear:selectedYear ,endpointName: 'studentsList'},{//this param will be passed in req.body to select only students for taht year
+  //   //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+  //   pollingInterval: 60000,//will refetch data every 60seconds
+  //   refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
+  //   refetchOnMountOrArgChange: true//refetch when we remount the component
+  // })
+
+//this ensures teh selected year is chosen before running hte useeffect it is working perfectly to dispaptch the selected year
+  useEffect(() => {
+    if (selectedAcademicYear?.title) {
+      setSelectedYear(selectedAcademicYear.title)
+      console.log('Selected year updated:', selectedAcademicYear.title)
+    }
+  }, [selectedAcademicYear])
+
+//   //save to the state
+// if (isSuccess){
+//   Dispatch(setResult(students))
+// }
+// const myLsit = useSelector(state=>state.student.entities)
+// console.log('mylist', myLsit)
+
+  const {
+    data: students,//the data is renamed students
+    isLoading,//monitor several situations is loading...
+    isSuccess,
+    isError,
+    error
+  } = useGetStudentsQuery({endpointName: 'studentsList'},{//this param will be passed in req.body to select only students for taht year
+    //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+    pollingInterval: 60000,//will refetch data every 60seconds
+    refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
+    refetchOnMountOrArgChange: true//refetch when we remount the component
+  })//this has no effect because  we are getting the students form the state and not from the query
+  
+  
+  const allStudents = useSelector(selectAllStudents)// not the same cache list we re looking for this is from getstudents query and not getstudentbyyear wuery
+
+//console.log('allStudents from the state by year',allStudents)
+  // State to hold selected rows
+  const [selectedRows, setSelectedRows] = useState([])
+//state to hold the search query
+const [searchQuery, setSearchQuery] = useState('')
+//const [filteredStudents, setFilteredStudents] = useState([])
+  // to ensure it is not undefined students
+  
+console.log('allStudents',allStudents)
+    //the serach result data
+  const filteredStudents = allStudents?.filter(item => {
+  //the nested objects need extra logic to separate them
+  const firstNameMatch = item?.studentName?.firstName.toLowerCase().includes(searchQuery.toLowerCase())
+  const middleNameMatch = item?.studentName?.middleName.toLowerCase().includes(searchQuery.toLowerCase())
+  const lastNameMatch = item?.studentName?.lastName.toLowerCase().includes(searchQuery.toLowerCase())
+  //console.log('filteredStudents in the success', item)
+  return (Object.values(item).some(val =>
+    String(val).toLowerCase().includes(searchQuery.toLowerCase())
+  )||firstNameMatch||middleNameMatch||lastNameMatch)
 })
-const Navigate = useNavigate()
-const allStudents = useSelector(state => selectAllStudents(state))
+
+
+
+
+//import students
+
 const{canEdit, canDelete, canCreate, status2}=useAuth()
 // console.log('in student list canEdit', canEdit)
 // console.log('canDelete', canDelete)
@@ -40,22 +108,10 @@ const{canEdit, canDelete, canCreate, status2}=useAuth()
 // console.log('isParent', isParent)
 // console.log('status2', status2)
 
-  // State to hold selected rows
-  const [selectedRows, setSelectedRows] = useState([])
-//state to hold the search query
-const [searchQuery, setSearchQuery] = useState('')
+
    
 
-//the serach result data
-const filteredStudents = allStudents.filter(item => {
-  //the nested objects need extra logic to separate them
-  const firstNameMatch = item.studentName.firstName.toLowerCase().includes(searchQuery)
-  const middleNameMatch = item.studentName.middleName.toLowerCase().includes(searchQuery)
-  const lastNameMatch = item.studentName.lastName.toLowerCase().includes(searchQuery)
-  return (Object.values(item).some(val =>
-      String(val).toLowerCase().includes(searchQuery.toLowerCase())
-  )||firstNameMatch||middleNameMatch||lastNameMatch)
-})
+
 
 const handleSearch = (e) => {
     setSearchQuery(e.target.value)
@@ -70,6 +126,7 @@ const handleSearch = (e) => {
 
 
 const handleEdit=(id)=>{
+  console.log('in teh edit handle and id is', id)
   Navigate(`/students/studentsParents/students/${id}`)//the path to be set in app.js and to be checked with server.js in backend, this is editing page of 
 }
 //handle delete
@@ -105,6 +162,13 @@ const toDuplicate = selectedRows[-1]
 
     setSelectedRows([]); // Clear selection after delete
   }
+
+  
+
+
+
+
+ 
 
 
 const column =[
@@ -154,14 +218,19 @@ sortable:true
   sortable:true,
   removableRows:true
 },
+{name: "Student Year",
+  selector:row=>row.studentYear,
+  sortable:true,
+  removableRows:true
+},
 { 
   name: "Actions",
   cell: row => (
     <div className="space-x-1">
-      <button className="text-blue-500" fontSize={20}  onClick={() => Navigate(`studentDetails/${row.id}`)}  > 
+      <button className="text-blue-500" fontSize={20}  onClick={() => Navigate(`studentDetails/${row._id}`)}  > 
         <ImProfile fontSize={20}/> 
         </button>
-      {canEdit?(<button  className="text-yellow-400" onClick={() => handleEdit(row._id)}  > 
+      {canEdit?(<button  className="text-yellow-400" onClick={() => Navigate(`/students/studentsParents/${row._id}`)}  > 
       <FiEdit fontSize={20}/> 
       </button>):null}
       {canDelete?(<button className="text-red-500"  onClick={() => handleDelete(row._id)}>
@@ -175,16 +244,13 @@ sortable:true
 }
 ]
 let content
-
 if (isLoading) content = <p>Loading...</p>
-
 if (isError) {
-    content = <p className="errmsg">{error?.data?.message}</p>//errormessage class defined in the css, the error has data and inside we have message of error
+  content = <p className="errmsg">{error?.data?.message}</p>//errormessage class defined in the css, the error has data and inside we have message of error
 }
+ if (isSuccess){
 
-if (isSuccess) {
-
- content =  
+ content = ( 
   <>
 
   <StudentsParents/>
@@ -234,11 +300,8 @@ if (isSuccess) {
 	</div>
 
   </div>
-  </>
-
-
+  </>)
 }
 return content
-
-}
-export default StudentsList
+ }
+  export default StudentsList

@@ -27,10 +27,10 @@ export const parentsApiSlice = apiSlice.injectEndpoints({
             providesTags: (result, error, arg) => {
                 if (result?.ids) {
                     return [
-                        { type: 'Parent', id: 'LIST' },
-                        ...result.ids.map(id => ({ type: 'Parent', id }))
+                        { type: 'parent', id: 'LIST' },
+                        ...result.ids.map(id => ({ type: 'parent', id }))
                     ]
-                } else return [{ type: 'Parent', id: 'LIST' }]
+                } else return [{ type: 'parent', id: 'LIST' }]
             }
         }),
         addNewParent: builder.mutation({
@@ -42,7 +42,7 @@ export const parentsApiSlice = apiSlice.injectEndpoints({
                 }
             }),
             invalidatesTags: [//forces the cache in RTK query to update
-                { type: 'Parent', id: "LIST" }//the parent list will be unvalidated and updated
+                { type: 'parent', id: "LIST" }//the parent list will be unvalidated and updated
             ]
         }),
         updateParent: builder.mutation({
@@ -54,7 +54,7 @@ export const parentsApiSlice = apiSlice.injectEndpoints({
                 }
             }),
             invalidatesTags: (result, error, arg) => [//we re not updating all the list, butonly update the parent in the cache by using the arg.id
-                { type: 'Parent', id: arg.id }
+                { type: 'parent', id: arg.id }
             ]
         }),
         deleteParent: builder.mutation({
@@ -64,7 +64,7 @@ export const parentsApiSlice = apiSlice.injectEndpoints({
                 body: { id }
             }),
             invalidatesTags: (result, error, arg) => [
-                { type: 'Parent', id: arg.id }
+                { type: 'parent', id: arg.id }
             ]
         }),
     }),

@@ -4,36 +4,42 @@
 
 
 export const HeaderChatSample=[
-	{type:"email",
+	{id:1,
+		type:"email",
 	sender:"ttt weslati",
 	path:"object",
 	content:"the first phrase"
 	 },
-	 {type:"chat",
-		sender:"fdAli wesfdlati",
-		path:"object",
-		content:"the first phrase"
-		 },
+	{id:2,
+	type:"chat",
+	sender:"fdAli wesfdlati",
+	path:"object",
+	content:"the first phrase"
+		},
 	 
-		 {type:"email",
-			sender:"Ali weslati",
-			path:"object",
-			content:"the first phrase"
-			 },
-	{type:"email",
+	{id:3,
+		type:"email",
+	sender:"Ali weslati",
+	path:"object",
+	content:"the first phrase"
+		},
+	{id:4,
+		type:"email",
 	sender:"Ali weslati",
 	path:"object",
 	content:"the first phrase"
 	 },
-	 {type:"email",
-		sender:"Ali weslati",
-		path:"object",
-		content:"the first phrase"
-		 },
+	{id:5,
+		type:"email",
+	sender:"Ali weslati",
+	path:"object",
+	content:"the first phrase"
+		},
 	 
-		 {type:"email",
-			sender:"Ali weslati",
-			path:"object",
-			content:"the first phrase"
-			 }
+	{id:6,
+		type:"email",
+	sender:"Ali weslati",
+	path:"object",
+	content:"the first phrase"
+		}
 ]
