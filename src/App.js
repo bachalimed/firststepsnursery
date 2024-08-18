@@ -122,11 +122,12 @@ const App = () => {
 									<Route path="students/" element={<StudentsList />}/>												
 									<Route path="newStudent/" element={<NewStudentFormMain />}/>												
 									<Route path="newStudent/:id/" element={<NewStudentFormSecondary />}/>
-									<Route path=":id/" element={<EditStudent/>}/>
-									<Route path="student/" element={<StudentsList />}>												
+									<Route path="student" >
+									<Route index   element={<EditStudent/>}/>												
+										<Route path=":id/" element={<EditStudent/>}/>
 										
 										<Route path="studentDetails/:id/" element={<StudentDetails/>}/>
-									</Route> {/* end of Students route */}
+									</Route> {/* end of Student route */}
 
 
 									<Route path="parents/" element={<ParentsList />}>

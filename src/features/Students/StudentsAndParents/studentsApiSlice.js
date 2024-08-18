@@ -3,26 +3,26 @@ import {
     createEntityAdapter
 } from "@reduxjs/toolkit";
 import { apiSlice } from "../../../app/api/apiSlice"
-
 const studentsAdapter = createEntityAdapter({})
 
 const initialState = studentsAdapter.getInitialState()
 
 export const studentsApiSlice = apiSlice.injectEndpoints({
-    endpoints: builder => ({
+    endpoints: (builder) => ({
         getStudents: builder.query({
             query: () => '/students/studentsParents/students',//as defined in server.js
             validateStatus: (response, result) => {
                 return response.status === 200 && !result.isError
             },
-            //keepUnusedDataFor: 5,//default when app is deployed is 60seconds
+
+            keepUnusedDataFor: 5,//default when app is deployed is 60seconds
             transformResponse: responseData => {
                 const loadedStudents = responseData.map(student => {
                     student.id = student._id
                     return student
                 });
                 return studentsAdapter.setAll(initialState, loadedStudents)
-            },
+            }, 
             providesTags: (result, error, arg) => {
                 if (result?.ids) {
                     return [
@@ -35,7 +35,7 @@ export const studentsApiSlice = apiSlice.injectEndpoints({
         getStudentsByYear: builder.query({
             query: (params) =>{
                 const queryString = new URLSearchParams(params).toString() 
-                return `/students/studentsParents/students?${queryString}`;
+                return `/students/studentsParents/students?${queryString}`
                 },
             
             validateStatus: (response, result) => {
@@ -49,8 +49,8 @@ export const studentsApiSlice = apiSlice.injectEndpoints({
                     return student
                 });
                 
-                return studentsAdapter.setAll(initialState, loadedStudents)//original
-                //return  loadedStudents.data//modified
+                return studentsAdapter.setAll(initialState, loadedStudents)
+               
                 
             },
             providesTags: (result, error, arg) => {

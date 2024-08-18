@@ -15,26 +15,26 @@ const studentsSlice = createSlice({
             studentsAdapter.setAll(state, action.payload)
         
         },        
-        selectStudent: (state, action) => {
-            const { id } = action.payload //get the id from the payload that was passed in from the component selection
-            // console.log('selectedTitle')
-            // console.log(id)
-            //Reset isSelected for all academic years
-            const newStudents=Object.values(state.entities).map(item  => {//Converts the entities object from the state into an array of its values. Each value is an entity, Iterates over each entity in the array.
-                if (item.id === id){//Checks if the entity is not null or undefined.
+        // selectStudent: (state, action) => {
+        //     const { id } = action.payload //get the id from the payload that was passed in from the component selection
+        //     // console.log('selectedTitle')
+        //     // console.log(id)
+        //     //Reset isSelected for all academic years
+        //     const newStudents=Object.values(state.entities).map(item  => {//Converts the entities object from the state into an array of its values. Each value is an entity, Iterates over each entity in the array.
+        //         if (item.id === id){//Checks if the entity is not null or undefined.
                     
-                    return { ...item, isSelected: true }//Sets the isSelected property of the entity to true
-                } else {
-                    return { ...item, isSelected: false }
-                }
-            })
-            const newEntities = {}
-            newStudents.forEach(item => {newEntities[item.id] = item
-            })
-            state.entities = newEntities
-            state.ids = Object.keys(newEntities)
+        //             return { ...item, isSelected: true }//Sets the isSelected property of the entity to true
+        //         } else {
+        //             return { ...item, isSelected: false }
+        //         }
+        //     })
+        //     const newEntities = {}
+        //     newStudents.forEach(item => {newEntities[item.id] = item
+        //     })
+        //     state.entities = newEntities
+        //     state.ids = Object.keys(newEntities)
 
-            },
+        //     },
            
         updateStudent: (state, action) => {
             studentsAdapter.updateOne(state, action.payload)
@@ -50,7 +50,7 @@ const studentsSlice = createSlice({
     }
 })
 //export actions
-export const { setStudents, updateStudent,  selectStudent, setResult } = studentsSlice.actions
+export const { setStudents, updateStudent,   setResult } = studentsSlice.actions
 
 export const currentStudentsList = (state) => state.student
 //export reducer

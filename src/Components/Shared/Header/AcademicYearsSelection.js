@@ -37,6 +37,7 @@ useEffect(()=>{
 const handleSelectedAcademicYear =(e) =>{
   const  id = e.target.value
  //console.log(selectedTitle)
+ //this will publish the curretn selectiont ob eused by other components
   dispatch(selectAcademicYear({id:id}))
 }
 //const sortedList = academicYears.sort((a, b) => b.title.localeCompare(a.title))//will sort the selection options with topo most recent
