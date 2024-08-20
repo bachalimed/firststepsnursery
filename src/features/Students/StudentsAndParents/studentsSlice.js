@@ -14,27 +14,10 @@ const studentsSlice = createSlice({
         setStudents: (state, action) => {//get and sort the items
             studentsAdapter.setAll(state, action.payload)
         
-        },        
-        // selectStudent: (state, action) => {
-        //     const { id } = action.payload //get the id from the payload that was passed in from the component selection
-        //     // console.log('selectedTitle')
-        //     // console.log(id)
-        //     //Reset isSelected for all academic years
-        //     const newStudents=Object.values(state.entities).map(item  => {//Converts the entities object from the state into an array of its values. Each value is an entity, Iterates over each entity in the array.
-        //         if (item.id === id){//Checks if the entity is not null or undefined.
-                    
-        //             return { ...item, isSelected: true }//Sets the isSelected property of the entity to true
-        //         } else {
-        //             return { ...item, isSelected: false }
-        //         }
-        //     })
-        //     const newEntities = {}
-        //     newStudents.forEach(item => {newEntities[item.id] = item
-        //     })
-        //     state.entities = newEntities
-        //     state.ids = Object.keys(newEntities)
-
-        //     },
+        },   
+        setSomeStudents: (state, action) => {studentsAdapter.upsertMany(state, action.payload)
+        },    //will ad d to the state
+       
            
         updateStudent: (state, action) => {
             studentsAdapter.updateOne(state, action.payload)
@@ -50,12 +33,15 @@ const studentsSlice = createSlice({
     }
 })
 //export actions
-export const { setStudents, updateStudent,   setResult } = studentsSlice.actions
+export const { setStudents, updateStudent,   setResult, setSomeStudents } = studentsSlice.actions
 
 export const currentStudentsList = (state) => state.student
 //export reducer
 export default studentsSlice.reducer//to be sent to the store
 //export selectors
- export const { selectAll: selectAllStudents } = studentsAdapter.getSelectors(state => state.student)//added this one
+ export const { selectAll: selectAllStudents,
+    
+   
+  } = studentsAdapter.getSelectors(state => state.student)//added this one
 
 

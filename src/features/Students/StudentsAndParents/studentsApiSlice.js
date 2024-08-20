@@ -15,14 +15,16 @@ export const studentsApiSlice = apiSlice.injectEndpoints({
                 return response.status === 200 && !result.isError
             },
 
-            keepUnusedDataFor: 5,//default when app is deployed is 60seconds
+            keepUnusedDataFor: 60,//default when app is deployed is 60seconds
             transformResponse: responseData => {
-                const loadedStudents = responseData.map(student => {
-                    student.id = student._id
+                const newLoadedStudents = responseData.map(student => { 
+                    
+                    student.id = student._id//changed the _id from mongoDB to id
+                    delete student._id//added to delete the extra original _id from mongo but careful when planning to save to db again
                     return student
-                });
-                return studentsAdapter.setAll(initialState, loadedStudents)
-            }, 
+                })
+                return studentsAdapter.upsertMany(initialState, newLoadedStudents)
+            },
             providesTags: (result, error, arg) => {
                 if (result?.ids) {
                     return [
@@ -41,18 +43,54 @@ export const studentsApiSlice = apiSlice.injectEndpoints({
             validateStatus: (response, result) => {
                 return response.status === 200 && !result.isError
             },
-            //keepUnusedDataFor: 5,//default when app is deployed is 60seconds
+           
             transformResponse: responseData => {
-                const loadedStudents = responseData.map(student => {
-                    student.id = student._id
+                //const {loadedStudents} =
+                
+                //console.log('academicYears length  in the APIslice',responseData.total)
+                //console.log('academicYears in the APIslice', academicYears)
+                const newLoadedStudents = responseData.map(student => { 
                     
+                    student.id = student._id//changed the _id from mongoDB to id
+                    delete student._id//added to delete the extra original _id from mongo but careful when planning to save to db again
                     return student
-                });
-                
-                return studentsAdapter.setAll(initialState, loadedStudents)
-               
-                
+                })
+                return studentsAdapter.setAll(initialState, newLoadedStudents)
             },
+           
+            providesTags: (result, error, arg) => {
+                if (result?.ids) {
+                    return [
+                        { type: 'student', id: 'LIST' },
+                        ...result.ids.map(id => ({ type: 'student', id }))
+                    ]
+                } else return [{ type: 'student', id: 'LIST' }]
+            }
+        }),
+        getStudentById: builder.query({
+            query: (params) =>{
+                const queryString = new URLSearchParams(params).toString() 
+                return `/students/studentsParents/students?${queryString}`
+                },
+            
+            validateStatus: (response, result) => {
+                return response.status === 200 && !result.isError
+            },
+           
+            transformResponse: responseData => {
+                //const {loadedStudents} =
+                
+                //console.log('academicYears length  in the APIslice',responseData.total)
+                //console.log('academicYears in the APIslice', academicYears)
+                const newLoadedStudents = responseData.map(student => { 
+                    
+                    student.id = student._id//changed the _id from mongoDB to id
+                    delete student._id//added to delete the extra original _id from mongo but careful when planning to save to db again
+                    return student
+                })
+                return studentsAdapter.upsertMany(initialState, newLoadedStudents)
+            },
+           
             providesTags: (result, error, arg) => {
                 if (result?.ids) {
                     return [
@@ -105,10 +143,20 @@ export const {
     useUpdateStudentMutation,
     useDeleteStudentMutation,
     useGetStudentsByYearQuery,
+    useGetStudentByIdQuery,
 } = studentsApiSlice
 
-// returns the query result object and not only the data we need for this reason we need the createselector!!!
-export const selectStudentsResult = studentsApiSlice.endpoints.getStudents.select()
+// returns the query result object and not only the data we need for this reason we need the createselector!!! thsi selcetor decides which query is used??
+export const selectStudentsResult = studentsApiSlice.endpoints.getStudentsByYear.select()
+
+
+//this is specific for thequery byYear:
+// export const selectStudentsByYearResult = studentsApiSlice.endpoints.getStudentsByYear.select(selectedYear)
+
+// export const selectStudentByIdFromYear = (state, id, selectedYear) => {
+//     const studentsResult = selectStudentsByYearResult(state, selectedYear)
+//     return studentsResult?.data?.entities[id]
+// }
 
 // creates memoized selector that takes the inpput function selescStudentsREsult and gets the data from it which is ids and entities
 const selectStudentsData = createSelector(selectStudentsResult,

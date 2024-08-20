@@ -9,7 +9,6 @@ const academicYearsAdapter = createEntityAdapter({})//we can iterate on the id b
 // Initial state using the adapter
 const initialState = academicYearsAdapter.getInitialState()
 
-
 // Inject endpoints into the apiSlice
 export const academicYearsApiSlice = apiSlice.injectEndpoints({
     //define endpoints

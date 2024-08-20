@@ -18,7 +18,7 @@ import useAuth from '../../../hooks/useAuth'
 import getCurrentAcademicYear from '../../../config/CurrentYear'
 
 import { useDispatch } from "react-redux"
-import { setStudents } from "./studentsSlice"
+import { setSomeStudents, setStudents, currentStudentsList } from "./studentsSlice"
 
 
 const StudentsList = () => {
@@ -37,7 +37,7 @@ const StudentsList = () => {
           isSuccess,
           isError,
           error
-  } = useGetStudentsByYearQuery({selectedYear:selectedYear ,endpointName: 'studentsList'},{//this param will be passed in req.params to select only students for taht year
+  } = useGetStudentsByYearQuery({selectedYear:selectedYear ,endpointName: 'studentsList'}||{},{//this param will be passed in req.params to select only students for taht year
     //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
     pollingInterval: 60000,//will refetch data every 60seconds
     refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
@@ -88,14 +88,14 @@ let filteredStudents = []
   if (isSuccess){
     //console.log('students directly',students)
     
-    
     //set to the state to be used for other component s and edit student component
-
+    
     const {entities}=students
-         
+    
     //we need to change into array to be read??
     studentsList = Object.values(entities)//we are using entity adapter in this query
-    //Dispatch(setStudents(studentsList))//timing issue to update the state and use it the same time
+    Dispatch(setSomeStudents(studentsList))//timing issue to update the state and use it the same time
+    
    
     //the serach result data
    filteredStudents = studentsList?.filter(item => {
@@ -199,18 +199,18 @@ const column =[
 
   (status2)&&{ 
 name: "ID",
-selector:row=>( <Link to={`/students/studentsParents/student/studentDetails/${row._id}`} >{row._id} </Link> ),
+selector:row=>( <Link to={`/students/studentsParents/student/studentDetails/${row.id}`} >{row.id} </Link> ),
 sortable:true
  }, 
   { 
 name: "First Name",
-selector:row=>( <Link to={`/students/studentsParents/student/studentDetails/${row._id}`}> {row.studentName.firstName+" " +row.studentName.middleName}</Link>),
+selector:row=>( <Link to={`/students/studentsParents/student/studentDetails/${row.id}`}> {row.studentName.firstName+" " +row.studentName.middleName}</Link>),
 sortable:true
  }, 
   { 
 name: "Last Name",
 selector:row=>(
-  <Link to={`/students/studentsParents/student/studentDetails/${row._id}`}>
+  <Link to={`/students/studentsParents/student/studentDetails/${row.id}`}>
   {row.studentName.lastName}
   </Link>
   ),
@@ -243,13 +243,13 @@ sortable:true
   name: "Actions",
   cell: row => (
     <div className="space-x-1">
-      <button className="text-blue-500" fontSize={20}  onClick={() => Navigate(`/students/studentsParents/student/studentDetails/${row._id}`)}  > 
+      <button className="text-blue-500" fontSize={20}  onClick={() => Navigate(`/students/studentsParents/student/studentDetails/${row.id}`)}  > 
         <ImProfile fontSize={20}/> 
         </button>
-      {canEdit?(<button  className="text-yellow-400" onClick={() => Navigate(`/students/studentsParents/student/${row._id}`)}  > 
+      {canEdit?(<button  className="text-yellow-400" onClick={() => Navigate(`/students/studentsParents/edit/${row.id}`)}  > 
       <FiEdit fontSize={20}/> 
       </button>):null}
-      {canDelete?(<button className="text-red-500"  onClick={() => handleDelete(row._id)}>
+      {canDelete?(<button className="text-red-500"  onClick={() => handleDelete(row.id)}>
         <RiDeleteBin6Line fontSize={20}/>
       </button>):null}
     </div>

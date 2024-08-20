@@ -8,10 +8,22 @@ import { studentsApiSlice } from '../Students/StudentsAndParents/studentsApiSlic
 import { parentsApiSlice } from '../Students/StudentsAndParents/parentsApiSlice'
 import { tasksApiSlice } from '../Desk/Tasks/tasksApiSlice'
 import { academicYearsApiSlice } from '../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 
+import { useSelectedAcademicYear } from "../../hooks/useSelectedAcademicYears"
+
 const Prefetch = () => {
+    // const selectedAcademicYear = useSelectedAcademicYear()
+    // const [selectedYear, setSelectedYear]=useState('')
+
+    // useEffect(() => {
+    //     if (selectedAcademicYear?.title) {
+    //       setSelectedYear(selectedAcademicYear.title)
+    //       //console.log('Selected year updated:', selectedAcademicYear.title)
+    //     }
+    //   }, [selectedAcademicYear])
+
     useEffect(() => {//will run when the component mounts
         console.log('subscribing')
         const users = store.dispatch(usersApiSlice.endpoints.getUsers.initiate())//manual subscription to each endpoint by querying

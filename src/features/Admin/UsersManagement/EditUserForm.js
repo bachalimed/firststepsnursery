@@ -302,7 +302,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                 />
                 </div>
                 <label> <div style={{ marginTop: '10px' }}>
-                    Selected Sex: {userSex || 'None'}
+                    User Sex: {userSex || 'None'}
                 </div><br/>
                     <input
                     type="radio"

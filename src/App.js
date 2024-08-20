@@ -71,6 +71,7 @@ import NoPage from './pages/NoPage'
 import AcademicYearsList from './features/AppSettings/AcademicsSet/AcademicYears/AcademicYearsList'
 import AcademicYearDetails from './features/AppSettings/AcademicsSet/AcademicYears/AcademicYearDetails'
 import NewAcademicYear from './features/AppSettings/AcademicsSet/AcademicYears/NewAcademicYear'
+import EditStudentForm from './features/Students/StudentsAndParents/EditStudentForm'
 // import Parents from './features/Students/Parents'
 // import NewStudent from './features/Students/NewStudent'
 // import ResetPassword from './features/auth/ResetPassword'
@@ -122,12 +123,12 @@ const App = () => {
 									<Route path="students/" element={<StudentsList />}/>												
 									<Route path="newStudent/" element={<NewStudentFormMain />}/>												
 									<Route path="newStudent/:id/" element={<NewStudentFormSecondary />}/>
-									<Route path="student" >
-									<Route index   element={<EditStudent/>}/>												
-										<Route path=":id/" element={<EditStudent/>}/>
-										
 										<Route path="studentDetails/:id/" element={<StudentDetails/>}/>
-									</Route> {/* end of Student route */}
+									<Route path="edit/:id/" element={<EditStudent/>}/>
+																					
+										{/* <Route path=":id/" element={<EditStudentForm/>}/> */}
+										
+									
 
 
 									<Route path="parents/" element={<ParentsList />}>
