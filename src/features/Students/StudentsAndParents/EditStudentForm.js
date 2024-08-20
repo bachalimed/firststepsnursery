@@ -54,7 +54,7 @@ const{userId,canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
         
     const [studentMother, setStudentMother] = useState(student.studentMother)
     const [studentFather, setStudentFather] = useState(student.studentFather)
-    const [studentGardien, setStudentGardien] = useState(student.studentGardien)//an array
+    const [studentGardien, setStudentGardien] = useState(student.studentGardien)//an object
     const [gardienFirstName, setGardienFirstName] = useState(student.gardienFirstName)
     const [gardienMiddleName, setgardienMiddleName] = useState(student.gardienMiddleName)
     const [gardienLastName, setGardienLastName] = useState(student.gardienLastName)
@@ -115,7 +115,7 @@ const{userId,canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
             setGardienLastName('')
             setGardienPhone('')
             setGardienRelation('')
-            setStudentGardien([])
+            setStudentGardien({})
             setSchoolyear('')
             setAttendedSchool('')
             setNote('')
@@ -173,7 +173,7 @@ const{userId,canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
             setStudentName({firstName:firstName, middleName:middleName, lastName:lastName})},
         [firstName, middleName, lastName])
         useEffect(()=> {
-            setStudentGardien([{gardienFirstName:gardienFirstName, gardienMiddleName:gardienMiddleName, gardienLastName:gardienLastName, gardienPhone:gardienPhone, gardienRelation:gardienRelation}])
+            setStudentGardien({gardienFirstName:gardienFirstName, gardienMiddleName:gardienMiddleName, gardienLastName:gardienLastName, gardienPhone:gardienPhone, gardienRelation:gardienRelation})
         }, [gardienFirstName, gardienMiddleName, gardienLastName, gardienPhone, gardienRelation])
         
         useEffect(()=>{

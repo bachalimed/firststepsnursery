@@ -33,7 +33,7 @@ const studentsSlice = createSlice({
     }
 })
 //export actions
-export const { setStudents, updateStudent,   setResult, setSomeStudents } = studentsSlice.actions
+export const { setStudents, updateStudent,   setResult, setSomeStudents } = studentsSlice.actions//to be used with dispatch in the components
 
 export const currentStudentsList = (state) => state.student
 //export reducer
@@ -43,5 +43,4 @@ export default studentsSlice.reducer//to be sent to the store
     
    
   } = studentsAdapter.getSelectors(state => state.student)//added this one
-
 

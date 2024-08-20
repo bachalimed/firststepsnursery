@@ -52,27 +52,9 @@ const StudentsList = () => {
     }
   }, [selectedAcademicYear])
 
-//   //save to the state
-// if (isSuccess){
-//   Dispatch(setResult(students))
-// }
-// const myLsit = useSelector(state=>state.student.entities)
-// console.log('mylist', myLsit)
 
-  // const {
-  //   data: students,//the data is renamed students
-  //   isLoading,//monitor several situations is loading...
-  //   isSuccess,
-  //   isError,
-  //   error
-  // } = useGetStudentsQuery({endpointName: 'studentsList'},{//this param will be passed in req.body to select only students for taht year
-  //   //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-  //   pollingInterval: 60000,//will refetch data every 60seconds
-  //   refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
-  //   refetchOnMountOrArgChange: true//refetch when we remount the component
-  // })||{}//this has no effect because  we are getting the students form the state and not from the query
-
- 
+  // const myStu = useSelector(state=> state.student)
+  // console.log(myStu, 'mystu')
 
   //const allStudents = useSelector(selectAllStudents)// not the same cache list we re looking for this is from getstudents query and not getstudentbyyear wuery
 
@@ -86,7 +68,6 @@ const [searchQuery, setSearchQuery] = useState('')
   let studentsList =[]
 let filteredStudents = []
   if (isSuccess){
-    //console.log('students directly',students)
     
     //set to the state to be used for other component s and edit student component
     
@@ -222,11 +203,11 @@ sortable:true
   sortable:true
 }, 
 {name: "Father",
-  selector:row=>row.studentParent.studentFather,
+  selector:row=>row.studentFather,
   sortable:true
 }, 
 {name: "Mother",
-  selector:row=>row.studentParent.studentMother,
+  selector:row=>row.studentMother,
   sortable:true
 }, 
 {name: "Sex",
