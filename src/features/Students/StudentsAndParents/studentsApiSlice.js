@@ -25,14 +25,15 @@ export const studentsApiSlice = apiSlice.injectEndpoints({
                 })
                 return studentsAdapter.upsertMany(initialState, newLoadedStudents)
             },
-            providesTags: (result, error, arg) => {
-                if (result?.ids) {
-                    return [
-                        { type: 'student', id: 'LIST' },
-                        ...result.ids.map(id => ({ type: 'student', id }))
-                    ]
-                } else return [{ type: 'student', id: 'LIST' }]
-            }
+            providesTags:['student']
+            // providesTags: (result, error, arg) => {
+            //     if (result?.ids) {
+            //         return [
+            //             { type: 'student', id: 'LIST' },
+            //             ...result.ids.map(id => ({ type: 'student', id }))
+            //         ]
+            //     } else return [{ type: 'student', id: 'LIST' }]
+            // }
         }),
         getStudentsByYear: builder.query({
             query: (params) =>{
@@ -57,15 +58,16 @@ export const studentsApiSlice = apiSlice.injectEndpoints({
                 })
                 return studentsAdapter.setAll(initialState, newLoadedStudents)
             },
+            providesTags:['student']
            
-            providesTags: (result, error, arg) => {
-                if (result?.ids) {
-                    return [
-                        { type: 'student', id: 'LIST' },
-                        ...result.ids.map(id => ({ type: 'student', id }))
-                    ]
-                } else return [{ type: 'student', id: 'LIST' }]
-            }
+            // providesTags: (result, error, arg) => {
+            //     if (result?.ids) {
+            //         return [
+            //             { type: 'student', id: 'LIST' },
+            //             ...result.ids.map(id => ({ type: 'student', id }))
+            //         ]
+            //     } else return [{ type: 'student', id: 'LIST' }]
+            // }
         }),
         getStudentById: builder.query({
             query: (params) =>{
@@ -90,15 +92,15 @@ export const studentsApiSlice = apiSlice.injectEndpoints({
                 })
                 return studentsAdapter.upsertMany(initialState, newLoadedStudents)
             },
-           
-            providesTags: (result, error, arg) => {
-                if (result?.ids) {
-                    return [
-                        { type: 'student', id: 'LIST' },
-                        ...result.ids.map(id => ({ type: 'student', id }))
-                    ]
-                } else return [{ type: 'student', id: 'LIST' }]
-            }
+            providesTags:['student']
+            // providesTags: (result, error, arg) => {
+            //     if (result?.ids) {
+            //         return [
+            //             { type: 'student', id: 'LIST' },
+            //             ...result.ids.map(id => ({ type: 'student', id }))
+            //         ]
+            //     } else return [{ type: 'student', id: 'LIST' }]
+            // }
         }),
         addNewStudent: builder.mutation({
             query: initialStudentData => ({
@@ -120,9 +122,10 @@ export const studentsApiSlice = apiSlice.injectEndpoints({
                     ...initialStudentData,
                 }
             }),
-            invalidatesTags: (result, error, arg) => [//we re not updating all the list, butonly update the student in the cache by using the arg.id
-                { type: 'student', id: arg.id }
-            ]
+            invalidatesTags:['student']
+            // invalidatesTags: (result, error, arg) => [//we re not updating all the list, butonly update the student in the cache by using the arg.id
+            //     { type: 'student', id: arg.id }
+            // ]
         }),
         deleteStudent: builder.mutation({
             query: ({ id }) => ({
@@ -130,9 +133,10 @@ export const studentsApiSlice = apiSlice.injectEndpoints({
                 method: 'DELETE',
                 body: { id }
             }),
-            invalidatesTags: (result, error, arg) => [
-                { type: 'student', id: arg.id }
-            ]
+            invalidatesTags:['student']
+            // invalidatesTags: (result, error, arg) => [
+            //     { type: 'student', id: arg.id }
+            // ]
         }),
     }),
 })

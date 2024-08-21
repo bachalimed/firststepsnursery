@@ -10,6 +10,7 @@
         import { ROLES } from "../../../config/UserRoles"
         import { ACTIONS } from "../../../config/UserActions"
         import useAuth from '../../../hooks/useAuth'
+        import { useSelectedAcademicYear } from "../../../hooks/useSelectedAcademicYears"
   
   
         //constrains on inputs when creating new user
@@ -20,9 +21,12 @@
         const DOB_REGEX = /^[0-9/-]{4,10}$/
         const EMAIL_REGEX = /^[A-z0-9.@-_]{6,20}$/
 
-    const NewStudentFormMain = () => {
-        //we will only get minimal student infomation in this first page, to create, student, user, parents
-    
+    const NewStudentForm = () => {
+       
+       const [selectedYear, setSelectedYear] = useState('')
+        const Navigate = useNavigate()
+
+
       const [addNewStudent, {//an object that calls the status when we execute the newUserForm function
           isLoading,
           isSuccess,
@@ -30,11 +34,10 @@
           error
       }] = useAddNewStudentMutation()//it will not execute the mutation nownow but when called
   
-        const Navigate = useNavigate()
+      //prepare the permission variables
+ const{userId,canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
+     
 
-         //prepare the permission variables
-    const{userId,canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
-        
         //initialisation of states for each input
         const [studentName, setStudentName] = useState({})
         const [firstName, setFirstName] = useState('')
@@ -324,8 +327,9 @@
                     />
                     Student Is Active
                     </label>
+
                    <label className="form__label" htmlFor="StudentYear">
-                      studentYear* :wiil get form acaamdeic years selection later <span className="nowrap">[8-20 chars incl. !@#$-_%]</span></label>
+                      studentYear* :jjjj<span className="nowrap"></span></label>
                   <input
                       className=''
                       id="studentYear"
@@ -334,6 +338,7 @@
                       value={studentYear}
                       onChange={onStudentYearChanged}
                   />
+
                   <label>
                     <input
                     type="checkbox"
@@ -465,4 +470,4 @@
       
         return content
     }
-export default NewStudentFormMain
+export default NewStudentForm

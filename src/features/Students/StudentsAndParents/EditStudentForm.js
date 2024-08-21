@@ -69,7 +69,7 @@ const{userId,canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
     const [date, setDate] = useState(student.date)//the exact date time of saving will be saved in the backend
     const [operator, setOperator]=useState(userId)//id of the user logged in already
     const [studentDocuments, setStudentDocuments]=useState(student.studentDocuments)//an array
-    const [admissions, setAdmissions]=useState(student.admissions)
+    const [studentAdmissions, setStudentAdmissions]=useState(student.admissions)
     const [id, setId]=useState(student.id)
     const [schoolYear, setSchoolYear]=useState(student.schoolYear)
     const [admission, setAdmission]=useState(student.admission)
@@ -126,8 +126,8 @@ const{userId,canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
             setStudentDocuments([])
             setId('')
             setSchoolYear('')
+            setStudentAdmissions([])
             setAdmission('')
-            setAdmissions([])
             Navigate('/students/studentsParent/students/')//will navigate here after saving
           }
         }, [isSuccess, Navigate])//even if no success it will navigate and not show any warning if failed or success
@@ -165,8 +165,8 @@ const{userId,canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
       const onStudentDocumentsChanged = e => setStudentDocuments(e.target.value)
       const onIdChanged = e => setId(e.target.value)
       const onSchoolYearChanged = e => setSchoolYear(e.target.value)
+      //const onStudentAdmissionsChanged = e => setStudentAdmissions(e.target.value)
       const onAdmissionChanged = e => setAdmission(e.target.value)
-      const onAdmissionsChanged = e => setAdmissions(e.target.value)
       
           
         useEffect(()=>{
@@ -187,7 +187,7 @@ const{userId,canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
           setStudentDocuments(prev=>[...prev,{id:id}])},
           [id])
           useEffect(()=> {
-            setAdmissions(prev=>[...prev,{schoolYear:schoolYear, admission:admission}])
+            setStudentAdmissions(prev=>[...prev,{schoolYear:schoolYear, admission:admission}])
         }, [schoolYear, admission])
         
         

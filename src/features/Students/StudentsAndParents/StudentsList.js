@@ -39,7 +39,7 @@ const StudentsList = () => {
           error
   } = useGetStudentsByYearQuery({selectedYear:selectedYear ,endpointName: 'studentsList'}||{},{//this param will be passed in req.params to select only students for taht year
     //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-    pollingInterval: 60000,//will refetch data every 60seconds
+    //pollingInterval: 60000,//will refetch data every 60seconds
     refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
     refetchOnMountOrArgChange: true//refetch when we remount the component
   })
@@ -97,7 +97,7 @@ let filteredStudents = []
 
 //import students
 
-const{canEdit, canDelete, canCreate, status2}=useAuth()
+const{canEdit, isAdmin, canDelete, canCreate, status2}=useAuth()
 // console.log('in student list canEdit', canEdit)
 // console.log('canDelete', canDelete)
 // console.log('canAdd', canAdd)
@@ -105,7 +105,9 @@ const{canEdit, canDelete, canCreate, status2}=useAuth()
 // console.log('isParent', isParent)
 // console.log('status2', status2)
 
+const handleAllStudents = (e)=>{
 
+}
    
 
 
@@ -202,21 +204,25 @@ sortable:true
   
   sortable:true
 }, 
-{name: "Father",
-  selector:row=>row.studentFather,
-  sortable:true
-}, 
-{name: "Mother",
-  selector:row=>row.studentMother,
-  sortable:true
-}, 
+// {name: "Father",
+//   selector:row=>row.studentFather._id,
+//   sortable:true
+// }, 
+// {name: "Mother",
+//   selector:row=>row.studentMother._id,
+//   sortable:true
+// }, 
 {name: "Sex",
   selector:row=>row.studentSex,
   sortable:true,
   removableRows:true
 },
-{name: "Student Year",
-  selector:row=>row.studentYear,
+{name: "Student Years",
+  
+  selector:row=>( 
+  <div>{row.studentYears.map(year=> (
+    <div key ={year.academicYear}>{year.academicYear}</div>))}
+  </div>),
   sortable:true,
   removableRows:true
 },
@@ -288,6 +294,14 @@ if (isError) {
 			>
 			Duplicate Selected
 		</button>
+     {(isAdmin&&<button 
+			className="px-3 py-2 bg-gray-400 text-white rounded"
+			onClick={handleDuplicateSelected}
+			disabled={selectedRows.length !== 1} // Disable if no rows are selected
+      hidden={!canCreate}
+			>
+			All
+		</button>)}
 	</div>
 
   </div>

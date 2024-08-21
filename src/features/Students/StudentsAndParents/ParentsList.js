@@ -1,6 +1,7 @@
 import React from 'react';
 import { HiOutlineSearch } from 'react-icons/hi'
-import { useGetParentsQuery } from "./parentsApiSlice"
+import { useGetParentsQuery, useGetParentsByYearQuery } from "./parentsApiSlice"
+import { setSomeParents } from "./parentsSlice"
 import { useGetUsersQuery} from "../../Admin/UsersManagement/usersApiSlice"
 import StudentsParents from '../StudentsParents'
 import DataTable from 'react-data-table-component'
@@ -14,46 +15,82 @@ import { FiEdit, FiDelete  } from 'react-icons/fi'
 import { RiDeleteBin6Line } from 'react-icons/ri'
 import useAuth from "../../../hooks/useAuth"
 import { ImProfile } from 'react-icons/im'
+import { useDispatch } from "react-redux"
 import { IoShieldCheckmarkOutline, IoShieldOutline  } from "react-icons/io5"
-
+import { useSelectedAcademicYear } from "../../../hooks/useSelectedAcademicYears"
 const ParentsList = () => {
+//this is for the academic year selection
+const selectedAcademicYear = useSelectedAcademicYear()
+const [selectedYear, setSelectedYear]=useState('')
+const Navigate = useNavigate()
+const Dispatch = useDispatch()
+
+
+
+
 
 //get several things from the query
 const {
   data: parents,//the data is renamed parents
-  isLoading: isParentLoading,//monitor several situations
-  isSuccess: isParentSuccess,
-  isError: isParentError,
-  error: parentError
-} = useGetParentsQuery('parentsList', {//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-  pollingInterval: 60000,//will refetch data every 60seconds
+  isLoading: isLoading,//monitor several situations
+  isSuccess: isSuccess,
+  isError: isError,
+  error: Error
+} = useGetParentsByYearQuery({selectedYear:selectedYear ,endpointName: 'parentsList'}||{},{//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+  //pollingInterval: 60000,//will refetch data every 60seconds
   refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
   refetchOnMountOrArgChange: true//refetch when we remount the component
 })
-const allParents = useSelector(state => selectAllParents(state))
+
+//this ensures teh selected year is chosen before running hte useeffect it is working perfectly to dispaptch the selected year
+useEffect(() => {
+  if (selectedAcademicYear?.title) {
+    setSelectedYear(selectedAcademicYear.title)
+    //console.log('Selected year updated:', selectedAcademicYear.title)
+  }
+}, [selectedAcademicYear])
+
+// State to hold selected rows
+const [selectedRows, setSelectedRows] = useState([])
+//state to hold the search query
+const [searchQuery, setSearchQuery] = useState('')
+
+let parentsList =[]
+let filteredParents=[]
+if (isSuccess){
+  //set to the state to be used for other component s and edit student component
+  
+  const {entities}=parents
+  //we need to change into array to be read??
+  parentsList = Object.values(entities)//we are using entity adapter in this query
+  Dispatch(setSomeParents(parentsList))//timing issue to update the state and use it the same time
+ console.log(entities)
+  //the serach result data
+ filteredParents = parentsList?.filter(item => {
+//the nested objects need extra logic to separate them
+const firstNameMatch = item?.userProfile?.userFullName?.userFirstName?.toLowerCase().includes(searchQuery.toLowerCase())
+const middleNameMatch = item?.userProfile?.userFullName?.userMiddleName?.toLowerCase().includes(searchQuery.toLowerCase())
+const lastNameMatch = item?.userProfile?.userFullName?.userLastName?.toLowerCase().includes(searchQuery.toLowerCase())
+const dobMatch = item?.userProfile?.userDob?.toLowerCase().includes(searchQuery.toLowerCase());
+
+
+
+
+
+
+//console.log('filteredStudents in the success', item)
+return (Object.values(item).some(val =>
+  String(val).toLowerCase().includes(searchQuery.toLowerCase())
+)||firstNameMatch||middleNameMatch||lastNameMatch||dobMatch)
+})
+}
+
+
+
 //console.log('allParents', allParents)
 
+const{canEdit, canDelete, canCreate, status2}=useAuth()
 
-
-
-
-
-
-// const {
-//   data: users,//the data is renamed parents
-//   isLoading: isUserLoading,//monitor several situations
-//   isSuccess: isUserSuccess,
-//   isError: isUserError,
-//   error: userError    
-// } = useGetUsersQuery()
-// const allUsers = useSelector(state => selectAllUsers(state))
-// console.log('allUsers', allUsers)
-const Navigate = useNavigate()
-    const [parentYear, setParentYear] = useState('')
-    const [childrenList, setChildrenList] = useState('')
-    const [partner, setPartner] = useState('')
-    const[individual, setIndividual]=useState({})
- const {canEdit, canDelete, }=useAuth()
 
     const [deleteParent, {
       isSuccess: isDelSuccess,
@@ -64,22 +101,6 @@ const Navigate = useNavigate()
 
 
 
-  // State to hold selected rows
-  const [selectedRows, setSelectedRows] = useState([])
-//state to hold the search query
-const [searchQuery, setSearchQuery] = useState('')
-//the serach result data
-const filteredParents = allParents.filter(item => {
-  //the nested objects need extra logic to separate them
-   //const firstNameMatch = item.studentName.firstName.toLowerCase().includes(searchQuery)
-   //const middleNameMatch = item.studentName.middleName.toLowerCase().includes(searchQuery)
-   //const lastNameMatch = item.studentName.lastName.toLowerCase().includes(searchQuery)
-  return Object.values(item).some(val =>
-      String(val).toLowerCase().includes(searchQuery.toLowerCase())
-  )
-  // ||firstNameMatch||middleNameMatch||lastNameMatch)
-      //||firstNameMatch||middleNameMatch||lastNameMatch)
-})
 const handleSearch = (e) => {
   setSearchQuery(e.target.value)
 }
@@ -122,7 +143,7 @@ const toDuplicate = selectedRows[-1]
 setSelectedRows([]); // Clear selection after delete
 }
 
-const errContent = (isParentError?.data?.message || isDelError?.data?.message) ?? ''
+const errContent = (isError?.data?.message || isDelError?.data?.message) ?? ''
 //define the content to be conditionally rendered
 
 const column =[
@@ -163,9 +184,15 @@ const column =[
   selector:row=>row.children[0].studentJointFamily?'Jointe':'Separation',
   sortable:true
 },
+ 
 {name: "Children",
-  selector:row=>row.children[0].studentName.firstName+row.children[0].studentName.middleName,
-  sortable:true
+  selector:row=>( 
+    <div>{row.children.map(child=> (
+      <div key ={child._id}>{child.studentName.firstName} {child.studentName.middleName} {child.studentName.lastName}</div>))}
+    </div>),
+  
+  sortable:true,
+  width: '180px',
 },
 { 
   name: "Manage",
@@ -175,7 +202,7 @@ const column =[
       <ImProfile fontSize={20}/> 
       </button>
       {/* /////////////////////condition is canEdit and not ! of it */}
-      {canEdit?(<button className="text-yellow-400"  onClick={() => handleEdit(row._id)}  > 
+      {canEdit?(<button className="text-yellow-400"  onClick={() => Navigate(`/students/studentsParents/editParent/${row.id}`)} > 
       <FiEdit fontSize={20}/> 
       </button>):null}
       {canDelete?(<button className="text-red-500" onClick={() => onDeleteParentClicked(row._id)} >
@@ -192,13 +219,13 @@ const column =[
 ]
 let content
 
-if (isParentLoading) content = <p>Loading...</p>
+if (isLoading) content = <p>Loading...</p>
 
-if (isParentError|isDelError) {
-    content = <p className="errmsg">error msg{parentError?.data?.message}</p>//errormessage class defined in the css, the error has data and inside we have message of error
+if (isError|isDelError) {
+    content = <p className="errmsg">error msg  {Error?.data?.message}</p>//errormessage class defined in the css, the error has data and inside we have message of error
 }
 
-if (isParentSuccess||isDelSuccess) {
+if (isSuccess||isDelSuccess) {
 
   //console.log('filtered and success', filteredParents)
 

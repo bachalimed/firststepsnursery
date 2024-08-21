@@ -21,6 +21,7 @@ const content = (
         <Link to={'/students/studentsParents/students/'}><li >Students</li></Link>
         <Link to={'/students/studentsParents/parents/'}><li >Parents</li></Link>
         <Link to={'/students/studentsParents/newStudent/'}><li >New Student</li></Link>
+        <Link to={'/students/studentsParents/newParent/'}><li >New Parent</li></Link>
       </ul>
     </div>
   )

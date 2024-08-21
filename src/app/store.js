@@ -5,14 +5,16 @@ import authReducer from "../features/auth/authSlice"
 import academicYearsReducer from '../features/AppSettings/AcademicsSet/AcademicYears/academicYearsSlice'
 import tasksReducer from '../features/Desk/Tasks/tasksSlice'
 import studentsReducer from  '../features/Students/StudentsAndParents/studentsSlice'
+import parentsReducer from  '../features/Students/StudentsAndParents/parentsSlice'
 
 export const store = configureStore({
     reducer: {// Add the generated reducer as a specific top-level slice
         [apiSlice.reducerPath]: apiSlice.reducer,//what ever we name in the reducerpath will be given the name to this apislice, the default is 'api'
         auth: authReducer,
         academicYear: academicYearsReducer,
+        student: studentsReducer,
+        parent: parentsReducer,
         //task: tasksReducer,
-        student: studentsReducer
         
         //imported from taskSlice
         

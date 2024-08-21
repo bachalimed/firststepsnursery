@@ -11,8 +11,10 @@ import StudentsParents from './features/Students/StudentsParents'
 import StudentsList from './features/Students/StudentsAndParents/StudentsList'
 import ParentsList from './features/Students/StudentsAndParents/ParentsList'
 import EditStudent from './features/Students/StudentsAndParents/EditStudent'
-import NewStudentFormMain from './features/Students/StudentsAndParents/NewStudentFormMain'
-import NewStudentFormSecondary from './features/Students/StudentsAndParents/NewStudentFormSecondary'
+import EditParent from './features/Students/StudentsAndParents/EditParent'
+import NewStudentForm from './features/Students/StudentsAndParents/NewStudentForm'
+import NewParentForm from './features/Students/StudentsAndParents/NewParentForm'
+
 import StudentDetails from './features/Students/StudentsAndParents/StudentDetails'
 import ParentDetails from './features/Students/StudentsAndParents/ParentDetails'
 
@@ -121,10 +123,12 @@ const App = () => {
 								<Route path="studentsParents" > 					
 								<Route index element={<StudentsParents />} /> 
 									<Route path="students/" element={<StudentsList />}/>												
-									<Route path="newStudent/" element={<NewStudentFormMain />}/>												
-									<Route path="newStudent/:id/" element={<NewStudentFormSecondary />}/>
+									<Route path="newStudent/" element={<NewStudentForm />}/>												
+									<Route path="newParent/" element={<NewParentForm />}/>												
+									
 										<Route path="studentDetails/:id/" element={<StudentDetails/>}/>
 									<Route path="edit/:id/" element={<EditStudent/>}/>
+									<Route path="editParent/:id/" element={<EditParent/>}/>
 																					
 										{/* <Route path=":id/" element={<EditStudentForm/>}/> */}
 										
@@ -133,7 +137,7 @@ const App = () => {
 
 									<Route path="parents/" element={<ParentsList />}>
 										<Route path=":id/" element={<ParentDetails />}/>
-										<Route path="newParent/:id/" element={<NewStudentFormMain />}/>
+										
 									</Route> {/* end of Parents route */}
 
 																											

@@ -33,6 +33,73 @@ export const parentsApiSlice = apiSlice.injectEndpoints({
                 } else return [{ type: 'parent', id: 'LIST' }]
             }
         }),
+        getParentsByYear: builder.query({
+            query: (params) =>{
+                const queryString = new URLSearchParams(params).toString() 
+                return `/students/studentsParents/parents?${queryString}`
+                },
+            
+            validateStatus: (response, result) => {
+                return response.status === 200 && !result.isError
+            },
+           
+            transformResponse: responseData => {
+                //const {loadedParent} =
+                
+                //console.log('academicYears length  in the APIslice',responseData.total)
+                //console.log('academicYears in the APIslice', academicYears)
+                const newLoadedParent = responseData.map(parent => { 
+                    
+                    parent.id = parent._id//changed the _id from mongoDB to id
+                    delete parent._id//added to delete the extra original _id from mongo but careful when planning to save to db again
+                    return parent
+                })
+                return parentsAdapter.setAll(initialState, newLoadedParent)
+            },
+            providesTags:['parent']
+           
+            // providesTags: (result, error, arg) => {
+            //     if (result?.ids) {
+            //         return [
+            //             { type: 'parent', id: 'LIST' },
+            //             ...result.ids.map(id => ({ type: 'parent', id }))
+            //         ]
+            //     } else return [{ type: 'parent', id: 'LIST' }]
+            // }
+        }),
+        getParentById: builder.query({
+            query: (params) =>{
+                const queryString = new URLSearchParams(params).toString() 
+                return `/students/studentsParents/parents?${queryString}`
+                },
+            
+            validateStatus: (response, result) => {
+                return response.status === 200 && !result.isError
+            },
+           
+            transformResponse: responseData => {
+                //const {loadedParent} =
+                
+                //console.log('academicYears length  in the APIslice',responseData.total)
+                //console.log('academicYears in the APIslice', academicYears)
+                const newLoadedParent = responseData.map(parent => { 
+                    
+                    parent.id = parent._id//changed the _id from mongoDB to id
+                    delete parent._id//added to delete the extra original _id from mongo but careful when planning to save to db again
+                    return parent
+                })
+                return parentsAdapter.upsertMany(initialState, newLoadedParent)
+            },
+            providesTags:['parent']
+            // providesTags: (result, error, arg) => {
+            //     if (result?.ids) {
+            //         return [
+            //             { type: 'parent', id: 'LIST' },
+            //             ...result.ids.map(id => ({ type: 'parent', id }))
+            //         ]
+            //     } else return [{ type: 'parent', id: 'LIST' }]
+            // }
+        }),
         addNewParent: builder.mutation({
             query: initialParentData => ({
                 url: '/students/studentsParents/parents/',
@@ -75,6 +142,8 @@ export const {
     useAddNewParentMutation,
     useUpdateParentMutation,
     useDeleteParentMutation,
+    useGetParentsByYearQuery,
+    useGetParentByIdQuery
 } = parentsApiSlice
 
 // returns the query result object
