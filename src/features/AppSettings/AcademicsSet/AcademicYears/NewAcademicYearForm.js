@@ -1,9 +1,9 @@
 import React from 'react'
 
-const NewAcademicYear = () => {
+const NewAcademicYearForm = () => {
   return (
     <div>NewAcademicYear</div>
   )
 }
 
-export default NewAcademicYear
+export default NewAcademicYearForm

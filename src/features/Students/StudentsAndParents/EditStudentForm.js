@@ -10,7 +10,9 @@ import { faSave } from "@fortawesome/free-solid-svg-icons"
 import { ROLES } from "../../../config/UserRoles"
 import { ACTIONS } from "../../../config/UserActions"
 import useAuth from '../../../hooks/useAuth'
-
+import { useSelectedAcademicYear } from "../../../hooks/useSelectedAcademicYears"
+import { useSelector } from 'react-redux'
+import { selectAllAcademicYears } from '../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
 
  //constrains on inputs when creating new user
  const USER_REGEX = /^[A-z]{6,20}$/
@@ -29,12 +31,21 @@ const EditStudentForm = ({student}) => {
     isError,
     error
 }] = useUpdateStudentMutation()//it will not execute the mutation nownow but when called
-
+const [selectedYear, setSelectedYear] = useState('')
 const Navigate = useNavigate()
+const academicYears = useSelector(selectAllAcademicYears)// to be used to show all academic years
 
 //prepare the permission variables
 const{userId,canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
 
+ //this to be used to only select current year from check box
+ const selectedAcademicYear = useSelectedAcademicYear()
+ useEffect(() => {
+    if (selectedAcademicYear?.title) {
+      setSelectedYear(selectedAcademicYear.title)
+      //console.log('Selected year updated:', selectedAcademicYear.title)
+    }
+  }, [selectedAcademicYear])
 
    
   //initialisation of states for each input
@@ -48,7 +59,7 @@ const{userId,canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
     const [ validStudentDob,setValidStudentDob ]= useState(false)
     const [ studentSex,setStudentSex ]= useState(student.studentSex)
     const [studentIsActive, setStudentIsActive] = useState(student.studentIsActive)
-    const [studentYear, setStudentYear] = useState(student.studentYear)
+    const [studentYears, setStudentYears] = useState(student.studentYear)
     const [studentJointFamily, setStudentJointFamily] = useState(student.studentJointFamily)
     const [studentPhoto, setStudentPhoto] = useState(student.studentPhoto)
         
@@ -106,7 +117,7 @@ const{userId,canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
             setValidStudentDob('')
             setStudentSex('')
             setStudentIsActive(false)
-            setStudentYear('')//will be true when the username is validated
+            setStudentYears('')//will be true when the username is validated
             setStudentMother('')
             setStudentFather('')
             setStudentJointFamily('')
@@ -146,7 +157,7 @@ const{userId,canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
         const onStudentDobChanged = e => setStudentDob(e.target.value)
         const onStudentSexChanged = e => setStudentSex(e.target.value)
         const onStudentIsActiveChanged = e => setStudentIsActive(e.target.value)
-        const onStudentYearChanged = e => setStudentYear(e.target.value)
+        //const onStudentYearsChanged = e => setStudentYears(e.target.value)
       const onStudentMotherChanged = e => setStudentMother(e.target.value)
       const onStudentFatherChanged = e => setStudentFather(e.target.value)
       const onStudentJointFamilyChanged = e => setStudentJointFamily(e.target.value)
@@ -190,7 +201,22 @@ const{userId,canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
             setStudentAdmissions(prev=>[...prev,{schoolYear:schoolYear, admission:admission}])
         }, [schoolYear, admission])
         
+      
         
+
+        
+      //adds to the previous entries in arrays for gardien, schools...
+      const onStudentYearsChanged = (e, selectedYear) => {
+        if (e.target.checked) {
+          // Add the selectedYear to studentYears if it's checked
+          setStudentYears([...studentYears, selectedYear]);
+        } else {
+          // Remove the selectedYear from studentYears if it's unchecked
+          setStudentYears(studentYears.filter(year => year !== selectedYear));
+        }
+      };
+
+      
         //to check if we can save before onsave, if every one is true, and also if we are not loading status
         const canSave = [validFirstName, validLastName, validStudentDob, studentSex ].every(Boolean) && !isLoading
         
@@ -198,7 +224,7 @@ const{userId,canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
         const onSaveStudentClicked = async (e) => {  
             //generate the objects before saving
             //console.log(` 'first name' ${userFirstName}', fullfirstname,' ${userFullName.userFirstName}', house: '${house}', usercontact house' ${userContact.house},    ${userRoles.length},${isParent}, ${isEmployee}` )
-            await updateStudent({ studentName, studentDob, studentSex, studentIsActive, studentYear, studentPhoto, studentJointFamily  })//we call the add new user mutation and set the arguments to be saved
+            await updateStudent({ studentName, studentDob, studentSex, studentIsActive, studentYears, studentPhoto, studentJointFamily  })//we call the add new user mutation and set the arguments to be saved
             //added this to confirm save
             if (isError) {console.log('error savingg', error)//handle the error msg to be shown  in the logs??
             }
@@ -309,16 +335,20 @@ const{userId,canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
                     />
                     Student Is Active
                     </label>
-                   <label className="form__label" htmlFor="StudentYear">
-                      studentYear* :wiil get form acaamdeic years selection later <span className="nowrap">[8-20 chars incl. !@#$-_%]</span></label>
-                  <input
-                      className=''
-                      id="studentYear"
-                      name="studentYear"
-                      type="studentYear"
-                      value={studentYear}
-                      onChange={onStudentYearChanged}
-                  />
+                    <h1>Student Years: </h1>
+                    <div className="flex flex-wrap space-x-4">
+                        {academicYears.map((year, index) => (
+                            <label key={year.title} className="flex items-center">
+                            <input
+                                type="checkbox"
+                                value={year.title}
+                                checked={studentYears.includes(year.title)}
+                                onChange={(e) => onStudentYearsChanged(e, year.title)}
+                                disabled= {(selectedYear ? false:true)  }                         />
+                            {year.title}
+                            </label>
+                        ))}
+                        </div>
                   <label>
                     <input
                     type="checkbox"

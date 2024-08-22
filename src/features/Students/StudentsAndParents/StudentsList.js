@@ -121,13 +121,7 @@ const handleSearch = (e) => {
     //console.log('selectedRows', selectedRows)
   }
   
-//handle edit
 
-
-// const handleEdit=(id)=>{
-//   console.log('in teh edit handle and id is', id)
-//   Navigate(`/students/studentsParents/student/${id}`)//the path to be set in app.js and to be checked with server.js in backend, this is editing page of 
-// }
 //handle delete
 
 const handleDelete=()=>{
@@ -251,9 +245,9 @@ if (isLoading) content = <p>Loading...</p>
 if (isError) {
   content = <p className="errmsg">{error?.data?.message}</p>//errormessage class defined in the css, the error has data and inside we have message of error
 }
- if (isSuccess){
+ //if (isSuccess){
 
- content = ( 
+ content = 
   <>
 
   <StudentsParents/>
@@ -305,8 +299,9 @@ if (isError) {
 	</div>
 
   </div>
-  </>)
-}
+  </>
+//}
 return content
+    
  }
   export default StudentsList

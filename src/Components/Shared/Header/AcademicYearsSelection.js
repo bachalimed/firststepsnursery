@@ -35,23 +35,14 @@ const getCurrentAcademicYear = () => {
   return academicYear
 }
 
-//compare the selcted with the current year  
-useEffect(() => {
-    const currentYear = getCurrentAcademicYear()
-    const matchingYear = academicYears.find(year => year.title === currentYear)
-    if (matchingYear) {
-      setDefaultAcademicYearId(matchingYear.id)
-      dispatch(selectAcademicYear({ id: matchingYear.id }))
-    }
-  }, [academicYears, dispatch])
+//compare the selcted with the current year only the first time
 
 
 
 
-
-// useEffect(()=>{
-//   dispatch(setAcademicYears(academicYears))//dispatch list to state,this only shows tehn redux state not empty in the browser tools, check later if this is needed as the query updated the state in apislice
-// },[academicYears, dispatch])// added dispatch here
+useEffect(()=>{
+  dispatch(setAcademicYears(academicYears))//dispatch list to state,this only shows tehn redux state not empty in the browser tools, check later if this is needed as the query updated the state in apislice
+},[academicYears, dispatch])// added dispatch here
 
 
 
@@ -76,7 +67,7 @@ const handleSelectedAcademicYear =(e) =>{
           {/*add defaultvalue the curretn  academic year to select */}
           <Select 
             name="SelectedAcademicYear"  
-            value = {defaultAcademicYearId}
+           
             onChange={handleSelectedAcademicYear}  
             className= ' relative mt-1  w-32 data-[hover]:shadow block data-[focus]:bg-blue-200 appearance-none rounded-sm border-gray-600 bg-white/5 py-0 px-3 text-md/6 text-gray-900 border '
           >

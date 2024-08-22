@@ -104,15 +104,13 @@ export const studentsApiSlice = apiSlice.injectEndpoints({
         }),
         addNewStudent: builder.mutation({
             query: initialStudentData => ({
-                url: '/students/studentsParents/students/newStudent/',
+                url: '/students/studentsParents/students/',
                 method: 'POST',
                 body: {
                     ...initialStudentData,
                 }
             }),
-            invalidatesTags: [//forces the cache in RTK query to update
-                { type: 'student', id: "LIST" }//the student list will be unvalidated and updated
-            ]
+            invalidatesTags: ['student']
         }),
         updateStudent: builder.mutation({
             query: initialStudentData => ({

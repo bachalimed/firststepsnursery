@@ -225,7 +225,7 @@ if (isError|isDelError) {
     content = <p className="errmsg">error msg  {Error?.data?.message}</p>//errormessage class defined in the css, the error has data and inside we have message of error
 }
 
-if (isSuccess||isDelSuccess) {
+//if (isSuccess||isDelSuccess) {
 
   //console.log('filtered and success', filteredParents)
 
@@ -272,7 +272,7 @@ content= (
 )
 
 
-}
+//}
 return content
 }
 export default ParentsList

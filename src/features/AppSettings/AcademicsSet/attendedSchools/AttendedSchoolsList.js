@@ -9,29 +9,29 @@ import { useNavigate } from "react-router-dom"
 import { ImProfile } from "react-icons/im"
 import { FiEdit } from "react-icons/fi"
 import { RiDeleteBin6Line } from "react-icons/ri"
-import { setAcademicYears } from "./academicYearsSlice"
-import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYears"
+import { setAttendedSchools } from "./attendedSchoolsSlice"
+
 import useAuth from '../../../../hooks/useAuth'
 
 
-import { useGetAcademicYearsQuery} from "./academicYearsApiSlice"
+import { useGetAttendedSchoolsQuery} from "./attendedSchoolsApiSlice"
 
 
 import { useSelector, useDispatch } from 'react-redux'
 
 import AcademicsSet from "../../AcademicsSet"
 
-const AcademicYearsList = () => {
+const AttendedSchoolsList = () => {
   const Navigate = useNavigate()
   const dispatch = useDispatch()
 //get several things from the query
 const {
-  data: academicYearsData,//the data is renamed academicYearsData
+  data: attendedSchoolsData,//the data is renamed attendedSchoolsData
         isLoading,//monitor several situations is loading...
         isSuccess,
         isError,
         error
-} = useGetAcademicYearsQuery('academicYearsList')//this should match the endpoint defined in your API slice.!! what does it mean?
+} = useGetAttendedSchoolsQuery('attendedSchoolsList')||{}//this should match the endpoint defined in your API slice.!! what does it mean?
 //we do not want to import from state but from DB
 const [selectedRows, setSelectedRows] = useState([])
 
@@ -47,20 +47,12 @@ const handleDelete=()=>{
 console.log('deleting')
 }
 
-const handleNextSelected = () => {
-  console.log('Selected Rows to duplicate forward:', selectedRows);
-  // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
-//ensure only one can be selected: the last one
-const toDuplicate = selectedRows[-1]
-
-  setSelectedRows([]); // Clear selection after delete
-}
 
 
 
 const{canEdit, isAdmin, canDelete, canCreate, status2}=useAuth()
-//console.log(academicYearsData)
-const [academicYears, setAcademicYearsState] = useState([])
+//console.log(attendedSchoolsData)
+const [attendedSchools, setAttendedSchoolsState] = useState([])
 useEffect(()=>{
   // console.log('isLoading:', isLoading)
   // console.log('isSuccess:', isSuccess)
@@ -69,18 +61,18 @@ useEffect(()=>{
     console.log('error:', error)
   }
   if (isSuccess ) {
-    //console.log('academicYearsData',academicYearsData)
+    //console.log('attendedSchoolsData',attendedSchoolsData)
     //transform into an array
-    const {entities}=academicYearsData
-    const academicYearsArray =Object.values(entities)
-    setAcademicYearsState(academicYearsArray)
-    //console.log('academic years from list call', academicYears)
-    dispatch(setAcademicYears(entities)); // Dispatch to state  using setALL which will create the ids and entities automatically
-    //console.log('academicYears',academicYears)
+    const {entities}=attendedSchoolsData
+    const attendedSchoolsArray =Object.values(entities)
+    setAttendedSchoolsState(attendedSchoolsArray)
+    //console.log('academic years from list call', attendedSchools)
+    dispatch(setAttendedSchools(entities)); // Dispatch to state  using setALL which will create the ids and entities automatically
+    //console.log('attendedSchools',attendedSchools)
   } else {
-    //console.log('academicYearsData is not an array')
+    //console.log('attendedSchoolsData is not an array')
   }
-}, [isSuccess, academicYearsData, isError, error, dispatch])
+}, [isSuccess, attendedSchoolsData, isError, error, dispatch])
 
 //define the content to be conditionally rendered
 const column =[
@@ -90,30 +82,21 @@ selector:row=>row.id,
 sortable:true
  }, 
   { 
-name: "Title",
-selector:row=>row.title,
+name: "School Name",
+selector:row=>row.schoolName,
 sortable:true
  }, 
   { 
-name: "Academic Year start",
-selector:row=>new Date(row.yearStart).toLocaleString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' }),
+name: "School Type",
+selector:row=>row.schoolType,
 sortable:true
  }, 
-{name: "Academic Year End",
-  selector:row=>new Date(row.yearEnd).toLocaleString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' }),
+{name: "School City",
+  selector:row=>row.schoolCity,
   
   sortable:true
 }, 
 
-{name: "Creator",
-  selector:row=>row.academicYearCreator,
-  sortable:true
-}, 
-{name: "Action",
-  selector:null,
-  
-  removableRows:true
-},
 { 
   name: "Actions",
   cell: row => (
@@ -156,7 +139,7 @@ return (
    
    <DataTable
     columns={column}
-    data={academicYears}
+    data={attendedSchools}
     pagination
     selectableRows
     removableRows
@@ -168,11 +151,11 @@ return (
 		
         <button 
 			className="px-3 py-2 bg-yellow-400 text-white rounded"
-			onClick={() => Navigate('/settings/academicsSet/newAcademicYear')}
+			onClick={() => Navigate('/settings/academicsSet/newSchool')}
 			disabled={selectedRows.length !== 0} // Disable if no rows are selected
       hidden={!canCreate}
 			>
-			New academic Year
+			New School
 		</button>
      
 	</div>
@@ -184,4 +167,4 @@ return (
 }
 
 }
-export default AcademicYearsList
+export default AttendedSchoolsList

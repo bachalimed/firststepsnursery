@@ -16,8 +16,8 @@ const academicsSetTabs=
     allowedRoles:[ "Academic", "Director","Manager", "Admin"]
     },
 
-    {title:"option2",
-    path:"academicYears/",
+    {title:"Schools",
+    path:"attendedSchools/",
     allowedRoles:[ "Academic", "Director","Manager", "Admin"]
     },
     
@@ -33,9 +33,9 @@ let content
 content = (
   
     <div className="flex bg-gray-300 justify-left  ">  
-      <ul className='flex gap-2 px-2 py-2 bg-gray-300'>
+      <ul className='flex gap-4 px-2 py-2 bg-gray-300'>
         <Link to={'/settings/academicsSet/academicYears/'}><li >Academic Years</li></Link>
-        <Link to={'/settings/academicsSet/'}><li >options </li></Link>
+        <Link to={'/settings/academicsSet/attendedSchools/'}><li >attendedSchools </li></Link>
         <Link to={'/settings/academicsSet'}><li >option3</li></Link>
       </ul>
     </div>

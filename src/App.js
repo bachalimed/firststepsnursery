@@ -72,7 +72,10 @@ import {ROLES} from  './config/UserRoles'
 import NoPage from './pages/NoPage'
 import AcademicYearsList from './features/AppSettings/AcademicsSet/AcademicYears/AcademicYearsList'
 import AcademicYearDetails from './features/AppSettings/AcademicsSet/AcademicYears/AcademicYearDetails'
-import NewAcademicYear from './features/AppSettings/AcademicsSet/AcademicYears/NewAcademicYear'
+import AttendedSchoolList from './features/AppSettings/AcademicsSet/attendedSchools/AttendedSchoolsList'
+import AttendedSchoolsList from './features/AppSettings/AcademicsSet/attendedSchools/AttendedSchoolsList'
+import NewAttendedSchoolForm from './features/AppSettings/AcademicsSet/attendedSchools/NewAttendedSchoolForm'
+import NewAcademicYearForm from './features/AppSettings/AcademicsSet/AcademicYears/NewAcademicYearForm'
 import EditStudentForm from './features/Students/StudentsAndParents/EditStudentForm'
 // import Parents from './features/Students/Parents'
 // import NewStudent from './features/Students/NewStudent'
@@ -252,12 +255,14 @@ const App = () => {
 								<Route path="academicsSet">
 								<Route index  element={<AcademicsSet />} /> 	{/*the path link is in sidebarmenu*/ }				
 									
-									<Route path="academicYears/" element={<AcademicYearsList />} > 
-									<Route path=":academicYearId" element={<AcademicYearDetails />}/>
-									<Route path="newAcademicYear" element={<NewAcademicYear />}/>
+									<Route path="academicYears/" element={<AcademicYearsList />} /> 									
+									<Route path="newAcademicYear" element={<NewAcademicYearForm />}/>
+								
+									<Route path="attendedSchools/" element={<AttendedSchoolsList />} /> 									
+									<Route path="newSchool/" element={<NewAttendedSchoolForm />}/>
+									
 
 
-								</Route> {/* end of academicYears route */}
 								</Route> {/* end of academicsSet route */}
 
 
