@@ -77,6 +77,9 @@ import AttendedSchoolsList from './features/AppSettings/AcademicsSet/attendedSch
 import NewAttendedSchoolForm from './features/AppSettings/AcademicsSet/attendedSchools/NewAttendedSchoolForm'
 import NewAcademicYearForm from './features/AppSettings/AcademicsSet/AcademicYears/NewAcademicYearForm'
 import EditStudentForm from './features/Students/StudentsAndParents/EditStudentForm'
+import NewStudentDocumentsListForm from './features/AppSettings/StudentsSet/StudentDocumentLists/NewStudentDocumentsListForm'
+import StudentDocumentsLists from './features/AppSettings/StudentsSet/StudentDocumentLists/StudentDocumentsLists'
+import StudentDocumentsForm from './features/Students/StudentsAndParents/StudentDocumentsForm'
 // import Parents from './features/Students/Parents'
 // import NewStudent from './features/Students/NewStudent'
 // import ResetPassword from './features/auth/ResetPassword'
@@ -128,6 +131,7 @@ const App = () => {
 									<Route path="students/" element={<StudentsList />}/>												
 									<Route path="newStudent/" element={<NewStudentForm />}/>												
 									<Route path="newParent/" element={<NewParentForm />}/>												
+									<Route path="studentDocuments/" element={<StudentDocumentsForm />}/>												
 									
 										<Route path="studentDetails/:id/" element={<StudentDetails/>}/>
 									<Route path="edit/:id/" element={<EditStudent/>}/>
@@ -249,7 +253,11 @@ const App = () => {
 								</Route> {/* end of dashboardSet route */}
 
 								<Route path="studentsSet" > 					
-								<Route index element={<StudentsSet />} /> 
+								<Route index element={<StudentsSet />} />
+									<Route path="studentDocumentsLists/" element={<StudentDocumentsLists />} /> 									
+									<Route path="newStudentDocumentsList" element={<NewStudentDocumentsListForm />}/>
+
+
 								</Route> {/* end of studentsSet route */}
 
 								<Route path="academicsSet">

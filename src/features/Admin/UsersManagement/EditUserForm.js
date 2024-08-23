@@ -18,6 +18,10 @@ const EMAIL_REGEX = /^[A-z0-9.@-_]{8,20}$/
 
 
 const EditUserForm = ({ user }) => {//user was passed as prop in editUser
+    const Navigate = useNavigate()
+    
+    
+    //initialise th mutation to be used later
     const [updateUser, {
         isLoading,
         isSuccess,
@@ -25,18 +29,12 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
         error
     }] = useUpdateUserMutation()
 
-  
-
-    const Navigate = useNavigate()
-
-
-    //const [id, setId] = useState(user.id)
+    //initialise the parameters with the user details
     const [username, setUsername] = useState(user.username)
     const [validUsername, setValidUsername] = useState(false)
     const [password, setPassword] = useState('')
     const [validPassword, setValidPassword] = useState(false)
     const [userRoles, setUserRoles] = useState(user.userRoles)
-   
     const [userAllowedActions, setUserAllowedActions] = useState(user.userAllowedActions?(user.userAllowedActions):[])//to prevent undefined error if the variable does not exist in DB
     const [userFirstName, setUserFirstName] = useState(user.userFullName.userFirstName)
     const [validUserFirstName, setValidUserFirstName] = useState(false)

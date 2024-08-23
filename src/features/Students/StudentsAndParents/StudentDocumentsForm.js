@@ -17,12 +17,12 @@
         //constrains on inputs when creating new user
         const USER_REGEX = /^[A-z]{6,20}$/
         const PWD_REGEX = /^[A-z0-9!@#-_$%]{8,20}$/
-        const NAME_REGEX= /^[A-z 0-9]{3,20}$/
+        const NAME_REGEX= /^[A-z 0-9]{6,20}$/
         const PHONE_REGEX= /^[0-9]{6,15}$/
         const DOB_REGEX = /^[0-9/-]{4,10}$/
         const EMAIL_REGEX = /^[A-z0-9.@-_]{6,20}$/
 
-    const NewStudentForm = () => {
+    const StudentDocumentsForm = () => {
        
        const [selectedYear, setSelectedYear] = useState('')
         const Navigate = useNavigate()
@@ -317,233 +317,55 @@ if (yearIsSuccess){
   
               <form className="form" onSubmit={onSaveStudentClicked}>
                   <div className="form__title-row">
-                      <h2>New Student Form</h2>
+                      <h2>Upload Student Documents</h2>
                       
                   </div>
-                  <div>
-                  <label className="form__label" htmlFor="firstName">
-                      First Name* : <span className="nowrap">[3-20 letters]</span></label>
-                  <input
-                      className=''
-                      id="firstName"
-                      name="firstName"
-                      type="text"
-                      autoComplete="off"
-                      value={firstName}
-                      onChange={onFirstNameChanged}
-                  />
-                  <label className="form__label" htmlFor="middleName">
-                     Middle Name : <span className="nowrap"></span></label>
-                  <input
-                      className=''
-                      id="middleName"
-                      name="middleName"
-                      type="text"
-                      autoComplete="off"
-                      value={middleName}
-                      onChange={onMiddleNameChanged}
-                  />
-                  </div>
-                  <div>
-                  <label className="form__label" htmlFor="lastName">
-                      Last Name* : <span className="nowrap">[3-20 letters]</span></label>
-                  <input
-                      className=''
-                      id="lastName"
-                      name="lastName"
-                      type="text"
-                      autoComplete="off"
-                      value={lastName}
-                      onChange={onLastNameChanged}
-                  />
-                   <label className="form__label" htmlFor="userDob">
-                      Date Of Birth* : <span className="nowrap">[dd/mm/yyyy]</span></label>
-                  <input
-                      className=''
-                      id="studentDob"
-                      name="studentDob"
-                      type="date"
-                      autoComplete="off"
-                      value={studentDob}
-                      onChange={onStudentDobChanged}
-                  />
-                  </div>
-                  <div>
-                  <label> <div style={{ marginTop: '10px' }}>
-                      Student Sex* : {studentSex || 'None'}
-                  </div>
-                      <input
-                      type="checkbox"
-                      value="Male"
-                      checked={studentSex === 'Male'}
-                      onChange={onStudentSexChanged}
-                      />
-                      Male
-                  </label>
-  
-
-                  <label style={{ marginLeft: '10px' }}>
-                      <input
-                      type="checkbox"
-                      value="Female"
-                      checked={studentSex === 'Female'}
-                      onChange={onStudentSexChanged}
-                      />
-                      Female
-                  </label>
-  
-                
-                  </div>
                  
-                  <label>
-                    <input
-                    type="checkbox"
-                    value={studentIsActive}
-                    checked={studentIsActive}
-                    onChange={onStudentIsActiveChanged}
-                    />
-                    Student Is Active
-                    </label>
-
-
-                    <h1>Student Year* : </h1>
-                    <div className="flex flex-wrap space-x-4">
-                       
-                            <label >
-                            <input
-                            type="checkbox"
-                            value={selectedYear}
-                            checked={studentYears.some(year => year.academicYear === selectedYear)}
-                            onChange={onAcademicYearChanged}
-                            />
-                            {selectedYear}
-                            </label>
-                     
-                        </div>
-
-                  <label>
-                    <input
-                    type="checkbox"
-                    value={studentJointFamily}
-                    checked={studentJointFamily}
-                    onChange={onStudentJointFamilyChanged}
-                    />
-                    Student Joint family
-                    </label>
-                   
-                   
-                  
                  
+             
+                {Array.isArray(studentEducation)&&(studentEducation.length!=0)&&(studentEducation.map((entry, index) => (
+                    <div key={index} className="education-entry">
+                    <div>
+                        <label htmlFor={`educationYear-${index}`}>educationYear:</label>
+                        <select
+                        id={`educationYear-${index}`}
+                        value={entry.educationYear}
+                        onChange={(e) => handleFieldChange(index, 'educationYear', e.target.value)}
+                        >
+                        <option value="">Select Year</option>
+                        {yearsList.map((year) => (
+                            <option key={year.id} value={year.id}>
+                            {year.title}
+                            </option>
+                        ))}
+                        </select>
+                    </div>
 
+                    <div>
+                        <label htmlFor={`attendedSchool-${index}`}>Attended School:</label>
+                        <select
+                        id={`attendedSchool-${index}`}
+                        value={entry.attendedSchool}
+                        onChange={(e) => handleFieldChange(index, 'attendedSchool', e.target.value)}
+                        >
+                        <option value="">Select School</option>
+                        { schoolIsSuccess&&(attendedSchools.map((school) => (
+                            <option key={school.id} value={school.id}>
+                            {school.schoolName}
+                            </option>
+                        )))}
+                        </select>
+                    </div>
 
-
-
-
-                  <div>
-                  <label className="form__label" htmlFor="gardienFirstName">
-                      Gardien First Name : <span className="nowrap">[3-20 letters]</span></label>
-                  <input
-                      className=''
-                      id="gardienFirstName"
-                      name="gardienFirstName"
-                      type="text"
-                      autoComplete="off"
-                      value={gardienFirstName}
-                      onChange={onGardienFirstNameChanged}
-                  />
-                  <label className="form__label" htmlFor="gardienMiddleName">
-                      Gardien Middle Name : <span className="nowrap"></span></label>
-                  <input
-                      className=''
-                      id="gardienMiddleName"
-                      name="gardienMiddleName"
-                      type="text"
-                      autoComplete="off"
-                      value={gardienMiddleName}
-                      onChange={onGardienMiddleNameChanged}
-                  />
-                  </div>
-                  
-
-                  <label className="form__label" htmlFor="gardienLastName">
-                      Gardien Last Name : <span className="nowrap">[3-20 letters]</span></label>
-                  <input
-                      className=''
-                      id="gardienLastName"
-                      name="gardienLastName"
-                      type="text"
-                      autoComplete="off"
-                      value={gardienLastName}
-                      onChange={onGardienLastNameChanged}
-                  />
-                  <div>
-                  <label className="form__label" htmlFor="gardienRelation">
-                      Gardien Relation : <span className="nowrap">[3-20 letters]</span></label>
-                  <input
-                      className=''
-                      id="gardienRelation"
-                      name="gardienRelation"
-                      type="text"
-                      autoComplete="off"
-                      value={gardienRelation}
-                      onChange={onGardienRelationChanged}
-                  />
-                  <label className="form__label" htmlFor="gardienPhone">
-                      Gardien Phone : <span className="nowrap"></span></label>
-                  <input
-                      className=''
-                      id="gardienPhonee"
-                      name="gardienPhone"
-                      type="text"
-                      autoComplete="off"
-                      value={gardienPhone}
-                      onChange={onGardienPhoneChanged}
-                  />
-                  </div>
-                <h1>Student Education</h1>
-                        {Array.isArray(studentEducation)&&(studentEducation.length!=0)&&(studentEducation.map((entry, index) => (
-                            <div key={index} className="education-entry">
-                            <div>
-                                <label htmlFor={`educationYear-${index}`}>educationYear:</label>
-                                <select
-                                id={`educationYear-${index}`}
-                                value={entry.educationYear}
-                                onChange={(e) => handleFieldChange(index, 'educationYear', e.target.value)}
-                                >
-                                <option value="">Select Year</option>
-                                {yearsList.map((year) => (
-                                    <option key={year.id} value={year.id}>
-                                    {year.title}
-                                    </option>
-                                ))}
-                                </select>
-                            </div>
-
-                            <div>
-                                <label htmlFor={`attendedSchool-${index}`}>Attended School:</label>
-                                <select
-                                id={`attendedSchool-${index}`}
-                                value={entry.attendedSchool}
-                                onChange={(e) => handleFieldChange(index, 'attendedSchool', e.target.value)}
-                                >
-                                <option value="">Select School</option>
-                                { schoolIsSuccess&&(attendedSchools.map((school) => (
-                                    <option key={school.id} value={school.id}>
-                                    {school.schoolName}
-                                    </option>
-                                )))}
-                                </select>
-                            </div>
-
-                            <div>
-                                <label htmlFor={`note-${index}`}>Note:</label>
-                                <input
-                                id={`note-${index}`}
-                                type="text"
-                                value={entry.note}
-                                onChange={(e) => handleFieldChange(index, 'note', e.target.value)}
-                                />
-                            </div>
+                    <div>
+                        <label htmlFor={`note-${index}`}>Note:</label>
+                        <input
+                        id={`note-${index}`}
+                        type="text"
+                        value={entry.note}
+                        onChange={(e) => handleFieldChange(index, 'note', e.target.value)}
+                        />
+                    </div>
 
                             <button type="button" onClick={() => handleRemoveEntry(index)}>Remove Entry</button>
                             </div>
@@ -580,4 +402,4 @@ if (yearIsSuccess){
       
         return content
     }
-export default NewStudentForm
+export default StudentDocumentsForm

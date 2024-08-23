@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom'
-
+import { Link, useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
 import SearchBar from '../../Components/Shared/SearchBar'
 //we will  find the object corresponding to the page and extract the section tabs
 const UsersManagement = () => {
@@ -18,8 +18,8 @@ const usersManagementTabs=
   ]
 }
 
-let content
-content = (
+
+let content = (
   
     <div className="flex bg-gray-300 justify-left  ">  
       <ul className='flex gap-2 px-2 py-2 bg-gray-300'>

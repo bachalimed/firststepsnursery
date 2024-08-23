@@ -12,7 +12,7 @@ const EditStudent = () => {
 
 //will get hte student from the state
   const studentToEdit = useSelector(state=> state.student?.entities[id])
-  console.log('helllllow',studentToEdit, 'mystu')
+  //console.log('helllllow',studentToEdit, 'mystu')
 
 
   let content
