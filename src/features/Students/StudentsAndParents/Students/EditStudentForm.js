@@ -1,5 +1,5 @@
 import React from 'react'
-import StudentsParents from '../StudentsParents'
+import StudentsParents from '../../StudentsParents'
 
 
 import { useState, useEffect } from "react"
@@ -7,12 +7,12 @@ import { useUpdateStudentMutation } from "./studentsApiSlice"
 import { useNavigate } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave } from "@fortawesome/free-solid-svg-icons"
-import { ROLES } from "../../../config/UserRoles"
-import { ACTIONS } from "../../../config/UserActions"
-import useAuth from '../../../hooks/useAuth'
-import { useSelectedAcademicYear } from "../../../hooks/useSelectedAcademicYears"
+import { ROLES } from "../../../../config/UserRoles"
+import { ACTIONS } from '../../../../config/UserActions'
+import useAuth from '../../../../hooks/useAuth'
+import { useSelectedAcademicYear } from '../../../../hooks/useSelectedAcademicYears'
 import { useSelector } from 'react-redux'
-import { selectAllAcademicYears } from '../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
+import { selectAllAcademicYears } from '../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
 
  //constrains on inputs when creating new user
  const USER_REGEX = /^[A-z]{6,20}$/

@@ -2,22 +2,22 @@ import React from 'react';
 import { HiOutlineSearch } from 'react-icons/hi'
 import { useGetParentsQuery, useGetParentsByYearQuery } from "./parentsApiSlice"
 import { setSomeParents } from "./parentsSlice"
-import { useGetUsersQuery} from "../../Admin/UsersManagement/usersApiSlice"
-import StudentsParents from '../StudentsParents'
+import { useGetUsersQuery} from "../../../Admin/UsersManagement/usersApiSlice"
+import StudentsParents from '../../StudentsParents'
 import DataTable from 'react-data-table-component'
 import { useSelector } from 'react-redux'
 import { selectParentById, selectAllParents } from './parentsApiSlice'//use the memoized selector 
-import { selectAllUsers, selectUserById } from '../../Admin/UsersManagement/usersApiSlice'//use the memoized selector 
+import { selectAllUsers, selectUserById } from '../../../Admin/UsersManagement/usersApiSlice'//use the memoized selector 
 import { useState, useEffect } from "react"
 import { Link , useNavigate} from 'react-router-dom'
 import { useDeleteParentMutation } from './parentsApiSlice'
 import { FiEdit, FiDelete  } from 'react-icons/fi'
 import { RiDeleteBin6Line } from 'react-icons/ri'
-import useAuth from "../../../hooks/useAuth"
+import useAuth from "../../../../hooks/useAuth"
 import { ImProfile } from 'react-icons/im'
 import { useDispatch } from "react-redux"
 import { IoShieldCheckmarkOutline, IoShieldOutline  } from "react-icons/io5"
-import { useSelectedAcademicYear } from "../../../hooks/useSelectedAcademicYears"
+import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYears"
 const ParentsList = () => {
 //this is for the academic year selection
 const selectedAcademicYear = useSelectedAcademicYear()

@@ -4,8 +4,8 @@ import { setupListeners } from "@reduxjs/toolkit/query"
 import authReducer from "../features/auth/authSlice"
 import academicYearsReducer from '../features/AppSettings/AcademicsSet/AcademicYears/academicYearsSlice'
 import tasksReducer from '../features/Desk/Tasks/tasksSlice'
-import studentsReducer from  '../features/Students/StudentsAndParents/studentsSlice'
-import parentsReducer from  '../features/Students/StudentsAndParents/parentsSlice'
+import studentsReducer from  '../features/Students/StudentsAndParents/Students/studentsSlice'
+import parentsReducer from  '../features/Students/StudentsAndParents/Parents/parentsSlice'
 
 export const store = configureStore({
     reducer: {// Add the generated reducer as a specific top-level slice

@@ -14,7 +14,7 @@ import { ImProfile } from 'react-icons/im'
 import { LiaMaleSolid, LiaFemaleSolid  } from "react-icons/lia";
 
 
-import { selectParentById } from '../../Students/StudentsAndParents/parentsApiSlice'
+import { selectParentById } from '../../Students/StudentsAndParents/Parents/parentsApiSlice'
 import { IoShieldCheckmarkOutline, IoShieldOutline  } from "react-icons/io5";
 
 

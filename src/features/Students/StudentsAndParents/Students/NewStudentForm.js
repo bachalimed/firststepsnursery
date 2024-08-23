@@ -1,19 +1,19 @@
         import React from 'react'
-        import StudentsParents from '../StudentsParents'
+        import StudentsParents from '../../StudentsParents'
 
-        import { useGetAttendedSchoolsQuery } from '../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice'
+        import { useGetAttendedSchoolsQuery } from '../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice'
         import { useState, useEffect } from "react"
         import { useAddNewStudentMutation } from "./studentsApiSlice"
         import { useNavigate } from "react-router-dom"
         import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
         import { faSave } from "@fortawesome/free-solid-svg-icons"
-        import { ROLES } from "../../../config/UserRoles"
-        import { ACTIONS } from "../../../config/UserActions"
-        import useAuth from '../../../hooks/useAuth'
-        import { useSelectedAcademicYear } from "../../../hooks/useSelectedAcademicYears"
+        import { ROLES } from "../../../../config/UserRoles"
+        import { ACTIONS } from "../../../../config/UserActions"
+        import useAuth from '../../../../hooks/useAuth'
+        import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYears"
         import { useSelector } from 'react-redux'
-        import { selectAllAcademicYears } from '../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
-        import { useGetAcademicYearsQuery } from '../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
+       
+        import { useGetAcademicYearsQuery, selectAllAcademicYears } from '../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
         //constrains on inputs when creating new user
         const USER_REGEX = /^[A-z]{6,20}$/
         const PWD_REGEX = /^[A-z0-9!@#-_$%]{8,20}$/

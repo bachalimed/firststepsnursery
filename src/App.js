@@ -8,15 +8,17 @@ import Dashboard from './features/Dashboard/Dashboard'
 
 
 import StudentsParents from './features/Students/StudentsParents'
-import StudentsList from './features/Students/StudentsAndParents/StudentsList'
-import ParentsList from './features/Students/StudentsAndParents/ParentsList'
-import EditStudent from './features/Students/StudentsAndParents/EditStudent'
-import EditParent from './features/Students/StudentsAndParents/EditParent'
-import NewStudentForm from './features/Students/StudentsAndParents/NewStudentForm'
-import NewParentForm from './features/Students/StudentsAndParents/NewParentForm'
+import StudentsList from './features/Students/StudentsAndParents/Students/StudentsList'
+import ParentsList from './features/Students/StudentsAndParents/Parents/ParentsList'
+import EditStudent from './features/Students/StudentsAndParents/Students/EditStudent'
+import EditParent from './features/Students/StudentsAndParents/Parents/EditParent'
+import NewStudentForm from './features/Students/StudentsAndParents/Students/NewStudentForm'
+import StudentDetails from './features/Students/StudentsAndParents/Students/StudentDetails'
+import StudentDocuments from './features/Students/StudentsAndParents/Students/StudentDocuments'
+import EditStudentForm from './features/Students/StudentsAndParents/Students/EditStudentForm'
 
-import StudentDetails from './features/Students/StudentsAndParents/StudentDetails'
-import ParentDetails from './features/Students/StudentsAndParents/ParentDetails'
+import NewParentForm from './features/Students/StudentsAndParents/Parents/NewParentForm'
+import ParentDetails from './features/Students/StudentsAndParents/Parents/ParentDetails'
 
 import Admissions from "./features/Students/Admissions"
 import AllAdmissions from "./features/Students/Admissions/AllAdmissions"
@@ -76,10 +78,8 @@ import AttendedSchoolList from './features/AppSettings/AcademicsSet/attendedScho
 import AttendedSchoolsList from './features/AppSettings/AcademicsSet/attendedSchools/AttendedSchoolsList'
 import NewAttendedSchoolForm from './features/AppSettings/AcademicsSet/attendedSchools/NewAttendedSchoolForm'
 import NewAcademicYearForm from './features/AppSettings/AcademicsSet/AcademicYears/NewAcademicYearForm'
-import EditStudentForm from './features/Students/StudentsAndParents/EditStudentForm'
 import NewStudentDocumentsListForm from './features/AppSettings/StudentsSet/StudentDocumentLists/NewStudentDocumentsListForm'
 import StudentDocumentsLists from './features/AppSettings/StudentsSet/StudentDocumentLists/StudentDocumentsLists'
-import StudentDocumentsForm from './features/Students/StudentsAndParents/StudentDocumentsForm'
 // import Parents from './features/Students/Parents'
 // import NewStudent from './features/Students/NewStudent'
 // import ResetPassword from './features/auth/ResetPassword'
@@ -131,7 +131,7 @@ const App = () => {
 									<Route path="students/" element={<StudentsList />}/>												
 									<Route path="newStudent/" element={<NewStudentForm />}/>												
 									<Route path="newParent/" element={<NewParentForm />}/>												
-									<Route path="studentDocuments/" element={<StudentDocumentsForm />}/>												
+									<Route path="studentDocuments/:id/" element={<StudentDocuments />}/>												
 									
 										<Route path="studentDetails/:id/" element={<StudentDetails/>}/>
 									<Route path="edit/:id/" element={<EditStudent/>}/>

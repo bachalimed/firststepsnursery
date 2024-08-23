@@ -2,7 +2,7 @@
 
 import {  useGetStudentsQuery, useGetStudentsByYearQuery } from "./studentsApiSlice"
 import { HiOutlineSearch } from 'react-icons/hi'
-import StudentsParents from "../StudentsParents"
+import StudentsParents from "../../StudentsParents"
 import DataTable from 'react-data-table-component'
 import { useSelector } from 'react-redux'
 import {  selectAllStudentsByYear, selectAllStudents } from './studentsApiSlice'//use the memoized selector 
@@ -12,13 +12,14 @@ import { useNavigate } from "react-router-dom"
 import { ImProfile } from "react-icons/im"
 import { FiEdit } from "react-icons/fi"
 import { RiDeleteBin6Line } from "react-icons/ri"
-import { setAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice"
-import { useSelectedAcademicYear } from "../../../hooks/useSelectedAcademicYears"
-import useAuth from '../../../hooks/useAuth'
-import getCurrentAcademicYear from '../../../config/CurrentYear'
-
+import { setAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice"
+import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYears"
+import useAuth from '../../../../hooks/useAuth'
+import getCurrentAcademicYear from '../../../../config/CurrentYear'
+import { LiaMaleSolid, LiaFemaleSolid  } from "react-icons/lia";
 import { useDispatch } from "react-redux"
 import { setSomeStudents, setStudents, currentStudentsList } from "./studentsSlice"
+import { IoDocumentAttachOutline } from "react-icons/io5";
 
 
 const StudentsList = () => {
@@ -177,12 +178,32 @@ const column =[
   (status2)&&{ 
 name: "ID",
 selector:row=>( <Link to={`/students/studentsParents/student/studentDetails/${row.id}`} >{row.id} </Link> ),
-sortable:true
+sortable:true,
+width:'200px'
  }, 
+ { 
+  name: "Sex",
+  selector:row=>row.userSex,
+  cell: row => (
+   <span>
+     {row.studentSex==='Male' ? (
+       <LiaMaleSolid className='text-blue-500 text-2xl' />
+     ) : (
+       <LiaFemaleSolid  className='text-red-500 text-2xl' />
+     )}
+   </span>
+ ),
+  sortable:true,
+  removableRows:true,
+  width:'70px'
+  }, 
   { 
 name: "First Name",
-selector:row=>( <Link to={`/students/studentsParents/student/studentDetails/${row.id}`}> {row.studentName.firstName+" " +row.studentName.middleName}</Link>),
-sortable:true
+selector:row=>( <Link to={`/students/studentsParents/student/studentDetails/${row.id}`}> {row.studentName.firstName+" "+row.studentName.middleName}</Link>
+  
+),
+sortable:true,
+width:'180px'
  }, 
   { 
 name: "Last Name",
@@ -206,11 +227,8 @@ sortable:true
 //   selector:row=>row.studentMother._id,
 //   sortable:true
 // }, 
-{name: "Sex",
-  selector:row=>row.studentSex,
-  sortable:true,
-  removableRows:true
-},
+
+
 {name: "Student Years",
   
   selector:row=>( 
@@ -220,6 +238,14 @@ sortable:true
   sortable:true,
   removableRows:true
 },
+{name: "Documents",
+  selector:row=>( <Link to={`/students/studentsParents/studentDocuments/${row.id}`} > <IoDocumentAttachOutline className='text-gray-500 text-2xl'/></Link> ),
+  sortable:true,
+  removableRows:true,
+  width:'120px',
+},
+
+
 { 
   name: "Actions",
   cell: row => (
