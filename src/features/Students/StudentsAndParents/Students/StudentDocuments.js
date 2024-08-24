@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom' //because we will get the userId from the url
 import { useSelector } from 'react-redux'
 
-import StudentDocumentsForm from './StudentDocumentsForm'
+import StudentDocumentsList from './StudentDocumentsList'
 import useAuth from '../../../../hooks/useAuth'
 import { currentStudentsList } from './studentsSlice'
 
@@ -15,7 +15,7 @@ const StudentDocuments = () => {
   
   let content
   
-  content = studentToEdit ? <StudentDocumentsForm student={studentToEdit} /> : <p>Loading...</p>
+  content = studentToEdit ? <StudentDocumentsList student={studentToEdit} /> : <p>Loading...</p>
 
 //}
 //if(isError){<h1>is error</h1>}

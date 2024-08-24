@@ -22,6 +22,7 @@ const useAuth = () => {
     let canDelete= false
     let canAdd= false
     let canCreate = false
+    let canView = false
 
     if (token) {
         const decoded = jwtDecode(token)
@@ -43,6 +44,7 @@ const useAuth = () => {
         canDelete= userAllowedActions.includes('canDelete')
         canAdd= userAllowedActions.includes('canAdd')
         canCreate = userAllowedActions.includes('canCreate')
+        canView = userAllowedActions.includes('canView')
         
 
      //will get the higher status as it is executed in order
@@ -59,9 +61,9 @@ const useAuth = () => {
         if (isAdmin) status2 = "Admin"
         
 
-        return { userId, username, userRoles, status1, status2, canEdit, canDelete, canAdd, canCreate, isEmployee, isManager, isParent, isContentManager, isAnimator, isAcademic, isFinance, isHR, isDesk, isDirector,  isAdmin }
+        return { userId, username, userRoles, status1, status2, canEdit, canDelete, canAdd, canCreate, canView, isEmployee, isManager, isParent, isContentManager, isAnimator, isAcademic, isFinance, isHR, isDesk, isDirector,  isAdmin }
     }
 
-    return { userId:'', username: '', userRoles: [], status1, status2, canEdit, canDelete, canAdd, canCreate, isEmployee, isManager, isParent, isContentManager, isAnimator, isAcademic, isFinance, isHR, isDesk, isDirector,  isAdmin }
+    return { userId:'', username: '', userRoles: [], status1, status2, canEdit, canDelete, canAdd, canCreate, canView, isEmployee, isManager, isParent, isContentManager, isAnimator, isAcademic, isFinance, isHR, isDesk, isDirector,  isAdmin }
 }
 export default useAuth

@@ -69,10 +69,38 @@ export const studentDocumentsApiSlice = apiSlice.injectEndpoints({
             //     } else return [{ type: 'studentsDocument', id: 'LIST' }]
             // }
         }),
+        getStudentDocumentsByYearById: builder.query({
+            query: (params) =>{
+                const queryString = new URLSearchParams(params).toString() 
+                return `/students/studentsParents/studentDocuments?${queryString}`
+                },
+            
+            validateStatus: (response, result) => {
+                return response.status === 200 && !result.isError
+            },
+            
+           
+            transformResponse: responseData => {
+                //const {loadedStudentDocuments} =
+                
+                //console.log(responseData.total)
+                //console.log('academicYears in the APIslice', academicYears)
+                // const newLoadedStudentDocuments = responseData.map(studentDocument => { 
+                    
+                //     studentDocument.id = studentDocument._id//changed the _id from mongoDB to id
+                //     delete studentDocument._id//added to delete the extra original _id from mongo but careful when planning to save to db again
+                //     return studentDocument
+                // })
+                // return studentDocumentsAdapter.setAll(initialState, newLoadedStudentDocuments)
+                return responseData
+            },
+            providesTags:['studentDocument']
+           
+        }),
         getStudentDocumentById: builder.query({
             query: (params) =>{
                 const queryString = new URLSearchParams(params).toString() 
-                return `/studentsDocuments/studentsDocumentsParents/studentsDocuments?${queryString}`
+                return `/students/studentsParents/studentDocuments?${queryString}`
                 },
             
             validateStatus: (response, result) => {
@@ -144,6 +172,7 @@ export const {
     useUpdateStudentDocumentMutation,
     useDeleteStudentDocumentMutation,
     useGetStudentDocumentsByYearQuery,
+    useGetStudentDocumentsByYearByIdQuery,
     useGetStudentDocumentByIdQuery,
 } = studentDocumentsApiSlice
 

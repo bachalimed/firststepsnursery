@@ -183,7 +183,7 @@ width:'200px'
  }, 
  { 
   name: "Sex",
-  selector:row=>row.userSex,
+  selector:row=>row.studentSex,//changed from userSex
   cell: row => (
    <span>
      {row.studentSex==='Male' ? (
@@ -239,7 +239,7 @@ sortable:true
   removableRows:true
 },
 {name: "Documents",
-  selector:row=>( <Link to={`/students/studentsParents/studentDocuments/${row.id}`} > <IoDocumentAttachOutline className='text-gray-500 text-2xl'/></Link> ),
+  selector:row=>( <Link to={`/students/studentsParents/studentDocumentsList/${row.id}`} > <IoDocumentAttachOutline className='text-gray-500 text-2xl'/></Link> ),
   sortable:true,
   removableRows:true,
   width:'120px',

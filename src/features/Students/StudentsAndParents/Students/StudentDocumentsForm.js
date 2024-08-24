@@ -82,7 +82,7 @@ const {
  console.log(filteredList,'filteredList')
   
  const handleAddDocument = () => {
-    setDocuments([...documents, { studentId, studentDocumentYear, documentReference: '', documentLabel: '', file: null }]);
+    setDocuments([...documents, { studentId, studentDocumentYear, studentDocumentReference: '', studentDocumentLabel: '', file: null }]);
   };
 
   const handleFieldChange = (index, field, value) => {
@@ -106,18 +106,18 @@ const {
     e.preventDefault()
     
     const formData = new FormData()
-
+const doc = documents[0]
     // Append each document to the FormData
-    documents.forEach((doc, index) => {
-      formData.append(`documents[${index}][studentId]`, doc.studentId);
-      formData.append(`documents[${index}][studentDocumentYear]`, doc.studentDocumentYear);
-      formData.append(`documents[${index}][documentReference]`, doc.studentDocumentReference);
-      formData.append(`documents[${index}][documentLabel]`, doc.studentDocumentLabel);
-      formData.append(`documents[${index}][file]`, doc.file);
-    });
+    
+      formData.append('studentId', doc.studentId);
+      formData.append('studentDocumentYear', doc.studentDocumentYear);
+      formData.append('studentDocumentReference', doc.studentDocumentReference)///!!!must upload the id and not the title
+      formData.append('studentDocumentLabel', doc.studentDocumentLabel);
+      formData.append('file', doc.file);
+    
   
     try {
-      const response = await addStudentDocuments(formData)
+      const response = await addStudentDocuments(formData)//.unwrap()
 
 
     if (!response.ok) {
@@ -174,6 +174,12 @@ return (
   <>
     <StudentsParents />
     <form onSubmit={handleSubmit}>
+
+
+      <div>
+
+        show already uploaded documents for the student, adn the missing ones
+      </div>
       <h2>Upload Documents for {studentName.firstName} {studentName.middleName} {studentName.lastName} </h2>
       {listsListIsLoading && <p>Loading...</p>}
       {listsListIsSuccess && (
@@ -189,7 +195,7 @@ return (
                 >
                   <option value="">Select Document</option>
                   {filteredList.map((doc) => (
-                    <option key={doc.documentReference} value={doc.studentDocumentReference}>
+                    <option key={doc.documentReference} value={doc.documentReference}>
                       {doc.documentTitle}
                     </option>
                   ))}
@@ -215,8 +221,8 @@ return (
               <button type="button" onClick={() => handleRemoveDocument(index)}>Remove Entry</button>
             </div>
           ))}
-          <button type="button" onClick={handleAddDocument}>Add Document</button>
-          <button type="submit">Upload Documents</button>
+          <button type="button" onClick={handleAddDocument}>Add File</button>
+          <button type="submit">Upload Document</button>
         </>
       )}
     </form>

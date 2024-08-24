@@ -16,6 +16,10 @@ import NewStudentForm from './features/Students/StudentsAndParents/Students/NewS
 import StudentDetails from './features/Students/StudentsAndParents/Students/StudentDetails'
 import StudentDocuments from './features/Students/StudentsAndParents/Students/StudentDocuments'
 import EditStudentForm from './features/Students/StudentsAndParents/Students/EditStudentForm'
+import StudentDocumentsListsList from './features/AppSettings/StudentsSet/StudentDocumentLists/StudentDocumentsListsList'
+import StudentDocumentsList from './features/Students/StudentsAndParents/Students/StudentDocumentsList'
+import StudentDocumentsForm from './features/Students/StudentsAndParents/Students/StudentDocumentsList'
+import NewStudentDocumentsListForm from './features/AppSettings/StudentsSet/StudentDocumentLists/NewStudentDocumentsListForm'
 
 import NewParentForm from './features/Students/StudentsAndParents/Parents/NewParentForm'
 import ParentDetails from './features/Students/StudentsAndParents/Parents/ParentDetails'
@@ -78,8 +82,6 @@ import AttendedSchoolList from './features/AppSettings/AcademicsSet/attendedScho
 import AttendedSchoolsList from './features/AppSettings/AcademicsSet/attendedSchools/AttendedSchoolsList'
 import NewAttendedSchoolForm from './features/AppSettings/AcademicsSet/attendedSchools/NewAttendedSchoolForm'
 import NewAcademicYearForm from './features/AppSettings/AcademicsSet/AcademicYears/NewAcademicYearForm'
-import NewStudentDocumentsListForm from './features/AppSettings/StudentsSet/StudentDocumentLists/NewStudentDocumentsListForm'
-import StudentDocumentsLists from './features/AppSettings/StudentsSet/StudentDocumentLists/StudentDocumentsLists'
 // import Parents from './features/Students/Parents'
 // import NewStudent from './features/Students/NewStudent'
 // import ResetPassword from './features/auth/ResetPassword'
@@ -131,7 +133,8 @@ const App = () => {
 									<Route path="students/" element={<StudentsList />}/>												
 									<Route path="newStudent/" element={<NewStudentForm />}/>												
 									<Route path="newParent/" element={<NewParentForm />}/>												
-									<Route path="studentDocuments/:id/" element={<StudentDocuments />}/>												
+									<Route path="studentDocumentsList/:id/" element={<StudentDocuments />}/>												
+									<Route path="studentDocuments/upload/:id/" element={<StudentDocumentsForm />}/>												
 									
 										<Route path="studentDetails/:id/" element={<StudentDetails/>}/>
 									<Route path="edit/:id/" element={<EditStudent/>}/>
@@ -254,7 +257,7 @@ const App = () => {
 
 								<Route path="studentsSet" > 					
 								<Route index element={<StudentsSet />} />
-									<Route path="studentDocumentsLists/" element={<StudentDocumentsLists />} /> 									
+									<Route path="studentDocumentsListsList/" element={<StudentDocumentsListsList />} /> 									
 									<Route path="newStudentDocumentsList" element={<NewStudentDocumentsListForm />}/>
 
 
