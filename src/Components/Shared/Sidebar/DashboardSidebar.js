@@ -67,10 +67,10 @@ const DashboardSidebar = () => {
 				<span className={`text-base font-light flex-1 ${!open && "hidden"} duration-200`} > Dashboard</span>
 				</li >
 			</Link>
-			<Link to=''> 
-				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>    
-				<span className='text-2xl block float-left' onClick={()=>setOpen(true)} ><PiStudent/> </span>
-				<span className={`text-base font-light flex-1 ${!open && "hidden"} duration-200`} onClick={()=> setOpen(open)} > Students</span>
+			<Link to='/students/studentsParents/'> 
+				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md  `}>    
+				<span className='text-2xl block float-left duration-200' onClick={()=>setOpen(true)} ><PiStudent/> </span>
+				<span className={`text-base font-light flex-1 ${!open && "hidden"} duration-200`} onClick={()=> setOpen(!open)} > Students</span>
 				{open &&(<BsChevronDown className={`${studentsOpen && "rotate-180"}`} onClick={()=>setStudentsOpen(!studentsOpen)}/>
 				)}
 				</li >
@@ -96,10 +96,10 @@ const DashboardSidebar = () => {
 					</li>
 					</Link>		
 				</ul>)}
-			<Link to=''> 
+			<Link to='/academics/schoolPlannings/'> 
 				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>    
 				<span className='text-2xl block float-left' onClick={()=>setOpen(true)} ><IoSchoolOutline/> </span>
-				<span className={`text-base font-light flex-1 ${!open && "hidden"} duration-200`} onClick={()=> setOpen(open)}> Academics</span>
+				<span className={`text-base font-light flex-1 ${!open && "hidden"} duration-200`} onClick={()=> setOpen(!open)}> Academics</span>
 				{open &&(<BsChevronDown className={`${academicsOpen && "rotate-180"}`} onClick={()=>setAcademicsOpen(!academicsOpen)}/>
 				)}
 				</li >
@@ -124,10 +124,10 @@ const DashboardSidebar = () => {
 					</li>
 					</Link>		
 				</ul>)}
-			<Link to=''> 
+			<Link to='/finances/invoices/'> 
 				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>    
 				<span className='text-2xl block float-left' onClick={()=>setOpen(true)} ><LuCircleDollarSign/> </span>
-				<span className={`text-base font-light flex-1 ${!open && "hidden"} duration-200`} onClick={()=> setOpen(open)} > Finances</span>
+				<span className={`text-base font-light flex-1 ${!open && "hidden"} duration-200`} onClick={()=> setOpen(!open)} > Finances</span>
 				{open &&(<BsChevronDown className={`${financesOpen && "rotate-180"}`} onClick={()=>setFinancesOpen(!financesOpen)}/>
 				)}
 				</li >
@@ -152,10 +152,10 @@ const DashboardSidebar = () => {
 					</li>
 					</Link>		
 				</ul>)}
-			<Link to=''> 
+			<Link to='/hr/employees/'> 
 				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>    
 				<span className='text-2xl block float-left' onClick={()=>setOpen(true)} ><GiHumanPyramid/> </span>
-				<span className={`text-base font-light flex-1 ${!open && "hidden"} duration-200`} onClick={()=> setOpen(open)} > HR</span>
+				<span className={`text-base font-light flex-1 ${!open && "hidden"} duration-200`} onClick={()=> setOpen(!open)} > HR</span>
 				{open &&(<BsChevronDown className={`${hrOpen && "rotate-180"}`} onClick={()=>setHrOpen(!hrOpen)}/>
 				)}
 				</li >
@@ -180,10 +180,10 @@ const DashboardSidebar = () => {
 					</li>
 					</Link>		
 				</ul>)}
-			<Link to=''> 
+			<Link to='/desk/inquiries/'> 
 				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>    
 				<span className='text-2xl block float-left' onClick={()=>setOpen(true)} ><FaMailBulk/> </span>
-				<span className={`text-base font-light flex-1 ${!open && "hidden"} duration-200`} onClick={()=> setOpen(open)} > Desk</span>
+				<span className={`text-base font-light flex-1 ${!open && "hidden"} duration-200`} onClick={()=> setOpen(!open)} > Desk</span>
 				{open &&(<BsChevronDown className={`${deskOpen && "rotate-180"}`} onClick={()=>setDeskOpen(!deskOpen)}/>
 				)}
 				</li >
@@ -230,10 +230,10 @@ const DashboardSidebar = () => {
 					
 			<div  className='border-t border-neutral-600' >
 
-				<Link to=''> 
+				<Link to='/admin/usersManagement/'> 
 					<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>    
 					<span className='text-2xl block float-left'onClick={()=>setOpen(true)}  ><GrUserAdmin/> </span>
-					<span className={`text-base font-light flex-1 ${!open && "hidden"} duration-200`} onClick={()=> setOpen(open)} > Admin</span>
+					<span className={`text-base font-light flex-1 ${!open && "hidden"} duration-200`} onClick={()=> setOpen(!open)} > Admin</span>
 					{open &&(<BsChevronDown className={`${adminOpen && "rotate-180"}`} onClick={()=>setAdminOpen(!adminOpen)}/>
 				)}
 					</li >
@@ -255,7 +255,7 @@ const DashboardSidebar = () => {
 					<Link to=''> 
 				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>    
 				<span className='text-2xl block float-left' onClick={()=>setOpen(true)} ><SlSettings/> </span>
-				<span className={`text-base font-light flex-1 ${!open && "hidden"} duration-200`} onClick={()=> setOpen(open)}> Settings</span>
+				<span className={`text-base font-light flex-1 ${!open && "hidden"} duration-200`} onClick={()=> setOpen(!open)}> Settings</span>
 				{open &&(<BsChevronDown className={`${settingsOpen && "rotate-180"}`} onClick={()=>setSettingsOpen(!settingsOpen)}/>
 				)}
 				</li >

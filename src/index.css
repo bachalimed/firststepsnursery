@@ -136,3 +136,18 @@
   justify-content: flex-end;
   margin-top: 20px;
 }
+.ReactModal__Overlay {
+  background: rgba(0, 0, 0, 0.5); /* Overlay color */
+}
+
+.ReactModal__Content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border-radius: 4px;
+  width: 80%;
+  max-width: 600px;
+}

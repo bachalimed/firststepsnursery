@@ -98,9 +98,9 @@ export const studentDocumentsApiSlice = apiSlice.injectEndpoints({
            
         }),
         getStudentDocumentById: builder.query({
-            query: (params) =>{
-                const queryString = new URLSearchParams(params).toString() 
-                return `/students/studentsParents/studentDocuments?${queryString}`
+            query: (id) =>{
+                
+                return `/students/studentsParents/studentDocuments/${id}`
                 },
             
             validateStatus: (response, result) => {
@@ -108,10 +108,7 @@ export const studentDocumentsApiSlice = apiSlice.injectEndpoints({
             },
            
             transformResponse: responseData => {
-                //const {loadedStudentsDocuments} =
                 
-                //console.log('academicYears length  in the APIslice',responseData.total)
-                //console.log('academicYears in the APIslice', academicYears)
                 const newLoadedStudentDocuments = responseData.map(studentDocument => { 
                     
                     studentDocument.id = studentDocument._id//changed the _id from mongoDB to id

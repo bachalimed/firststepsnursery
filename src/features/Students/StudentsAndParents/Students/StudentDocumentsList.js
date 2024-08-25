@@ -32,7 +32,7 @@ import { useDispatch } from "react-redux"
 import { setSomeStudents, setStudents, currentStudentsList } from "./studentsSlice"
 import { IoDocumentAttachOutline } from "react-icons/io5";
 import { useGetStudentDocumentsByYearByIdQuery } from './studentDocumentsApiSlice'
-
+import ViewDocumentModal from './ViewDocumentModal';
 import { useGetAcademicYearsQuery, selectAllAcademicYears } from '../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
 
 //constrains on inputs when creating new user
@@ -40,7 +40,9 @@ import { useGetAcademicYearsQuery, selectAllAcademicYears } from '../../../AppSe
 const NAME_REGEX= /^[A-z 0-9.-_]{6,20}$/
 
 const StudentDocumentsList = ({student}) => {
-
+    const [isModalViewOpen, setIsModalViewOpen] = useState(false)
+    console.log('ismodalview start',isModalViewOpen )
+    const [selectedDocument, setSelectedDocument] = useState(null)
 const Navigate = useNavigate()
 //get the student details from the passed data
 const {id, studentName}= student
@@ -96,16 +98,21 @@ let updatedListing=[]
     if (listIsSuccess) {
     const { studentDocuments, studentDocumentsList }= studentDocumentsListing
     const listing =studentDocumentsList[0].documentsList
-     updatedListing = listing.map(item => {
-        // Check if the documentReference exists in the studentDocuments array
-        const isUploaded = studentDocuments.some(doc => doc.studentDocumentReference === item.documentReference);
-        
-        // Return a new object with the documentUploaded key added if the reference exists
+
+    updatedListing = listing.map(item => {
+   
+        //Find the document in the studentDocuments array that matches the documentReference
+        const matchingDocument = studentDocuments.find(doc => doc.studentDocumentReference === item.documentReference);
+    
+       //Return a new object with the documentUploaded and studentDocumentId keys added if the reference exists
         return {
             ...item,
-            documentUploaded: isUploaded
+            documentUploaded: !!matchingDocument, // true if matchingDocument is found, false otherwise
+            studentDocumentId: matchingDocument ? matchingDocument._id : '', // Add studentDocumentId if found, otherwise null
         };
     });
+
+
     console.log(studentDocuments,'returned data docs')
     
     console.log(   updatedListing,'returned data listing')
@@ -122,7 +129,7 @@ let updatedListing=[]
 const handleDelete =()=>{
     console.log('deleting')
 }
-
+//modal to upload document
 const [isModalOpen, setIsModalOpen] = useState(false)
 const handleUploadClick = () => {
     setIsModalOpen(true);
@@ -153,6 +160,16 @@ const formData = new FormData()
   }
 };
 
+
+//modal to view document
+console.log('selectedDocument:', selectedDocument);
+const handleViewDocument = ( id ) => {
+    console.log(id,'the di idid')
+    setSelectedDocument({ id:id})
+    setIsModalViewOpen(true);
+  };
+
+
 useEffect(() => {
     if (uploadIsSuccess) {//if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
       setStudentId('')
@@ -175,7 +192,7 @@ const column =[
     }, 
     //show this column only if user is a parent and not employee
   
-    (status2)&&{ 
+    { 
   name: "Reference",
   selector:row=>( row.documentReference  ),
   sortable:true,
@@ -231,14 +248,14 @@ const column =[
     name: "Actions",
     cell: row => (
       <div className="space-x-1">
-        {canView&&row.documentUploaded&&(<button className="text-blue-500" fontSize={20}  onClick={() => Navigate(`/students/studentsParents/studentDocument/${row.id}`)}  > 
+        {canView&&row.documentUploaded&&(<button className="text-blue-500" fontSize={20}  onClick={() => handleViewDocument(row.studentDocumentId)}  > 
           <GrView fontSize={20}/> 
           </button>)}
        
         {canEdit&&!row.documentUploaded&&(<button  className="text-yellow-400" onClick={handleUploadClick}  > 
         <GrDocumentUpload fontSize={20}/> 
         </button>)}
-        {canDelete&&row.documentUploaded&&(<button className="text-red-500"  onClick={() => handleDelete(row.id)}>
+        {canDelete&&row.documentUploaded&&(<button className="text-red-500"  onClick={() => handleDelete(row._id)}>
           <RiDeleteBin6Line fontSize={20}/>
         </button>)}
       </div>
@@ -259,9 +276,7 @@ const column =[
     <>
   
     <StudentsParents/>
-
-    <div>
-         
+    
     <UploadDocumentFormModal 
                 isOpen={isModalOpen} 
                 onRequestClose={() => setIsModalOpen(false)} 
@@ -270,7 +285,7 @@ const column =[
                 year={studentDocumentYear}
                 onUpload={handleUpload}
             />
-    </div>
+    
         
     <div className=' flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200' >
       
@@ -284,8 +299,15 @@ const column =[
       pageSizeControl
       
       
-      >
-      </DataTable>
+      />
+      
+
+     {isModalViewOpen&& (<ViewDocumentModal 
+          id={selectedDocument?.id} 
+         
+          isOpen={isModalViewOpen} 
+          onClose={() => setIsModalViewOpen(false)} 
+        />)}
       <div className="flex justify-end items-center space-x-4">
           
           <button 
