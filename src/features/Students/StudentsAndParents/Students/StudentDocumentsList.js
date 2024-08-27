@@ -1,6 +1,7 @@
 
 import React from 'react'
 import axios from 'axios';
+import { setStudentDocuments } from './studentDocumentsSlice';
 import StudentsParents from '../../StudentsParents'
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
 import { IoCheckmarkSharp, IoCheckmarkDoneOutline  } from "react-icons/io5";
@@ -9,7 +10,7 @@ import { GrView } from "react-icons/gr";
 import { GrDocumentUpload } from "react-icons/gr";
 import { useGetAttendedSchoolsQuery } from '../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice'
 import { useState, useEffect } from "react"
-import { useAddStudentDocumentsMutation } from "./studentDocumentsApiSlice"
+import { useAddStudentDocumentsMutation, useDeleteStudentDocumentMutation } from "./studentDocumentsApiSlice"
 import { useNavigate, Link } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave } from "@fortawesome/free-solid-svg-icons"
@@ -37,14 +38,16 @@ import ViewDocumentModal from './ViewDocumentModal';
 import { useGetAcademicYearsQuery, selectAllAcademicYears } from '../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
 import {jwtDecode} from 'jwt-decode'
 import { selectCurrentToken } from "../../../auth/authSlice"
-//constrains on inputs when creating new user
+import DeleteConfirmModal from './DeleteConfirmModal'
+ //constrains on inputs when creating new user
 
 const NAME_REGEX= /^[A-z 0-9.-_]{6,20}$/
 
 const StudentDocumentsList = ({student}) => {
-    
+  const [deleteStudentDocument, { isLoading: isDeleting, isSuccess: deleteSuccess, isError: deleteError, error: deleteErrorDetails }] = useDeleteStudentDocumentMutation();
     const [selectedDocument, setSelectedDocument] = useState(null)
 const Navigate = useNavigate()
+const Dispatch = useDispatch()
 //get the student details from the passed data
 const {id, studentName}= student
 //console.log(id, studentName,'student name and id')
@@ -65,20 +68,20 @@ const [studentDocumentLabel, setStudentDocumentLabel] = useState('')
 const [validStudentDocumentLabel, setValidStudentDocumentLabel] = useState('')
 const [studentDocumentReference, setStudentDocumentReference] = useState('')
 
-const selectedAcademicYear = useSelectedAcademicYear()
 
 
 //prepare the permission variables
 const{userId,canEdit, canDelete, canAdd, canView, canCreate, isParent, isAdmin, status2}=useAuth()
 
+const selectedAcademicYear = useSelectedAcademicYear()
+const [studentDocumentYear, setStudentDocumentYear] = useState(selectedAcademicYear.title||'')
 useEffect(() => {
     if (selectedAcademicYear?.title) {
         setStudentDocumentYear(selectedAcademicYear.title)
-      console.log('Selected year updated:', selectedAcademicYear.title)
+      console.log('studentDocumentYear:', studentDocumentYear)
     }
-  }, [selectedAcademicYear])
+  }, [selectedAcademicYear,])
 
- const [studentDocumentYear, setStudentDocumentYear] = useState(selectedAcademicYear.title)
 
 const {
 data: studentDocumentsListing,//the data is renamed parents
@@ -97,7 +100,8 @@ let studentDocuments
 let updatedListing=[]
 
     if (listIsSuccess) {
-    const { studentDocuments, studentDocumentsList }= studentDocumentsListing
+      const { studentDocuments, studentDocumentsList }= studentDocumentsListing
+      Dispatch(setStudentDocuments(studentDocuments))
     const listing =studentDocumentsList[0].documentsList
 
     updatedListing = listing.map(item => {
@@ -127,9 +131,39 @@ let updatedListing=[]
 //       //const validStudentClass = !validStudentName ? 'form__input--incomplete' : ''
 //       //const validPwdClass = !validPassword ? 'form__input--incomplete' : ''
 //       //const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
-const handleDelete =()=>{
-    console.log('deleting')
-}
+
+
+const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+const handleDelete = async (id) => {
+  
+  try {
+    await deleteStudentDocument(id).unwrap();
+    setIsDeleteModalOpen(false);
+  } catch (err) {
+    console.error('Error deleting document:', err);
+  }
+};
+
+const openDeleteModal = (id) => {
+  setSelectedDocument(id);
+  setIsDeleteModalOpen(true);
+};
+
+const closeDeleteModal = () => {
+  setSelectedDocument(null);
+  setIsDeleteModalOpen(false);
+};
+
+// const handleDelete = async (id) => {
+//   try {
+//       console.log('the id in delete handle', id);
+//       await deleteStudentDocument(id).unwrap(); // unwrap to handle fulfilled and rejected states
+//       // Optionally refetch data or update local state here
+//   } catch (err) {
+//       console.error('Error deleting document:', err);
+//   }
+// };
 //modal to upload document
 const [isModalOpen, setIsModalOpen] = useState(false)
 const handleUploadClick = () => {
@@ -138,6 +172,7 @@ const handleUploadClick = () => {
 // now that the modal has returned the required data:{ studentId, studentDocumentYear, studentDocumentLabel, studentDocumentType, file
 
 const handleUpload = async ({studentId, studentDocumentYear, studentDocumentLabel, studentDocumentReference, file }) => {
+  console.log(studentId, studentDocumentYear, studentDocumentLabel, studentDocumentReference, file)
    // e.preventDefault()
 const formData = new FormData()
 
@@ -199,23 +234,24 @@ const handleViewDocument = async (id) => {
     console.error('Error viewing the document:', error);
   }
 };
-const handleDownloadDocument = async (url) => {
-  
-      
-     
- 
-};
+
 
 useEffect(() => {
     if (uploadIsSuccess) {//if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
-      setStudentId('')
-      setStudentDocumentYear('')
+      setStudentId(studentId)//to ensure it is always present in teh future requests in the same page
+      //setStudentDocumentYear('')
       setStudentDocumentLabel('')
       setStudentDocumentReference('')
       setDocuments([])
       Navigate(`/students/studentsParents/studentDocumentsList/${studentId}`)//will navigate here after saving
     }
 }, [uploadIsSuccess, Navigate])
+
+
+
+
+
+
 
 
 const column =[
@@ -228,12 +264,12 @@ const column =[
     }, 
     //show this column only if user is a parent and not employee
   
-    { 
-  name: "Reference",
-  selector:row=>( row.documentReference  ),
-  sortable:true,
-  width:'200px'
-   }, 
+  //   { 
+  // name: "Reference",
+  // selector:row=>( row.documentReference  ),
+  // sortable:true,
+  // width:'200px'
+  //  }, 
    { 
     name: "Title",
     selector:row=>row.documentTitle,
@@ -291,7 +327,7 @@ const column =[
         {canEdit&&!row.documentUploaded&&(<button  className="text-yellow-400" onClick={handleUploadClick}  > 
         <GrDocumentUpload fontSize={20}/> 
         </button>)}
-        {canDelete&&row.documentUploaded&&(<button className="text-red-500"  onClick={() => handleDelete(row._id)}>
+        {canDelete&& row.documentUploaded && !isDeleting &&(<button className="text-red-500"  onClick={() => handleDelete(row.studentDocumentId)}>
           <RiDeleteBin6Line fontSize={20}/>
         </button>)}
       </div>
@@ -309,7 +345,7 @@ const column =[
    //if (isSuccess){
   
    content = 
-    <>
+    <>  {deleteSuccess && <p>Document deleted successfully!</p>}
   
     <StudentsParents/>
     
@@ -326,6 +362,12 @@ const column =[
       onRequestClose={() => setViewModalOpen(false)}
       documentUrl={documentToView}
     />
+     <DeleteConfirmModal
+        isOpen={isDeleteModalOpen}
+        onRequestClose={closeDeleteModal}
+        onConfirm={handleDelete}
+        documentId={id}
+      />
      
         
     <div className=' flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200' >

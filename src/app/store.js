@@ -6,6 +6,7 @@ import academicYearsReducer from '../features/AppSettings/AcademicsSet/AcademicY
 import tasksReducer from '../features/Desk/Tasks/tasksSlice'
 import studentsReducer from  '../features/Students/StudentsAndParents/Students/studentsSlice'
 import parentsReducer from  '../features/Students/StudentsAndParents/Parents/parentsSlice'
+import studentDocumentsReducer from  '../features/Students/StudentsAndParents/Students/studentDocumentsSlice'
 
 export const store = configureStore({
     reducer: {// Add the generated reducer as a specific top-level slice
@@ -14,6 +15,7 @@ export const store = configureStore({
         academicYear: academicYearsReducer,
         student: studentsReducer,
         parent: parentsReducer,
+        studentDocument:studentDocumentsReducer
         //task: tasksReducer,
         
         //imported from taskSlice

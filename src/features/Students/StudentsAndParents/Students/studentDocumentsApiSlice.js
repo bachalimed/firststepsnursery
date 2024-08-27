@@ -38,7 +38,7 @@ export const studentDocumentsApiSlice = apiSlice.injectEndpoints({
         getStudentDocumentsByYear: builder.query({
             query: (params) =>{
                 const queryString = new URLSearchParams(params).toString() 
-                return `/studentsDocuments/studentsDocumentsParents/studentsDocuments?${queryString}`
+                return `/students/studentsParents/studentDocuments?${queryString}`
                 },
             
             validateStatus: (response, result) => {
@@ -61,56 +61,55 @@ export const studentDocumentsApiSlice = apiSlice.injectEndpoints({
             providesTags:['studentDocument']
            
             // providesTags: (result, error, arg) => {
-            //     if (result?.ids) {
-            //         return [
-            //             { type: 'studentsDocument', id: 'LIST' },
-            //             ...result.ids.map(id => ({ type: 'studentsDocument', id }))
-            //         ]
-            //     } else return [{ type: 'studentsDocument', id: 'LIST' }]
-            // }
-        }),
-        getStudentDocumentsByYearById: builder.query({
+                //     if (result?.ids) {
+                    //         return [
+                        //             { type: 'studentsDocument', id: 'LIST' },
+                        //             ...result.ids.map(id => ({ type: 'studentsDocument', id }))
+                        //         ]
+                        //     } else return [{ type: 'studentsDocument', id: 'LIST' }]
+                        // }
+                    }),
+            getStudentDocumentsByYearById: builder.query({
             query: (params) =>{
                 const queryString = new URLSearchParams(params).toString() 
                 return `/students/studentsParents/studentDocuments?${queryString}`
-                },
+            },
             
             validateStatus: (response, result) => {
                 return response.status === 200 && !result.isError
             },
             
-           
-            transformResponse: responseData => {
-                //const {loadedStudentDocuments} =
-                
-                //console.log(responseData.total)
-                //console.log('academicYears in the APIslice', academicYears)
-                // const newLoadedStudentDocuments = responseData.map(studentDocument => { 
-                    
-                //     studentDocument.id = studentDocument._id//changed the _id from mongoDB to id
-                //     delete studentDocument._id//added to delete the extra original _id from mongo but careful when planning to save to db again
-                //     return studentDocument
-                // })
-                // return studentDocumentsAdapter.setAll(initialState, newLoadedStudentDocuments)
-                return responseData
-            },
-            providesTags:['studentDocument']
-           
-        }),
-        getStudentDocumentById: builder.query({
-            query: (id) =>{
-                
-                return `/students/studentsParents/studentDocuments/${id}`
-                },
             
+            transformResponse: responseData => {
+                    return responseData
+                },
+            providesTags:['studentDocument']
+                
+            }),
+            getStudentDocumentById: builder.query({
+                query: (id) =>{
+                    
+                    return `/students/studentsParents/studentDocuments/${id}`
+                },
+                
                 // responseHandler: (response) => response.blob(),
-          
-           
-        }),
-        addStudentDocuments: builder.mutation({
-            query:  (formData) => ({
-                url: '/students/studentsParents/studentDocuments/',
-                method: 'POST',
+                
+                
+            }),
+            deleteStudentDocument: builder.mutation({
+                query: ( id ) => ({
+                    url: `/students/studentsParents/studentDocuments/${id}`,
+                    method: 'DELETE',
+                    
+                    
+                    
+                }),
+                invalidatesTags:['studentDocument']
+            }),
+            addStudentDocuments: builder.mutation({
+                query:  (formData) => ({
+                    url: '/students/studentsParents/studentDocuments/',
+                    method: 'POST',
                 body: formData,
                 
             }),
@@ -126,17 +125,6 @@ export const studentDocumentsApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags:['studentDocument']
             // invalidatesTags: (result, error, arg) => [//we re not updating all the list, butonly update the studentsDocument in the cache by using the arg.id
-            //     { type: 'studentsDocument', id: arg.id }
-            // ]
-        }),
-        deleteStudentDocument: builder.mutation({
-            query: ({ id }) => ({
-                url: '/students/studentsParents/studentsDocuments',
-                method: 'DELETE',
-                body: { id }
-            }),
-            invalidatesTags:['studentDocument']
-            // invalidatesTags: (result, error, arg) => [
             //     { type: 'studentsDocument', id: arg.id }
             // ]
         }),
@@ -165,7 +153,7 @@ export const selectStudentDocumentsResult = studentDocumentsApiSlice.endpoints.g
 //     return studentDocumentsResult?.data?.entities[id]
 // }
 
-// creates memoized selector that takes the inpput function selescStudentsDocumentsREsult and gets the data from it which is ids and entities
+// creates memoized selector that takes the inpput function selescStudentDocumentsREsult and gets the data from it which is ids and entities
 const selectStudentDocumentsData = createSelector(selectStudentDocumentsResult,
     studentDocumentsResult => studentDocumentsResult.data // normalized state object with ids & entities
 )
@@ -176,5 +164,5 @@ export const {
     selectAll: selectAllStudentDocuments,
     selectById: selectStudentDocumentById,
     selectIds: selectStudentDocumentIds
-    // Pass in a selector that returns the studentsDocuments slice of state
+    // Pass in a selector that returns the studentDocuments slice of state
 } = studentDocumentsAdapter.getSelectors(state => selectStudentDocumentsData(state) ?? initialState)
