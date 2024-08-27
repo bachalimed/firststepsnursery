@@ -109,7 +109,6 @@
   transform: scale(1.2);
 }
 
-
 .modal {
   background: white;
   padding: 20px;
@@ -136,6 +135,7 @@
   justify-content: flex-end;
   margin-top: 20px;
 }
+
 .ReactModal__Overlay {
   background: rgba(0, 0, 0, 0.5); /* Overlay color */
 }
@@ -150,4 +150,19 @@
   border-radius: 4px;
   width: 80%;
   max-width: 600px;
+}
+
+/* New styles for document viewing */
+.document-image {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 20px 0;
+}
+
+.document-link {
+  display: inline-block;
+  margin: 20px 0;
+  color: blue;
+  text-decoration: underline;
 }

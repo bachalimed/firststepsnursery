@@ -1,32 +1,64 @@
-import React, { useState } from 'react';
-import { useGetStudentDocumentByIdQuery } from './studentDocumentsApiSlice'
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
+import { useGetStudentDocumentByIdQuery } from './studentDocumentsApiSlice';
 
-const ViewDocumentModal = ({ id, isOpen, onClose }) => {
-    const { data: document,isSuccess, isLoading, isError, error } = useGetStudentDocumentByIdQuery(id)
-    if (isLoading) return <div>Loading...</div>;
-    if (isError) return <div>Error loading document</div>
-    if (isSuccess){
-    console.log(id,'id','isopne:', isOpen,'onclose:', onClose, 'document',document)
+Modal.setAppElement('#root'); // Ensure accessibility
+
+const ViewDocumentModal = ({ id, isOpen, onRequestClose }) => {
+    const { data: blob, isLoading, isError, error, isSuccess } = useGetStudentDocumentByIdQuery(id);
+    const [fileUrl, setFileUrl] = useState('');
+
+    useEffect(() => {
+        if (isSuccess && blob) {
+            try {
+                const url = URL.createObjectURL(blob);
+                setFileUrl(url);
+            } catch (error) {
+                console.error('Failed to create object URL:', error);
+            }
+        }
+
+        return () => {
+            if (fileUrl) {
+                URL.revokeObjectURL(fileUrl);
+            }
+        };
+    }, [isSuccess, blob]);
+
+    const handleClose = () => {
+        setFileUrl('');
+        onRequestClose();
+    };
+
     return (
-        <Modal isOpen={isOpen} 
-        onRequestClose={onClose} 
-        
-        contentLabel="View Document">
-            {/* <h2>{document.studentDocumentLabel}</h2> */}
-            {document.file.endsWith('.jpg') || document.file.endsWith('.jpeg') ? (
-    <img src={`${document.file}`}  style={{ width: '100%', height: 'auto' }} />
-) : (
-    <iframe src={`${document.file}`} title="Document Viewer" width="100%" height="500px" frameBorder="0"></iframe>
-)}
-
-            <button onClick={() => window.print()}>Print</button>
-            <a href={`${document.file}`} download>Save to Computer</a>
-            <button onClick={onClose}>Close</button>
+        <Modal
+            isOpen={isOpen}
+            onRequestClose={handleClose}
+            contentLabel="View Document"
+            className="modal"
+            overlayClassName="modal-overlay"
+        >
+            <h2>View Document</h2>
+            {isLoading && <p>Loading...</p>}
+            {isError && <p className="errmsg">Error loading document: {error?.message}</p>}
+            {isSuccess && fileUrl && (
+                <div>
+                    {blob.type.startsWith('image/') ? (
+                        <img src={fileUrl} alt="Document" className="document-image" />
+                    ) : blob.type === 'application/pdf' ? (
+                        <iframe src={fileUrl} title="Document" style={{ width: '100%', height: '600px' }} />
+                    ) : (
+                        <a href={fileUrl} download="document" className="document-link">
+                            Download Document
+                        </a>
+                    )}
+                </div>
+            )}
+            <div className="modal-actions">
+                <button onClick={handleClose}>Close</button>
+            </div>
         </Modal>
     );
-}
-return null;
 };
 
 export default ViewDocumentModal;

@@ -103,29 +103,9 @@ export const studentDocumentsApiSlice = apiSlice.injectEndpoints({
                 return `/students/studentsParents/studentDocuments/${id}`
                 },
             
-            validateStatus: (response, result) => {
-                return response.status === 200 && !result.isError
-            },
+                // responseHandler: (response) => response.blob(),
+          
            
-            transformResponse: responseData => {
-                
-                const newLoadedStudentDocuments = responseData.map(studentDocument => { 
-                    
-                    studentDocument.id = studentDocument._id//changed the _id from mongoDB to id
-                    delete studentDocument._id//added to delete the extra original _id from mongo but careful when planning to save to db again
-                    return studentDocument
-                })
-                return studentDocumentsAdapter.upsertMany(initialState, newLoadedStudentDocuments)
-            },
-            providesTags:['studentsDocument']
-            // providesTags: (result, error, arg) => {
-            //     if (result?.ids) {
-            //         return [
-            //             { type: 'studentsDocument', id: 'LIST' },
-            //             ...result.ids.map(id => ({ type: 'studentsDocument', id }))
-            //         ]
-            //     } else return [{ type: 'studentsDocument', id: 'LIST' }]
-            // }
         }),
         addStudentDocuments: builder.mutation({
             query:  (formData) => ({

@@ -40,8 +40,7 @@ import { useGetAcademicYearsQuery, selectAllAcademicYears } from '../../../AppSe
 const NAME_REGEX= /^[A-z 0-9.-_]{6,20}$/
 
 const StudentDocumentsList = ({student}) => {
-    const [isModalViewOpen, setIsModalViewOpen] = useState(false)
-    console.log('ismodalview start',isModalViewOpen )
+    
     const [selectedDocument, setSelectedDocument] = useState(null)
 const Navigate = useNavigate()
 //get the student details from the passed data
@@ -113,9 +112,9 @@ let updatedListing=[]
     });
 
 
-    console.log(studentDocuments,'returned data docs')
+   //console.log(studentDocuments,'returned data docs')
     
-    console.log(   updatedListing,'returned data listing')
+    //console.log(   updatedListing,'returned data listing')
     
     }
 
@@ -162,11 +161,12 @@ const formData = new FormData()
 
 
 //modal to view document
-console.log('selectedDocument:', selectedDocument);
+const [isModalViewOpen, setIsModalViewOpen] = useState(false)
+
 const handleViewDocument = ( id ) => {
+  setIsModalViewOpen(true);
     console.log(id,'the di idid')
-    setSelectedDocument({ id:id})
-    setIsModalViewOpen(true);
+    setSelectedDocument({ id})//or {id:id})
   };
 
 
@@ -286,6 +286,12 @@ const column =[
                 onUpload={handleUpload}
             />
     
+      <ViewDocumentModal 
+            id={selectedDocument?.id} 
+           
+            isOpen={isModalViewOpen} 
+            onRequestClose={() => setIsModalViewOpen(false)} 
+          />
         
     <div className=' flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200' >
       
@@ -297,17 +303,8 @@ const column =[
       selectableRows
       removableRows
       pageSizeControl
-      
-      
       />
       
-
-     {isModalViewOpen&& (<ViewDocumentModal 
-          id={selectedDocument?.id} 
-         
-          isOpen={isModalViewOpen} 
-          onClose={() => setIsModalViewOpen(false)} 
-        />)}
       <div className="flex justify-end items-center space-x-4">
           
           <button 
@@ -329,6 +326,12 @@ const column =[
       </div>
   
     </div>
+
+
+
+
+
+    
     </>
   //}
   return content
