@@ -1,64 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Modal from 'react-modal';
-import { useGetStudentDocumentByIdQuery } from './studentDocumentsApiSlice';
+import handleDownloadDocument from './StudentDocumentsList'
 
-Modal.setAppElement('#root'); // Ensure accessibility
-
-const ViewDocumentModal = ({ id, isOpen, onRequestClose }) => {
-    const { data: blob, isLoading, isError, error, isSuccess } = useGetStudentDocumentByIdQuery(id);
-    const [fileUrl, setFileUrl] = useState('');
-
-    useEffect(() => {
-        if (isSuccess && blob) {
-            try {
-                const url = URL.createObjectURL(blob);
-                setFileUrl(url);
-            } catch (error) {
-                console.error('Failed to create object URL:', error);
-            }
-        }
-
-        return () => {
-            if (fileUrl) {
-                URL.revokeObjectURL(fileUrl);
-            }
-        };
-    }, [isSuccess, blob]);
-
-    const handleClose = () => {
-        setFileUrl('');
-        onRequestClose();
-    };
-
-    return (
-        <Modal
-            isOpen={isOpen}
-            onRequestClose={handleClose}
-            contentLabel="View Document"
-            className="modal"
-            overlayClassName="modal-overlay"
-        >
-            <h2>View Document</h2>
-            {isLoading && <p>Loading...</p>}
-            {isError && <p className="errmsg">Error loading document: {error?.message}</p>}
-            {isSuccess && fileUrl && (
-                <div>
-                    {blob.type.startsWith('image/') ? (
-                        <img src={fileUrl} alt="Document" className="document-image" />
-                    ) : blob.type === 'application/pdf' ? (
-                        <iframe src={fileUrl} title="Document" style={{ width: '100%', height: '600px' }} />
-                    ) : (
-                        <a href={fileUrl} download="document" className="document-link">
-                            Download Document
-                        </a>
-                    )}
-                </div>
-            )}
-            <div className="modal-actions">
-                <button onClick={handleClose}>Close</button>
-            </div>
-        </Modal>
-    );
+const ViewDocumentModal = ({ isOpen, onRequestClose, documentUrl }) => {
+  return (
+    <Modal
+      isOpen={isOpen}
+      onRequestClose={onRequestClose}
+      contentLabel="View Document"
+      className="modal"
+      overlayClassName="overlay"
+    >
+      <button onClick={onRequestClose} className="close-btn">Close</button>
+      {documentUrl && (
+        <>
+          {/* Handling PDFs */}
+          {documentUrl.endsWith('.pdf') ? handleDownloadDocument(documentUrl) : (
+            <img
+              src={documentUrl}
+              alt="Document"
+              style={{ width: '100%', height: 'auto' }}
+            />
+          )}
+        </>
+      )}
+    </Modal>
+  );
 };
 
 export default ViewDocumentModal;

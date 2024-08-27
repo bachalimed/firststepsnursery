@@ -1,5 +1,6 @@
 
 import React from 'react'
+import axios from 'axios';
 import StudentsParents from '../../StudentsParents'
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
 import { IoCheckmarkSharp, IoCheckmarkDoneOutline  } from "react-icons/io5";
@@ -34,7 +35,8 @@ import { IoDocumentAttachOutline } from "react-icons/io5";
 import { useGetStudentDocumentsByYearByIdQuery } from './studentDocumentsApiSlice'
 import ViewDocumentModal from './ViewDocumentModal';
 import { useGetAcademicYearsQuery, selectAllAcademicYears } from '../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
-
+import {jwtDecode} from 'jwt-decode'
+import { selectCurrentToken } from "../../../auth/authSlice"
 //constrains on inputs when creating new user
 
 const NAME_REGEX= /^[A-z 0-9.-_]{6,20}$/
@@ -158,17 +160,51 @@ const formData = new FormData()
     console.error('Error uploading documents:', error);
   }
 };
+const token = useSelector(selectCurrentToken)
+//console.log(token,'token')
 
+const apiClient = axios.create({
+  baseURL: 'http://localhost:3500',
+  headers: {
+      'Authorization': `Bearer ${token}`
+  }
+});
 
-//modal to view document
-const [isModalViewOpen, setIsModalViewOpen] = useState(false)
+const [viewModalOpen, setViewModalOpen] = useState(false);
+const [documentToView, setDocumentToView] = useState(null);
 
-const handleViewDocument = ( id ) => {
-  setIsModalViewOpen(true);
-    console.log(id,'the di idid')
-    setSelectedDocument({ id})//or {id:id})
-  };
+const handleViewDocument = async (id) => {
+  try {
+    const response = await apiClient.get(`/students/studentsParents/studentDocuments/${id}`, {
+      responseType: 'blob',
+    });
 
+    const contentType = response.headers['content-type'];
+    const blob = new Blob([response.data], { type: contentType });
+    const url = window.URL.createObjectURL(blob);
+      if (contentType === 'application/pdf') {
+      // Handle PDF download
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `document_${id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      } else {
+
+      setDocumentToView(url);
+      setViewModalOpen(true);
+    }
+  } catch (error) {
+    console.error('Error viewing the document:', error);
+  }
+};
+const handleDownloadDocument = async (url) => {
+  
+      
+     
+ 
+};
 
 useEffect(() => {
     if (uploadIsSuccess) {//if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
@@ -285,13 +321,12 @@ const column =[
                 year={studentDocumentYear}
                 onUpload={handleUpload}
             />
-    
-      <ViewDocumentModal 
-            id={selectedDocument?.id} 
-           
-            isOpen={isModalViewOpen} 
-            onRequestClose={() => setIsModalViewOpen(false)} 
-          />
+     <ViewDocumentModal
+      isOpen={viewModalOpen}
+      onRequestClose={() => setViewModalOpen(false)}
+      documentUrl={documentToView}
+    />
+     
         
     <div className=' flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200' >
       
