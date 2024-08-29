@@ -1,28 +1,33 @@
-import { useGetUsersQuery } from './usersApiSlice'
+
+import {
+	useGetUsersQuery,
+  	useDeleteUserMutation,
+	selectAllUsers } from './usersApiSlice'
 import DataTable from 'react-data-table-component'
-import { useSelector } from 'react-redux'
-import { selectAllUsers } from "./usersApiSlice"//use the memoized selector 
 import { useState } from 'react'
-import { useDeleteUserMutation } from './usersApiSlice'
+import { useSelector } from 'react-redux'
+import useAuth from "../../../hooks/useAuth"
 import { Link , useNavigate} from 'react-router-dom'
+import UsersManagement from '../UsersManagement'
+
 import { HiOutlineSearch } from 'react-icons/hi'
 import { FiEdit, FiDelete  } from 'react-icons/fi'
 import { RiDeleteBin6Line } from 'react-icons/ri'
-import useAuth from "../../../hooks/useAuth"
-import UsersManagement from '../UsersManagement'
 import { ImProfile } from 'react-icons/im'
 import { LiaMaleSolid, LiaFemaleSolid  } from "react-icons/lia";
-
-
-import { selectParentById } from '../../Students/StudentsAndParents/Parents/parentsApiSlice'
 import { IoShieldCheckmarkOutline, IoShieldOutline  } from "react-icons/io5";
-
-
+ 
 
 const UsersList = () => {
-//get several things from the query
+	//initialise state variables and hooks
+	const Navigate = useNavigate()
+	
+	const{canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
+	const [selectedRows, setSelectedRows] = useState([])
+	const [searchQuery, setSearchQuery] = useState('')
+//import users using RTK query
     const {
-        data: users,//the data is deconstructing the  into users
+        data: users,//deconstructing data into users
         isLoading,
         isSuccess,
         isError,
@@ -39,17 +44,14 @@ const UsersList = () => {
       error: delerror
   }] = useDeleteUserMutation()
  
-const Navigate = useNavigate()
+//normally we will remove the prefetch since we wont need all users for any login and we import rtk here
     //get the users fromthe state
     const allUsers = useSelector(state => selectAllUsers(state))
     //prepare the permission variables
-    const{canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
 
   // State to hold selected rows
-  const [selectedRows, setSelectedRows] = useState([])
 
   //state to hold the search query
-    const [searchQuery, setSearchQuery] = useState('')
    
 
     //the serach result data

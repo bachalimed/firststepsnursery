@@ -16,7 +16,7 @@ const DashboardHeader = () => {
   const content =(
     
     <header >
-        <div className="bg-white h-14 px-10 flex justify-between items-center ">
+        <div className="bg-white h-18 px-10 flex justify-between items-center ">
         <AcademicYearsSelection/>
         
         <p className="">

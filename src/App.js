@@ -16,10 +16,11 @@ import NewStudentForm from './features/Students/StudentsAndParents/Students/NewS
 import StudentDetails from './features/Students/StudentsAndParents/Students/StudentDetails'
 import StudentDocuments from './features/Students/StudentsAndParents/Students/StudentDocuments'
 import EditStudentForm from './features/Students/StudentsAndParents/Students/EditStudentForm'
-import StudentDocumentsListsList from './features/AppSettings/StudentsSet/StudentDocumentLists/StudentDocumentsListsList'
+import StudentDocumentsListsList from './features/AppSettings/StudentsSet/StudentDocumentsLists/StudentDocumentsListsList'
 import StudentDocumentsList from './features/Students/StudentsAndParents/Students/StudentDocumentsList'
 import StudentDocumentsForm from './features/Students/StudentsAndParents/Students/StudentDocumentsList'
-import NewStudentDocumentsListForm from './features/AppSettings/StudentsSet/StudentDocumentLists/NewStudentDocumentsListForm'
+import NewStudentDocumentsListForm from './features/AppSettings/StudentsSet/StudentDocumentsLists/NewStudentDocumentsListForm'
+import EditStudentDocumentsList from './features/AppSettings/StudentsSet/StudentDocumentsLists/EditStudentDocumentsList'
 
 import NewParentForm from './features/Students/StudentsAndParents/Parents/NewParentForm'
 import ParentDetails from './features/Students/StudentsAndParents/Parents/ParentDetails'
@@ -136,7 +137,7 @@ const App = () => {
 									<Route path="studentDocumentsList/:id/" element={<StudentDocuments />}/>												
 									<Route path="studentDocuments/upload/:id/" element={<StudentDocumentsForm />}/>												
 									
-										<Route path="studentDetails/:id/" element={<StudentDetails/>}/>
+									<Route path="studentDetails/:id/" element={<StudentDetails/>}/>
 									<Route path="edit/:id/" element={<EditStudent/>}/>
 									<Route path="editParent/:id/" element={<EditParent/>}/>
 																					
@@ -259,6 +260,7 @@ const App = () => {
 								<Route index element={<StudentsSet />} />
 									<Route path="studentDocumentsListsList/" element={<StudentDocumentsListsList />} /> 									
 									<Route path="newStudentDocumentsList" element={<NewStudentDocumentsListForm />}/>
+									<Route path="studentDocumentsList/edit/:id" element={<EditStudentDocumentsList />}/>
 
 
 								</Route> {/* end of studentsSet route */}

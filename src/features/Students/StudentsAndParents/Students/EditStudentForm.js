@@ -1,7 +1,5 @@
 import React from 'react'
 import StudentsParents from '../../StudentsParents'
-
-
 import { useState, useEffect } from "react"
 import { useUpdateStudentMutation } from "./studentsApiSlice"
 import { useNavigate } from "react-router-dom"
@@ -24,19 +22,22 @@ import { selectAllAcademicYears } from '../../../AppSettings/AcademicsSet/Academ
 
 
 const EditStudentForm = ({student}) => {
-  console.log('hello', student)
-  const [updateStudent, {//an object that calls the status when we execute the newUserForm function
+ //initialising state variables and hooks
+ const Navigate = useNavigate()
+ const [selectedYear, setSelectedYear] = useState('')
+ const academicYears = useSelector(selectAllAcademicYears)// to be used to show all academic years
+  
+ const{userId,canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
+ 
+  //initialising the function
+  const [updateStudent, {
     isLoading,
     isSuccess,
     isError,
     error
 }] = useUpdateStudentMutation()//it will not execute the mutation nownow but when called
-const [selectedYear, setSelectedYear] = useState('')
-const Navigate = useNavigate()
-const academicYears = useSelector(selectAllAcademicYears)// to be used to show all academic years
 
 //prepare the permission variables
-const{userId,canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
 
  //this to be used to only select current year from check box
  const selectedAcademicYear = useSelectedAcademicYear()

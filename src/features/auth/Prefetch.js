@@ -8,6 +8,7 @@ import { studentsApiSlice } from '../Students/StudentsAndParents/Students/studen
 import { parentsApiSlice } from '../Students/StudentsAndParents/Parents/parentsApiSlice'
 import { tasksApiSlice } from '../Desk/Tasks/tasksApiSlice'
 import { academicYearsApiSlice } from '../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
+import { studentDocumentsListsApiSlice } from '../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice'
 import { useEffect, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 
@@ -26,7 +27,8 @@ const Prefetch = () => {
 
     useEffect(() => {//will run when the component mounts
         console.log('subscribing')
-        const users = store.dispatch(usersApiSlice.endpoints.getUsers.initiate())//manual subscription to each endpoint by querying to make them remain active while we are in the protected pages even after the 60second default
+        //const users = store.dispatch(usersApiSlice.endpoints.getUsers.initiate())//manual subscription to each endpoint by querying to make them remain active while we are in the protected pages even after the 60second default
+        //const studentDocumentsLists = store.dispatch(studentDocumentsListsApiSlice.endpoints.getStudentDocumentsLists.initiate())
         //const students = store.dispatch(studentsApiSlice.endpoints.getStudents.initiate())
         //const parents = store.dispatch(parentsApiSlice.endpoints.getParents.initiate())
         //const employees = store.dispatch(employeesApiSlice.endpoints.getEmployees.initiate())
@@ -35,7 +37,8 @@ const Prefetch = () => {
 
         return () => {
             console.log('unsubscribing')
-            users.unsubscribe()
+            //users.unsubscribe()
+            //studentDocumentsLists.unsubscribe()
             //students.unsubscribe()
             //parents.unsubscribe()
             //employees.unsubscribe()

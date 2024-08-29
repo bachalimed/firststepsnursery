@@ -18,8 +18,8 @@ content = (
     <div className="flex bg-gray-300 justify-left  ">  
       <ul className='flex gap-2 px-2 py-2 bg-gray-300'>
         <Link to={'/settings/studentsSet/studentDocumentsListsList'}><li >Student Documents List</li></Link>
-        <Link to={'/settings/studentsSet/'}><li >Parents</li></Link>
-        <Link to={'/settings/studentsSet/'}><li >New Student</li></Link>
+        <Link to={'/settings/studentsSet/'}><li >Parentblqlqllqs</li></Link>
+        <Link to={'/settings/studentsSet/'}><li >other</li></Link>
       </ul>
     </div>
   )

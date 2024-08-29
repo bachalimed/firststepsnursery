@@ -4,6 +4,7 @@ import {
 } from "@reduxjs/toolkit";
 import { apiSlice } from '../../../../app/api/apiSlice'
 
+
 // Initialize the entity adapter
 const studentDocumentsListsAdapter = createEntityAdapter({})//we can iterate on the id but not on the entities
 // Initial state using the adapter
@@ -27,24 +28,24 @@ export const studentDocumentsListsApiSlice = apiSlice.injectEndpoints({
                     delete studentDocumentsList._id//added to delete the extra original _id from mongo but careful when planning to save to db again
                     return studentDocumentsList
                 })
-                return studentDocumentsListsAdapter.upsertMany(initialState, newLoadedStudentDocumentsLists)
+                return studentDocumentsListsAdapter.setAll(initialState, newLoadedStudentDocumentsLists)
             },
             providesTags:['studentDocumentsList']
         }),
-        addNewStudentDocumentsList: builder.mutation({
+        updateStudentDocumentsList: builder.mutation({
             query: initialStudentDocumentsListData => ({
                 url: '/settings/studentsSet/studentDocumentsLists/',
-                method: 'POST',
+                method: 'PATCH',
                 body: {
                     ...initialStudentDocumentsListData,
                 }
             }),
             invalidatesTags: ['studentDocumentsList']
         }),
-        updateStudentDocumentsList: builder.mutation({
+        addNewStudentDocumentsList: builder.mutation({
             query: initialStudentDocumentsListData => ({
                 url: '/settings/studentsSet/studentDocumentsLists/',
-                method: 'PATCH',
+                method: 'POST',
                 body: {
                     ...initialStudentDocumentsListData,
                 }

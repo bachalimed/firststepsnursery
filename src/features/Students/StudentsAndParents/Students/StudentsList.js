@@ -23,13 +23,14 @@ import { IoDocumentAttachOutline } from "react-icons/io5";
 
 
 const StudentsList = () => {
-//this is for the academic year selection
-  const selectedAcademicYear = useSelectedAcademicYear()
-  const [selectedYear, setSelectedYear]=useState('')
-  
+  //this is for the academic year selection
   const Navigate = useNavigate()
   const Dispatch = useDispatch()
-
+  
+  const [selectedYear, setSelectedYear]=useState('')
+  const{canEdit, isAdmin, canDelete, canCreate, status2}=useAuth()
+  
+  const selectedAcademicYear = useSelectedAcademicYear()
 
 
   const {
@@ -98,7 +99,6 @@ let filteredStudents = []
 
 //import students
 
-const{canEdit, isAdmin, canDelete, canCreate, status2}=useAuth()
 // console.log('in student list canEdit', canEdit)
 // console.log('canDelete', canDelete)
 // console.log('canAdd', canAdd)
@@ -106,10 +106,6 @@ const{canEdit, isAdmin, canDelete, canCreate, status2}=useAuth()
 // console.log('isParent', isParent)
 // console.log('status2', status2)
 
-const handleAllStudents = (e)=>{
-
-}
-   
 
 
 
@@ -158,12 +154,6 @@ const toDuplicate = selectedRows[-1]
   }
 
   
-
-
-
-
- 
-
 
 const column =[
   { 
@@ -273,58 +263,58 @@ if (isError) {
 }
  //if (isSuccess){
 
- content = 
+content = 
   <>
 
-  <StudentsParents/>
-      <div className='relative h-10 mr-2 '>
+  	<StudentsParents/>
+	<div className='relative h-10 mr-2 '>
 				<HiOutlineSearch fontSize={20} className='text-gray-400 absolute top-1/2 -translate-y-1/2 left-3'/>
 				<input type='text'  value={searchQuery} onChange= {handleSearch} className='text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4'/>
-			</div>
-  <div className=' flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200' >
+	</div>
+  	<div className=' flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200' >
     
    
-   <DataTable
-    columns={column}
-    data={filteredStudents}
-    pagination
-    selectableRows
-    removableRows
-    pageSizeControl
-    onSelectedRowsChange={handleRowSelected}
-    selectableRowsHighlight
-    >
-	</DataTable>
-	<div className="flex justify-end items-center space-x-4">
+		<DataTable
+		columns={column}
+		data={filteredStudents}
+		pagination
+		selectableRows
+		removableRows
+		pageSizeControl
+		onSelectedRowsChange={handleRowSelected}
+		selectableRowsHighlight
+		>
+	  </DataTable>
+		<div className="flex justify-end items-center space-x-4">
         
-        <button 
-            className=" px-4 py-2 bg-green-500 text-white rounded"
-            onClick={handleDetailsSelected}
-            disabled={selectedRows.length !== 1} // Disable if no rows are selected
-          	>
-            Student Details
-          </button>
+        	<button 
+				className=" px-4 py-2 bg-green-500 text-white rounded"
+				onClick={handleDetailsSelected}
+				disabled={selectedRows.length !== 1} // Disable if no rows are selected
+				>
+				Student Details
+          	</button>
       
 		
-        <button 
-			className="px-3 py-2 bg-yellow-400 text-white rounded"
-			onClick={handleDuplicateSelected}
-			disabled={selectedRows.length !== 1} // Disable if no rows are selected
-      hidden={!canCreate}
+        	<button 
+				className="px-3 py-2 bg-yellow-400 text-white rounded"
+				onClick={handleDuplicateSelected}
+				disabled={selectedRows.length !== 1} // Disable if no rows are selected
+				hidden={!canCreate}
 			>
 			Duplicate Selected
-		</button>
-     {(isAdmin&&<button 
-			className="px-3 py-2 bg-gray-400 text-white rounded"
-			onClick={handleDuplicateSelected}
-			disabled={selectedRows.length !== 1} // Disable if no rows are selected
-      hidden={!canCreate}
+			</button>
+     		{(isAdmin&&<button 
+				className="px-3 py-2 bg-gray-400 text-white rounded"
+				onClick={handleDuplicateSelected}
+				disabled={selectedRows.length !== 1} // Disable if no rows are selected
+      			hidden={!canCreate}
 			>
 			All
-		</button>)}
-	</div>
+			</button>)}
+		</div>
 
-  </div>
+  	</div>
   </>
 //}
 return content
