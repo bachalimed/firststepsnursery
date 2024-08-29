@@ -1,6 +1,6 @@
 
 
-import {  useGetStudentsQuery, useGetStudentsByYearQuery } from "./studentsApiSlice"
+import {  useGetStudentsQuery, useGetStudentsByYearQuery, useDeleteStudentMutation } from "./studentsApiSlice"
 import { HiOutlineSearch } from 'react-icons/hi'
 import StudentsParents from "../../StudentsParents"
 import DataTable from 'react-data-table-component'
@@ -20,7 +20,7 @@ import { LiaMaleSolid, LiaFemaleSolid  } from "react-icons/lia";
 import { useDispatch } from "react-redux"
 import { setSomeStudents, setStudents, currentStudentsList } from "./studentsSlice"
 import { IoDocumentAttachOutline } from "react-icons/io5";
-
+import DeletionConfirmModal from '../../../../Components/Shared/Modals/DeletionConfirmModal'
 
 const StudentsList = () => {
   //this is for the academic year selection
@@ -31,7 +31,8 @@ const StudentsList = () => {
   const{canEdit, isAdmin, canDelete, canCreate, status2}=useAuth()
   
   const selectedAcademicYear = useSelectedAcademicYear()
-
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
+  const [idStudentToDelete, setIdStudentToDelete] = useState(null); // State to track which document to delete
 
   const {
     data: students,//the data is renamed students
@@ -45,6 +46,32 @@ const StudentsList = () => {
     refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
     refetchOnMountOrArgChange: true//refetch when we remount the component
   })
+
+  //initialising the delete Mutation
+  const [deleteStudent, {
+    isLoading:isDelLoading,
+    isSuccess: isDelSuccess,
+    isError: isDelError,
+    error: delerror,
+  }] = useDeleteStudentMutation()
+
+  // Function to handle the delete button click
+  const onDeleteStudentClicked = (id) => {
+    setIdStudentToDelete(id); // Set the document to delete
+    setIsDeleteModalOpen(true); // Open the modal
+  };
+
+  // Function to confirm deletion in the modal
+  const handleConfirmDelete = async () => {
+    await deleteStudent({ id: idStudentToDelete });
+    setIsDeleteModalOpen(false); // Close the modal
+  };
+
+  // Function to close the modal without deleting
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setIdStudentToDelete(null);
+  };
 
 //this ensures teh selected year is chosen before running hte useeffect it is working perfectly to dispaptch the selected year
   useEffect(() => {
@@ -93,20 +120,6 @@ let filteredStudents = []
 })
 }
 
-//console.log('the studentsList after if ', studentsList)
-//console.log('the filteredStudents afyter if ', filteredStudents)
-
-
-//import students
-
-// console.log('in student list canEdit', canEdit)
-// console.log('canDelete', canDelete)
-// console.log('canAdd', canAdd)
-// console.log('canCreate', canCreate)
-// console.log('isParent', isParent)
-// console.log('status2', status2)
-
-
 
 
 const handleSearch = (e) => {
@@ -117,13 +130,7 @@ const handleSearch = (e) => {
     setSelectedRows(state.selectedRows)
     //console.log('selectedRows', selectedRows)
   }
-  
 
-//handle delete
-
-const handleDelete=()=>{
-console.log('deleting')
-}
   // Handler for deleting selected rows
   const handleDeleteSelected = () => {
     console.log('Selected Rows to delete:', selectedRows)
@@ -246,9 +253,9 @@ sortable:true
       {canEdit?(<button  className="text-yellow-400" onClick={() => Navigate(`/students/studentsParents/edit/${row.id}`)}  > 
       <FiEdit fontSize={20}/> 
       </button>):null}
-      {canDelete?(<button className="text-red-500"  onClick={() => handleDelete(row.id)}>
+      {canDelete&&!isDelLoading&&(<button className="text-red-500"  onClick={() => onDeleteStudentClicked(row.id)}>
         <RiDeleteBin6Line fontSize={20}/>
-      </button>):null}
+      </button>)}
     </div>
   ),
   ignoreRowClick: true,
@@ -315,6 +322,11 @@ content =
 		</div>
 
   	</div>
+    <DeletionConfirmModal
+  isOpen={isDeleteModalOpen}
+  onClose={handleCloseDeleteModal}
+  onConfirm={handleConfirmDelete}
+/>
   </>
 //}
 return content

@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import useAuth from '../../../../hooks/useAuth'
 import { FiEdit } from "react-icons/fi"
 import StudentsSet from "../../StudentsSet"
-import DeletionConfirmModal from './DeletionConfirmModal'
+import DeletionConfirmModal from '../../../../Components/Shared/Modals/DeletionConfirmModal'
 
 import { RiDeleteBin6Line } from "react-icons/ri"
 import { HiOutlineSearch } from 'react-icons/hi'
@@ -23,7 +23,7 @@ const StudentDocumentsListsList = () => {
   const [selectedRows, setSelectedRows] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [deleteModalOpen, setDeleteModalOpen] = useState(false); // State for modal
-  const [docToDelete, setDocToDelete] = useState(null); // State to track which document to delete
+  const [idDocToDelete, setIdDocToDelete] = useState(null); // State to track which document to delete
 
   //RTK query studentDocumentsLists import  
   const {
@@ -46,20 +46,20 @@ const StudentDocumentsListsList = () => {
 
 // Function to handle the delete button click
   const onDeleteStudentDocumentsListClicked = (id) => {
-    setDocToDelete(id); // Set the document to delete
+    setIdDocToDelete(id); // Set the document to delete
     setDeleteModalOpen(true); // Open the modal
   };
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    await deleteStudentDocumentsList({ id: docToDelete });
+    await deleteStudentDocumentsList({ id: idDocToDelete });
     setDeleteModalOpen(false); // Close the modal
   };
 
   // Function to close the modal without deleting
   const handleCloseModal = () => {
     setDeleteModalOpen(false);
-    setDocToDelete(null);
+    setIdDocToDelete(null);
   };
 
 

@@ -4,18 +4,18 @@ import Modal from 'react-modal'; // You need to install react-modal: npm install
 
 Modal.setAppElement('#root'); // This is to ensure accessibility
 
-const UploadDocumentFormModal = ({ isOpen, onRequestClose, studentId, year, onUpload, updatedListing }) => {
+const UploadDocumentFormModal = ({ isOpen, onRequestClose, studentId, year, onUpload, studentDocumentsListing }) => {
     const [studentDocumentLabel, setStudentDocumentLabel] = useState('');
     const [studentDocumentReference, setStudentDocumentType] = useState('');
-    const [studentDocumentYear, serStudentDocumentYear] =useState(year)
+    const [studentDocumentYear, setStudentDocumentYear] =useState(year)
     const [file, setFile] = useState(null);
 
+    //console.log('the updated listing in teh modal',studentDocumentsListing )
     const handleUpload = () => {
         if (!file) {
             alert('Please select a file to upload.');
             return;
         }
-
         onUpload({ studentId, studentDocumentYear, studentDocumentLabel, studentDocumentReference, file });
         onRequestClose();
     };
@@ -24,7 +24,7 @@ const UploadDocumentFormModal = ({ isOpen, onRequestClose, studentId, year, onUp
 
 
     return (
-        <Modal 
+       <Modal 
             isOpen={isOpen} 
             onRequestClose={onRequestClose}
             contentLabel="Upload Document"
@@ -46,8 +46,8 @@ const UploadDocumentFormModal = ({ isOpen, onRequestClose, studentId, year, onUp
                     value={studentDocumentReference} 
                     onChange={(e) => setStudentDocumentType(e.target.value)}
                 >    <option value="">Select Type</option>
-                 {updatedListing.map((doc)=>(
-                    <option key ={doc.documentReference} value={doc.documentReference}>{doc.documentTitle}</option>
+                 {Array.isArray(studentDocumentsListing) && studentDocumentsListing.map((doc) => (//will not show the docs where we have studetndocumentid toavoid uploading same document title
+                    (!doc.studentDocumentId&&<option key ={doc.documentReference} value={doc.documentReference}>{doc.documentTitle}</option>)
                     ))}
                 </select>
             </label>

@@ -102,7 +102,7 @@ if (yearIsSuccess){
 
         const [academicYear, setAcademicYear] = useState('')
         const [studentYears, setStudentYears] = useState([])
-        const [studentJointFamily, setStudentJointFamily] = useState('')
+        const [studentJointFamily, setStudentJointFamily] = useState(true)
         const [studentPhoto, setStudentPhoto] = useState({})
         
         const [studentMother, setStudentMother] = useState('')
@@ -163,7 +163,7 @@ if (yearIsSuccess){
             setStudentYears('')//will be true when the username is validated
             setStudentMother('')
             setStudentFather('')
-            setStudentJointFamily('')
+            setStudentJointFamily(true)
             setGardienFirstName('')
             setgardienMiddleName('')
             setGardienLastName('')

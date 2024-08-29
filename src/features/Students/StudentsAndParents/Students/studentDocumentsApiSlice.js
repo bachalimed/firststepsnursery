@@ -4,12 +4,11 @@ import {
 } from "@reduxjs/toolkit";
 import { apiSlice } from "../../../../app/api/apiSlice"
 const studentDocumentsAdapter = createEntityAdapter({})
-
 const initialState = studentDocumentsAdapter.getInitialState()
 
 export const studentDocumentsApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        getStudentDocuments: builder.query({
+        getStudentDocuments: builder.query({//this should be done with studetndocumentslists apiand not this one but it is ok
             query: () => '/students/studentsParents/studentDocuments/',//as defined in server.js
             validateStatus: (response, result) => {
                 return response.status === 200 && !result.isError
@@ -69,23 +68,23 @@ export const studentDocumentsApiSlice = apiSlice.injectEndpoints({
                         //     } else return [{ type: 'studentsDocument', id: 'LIST' }]
                         // }
                     }),
-            getStudentDocumentsByYearById: builder.query({
-            query: (params) =>{
-                const queryString = new URLSearchParams(params).toString() 
-                return `/students/studentsParents/studentDocuments?${queryString}`
-            },
+            // getStudentDocumentsByYearById: builder.query({
+            // query: (params) =>{
+            //     const queryString = new URLSearchParams(params).toString() 
+            //     return `/students/studentsParents/studentDocuments?${queryString}`
+            // },
             
-            validateStatus: (response, result) => {
-                return response.status === 200 && !result.isError
-            },
+            // validateStatus: (response, result) => {
+            //     return response.status === 200 && !result.isError
+            // },
             
             
-            transformResponse: responseData => {
-                    return responseData
-                },
-            providesTags:['studentDocument']
+            // transformResponse: responseData => {
+            //         return responseData
+            //     },
+            // providesTags:['studentDocument']
                 
-            }),
+            // }),
             getStudentDocumentById: builder.query({
                 query: (id) =>{
                     
@@ -97,15 +96,15 @@ export const studentDocumentsApiSlice = apiSlice.injectEndpoints({
                 
             }),
             deleteStudentDocument: builder.mutation({
-                query: ( id ) => ({
-                    url: `/students/studentsParents/studentDocuments/${id}`,
+                query: ( {id }) => ({
+                    url: `/students/studentsParents/studentDocuments/`,
                     method: 'DELETE',
-                    
-                    
+                    body: {id},
                     
                 }),
                 invalidatesTags:['studentDocument']
             }),
+           
             addStudentDocuments: builder.mutation({
                 query:  (formData) => ({
                     url: '/students/studentsParents/studentDocuments/',
@@ -137,7 +136,7 @@ export const {
     useUpdateStudentDocumentMutation,
     useDeleteStudentDocumentMutation,
     useGetStudentDocumentsByYearQuery,
-    useGetStudentDocumentsByYearByIdQuery,
+    //useGetStudentDocumentsByYearByIdQuery,
     useGetStudentDocumentByIdQuery,
 } = studentDocumentsApiSlice
 
