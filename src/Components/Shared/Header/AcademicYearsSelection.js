@@ -13,8 +13,8 @@ import { useSelectedAcademicYear } from "../../../hooks/useSelectedAcademicYears
 
 const AcademicYearsSelection = () => {
   const dispatch = useDispatch()
-//const listOfAcademicYears = useSelector(state => selectAllAcademicYears(state))//this is original
-const academicYears = useSelector(selectAllAcademicYears)//this works
+//const listOfAcademicYears = useSelector(state => selectAllAcademicYears(state))//this is original but not working if we did not use the query in the list
+const academicYears = useSelector(selectAllAcademicYears)//this works because prefetch?
 const [defaultAcademicYearId, setDefaultAcademicYearId] = useState('');
 
 const getCurrentAcademicYear = () => {

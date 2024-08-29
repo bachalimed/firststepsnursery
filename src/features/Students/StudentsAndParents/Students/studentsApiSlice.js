@@ -23,7 +23,7 @@ export const studentsApiSlice = apiSlice.injectEndpoints({
                     delete student._id//added to delete the extra original _id from mongo but careful when planning to save to db again
                     return student
                 })
-                return studentsAdapter.upsertMany(initialState, newLoadedStudents)
+                return studentsAdapter.setAll(initialState, newLoadedStudents)
             },
             providesTags:['student']
             // providesTags: (result, error, arg) => {

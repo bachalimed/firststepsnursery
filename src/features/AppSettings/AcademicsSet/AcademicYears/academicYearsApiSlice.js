@@ -38,14 +38,15 @@ export const academicYearsApiSlice = apiSlice.injectEndpoints({
                return academicYearsAdapter.setAll(initialState, sortedList)//loaded the academicYears into academicYearsadapter, setAll is responsible of creating ids and entities
              
             },
-            providesTags: (result, error, arg) => {
-                if (result?.ids) {
-                    return [
-                        { type: 'AcademicYear', id: 'LIST' },
-                        ...result.ids.map(id => ({ type: 'AcademicYear', id }))
-                    ]
-                } else return [{ type: 'AcademicYear', id: 'LIST' }]
-            }, 
+            providesTags:['academicYear'],
+            // providesTags: (result, error, arg) => {
+            //     if (result?.ids) {
+            //         return [
+            //             { type: 'AcademicYear', id: 'LIST' },
+            //             ...result.ids.map(id => ({ type: 'AcademicYear', id }))
+            //         ]
+            //     } else return [{ type: 'AcademicYear', id: 'LIST' }]
+            // }, 
         }),
         addNewAcademicYear: builder.mutation({
             query: initialAcademicYearData => ({
@@ -55,9 +56,10 @@ export const academicYearsApiSlice = apiSlice.injectEndpoints({
                     ...initialAcademicYearData,
                 }
             }),
-            invalidatesTags: [//forces the cache in RTK query to update
-                { type: 'AcademicYear', id: "LIST" }//the academicYear list will be unvalidated and updated
-            ]
+            invalidatesTags:['academicYear'],
+            // invalidatesTags: [//forces the cache in RTK query to update
+                // { type: 'AcademicYear', id: "LIST" }//the academicYear list will be unvalidated and updated
+            // ]
         }),
         updateAcademicYear: builder.mutation({
             query: initialAcademicYearData => ({
@@ -67,9 +69,10 @@ export const academicYearsApiSlice = apiSlice.injectEndpoints({
                     ...initialAcademicYearData,
                 }
             }),
-            invalidatesTags: (result, error, arg) => [//we re not updating all the list, butonly update the academicYear in the cache by using the arg.id
-                { type: 'AcademicYear', id: arg.id }
-            ]
+            invalidatesTags:['academicYear'],
+            // invalidatesTags: (result, error, arg) => [//we re not updating all the list, butonly update the academicYear in the cache by using the arg.id
+            //     { type: 'AcademicYear', id: arg.id }
+            // ]
         }),
         deleteAcademicYear: builder.mutation({
             query: ({ id }) => ({
@@ -77,9 +80,10 @@ export const academicYearsApiSlice = apiSlice.injectEndpoints({
                 method: 'DELETE',
                 body: { id }
             }),
-            invalidatesTags: (result, error, arg) => [
-                { type: 'AcademicYear', id: arg.id }
-            ]
+            invalidatesTags:['academicYear'],
+            // invalidatesTags: (result, error, arg) => [
+            //     { type: 'AcademicYear', id: arg.id }
+            // ]
         }),
     }),
 })

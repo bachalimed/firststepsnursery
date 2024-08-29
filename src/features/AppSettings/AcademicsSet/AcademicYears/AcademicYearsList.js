@@ -1,24 +1,16 @@
 
 
-import { HiOutlineSearch } from 'react-icons/hi'
-
 import DataTable from 'react-data-table-component'
 import { useEffect, useState } from "react"
-import { Link } from 'react-router-dom'
+
 import { useNavigate } from "react-router-dom"
-import { ImProfile } from "react-icons/im"
 import { FiEdit } from "react-icons/fi"
 import { RiDeleteBin6Line } from "react-icons/ri"
 import { setAcademicYears } from "./academicYearsSlice"
 import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYears"
 import useAuth from '../../../../hooks/useAuth'
-
-
 import { useGetAcademicYearsQuery} from "./academicYearsApiSlice"
-
-
 import { useSelector, useDispatch } from 'react-redux'
-
 import AcademicsSet from "../../AcademicsSet"
 
 const AcademicYearsList = () => {

@@ -26,7 +26,7 @@ const Prefetch = () => {
 
     useEffect(() => {//will run when the component mounts
         console.log('subscribing')
-        const users = store.dispatch(usersApiSlice.endpoints.getUsers.initiate())//manual subscription to each endpoint by querying
+        const users = store.dispatch(usersApiSlice.endpoints.getUsers.initiate())//manual subscription to each endpoint by querying to make them remain active while we are in the protected pages even after the 60second default
         //const students = store.dispatch(studentsApiSlice.endpoints.getStudents.initiate())
         //const parents = store.dispatch(parentsApiSlice.endpoints.getParents.initiate())
         //const employees = store.dispatch(employeesApiSlice.endpoints.getEmployees.initiate())
@@ -42,8 +42,9 @@ const Prefetch = () => {
             //tasks.unsubscribe()
             academicYears.unsubscribe()
         }
-    }, [])
+    }, [])//only runs when the component mounts
 
     return <Outlet />
 }
 export default Prefetch
+///!!!in dev we are using strict mode, it will mount, unmount and remount again so we will see three times

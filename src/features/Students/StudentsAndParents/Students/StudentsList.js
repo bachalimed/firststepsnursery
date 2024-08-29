@@ -52,7 +52,7 @@ const StudentsList = () => {
       //console.log('Selected year updated:', selectedAcademicYear.title)
     }
   }, [selectedAcademicYear])
-
+console.log('selectedAcademicYear',selectedAcademicYear)
 
   // const myStu = useSelector(state=> state.student)
   // console.log(myStu, 'mystu')
