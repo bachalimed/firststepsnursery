@@ -100,35 +100,25 @@ if (yearIsSuccess){
         const [ studentSex,setStudentSex ]= useState('')
         const [studentIsActive, setStudentIsActive] = useState(prev => !prev)
 
-        const [academicYear, setAcademicYear] = useState('')
+        const [academicYear, setAcademicYear] = useState(null)
         const [studentYears, setStudentYears] = useState([])
         const [studentJointFamily, setStudentJointFamily] = useState(true)
-        const [studentPhoto, setStudentPhoto] = useState({})
-        
-        const [studentMother, setStudentMother] = useState('')
-        const [studentFather, setStudentFather] = useState('')
-        const [studentGardien, setStudentGardien] = useState('')
+        const [studentGardien, setStudentGardien] = useState([])
+        const [gardienYear, setGardienYear] = useState('')
         const [gardienFirstName, setGardienFirstName] = useState('')
         const [gardienMiddleName, setgardienMiddleName] = useState('')
         const [gardienLastName, setGardienLastName] = useState('')
         const [gardienPhone, setGardienPhone] = useState('')
         const [gardienRelation, setGardienRelation] = useState('')
         
-        const [educationYear, setEducationYear] = useState('')
+        const [schoolYear, setSchoolYear] = useState('')
         const [note, setNote] = useState('')
         const [attendedSchool, setAttendedSchool] = useState('')
         const [studentEducation, setStudentEducation] = useState([])
-        const [lastModified, setLastModified]=useState({})
-        const [date, setDate] = useState('')//the exact date time of saving will be saved in the backend
+
         const [operator, setOperator]=useState(userId)//id of the user logged in already
-        const [studentDocuments, setStudentDocuments]=useState([])
-        const [admissions, setAdmissions]=useState([])
-        const [id, setId]=useState('')
-        const [schoolYear, setSchoolYear]=useState('')
-        const [admission, setAdmission]=useState('')
+
       
-      
-            
         //use effect is used to validate the inputs against the defined REGEX above
         //the previous constrains have to be verified on the form for teh user to know 
 
@@ -144,11 +134,12 @@ if (yearIsSuccess){
       useEffect(() => {
           setValidStudentDob(DOB_REGEX.test(studentDob))
       }, [studentDob])
+      //ensure studentEducation has no empty array
+      
   
   
       useEffect(() => {
           if (isSuccess) {//if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
-              
             setFirstName('')
             setValidFirstName(false)
             setMiddleName('')
@@ -157,42 +148,29 @@ if (yearIsSuccess){
             setStudentName({firstName:'', middleName:'', lastName:''})
             setStudentDob('')
             setValidStudentDob('')
-            setStudentPhoto({})
+            
             setStudentSex('')
             setStudentIsActive(false)
             setStudentYears('')//will be true when the username is validated
-            setStudentMother('')
-            setStudentFather('')
+           
             setStudentJointFamily(true)
             setGardienFirstName('')
             setgardienMiddleName('')
             setGardienLastName('')
             setGardienPhone('')
             setGardienRelation('')
-            setStudentGardien({gardienFirstName:'', gardienMiddleName:'', gardienlastName:'', gardienPhone:''})
-            setEducationYear('')
+            setStudentGardien({})
+            setSchoolYear('')
             setAttendedSchool('')
             setNote('')
-            setStudentEducation([{ educationYear: '', attendedSchool: '', note: '' }])           
+            setStudentEducation([])           
             //setDate = useState()
             setOperator('')
-            setLastModified({date:'', operator:''})
-            setStudentDocuments([])
-            setId('')
-            setSchoolYear('')
-            setAdmission('')
-            setAdmissions([])
             Navigate('/students/studentsParents/students')//will navigate here after saving
           }
       }, [isSuccess, Navigate])//even if no success it will navigate and not show any warning if failed or success
   
       //handlers to get the individual states from the input
-
-
-
-
-
-
 
       const onFirstNameChanged = e => setFirstName(e.target.value)
       const onMiddleNameChanged = e => setMiddleName(e.target.value)
@@ -201,30 +179,21 @@ if (yearIsSuccess){
       const onStudentSexChanged = e => setStudentSex(e.target.value)
       const onStudentIsActiveChanged = e => setStudentIsActive((prev)=>!prev)
       //const onAcademicYearChanged = e => setAcademicYear(e.target.value)
-      
-      const onStudentMotherChanged = e => setStudentMother(e.target.value)
-      const onStudentFatherChanged = e => setStudentFather(e.target.value)
+ 
       const onStudentJointFamilyChanged = e => setStudentJointFamily((prev)=>!prev)
+
       const onGardienFirstNameChanged = e => setGardienFirstName(e.target.value)
       const onGardienMiddleNameChanged = e => setgardienMiddleName(e.target.value)  
       const onGardienLastNameChanged = e => setGardienLastName(e.target.value)
       const onGardienPhoneChanged = e => setGardienPhone(e.target.value)
       const onGardienRelationChanged = e => setGardienRelation(e.target.value)
-      const onEducationYearChanged = e => setEducationYear(e.target.value)
+      const onSchoolYearChanged = e => setSchoolYear(e.target.value)
       const onAttendedSchoolChanged = e => setAttendedSchool(e.target.value)
       const onNoteChanged = e => setNote(e.target.value)
-      //const onStudentEducationChanged = e => setStudentEducation(e.target.value)
+      const onStudentEducationChanged = e => setStudentEducation(e.target.value)
       //const onDateChanged = e => setDate(e.target.value)
     //   const onOperatorChanged = e => setOperator(e.target.value)//it is imopprted from usAuth already
-      //const onLastModifiedChanged = e => setLastModified(e.target.value)// this will be done in the backend when saving
-      const onStudentDocumentsChanged = e => setStudentDocuments(e.target.value)
-      const onIdChanged = e => setId(e.target.value)
-      const onSchoolYearChanged = e => setSchoolYear(e.target.value)
-      const onAdmissionChanged = e => setAdmission(e.target.value)
-      const onAdmissionsChanged = e => setAdmissions(e.target.value)
-      
-      
-  
+        
       //adds to the previous entries in arrays for gardien, schools...
       const onAcademicYearChanged = (e) => {
         const { value, checked } = e.target
@@ -234,7 +203,30 @@ if (yearIsSuccess){
             : prevYears.filter((year) => year.academicYear !== value)
         )
       }
- 
+      
+ // to deal with student gardien entries:
+ // Handler to update an entry field
+ const handleGardienFieldChange = (index, field, value) => {
+    const updatedEntries = [...studentGardien];
+    updatedEntries[index][field] = value;
+    setStudentGardien(updatedEntries);
+  };
+
+  // Handler to add a new education entry
+  const handleAddGardienEntry = () => {
+    setStudentGardien([
+      ...studentGardien,
+      { gardienFirstName: '', gardienMiddleName: '', gardienLastName: '', gardienPhone: '',gardienRelation: ''}
+    ])
+  }
+
+  // Handler to remove an education entry
+  const handleRemoveGardienEntry = (index) => {
+    const updatedEntries = studentGardien.filter((_, i) => i !== index);
+    setStudentGardien(updatedEntries);
+  };
+  
+
  // to deal with student education entries:
  // Handler to update an entry field
  const handleFieldChange = (index, field, value) => {
@@ -247,9 +239,9 @@ if (yearIsSuccess){
   const handleAddEntry = () => {
     setStudentEducation([
       ...studentEducation,
-      { academicYear: '', attendedSchool: '', note: '' }
-    ]);
-  };
+      { schoolYear: '', attendedSchool: '', note: '' }
+    ])
+  }
 
   // Handler to remove an education entry
   const handleRemoveEntry = (index) => {
@@ -257,33 +249,10 @@ if (yearIsSuccess){
     setStudentEducation(updatedEntries);
   };
   
-       
-        // //check if the parent and employee id is available or delete the variable
-        // if (isParent===''){ setIsParent(undefined)}
-        // if (isEmployee===''){ setIsEmployee(undefined)}
-        
         useEffect(()=>{
             setStudentName({firstName:firstName, middleName:middleName, lastName:lastName})},
         [firstName, middleName, lastName])
-        useEffect(()=> {
-            setStudentGardien([{gardienFirstName:gardienFirstName, gardienMiddleName:gardienMiddleName, gardienLastName:gardienLastName, gardienPhone:gardienPhone, gardienRelation:gardienRelation}])
-        }, [gardienFirstName, gardienMiddleName, gardienLastName, gardienPhone, gardienRelation])
-  
-        // useEffect(()=>{
-        //     setStudentEducation({schoolYear:schoolYear, attendedSchool:attendedSchool, note:note})},
-        // [schoolYear, attendedSchool, note])
-        useEffect(()=> {
-            setLastModified([{date:'', operator:operator}])
-        }, [date, operator])
-  
-        useEffect(()=>{
-            setStudentDocuments({id:id})},
-        [id])
-        // useEffect(()=> {
-        //     setAdmissions([{schoolYear:schoolYear, admission:admission}])
-        // }, [schoolYear, admission])
-  
-  
+     
         //to check if we can save before onsave, if every one is true, and also if we are not loading status
       const canSave = [validFirstName, validLastName, studentYears, validStudentDob, studentSex ].every(Boolean) && !isLoading
         
@@ -292,8 +261,8 @@ if (yearIsSuccess){
           
           if (canSave) {//if cansave is true
               //generate the objects before saving
-              //console.log(studentName, studentDob, studentSex, studentIsActive, studentYears, studentPhoto, studentJointFamily, studentEducation)
-              await addNewStudent({ studentName, studentDob, studentSex, studentIsActive, studentYears, studentPhoto, studentJointFamily, studentEducation  })//we call the add new user mutation and set the arguments to be saved
+              console.log(studentName, studentDob, studentSex, studentIsActive, studentYears,  studentJointFamily, studentEducation)
+              await addNewStudent({ studentName, studentDob, studentSex, studentIsActive, studentYears,  studentJointFamily, studentEducation , studentGardien, operator  })//we call the add new user mutation and set the arguments to be saved
               //added this to confirm save
               if (isError) {console.log('error savingg', error)//handle the error msg to be shown  in the logs??
               }
@@ -309,275 +278,305 @@ if (yearIsSuccess){
       //const validPwdClass = !validPassword ? 'form__input--incomplete' : ''
       //const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
   
+      const content = (
+        <>
+          <StudentsParents />
       
-      const content = (<>
-        <StudentsParents/>
-        
-              <p className={errClass}>{error?.data?.message}</p>  {/*will display if there is an error message, some of the error messagees are defined in the back end responses*/}
-  
-              <form className="form" onSubmit={onSaveStudentClicked}>
-                  <div className="form__title-row">
-                      <h2>New Student Form</h2>
-                      
-                  </div>
-                  <div>
-                  <label className="form__label" htmlFor="firstName">
-                      First Name* : <span className="nowrap">[3-20 letters]</span></label>
-                  <input
-                      className=''
-                      id="firstName"
-                      name="firstName"
-                      type="text"
-                      autoComplete="off"
-                      value={firstName}
-                      onChange={onFirstNameChanged}
-                  />
-                  <label className="form__label" htmlFor="middleName">
-                     Middle Name : <span className="nowrap"></span></label>
-                  <input
-                      className=''
-                      id="middleName"
-                      name="middleName"
-                      type="text"
-                      autoComplete="off"
-                      value={middleName}
-                      onChange={onMiddleNameChanged}
-                  />
-                  </div>
-                  <div>
-                  <label className="form__label" htmlFor="lastName">
-                      Last Name* : <span className="nowrap">[3-20 letters]</span></label>
-                  <input
-                      className=''
-                      id="lastName"
-                      name="lastName"
-                      type="text"
-                      autoComplete="off"
-                      value={lastName}
-                      onChange={onLastNameChanged}
-                  />
-                   <label className="form__label" htmlFor="userDob">
-                      Date Of Birth* : <span className="nowrap">[dd/mm/yyyy]</span></label>
-                  <input
-                      className=''
-                      id="studentDob"
-                      name="studentDob"
-                      type="date"
-                      autoComplete="off"
-                      value={studentDob}
-                      onChange={onStudentDobChanged}
-                  />
-                  </div>
-                  <div>
-                  <label> <div style={{ marginTop: '10px' }}>
-                      Student Sex* : {studentSex || 'None'}
-                  </div>
-                      <input
-                      type="checkbox"
-                      value="Male"
-                      checked={studentSex === 'Male'}
-                      onChange={onStudentSexChanged}
-                      />
-                      Male
-                  </label>
-  
-
-                  <label style={{ marginLeft: '10px' }}>
-                      <input
-                      type="checkbox"
-                      value="Female"
-                      checked={studentSex === 'Female'}
-                      onChange={onStudentSexChanged}
-                      />
-                      Female
-                  </label>
-  
-                
-                  </div>
-                 
-                  <label>
-                    <input
-                    type="checkbox"
-                    value={studentIsActive}
-                    checked={studentIsActive}
-                    onChange={onStudentIsActiveChanged}
-                    />
-                    Student Is Active
-                    </label>
-
-
-                    <h1>Student Year* : </h1>
-                    <div className="flex flex-wrap space-x-4">
+          <p className={`text-red-500 ${errClass}`}>{error?.data?.message}</p> {/* Display error messages */}
+      
+          <form className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md" onSubmit={onSaveStudentClicked}>
+            <div className="mb-6">
+              <h2 className="text-2xl font-semibold">New student for the academic year {selectedYear}</h2>
+            </div>
+      
+            <div className="grid gap-6 mb-6 md:grid-cols-2">
+              <div>
+                <label className="block text-sm font-medium text-gray-700" htmlFor="firstName">
+                  First Name* <span className="text-gray-500 text-xs">[3-20 letters]</span>
+                </label>
+                <input
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                  id="firstName"
+                  name="firstName"
+                  type="text"
+                  autoComplete="off"
+                  value={firstName}
+                  onChange={onFirstNameChanged}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700" htmlFor="middleName">
+                  Middle Name
+                </label>
+                <input
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                  id="middleName"
+                  name="middleName"
+                  type="text"
+                  autoComplete="off"
+                  value={middleName}
+                  onChange={onMiddleNameChanged}
+                />
+              </div>
+      
+              <div>
+                <label className="block text-sm font-medium text-gray-700" htmlFor="lastName">
+                  Last Name* <span className="text-gray-500 text-xs">[3-20 letters]</span>
+                </label>
+                <input
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                  id="lastName"
+                  name="lastName"
+                  type="text"
+                  autoComplete="off"
+                  value={lastName}
+                  onChange={onLastNameChanged}
+                />
+              </div>
+      
+              <div>
+                <label className="block text-sm font-medium text-gray-700" htmlFor="studentDob">
+                  Date Of Birth* <span className="text-gray-500 text-xs">[dd/mm/yyyy]</span>
+                </label>
+                <input
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                  id="studentDob"
+                  name="studentDob"
+                  type="date"
+                  autoComplete="off"
+                  value={studentDob}
+                  onChange={onStudentDobChanged}
+                />
+              </div>
+            </div>
+      
+            <div className="mb-6">
+              <div className="flex items-center mb-2">
+                <input
+                  type="checkbox"
+                  id="male"
+                  value="Male"
+                  checked={studentSex === 'Male'}
+                  onChange={onStudentSexChanged}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label htmlFor="male" className="ml-2 text-sm font-medium text-gray-700">Male</label>
+      
+                <input
+                  type="checkbox"
+                  id="female"
+                  value="Female"
+                  checked={studentSex === 'Female'}
+                  onChange={onStudentSexChanged}
+                  className="ml-6 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label htmlFor="female" className="ml-2 text-sm font-medium text-gray-700">Female</label>
+              </div>
+      
+              <div className="flex items-center mb-2">
+                <input
+                  type="checkbox"
+                  id="active"
+                  value={studentIsActive}
+                  checked={studentIsActive}
+                  onChange={onStudentIsActiveChanged}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label htmlFor="active" className="ml-2 text-sm font-medium text-gray-700">Student Is Active</label>
+              </div>
+      
+              <div className="flex items-center mb-2">
+                <input
+                  type="checkbox"
+                  id="jointFamily"
+                  value={studentJointFamily}
+                  checked={studentJointFamily}
+                  onChange={onStudentJointFamilyChanged}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label htmlFor="jointFamily" className="ml-2 text-sm font-medium text-gray-700">Student Joint Family</label>
+              </div>
+              
+             
+              <div className="flex items-center mb-2">
                        
-                            <label >
-                            <input
-                            type="checkbox"
-                            value={selectedYear}
-                            checked={studentYears.some(year => year.academicYear === selectedYear)}
-                            onChange={onAcademicYearChanged}
-                            />
-                            {selectedYear}
-                            </label>
+                           
+                <input
+                type="checkbox"
+                id="studentYears"
+                value={selectedYear}
+                checked={studentYears.some(year => year.academicYear === selectedYear)}
+                onChange={onAcademicYearChanged}
+                
+                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                
+            <label htmlFor="studentYears" className="ml-2 text-sm font-medium text-gray-700">Student Year {selectedYear}</label>            
                      
-                        </div>
-
-                  <label>
-                    <input
-                    type="checkbox"
-                    value={studentJointFamily}
-                    checked={studentJointFamily}
-                    onChange={onStudentJointFamilyChanged}
-                    />
-                    Student Joint family
-                    </label>
-                   
-                   
-                  
-                 
-
-
-
-
-
-                  <div>
-                  <label className="form__label" htmlFor="gardienFirstName">
-                      Gardien First Name : <span className="nowrap">[3-20 letters]</span></label>
-                  <input
-                      className=''
-                      id="gardienFirstName"
-                      name="gardienFirstName"
-                      type="text"
-                      autoComplete="off"
-                      value={gardienFirstName}
-                      onChange={onGardienFirstNameChanged}
-                  />
-                  <label className="form__label" htmlFor="gardienMiddleName">
-                      Gardien Middle Name : <span className="nowrap"></span></label>
-                  <input
-                      className=''
-                      id="gardienMiddleName"
-                      name="gardienMiddleName"
-                      type="text"
-                      autoComplete="off"
-                      value={gardienMiddleName}
-                      onChange={onGardienMiddleNameChanged}
-                  />
-                  </div>
-                  
-
-                  <label className="form__label" htmlFor="gardienLastName">
-                      Gardien Last Name : <span className="nowrap">[3-20 letters]</span></label>
-                  <input
-                      className=''
-                      id="gardienLastName"
-                      name="gardienLastName"
-                      type="text"
-                      autoComplete="off"
-                      value={gardienLastName}
-                      onChange={onGardienLastNameChanged}
-                  />
-                  <div>
-                  <label className="form__label" htmlFor="gardienRelation">
-                      Gardien Relation : <span className="nowrap">[3-20 letters]</span></label>
-                  <input
-                      className=''
-                      id="gardienRelation"
-                      name="gardienRelation"
-                      type="text"
-                      autoComplete="off"
-                      value={gardienRelation}
-                      onChange={onGardienRelationChanged}
-                  />
-                  <label className="form__label" htmlFor="gardienPhone">
-                      Gardien Phone : <span className="nowrap"></span></label>
-                  <input
-                      className=''
-                      id="gardienPhonee"
-                      name="gardienPhone"
-                      type="text"
-                      autoComplete="off"
-                      value={gardienPhone}
-                      onChange={onGardienPhoneChanged}
-                  />
-                  </div>
-                <h1>Student Education</h1>
-                        {Array.isArray(studentEducation)&&(studentEducation.length!=0)&&(studentEducation.map((entry, index) => (
-                            <div key={index} className="education-entry">
-                            <div>
-                                <label htmlFor={`educationYear-${index}`}>educationYear:</label>
-                                <select
-                                id={`educationYear-${index}`}
-                                value={entry.educationYear}
-                                onChange={(e) => handleFieldChange(index, 'educationYear', e.target.value)}
-                                >
-                                <option value="">Select Year</option>
-                                {yearsList.map((year) => (
-                                    <option key={year.id} value={year.id}>
-                                    {year.title}
-                                    </option>
-                                ))}
-                                </select>
-                            </div>
-
-                            <div>
-                                <label htmlFor={`attendedSchool-${index}`}>Attended School:</label>
-                                <select
-                                id={`attendedSchool-${index}`}
-                                value={entry.attendedSchool}
-                                onChange={(e) => handleFieldChange(index, 'attendedSchool', e.target.value)}
-                                >
-                                <option value="">Select School</option>
-                                { schoolIsSuccess&&(attendedSchools.map((school) => (
-                                    <option key={school.id} value={school.id}>
-                                    {school.schoolName}
-                                    </option>
-                                )))}
-                                </select>
-                            </div>
-
-                            <div>
-                                <label htmlFor={`note-${index}`}>Note:</label>
-                                <input
-                                id={`note-${index}`}
-                                type="text"
-                                value={entry.note}
-                                onChange={(e) => handleFieldChange(index, 'note', e.target.value)}
-                                />
-                            </div>
-
-                            <button type="button" onClick={() => handleRemoveEntry(index)}>Remove Entry</button>
-                            </div>
-                        )))}
-
-                        <button type="button" className=" px-4 py-2 bg-blue-200 text-white rounded" onClick={handleAddEntry}>Add Student Education</button>
-
-                <div className="flex justify-end items-center space-x-4">
-                      <button 
-                          className=" px-4 py-2 bg-green-500 text-white rounded"
-                          type='submit'
-                          title="Save"
-                          onClick={onSaveStudentClicked}
-                          disabled={!canSave}
-                          >
-                          Save Changes
-                      </button>
-                      <button 
-                      className=" px-4 py-2 bg-red-500 text-white rounded"
-                      onClick={handleCancel }
-                      >
-                      Cancel
-                      </button>
-                  </div>
-  
-  
-              </form>
-          </>
-      )
-  
-  
-
-     
+             </div>
+            </div>
       
-        return content
+            <div className="mb-6">
+              <h3 className="text-xl font-semibold mb-2">Student Gardien</h3>
+              {Array.isArray(studentGardien) && studentGardien.length > 0 && studentGardien.map((entry, index) => (
+                <div key={index} className="bg-gray-50 p-4 rounded-lg shadow-sm mb-4">
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor={`gardienFirstName-${index}`}>First Name:</label>
+                    <input
+                      id={`gardienFirstName-${index}`}
+                      type="text"
+                      value={entry.gardienFirstName}
+                      onChange={(e) => handleGardienFieldChange(index, 'gardienFirstName', e.target.value)}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor={`gardienMiddleName-${index}`}>Middle Name:</label>
+                    <input
+                      id={`gardienMiddleName-${index}`}
+                      type="text"
+                      value={entry.gardienMiddleName}
+                      onChange={(e) => handleGardienFieldChange(index, 'gardienMiddleName', e.target.value)}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor={`gardienLastName-${index}`}>Last Name:</label>
+                    <input
+                      id={`gardienLastName-${index}`}
+                      type="text"
+                      value={entry.gardienLastName}
+                      onChange={(e) => handleGardienFieldChange(index, 'gardienLastName', e.target.value)}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor={`gardienRelation-${index}`}>Relation To Student Name:</label>
+                    <input
+                      id={`gardienRelation-${index}`}
+                      type="text"
+                      value={entry.gardienRelation}
+                      onChange={(e) => handleGardienFieldChange(index, 'gardienRelation', e.target.value)}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor={`gardienPhone-${index}`}>Phone Number:</label>
+                    <input
+                      id={`gardienPhone-${index}`}
+                      type="text"
+                      value={entry.gardienPhone}
+                      onChange={(e) => handleGardienFieldChange(index, 'gardienPhone', e.target.value)}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                    />
+                  </div>
+      
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveGardienEntry(index)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    Remove Entry
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                onClick={handleAddGardienEntry}
+              >
+                Add Student Gardien
+              </button>
+            </div>
+      
+            <div className="mb-6">
+              <h3 className="text-xl font-semibold mb-2">Student Education</h3>
+              {Array.isArray(studentEducation) && studentEducation.length > 0 && studentEducation.map((entry, index) => (
+                <div key={index} className="bg-gray-50 p-4 rounded-lg shadow-sm mb-4">
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor={`schoolYear-${index}`}>School Year:</label>
+                    <select
+                      id={`schoolYear-${index}`}
+                      value={entry.schoolYear}
+                      onChange={(e) => handleFieldChange(index, 'schoolYear', e.target.value)}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                    >
+                      <option value="">Select Year</option>
+                      {yearsList.map((year) => (
+                        <option key={year.id} value={year.id}>
+                          {year.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor={`attendedSchool-${index}`}>Attended School:</label>
+                    <select
+                      id={`attendedSchool-${index}`}
+                      value={entry.attendedSchool}
+                      onChange={(e) => handleFieldChange(index, 'attendedSchool', e.target.value)}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                    >
+                      <option value="">Select School</option>
+                      {schoolIsSuccess && attendedSchools.map((school) => (
+                        <option key={school.id} value={school.id}>
+                          {school.schoolName}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor={`note-${index}`}>Note:</label>
+                    <input
+                      id={`note-${index}`}
+                      type="text"
+                      value={entry.note}
+                      onChange={(e) => handleFieldChange(index, 'note', e.target.value)}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                    />
+                  </div>
+      
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveEntry(index)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    Remove Entry
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                onClick={handleAddEntry}
+              >
+                Add Student Education
+              </button>
+            </div>
+      
+            <div className="flex justify-end space-x-4">
+              <button
+                type="submit"
+                className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+                title="Save"
+                onClick={onSaveStudentClicked}
+                disabled={!canSave}
+              >
+                Save Changes
+              </button>
+              <button
+                type="button"
+                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                onClick={handleCancel}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </>
+      );
+      
+      return content;
     }
 export default NewStudentForm

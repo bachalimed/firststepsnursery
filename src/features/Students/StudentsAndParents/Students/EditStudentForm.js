@@ -62,32 +62,24 @@ const EditStudentForm = ({student}) => {
     const [studentIsActive, setStudentIsActive] = useState(student.studentIsActive)
     const [studentYears, setStudentYears] = useState(student.studentYears)
     const [studentJointFamily, setStudentJointFamily] = useState(student.studentJointFamily)
-    const [studentPhoto, setStudentPhoto] = useState(student.studentPhoto)
-        
-    const [studentMother, setStudentMother] = useState(student.studentMother)
-    const [studentFather, setStudentFather] = useState(student.studentFather)
+    
+  
     const [studentGardien, setStudentGardien] = useState(student.studentGardien)//an object
-    const [gardienFirstName, setGardienFirstName] = useState(student.gardienFirstName)
-    const [gardienMiddleName, setgardienMiddleName] = useState(student.gardienMiddleName)
-    const [gardienLastName, setGardienLastName] = useState(student.gardienLastName)
-    const [gardienPhone, setGardienPhone] = useState(student.gardienPhone)
-    const [gardienRelation, setGardienRelation] = useState(student.gardienRelation)
+    const [gardienFirstName, setGardienFirstName] = useState(student.studentGardien.gardienFirstName)
+    const [gardienMiddleName, setgardienMiddleName] = useState(student.studentGardien.gardienMiddleName)
+    const [gardienLastName, setGardienLastName] = useState(student.studentGardien.gardienLastName)
+    const [gardienPhone, setGardienPhone] = useState(student.studentGardien.gardienPhone)
+    const [gardienRelation, setGardienRelation] = useState(student.studentGardien.gardienRelation)
+    console.log('studddds',student)
+    console.log(student.studentGardien)
     
     const [studentEducation, setStudentEducation] = useState(student.studentEducation)//an array
-    const [schoolyear, setSchoolyear] = useState(student.schoolyear)
+    const [schoolYear, setSchoolYear] = useState(student.schoolYear)
     const [attendedSchool, setAttendedSchool] = useState(student.attendedSchool)
     const [note, setNote] = useState(student.note)
-    const [lastModified, setLastModified]=useState(student.lastModified)
-    const [date, setDate] = useState(student.date)//the exact date time of saving will be saved in the backend
+    
     const [operator, setOperator]=useState(userId)//id of the user logged in already
-    const [studentDocuments, setStudentDocuments]=useState(student.studentDocuments)//an array
-    const [studentAdmissions, setStudentAdmissions]=useState(student.admissions)
-    const [id, setId]=useState(student.id)
-    const [schoolYear, setSchoolYear]=useState(student.schoolYear)
-    const [admission, setAdmission]=useState(student.admission)
-        
-        
-        
+   
         //use effect is used to validate the inputs against the defined REGEX above
         //the previous constrains have to be verified on the form for teh user to know 
         
@@ -119,8 +111,7 @@ const EditStudentForm = ({student}) => {
             setStudentSex('')
             setStudentIsActive(false)
             setStudentYears([])//will be true when the username is validated
-            setStudentMother('')
-            setStudentFather('')
+
             setStudentJointFamily('')
             setGardienFirstName('')
             setgardienMiddleName('')
@@ -128,18 +119,11 @@ const EditStudentForm = ({student}) => {
             setGardienPhone('')
             setGardienRelation('')
             setStudentGardien({})
-            setSchoolyear('')
+            setSchoolYear('')
             setAttendedSchool('')
             setNote('')
             setStudentEducation([])              
-            //setDate = useState()
             setOperator('')
-            setLastModified({date:'', operator:''})
-            setStudentDocuments([])
-            setId('')
-            setSchoolYear('')
-            setStudentAdmissions([])
-            setAdmission('')
             Navigate('/students/studentsParent/students/')//will navigate here after saving
           }
         }, [isSuccess, Navigate])//even if no success it will navigate and not show any warning if failed or success
@@ -153,28 +137,16 @@ const EditStudentForm = ({student}) => {
         const onStudentDobChanged = e => setStudentDob(e.target.value)
         const onStudentSexChanged = e => setStudentSex(e.target.value)
         const onStudentIsActiveChanged = e => setStudentIsActive(e.target.value)
-        //const onStudentYearsChanged = e => setStudentYears(e.target.value)
-      const onStudentMotherChanged = e => setStudentMother(e.target.value)
-      const onStudentFatherChanged = e => setStudentFather(e.target.value)
       const onStudentJointFamilyChanged = e => setStudentJointFamily(e.target.value)
       const onGardienFirstNameChanged = e => setGardienFirstName(e.target.value)
       const onGardienMiddleNameChanged = e => setgardienMiddleName(e.target.value)  
       const onGardienLastNameChanged = e => setGardienLastName(e.target.value)
       const onGardienPhoneChanged = e => setGardienPhone(e.target.value)
       const onGardienRelationChanged = e => setGardienRelation(e.target.value)
-      const onSchoolyearChanged = e => setSchoolyear(e.target.value)
+      const onSchoolYearChanged = e => setSchoolYear(e.target.value)
       const onAttendedSchoolChanged = e => setAttendedSchool(e.target.value)
       const onNoteChanged = e => setNote(e.target.value)
-      
-      //const onDateChanged = e => setDate(e.target.value)
-      const onOperatorChanged = e => setOperator(e.target.value)
-      const onLastModifiedChanged = e => setLastModified(e.target.value)
-      const onStudentDocumentsChanged = e => setStudentDocuments(e.target.value)
-      const onIdChanged = e => setId(e.target.value)
-      const onSchoolYearChanged = e => setSchoolYear(e.target.value)
-      //const onStudentAdmissionsChanged = e => setStudentAdmissions(e.target.value)
-      const onAdmissionChanged = e => setAdmission(e.target.value)
-      
+ 
           
         useEffect(()=>{
             setStudentName({firstName:firstName, middleName:middleName, lastName:lastName})},
@@ -186,17 +158,7 @@ const EditStudentForm = ({student}) => {
         useEffect(()=>{
           setStudentEducation(prev=>[...prev,{schoolYear:schoolYear, attendedSchool:attendedSchool, note:note}])},
           [schoolYear, attendedSchool, note])
-        useEffect(()=> {
-            setLastModified([{date:'', operator:operator}])
-          }, [date, operator])
-          
-        useEffect(()=>{
-          setStudentDocuments(prev=>[...prev,{id:id}])},
-          [id])
-          useEffect(()=> {
-            setStudentAdmissions(prev=>[...prev,{schoolYear:schoolYear, admission:admission}])
-        }, [schoolYear, admission])
-        
+
       
       //adds to the previous entries in arrays for gardien, schools...
       const onStudentYearsChanged = (e, selectedYear) => {
@@ -205,11 +167,10 @@ const EditStudentForm = ({student}) => {
           setStudentYears([...studentYears, selectedYear]);
         } else {
           // Remove the selectedYear from studentYears if it's unchecked
-          setStudentYears(studentYears.filter(year => year !== selectedYear));
+          setStudentYears(studentYears.filter(year => year !== selectedYear))
         }
-      };
+      }
 
-      
         //to check if we can save before onsave, if every one is true, and also if we are not loading status
         const canSave = [validFirstName, validLastName, validStudentDob, studentSex ].every(Boolean) && !isLoading
         
@@ -217,7 +178,7 @@ const EditStudentForm = ({student}) => {
         const onSaveStudentClicked = async (e) => {  
             //generate the objects before saving
             //console.log(` 'first name' ${userFirstName}', fullfirstname,' ${userFullName.userFirstName}', house: '${house}', usercontact house' ${userContact.house},    ${userRoles.length},${isParent}, ${isEmployee}` )
-            await updateStudent({ studentName, studentDob, studentSex, studentIsActive, studentYears, studentPhoto, studentJointFamily  })//we call the add new user mutation and set the arguments to be saved
+            await updateStudent({ studentName, studentDob, studentSex, studentIsActive, studentYears, studentJointFamily , studentEducation, operator })//we call the add new user mutation and set the arguments to be saved
             //added this to confirm save
             if (isError) {console.log('error savingg', error)//handle the error msg to be shown  in the logs??
             }

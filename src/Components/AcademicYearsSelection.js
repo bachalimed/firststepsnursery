@@ -11,6 +11,8 @@ import { useState , useEffect} from 'react'
 //import useAcademicYears from '../../../hooks/useAcademicYears'
 import { useSelectedAcademicYear } from '../hooks/useSelectedAcademicYears'
 
+
+//we could include permissions to only allow some users to select
 const AcademicYearsSelection = () => {
   const dispatch = useDispatch()
 //const listOfAcademicYears = useSelector(state => selectAllAcademicYears(state))//this is original but not working if we did not use the query in the list

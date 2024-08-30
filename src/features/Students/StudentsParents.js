@@ -28,9 +28,9 @@ const content = (
         <Link to={'/students/studentsParents/students/'}><li >Students</li></Link>
         <Link to={'/students/studentsParents/parents/'}><li >Parents</li></Link>
         <Link to={'/students/studentsParents/newStudent/'}><li >New Student</li></Link>
+        <Link to={'/students/studentsParents/reregister/'}><li >Re-register Student</li></Link>
         <Link to={'/students/studentsParents/newParent/'}><li >New Parent</li></Link>
         <AcademicYearsSelection/>
-        
         
       </ul>
     </div>
