@@ -1,7 +1,7 @@
 
 import { Link } from 'react-router-dom'
 import { IoFileTrayStackedOutline } from 'react-icons/io5'
-
+import AcademicYearsSelection from '../../Components/AcademicYearsSelection'
 const Admissions = () => {
 
   const admissionsTabs={title:"Admissions",
@@ -17,6 +17,7 @@ content = (
       <Link to={'/students/admissions/allAdmissions/'}><li >All Admissions</li></Link>
       <Link to={'/students/admissions/newAdmission/'}><li >New Admission</li></Link>
       <Link to={'/students/admissions/blablabla/'}><li >blabla</li></Link>
+      <AcademicYearsSelection/>
     </ul>
   </div>
 )

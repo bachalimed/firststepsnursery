@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { FaListCheck } from "react-icons/fa6"
-
+import AcademicYearsSelection from '../../Components/AcademicYearsSelection'
 const Enrolments = () => {
 
   const enrolmentTabs = {title:"Enrolments",
@@ -18,6 +18,7 @@ const Enrolments = () => {
           <Link to={'/students/admissions/allEnrolments'}><li >All Enrolments</li></Link>
           <Link to={'/students/admissions/newEnrolment'}><li >New Enrolment</li></Link>
           <Link to={'/students/admissions/ffefef'}><li >blabla</li></Link>
+          <AcademicYearsSelection/>
         </ul>
       </div>
     )

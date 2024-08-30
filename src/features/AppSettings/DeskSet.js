@@ -1,7 +1,7 @@
 
 
 import { Link } from 'react-router-dom'
-
+import AcademicYearsSelection from '../../Components/AcademicYearsSelection'
 
 //we will  find the object corresponding to the page and extract the section tabs
 const DeskSet = () => {
@@ -20,6 +20,7 @@ content = (
         <Link to={'/settings/deskSet/'}><li >Students</li></Link>
         <Link to={'/settings/deskSet/'}><li >Parents</li></Link>
         <Link to={'/settings/deskSet/'}><li >New Student</li></Link>
+        <AcademicYearsSelection/>
       </ul>
     </div>
   )

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { MdOutlineBusinessCenter } from "react-icons/md"
-
+import AcademicYearsSelection from '../../Components/AcademicYearsSelection'
 const SchoolPlannings = () => {
  
 
@@ -19,6 +19,7 @@ const schoolPlanningsTabs = {title:"School Plannings",
         <Link to={'/academics/schoolPlannings/'}><li >Week Planning</li></Link>
         <Link to={'/academics/schoolPlannings/'}><li >Day plan</li></Link>
         <Link to={'/academics/schoolPlannings/'}><li >New Student</li></Link>
+        <AcademicYearsSelection/>
       </ul>
     </div>
   )

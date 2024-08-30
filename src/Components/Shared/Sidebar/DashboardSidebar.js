@@ -305,21 +305,11 @@ const DashboardSidebar = () => {
 					</Link>		
 				</ul>)}
 
-
 </div>
-
-
-
-				
+			
 				</ul>
-			</div>
-
-
-		
+			</div>	
 		</div>
-	
-  
-
 
 )
 return content}

@@ -2,7 +2,7 @@
 import { useEffect } from 'react';
 
 import { useNavigate , Link} from 'react-router-dom';
-
+import AcademicYearsSelection from '../../Components/AcademicYearsSelection'
 
 //we will  find the object corresponding to the page and extract the section tabs
 const StudentsParents = () => {
@@ -29,6 +29,7 @@ const content = (
         <Link to={'/students/studentsParents/parents/'}><li >Parents</li></Link>
         <Link to={'/students/studentsParents/newStudent/'}><li >New Student</li></Link>
         <Link to={'/students/studentsParents/newParent/'}><li >New Parent</li></Link>
+        <AcademicYearsSelection/>
         
         
       </ul>

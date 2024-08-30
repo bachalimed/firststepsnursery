@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { LuSchool } from 'react-icons/lu'
-
+import AcademicYearsSelection from '../../Components/AcademicYearsSelection'
 const NurseryPlannings = () => {
  
 
@@ -18,6 +18,7 @@ const NurseryPlanningsTabs = {title:"Nursery Plannings",
         <Link to={'/academics/schoolPlannings/'}><li >nurs Planning</li></Link>
         <Link to={'/academics/schoolPlannings/'}><li >ners plan</li></Link>
         <Link to={'/academics/schoolPlannings/'}><li >new pppl anning</li></Link>
+        <AcademicYearsSelection/>
       </ul>
     </div>
   )

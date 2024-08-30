@@ -1,7 +1,7 @@
 
 import NavbarHeader from './NavbarHeader'
 import useAuth from '../../../hooks/useAuth'
-import AcademicYearsSelection from './AcademicYearsSelection'
+import AcademicYearsSelection from '../../AcademicYearsSelection'
 // import { useNavigate, useLocation } from "react-router"
 //import useAcademicYears from '../../../hooks/useAcademicYears'
 
@@ -17,7 +17,7 @@ const DashboardHeader = () => {
     
     <header >
         <div className="bg-white h-18 px-10 flex justify-between items-center ">
-        <AcademicYearsSelection/>
+        {/* <AcademicYearsSelection/> */}
         
         <p className="">
          welcome back Mr {username} id: {userId}<br/>

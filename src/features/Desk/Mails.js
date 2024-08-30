@@ -1,6 +1,6 @@
 
 import { Link } from 'react-router-dom'
-
+import AcademicYearsSelection from '../../Components/AcademicYearsSelection'
 
 //we will  find the object corresponding to the page and extract the section tabs
 const Mails = () => {
@@ -19,6 +19,7 @@ let content = (
         <Link to={'/desk/mails/myMails/'}><li >My Mailss </li></Link>
         <Link to={'/desk/mails/newTask'}><li >New Task </li></Link>
         <Link to={'/desk/mails/'}><li >Task 3</li></Link>
+        <AcademicYearsSelection/>
       </ul>
     </div>
   )

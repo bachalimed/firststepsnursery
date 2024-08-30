@@ -1,7 +1,7 @@
 
 import { Link } from 'react-router-dom'
 import { BsQuestionSquare } from 'react-icons/bs'
-
+import AcademicYearsSelection from '../../Components/AcademicYearsSelection'
 //we will  find the object corresponding to the page and extract the section tabs
 const Inquiries = () => {
 
@@ -19,6 +19,7 @@ let content = (
         <Link to={'/desk/inquiries/'}><li >all Inquiries</li></Link>
         <Link to={'/desk/inquiries/'}><li >New Inquiry </li></Link>
         <Link to={'/desk/inquiries/'}><li >Inquiry 3</li></Link>
+        <AcademicYearsSelection/>
       </ul>
     </div>
   )

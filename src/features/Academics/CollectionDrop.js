@@ -2,7 +2,7 @@
 
 import { Link } from 'react-router-dom'
 import { HiMiniArrowsUpDown } from 'react-icons/hi2'
-
+import AcademicYearsSelection from '../../Components/AcademicYearsSelection'
 //we will  find the object corresponding to the page and extract the section tabs
 const CollectionDrop = () => {
 
@@ -21,6 +21,7 @@ content = (
         <Link to={'/academics/collectionDrop/'}><li >drop1 </li></Link>
         <Link to={'/academics/collectionDrop/'}><li >drop2</li></Link>
         <Link to={'/academics/collectionDrop/'}><li >drop3</li></Link>
+        <AcademicYearsSelection/>
       </ul>
     </div>
   )

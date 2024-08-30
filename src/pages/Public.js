@@ -1,7 +1,7 @@
 //the public facing webpage when not logged in
 
-import PublicHeader from '../Components/PublicHeader';
-import PublicFooter from '../Components/PublicFooter';
+import PublicHeader from '../Components/Shared/Header/PublicHeader'
+import PublicFooter from '../Components/Shared/Footer/PublicFooter'
 // import { Link } from 'react-router-dom';
 // import { Outlet } from 'react-router-dom';
 

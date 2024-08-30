@@ -1,5 +1,6 @@
 
 
+import AcademicYearsSelection from '../../Components/AcademicYearsSelection'
 import { Link } from 'react-router-dom'
 
 
@@ -37,6 +38,7 @@ content = (
         <Link to={'/settings/academicsSet/academicYears/'}><li >Academic Years</li></Link>
         <Link to={'/settings/academicsSet/attendedSchools/'}><li >attendedSchools </li></Link>
         <Link to={'/settings/academicsSet'}><li >option3</li></Link>
+        <AcademicYearsSelection/>
       </ul>
     </div>
   )

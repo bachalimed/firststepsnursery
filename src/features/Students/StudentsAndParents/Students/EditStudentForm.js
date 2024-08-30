@@ -60,7 +60,7 @@ const EditStudentForm = ({student}) => {
     const [ validStudentDob,setValidStudentDob ]= useState(false)
     const [ studentSex,setStudentSex ]= useState(student.studentSex)
     const [studentIsActive, setStudentIsActive] = useState(student.studentIsActive)
-    const [studentYears, setStudentYears] = useState(student.studentYear)
+    const [studentYears, setStudentYears] = useState(student.studentYears)
     const [studentJointFamily, setStudentJointFamily] = useState(student.studentJointFamily)
     const [studentPhoto, setStudentPhoto] = useState(student.studentPhoto)
         
@@ -118,7 +118,7 @@ const EditStudentForm = ({student}) => {
             setValidStudentDob('')
             setStudentSex('')
             setStudentIsActive(false)
-            setStudentYears('')//will be true when the username is validated
+            setStudentYears([])//will be true when the username is validated
             setStudentMother('')
             setStudentFather('')
             setStudentJointFamily('')
@@ -145,11 +145,6 @@ const EditStudentForm = ({student}) => {
         }, [isSuccess, Navigate])//even if no success it will navigate and not show any warning if failed or success
         
         //handlers to get the individual states from the input
-        
-        
-        
-        
-        
         
         
         const onFirstNameChanged = e => setFirstName(e.target.value)
@@ -203,9 +198,6 @@ const EditStudentForm = ({student}) => {
         }, [schoolYear, admission])
         
       
-        
-
-        
       //adds to the previous entries in arrays for gardien, schools...
       const onStudentYearsChanged = (e, selectedYear) => {
         if (e.target.checked) {

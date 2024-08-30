@@ -7,6 +7,8 @@ import DataTable from 'react-data-table-component'
 import { useSelector } from 'react-redux'
 import {  selectAllStudentsByYear, selectAllStudents } from './studentsApiSlice'//use the memoized selector 
 import { useEffect, useState } from "react"
+import DeletionConfirmModal from '../../../../Components/Shared/Modals/DeletionConfirmModal'
+
 import { Link } from 'react-router-dom'
 import { useNavigate } from "react-router-dom"
 import { ImProfile } from "react-icons/im"
@@ -20,7 +22,6 @@ import { LiaMaleSolid, LiaFemaleSolid  } from "react-icons/lia";
 import { useDispatch } from "react-redux"
 import { setSomeStudents, setStudents, currentStudentsList } from "./studentsSlice"
 import { IoDocumentAttachOutline } from "react-icons/io5";
-import DeletionConfirmModal from '../../../../Components/Shared/Modals/DeletionConfirmModal'
 
 const StudentsList = () => {
   //this is for the academic year selection
@@ -80,7 +81,7 @@ const StudentsList = () => {
       //console.log('Selected year updated:', selectedAcademicYear.title)
     }
   }, [selectedAcademicYear])
-console.log('selectedAcademicYear',selectedAcademicYear)
+//console.log('selectedAcademicYear',selectedAcademicYear)
 
   // const myStu = useSelector(state=> state.student)
   // console.log(myStu, 'mystu')
@@ -273,11 +274,14 @@ if (isError) {
 content = 
   <>
 
+   
   	<StudentsParents/>
+	
+  
 	<div className='relative h-10 mr-2 '>
 				<HiOutlineSearch fontSize={20} className='text-gray-400 absolute top-1/2 -translate-y-1/2 left-3'/>
 				<input type='text'  value={searchQuery} onChange= {handleSearch} className='text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4'/>
-	</div>
+  </div>
   	<div className=' flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200' >
     
    

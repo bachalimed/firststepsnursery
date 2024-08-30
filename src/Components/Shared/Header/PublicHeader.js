@@ -4,15 +4,15 @@ import { VscDashboard } from "react-icons/vsc"
 
 import { LuUserCircle2 } from "react-icons/lu"
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import logo from './../Data/logo.jpg'
+import logo from '../../../Data/logo.jpg'
 // import { Link} from 'react-router'
 
 import { useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons"
 import { useNavigate, Link, useLocation } from 'react-router-dom'
-import { useSendLogoutMutation } from '../features/auth/authApiSlice'
-import useAuth from '../hooks/useAuth'
+import { useSendLogoutMutation } from '../../../features/auth/authApiSlice'
+import useAuth from '../../../hooks/useAuth'
 
 
 //these will be used to compare to the location in the url
