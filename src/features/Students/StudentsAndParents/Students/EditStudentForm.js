@@ -27,15 +27,15 @@ const EditStudentForm = ({student}) => {
  const Navigate = useNavigate()
  const [selectedYear, setSelectedYear] = useState('')
  const academicYears = useSelector(selectAllAcademicYears)// to be used to show all academic years
-  
+  const[id, setId] = useState(student.id)
  const{userId,canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
  
   //initialising the function
   const [updateStudent, {
-    isUpdateLoading,
-    isUpdateSuccess,
-    isUpdateError,
-    updateError
+    isLoading: isUpdateLoading,
+    isSuccess: isUpdateSuccess,
+    isError: isUpdateError,
+    error:updateError
 }] = useUpdateStudentMutation()//it will not execute the mutation nownow but when called
 
 
@@ -113,8 +113,8 @@ if (schoolIsSuccess){
     const [gardienLastName, setGardienLastName] = useState(student.studentGardien.gardienLastName)
     const [gardienPhone, setGardienPhone] = useState(student.studentGardien.gardienPhone)
     const [gardienRelation, setGardienRelation] = useState(student.studentGardien.gardienRelation)
-    console.log('studddds',student)
-    console.log(student.studentGardien)
+    //console.log('studddds',student)
+    //console.log(student.studentGardien)
     
     const [studentEducation, setStudentEducation] = useState(student.studentEducation)//an array
     const [schoolYear, setSchoolYear] = useState(student.schoolYear)
@@ -141,8 +141,9 @@ if (schoolIsSuccess){
         
         
         useEffect(() => {
-          if (isUpdateSuccess) {//if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
-            
+        if (isUpdateSuccess) {//if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
+            console.log('updated!!!!!!')
+            setId(student.id)
             setFirstName('')
             setValidFirstName(false)
             setMiddleName('')
@@ -167,7 +168,7 @@ if (schoolIsSuccess){
             setNote('')
             setStudentEducation([])              
             setOperator('')
-            Navigate('/students/studentsParent/students/')//will navigate here after saving
+            Navigate('/students/studentsParents/students/')//will navigate here after saving
           }
         }, [isUpdateSuccess, Navigate])//even if no success it will navigate and not show any warning if failed or success
         
@@ -270,8 +271,9 @@ const handleRemoveEntry = (index) => {
         const onUpdateStudentClicked = async (e) => {  
           e.preventDefault()
             //generate the objects before saving
-            //console.log(` 'first name' ${userFirstName}', fullfirstname,' ${userFullName.userFirstName}', house: '${house}', usercontact house' ${userContact.house},    ${userRoles.length},${isParent}, ${isEmployee}` )
-            await updateStudent({ studentName, studentDob, studentSex, studentIsActive, studentYears, studentJointFamily , studentEducation, operator })//we call the add new user mutation and set the arguments to be saved
+            const toSave = {id,studentName, studentDob, studentSex, studentIsActive, studentYears,  studentJointFamily, studentEducation , studentGardien, operator }
+            console.log(toSave )
+            await updateStudent({id, studentName, studentDob, studentSex, studentIsActive, studentYears,  studentJointFamily, studentEducation , studentGardien, operator  })//we call the add new user mutation and set the arguments to be saved
             //added this to confirm save
             if (isUpdateError) {console.log('error savingg', updateError)//handle the error msg to be shown  in the logs??
             }
@@ -291,12 +293,12 @@ const handleRemoveEntry = (index) => {
       
       content = ( yearIsSuccess&&schoolIsSuccess&&   <>
         <StudentsParents/>
-        
+        <p className={`text-red-500 ${errClass}`}>{updateError?.data?.message}</p> {/* Display error messages */}
               <p className={errClass}>{updateError?.data?.message}</p>  {/*will display if there is an error message, some of the error messagees are defined in the back end responses*/}
   
               <form className="form" onSubmit={e=>e.preventDefault()}>
                   <div className="form__title-row">
-                      <h2>`Editing {firstName} {middleName} {lastName} Profile`</h2>
+                  <h2 className="text-2xl font-semibold">Editing {firstName} {middleName} {lastName} Profile</h2>
                       
                   </div>
                   
@@ -455,9 +457,10 @@ const handleRemoveEntry = (index) => {
                         onChange={(e) => handleGardienFieldChange(index, 'gardienYear', e.target.value)}
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
                       >
-                        <option value="">Select Year</option>
+                        
                        
-                          <option  value={selectedYear}> </option>
+                          <option  value={entry.gardienYear}>{entry.gardienYear}</option>
+                          
                        
                       </select>
                   </div>
