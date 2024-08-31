@@ -2,6 +2,7 @@ import React from 'react'
 import StudentsParents from '../../StudentsParents'
 import { useState, useEffect } from "react"
 import { useUpdateStudentMutation } from "./studentsApiSlice"
+import {useGetAttendedSchoolsQuery} from '../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice'
 import { useNavigate } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave } from "@fortawesome/free-solid-svg-icons"
@@ -10,7 +11,7 @@ import { ACTIONS } from '../../../../config/UserActions'
 import useAuth from '../../../../hooks/useAuth'
 import { useSelectedAcademicYear } from '../../../../hooks/useSelectedAcademicYears'
 import { useSelector } from 'react-redux'
-import { selectAllAcademicYears } from '../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
+import { selectAllAcademicYears, useGetAcademicYearsQuery } from '../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
 
  //constrains on inputs when creating new user
  const USER_REGEX = /^[A-z]{6,20}$/
@@ -31,11 +32,53 @@ const EditStudentForm = ({student}) => {
  
   //initialising the function
   const [updateStudent, {
-    isLoading,
-    isSuccess,
-    isError,
-    error
+    isUpdateLoading,
+    isUpdateSuccess,
+    isUpdateError,
+    updateError
 }] = useUpdateStudentMutation()//it will not execute the mutation nownow but when called
+
+
+
+const {
+  data: academicYearsList,//the data is renamed parents
+  isLoading: yearIsLoading,//monitor several situations
+  isSuccess: yearIsSuccess,
+  isError: yearIsError,
+  error: yearError
+} = useGetAcademicYearsQuery({endpointName: 'academicYearsList'}||{},{//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+  //pollingInterval: 60000,//will refetch data every 60seconds
+  refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
+  refetchOnMountOrArgChange: true//refetch when we remount the component
+})
+
+let yearsList
+if (yearIsSuccess){
+  const {entities} = academicYearsList
+  yearsList = Object.values(entities)
+  //console.log(yearsList)
+}
+
+const {
+  data: attendedSchoolsList,//the data is renamed parents
+  isLoading: schoolIsLoading,//monitor several situations
+  isSuccess: schoolIsSuccess,
+  isError: schoolIsError,
+  error: schoolError
+} = useGetAttendedSchoolsQuery({endpointName: 'attendedSchoolsList'}||{},{//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+  //pollingInterval: 60000,//will refetch data every 60seconds
+  refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
+  refetchOnMountOrArgChange: true//refetch when we remount the component
+})
+
+let attendedSchools
+if (schoolIsSuccess){
+  const {entities} = attendedSchoolsList
+  attendedSchools = Object.values(entities)
+  //console.log(attendedSchools)
+}
+
+
 
 //prepare the permission variables
 
@@ -98,7 +141,7 @@ const EditStudentForm = ({student}) => {
         
         
         useEffect(() => {
-          if (isSuccess) {//if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
+          if (isUpdateSuccess) {//if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
             
             setFirstName('')
             setValidFirstName(false)
@@ -126,7 +169,7 @@ const EditStudentForm = ({student}) => {
             setOperator('')
             Navigate('/students/studentsParent/students/')//will navigate here after saving
           }
-        }, [isSuccess, Navigate])//even if no success it will navigate and not show any warning if failed or success
+        }, [isUpdateSuccess, Navigate])//even if no success it will navigate and not show any warning if failed or success
         
         //handlers to get the individual states from the input
         
@@ -151,36 +194,86 @@ const EditStudentForm = ({student}) => {
         useEffect(()=>{
             setStudentName({firstName:firstName, middleName:middleName, lastName:lastName})},
         [firstName, middleName, lastName])
-        useEffect(()=> {
-            setStudentGardien({gardienFirstName:gardienFirstName, gardienMiddleName:gardienMiddleName, gardienLastName:gardienLastName, gardienPhone:gardienPhone, gardienRelation:gardienRelation})
-        }, [gardienFirstName, gardienMiddleName, gardienLastName, gardienPhone, gardienRelation])
-        
-        useEffect(()=>{
-          setStudentEducation(prev=>[...prev,{schoolYear:schoolYear, attendedSchool:attendedSchool, note:note}])},
-          [schoolYear, attendedSchool, note])
+       
 
       
-      //adds to the previous entries in arrays for gardien, schools...
-      const onStudentYearsChanged = (e, selectedYear) => {
-        if (e.target.checked) {
-          // Add the selectedYear to studentYears if it's checked
-          setStudentYears([...studentYears, selectedYear]);
-        } else {
-          // Remove the selectedYear from studentYears if it's unchecked
-          setStudentYears(studentYears.filter(year => year !== selectedYear))
-        }
-      }
+      // //adds to the previous entries in arrays for gardien, schools...
+      // const onStudentYearsChanged = (e, selectedYear) => {
+      //   if (e.target.checked) {
+      //     // Add the selectedYear to studentYears if it's checked
+      //     setStudentYears([...studentYears, selectedYear]);
+      //   } else {
+      //     // Remove the selectedYear from studentYears if it's unchecked
+      //     setStudentYears(studentYears.filter(year => year !== selectedYear))
+      //   }
+      // }
+     
+ // to deal with student gardien entries:
+ // Handler to update an entry field
+ const handleGardienFieldChange = (index, field, value) => {
+  const updatedEntries = [...studentGardien];
+  updatedEntries[index][field] = value;
+  setStudentGardien(updatedEntries);
+};
+
+// Handler to add a new education entry
+const handleAddGardienEntry = () => {
+  setStudentGardien([
+    ...studentGardien,
+    { gardienFirstName: '', gardienMiddleName: '', gardienLastName: '', gardienPhone: '',gardienRelation: '', gardienYear:''}
+  ])
+}
+
+// Handler to remove an education entry
+const handleRemoveGardienEntry = (index) => {
+  const updatedEntries = studentGardien.filter((_, i) => i !== index);
+  setStudentGardien(updatedEntries);
+};
+
+
+// to deal with student education entries:
+// Handler to update an entry field
+const handleFieldChange = (index, field, value) => {
+  const updatedEntries = [...studentEducation];
+  updatedEntries[index][field] = value;
+  setStudentEducation(updatedEntries);
+};
+
+// Handler to add a new education entry
+const handleAddEntry = () => {
+  setStudentEducation([
+    ...studentEducation,
+    { schoolYear: '', attendedSchool: '', note: '' }
+  ])
+}
+
+// Handler to remove an education entry
+const handleRemoveEntry = (index) => {
+  const updatedEntries = studentEducation.filter((_, i) => i !== index);
+  setStudentEducation(updatedEntries);
+};
+
+
+
+
+
+
+
+
 
         //to check if we can save before onsave, if every one is true, and also if we are not loading status
-        const canSave = [validFirstName, validLastName, validStudentDob, studentSex ].every(Boolean) && !isLoading
+        const canSave = [validFirstName, validLastName, validStudentDob, studentSex ].every(Boolean) && !isUpdateLoading
         
        
-        const onSaveStudentClicked = async (e) => {  
+
+
+        const onUpdateStudentClicked = async (e) => {  
+          e.preventDefault()
             //generate the objects before saving
             //console.log(` 'first name' ${userFirstName}', fullfirstname,' ${userFullName.userFirstName}', house: '${house}', usercontact house' ${userContact.house},    ${userRoles.length},${isParent}, ${isEmployee}` )
             await updateStudent({ studentName, studentDob, studentSex, studentIsActive, studentYears, studentJointFamily , studentEducation, operator })//we call the add new user mutation and set the arguments to be saved
             //added this to confirm save
-            if (isError) {console.log('error savingg', error)//handle the error msg to be shown  in the logs??
+            if (isUpdateError) {console.log('error savingg', updateError)//handle the error msg to be shown  in the logs??
             }
           }
         
@@ -189,241 +282,315 @@ const EditStudentForm = ({student}) => {
         }
         
         //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
-        const errClass = isError ? "errmsg" : "offscreen"
+        const errClass = isUpdateError ? "errmsg" : "offscreen"
         //const validStudentClass = !validStudentName ? 'form__input--incomplete' : ''
         //const validPwdClass = !validPassword ? 'form__input--incomplete' : ''
         //const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
         
         let content
       
-      content = (<>
+      content = ( yearIsSuccess&&schoolIsSuccess&&   <>
         <StudentsParents/>
         
-              <p className={errClass}>{error?.data?.message}</p>  {/*will display if there is an error message, some of the error messagees are defined in the back end responses*/}
+              <p className={errClass}>{updateError?.data?.message}</p>  {/*will display if there is an error message, some of the error messagees are defined in the back end responses*/}
   
               <form className="form" onSubmit={e=>e.preventDefault()}>
                   <div className="form__title-row">
-                      <h2>Edit Student Form</h2>
+                      <h2>`Editing {firstName} {middleName} {lastName} Profile`</h2>
                       
                   </div>
-                  <div>
-                  <label className="form__label" htmlFor="firstName">
-                      First Name* : <span className="nowrap">[3-20 letters]</span></label>
-                  <input
-                      className=''
-                      id="firstName"
-                      name="firstName"
-                      type="text"
-                      autoComplete="off"
-                      value={firstName}
-                      onChange={onFirstNameChanged}
-                  />
-                  <label className="form__label" htmlFor="middleName">
-                     Middle Name : <span className="nowrap"></span></label>
-                  <input
-                      className=''
-                      id="middleName"
-                      name="middleName"
-                      type="text"
-                      autoComplete="off"
-                      value={middleName}
-                      onChange={onMiddleNameChanged}
-                  />
-                  </div>
-                  <div>
-                  <label className="form__label" htmlFor="lastName">
-                      Last Name* : <span className="nowrap">[3-20 letters]</span></label>
-                  <input
-                      className=''
-                      id="lastName"
-                      name="lastName"
-                      type="text"
-                      autoComplete="off"
-                      value={lastName}
-                      onChange={onLastNameChanged}
-                  />
-                   <label className="form__label" htmlFor="userDob">
-                      Date Of Birth* : <span className="nowrap">[dd/mm/yyyy]</span></label>
-                  <input
-                      className=''
-                      id="studentDob"
-                      name="studentDob"
-                      type="date"
-                      autoComplete="off"
-                      value={studentDob}
-                      onChange={onStudentDobChanged}
-                  />
-                  </div>
-                  <div>
-                  <label> <div style={{ marginTop: '10px' }}>
-                      User Sex: {studentSex}
-                  </div><br/>
-                      <input
-                      type="radio"
-                      value="Male"
-                      checked={studentSex === 'Male'}
-                      onChange={onStudentSexChanged}
-                      />
-                      Male
-                  </label>
-  
-                  <label style={{ marginLeft: '10px' }}>
-                      <input
-                      type="radio"
-                      value="Female"
-                      checked={studentSex === 'Female'}
-                      onChange={onStudentSexChanged}
-                      />
-                      Female
-                  </label>
-  
                   
-                  </div>
-                 
-                  <label>
+                  <div className="grid gap-6 mb-6 md:grid-cols-2">
+              <div>
+                <label className="block text-sm font-medium text-gray-700" htmlFor="firstName">
+                  First Name* <span className="text-gray-500 text-xs">[3-20 letters]</span>
+                </label>
+                <input
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                  id="firstName"
+                  name="firstName"
+                  type="text"
+                  autoComplete="off"
+                  value={firstName}
+                  onChange={onFirstNameChanged}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700" htmlFor="middleName">
+                  Middle Name
+                </label>
+                <input
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                  id="middleName"
+                  name="middleName"
+                  type="text"
+                  autoComplete="off"
+                  value={middleName}
+                  onChange={onMiddleNameChanged}
+                />
+              </div>
+      
+              <div>
+                <label className="block text-sm font-medium text-gray-700" htmlFor="lastName">
+                  Last Name* <span className="text-gray-500 text-xs">[3-20 letters]</span>
+                </label>
+                <input
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                  id="lastName"
+                  name="lastName"
+                  type="text"
+                  autoComplete="off"
+                  value={lastName}
+                  onChange={onLastNameChanged}
+                />
+              </div>
+      
+              <div>
+                <label className="block text-sm font-medium text-gray-700" htmlFor="studentDob">
+                  Date Of Birth* <span className="text-gray-500 text-xs">[dd/mm/yyyy]</span>
+                </label>
+                <input
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                  id="studentDob"
+                  name="studentDob"
+                  type="date"
+                  autoComplete="off"
+                  value={studentDob}
+                  onChange={onStudentDobChanged}
+                />
+              </div>
+            </div>
+
+
+            <div className="mb-6">
+              <div className="flex items-center mb-2">
+                <input
+                  type="checkbox"
+                  id="male"
+                  value="Male"
+                  checked={studentSex === 'Male'}
+                  onChange={onStudentSexChanged}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label htmlFor="male" className="ml-2 text-sm font-medium text-gray-700">Male</label>
+      
+                <input
+                  type="checkbox"
+                  id="female"
+                  value="Female"
+                  checked={studentSex === 'Female'}
+                  onChange={onStudentSexChanged}
+                  className="ml-6 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label htmlFor="female" className="ml-2 text-sm font-medium text-gray-700">Female</label>
+              </div>
+      
+              <div className="flex items-center mb-2">
+                <input
+                  type="checkbox"
+                  id="active"
+                  value={studentIsActive}
+                  checked={studentIsActive}
+                  onChange={onStudentIsActiveChanged}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label htmlFor="active" className="ml-2 text-sm font-medium text-gray-700">Student Is Active</label>
+              </div>
+      
+              <div className="flex items-center mb-2">
+                <input
+                  type="checkbox"
+                  id="jointFamily"
+                  value={studentJointFamily}
+                  checked={studentJointFamily}
+                  onChange={onStudentJointFamilyChanged}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label htmlFor="jointFamily" className="ml-2 text-sm font-medium text-gray-700">Student Joint Family</label>
+              </div>
+              
+            </div>
+      
+            <div className="mb-6">
+              <h3 className="text-xl font-semibold mb-2">Student Gardien</h3>
+              {Array.isArray(studentGardien) && studentGardien.length > 0 && studentGardien.map((entry, index) => (
+                <div key={index} className="bg-gray-50 p-4 rounded-lg shadow-sm mb-4">
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor={`gardienFirstName-${index}`}>First Name:</label>
                     <input
-                    type="checkbox"
-                    value={studentIsActive}
-                    checked={studentIsActive}
-                    onChange={onStudentIsActiveChanged}
+                      id={`gardienFirstName-${index}`}
+                      type="text"
+                      value={entry.gardienFirstName}
+                      onChange={(e) => handleGardienFieldChange(index, 'gardienFirstName', e.target.value)}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
                     />
-                    Student Is Active
-                    </label>
-                    <h1>Student Years: </h1>
-                    <div className="flex flex-wrap space-x-4">
-                        {academicYears.map((year, index) => (
-                            <label key={year.title} className="flex items-center">
-                            <input
-                                type="checkbox"
-                                value={year.title}
-                                checked={studentYears.includes(year.title)}
-                                onChange={(e) => onStudentYearsChanged(e, year.title)}
-                                disabled= {(selectedYear ? false:true)  }                         />
-                            {year.title}
-                            </label>
-                        ))}
-                        </div>
-                  <label>
-                    <input
-                    type="checkbox"
-                    value={studentJointFamily}
-                    checked={studentJointFamily}
-                    onChange={onStudentJointFamilyChanged}
-                    />
-                    Student Joint family
-                    </label>
-                 
-                  
-                  <label className="form__label" htmlFor="gardienFirstName">
-                      Gardien First Name : <span className="nowrap">[3-20 letters]</span></label>
-                  <input
-                      className=''
-                      id="gardienFirstName"
-                      name="gardienFirstName"
-                      type="text"
-                      autoComplete="off"
-                      value={gardienFirstName}
-                      onChange={onGardienFirstNameChanged}
-                  />
-                  <label className="form__label" htmlFor="gardienMiddleName">
-                      Gardien Middle Name : <span className="nowrap"></span></label>
-                  <input
-                      className=''
-                      id="gardienMiddleName"
-                      name="gardienMiddleName"
-                      type="text"
-                      autoComplete="off"
-                      value={gardienMiddleName}
-                      onChange={onGardienMiddleNameChanged}
-                  />
-                  <label className="form__label" htmlFor="gardienLastName">
-                      Gardien Last Name : <span className="nowrap">[3-20 letters]</span></label>
-                  <input
-                      className=''
-                      id="gardienLastName"
-                      name="gardienLastName"
-                      type="text"
-                      autoComplete="off"
-                      value={gardienLastName}
-                      onChange={onGardienLastNameChanged}
-                  />
-                  <label className="form__label" htmlFor="gardienRelation">
-                      Gardien Relation : <span className="nowrap">[3-20 letters]</span></label>
-                  <input
-                      className=''
-                      id="gardienRelation"
-                      name="gardienRelation"
-                      type="text"
-                      autoComplete="off"
-                      value={gardienRelation}
-                      onChange={onGardienRelationChanged}
-                  />
-                  <label className="form__label" htmlFor="gardienPhone">
-                      Gardien Phone : <span className="nowrap"></span></label>
-                  <input
-                      className=''
-                      id="gardienPhonee"
-                      name="gardienPhone"
-                      type="text"
-                      autoComplete="off"
-                      value={gardienPhone}
-                      onChange={onGardienPhoneChanged}
-                  />
-                  <label className="form__label" htmlFor="schoolYear">
-                      School Year : <span className="nowrap"></span></label>
-                  <input
-                      className=''
-                      id="schoolYear"
-                      name="schoolYear"
-                      type="text"
-                      autoComplete="off"
-                      value={schoolYear}
-                      onChange={onSchoolYearChanged}
-                  />
-                  <div>
-                  <label className="form__label" htmlFor="attendedSchool">
-                      Attended School: <span className="nowrap"></span></label>
-                  <input
-                      className=''
-                      id="attendedSchool"
-                      name="attendedSchool"
-                      type="text"
-                      autoComplete="off"
-                      value={attendedSchool}
-                      onChange={onAttendedSchoolChanged}
-                  />
-                  <label className="form__label" htmlFor="note">
-                      Note : <span className="nowrap"></span></label>
-                  <input
-                      className=''
-                      id="note"
-                      name="note"
-                      type="text"
-                      autoComplete="off"
-                      value={note}
-                      onChange={onNoteChanged}
-                  />
                   </div>
-                 
-                <div className="flex justify-end items-center space-x-4">
-                      <button 
-                          className=" px-4 py-2 bg-green-500 text-white rounded"
-                          type='submit'
-                          title="Save"
-                          onClick={onSaveStudentClicked}
-                          disabled={!canSave}
-                          >
-                          Save Changes
-                      </button>
-                      <button 
-                      className=" px-4 py-2 bg-red-500 text-white rounded"
-                      onClick={handleCancel }
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor={`gardienMiddleName-${index}`}>Middle Name:</label>
+                    <input
+                      id={`gardienMiddleName-${index}`}
+                      type="text"
+                      value={entry.gardienMiddleName}
+                      onChange={(e) => handleGardienFieldChange(index, 'gardienMiddleName', e.target.value)}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor={`gardienLastName-${index}`}>Last Name:</label>
+                    <input
+                      id={`gardienLastName-${index}`}
+                      type="text"
+                      value={entry.gardienLastName}
+                      onChange={(e) => handleGardienFieldChange(index, 'gardienLastName', e.target.value)}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor={`gardienYear-${index}`}>gardienYear:</label>
+                   
+                    <select
+                        id={`gardienYear-${index}`}
+                        value={entry.gardienYear}
+                        onChange={(e) => handleGardienFieldChange(index, 'gardienYear', e.target.value)}
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
                       >
-                      Cancel
-                      </button>
+                        <option value="">Select Year</option>
+                       
+                          <option  value={selectedYear}> </option>
+                       
+                      </select>
                   </div>
-  
-  
+
+
+
+
+
+
+
+                 
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor={`gardienRelation-${index}`}>Relation To Student :</label>
+                    <input
+                      id={`gardienRelation-${index}`}
+                      type="text"
+                      value={entry.gardienRelation}
+                      onChange={(e) => handleGardienFieldChange(index, 'gardienRelation', e.target.value)}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor={`gardienPhone-${index}`}>Phone Number:</label>
+                    <input
+                      id={`gardienPhone-${index}`}
+                      type="text"
+                      value={entry.gardienPhone}
+                      onChange={(e) => handleGardienFieldChange(index, 'gardienPhone', e.target.value)}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                    />
+                  </div>
+      
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveGardienEntry(index)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    Remove Entry
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                onClick={handleAddGardienEntry}
+              >
+                Add Student Gardien
+              </button>
+            </div>
+      
+            <div className="mb-6">
+              <h3 className="text-xl font-semibold mb-2">Student Education</h3>
+              {Array.isArray(studentEducation) && studentEducation.length > 0 && studentEducation.map((entry, index) => (
+                <div key={index} className="bg-gray-50 p-4 rounded-lg shadow-sm mb-4">
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor={`schoolYear-${index}`}>School Year:</label>
+                    <select
+                      id={`schoolYear-${index}`}
+                      value={entry.schoolYear}
+                      onChange={(e) => handleFieldChange(index, 'schoolYear', e.target.value)}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                    >
+                      <option value="">Select Year</option>
+                      {yearsList.map((year) => (
+                        <option key={year.id} value={year.title}>
+                          {year.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor={`attendedSchool-${index}`}>Attended School:</label>
+                    <select
+                      id={`attendedSchool-${index}`}
+                      value={entry.attendedSchool}
+                      onChange={(e) => handleFieldChange(index, 'attendedSchool', e.target.value)}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                    >
+                      <option value="">Select School</option>
+                      {schoolIsSuccess && attendedSchools.map((school) => (
+                        <option key={school.id} value={school.id}>
+                          {school.schoolName}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor={`note-${index}`}>Note:</label>
+                    <input
+                      id={`note-${index}`}
+                      type="text"
+                      value={entry.note}
+                      onChange={(e) => handleFieldChange(index, 'note', e.target.value)}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                    />
+                  </div>
+      
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveEntry(index)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    Remove Entry
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                onClick={handleAddEntry}
+              >
+                Add Student Education
+              </button>
+            </div>
+      
+            <div className="flex justify-end space-x-4">
+              <button
+                type="submit"
+                className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+                title="Save"
+                onClick={onUpdateStudentClicked}
+                disabled={!canSave}
+              >
+                Save Changes
+              </button>
+              <button
+                type="button"
+                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                onClick={handleCancel}
+              >
+                Cancel
+              </button>
+            </div>
               </form>
            
       

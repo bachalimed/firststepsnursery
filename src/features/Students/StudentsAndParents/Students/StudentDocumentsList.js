@@ -136,10 +136,12 @@ const handleCloseDeleteModal = () => {
   setIsDeleteModalOpen(false);
   setIdStudentDocumentToDelete(null);
 };
-
+const[documentTitle, setDocumentTitle] = useState('')
 //modal to upload document
-const handleUploadClick = () => {
-    setIsUploadModalOpen(true);
+const handleUploadClick = (documentTitle, documentReference) => {
+    setIsUploadModalOpen(true)
+    setDocumentTitle(documentTitle)
+    setStudentDocumentReference(documentReference)
 }
 // now that the modal has returned the required data:{ studentId, studentDocumentYear, studentDocumentLabel, studentDocumentType, file
 
@@ -208,7 +210,7 @@ const handleViewDocument = async (id) => {
 
 useEffect(() => {
     if (uploadIsSuccess) {//if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
-      setStudentId(studentId)//to ensure it is always present in teh future requests in the same page
+      //setStudentId(studentId)//to ensure it is always present in teh future requests in the same page
       //setStudentDocumentYear('')
       setStudentDocumentLabel('')
       setStudentDocumentReference('')
@@ -289,7 +291,7 @@ const column =[
           <GrView fontSize={20}/> 
           </button>)}
        
-        {canEdit&&!row.documentUploaded&&(<button  className="text-yellow-400" onClick={handleUploadClick}  > 
+        {canEdit&&!row.documentUploaded&&(<button  className="text-yellow-400" onClick={()=>handleUploadClick(row.documentTitle, row.documentReference)}  > 
         <GrDocumentUpload fontSize={20}/> 
         </button>)}
         {canDelete&& row.documentUploaded && !isDelLoading &&(<button className="text-red-500"  onClick={() => onDeleteStudentDocumentClicked(row.studentDocumentId)}>
@@ -308,7 +310,7 @@ const column =[
     content = <p className="errmsg">{listError?.data?.message}</p>//errormessage class defined in the css, the error has data and inside we have message of error
   }
    if (listIsSuccess){
-  
+  console.log(studentDocumentsListing)
    content = 
     <>  {isDelSuccess && <p>Document deleted successfully!</p>}
   
@@ -354,9 +356,9 @@ const column =[
                 isOpen={isUploadModalOpen} 
                 onRequestClose={() => setIsUploadModalOpen(false)} 
                 studentId={studentId}
-                studentDocumentsListing={studentDocumentsListing}
                 year={studentDocumentYear}
-                listIsSuccess={listIsSuccess}
+                documentTitle={documentTitle}
+                studentDocumentReference={studentDocumentReference}
                 onUpload={handleUpload}
             />
      <ViewDocumentModal

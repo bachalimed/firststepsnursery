@@ -216,7 +216,7 @@ if (yearIsSuccess){
   const handleAddGardienEntry = () => {
     setStudentGardien([
       ...studentGardien,
-      { gardienFirstName: '', gardienMiddleName: '', gardienLastName: '', gardienPhone: '',gardienRelation: ''}
+      { gardienFirstName: '', gardienMiddleName: '', gardienLastName: '', gardienPhone: '',gardienRelation: '', gardienYear:''}
     ])
   }
 
@@ -412,7 +412,7 @@ if (yearIsSuccess){
                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
                 
-            <label htmlFor="studentYears" className="ml-2 text-sm font-medium text-gray-700">Student Year {selectedYear}</label>            
+            <label htmlFor="studentYears" className="ml-2 text-sm font-medium text-gray-700">Student Year*: {selectedYear}</label>            
                      
              </div>
             </div>
@@ -452,7 +452,32 @@ if (yearIsSuccess){
                     />
                   </div>
                   <div className="mb-2">
-                    <label className="block text-sm font-medium text-gray-700" htmlFor={`gardienRelation-${index}`}>Relation To Student Name:</label>
+                    <label className="block text-sm font-medium text-gray-700" htmlFor={`gardienYear-${index}`}>gardienYear:</label>
+                   
+                    <select
+                        id={`gardienYear-${index}`}
+                        value={entry.gardienYear}
+                        onChange={(e) => handleGardienFieldChange(index, 'gardienYear', e.target.value)}
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                      >
+                        <option value="">Select Year</option>
+                        {yearsList.map((year) => (
+                          <option key={year.id} value={year.title}>
+                            {year.title}
+                          </option>
+                        ))}
+                      </select>
+                  </div>
+
+
+
+
+
+
+
+                 
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor={`gardienRelation-${index}`}>Relation To Student :</label>
                     <input
                       id={`gardienRelation-${index}`}
                       type="text"
@@ -504,7 +529,7 @@ if (yearIsSuccess){
                     >
                       <option value="">Select Year</option>
                       {yearsList.map((year) => (
-                        <option key={year.id} value={year.id}>
+                        <option key={year.id} value={year.title}>
                           {year.title}
                         </option>
                       ))}
