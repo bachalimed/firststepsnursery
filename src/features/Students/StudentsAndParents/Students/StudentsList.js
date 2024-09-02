@@ -211,11 +211,20 @@ const column =[
   }, 
   //show this column only if user is a parent and not employee
 
-  (status2)&&{ 
+  (isAdmin)&&{ 
 name: "ID",
 selector:row=>( <Link to={`/students/studentsParents/student/studentDetails/${row.id}`} >{row.id} </Link> ),
 sortable:true,
 width:'200px'
+ }, 
+
+  { 
+name: "Student Name",
+selector:row=>( <Link to={`/students/studentsParents/student/studentDetails/${row.id}`}> {row.studentName.firstName+" "+row.studentName.middleName+" "+row.studentName.lastName}</Link>
+  
+),
+sortable:true,
+width:'260px'
  }, 
  { 
   name: "Sex",
@@ -233,14 +242,6 @@ width:'200px'
   removableRows:true,
   width:'70px'
   }, 
-  { 
-name: "Student Name",
-selector:row=>( <Link to={`/students/studentsParents/student/studentDetails/${row.id}`}> {row.studentName.firstName+" "+row.studentName.middleName+" "+row.studentName.lastName}</Link>
-  
-),
-sortable:true,
-width:'260px'
- }, 
   
 {name: "DOB",
   selector:row=>new Date(row.studentDob).toLocaleString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' }),
@@ -258,14 +259,15 @@ width:'260px'
 // }, 
 
 
-{name: "Student Years",
+{name: "Registered",
   
   selector:row=>( 
   <div>{row.studentYears.map(year=> (
     <div key ={year.academicYear}>{year.academicYear}</div>))}
   </div>),
   sortable:true,
-  removableRows:true
+  removableRows:true,
+  width:'120px',
 },
 {name: "Documents",
   selector:row=>( <Link to={`/students/studentsParents/studentDocumentsList/${row.id}`} > <IoDocumentAttachOutline className='text-gray-500 text-2xl'/></Link> ),
@@ -279,7 +281,7 @@ width:'260px'
   name: "Actions",
   cell: row => (
     <div className="space-x-1">
-      <button className="text-blue-500" fontSize={20}  onClick={() => Navigate(`/students/studentsParents/student/studentDetails/${row.id}`)}  > 
+      <button className="text-blue-500" fontSize={20}  onClick={() => Navigate(`/students/studentsParents/studentDetails/${row.id}`)}  > 
         <ImProfile fontSize={20}/> 
         </button>
       {canEdit?(<button  className="text-yellow-400" onClick={() => Navigate(`/students/studentsParents/edit/${row.id}`)}  > 
