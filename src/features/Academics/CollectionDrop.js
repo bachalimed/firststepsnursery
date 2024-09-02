@@ -16,13 +16,13 @@ const CollectionDropTabs=
 let content 
 content = (
   
-    <div className="flex bg-gray-300 justify-left  ">  
-      <ul className='flex gap-2 px-2 py-2 bg-gray-300'>
-        <Link to={'/academics/collectionDrop/'}><li >drop1 </li></Link>
-        <Link to={'/academics/collectionDrop/'}><li >drop2</li></Link>
-        <Link to={'/academics/collectionDrop/'}><li >drop3</li></Link>
+  <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6"> 
+     
+        <Link to={'/academics/collectionDrop/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer" >drop1 </li></Link>
+        <Link to={'/academics/collectionDrop/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer" >drop2</li></Link>
+        <Link to={'/academics/collectionDrop/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer" >drop3</li></Link>
         <AcademicYearsSelection/>
-      </ul>
+     
     </div>
   )
  return content

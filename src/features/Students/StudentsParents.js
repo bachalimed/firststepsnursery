@@ -23,16 +23,17 @@ const studentsParentTabs=
   
 const content = (
   
-    <div className="flex bg-gray-300 justify-left  ">  
-      <ul className='flex gap-5 px-2 py-2 bg-gray-300'>
-        <Link to={'/students/studentsParents/students/'}><li >Students</li></Link>
-        <Link to={'/students/studentsParents/parents/'}><li >Parents</li></Link>
-        <Link to={'/students/studentsParents/newStudent/'}><li >New Student</li></Link>
-        <Link to={'/students/studentsParents/reregister/'}><li >Re-register Student</li></Link>
-        <Link to={'/students/studentsParents/newParent/'}><li >New Parent</li></Link>
+    <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6">  
+      
+        <Link to={'/students/studentsParents/students/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer" >Students</li></Link>
+        <Link to={'/students/studentsParents/parents/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer" >Parents</li></Link>
+        <Link to={'/students/studentsParents/families/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">Families</li></Link>
+        <Link to={'/students/studentsParents/newStudent/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">New Student</li></Link>
+    
+        <Link to={'/students/studentsParents/newParent/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">New Parent</li></Link>
         <AcademicYearsSelection/>
         
-      </ul>
+     
     </div>
   )
  return content

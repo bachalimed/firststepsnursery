@@ -13,12 +13,12 @@ const employeesTabs=
 let content
 content = (
   
-    <div className="flex bg-gray-300 justify-left  ">  
-      <ul className='flex gap-2 px-2 py-2 bg-gray-300'>
-        <Link to={'/hr/employees/employees/'}><li >All Employees</li></Link>
-        <Link to={'/hr/employees/newEmployee'}><li >New Employee </li></Link>
-        <Link to={'/hr/employees/'}><li >option3</li></Link>
-      </ul>
+  <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6">  
+
+        <Link to={'/hr/employees/employees/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer" >All Employees</li></Link>
+        <Link to={'/hr/employees/newEmployee'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer" >New Employee </li></Link>
+        <Link to={'/hr/employees/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">option3</li ></Link>
+    
     </div>
   )
  return content

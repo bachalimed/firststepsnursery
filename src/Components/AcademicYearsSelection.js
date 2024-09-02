@@ -61,17 +61,17 @@ const handleSelectedAcademicYear =(e) =>{
  
   const content = (
      
-      <Field className=' flex flex-col items-center'>
-        <Label className="text-sm/5 font-medium text-black ">Academic Year</Label>
+      <Field className="flex items-center space-x-4">
+        <Label className="text-sm font-medium text-black">Academic Year</Label>
         {/* <Description className="text-sm/6 text-white/50"> clients on the project.</Description> */}
         <div className="inline-flex relative">
-          <BsChevronDown className="absolute right-2 top-2" aria-hidden="true" />
+          <BsChevronDown className="absolute right-2 top-3 pointer-events-none text-gray-400"  aria-hidden="true" />
           {/*add defaultvalue the curretn  academic year to select */}
           <Select 
             name="SelectedAcademicYear"  
            
             onChange={handleSelectedAcademicYear}  
-            className= ' relative mt-1  w-32 data-[hover]:shadow block data-[focus]:bg-blue-200 appearance-none rounded-sm border-gray-600 bg-white/5 py-0 px-3 text-md/6 text-gray-900 border '
+            className="relative mt-1 w-36 pl-3 pr-8 py-2 text-md text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
           {academicYears.map(year=> (<option key= {year.id} value ={year.id}  className=''> {year.title} </option> ))}
           </Select>

@@ -14,13 +14,13 @@ const schoolPlanningsTabs = {title:"School Plannings",
   let content 
   content = (
   
-    <div className="flex bg-gray-300 justify-left  ">  
-      <ul className='flex gap-2 px-2 py-2 bg-gray-300'>
-        <Link to={'/academics/schoolPlannings/'}><li >Week Planning</li></Link>
-        <Link to={'/academics/schoolPlannings/'}><li >Day plan</li></Link>
-        <Link to={'/academics/schoolPlannings/'}><li >New Student</li></Link>
+    <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6">  
+     
+        <Link to={'/academics/schoolPlannings/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer" >Week Planning</li></Link>
+        <Link to={'/academics/schoolPlannings/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer" >Day plan</li></Link>
+        <Link to={'/academics/schoolPlannings/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer" >New Student</li></Link>
         <AcademicYearsSelection/>
-      </ul>
+      
     </div>
   )
  return content

@@ -12,14 +12,14 @@ const tasksTabs=
   }
 let content = (
   
-    <div className="flex bg-gray-300 justify-left  ">  
-      <ul className='flex gap-2 px-2 py-2 bg-gray-300'>
-        <Link to={'/desk/tasks/tasks/'}><li >All Tasks</li></Link>
-        <Link to={'/desk/tasks/myTasks/'}><li >My Taskss </li></Link>
-        <Link to={'/desk/tasks/newTask'}><li >New Task </li></Link>
-        <Link to={'/desk/tasks/'}><li >Task 3</li></Link>
+  <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6">  
+  
+        <Link to={'/desk/tasks/tasks/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">All Tasks</li></Link>
+        <Link to={'/desk/tasks/myTasks/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">My Taskss </li></Link>
+        <Link to={'/desk/tasks/newTask'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">New Task </li></Link>
+        <Link to={'/desk/tasks/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">Task 3</li></Link>
         <AcademicYearsSelection/>
-      </ul>
+  
     </div>
   )
  return content

@@ -33,13 +33,13 @@ const academicsSetTabs=
 let content
 content = (
   
-    <div className="flex bg-gray-300 justify-left  ">  
-      <ul className='flex gap-4 px-2 py-2 bg-gray-300'>
-        <Link to={'/settings/academicsSet/academicYears/'}><li >Academic Years</li></Link>
-        <Link to={'/settings/academicsSet/attendedSchools/'}><li >attendedSchools </li></Link>
-        <Link to={'/settings/academicsSet'}><li >option3</li></Link>
+    <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6">  
+     
+        <Link to={'/settings/academicsSet/academicYears/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">Academic Years</li></Link>
+        <Link to={'/settings/academicsSet/attendedSchools/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">attendedSchools </li></Link>
+        <Link to={'/settings/academicsSet'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">option3</li></Link>
         <AcademicYearsSelection/>
-      </ul>
+    
     </div>
   )
  return content

@@ -13,13 +13,13 @@ const Enrolments = () => {
     let content 
     content = (
   
-      <div className="flex bg-gray-300 justify-left  ">  
-        <ul className='flex gap-2 px-2 py-2 bg-gray-300'>
-          <Link to={'/students/admissions/allEnrolments'}><li >All Enrolments</li></Link>
-          <Link to={'/students/admissions/newEnrolment'}><li >New Enrolment</li></Link>
-          <Link to={'/students/admissions/ffefef'}><li >blabla</li></Link>
+      <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6"> 
+
+          <Link to={'/students/admissions/allEnrolments'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer" >All Enrolments</li></Link>
+          <Link to={'/students/admissions/newEnrolment'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer" >New Enrolment</li></Link>
+          <Link to={'/students/admissions/ffefef'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer" >blabla</li></Link>
           <AcademicYearsSelection/>
-        </ul>
+
       </div>
     )
    return content

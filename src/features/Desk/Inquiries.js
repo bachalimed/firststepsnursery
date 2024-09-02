@@ -14,13 +14,13 @@ const inquiriesTabs=
 
 let content = (
   
-    <div className="flex bg-gray-300 justify-left  ">  
-      <ul className='flex gap-2 px-2 py-2 bg-gray-300'>
-        <Link to={'/desk/inquiries/'}><li >all Inquiries</li></Link>
-        <Link to={'/desk/inquiries/'}><li >New Inquiry </li></Link>
-        <Link to={'/desk/inquiries/'}><li >Inquiry 3</li></Link>
+  <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6">  
+  
+        <Link to={'/desk/inquiries/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer" >all Inquiries</li></Link>
+        <Link to={'/desk/inquiries/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer" >New Inquiry </li></Link>
+        <Link to={'/desk/inquiries/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer" >Inquiry 3</li></Link>
         <AcademicYearsSelection/>
-      </ul>
+
     </div>
   )
  return content

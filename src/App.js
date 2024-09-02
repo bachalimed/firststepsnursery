@@ -10,6 +10,8 @@ import Dashboard from './features/Dashboard/Dashboard'
 import StudentsParents from './features/Students/StudentsParents'
 import StudentsList from './features/Students/StudentsAndParents/Students/StudentsList'
 import ParentsList from './features/Students/StudentsAndParents/Parents/ParentsList'
+import FamiliesList from './features/Students/StudentsAndParents/Families/FamiliesList'
+import FamilyDetails from './features/Students/StudentsAndParents/Families/FamilyDetails'
 import EditStudent from './features/Students/StudentsAndParents/Students/EditStudent'
 import EditParent from './features/Students/StudentsAndParents/Parents/EditParent'
 import NewStudentForm from './features/Students/StudentsAndParents/Students/NewStudentForm'
@@ -150,6 +152,10 @@ const App = () => {
 										<Route path=":id/" element={<ParentDetails />}/>
 										
 									</Route> {/* end of Parents route */}
+									<Route path="families/" element={<FamiliesList />}>
+										<Route path=":id/" element={<FamilyDetails />}/>
+										
+									</Route> {/* end of Families route */}
 
 																											
 																													

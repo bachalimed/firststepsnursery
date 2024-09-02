@@ -1,6 +1,6 @@
 
 
-import {  useGetStudentsQuery, useGetStudentsByYearQuery, useDeleteStudentMutation } from "./studentsApiSlice"
+import {  useGetStudentsQuery, useUpdateStudentMutation, useGetStudentsByYearQuery, useDeleteStudentMutation } from "./studentsApiSlice"
 import { HiOutlineSearch } from 'react-icons/hi'
 import StudentsParents from "../../StudentsParents"
 import DataTable from 'react-data-table-component'
@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux'
 import {  selectAllStudentsByYear, selectAllStudents } from './studentsApiSlice'//use the memoized selector 
 import { useEffect, useState } from "react"
 import DeletionConfirmModal from '../../../../Components/Shared/Modals/DeletionConfirmModal'
-
+import RegisterModal from './RegisterModal'
 import { Link } from 'react-router-dom'
 import { useNavigate } from "react-router-dom"
 import { ImProfile } from "react-icons/im"
@@ -22,12 +22,12 @@ import { LiaMaleSolid, LiaFemaleSolid  } from "react-icons/lia";
 import { useDispatch } from "react-redux"
 import { setSomeStudents, setStudents, currentStudentsList } from "./studentsSlice"
 import { IoDocumentAttachOutline } from "react-icons/io5";
-
+import {selectAllAcademicYears} from '../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
 const StudentsList = () => {
   //this is for the academic year selection
   const Navigate = useNavigate()
   const Dispatch = useDispatch()
-  
+  const academicYears = useSelector(selectAllAcademicYears)
   const [selectedYear, setSelectedYear]=useState('')
   const{canEdit, isAdmin, canDelete, canCreate, status2}=useAuth()
   
@@ -134,7 +134,7 @@ const handleSearch = (e) => {
 
   // Handler for deleting selected rows
   const handleDeleteSelected = () => {
-    console.log('Selected Rows to delete:', selectedRows)
+    //console.log('Selected Rows to delete:', selectedRows)
     // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
 
 
@@ -143,7 +143,7 @@ const handleSearch = (e) => {
 
   // Handler for duplicating selected rows, 
   const handleDuplicateSelected = () => {
-    console.log('Selected Rows to duplicate:', selectedRows);
+    //console.log('Selected Rows to duplicate:', selectedRows);
     // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
 //ensure only one can be selected: the last one
 const toDuplicate = selectedRows[-1]
@@ -151,16 +151,54 @@ const toDuplicate = selectedRows[-1]
     setSelectedRows([]); // Clear selection after delete
   }
   
-  // Handler for duplicating selected rows, 
-  const handleDetailsSelected = () => {
-    console.log('Selected Rows to detail:', selectedRows)
-    // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
-//ensure only one can be selected: the last one
-const toDuplicate = selectedRows[-1]
+  const [updateStudent, {
+    isLoading: isUpdateLoading,
+    isSuccess: isUpdateSuccess,
+    isError: isUpdateError,
+    error:updateError
+}] = useUpdateStudentMutation()//it will not execute the mutation nownow but when called
+  const[ studentObject, setStudentObject]= useState({})
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+  const[id, setId] = useState('')
+  //console.log(academicYears)
+  // Handler for registering selected row, 
+  const [studentYears, setStudentYears] = useState([])
+  const handleRegisterSelected = () => {
+    //we already allowed only one to be selected in the button options
+    //console.log('Selected Rows to detail:', selectedRows)
+    const studentObject= selectedRows[0]
+    //console.log('studentObject',studentObject )
+    const {id, studentYears}= studentObject
+    setId(id)
+    setStudentYears(studentYears)
+      //console.log('student years and id',id, studentYears )
+    setIsRegisterModalOpen(true)
 
-    setSelectedRows([]); // Clear selection after delete
+    //setSelectedRows([]); // Clear selection after process
   }
+  
+  const onUpdateStudentClicked = async (e) => {  
+    
+      //generate the objects before saving
+      const objectToSave = {...studentObject, id: id,  studentYears: studentYears}
+      
+      await updateStudent({...studentObject, id: id,  studentYears: studentYears})//we call the add new user mutation and set the arguments to be saved
+      //added this to confirm save
+      if (isUpdateError) {console.log('error savingg', updateError)//handle the error msg to be shown  in the logs??
+      }
+    }
 
+//   const [studentYears, setStudentYears] = useState([])
+// //adds to the previous entries in arrays for gardien, schools...
+//       const onStudentYearsChanged = (e, selectedYear) => {
+//         if (e.target.checked) {
+//           // Add the selectedYear to studentYears if it's checked
+//           setStudentYears([...studentYears, selectedYear]);
+//         } else {
+//           // Remove the selectedYear from studentYears if it's unchecked
+//           setStudentYears(studentYears.filter(year => year !== selectedYear))
+//         }
+//       }
   
 
 const column =[
@@ -196,26 +234,19 @@ width:'200px'
   width:'70px'
   }, 
   { 
-name: "First Name",
-selector:row=>( <Link to={`/students/studentsParents/student/studentDetails/${row.id}`}> {row.studentName.firstName+" "+row.studentName.middleName}</Link>
+name: "Student Name",
+selector:row=>( <Link to={`/students/studentsParents/student/studentDetails/${row.id}`}> {row.studentName.firstName+" "+row.studentName.middleName+" "+row.studentName.lastName}</Link>
   
 ),
 sortable:true,
-width:'180px'
+width:'260px'
  }, 
-  { 
-name: "Last Name",
-selector:row=>(
-  <Link to={`/students/studentsParents/student/studentDetails/${row.id}`}>
-  {row.studentName.lastName}
-  </Link>
-  ),
-sortable:true
- }, 
+  
 {name: "DOB",
   selector:row=>new Date(row.studentDob).toLocaleString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' }),
   
-  sortable:true
+  sortable:true,
+  width:'100px'
 }, 
 // {name: "Father",
 //   selector:row=>row.studentFather._id,
@@ -300,10 +331,11 @@ content =
         
         	<button 
 				className=" px-4 py-2 bg-green-500 text-white rounded"
-				onClick={handleDetailsSelected}
+				onClick={handleRegisterSelected}
 				disabled={selectedRows.length !== 1} // Disable if no rows are selected
+        hidden={!canCreate}
 				>
-				Student Details
+				Register
           	</button>
       
 		
@@ -313,13 +345,14 @@ content =
 				disabled={selectedRows.length !== 1} // Disable if no rows are selected
 				hidden={!canCreate}
 			>
-			Duplicate Selected
+			Re-hhh
 			</button>
+
      		{(isAdmin&&<button 
 				className="px-3 py-2 bg-gray-400 text-white rounded"
 				onClick={handleDuplicateSelected}
 				disabled={selectedRows.length !== 1} // Disable if no rows are selected
-      			hidden={!canCreate}
+      	hidden={!canCreate}
 			>
 			All
 			</button>)}
@@ -331,6 +364,13 @@ content =
   onClose={handleCloseDeleteModal}
   onConfirm={handleConfirmDelete}
 />
+<RegisterModal 
+        isOpen={isRegisterModalOpen}
+        onClose={() => setIsRegisterModalOpen(false)}
+        studentYears={studentYears}
+        academicYears={academicYears}
+        onSave={onUpdateStudentClicked}
+      />
   </>
 //}
 return content

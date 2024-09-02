@@ -15,13 +15,13 @@ const hRSetTabs=
 let content
 content = (
   
-    <div className="flex bg-gray-300 justify-left  ">  
-      <ul className='flex gap-2 px-2 py-2 bg-gray-300'>
-        <Link to={'/settings/HRSet/'}><li >HR set</li></Link>
-        <Link to={'/settings/HRSet/'}><li >Parents</li></Link>
-        <Link to={'/settings/HRSet/'}><li >New Student</li></Link>
+  <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6"> 
+      
+        <Link to={'/settings/HRSet/'}><li  className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">HR set</li></Link>
+        <Link to={'/settings/HRSet/'}><li  className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">Parents</li></Link>
+        <Link to={'/settings/HRSet/'}><li  className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">New Student</li></Link>
         <AcademicYearsSelection/>
-      </ul>
+      
     </div>
   )
  return content
