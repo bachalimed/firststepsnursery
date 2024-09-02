@@ -328,6 +328,7 @@ const column =[
       selectableRows
       removableRows
       pageSizeControl
+      
       />
       
       <div className="flex justify-end items-center space-x-4">
