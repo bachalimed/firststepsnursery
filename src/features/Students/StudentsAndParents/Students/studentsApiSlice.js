@@ -9,32 +9,32 @@ const initialState = studentsAdapter.getInitialState()
 
 export const studentsApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        getStudents: builder.query({
-            query: () => '/students/studentsParents/students',//as defined in server.js
-            validateStatus: (response, result) => {
-                return response.status === 200 && !result.isError
-            },
+        // getStudents: builder.query({
+        //     query: () => '/students/studentsParents/students',//as defined in server.js
+        //     validateStatus: (response, result) => {
+        //         return response.status === 200 && !result.isError
+        //     },
 
-            keepUnusedDataFor: 60,//default when app is deployed is 60seconds
-            transformResponse: responseData => {
-                const newLoadedStudents = responseData.map(student => { 
+        //     keepUnusedDataFor: 60,//default when app is deployed is 60seconds
+        //     transformResponse: responseData => {
+        //         const newLoadedStudents = responseData.map(student => { 
                     
-                    student.id = student._id//changed the _id from mongoDB to id
-                    delete student._id//added to delete the extra original _id from mongo but careful when planning to save to db again
-                    return student
-                })
-                return studentsAdapter.setAll(initialState, newLoadedStudents)
-            },
-            providesTags:['student']
-            // providesTags: (result, error, arg) => {
-            //     if (result?.ids) {
-            //         return [
-            //             { type: 'student', id: 'LIST' },
-            //             ...result.ids.map(id => ({ type: 'student', id }))
-            //         ]
-            //     } else return [{ type: 'student', id: 'LIST' }]
-            // }
-        }),
+        //             student.id = student._id//changed the _id from mongoDB to id
+        //             delete student._id//added to delete the extra original _id from mongo but careful when planning to save to db again
+        //             return student
+        //         })
+        //         return studentsAdapter.setAll(initialState, newLoadedStudents)
+        //     },
+        //     providesTags:['student']
+        //     // providesTags: (result, error, arg) => {
+        //     //     if (result?.ids) {
+        //     //         return [
+        //     //             { type: 'student', id: 'LIST' },
+        //     //             ...result.ids.map(id => ({ type: 'student', id }))
+        //     //         ]
+        //     //     } else return [{ type: 'student', id: 'LIST' }]
+        //     // }
+        // }),
         getStudentsByYear: builder.query({
             query: (params) =>{
                 const queryString = new URLSearchParams(params).toString() 

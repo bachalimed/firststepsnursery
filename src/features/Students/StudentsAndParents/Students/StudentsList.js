@@ -224,9 +224,9 @@ selector:row=>( <Link to={`/students/studentsParents/student/studentDetails/${ro
   
 ),
 sortable:true,
-width:'260px'
+width:'200px'
  }, 
- { 
+  { 
   name: "Sex",
   selector:row=>row.studentSex,//changed from userSex
   cell: row => (
@@ -267,7 +267,7 @@ width:'260px'
   </div>),
   sortable:true,
   removableRows:true,
-  width:'120px',
+  width:'110px',
 },
 {name: "Documents",
   selector:row=>( <Link to={`/students/studentsParents/studentDocumentsList/${row.id}`} > <IoDocumentAttachOutline className='text-gray-500 text-2xl'/></Link> ),

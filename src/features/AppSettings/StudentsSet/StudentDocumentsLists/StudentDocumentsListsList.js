@@ -12,7 +12,7 @@ import DeletionConfirmModal from '../../../../Components/Shared/Modals/DeletionC
 
 import { RiDeleteBin6Line } from "react-icons/ri"
 import { HiOutlineSearch } from 'react-icons/hi'
-import { Puff  } from 'react-loading-icons'
+import  LoadingStateIcon   from '../../../../Components/LoadingStateIcon'
 
 const StudentDocumentsListsList = () => {
   //initialise state variables and hooks
@@ -195,7 +195,7 @@ width:'120px',
 ]
 let content
 
-if (isLoading) content = <p><Puff    stroke="#98ff98" strokeOpacity={.125} speed={.75}  /></p>
+if (isLoading) content = (<LoadingStateIcon/>)
 
 if (isError) {
     content = <p className="errmsg">{error?.data?.message}</p>//errormessage class defined in the css, the error has data and inside we have message of error

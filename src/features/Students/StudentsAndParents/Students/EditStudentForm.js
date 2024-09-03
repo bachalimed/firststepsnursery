@@ -56,7 +56,7 @@ let yearsList
 if (yearIsSuccess){
   const {entities} = academicYearsList
   yearsList = Object.values(entities)
-  //console.log(yearsList)
+  console.log(yearsList,'yearsList')
 }
 
 const {
@@ -212,8 +212,12 @@ if (schoolIsSuccess){
  // to deal with student gardien entries:
  // Handler to update an entry field
  const handleGardienFieldChange = (index, field, value) => {
-  const updatedEntries = [...studentGardien];
-  updatedEntries[index][field] = value;
+  // Create a deep copy of the studentGardien array
+  const updatedEntries = studentGardien.map((entry, i) =>
+    i === index ? { ...entry, [field]: value } : entry
+  );
+  
+  // Update the state with the new array
   setStudentGardien(updatedEntries);
 };
 
@@ -235,8 +239,9 @@ const handleRemoveGardienEntry = (index) => {
 // to deal with student education entries:
 // Handler to update an entry field
 const handleFieldChange = (index, field, value) => {
-  const updatedEntries = [...studentEducation];
-  updatedEntries[index][field] = value;
+  const updatedEntries = studentEducation.map((entry, i) =>
+    i === index ? { ...entry, [field]: value } : entry
+  );
   setStudentEducation(updatedEntries);
 };
 
@@ -253,12 +258,6 @@ const handleRemoveEntry = (index) => {
   const updatedEntries = studentEducation.filter((_, i) => i !== index);
   setStudentEducation(updatedEntries);
 };
-
-
-
-
-
-
 
 
 
@@ -400,17 +399,7 @@ const handleRemoveEntry = (index) => {
                 <label htmlFor="active" className="ml-2 text-sm font-medium text-gray-700">Student Is Active</label>
               </div>
       
-              <div className="flex items-center mb-2">
-                <input
-                  type="checkbox"
-                  id="jointFamily"
-                  value={studentJointFamily}
-                  checked={studentJointFamily}
-                  onChange={onStudentJointFamilyChanged}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <label htmlFor="jointFamily" className="ml-2 text-sm font-medium text-gray-700">Student Joint Family</label>
-              </div>
+             
               
             </div>
       
@@ -458,18 +447,13 @@ const handleRemoveEntry = (index) => {
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
                       >
                         
-                       
-                          <option  value={entry.gardienYear}>{entry.gardienYear}</option>
-                          
-                       
+                        {yearsList.map((year,i) => (
+                        <option key={year.id} value={year.title}>
+                          {year.title}
+                        </option>
+                      ))}
                       </select>
                   </div>
-
-
-
-
-
-
 
                  
                   <div className="mb-2">
@@ -524,7 +508,7 @@ const handleRemoveEntry = (index) => {
                       className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
                     >
                       <option value="">Select Year</option>
-                      {yearsList.map((year) => (
+                      {yearsList.map((year,i) => (
                         <option key={year.id} value={year.title}>
                           {year.title}
                         </option>

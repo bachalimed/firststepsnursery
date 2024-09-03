@@ -2,15 +2,6 @@ import React, { useState, useEffect } from 'react'
 import Modal from 'react-modal'
 const RegisterModal = ({ isOpen, onClose, studentYears, academicYears, onSave }) => {
   const [modifiedYears, setModifiedYears] = useState([...studentYears])
-  //console.log(studentYears,'studentYears')
-  //console.log(modifiedYears,'modifiedYears')
-
-
-
-
-
-
-  
   useEffect(() => {
     if (isOpen) {
       // Initialize the modifiedYears array with selected flag based on studentYears
@@ -39,7 +30,7 @@ const RegisterModal = ({ isOpen, onClose, studentYears, academicYears, onSave })
     .map(year => ({ academicYear: year.title })); // Map to the desired format
     setYears(updatedStudentYears)
   setModifiedYears(updatedYears);
-  //console.log('updatedStudentYears', updatedStudentYears)
+  console.log('updatedStudentYears', updatedStudentYears)
 }
   const handleSave = () => {
     onSave(modifiedYears.filter(year => year.selected))

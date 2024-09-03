@@ -310,7 +310,7 @@ const column =[
     content = <p className="errmsg">{listError?.data?.message}</p>//errormessage class defined in the css, the error has data and inside we have message of error
   }
    if (listIsSuccess){
-  console.log(studentDocumentsListing)
+  //console.log(studentDocumentsListing)
    content = 
     <>  {isDelSuccess && <p>Document deleted successfully!</p>}
   
