@@ -10,12 +10,11 @@ import Dashboard from './features/Dashboard/Dashboard'
 import StudentsParents from './features/Students/StudentsParents'
 import StudentsList from './features/Students/StudentsAndParents/Students/StudentsList'
 import ParentsList from './features/Students/StudentsAndParents/Parents/ParentsList'
-import FamiliesList from './features/Students/StudentsAndParents/Families/FamiliesList'
-import FamilyDetails from './features/Students/StudentsAndParents/Families/FamilyDetails'
 import EditStudent from './features/Students/StudentsAndParents/Students/EditStudent'
 import EditParent from './features/Students/StudentsAndParents/Parents/EditParent'
 import NewStudentForm from './features/Students/StudentsAndParents/Students/NewStudentForm'
 import StudentDetails from './features/Students/StudentsAndParents/Students/StudentDetails'
+
 import StudentDocuments from './features/Students/StudentsAndParents/Students/StudentDocuments'
 import EditStudentForm from './features/Students/StudentsAndParents/Students/EditStudentForm'
 import StudentDocumentsListsList from './features/AppSettings/StudentsSet/StudentDocumentsLists/StudentDocumentsListsList'
@@ -137,8 +136,7 @@ const App = () => {
 									<Route path="newStudent/" element={<NewStudentForm />}/>												
 									<Route path="newParent/" element={<NewParentForm />}/>												
 									<Route path="studentDocumentsList/:id/" element={<StudentDocuments />}/>												
-									<Route path="studentDocuments/upload/:id/" element={<StudentDocumentsForm />}/>												
-									
+									<Route path="studentDocuments/upload/:id/" element={<StudentDocumentsForm />}/>	
 									<Route path="studentDetails/:id/" element={<StudentDetails/>}/>
 									<Route path="edit/:id/" element={<EditStudent/>}/>
 									<Route path="editParent/:id/" element={<EditParent/>}/>
@@ -148,14 +146,11 @@ const App = () => {
 									
 
 
-									<Route path="parents/" element={<ParentsList />}>
+									<Route path="parents/" element={<ParentsList />}/>
+									<Route path="parentDetails/:id/" element={<ParentDetails/>}/>
 										<Route path=":id/" element={<ParentDetails />}/>
 										
-									</Route> {/* end of Parents route */}
-									<Route path="families/" element={<FamiliesList />}>
-										<Route path=":id/" element={<FamilyDetails />}/>
-										
-									</Route> {/* end of Families route */}
+									
 
 																											
 																													

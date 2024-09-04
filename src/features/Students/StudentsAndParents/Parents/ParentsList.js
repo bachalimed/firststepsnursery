@@ -5,6 +5,7 @@ import { setSomeParents } from "./parentsSlice"
 import { useGetUsersQuery} from "../../../Admin/UsersManagement/usersApiSlice"
 import StudentsParents from '../../StudentsParents'
 import DataTable from 'react-data-table-component'
+import DeletionConfirmModal from '../../../../Components/Shared/Modals/DeletionConfirmModal'
 import { useSelector } from 'react-redux'
 import { selectParentById, selectAllParents } from './parentsApiSlice'//use the memoized selector 
 import { selectAllUsers, selectUserById } from '../../../Admin/UsersManagement/usersApiSlice'//use the memoized selector 
@@ -72,16 +73,14 @@ const firstNameMatch = item?.userProfile?.userFullName?.userFirstName?.toLowerCa
 const middleNameMatch = item?.userProfile?.userFullName?.userMiddleName?.toLowerCase().includes(searchQuery.toLowerCase())
 const lastNameMatch = item?.userProfile?.userFullName?.userLastName?.toLowerCase().includes(searchQuery.toLowerCase())
 const dobMatch = item?.userProfile?.userDob?.toLowerCase().includes(searchQuery.toLowerCase());
-
-
-
-
-
+const motherFirstNameMatch = item?.partner?.userProfile?.userFullName?.userFirstName?.toLowerCase().includes(searchQuery.toLowerCase())
+const motherMiddleNameMatch = item?.partner?.userProfile?.userFullName?.userMiddleName?.toLowerCase().includes(searchQuery.toLowerCase())
+const motherLastNameMatch = item?.partner?.userProfile?.userFullName?.userLastName?.toLowerCase().includes(searchQuery.toLowerCase())
 
 //console.log('filteredStudents in the success', item)
 return (Object.values(item).some(val =>
   String(val).toLowerCase().includes(searchQuery.toLowerCase())
-)||firstNameMatch||middleNameMatch||lastNameMatch||dobMatch)
+)||firstNameMatch||middleNameMatch||lastNameMatch||dobMatch||motherFirstNameMatch||motherMiddleNameMatch||motherLastNameMatch)
 })
 }
 
@@ -113,15 +112,42 @@ const handleRowSelected = (state) => {
 setSelectedRows(state.selectedRows)
 //console.log('selectedRows', selectedRows)
 }
+//add child to parents
+const handleAddChildren = async(selectedRows)=>{
+
+
+
+}
+
+
+
+
+
+
 
 //handle edit
 const handleEdit=(id)=>{
 Navigate(`/students/studentsParents/students/${id}/`)//the path to be set in app.js and to be checked with server.js in backend, this is editing page of user
 }
 
-const onDeleteParentClicked = async (id) => {    
-await deleteParent({ id })
+
+const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
+  const [idParentToDelete, setIdParentToDelete] = useState(null)
+const onDeleteParentClicked =  (id) => {    
+setIdParentToDelete(id)
+setIsDeleteModalOpen(true)
 }
+
+// Function to confirm deletion in the modal
+const handleConfirmDelete = async () => {
+  await deleteParent({ id: idParentToDelete });
+  setIsDeleteModalOpen(false); // Close the modal
+};
+// Function to close the modal without deleting
+const handleCloseDeleteModal = () => {
+  setIsDeleteModalOpen(false);
+  setIdParentToDelete(null);
+};
 
 // Handler for duplicating selected rows, 
 const handleDuplicateSelected = () => {
@@ -156,34 +182,39 @@ const column =[
   },
   
   
-  { name: "first Name",
-  selector:row=>( <Link to={`/changepath/${row._id}`}> {row.userProfile.userFullName.userFirstName+" "+row.userProfile.userFullName.userMiddleName}</Link>),
+  { name: "Father Name",
+  selector:row=>( <Link to={`/changepath/${row._id}`}> {row.userProfile.userFullName.userFirstName+" "+row.userProfile.userFullName.userMiddleName+" "+row.userProfile.userFullName.userLastName}</Link>),
   sortable:true,
   width:'150px'
   }, 
-  { 
-  name: "Last Name",
-  selector:row=>( <Link to={`/change path/${row._id}`}> {row.userProfile.userFullName.userLastName}</Link>),
+  { name: "Mother Name",
+  selector:row=>( <Link to={`/changepath/${row._id}`}> {row.partner.userProfile.userFullName.userFirstName+" "+row.partner.userProfile.userFullName.userMiddleName+" "+row.partner.userProfile.userFullName.userLastName}</Link>),
   sortable:true,
   width:'150px'
-  },
- 
-
-   {name: "DOB",
-    selector:row=>new Date(row.userProfile.userDob).toLocaleString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' }),
-    width:'100px',
+  }, 
+  {name: "Situation",
+    selector:row=>row.children[0].studentJointFamily?'Joint':'Separated',
     sortable:true
-  },  
+  },
+  
+  //  {name: "DOB",
+  //   selector:row=>new Date(row.userProfile.userDob).toLocaleString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' }),
+  //   width:'100px',
+  //   sortable:true
+  // },  
 
  
-{name: "Contact",
+{name: "Father Phone",
   selector:row=>row.userProfile.userContact.primaryPhone,
-  sortable:true
+  sortable:true,
+  width:'130px'
 },
-{name: "Situation",
-  selector:row=>row.children[0].studentJointFamily?'Jointe':'Separation',
-  sortable:true
+{name: "Mother Phone",
+  selector:row=>row.partner.userProfile.userContact.primaryPhone,
+  sortable:true,
+  width:'130px'
 },
+
  
 {name: "Children",
   selector:row=>( 
@@ -198,7 +229,7 @@ const column =[
   name: "Manage",
   cell: row => (
     <div className="space-x-1">
-     <button className="text-blue-500" fontSize={20}  onClick={() => Navigate(`userDetails/${row._id}`)}  > 
+     <button className="text-blue-500" fontSize={20}  onClick={() => Navigate(`/students/studentsParents/parentDetails/${row.id}`)}  > 
       <ImProfile fontSize={20}/> 
       </button>
       {/* /////////////////////condition is canEdit and not ! of it */}
@@ -266,8 +297,21 @@ content= (
               >
               Duplicate Selected
           </button>
+          <button 
+              className="px-3 py-2 bg-yellow-400 text-white rounded"
+              onClick={handleAddChildren}
+              disabled={selectedRows.length !== 1} // Disable if no rows are selected
+        // hidden={!canCreate}
+              >
+              Add Child
+          </button>
       </div>
   </div>
+  <DeletionConfirmModal
+  isOpen={isDeleteModalOpen}
+  onClose={handleCloseDeleteModal}
+  onConfirm={handleConfirmDelete}
+/>
   </>
 )
 

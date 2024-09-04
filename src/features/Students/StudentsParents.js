@@ -27,7 +27,7 @@ const content = (
       
         <Link to={'/students/studentsParents/students/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer" >Students</li></Link>
         <Link to={'/students/studentsParents/parents/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer" >Parents</li></Link>
-        <Link to={'/students/studentsParents/families/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">Families</li></Link>
+ 
         <Link to={'/students/studentsParents/newStudent/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">New Student</li></Link>
     
         <Link to={'/students/studentsParents/newParent/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">New Parent</li></Link>

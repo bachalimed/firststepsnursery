@@ -180,8 +180,8 @@ if (schoolIsSuccess){
         const onLastNameChanged = e => setLastName(e.target.value)
         const onStudentDobChanged = e => setStudentDob(e.target.value)
         const onStudentSexChanged = e => setStudentSex(e.target.value)
-        const onStudentIsActiveChanged = e => setStudentIsActive(e.target.value)
-      const onStudentJointFamilyChanged = e => setStudentJointFamily(e.target.value)
+        const onStudentIsActiveChanged = e => setStudentIsActive(prev=>!prev)
+      const onStudentJointFamilyChanged = e => setStudentJointFamily(prev=>!prev)
       const onGardienFirstNameChanged = e => setGardienFirstName(e.target.value)
       const onGardienMiddleNameChanged = e => setgardienMiddleName(e.target.value)  
       const onGardienLastNameChanged = e => setGardienLastName(e.target.value)
@@ -397,6 +397,17 @@ const handleRemoveEntry = (index) => {
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
                 <label htmlFor="active" className="ml-2 text-sm font-medium text-gray-700">Student Is Active</label>
+              </div>
+              <div className="flex items-center mb-2">
+                <input
+                  type="checkbox"
+                  id="jointFAmily"
+                  value={studentJointFamily}
+                  checked={studentJointFamily}
+                  onChange={onStudentJointFamilyChanged}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label htmlFor="active" className="ml-2 text-sm font-medium text-gray-700">Student Joint Family</label>
               </div>
       
              
