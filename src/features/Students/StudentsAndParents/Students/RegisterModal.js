@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import Modal from 'react-modal'
-const RegisterModal = ({ isOpen, onClose, studentYears=[], academicYears=[], onSave }) => {
+const RegisterModal = ({ isOpen, onClose, studentYears, academicYears, onSave }) => {
   const [modifiedYears, setModifiedYears] = useState([])
   useEffect(() => {
     if (isOpen && Array.isArray(studentYears)) {
+      console.log(studentYears,'studtnyears', academicYears,'academicyears')
       // Initialize the modifiedYears array with selected flag based on studentYears
       const updatedYears = academicYears.map((year) => {
-        const isSelected = studentYears.some(studentYear => studentYear.academicYear === year.title)
+        const isSelected = studentYears.some((studentYear) => studentYear.academicYear.toLowerCase().trim() === year.title.toLowerCase().trim()
+      )
+      
         
         // if (isSelected) {
         //   console.log(`Selected: true for year.title: ${year.title}`);

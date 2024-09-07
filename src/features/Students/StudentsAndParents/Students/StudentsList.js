@@ -159,10 +159,10 @@ const toDuplicate = selectedRows[-1]
     
     setStudentObject(selectedRows[0])
     console.log(studentObject, 'studentObject' )
-    const {studentYears}= (selectedRows[0])
+    //const {studentYears}= (studentObject)
     
-    setStudentYears(studentYears||[])
-      //console.log('student years and id',id, studentYears )
+    setStudentYears(studentObject.studentYears)
+      console.log('student years and id', studentYears )
     setIsRegisterModalOpen(true)
 
     //setSelectedRows([]); // Clear selection after process
