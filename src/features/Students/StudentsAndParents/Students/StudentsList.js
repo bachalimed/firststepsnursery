@@ -121,8 +121,6 @@ let filteredStudents = []
 })
 }
 
-
-
 const handleSearch = (e) => {
     setSearchQuery(e.target.value)
 }
@@ -132,14 +130,6 @@ const handleSearch = (e) => {
     //console.log('selectedRows', selectedRows)
   }
 
-  // Handler for deleting selected rows
-  const handleDeleteSelected = () => {
-    //console.log('Selected Rows to delete:', selectedRows)
-    // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
-
-
-    setSelectedRows([]) // Clear selection after delete
-  }
 
   // Handler for duplicating selected rows, 
   const handleDuplicateSelected = () => {
@@ -157,36 +147,47 @@ const toDuplicate = selectedRows[-1]
     isError: isUpdateError,
     error:updateError
 }] = useUpdateStudentMutation()//it will not execute the mutation nownow but when called
-  const[ studentObject, setStudentObject]= useState({})
+  const[ studentObject, setStudentObject]= useState('')
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
-  const[id, setId] = useState('')
+  
   //console.log(academicYears)
   // Handler for registering selected row, 
   const [studentYears, setStudentYears] = useState([])
   const handleRegisterSelected = () => {
     //we already allowed only one to be selected in the button options
     //console.log('Selected Rows to detail:', selectedRows)
-    const studentObject= selectedRows[0]
-    //console.log('studentObject',studentObject )
-    const {id, studentYears}= studentObject
-    setId(id)
-    setStudentYears(studentYears)
+    
+    setStudentObject(selectedRows[0])
+    console.log(studentObject, 'studentObject' )
+    const {studentYears}= (selectedRows[0])
+    
+    setStudentYears(studentYears||[])
       //console.log('student years and id',id, studentYears )
     setIsRegisterModalOpen(true)
 
     //setSelectedRows([]); // Clear selection after process
   }
   
-  const onUpdateStudentClicked = async (e) => {  
-    
-      //generate the objects before saving
-      const objectToSave = {...studentObject, id: id,  studentYears: studentYears}
-      
-      await updateStudent({...studentObject, id: id,  studentYears: studentYears})//we call the add new user mutation and set the arguments to be saved
-      //added this to confirm save
-      if (isUpdateError) {console.log('error savingg', updateError)//handle the error msg to be shown  in the logs??
-      }
+  // This is called when saving the updated student years from the modal
+  const onUpdateStudentClicked = async (updatedYears) => {
+    console.log('Updated studentYears from modal:', updatedYears);
+
+    const updatedStudentObject = {
+      ...studentObject,
+      studentYears: updatedYears, // Merge updated studentYears
+    };
+
+    console.log('Saving updated student:', updatedStudentObject);
+
+    try {
+      await updateStudent(updatedStudentObject); // Save updated student to backend
+      console.log('Student updated successfully');
+    } catch (error) {
+      console.log('Error saving student:', error);
     }
+
+    setIsRegisterModalOpen(false); // Close modal
+  };
 
 //   const [studentYears, setStudentYears] = useState([])
 // //adds to the previous entries in arrays for gardien, schools...
