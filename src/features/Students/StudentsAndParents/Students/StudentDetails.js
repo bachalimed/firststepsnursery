@@ -39,7 +39,7 @@ const StudentDetails = () => {
 
       const photoId = findStudentPhotoId(studentDocumentsListing);
       setPhotoId(photoId);
-      console.log('photo id', photoId)
+      //console.log('photo id', photoId)
     }
   }, [listIsSuccess, studentDocumentsListing]);
 
@@ -63,7 +63,7 @@ const StudentDetails = () => {
         console.error('Error fetching student photo:', error);
       }
     };
-console.log('now hereeee')
+
     fetchPhoto();
   }, [photoId, token]);
 

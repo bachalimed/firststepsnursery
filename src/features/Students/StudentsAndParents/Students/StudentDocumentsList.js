@@ -91,7 +91,7 @@ const [addStudentDocuments, {//an object that calls the status when we execute t
 useEffect(() => {
     if (selectedAcademicYear?.title) {
         setStudentDocumentYear(selectedAcademicYear.title)
-      console.log('studentDocumentYear:', studentDocumentYear)
+      //console.log('studentDocumentYear:', studentDocumentYear)
     }
   }, [selectedAcademicYear,])
 

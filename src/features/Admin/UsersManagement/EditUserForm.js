@@ -21,7 +21,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
     const Navigate = useNavigate()
     
     
-    //initialise th mutation to be used later
+    //initialise the mutation to be used later
     const [updateUser, {
         isLoading,
         isSuccess,
@@ -149,36 +149,25 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
      //handlers to get the individual states from the input
      const onUsernameChanged = e => setUsername(e.target.value)
      const onPasswordChanged = e => setPassword(e.target.value)
-     //const onUserFirstNameChanged = e => setUserFullName({userFirstName:e.target.value,userMiddleName:userMiddleName, userLastName:userLastName }) 
-     //const onUserMiddleNameChanged = e => setUserFullName({userMiddleName:e.target.value})
-     //const onUserLastNameChanged = e => setUserFullName({userLastName:e.target.value})
      const onUserFirstNameChanged = e => setUserFirstName(e.target.value) 
      const onUserMiddleNameChanged = e => setUserMiddleName(e.target.value)
      const onUserLastNameChanged = e => setUserLastName(e.target.value)
-
      const onIsParentChanged = e => setIsParent(e.target.value)
      const onIsEmployeeChanged = e => setIsEmployee(e.target.value)
      const onUserDobChanged = e => setUserDob(e.target.value)
      const onUserSexChanged = e => setUserSex(e.target.value)
      const onUserIsActiveChanged = e => setUserIsActive(prev => !prev)
-     //const onLabelChanged = e => setLabel(e.target.value)
-     //const onLocationChanged = e => setLocation(e.target.value)
-     //const onSizeChanged = e => setSize(e.target.value)
-     //const onFormatChanged = e => setFormat(e.target.value)
-     const onUserPhotoChanged = e => setUserPhoto(e.target.value)
-    
+     const onUserPhotoChanged = e => setUserPhoto(e.target.value) 
      const onHouseChanged = e => setHouse(e.target.value)
      const onStreetChanged = e => setStreet(e.target.value)
      const onAreaChanged = e => setArea(e.target.value)
      const onPostCodeChanged = e => setPostCode(e.target.value)
      const onCityChanged = e => setCity(e.target.value)
-    
      const onPrimaryPhoneChanged = e => setPrimaryPhone(e.target.value)
      const onSecondaryPhoneChanged = e => setSecondaryPhone(e.target.value)
      const onEmailChanged = e => setEmail(e.target.value)
      
-    
- 
+    //update the array inputs
     const onUserRolesChanged =  (e) => {
         const { value, checked } = e.target    
         setUserRoles((prevRoles) =>

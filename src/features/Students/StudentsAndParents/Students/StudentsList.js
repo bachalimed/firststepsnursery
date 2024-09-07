@@ -4,6 +4,7 @@ import {  useGetStudentsQuery, useUpdateStudentMutation, useGetStudentsByYearQue
 import { HiOutlineSearch } from 'react-icons/hi'
 import StudentsParents from "../../StudentsParents"
 import DataTable from 'react-data-table-component'
+import { useGetStudentDocumentsByYearByIdQuery } from "../../../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice"
 import { useSelector } from 'react-redux'
 import {  selectAllStudentsByYear, selectAllStudents } from './studentsApiSlice'//use the memoized selector 
 import { useEffect, useState } from "react"
@@ -23,6 +24,7 @@ import { useDispatch } from "react-redux"
 import { setSomeStudents, setStudents, currentStudentsList } from "./studentsSlice"
 import { IoDocumentAttachOutline } from "react-icons/io5";
 import {selectAllAcademicYears} from '../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
+
 const StudentsList = () => {
   //this is for the academic year selection
   const Navigate = useNavigate()
@@ -30,7 +32,9 @@ const StudentsList = () => {
   const academicYears = useSelector(selectAllAcademicYears)
   const [selectedYear, setSelectedYear]=useState('')
   const{canEdit, isAdmin, canDelete, canCreate, status2}=useAuth()
-  
+  const [requiredDocNumber, setRequiredDocNumber]=useState('')
+  const [studentDocNumber, setStudentDocNumber]=useState('')
+
   const selectedAcademicYear = useSelectedAcademicYear()
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idStudentToDelete, setIdStudentToDelete] = useState(null); // State to track which document to delete
@@ -55,6 +59,11 @@ const StudentsList = () => {
     isError: isDelError,
     error: delerror,
   }] = useDeleteStudentMutation()
+
+
+
+
+
 
   // Function to handle the delete button click
   const onDeleteStudentClicked = (id) => {
@@ -235,7 +244,7 @@ width:'200px'
      {row.studentSex==='Male' ? (
        <LiaMaleSolid className='text-blue-500 text-2xl' />
      ) : (
-       <LiaFemaleSolid  className='text-red-500 text-2xl' />
+       <LiaFemaleSolid  className='text-orange-500 text-2xl' />
      )}
    </span>
  ),
@@ -282,6 +291,7 @@ width:'200px'
   name: "Actions",
   cell: row => (
     <div className="space-x-1">
+    
       <button className="text-blue-500" fontSize={20}  onClick={() => Navigate(`/students/studentsParents/studentDetails/${row.id}`)}  > 
         <ImProfile fontSize={20}/> 
         </button>

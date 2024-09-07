@@ -19,15 +19,17 @@ import { ImProfile } from 'react-icons/im'
 import { useDispatch } from "react-redux"
 import { IoShieldCheckmarkOutline, IoShieldOutline  } from "react-icons/io5"
 import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYears"
+import AssignChildModal from './AssignChildModal';
+import { useGetStudentsQuery, useGetStudentsByYearQuery } from '../Students/studentsApiSlice';
+const ManageFamilies = () => {
+  //this is for the academic year selection
+  
+  const [selectedRows, setSelectedRows] = useState([])
 
-
-const ParentsList = () => {
-//this is for the academic year selection
-const selectedAcademicYear = useSelectedAcademicYear()
-const [selectedYear, setSelectedYear]=useState('')
 const Navigate = useNavigate()
 const Dispatch = useDispatch()
-
+const [isAssignChildModalOpen, setIsAssignChildModalOpen] = useState(false);
+const [selectedFatherId, setSelectedFatherId] = useState(null);
 
 //get several things from the query
 const {
@@ -36,24 +38,29 @@ const {
   isSuccess: isParentSuccess,
   isError: isParentError,
   error: parentError
-} = useGetParentsByYearQuery({selectedYear:selectedYear ,endpointName: 'parentsList'}||{},{//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+} = useGetParentsByYearQuery({selectedYear:'1000' ,endpointName: 'parentsList'}||{},{//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
   //pollingInterval: 60000,//will refetch data every 60seconds
   refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
   refetchOnMountOrArgChange: true//refetch when we remount the component
 })
 
 //this ensures teh selected year is chosen before running hte useeffect it is working perfectly to dispaptch the selected year
-useEffect(() => {
-  if (selectedAcademicYear?.title) {
-    setSelectedYear(selectedAcademicYear.title)
-    //console.log('Selected year updated:', selectedAcademicYear.title)
-  }
-}, [selectedAcademicYear])
 
+const {
+  data: students,//the data is renamed students
+        isLoading:isStudentLoading,//monitor several situations is loading...
+        isSuccess:isStudentSuccess,
+        isError:isStudentError,
+        error:studentError
+} = useGetStudentsByYearQuery({selectedYear:'1000' ,endpointName: 'studentsList'}||{},{//this param will be passed in req.params to select only students for taht year
+  //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+  //pollingInterval: 60000,//will refetch data every 60seconds
+  refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
+  refetchOnMountOrArgChange: true//refetch when we remount the component
+})
 
 
 // State to hold selected rows
-const [selectedRows, setSelectedRows] = useState([])
 //state to hold the search query
 const [searchQuery, setSearchQuery] = useState('')
 
@@ -66,7 +73,7 @@ if (isParentSuccess){
   //we need to change into array to be read??
   parentsList = Object.values(entities)//we are using entity adapter in this query
   Dispatch(setSomeParents(parentsList))//timing issue to update the state and use it the same time
- console.log(entities)
+ console.log(parentsList)
   //the serach result data
  filteredParents = parentsList?.filter(item => {
 //the nested objects need extra logic to separate them
@@ -92,15 +99,6 @@ return (Object.values(item).some(val =>
 const{canEdit, canDelete, canCreate, status2}=useAuth()
 
 
-    const [deleteParent, {
-      isParentSuccess: isDelSuccess,
-      isError: isDelError,
-      error: delerror
-  }] = useDeleteParentMutation()
-
-
-
-
 const handleSearch = (e) => {
   setSearchQuery(e.target.value)
 }
@@ -111,15 +109,34 @@ const handleSearch = (e) => {
 // Handler for selecting rows
 const handleRowSelected = (state) => {
 setSelectedRows(state.selectedRows)
-//console.log('selectedRows', selectedRows)
+console.log('selectedRows', selectedRows)
 }
-//add child to parents
-const handleAddChildren = async(selectedRows)=>{
-
-
+let studentsList
+if (isStudentSuccess){
+  const {entities}=students
+  //we need to change into array to be read??
+  studentsList = Object.values(entities)
+  //console.log('studetnsList', studentsList)
 
 }
+const handleAssignChild = () => {
+  if (selectedRows.length === 1) {
+    setSelectedFatherId(selectedRows[0].id); // Assuming _id is the parent ID
+    console.log('selectedPAretn id', selectedFatherId)
+    setIsAssignChildModalOpen(true);
+  }
+};
 
+
+const handleConfirmAssignChild = (studentId) => {
+  // Logic to add the child to the parent
+  console.log('Adding child:', studentId, 'to parent:', selectedFatherId);
+  setIsAssignChildModalOpen(false);
+};
+
+const handleAssignPartner=()=>{
+  console.log('hi')
+}
 
 //handle edit
 const handleEdit=(id)=>{
@@ -127,45 +144,11 @@ Navigate(`/students/studentsParents/students/${id}/`)//the path to be set in app
 }
 
 
-const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
-  const [idParentToDelete, setIdParentToDelete] = useState(null)
-const onDeleteParentClicked =  (id) => {    
-setIdParentToDelete(id)
-setIsDeleteModalOpen(true)
-}
 
-// Function to confirm deletion in the modal
-const handleConfirmDelete = async () => {
-  await deleteParent({ id: idParentToDelete });
-  setIsDeleteModalOpen(false); // Close the modal
-};
-// Function to close the modal without deleting
-const handleCloseDeleteModal = () => {
-  setIsDeleteModalOpen(false);
-  setIdParentToDelete(null);
-};
 
-// Handler for duplicating selected rows, 
-const handleDuplicateSelected = () => {
-console.log('Selected Rows to duplicate:', selectedRows);
-// Add  delete logic here (e.g., dispatching a Redux action or calling an API)
-//ensure only one can be selected: the last one
-const toDuplicate = selectedRows[-1]
 
-setSelectedRows([]); // Clear selection after delete
-}
 
-// Handler for duplicating selected rows, 
-const handleDetailsSelected = () => {
-//console.log('Selected Rows to detail:', selectedRows)
-// Add  delete logic here (e.g., dispatching a Redux action or calling an API)
-//ensure only one can be selected: the last one
-const toDuplicate = selectedRows[-1]
-
-setSelectedRows([]); // Clear selection after delete
-}
-
-const errContent = (isParentError?.data?.message || isDelError?.data?.message) ?? ''
+const errContent = (isParentError?.data?.message || isStudentError?.data?.message) ?? ''
 //define the content to be conditionally rendered
 
 const column =[
@@ -232,9 +215,7 @@ const column =[
       {canEdit?(<button className="text-yellow-400"  onClick={() => Navigate(`/students/studentsParents/editParent/${row.id}`)} > 
       <FiEdit fontSize={20}/> 
       </button>):null}
-      {canDelete?(<button className="text-red-500" onClick={() => onDeleteParentClicked(row._id)} >
-        <RiDeleteBin6Line fontSize={20}/>
-      </button>):null}
+
     </div>
   ),
   ignoreRowClick: true,
@@ -242,13 +223,13 @@ const column =[
   button: true,
 }
 
-
 ]
 let content
 
+
 if (isParentLoading) content = <p>Loading...</p>
 
-if (isParentError|isDelError) {
+if (isParentError|isStudentError) {
     content = <p className="errmsg">error msg  {Error?.data?.message}</p>//errormessage class defined in the css, the error has data and inside we have message of error
 }
 
@@ -274,40 +255,39 @@ content= (
     pagination
     selectableRows
     removableRows
+    onSelectedRowsChange={handleRowSelected}
     pageSizeControl>
    </DataTable>
    <div className="flex justify-end items-center space-x-4">
           <button 
-              className=" px-4 py-2 bg-green-500 text-white rounded"
-              onClick={handleDetailsSelected}
+               className="px-3 py-2 bg-yellow-400 text-white rounded"
+               onClick={handleAssignChild}
               disabled={selectedRows.length !== 1} // Disable if no rows are selected
                 >
-              User Details
+              Assign Child
             </button>
           
           <button 
-              className="px-3 py-2 bg-yellow-400 text-white rounded"
-              onClick={handleDuplicateSelected}
+              className="px-3 py-2 bg-blue-400 text-white rounded"
+              onClick={handleAssignPartner}
               disabled={selectedRows.length !== 1} // Disable if no rows are selected
         // hidden={!canCreate}
               >
-              Duplicate Selected
+              Assign Partner
           </button>
-          {/* <button 
-              className="px-3 py-2 bg-yellow-400 text-white rounded"
-              onClick={handleAddChildren}
-              disabled={selectedRows.length !== 1} // Disable if no rows are selected
-        // hidden={!canCreate}
-              >
-              Add Child
-          </button> */}
+         
       </div>
   </div>
-  <DeletionConfirmModal
-  isOpen={isDeleteModalOpen}
-  onClose={handleCloseDeleteModal}
-  onConfirm={handleConfirmDelete}
-/>
+  
+
+{isStudentSuccess&&(<AssignChildModal 
+        isOpen={isAssignChildModalOpen} 
+        onClose={() => setIsAssignChildModalOpen(false)} 
+        onConfirm={handleConfirmAssignChild}
+        students={studentsList || []} // Pass the students to the modal
+         className="modal"
+      overlayClassName="overlay"
+      />)}
   </>
 )
 
@@ -315,4 +295,4 @@ content= (
 //}
 return content
 }
-export default ParentsList
+export default ManageFamilies

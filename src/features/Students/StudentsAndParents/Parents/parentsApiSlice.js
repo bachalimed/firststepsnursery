@@ -108,9 +108,7 @@ export const parentsApiSlice = apiSlice.injectEndpoints({
                     ...initialParentData,
                 }
             }),
-            invalidatesTags: [//forces the cache in RTK query to update
-                { type: 'parent', id: "LIST" }//the parent list will be unvalidated and updated
-            ]
+            invalidatesTags: ['parent']
         }),
         updateParent: builder.mutation({
             query: initialParentData => ({

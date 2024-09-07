@@ -12,6 +12,7 @@ import StudentsList from './features/Students/StudentsAndParents/Students/Studen
 import ParentsList from './features/Students/StudentsAndParents/Parents/ParentsList'
 import EditStudent from './features/Students/StudentsAndParents/Students/EditStudent'
 import EditParent from './features/Students/StudentsAndParents/Parents/EditParent'
+import ManageFamilies from './features/Students/StudentsAndParents/Parents/ManageFamilies'
 import NewStudentForm from './features/Students/StudentsAndParents/Students/NewStudentForm'
 import StudentDetails from './features/Students/StudentsAndParents/Students/StudentDetails'
 
@@ -140,6 +141,7 @@ const App = () => {
 									<Route path="studentDetails/:id/" element={<StudentDetails/>}/>
 									<Route path="edit/:id/" element={<EditStudent/>}/>
 									<Route path="editParent/:id/" element={<EditParent/>}/>
+									<Route path="manageFamilies/" element={<ManageFamilies/>}/>
 																					
 										{/* <Route path=":id/" element={<EditStudentForm/>}/> */}
 										
