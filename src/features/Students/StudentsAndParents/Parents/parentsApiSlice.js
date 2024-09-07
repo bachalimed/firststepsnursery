@@ -44,10 +44,7 @@ export const parentsApiSlice = apiSlice.injectEndpoints({
             },
            
             transformResponse: responseData => {
-                //const {loadedParent} =
                 
-                //console.log('academicYears length  in the APIslice',responseData.total)
-                //console.log('academicYears in the APIslice', academicYears)
                 const newLoadedParent = responseData.map(parent => { 
                     
                     parent.id = parent._id//changed the _id from mongoDB to id

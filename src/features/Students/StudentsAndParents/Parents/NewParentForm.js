@@ -6,7 +6,8 @@ import { faSave } from "@fortawesome/free-solid-svg-icons"
 import { ROLES } from "../../../../config/UserRoles"
 import { ACTIONS } from "../../../../config/UserActions"
 import StudentsParents from '../../StudentsParents'
-
+import { useGetParentsByYearQuery } from "./parentsApiSlice"
+import { useGetStudentsByYearQuery } from "../Students/studentsApiSlice"
 
 //constrains on inputs when creating new parent
 const PARENT_REGEX = /^[A-z]{6,20}$/
@@ -19,17 +20,72 @@ const EMAIL_REGEX = /^[A-z0-9.@-_]{6,20}$/
 const NewParentForm = () => {//an add parent function that can be called inside the component
 
     const [addNewParent, {//an object that calls the status when we execute the newParentForm function
-        isLoading,
-        isSuccess,
-        isError,
-        error
+        isLoading:isAddParentLoading,
+        isSuccess:isAddParentSuccess,
+        isError:isAddParentError,
+        error:addParentError
     }] = useAddNewParentMutation()//it will not execute the mutation nownow but when called
 
+    const {
+        data: parents,//the data is renamed parents
+        isLoading: isParentListLoading,//monitor several situations
+        isSuccess: isParentListSuccess,
+        isError: isParentListError,
+        error: parentListError
+      } = useGetParentsByYearQuery({selectedYear:'1000' ,endpointName: 'parentsList'}||{},{//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+        //pollingInterval: 60000,//will refetch data every 60seconds
+        refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
+        refetchOnMountOrArgChange: true//refetch when we remount the component
+      })
+
+
+      let parentsList =[]
+      
+      if (isParentListSuccess){
+        //set to the state to be used for other component s and edit student component
+        
+        const {entities}=parents
+        //we need to change into array to be read??
+        parentsList = Object.values(entities)
+      }
+    const {
+        data: students,//the data is renamed parents
+        isLoading: isStudentListLoading,//monitor several situations
+        isSuccess: isStudentListSuccess,
+        isError: isStudentListError,
+        error: studentListError
+      } = useGetStudentsByYearQuery({selectedYear:'1000' ,endpointName: 'studentsList'}||{},{//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+        //pollingInterval: 60000,//will refetch data every 60seconds
+        refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
+        refetchOnMountOrArgChange: true//refetch when we remount the component
+      })
+
+
+      let studentsList =[]
+      
+      if (isStudentListSuccess){
+        //set to the state to be used for other component s and edit student component
+        
+        const {entities}=students
+        //we need to change into array to be read??
+        studentsList = Object.values(entities)
+      }
+
+
+
+      const generateRandomUsername = () => {
+        const randomChars = Math.random().toString(36).substring(2, 10); // generate random characters
+        return `user${randomChars}`; // prefix with 'user'
+    };
     const Navigate = useNavigate()
+
+
+    const [partner, setPartner] = useState(null); // Single partner selection
+    const [children, setChildren] = useState([]); // Array for multiple child selections
     //initialisation of states for each input
-    const [username, setUsername] = useState('')
+    const [username, setUsername] = useState(generateRandomUsername())
     const [validUsername, setValidUsername] = useState(false)//will be true when the parentname is validated
-    const [password, setPassword] = useState('')
+    const [password, setPassword] = useState('12345678')
     const [validPassword, setValidPassword] = useState(false)//will be true when the passwrod is validated
     const [userRoles, setUserRoles] = useState(["Parent"])//the roles array is defaulted to employee
     const [userAllowedActions, setUserAllowedActions] = useState([])
@@ -107,7 +163,7 @@ const NewParentForm = () => {//an add parent function that can be called inside 
     }, [email])
 
     useEffect(() => {
-        if (isSuccess) {//if the add of new parent using the mutation is success, empty all the individual states and navigate back to the parents list
+        if (isAddParentSuccess) {//if the add of new parent using the mutation is success, empty all the individual states and navigate back to the parents list
             setUsername('')
             setPassword('')
             setUserRoles([])
@@ -135,9 +191,9 @@ const NewParentForm = () => {//an add parent function that can be called inside 
             setSecondaryPhone()
             setEmail('')
             setUserContact({primaryPhone:'', secondaryPhone:'', email:'' })
-            Navigate('/admin/parentsManagement/parents/')//will navigate here after saving
+            Navigate('/students/studentsParents/parents/')//will navigate here after saving
         }
-    }, [isSuccess, Navigate])//even if no success it will navigate and not show any warning if failed or success
+    }, [isAddParentSuccess, Navigate])//even if no success it will navigate and not show any warning if failed or success
 
     //handlers to get the individual states from the input
     const onUsernameChanged = e => setUsername(e.target.value)
@@ -162,7 +218,7 @@ const NewParentForm = () => {//an add parent function that can be called inside 
     const onPrimaryPhoneChanged = e => setPrimaryPhone(e.target.value)
     const onSecondaryPhoneChanged = e => setSecondaryPhone(e.target.value)
     const onEmailChanged = e => setEmail(e.target.value)
-    
+    const onPartnerSelected = (e) => setPartner(e.target.value);
 
     const onUserRolesChanged = (e) => {
         const { value, checked } = e.target
@@ -176,7 +232,23 @@ const NewParentForm = () => {//an add parent function that can be called inside 
           checked ? [...prevActions, value] : prevActions.filter((action) => action !== value)
         )
       }
+ 
+  // Handle child selection
+  const handleChildChange = (index, value) => {
+    const newChildren = [...children];
+    newChildren[index] = value;
+    setChildren(newChildren);
+  };
 
+  // Add a new child dropdown
+  const addChildDropdown = () => {
+    setChildren([...children, '']);
+  };
+
+  // Remove a child dropdown
+  const removeChildDropdown = (index) => {
+    setChildren(children.filter((_, i) => i !== index));
+  };
 
 //we do not  need to retriev the employee and parent ids from the DB ans set their state because they are saved before the parent
 //check if the parent and employee id is available or delete the variable
@@ -196,17 +268,17 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
 [primaryPhone, secondaryPhone, email])
 
 //to check if we can save before onsave, if every one is true, and also if we are not loading status
-    const canSave = [validUserFirstName, validUserLastName, validUsername, validPassword, validUserDob, userSex, validStreet,  validPrimaryPhone, userRoles.length ].every(Boolean) && !isLoading
+    const canSave = [validUserFirstName, validUserLastName, validUsername, validPassword, validUserDob, userSex, validStreet,  validPrimaryPhone, userRoles.length ].every(Boolean) && !isAddParentLoading
 //console.log(` ${parentFirstName}, ${validParentLastName}, ${validParentname}, ${validPassword}, ${validParentDob},${parentAllowedActions}    ${ validStreet},  ${validPrimaryPhone}, ${validEmail}, ${parentRoles.length}, ${isParent}, ${isEmployee}, ${parentIsActive}` )
     const onSaveParentClicked = async (e) => {
         e.preventDefault()
         
         if (canSave) {//if cansave is true
             //generate the objects before saving
-            //console.log(` 'first name' ${parentFirstName}', fullfirstname,' ${parentFullName.parentFirstName}', house: '${house}', parentcontact house' ${parentContact.house},    ${parentRoles.length},${isParent}, ${isEmployee}` )
-            await addNewParent({ username, password,  userFullName, isParent, isEmployee, userDob, userSex, userPhoto, userIsActive, userRoles, userAllowedActions, userAddress, userContact })//we call the add new parent mutation and set the arguments to be saved
+          
+            await addNewParent({ username, password,  userFullName, isParent, isEmployee, userDob, userSex, userPhoto, userIsActive, userRoles, partner, children, userAllowedActions, userAddress, userContact })//we call the add new parent mutation and set the arguments to be saved
             //added this to confirm save
-            if (isError) {console.log('error savingg', error)//handle the error msg to be shown  in the logs??
+            if (isAddParentError) {console.log('error savingg', addParentError)//handle the error msg to be shown  in the logs??
             }
         }
     }
@@ -215,7 +287,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
     }
    
 //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
-    const errClass = isError ? "errmsg" : "offscreen"
+    const errClass = isAddParentError ? "errmsg" : "offscreen"
     const validUserClass = !validUsername ? 'form__input--incomplete' : ''
     const validPwdClass = !validPassword ? 'form__input--incomplete' : ''
     const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
@@ -224,7 +296,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
     const content = (
         <>
         <StudentsParents/>
-            <p className={errClass}>{error?.data?.message}</p>  {/*will display if there is an error message, some of the error messagees are defined in the back end responses*/}
+            <p className={errClass}>{addParentError?.data?.message}</p>  {/*will display if there is an error message, some of the error messagees are defined in the back end responses*/}
 
             <form className="form" onSubmit={onSaveParentClicked}>
                 <div className="form__title-row">
@@ -422,6 +494,57 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                     value={email}
                     onChange={onEmailChanged}
                 />
+                <label htmlFor="partner">Partner:</label>
+                <select id="partner" value={partner || ''} onChange={onPartnerSelected} className="form__select">
+                    <option value="">Select Partner</option>
+                    {parentsList.map(parent => (
+                        <option key={parent.id} value={parent.id}>
+                            {parent.userProfile.userFullName.userFirstName} {parent.userProfile.userFullName.userMiddleName} {parent.userProfile.userFullName.userLastName}
+                        </option>
+                    ))}
+                </select>
+                    
+
+                <h2>Manage Children</h2>
+      
+      {children.map((child, index) => (
+        <div key={index} className="child-dropdown">
+          <select
+            value={child}
+            onChange={(e) => handleChildChange(index, e.target.value)}
+            className="dropdown"
+          >
+            <option value="">Select a child</option>
+            {studentsList.map(option => (
+              <option key={option.id} value={option.id}>
+                {option.studentName.firstName} {option.studentName.middleName} {option.studentName.lastName}
+              </option>
+            ))}
+          </select>
+          
+          {children.length > 1 && (
+            <button
+              type="button"
+              onClick={() => removeChildDropdown(index)}
+              className="remove-button"
+            >
+              Remove
+            </button>
+          )}
+        </div>
+      ))}
+
+      <button
+        type="button"
+        onClick={addChildDropdown}
+        className="add-button"
+      >
+        Add Child
+      </button>
+               
+               
+
+
                
                 <label className="form__label" htmlFor="isParent">
                     User Is Parent: <span className="nowrap">[24 digits]</span></label>
