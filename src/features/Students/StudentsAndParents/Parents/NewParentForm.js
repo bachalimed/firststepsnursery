@@ -10,7 +10,7 @@ import { useGetParentsByYearQuery } from "./parentsApiSlice"
 import { useGetStudentsByYearQuery } from "../Students/studentsApiSlice"
 
 //constrains on inputs when creating new parent
-const PARENT_REGEX = /^[A-z]{6,20}$/
+const USER_REGEX = /^[A-z0-9]{6,20}$/
 const PWD_REGEX = /^[A-z0-9!@#-_$%]{8,20}$/
 const NAME_REGEX= /^[A-z 0-9]{3,20}$/
 const PHONE_REGEX= /^[0-9]{6,15}$/
@@ -130,7 +130,7 @@ const NewParentForm = () => {//an add parent function that can be called inside 
 //use effect is used to validate the inputs against the defined REGEX above
 //the previous constrains have to be verified on the form for teh parent to know 
     useEffect(() => {
-        setValidUsername(PARENT_REGEX.test(username))
+        setValidUsername(USER_REGEX.test(username))
     }, [username])
 
     useEffect(() => {
@@ -269,7 +269,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
 
 //to check if we can save before onsave, if every one is true, and also if we are not loading status
     const canSave = [validUserFirstName, validUserLastName, validUsername, validPassword, validUserDob, userSex, validStreet,  validPrimaryPhone, userRoles.length ].every(Boolean) && !isAddParentLoading
-//console.log(` ${parentFirstName}, ${validParentLastName}, ${validParentname}, ${validPassword}, ${validParentDob},${parentAllowedActions}    ${ validStreet},  ${validPrimaryPhone}, ${validEmail}, ${parentRoles.length}, ${isParent}, ${isEmployee}, ${parentIsActive}` )
+//console.log(` ${validUserFirstName}, ${validUserLastName}, ${validUsername}, ${validPassword}, ${validUserDob},${userSex}    ${ validStreet},  ${validPrimaryPhone},  ${userRoles.length}` )
     const onSaveParentClicked = async (e) => {
         e.preventDefault()
         
@@ -285,7 +285,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
     const handleCancel= ()=>{
         Navigate ('/students/studentsParents/parents/')
     }
-   
+   console.log(partner,'partner')
 //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
     const errClass = isAddParentError ? "errmsg" : "offscreen"
     const validUserClass = !validUsername ? 'form__input--incomplete' : ''

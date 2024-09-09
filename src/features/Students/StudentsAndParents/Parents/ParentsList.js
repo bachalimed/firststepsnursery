@@ -184,12 +184,12 @@ const column =[
   width:'150px'
   }, 
   { name: "Mother Name",
-  selector:row=>( <Link to={`/changepath/${row._id}`}> {row.partner.userProfile.userFullName.userFirstName+" "+row.partner.userProfile.userFullName.userMiddleName+" "+row.partner.userProfile.userFullName.userLastName}</Link>),
+  selector:row=>( <Link to={`/changepath/${row._id}`}> {row.partner?.userProfile?.userFullName.userFirstName+" "+row.partner?.userProfile?.userFullName.userMiddleName+" "+row.partner?.userProfile?.userFullName.userLastName}</Link>),
   sortable:true,
   width:'150px'
   }, 
   {name: "Situation",
-    selector:row=>row.children[0].studentJointFamily?'Joint':'Separated',
+    selector:row=>row.children[0]?.studentJointFamily?'Joint':'Separated',
     sortable:true
   },
   
@@ -206,7 +206,7 @@ const column =[
   width:'130px'
 },
 {name: "Mother Phone",
-  selector:row=>row.partner.userProfile.userContact.primaryPhone,
+  selector:row=>row.partner?.userProfile?.userContact.primaryPhone,
   sortable:true,
   width:'130px'
 },
