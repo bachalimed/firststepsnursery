@@ -1,17 +1,17 @@
 import React from 'react';
 import { HiOutlineSearch } from 'react-icons/hi'
-import { useGetParentsQuery, useGetParentsByYearQuery } from "./parentsApiSlice"
-import { setSomeParents } from "./parentsSlice"
+import { useGetFamiliesQuery, useGetFamiliesByYearQuery } from "./familiesApiSlice"
+import { setSomeFamilies } from "./familiesSlice"
 import { useGetUsersQuery} from "../../../Admin/UsersManagement/usersApiSlice"
 import StudentsParents from '../../StudentsParents'
 import DataTable from 'react-data-table-component'
 import DeletionConfirmModal from '../../../../Components/Shared/Modals/DeletionConfirmModal'
 import { useSelector } from 'react-redux'
-import { selectParentById, selectAllParents } from './parentsApiSlice'//use the memoized selector 
+import { selectFamilyById, selectAllFamilies } from './familiesApiSlice'//use the memoized selector 
 import { selectAllUsers, selectUserById } from '../../../Admin/UsersManagement/usersApiSlice'//use the memoized selector 
 import { useState, useEffect } from "react"
 import { Link , useNavigate} from 'react-router-dom'
-import { useDeleteParentMutation } from './parentsApiSlice'
+import { useDeleteFamilyMutation } from './familiesApiSlice'
 import { FiEdit, FiDelete  } from 'react-icons/fi'
 import { RiDeleteBin6Line } from 'react-icons/ri'
 import useAuth from "../../../../hooks/useAuth"
@@ -21,7 +21,7 @@ import { IoShieldCheckmarkOutline, IoShieldOutline  } from "react-icons/io5"
 import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYears"
 
 
-const ParentsList = () => {
+const FamiliesList = () => {
 //this is for the academic year selection
 const selectedAcademicYear = useSelectedAcademicYear()
 const [selectedYear, setSelectedYear]=useState('')
@@ -31,12 +31,12 @@ const Dispatch = useDispatch()
 
 //get several things from the query
 const {
-  data: parents,//the data is renamed parents
-  isLoading: isParentLoading,//monitor several situations
-  isSuccess: isParentSuccess,
-  isError: isParentError,
-  error: parentError
-} = useGetParentsByYearQuery({selectedYear:selectedYear ,endpointName: 'parentsList'}||{},{//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+  data: families,//the data is renamed parents
+  isLoading: isFamilyLoading,//monitor several situations
+  isSuccess: isFamilySuccess,
+  isError: isFamilyError,
+  error: familyError
+} = useGetFamiliesByYearQuery({selectedYear:selectedYear ,endpointName: 'families'}||{},{//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
   //pollingInterval: 60000,//will refetch data every 60seconds
   refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
   refetchOnMountOrArgChange: true//refetch when we remount the component
@@ -57,18 +57,18 @@ const [selectedRows, setSelectedRows] = useState([])
 //state to hold the search query
 const [searchQuery, setSearchQuery] = useState('')
 
-let parentsList =[]
-let filteredParents=[]
-if (isParentSuccess){
+let familiesList =[]
+let filteredFamilies=[]
+if (isFamilySuccess){
   //set to the state to be used for other component s and edit student component
   
-  const {entities}=parents
+  const {entities}=families
   //we need to change into array to be read??
-  parentsList = Object.values(entities)//we are using entity adapter in this query
-  Dispatch(setSomeParents(parentsList))//timing issue to update the state and use it the same time
+  familiesList = Object.values(entities)//we are using entity adapter in this query
+  Dispatch(setSomeFamilies(familiesList))//timing issue to update the state and use it the same time
  console.log(entities)
   //the serach result data
- filteredParents = parentsList?.filter(item => {
+ filteredFamilies = familiesList?.filter(item => {
 //the nested objects need extra logic to separate them
 const firstNameMatch = item?.userProfile?.userFullName?.userFirstName?.toLowerCase().includes(searchQuery.toLowerCase())
 const middleNameMatch = item?.userProfile?.userFullName?.userMiddleName?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -93,10 +93,10 @@ const{canEdit, canDelete, canCreate, status2}=useAuth()
 
 
     const [deleteParent, {
-      isParentSuccess: isDelSuccess,
+      isFamilySuccess: isDelSuccess,
       isError: isDelError,
       error: delerror
-  }] = useDeleteParentMutation()
+  }] = useDeleteFamilyMutation()
 
 
 
@@ -165,7 +165,7 @@ const toDuplicate = selectedRows[-1]
 setSelectedRows([]); // Clear selection after delete
 }
 
-const errContent = (isParentError?.data?.message || isDelError?.data?.message) ?? ''
+const errContent = (isFamilyError?.data?.message || isDelError?.data?.message) ?? ''
 //define the content to be conditionally rendered
 
 const column =[
@@ -246,9 +246,9 @@ const column =[
 ]
 let content
 
-if (isParentLoading) content = <p>Loading...</p>
+if (isFamilyLoading) content = <p>Loading...</p>
 
-if (isParentError|isDelError) {
+if (isFamilyError|isDelError) {
     content = <p className="errmsg">error msg  {Error?.data?.message}</p>//errormessage class defined in the css, the error has data and inside we have message of error
 }
 
@@ -270,7 +270,7 @@ content= (
    
    <DataTable
     columns={column}
-    data={filteredParents}
+    data={filteredFamilies}
     pagination
     selectableRows
     removableRows
@@ -315,4 +315,4 @@ content= (
 //}
 return content
 }
-export default ParentsList
+export default FamiliesList

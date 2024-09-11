@@ -4,39 +4,32 @@ import {
 } from "@reduxjs/toolkit";
 import { apiSlice } from "../../../../app/api/apiSlice"
 
-const parentsAdapter = createEntityAdapter({})
+const familiesAdapter = createEntityAdapter({})
 
-const initialState = parentsAdapter.getInitialState()
+const initialState = familiesAdapter.getInitialState()
 
-export const parentsApiSlice = apiSlice.injectEndpoints({
+export const familiesApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
-        getParents: builder.query({
-            query: () => '/students/studentsParents/parents/',//as defined in server.js
+        getFamilies: builder.query({
+            query: () => '/students/studentsParents/families/',//as defined in server.js
             validateStatus: (response, result) => {
                 return response.status === 200 && !result.isError
             },
             //keepUnusedDataFor: 5,//default when app is deployed is 60seconds
             transformResponse: responseData => {
-                const loadedParents = responseData.map(parent => {
-                    parent.id = parent._id
+                const loadedFamilies = responseData.map(family => {
+                    family.id = family._id
                     
-                    return parent
+                    return family
                 });
-                return parentsAdapter.setAll(initialState, loadedParents)
+                return familiesAdapter.setAll(initialState, loadedFamilies)
             },
-            providesTags: (result, error, arg) => {
-                if (result?.ids) {
-                    return [
-                        { type: 'parent', id: 'LIST' },
-                        ...result.ids.map(id => ({ type: 'parent', id }))
-                    ]
-                } else return [{ type: 'parent', id: 'LIST' }]
-            }
+            providesTags: ['family']
         }),
-        getParentsByYear: builder.query({
+        getFamiliesByYear: builder.query({
             query: (params) =>{
                 const queryString = new URLSearchParams(params).toString() 
-                return `/students/studentsParents/parents?${queryString}`
+                return `/students/studentsParents/families?${queryString}`
                 },
             
             validateStatus: (response, result) => {
@@ -45,15 +38,15 @@ export const parentsApiSlice = apiSlice.injectEndpoints({
            
             transformResponse: responseData => {
                 
-                const newLoadedParent = responseData.map(parent => { 
+                const newLoadedFamily = responseData.map(family => { 
                     
-                    parent.id = parent._id//changed the _id from mongoDB to id
-                    delete parent._id//added to delete the extra original _id from mongo but careful when planning to save to db again
-                    return parent
+                    family.id = family._id//changed the _id from mongoDB to id
+                    delete family._id//added to delete the extra original _id from mongo but careful when planning to save to db again
+                    return family
                 })
-                return parentsAdapter.setAll(initialState, newLoadedParent)
+                return familiesAdapter.setAll(initialState, newLoadedFamily)
             },
-            providesTags:['parent']
+            providesTags:['family']
            
             // providesTags: (result, error, arg) => {
             //     if (result?.ids) {
@@ -67,7 +60,7 @@ export const parentsApiSlice = apiSlice.injectEndpoints({
         getParentById: builder.query({
             query: (params) =>{
                 const queryString = new URLSearchParams(params).toString() 
-                return `/students/studentsParents/parents?${queryString}`
+                return `/students/studentsParents/families?${queryString}`
                 },
             
             validateStatus: (response, result) => {
@@ -79,15 +72,15 @@ export const parentsApiSlice = apiSlice.injectEndpoints({
                 
                 //console.log('academicYears length  in the APIslice',responseData.total)
                 //console.log('academicYears in the APIslice', academicYears)
-                const newLoadedParent = responseData.map(parent => { 
+                const newLoadedFamily = responseData.map(family => { 
                     
-                    parent.id = parent._id//changed the _id from mongoDB to id
-                    delete parent._id//added to delete the extra original _id from mongo but careful when planning to save to db again
-                    return parent
+                    family.id = family._id//changed the _id from mongoDB to id
+                    delete family._id//added to delete the extra original _id from mongo but careful when planning to save to db again
+                    return family
                 })
-                return parentsAdapter.upsertMany(initialState, newLoadedParent)
+                return familiesAdapter.upsertMany(initialState, newLoadedFamily)
             },
-            providesTags:['parent']
+            providesTags:['family']
             // providesTags: (result, error, arg) => {
             //     if (result?.ids) {
             //         return [
@@ -98,62 +91,58 @@ export const parentsApiSlice = apiSlice.injectEndpoints({
             // }
         }),
         addNewParent: builder.mutation({
-            query: initialParentData => ({
-                url: '/students/studentsParents/parents/',
+            query: initialFamilyData => ({
+                url: '/students/studentsParents/families/',
                 method: 'POST',
                 body: {
-                    ...initialParentData,
+                    ...initialFamilyData,
                 }
             }),
             invalidatesTags: ['parent']
         }),
         updateParent: builder.mutation({
             query: initialParentData => ({
-                url: '/students/studentsParents/parents/',
+                url: '/students/studentsParents/families/',
                 method: 'PATCH',
                 body: {
                     ...initialParentData,
                 }
             }),
-            invalidatesTags: (result, error, arg) => [//we re not updating all the list, butonly update the parent in the cache by using the arg.id
-                { type: 'parent', id: arg.id }
-            ]
+            invalidatesTags: ['family']
         }),
         deleteParent: builder.mutation({
             query: ({ id }) => ({
-                url: '/students/studentsParents/parents/',
+                url: '/students/studentsParents/families/',
                 method: 'DELETE',
                 body: { id }
             }),
-            invalidatesTags: (result, error, arg) => [
-                { type: 'parent', id: arg.id }
-            ]
+            invalidatesTags:['family']
         }),
     }),
 })
 
 export const {
-    useGetParentsQuery,
-    useAddNewParentMutation,
-    useUpdateParentMutation,
-    useDeleteParentMutation,
-    useGetParentsByYearQuery,
-    useGetParentByIdQuery
-} = parentsApiSlice
+    useGetFamiliesQuery,
+    useAddNewFamilyMutation,
+    useUpdateFamilyMutation,
+    useDeleteFamilyMutation,
+    useGetFamiliesByYearQuery,
+    useGetFamilyByIdQuery
+} = familiesApiSlice
 
 // returns the query result object
-export const selectParentsResult = parentsApiSlice.endpoints.getParents.select()
+export const selectFamiliesResult = familiesApiSlice.endpoints.getFamilies.select()
 
 // creates memoized selector
-const selectParentsData = createSelector(
-    selectParentsResult,
-    parentsResult => parentsResult.data // normalized state object with ids & entities
+const selectFamiliesData = createSelector(
+    selectFamiliesResult,
+    familiesResult => familiesResult.data // normalized state object with ids & entities
 )
 
 //getSelectors creates these selectors and we rename them with aliases using destructuring
 export const {
-    selectAll: selectAllParents,
-    selectById: selectParentById,
-    selectIds: selectParentIds
+    selectAll: selectAllFamilies,
+    selectById: selectFamilyById,
+    selectIds: selectFamilyIds
     // Pass in a selector that returns the parents slice of state
-} = parentsAdapter.getSelectors(state => selectParentsData(state) ?? initialState)
+} = familiesAdapter.getSelectors(state => selectFamiliesData(state) ?? initialState)

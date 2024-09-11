@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react"
-import { useAddNewParentMutation } from "./parentsApiSlice"
+import { useAddNewFamilyMutation } from "./familiesApiSlice"
 import { useNavigate } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave } from "@fortawesome/free-solid-svg-icons"
 import { ROLES } from "../../../../config/UserRoles"
 import { ACTIONS } from "../../../../config/UserActions"
 import StudentsParents from '../../StudentsParents'
-import { useGetParentsByYearQuery } from "./parentsApiSlice"
+import { useGetFamiliesByYearQuery } from "./familiesApiSlice"
 import { useGetStudentsByYearQuery } from "../Students/studentsApiSlice"
 
 //constrains on inputs when creating new parent
@@ -17,22 +17,22 @@ const PHONE_REGEX= /^[0-9]{6,15}$/
 const DOB_REGEX = /^[0-9/-]{4,10}$/
 const EMAIL_REGEX = /^[A-z0-9.@-_]{6,20}$/
 
-const NewParentForm = () => {//an add parent function that can be called inside the component
+const NewFamilyForm = () => {//an add parent function that can be called inside the component
 
-    const [addNewParent, {//an object that calls the status when we execute the newParentForm function
-        isLoading:isAddParentLoading,
-        isSuccess:isAddParentSuccess,
-        isError:isAddParentError,
-        error:addParentError
-    }] = useAddNewParentMutation()//it will not execute the mutation nownow but when called
+    const [addNewFamily, {//an object that calls the status when we execute the newParentForm function
+        isLoading:isAddFamilyLoading,
+        isSuccess:isAddFamilySuccess,
+        isError:isAddFamilyError,
+        error:addFamilyError
+    }] = useAddNewFamilyMutation()//it will not execute the mutation nownow but when called
 
     const {
-        data: parents,//the data is renamed parents
-        isLoading: isParentListLoading,//monitor several situations
-        isSuccess: isParentListSuccess,
-        isError: isParentListError,
-        error: parentListError
-      } = useGetParentsByYearQuery({selectedYear:'1000' ,endpointName: 'parentsList'}||{},{//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+        data: families,//the data is renamed parents
+        isLoading: isFamilyListLoading,//monitor several situations
+        isSuccess: isFamilyListSuccess,
+        isError: isFamilyListError,
+        error: familyListError
+      } = useGetFamiliesByYearQuery({selectedYear:'1000' ,endpointName: 'familiesList'}||{},{//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
         //pollingInterval: 60000,//will refetch data every 60seconds
         refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
         refetchOnMountOrArgChange: true//refetch when we remount the component
@@ -41,10 +41,10 @@ const NewParentForm = () => {//an add parent function that can be called inside 
 
       let parentsList =[]
       
-      if (isParentListSuccess){
+      if (isFamilyListSuccess){
         //set to the state to be used for other component s and edit student component
         
-        const {entities}=parents
+        const {entities}=families
         //we need to change into array to be read??
         parentsList = Object.values(entities)
       }
@@ -163,7 +163,7 @@ const NewParentForm = () => {//an add parent function that can be called inside 
     }, [email])
 
     useEffect(() => {
-        if (isAddParentSuccess) {//if the add of new parent using the mutation is success, empty all the individual states and navigate back to the parents list
+        if (isAddFamilySuccess) {//if the add of new parent using the mutation is success, empty all the individual states and navigate back to the parents list
             setUsername('')
             setPassword('')
             setUserRoles([])
@@ -193,7 +193,7 @@ const NewParentForm = () => {//an add parent function that can be called inside 
             setUserContact({primaryPhone:'', secondaryPhone:'', email:'' })
             Navigate('/students/studentsParents/parents/')//will navigate here after saving
         }
-    }, [isAddParentSuccess, Navigate])//even if no success it will navigate and not show any warning if failed or success
+    }, [isAddFamilySuccess, Navigate])//even if no success it will navigate and not show any warning if failed or success
 
     //handlers to get the individual states from the input
     const onUsernameChanged = e => setUsername(e.target.value)
@@ -268,7 +268,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
 [primaryPhone, secondaryPhone, email])
 
 //to check if we can save before onsave, if every one is true, and also if we are not loading status
-    const canSave = [validUserFirstName, validUserLastName, validUsername, validPassword, validUserDob, userSex, validStreet,  validPrimaryPhone, userRoles.length ].every(Boolean) && !isAddParentLoading
+    const canSave = [validUserFirstName, validUserLastName, validUsername, validPassword, validUserDob, userSex, validStreet,  validPrimaryPhone, userRoles.length ].every(Boolean) && !isAddFamilyLoading
 //console.log(` ${validUserFirstName}, ${validUserLastName}, ${validUsername}, ${validPassword}, ${validUserDob},${userSex}    ${ validStreet},  ${validPrimaryPhone},  ${userRoles.length}` )
     const onSaveParentClicked = async (e) => {
         e.preventDefault()
@@ -276,9 +276,9 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
         if (canSave) {//if cansave is true
             //generate the objects before saving
           
-            await addNewParent({ username, password,  userFullName, isParent, isEmployee, userDob, userSex, userPhoto, userIsActive, userRoles, partner, children, userAllowedActions, userAddress, userContact })//we call the add new parent mutation and set the arguments to be saved
+            await addNewFamily({ username, password,  userFullName, isParent, isEmployee, userDob, userSex, userPhoto, userIsActive, userRoles, partner, children, userAllowedActions, userAddress, userContact })//we call the add new parent mutation and set the arguments to be saved
             //added this to confirm save
-            if (isAddParentError) {console.log('error savingg', addParentError)//handle the error msg to be shown  in the logs??
+            if (isAddFamilyError) {console.log('error savingg', addFamilyError)//handle the error msg to be shown  in the logs??
             }
         }
     }
@@ -287,7 +287,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
     }
    console.log(partner,'partner')
 //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
-    const errClass = isAddParentError ? "errmsg" : "offscreen"
+    const errClass = isAddFamilyError ? "errmsg" : "offscreen"
     const validUserClass = !validUsername ? 'form__input--incomplete' : ''
     const validPwdClass = !validPassword ? 'form__input--incomplete' : ''
     const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
@@ -296,7 +296,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
     const content = (
         <>
         <StudentsParents/>
-            <p className={errClass}>{addParentError?.data?.message}</p>  {/*will display if there is an error message, some of the error messagees are defined in the back end responses*/}
+            <p className={errClass}>{addFamilyError?.data?.message}</p>  {/*will display if there is an error message, some of the error messagees are defined in the back end responses*/}
 
             <form className="form" onSubmit={onSaveParentClicked}>
                 <div className="form__title-row">
@@ -624,4 +624,4 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
 
     return content
 }
-export default NewParentForm
+export default NewFamilyForm

@@ -17,7 +17,7 @@ export const academicYearsApiSlice = apiSlice.injectEndpoints({
             query: () => '/settings/academicsSet/academicYears/',//this route is as defined in the backend server.js to give all academicYears
             validateStatus: (response, result) => {//to validate the status as per documentation
                 return response.status === 200 && !result.isError
-                
+            
             },
             //keepUnusedDataFor: 5,//default is 60seconds or data will be removed from the cache
             transformResponse: responseData => {
@@ -33,9 +33,9 @@ export const academicYearsApiSlice = apiSlice.injectEndpoints({
                 })
                 //sort by newst year
                 const sortedList = newAcademicYears.sort((a, b) => b.title.localeCompare(a.title))
-                //console.log('modifiedacademicYears in the APIslice', newAcademicYears)
-                
-               return academicYearsAdapter.setAll(initialState, sortedList)//loaded the academicYears into academicYearsadapter, setAll is responsible of creating ids and entities
+                console.log('modifiedsortedList in the APIslice', sortedList)
+                console.log('initialState',initialState)
+               return academicYearsAdapter.setAll( initialState, sortedList)//loaded the academicYears into academicYearsadapter, setAll is responsible of creating ids and entities
              
             },
             providesTags:['academicYear'],

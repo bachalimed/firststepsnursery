@@ -5,7 +5,7 @@ import { store } from '../../app/store'
 import { usersApiSlice } from '../Admin/UsersManagement/usersApiSlice'
 import { employeesApiSlice } from '../HR/Employees/employeesApiSlice'
 import { studentsApiSlice } from '../Students/StudentsAndParents/Students/studentsApiSlice'
-import { parentsApiSlice } from '../Students/StudentsAndParents/Parents/parentsApiSlice'
+import { familiesApiSlice } from '../Students/StudentsAndParents/Families/familiesApiSlice'
 import { tasksApiSlice } from '../Desk/Tasks/tasksApiSlice'
 import { academicYearsApiSlice } from '../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
 import { studentDocumentsListsApiSlice } from '../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice'
@@ -30,17 +30,17 @@ const Prefetch = () => {
         //const users = store.dispatch(usersApiSlice.endpoints.getUsers.initiate())//manual subscription to each endpoint by querying to make them remain active while we are in the protected pages even after the 60second default
         //const studentDocumentsLists = store.dispatch(studentDocumentsListsApiSlice.endpoints.getStudentDocumentsLists.initiate())
         //const students = store.dispatch(studentsApiSlice.endpoints.getStudents.initiate())
-        //const parents = store.dispatch(parentsApiSlice.endpoints.getParents.initiate())
+        //const families = store.dispatch(familiesApiSlice.endpoints.getFamilies.initiate())
         //const employees = store.dispatch(employeesApiSlice.endpoints.getEmployees.initiate())
         //const tasks = store.dispatch(tasksApiSlice.endpoints.getTasks.initiate())
-        const academicYears = store.dispatch(academicYearsApiSlice.endpoints.getAcademicYears.initiate())
+        const academicYears =  store.dispatch(academicYearsApiSlice.endpoints.getAcademicYears.initiate())
 
         return () => {
             console.log('unsubscribing')
             //users.unsubscribe()
             //studentDocumentsLists.unsubscribe()
             //students.unsubscribe()
-            //parents.unsubscribe()
+            //families.unsubscribe()
             //employees.unsubscribe()
             //tasks.unsubscribe()
             academicYears.unsubscribe()

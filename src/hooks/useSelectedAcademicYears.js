@@ -3,8 +3,6 @@ import { selectAllAcademicYears,  useGetAcademicYearsQuery } from "../features/A
 import currentAcademicYearsList  from "../features/AppSettings/AcademicsSet/AcademicYears/academicYearsSlice"
 
 
-
-
 export const useSelectedAcademicYear = () => {
 //function to get the current year according to the date
   const getCurrentAcademicYear = () => {
@@ -32,7 +30,6 @@ const currentYear =  getCurrentAcademicYear()//this is current year
       //console.log(selectedAcademicYear,' in the hook')
       return years.find(year => year.isSelected === true)
     }
-    
     
     
     

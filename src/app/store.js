@@ -5,7 +5,7 @@ import authReducer from "../features/auth/authSlice"
 import academicYearsReducer from '../features/AppSettings/AcademicsSet/AcademicYears/academicYearsSlice'
 import tasksReducer from '../features/Desk/Tasks/tasksSlice'
 import studentsReducer from  '../features/Students/StudentsAndParents/Students/studentsSlice'
-import parentsReducer from  '../features/Students/StudentsAndParents/Parents/parentsSlice'
+import familiesReducer from  '../features/Students/StudentsAndParents/Families/familiesSlice'
 import studentDocumentsReducer from  '../features/Students/StudentsAndParents/Students/studentDocumentsSlice'
 import studentDocumentsListReducer from  '../features/AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsSlice'
 
@@ -15,9 +15,9 @@ export const store = configureStore({
         auth: authReducer,
         academicYear: academicYearsReducer,
         student: studentsReducer,
-        parent: parentsReducer,
+        family: familiesReducer,
         studentDocument:studentDocumentsReducer,
-        studentDocumentsList:studentDocumentsListReducer
+        //studentDocumentsList:studentDocumentsListReducer,
         //task: tasksReducer,
         
         //imported from taskSlice

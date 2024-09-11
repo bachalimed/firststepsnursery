@@ -6,7 +6,7 @@ import { useGetAcademicYearsQuery, selectAllAcademicYears } from '../features/Ap
 
 import { BsChevronDown } from "react-icons/bs"
 import { useSelector, useDispatch } from 'react-redux'
-import {selectAcademicYear,  setAcademicYears} from '../features/AppSettings/AcademicsSet/AcademicYears/academicYearsSlice'
+import {academicYearSelected,  setAcademicYears} from '../features/AppSettings/AcademicsSet/AcademicYears/academicYearsSlice'
 import { useState , useEffect} from 'react'
 //import useAcademicYears from '../../../hooks/useAcademicYears'
 import { useSelectedAcademicYear } from '../hooks/useSelectedAcademicYears'
@@ -17,35 +17,11 @@ const AcademicYearsSelection = () => {
   const dispatch = useDispatch()
 //const listOfAcademicYears = useSelector(state => selectAllAcademicYears(state))//this is original but not working if we did not use the query in the list
 const academicYears = useSelector(selectAllAcademicYears)//this works because prefetch?
-const [defaultAcademicYearId, setDefaultAcademicYearId] = useState('');
 
-const getCurrentAcademicYear = () => {
-  const today = new Date() // Get today's date
-  const currentYear = today.getUTCFullYear() // Get the current year
-
-  // Define the academic year start and end dates
-  const startDate = new Date(Date.UTC(currentYear, 8, 1, 0, 0, 0)) // 1st September of the current year
-  const endDate = new Date(Date.UTC(currentYear + 1, 7, 31, 23, 59, 59, 999)) // 31st August of the next year
-
-  // Determine the academic year based on the current date
-  let academicYear
-  if (today >= startDate && today <= endDate) {
-    academicYear = `${currentYear}/${currentYear + 1}`
-  } else {
-    academicYear = `${currentYear - 1}/${currentYear}`
-  }
-  return academicYear
-}
-
-//compare the selcted with the current year only the first time
-
-
-
-
+//very important to dispatch every time there is a refresh
 useEffect(()=>{
   dispatch(setAcademicYears(academicYears))//dispatch list to state,this only shows tehn redux state not empty in the browser tools, check later if this is needed as the query updated the state in apislice
 },[academicYears, dispatch])// added dispatch here
-
 
 
 
@@ -54,7 +30,7 @@ const handleSelectedAcademicYear =(e) =>{
   const  id = e.target.value
  //console.log(selectedTitle)
  //this will publish the curretn selectiont ob eused by other components
-  dispatch(selectAcademicYear({id:id}))
+  dispatch(academicYearSelected({id:id}))
 }
 //const sortedList = academicYears.sort((a, b) => b.title.localeCompare(a.title))//will sort the selection options with topo most recent
 

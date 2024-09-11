@@ -5,7 +5,7 @@ import StudentsParents from '../../StudentsParents';
 import { IoCheckmarkSharp } from 'react-icons/io5';
 import { GrDocumentUpload, GrView } from 'react-icons/gr';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-const ParentDetails = () => {
+const FamilyDetails = () => {
   const {id}= useParams()//this is the raference used in app.js for the route
   const parent = useSelector(state=> state.parent?.entities[id])
   console.log(id, 'parentid ')
@@ -59,4 +59,4 @@ const ParentDetails = () => {
   );
 };
 
-export default ParentDetails
+export default FamilyDetails
