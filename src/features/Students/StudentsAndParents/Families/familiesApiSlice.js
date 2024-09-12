@@ -90,7 +90,7 @@ export const familiesApiSlice = apiSlice.injectEndpoints({
             //     } else return [{ type: 'parent', id: 'LIST' }]
             // }
         }),
-        addNewParent: builder.mutation({
+        addNewFamily: builder.mutation({
             query: initialFamilyData => ({
                 url: '/students/studentsParents/families/',
                 method: 'POST',
@@ -98,7 +98,7 @@ export const familiesApiSlice = apiSlice.injectEndpoints({
                     ...initialFamilyData,
                 }
             }),
-            invalidatesTags: ['parent']
+            invalidatesTags: ['family']
         }),
         updateParent: builder.mutation({
             query: initialParentData => ({
@@ -110,7 +110,7 @@ export const familiesApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['family']
         }),
-        deleteParent: builder.mutation({
+        deleteFamily: builder.mutation({
             query: ({ id }) => ({
                 url: '/students/studentsParents/families/',
                 method: 'DELETE',

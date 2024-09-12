@@ -31,7 +31,7 @@ const Dispatch = useDispatch()
 
 //get several things from the query
 const {
-  data: families,//the data is renamed parents
+  data: families,//the data is renamed families
   isLoading: isFamilyLoading,//monitor several situations
   isSuccess: isFamilySuccess,
   isError: isFamilyError,
@@ -70,29 +70,29 @@ if (isFamilySuccess){
   //the serach result data
  filteredFamilies = familiesList?.filter(item => {
 //the nested objects need extra logic to separate them
-const firstNameMatch = item?.userProfile?.userFullName?.userFirstName?.toLowerCase().includes(searchQuery.toLowerCase())
-const middleNameMatch = item?.userProfile?.userFullName?.userMiddleName?.toLowerCase().includes(searchQuery.toLowerCase())
-const lastNameMatch = item?.userProfile?.userFullName?.userLastName?.toLowerCase().includes(searchQuery.toLowerCase())
+const fatherFirstNameMatch = item?.father?.userFullName?.userFirstName?.toLowerCase().includes(searchQuery.toLowerCase())
+const fatherMiddleNameMatch = item?.father?.userFullName?.userMiddleName?.toLowerCase().includes(searchQuery.toLowerCase())
+const fatherLastNameMatch = item?.father?.userFullName?.userLastName?.toLowerCase().includes(searchQuery.toLowerCase())
 const dobMatch = item?.userProfile?.userDob?.toLowerCase().includes(searchQuery.toLowerCase());
-const motherFirstNameMatch = item?.partner?.userProfile?.userFullName?.userFirstName?.toLowerCase().includes(searchQuery.toLowerCase())
-const motherMiddleNameMatch = item?.partner?.userProfile?.userFullName?.userMiddleName?.toLowerCase().includes(searchQuery.toLowerCase())
-const motherLastNameMatch = item?.partner?.userProfile?.userFullName?.userLastName?.toLowerCase().includes(searchQuery.toLowerCase())
+const motherFirstNameMatch = item?.mother?.userFullName?.userFirstName?.toLowerCase().includes(searchQuery.toLowerCase())
+const motherMiddleNameMatch = item?.mother?.userFullName?.userMiddleName?.toLowerCase().includes(searchQuery.toLowerCase())
+const motherLastNameMatch = item?.mother?.userFullName?.userLastName?.toLowerCase().includes(searchQuery.toLowerCase())
 
 //console.log('filteredStudents in the success', item)
 return (Object.values(item).some(val =>
   String(val).toLowerCase().includes(searchQuery.toLowerCase())
-)||firstNameMatch||middleNameMatch||lastNameMatch||dobMatch||motherFirstNameMatch||motherMiddleNameMatch||motherLastNameMatch)
+)||fatherFirstNameMatch||fatherMiddleNameMatch||fatherLastNameMatch||dobMatch||motherFirstNameMatch||motherMiddleNameMatch||motherLastNameMatch)
 })
 }
 
 
 
-//console.log('allParents', allParents)
-
-const{canEdit, canDelete, canCreate, status2}=useAuth()
 
 
-    const [deleteParent, {
+const{canEdit, canDelete, canCreate, status2, isAdmin}=useAuth()
+
+
+    const [deleteFamily, {
       isFamilySuccess: isDelSuccess,
       isError: isDelError,
       error: delerror
@@ -105,7 +105,7 @@ const handleSearch = (e) => {
   setSearchQuery(e.target.value)
 }
 
-//console.log('filtered', filteredParents)
+
 
 
 // Handler for selecting rows
@@ -113,7 +113,7 @@ const handleRowSelected = (state) => {
 setSelectedRows(state.selectedRows)
 //console.log('selectedRows', selectedRows)
 }
-//add child to parents
+//add child to family
 const handleAddChildren = async(selectedRows)=>{
 
 
@@ -128,26 +128,26 @@ Navigate(`/students/studentsParents/students/${id}/`)//the path to be set in app
 
 
 const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
-  const [idParentToDelete, setIdParentToDelete] = useState(null)
-const onDeleteParentClicked =  (id) => {    
-setIdParentToDelete(id)
+  const [idFamilyToDelete, setIdFamilyToDelete] = useState(null)
+const onDeleteFamilyClicked =  (id) => {    
+  setIdFamilyToDelete(id)
 setIsDeleteModalOpen(true)
 }
 
 // Function to confirm deletion in the modal
 const handleConfirmDelete = async () => {
-  await deleteParent({ id: idParentToDelete });
+  await deleteFamily({ id: idFamilyToDelete });
   setIsDeleteModalOpen(false); // Close the modal
 };
 // Function to close the modal without deleting
 const handleCloseDeleteModal = () => {
   setIsDeleteModalOpen(false);
-  setIdParentToDelete(null);
+  setIdFamilyToDelete(null);
 };
 
 // Handler for duplicating selected rows, 
 const handleDuplicateSelected = () => {
-console.log('Selected Rows to duplicate:', selectedRows);
+//console.log('Selected Rows to duplicate:', selectedRows);
 // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
 //ensure only one can be selected: the last one
 const toDuplicate = selectedRows[-1]
@@ -178,61 +178,75 @@ const column =[
   },
   
   
-  { name: "Father Name",
-  selector:row=>( <Link to={`/changepath/${row._id}`}> {row.userProfile.userFullName.userFirstName+" "+row.userProfile.userFullName.userMiddleName+" "+row.userProfile.userFullName.userLastName}</Link>),
+  { name: "Name",
+  selector:row=>( <div>
+    <div><Link to={`/changepath/${row._id}`}> {row.father.userFullName.userFirstName+" "+row.father.userFullName.userMiddleName+" "+row.father.userFullName.userLastName}</Link></div>
+    <div><Link to={`/changepath/${row._id}`}> {row.mother?.userFullName.userFirstName+" "+row.mother?.userFullName.userMiddleName+" "+row.mother?.userFullName.userLastName}</Link></div>
+  </div>
+  ) ,
   sortable:true,
-  width:'150px'
+  width:'180px'
   }, 
-  { name: "Mother Name",
-  selector:row=>( <Link to={`/changepath/${row._id}`}> {row.partner?.userProfile?.userFullName.userFirstName+" "+row.partner?.userProfile?.userFullName.userMiddleName+" "+row.partner?.userProfile?.userFullName.userLastName}</Link>),
-  sortable:true,
-  width:'150px'
-  }, 
-  {name: "Situation",
-    selector:row=>row.children[0]?.studentJointFamily?'Joint':'Separated',
-    sortable:true
-  },
-  
-  //  {name: "DOB",
-  //   selector:row=>new Date(row.userProfile.userDob).toLocaleString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' }),
-  //   width:'100px',
-  //   sortable:true
-  // },  
-
  
-{name: "Father Phone",
-  selector:row=>row.userProfile.userContact.primaryPhone,
-  sortable:true,
-  width:'130px'
-},
-{name: "Mother Phone",
-  selector:row=>row.partner?.userProfile?.userContact.primaryPhone,
-  sortable:true,
-  width:'130px'
-},
+  { name: "DOB",
+    selector:row=>( <div>
+      <div> {new Date(row.father.userDob).toLocaleString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' })}</div>
+      <div>{new Date(row.mother.userDob).toLocaleString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' })}</div>
+    </div>
+    ) ,
+    sortable:true,
+    width:'100px'
+    }, 
+    {name: "Situation",
+      selector:row=>row.familySituation?'Joint':'Separated',
+      sortable:true,
+      width:'100px'
+    },
+  
+
+  { name: "Phone",
+    selector:row=>( <div>
+      <div> {row.father.userContact.primaryPhone}</div>
+      <div> {row.mother.userContact.primaryPhone}</div>
+    </div>
+    ) ,
+    sortable:true,
+    width:'100px'
+    }, 
+  { name: "Address",
+    selector:row=>( <div>
+      <div> {row.father.userAddress.house}  {row.father.userAddress.street}  {row.father.userAddress.area}  {row.father.userAddress.postCode}  {row.father.userAddress.city}</div>
+      {row.familySituation!=="Joint"&&<div> {row.mother.userAddress.house}  {row.mother.userAddress.street}  {row.mother.userAddress.area}  {row.mother.userAddress.postCode}  {row.mother.userAddress.city}</div>}
+    </div>
+    ) ,
+    sortable:true,
+    width:'100px'
+    }, 
 
  
 {name: "Children",
   selector:row=>( 
     <div>{row.children.map(child=> (
-      <div key ={child._id}>{child.studentName.firstName} {child.studentName.middleName} {child.studentName.lastName}</div>))}
+      <div key ={child._id}>{child.child.studentName.firstName} {child.child.studentName.middleName} {child.child.studentName.lastName}</div>))}
     </div>),
   
   sortable:true,
   width: '180px',
 },
+
+ 
 { 
   name: "Manage",
   cell: row => (
     <div className="space-x-1">
-     <button className="text-blue-500" fontSize={20}  onClick={() => Navigate(`/students/studentsParents/parentDetails/${row.id}`)}  > 
+     <button className="text-blue-500" fontSize={20}  onClick={() => Navigate(`/students/studentsParents/familyDetails/${row.id}`)}  > 
       <ImProfile fontSize={20}/> 
       </button>
       {/* /////////////////////condition is canEdit and not ! of it */}
-      {canEdit?(<button className="text-yellow-400"  onClick={() => Navigate(`/students/studentsParents/editParent/${row.id}`)} > 
+      {canEdit?(<button className="text-yellow-400"  onClick={() => Navigate(`/students/studentsParents/editFamily/${row.id}`)} > 
       <FiEdit fontSize={20}/> 
       </button>):null}
-      {canDelete?(<button className="text-red-500" onClick={() => onDeleteParentClicked(row._id)} >
+      {isAdmin&&canDelete?(<button className="text-red-500" onClick={() => onDeleteFamilyClicked(row._id)} >
         <RiDeleteBin6Line fontSize={20}/>
       </button>):null}
     </div>
@@ -252,9 +266,9 @@ if (isFamilyError|isDelError) {
     content = <p className="errmsg">error msg  {Error?.data?.message}</p>//errormessage class defined in the css, the error has data and inside we have message of error
 }
 
-//if (isParentSuccess||isDelSuccess) {
+//if (isFamilySuccess||isDelSuccess) {
 
-  //console.log('filtered and success', filteredParents)
+  //console.log('filtered and success', filteredFamilies)
 
 content= (
   <>

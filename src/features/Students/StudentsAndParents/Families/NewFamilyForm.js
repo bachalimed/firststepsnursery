@@ -39,14 +39,14 @@ const NewFamilyForm = () => {//an add parent function that can be called inside 
       })
 
 
-      let parentsList =[]
+      let familiesList =[]
       
       if (isFamilyListSuccess){
         //set to the state to be used for other component s and edit student component
         
         const {entities}=families
         //we need to change into array to be read??
-        parentsList = Object.values(entities)
+        familiesList = Object.values(entities)
       }
     const {
         data: students,//the data is renamed parents
@@ -283,7 +283,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
         }
     }
     const handleCancel= ()=>{
-        Navigate ('/students/studentsParents/parents/')
+        Navigate ('/students/studentsParents/families/')
     }
    console.log(partner,'partner')
 //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
@@ -497,9 +497,9 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                 <label htmlFor="partner">Partner:</label>
                 <select id="partner" value={partner || ''} onChange={onPartnerSelected} className="form__select">
                     <option value="">Select Partner</option>
-                    {parentsList.map(parent => (
-                        <option key={parent.id} value={parent.id}>
-                            {parent.userProfile.userFullName.userFirstName} {parent.userProfile.userFullName.userMiddleName} {parent.userProfile.userFullName.userLastName}
+                    {familiesList.map(family => (
+                        <option key={family.id} value={family.id}>
+                            {family.father.userFullName.userFirstName} {family.father.userFullName.userMiddleName} {family.father.userFullName.userLastName}
                         </option>
                     ))}
                 </select>

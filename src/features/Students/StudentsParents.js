@@ -30,8 +30,8 @@ const content = (
  
         <Link to={'/students/studentsParents/newStudent/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">New Student</li></Link>
     
-        <Link to={'/students/studentsParents/newParent/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">New Parent</li></Link>
-        <Link to={'/students/studentsParents/manageFamilies/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">Manage Families</li></Link>
+        <Link to={'/students/studentsParents/newFamily/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">New Family</li></Link>
+        
         <AcademicYearsSelection/>
         
      

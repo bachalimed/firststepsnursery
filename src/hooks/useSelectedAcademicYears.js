@@ -27,12 +27,12 @@ const currentYear =  getCurrentAcademicYear()//this is current year
     const selectedAcademicYear =  useSelector((state) => {
       //const selectedId = state.academicYears.selectedYearId // Assuming `selectedYearId` is where you store the selected year ID in your state
       const years = Object.values(state.academicYear?.entities || {})
-      //console.log(selectedAcademicYear,' in the hook')
       return years.find(year => year.isSelected === true)
     }
     
-    
-    
   )
+    //console.log(selectedAcademicYear,' in the hook')
+    
+    
   return selectedAcademicYear || { title: currentYear }
 }
