@@ -24,7 +24,7 @@ import StudentDocumentsForm from './features/Students/StudentsAndParents/Student
 import NewStudentDocumentsListForm from './features/AppSettings/StudentsSet/StudentDocumentsLists/NewStudentDocumentsListForm'
 import EditStudentDocumentsList from './features/AppSettings/StudentsSet/StudentDocumentsLists/EditStudentDocumentsList'
 
-import NewFamilyForm from './features/Students/StudentsAndParents/Families/NewFamilyForm'
+import NewFamily from './features/Students/StudentsAndParents/Families/NewFamily'
 import FamilyDetails from './features/Students/StudentsAndParents/Families/FamilyDetails'
 
 import Admissions from "./features/Students/Admissions"
@@ -136,7 +136,7 @@ const App = () => {
 								<Route index element={<StudentsParents />} /> 
 									<Route path="students/" element={<StudentsList />}/>												
 									<Route path="newStudent/" element={<NewStudentForm />}/>												
-									<Route path="newFamily/" element={<NewFamilyForm />}/>												
+									<Route path="newFamily/" element={<NewFamily />}/>												
 									<Route path="studentDocumentsList/:id/" element={<StudentDocuments />}/>												
 									<Route path="studentDocuments/upload/:id/" element={<StudentDocumentsForm />}/>	
 									<Route path="studentDetails/:id/" element={<StudentDetails/>}/>

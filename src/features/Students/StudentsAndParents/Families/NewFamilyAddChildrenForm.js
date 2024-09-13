@@ -17,7 +17,7 @@ const PHONE_REGEX= /^[0-9]{6,15}$/
 const DOB_REGEX = /^[0-9/-]{4,10}$/
 const EMAIL_REGEX = /^[A-z0-9.@-_]{6,20}$/
 
-const NewFamilyForm = () => {//an add parent function that can be called inside the component
+const NewFamilyAddChildrenForm = () => {//an add parent function that can be called inside the component
 
     const [addNewFamily, {//an object that calls the status when we execute the newParentForm function
         isLoading:isAddFamilyLoading,
@@ -26,28 +26,7 @@ const NewFamilyForm = () => {//an add parent function that can be called inside 
         error:addFamilyError
     }] = useAddNewFamilyMutation()//it will not execute the mutation nownow but when called
 
-    const {
-        data: families,//the data is renamed parents
-        isLoading: isFamilyListLoading,//monitor several situations
-        isSuccess: isFamilyListSuccess,
-        isError: isFamilyListError,
-        error: familyListError
-      } = useGetFamiliesByYearQuery({selectedYear:'1000' ,endpointName: 'familiesList'}||{},{//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-        //pollingInterval: 60000,//will refetch data every 60seconds
-        refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
-        refetchOnMountOrArgChange: true//refetch when we remount the component
-      })
-
-
-      let familiesList =[]
-      
-      if (isFamilyListSuccess){
-        //set to the state to be used for other component s and edit student component
-        
-        const {entities}=families
-        //we need to change into array to be read??
-        familiesList = Object.values(entities)
-      }
+    
     const {
         data: students,//the data is renamed parents
         isLoading: isStudentListLoading,//monitor several situations
@@ -84,9 +63,9 @@ const NewFamilyForm = () => {//an add parent function that can be called inside 
     const [children, setChildren] = useState([]); // Array for multiple child selections
     //initialisation of states for each input
     const [username, setUsername] = useState(generateRandomUsername())
-    const [validUsername, setValidUsername] = useState(false)//will be true when the parentname is validated
+    // const [validUsername, setValidUsername] = useState(false)//will be true when the parentname is validated
     const [password, setPassword] = useState('12345678')
-    const [validPassword, setValidPassword] = useState(false)//will be true when the passwrod is validated
+    // const [validPassword, setValidPassword] = useState(false)//will be true when the passwrod is validated
     const [userRoles, setUserRoles] = useState(["Parent"])//the roles array is defaulted to employee
     const [userAllowedActions, setUserAllowedActions] = useState([])
     const [userFullName, setUserFullName] = useState('')
@@ -129,13 +108,13 @@ const NewFamilyForm = () => {//an add parent function that can be called inside 
 
 //use effect is used to validate the inputs against the defined REGEX above
 //the previous constrains have to be verified on the form for teh parent to know 
-    useEffect(() => {
-        setValidUsername(USER_REGEX.test(username))
-    }, [username])
+    // useEffect(() => {
+    //     setValidUsername(USER_REGEX.test(username))
+    // }, [username])
 
-    useEffect(() => {
-        setValidPassword(PWD_REGEX.test(password))
-    }, [password])
+    // useEffect(() => {
+    //     setValidPassword(PWD_REGEX.test(password))
+    // }, [password])
 
     useEffect(() => {
         setValidUserFirstName(NAME_REGEX.test(userFirstName))
@@ -196,8 +175,8 @@ const NewFamilyForm = () => {//an add parent function that can be called inside 
     }, [isAddFamilySuccess, Navigate])//even if no success it will navigate and not show any warning if failed or success
 
     //handlers to get the individual states from the input
-    const onUsernameChanged = e => setUsername(e.target.value)
-    const onPasswordChanged = e => setPassword(e.target.value)
+    //const onUsernameChanged = e => setUsername(e.target.value)
+    //const onPasswordChanged = e => setPassword(e.target.value)
     const onUserFirstNameChanged = e => setUserFirstName(e.target.value)
     const onUserMiddleNameChanged = e => setUserMiddleName(e.target.value)
     const onUserLastNameChanged = e => setUserLastName(e.target.value)
@@ -252,8 +231,7 @@ const NewFamilyForm = () => {//an add parent function that can be called inside 
 
 //we do not  need to retriev the employee and parent ids from the DB ans set their state because they are saved before the parent
 //check if the parent and employee id is available or delete the variable
-if (isParent===''){ setIsParent(undefined)}
-if (isEmployee===''){ setIsEmployee(undefined)}
+
 
 useEffect(()=>{
 setUserFullName({userFirstName:userFirstName, userMiddleName:userMiddleName, userLastName:userLastName})},
@@ -268,7 +246,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
 [primaryPhone, secondaryPhone, email])
 
 //to check if we can save before onsave, if every one is true, and also if we are not loading status
-    const canSave = [validUserFirstName, validUserLastName, validUsername, validPassword, validUserDob, userSex, validStreet,  validPrimaryPhone, userRoles.length ].every(Boolean) && !isAddFamilyLoading
+    const canSave = [validUserFirstName, validUserLastName, validUserDob, userSex, validStreet,  validPrimaryPhone, userRoles.length ].every(Boolean) && !isAddFamilyLoading
 //console.log(` ${validUserFirstName}, ${validUserLastName}, ${validUsername}, ${validPassword}, ${validUserDob},${userSex}    ${ validStreet},  ${validPrimaryPhone},  ${userRoles.length}` )
     const onSaveParentClicked = async (e) => {
         e.preventDefault()
@@ -288,8 +266,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
    console.log(partner,'partner')
 //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
     const errClass = isAddFamilyError ? "errmsg" : "offscreen"
-    const validUserClass = !validUsername ? 'form__input--incomplete' : ''
-    const validPwdClass = !validPassword ? 'form__input--incomplete' : ''
+    
     const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
 
 
@@ -300,14 +277,14 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
 
             <form className="form" onSubmit={onSaveParentClicked}>
                 <div className="form__title-row">
-                    <h2>New Parent Form</h2>
+                    <h2>Add Children</h2>
                     
                 </div>
                 <div>
                 <label className="form__label" htmlFor="userFirstName">
                     Parent First Name* : <span className="nowrap">[3-20 letters]</span></label>
                 <input
-                    className={`form__input ${validUserClass}`}
+                    className={`form__input`}
                     id="userFirstName"
                     name="userFirstName"
                     type="text"
@@ -318,7 +295,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                 <label className="form__label" htmlFor="userMiddleName">
                     Parent Middle Name : <span className="nowrap"></span></label>
                 <input
-                    className={`form__input ${validUserClass}`}
+                    className={`form__input`}
                     id="userMiddleName"
                     name="userMiddleName"
                     type="text"
@@ -331,7 +308,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                 <label className="form__label" htmlFor="userLastName">
                     Parent Last Name* : <span className="nowrap">[3-20 letters]</span></label>
                 <input
-                    className={`form__input ${validUserClass}`}
+                    className={`form__input `}
                     id="userLastName"
                     name="userLastName"
                     type="text"
@@ -342,7 +319,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                  <label className="form__label" htmlFor="userDob">
                     Date Of Birth* : <span className="nowrap">[dd/mm/yyyy]</span></label>
                 <input
-                    className={`form__input ${validUserClass}`}
+                    className={`form__input `}
                     id="userDob"
                     name="userDob"
                     type="date"
@@ -377,34 +354,13 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                 
                 </div>
                
-                <label className="form__label" htmlFor="username">
-                    Username* : <span className="nowrap">[6-20 Characters]</span></label>
-                <input
-                    className={`form__input ${validUserClass}`}
-                    id="username"
-                    name="username"
-                    type="text"
-                    autoComplete="off"
-                    value={username}
-                    onChange={onUsernameChanged}
-                />
-                 <label className="form__label" htmlFor="password">
-                    Password* : <span className="nowrap">[8-20 chars incl. !@#$-_%]</span></label>
-                <input
-                    className={`form__input ${validPwdClass}`}
-                    id="password"
-                    name="password"
-                    type="password"
-                    value={password}
-                    onChange={onPasswordChanged}
-                />
-                
+            
                
                 
                 <label className="form__label" htmlFor="house">
                     House* : <span className="nowrap">[3-20 letters]</span></label>
                 <input
-                    className={`form__input ${validUserClass}`}
+                    className={`form__input `}
                     id="house"
                     name="house"
                     type="text"
@@ -415,7 +371,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                 <label className="form__label" htmlFor="street">
                     Street* : <span className="nowrap">[3-20 letters]</span></label>
                 <input
-                    className={`form__input ${validUserClass}`}
+                    className={`form__input `}
                     id="street"
                     name="street"
                     type="text"
@@ -427,7 +383,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                 <label className="form__label" htmlFor="area">
                     Area: <span className="nowrap"></span></label>
                 <input
-                    className={`form__input ${validUserClass}`}
+                    className={`form__input `}
                     id="area"
                     name="area"
                     type="text"
@@ -438,7 +394,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                 <label className="form__label" htmlFor="city">
                     City* : <span className="nowrap">[3-20 letters]</span></label>
                 <input
-                    className={`form__input ${validUserClass}`}
+                    className={`form__input `}
                     id="city"
                     name="city"
                     type="text"
@@ -450,7 +406,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                 <label className="form__label" htmlFor="postCode">
                     Post Code: <span className="nowrap"></span></label>
                 <input
-                    className={`form__input ${validUserClass}`}
+                    className={`form__input `}
                     id="postCode"
                     name="postCode"
                     type="text"
@@ -462,7 +418,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                 <label className="form__label" htmlFor="primaryPhone">
                     Primary Phone* : <span className="nowrap">[6 to 15 Digits]</span></label>
                 <input
-                    className={`form__input ${validUserClass}`}
+                    className={`form__input `}
                     id="primaryPhone"
                     name="primaryPhone"
                     type="tel"
@@ -474,7 +430,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                 <label className="form__label" htmlFor="secondaryPhone">
                     Secondary Phone: <span className="nowrap"></span></label>
                 <input
-                    className={`form__input ${validUserClass}`}
+                    className={`form__input `}
                     id="secondaryPhone"
                     name="secondaryPhone"
                     type="tel"
@@ -486,7 +442,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                 <label className="form__label" htmlFor="email">
                     Email: <span className="nowrap"></span></label>
                 <input
-                    className={`form__input ${validUserClass}`}
+                    className={`form__input `}
                     id="email"
                     name="email"
                     type="email"
@@ -494,7 +450,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                     value={email}
                     onChange={onEmailChanged}
                 />
-                <label htmlFor="partner">Partner:</label>
+                {/* <label htmlFor="partner">Partner:</label>
                 <select id="partner" value={partner || ''} onChange={onPartnerSelected} className="form__select">
                     <option value="">Select Partner</option>
                     {familiesList.map(family => (
@@ -502,7 +458,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                             {family.father.userFullName.userFirstName} {family.father.userFullName.userMiddleName} {family.father.userFullName.userLastName}
                         </option>
                     ))}
-                </select>
+                </select> */}
                     
 
                 <h2>Manage Children</h2>
@@ -541,61 +497,10 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
       >
         Add Child
       </button>
-               
-               
-
-
-               
-                <label className="form__label" htmlFor="isParent">
-                    User Is Parent: <span className="nowrap">[24 digits]</span></label>
-                <input
-                    className={`form__input ${validUserClass}`}
-                    id="isParent"
-                    name="isParent"
-                    type="text"
-                    autoComplete="off"
-                    value={isParent}
-                    onChange={onIsParentChanged}
-                />
-                 <label className="form__label" htmlFor="isEmployee">
-                 User Is Employee: <span className="nowrap">[24 digits]</span></label>
-                <input
-                    className={`form__input ${validUserClass}`}
-                    id="isEmployee"
-                    name="isEmployee"
-                    type="text"
-                    autoComplete="off"
-                    value={isEmployee}
-                    onChange={onIsEmployeeChanged}
-                />
+           
+                
                
 
-                    <label>
-                    <input
-                    type="checkbox"
-                    value={userIsActive}
-                    checked={userIsActive}
-                    onChange={onUserIsActiveChanged}
-                    />
-                    User Is Active
-                    </label>
-                    
-                    <h1>User Roles: </h1>
-                    <div className="flex flex-wrap space-x-4">
-                    {Object.keys(ROLES).map((key) => (
-                    
-                    <label  key={key} className="flex items-center">
-                        <input
-                        type="checkbox"
-                        value={ROLES[key]}
-                        checked={userRoles.includes(ROLES[key])}
-                        onChange={onUserRolesChanged}
-                        />
-                        {ROLES[key]}
-                    </label>
-                    
-                    ))}
-                    </div>
                     
               
 
@@ -624,4 +529,4 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
 
     return content
 }
-export default NewFamilyForm
+export default NewFamilyAddChildrenForm

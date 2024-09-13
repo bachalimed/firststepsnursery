@@ -102,7 +102,7 @@ if (yearIsSuccess){
 
         const [academicYear, setAcademicYear] = useState(null)
         const [studentYears, setStudentYears] = useState([])
-        const [studentJointFamily, setStudentJointFamily] = useState(true)
+        //const [studentJointFamily, setStudentJointFamily] = useState(true)
         const [studentGardien, setStudentGardien] = useState([])
         const [gardienYear, setGardienYear] = useState('')
         const [gardienFirstName, setGardienFirstName] = useState('')
@@ -153,7 +153,7 @@ if (yearIsSuccess){
             setStudentIsActive(false)
             setStudentYears('')//will be true when the username is validated
            
-            setStudentJointFamily(true)
+            //setStudentJointFamily(true)
             setGardienFirstName('')
             setgardienMiddleName('')
             setGardienLastName('')
@@ -180,7 +180,7 @@ if (yearIsSuccess){
       const onStudentIsActiveChanged = e => setStudentIsActive((prev)=>!prev)
       //const onAcademicYearChanged = e => setAcademicYear(e.target.value)
  
-      const onStudentJointFamilyChanged = e => setStudentJointFamily((prev)=>!prev)
+      //const onStudentJointFamilyChanged = e => setStudentJointFamily((prev)=>!prev)
 
       const onGardienFirstNameChanged = e => setGardienFirstName(e.target.value)
       const onGardienMiddleNameChanged = e => setgardienMiddleName(e.target.value)  
@@ -261,8 +261,8 @@ if (yearIsSuccess){
           
           if (canSave) {//if cansave is true
               //generate the objects before saving
-              console.log(studentName, studentDob, studentSex, studentIsActive, studentYears,  studentJointFamily, studentEducation)
-              await addNewStudent({ studentName, studentDob, studentSex, studentIsActive, studentYears,  studentJointFamily, studentEducation , studentGardien, operator  })//we call the add new user mutation and set the arguments to be saved
+              console.log(studentName, studentDob, studentSex, studentIsActive, studentYears,   studentEducation)
+              await addNewStudent({ studentName, studentDob, studentSex, studentIsActive, studentYears,   studentEducation , studentGardien, operator  })//we call the add new user mutation and set the arguments to be saved
               //added this to confirm save
               if (isError) {console.log('error savingg', error)//handle the error msg to be shown  in the logs??
               }
@@ -386,19 +386,6 @@ if (yearIsSuccess){
                 <label htmlFor="active" className="ml-2 text-sm font-medium text-gray-700">Student Is Active</label>
               </div>
       
-              <div className="flex items-center mb-2">
-                <input
-                  type="checkbox"
-                  id="jointFamily"
-                  value={studentJointFamily}
-                  checked={studentJointFamily}
-                  onChange={onStudentJointFamilyChanged}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <label htmlFor="jointFamily" className="ml-2 text-sm font-medium text-gray-700">Student Joint Family</label>
-              </div>
-              
-             
               <div className="flex items-center mb-2">
                        
                            

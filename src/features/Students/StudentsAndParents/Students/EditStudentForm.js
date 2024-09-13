@@ -104,7 +104,7 @@ if (schoolIsSuccess){
     const [ studentSex,setStudentSex ]= useState(student.studentSex)
     const [studentIsActive, setStudentIsActive] = useState(student.studentIsActive)
     const [studentYears, setStudentYears] = useState(student.studentYears)
-    const [studentJointFamily, setStudentJointFamily] = useState(student.studentJointFamily)
+    // const [studentJointFamily, setStudentJointFamily] = useState(student.studentJointFamily)
     
   
     const [studentGardien, setStudentGardien] = useState(student.studentGardien)//an object
@@ -156,7 +156,7 @@ if (schoolIsSuccess){
             setStudentIsActive(false)
             setStudentYears([])//will be true when the username is validated
 
-            setStudentJointFamily('')
+           // setStudentJointFamily('')
             setGardienFirstName('')
             setgardienMiddleName('')
             setGardienLastName('')
@@ -181,7 +181,7 @@ if (schoolIsSuccess){
         const onStudentDobChanged = e => setStudentDob(e.target.value)
         const onStudentSexChanged = e => setStudentSex(e.target.value)
         const onStudentIsActiveChanged = e => setStudentIsActive(prev=>!prev)
-      const onStudentJointFamilyChanged = e => setStudentJointFamily(prev=>!prev)
+      //const onStudentJointFamilyChanged = e => setStudentJointFamily(prev=>!prev)
       const onGardienFirstNameChanged = e => setGardienFirstName(e.target.value)
       const onGardienMiddleNameChanged = e => setgardienMiddleName(e.target.value)  
       const onGardienLastNameChanged = e => setGardienLastName(e.target.value)
@@ -270,9 +270,9 @@ const handleRemoveEntry = (index) => {
         const onUpdateStudentClicked = async (e) => {  
           e.preventDefault()
             //generate the objects before saving
-            const toSave = {id,studentName, studentDob, studentSex, studentIsActive, studentYears,  studentJointFamily, studentEducation , studentGardien, operator }
+            const toSave = {id,studentName, studentDob, studentSex, studentIsActive, studentYears,   studentEducation , studentGardien, operator }
             console.log(toSave )
-            await updateStudent({id, studentName, studentDob, studentSex, studentIsActive, studentYears,  studentJointFamily, studentEducation , studentGardien, operator  })//we call the add new user mutation and set the arguments to be saved
+            await updateStudent({id, studentName, studentDob, studentSex, studentIsActive, studentYears,   studentEducation , studentGardien, operator  })//we call the add new user mutation and set the arguments to be saved
             //added this to confirm save
             if (isUpdateError) {console.log('error savingg', updateError)//handle the error msg to be shown  in the logs??
             }
@@ -398,7 +398,7 @@ const handleRemoveEntry = (index) => {
                 />
                 <label htmlFor="active" className="ml-2 text-sm font-medium text-gray-700">Student Is Active</label>
               </div>
-              <div className="flex items-center mb-2">
+              {/* <div className="flex items-center mb-2">
                 <input
                   type="checkbox"
                   id="jointFAmily"
@@ -408,7 +408,7 @@ const handleRemoveEntry = (index) => {
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
                 <label htmlFor="active" className="ml-2 text-sm font-medium text-gray-700">Student Joint Family</label>
-              </div>
+              </div> */}
       
              
               

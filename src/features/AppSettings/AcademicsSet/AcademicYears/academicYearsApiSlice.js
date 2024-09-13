@@ -33,8 +33,8 @@ export const academicYearsApiSlice = apiSlice.injectEndpoints({
                 })
                 //sort by newst year
                 const sortedList = newAcademicYears.sort((a, b) => b.title.localeCompare(a.title))
-                console.log('modifiedsortedList in the APIslice', sortedList)
-                console.log('initialState',initialState)
+                //console.log('modifiedsortedList in the APIslice', sortedList)
+                //console.log('initialState',initialState)
                return academicYearsAdapter.setAll( initialState, sortedList)//loaded the academicYears into academicYearsadapter, setAll is responsible of creating ids and entities
              
             },
