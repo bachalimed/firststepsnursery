@@ -190,8 +190,8 @@ const column =[
  
   { name: "DOB",
     selector:row=>( <div>
-      <div> {new Date(row.father.userDob).toLocaleString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' })}</div>
-      <div>{new Date(row.mother.userDob).toLocaleString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' })}</div>
+      <div> {new Date(row.father?.userDob).toLocaleString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' })}</div>
+      <div>{new Date(row.mother?.userDob).toLocaleString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' })}</div>
     </div>
     ) ,
     sortable:true,
@@ -206,8 +206,8 @@ const column =[
 
   { name: "Phone",
     selector:row=>( <div>
-      <div> {row.father.userContact.primaryPhone}</div>
-      <div> {row.mother.userContact.primaryPhone}</div>
+      <div> {row.father?.userContact?.primaryPhone}</div>
+      <div> {row.mother?.userContact?.primaryPhone}</div>
     </div>
     ) ,
     sortable:true,
@@ -215,8 +215,8 @@ const column =[
     }, 
   { name: "Address",
     selector:row=>( <div>
-      <div> {row.father.userAddress.house}  {row.father.userAddress.street}  {row.father.userAddress.area}  {row.father.userAddress.postCode}  {row.father.userAddress.city}</div>
-      {row.familySituation!=="Joint"&&<div> {row.mother.userAddress.house}  {row.mother.userAddress.street}  {row.mother.userAddress.area}  {row.mother.userAddress.postCode}  {row.mother.userAddress.city}</div>}
+      <div> {row.father.userAddress?.house}  {row.father.userAddress?.street}  {row.father.userAddress?.area}  {row.father.userAddress?.postCode}  {row.father.userAddress?.city}</div>
+      {row.familySituation!=="Joint"&&<div> {row.mother.userAddress?.house}  {row.mother.userAddress?.street}  {row.mother.userAddress?.area}  {row.mother.userAddress?.postCode}  {row.mother.userAddress?.city}</div>}
     </div>
     ) ,
     sortable:true,
@@ -227,7 +227,7 @@ const column =[
 {name: "Children",
   selector:row=>( 
     <div>{row.children.map(child=> (
-      <div key ={child._id}>{child.child.studentName.firstName} {child.child.studentName.middleName} {child.child.studentName.lastName}</div>))}
+      <div key ={child._id}>{child.child?.studentName.firstName} {child.child?.studentName.middleName} {child.child?.studentName.lastName}</div>))}
     </div>),
   
   sortable:true,

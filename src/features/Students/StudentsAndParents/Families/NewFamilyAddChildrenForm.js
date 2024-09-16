@@ -8,18 +8,18 @@ import { ACTIONS } from "../../../../config/UserActions"
 import StudentsParents from '../../StudentsParents'
 import { useGetFamiliesByYearQuery } from "./familiesApiSlice"
 import { useGetStudentsByYearQuery } from "../Students/studentsApiSlice"
-
+import { useContext } from "react"
+import { StepperContext } from "../../../../contexts/StepperContext"
 //constrains on inputs when creating new parent
-const USER_REGEX = /^[A-z0-9]{6,20}$/
-const PWD_REGEX = /^[A-z0-9!@#-_$%]{8,20}$/
-const NAME_REGEX= /^[A-z 0-9]{3,20}$/
-const PHONE_REGEX= /^[0-9]{6,15}$/
-const DOB_REGEX = /^[0-9/-]{4,10}$/
-const EMAIL_REGEX = /^[A-z0-9.@-_]{6,20}$/
+
 
 const NewFamilyAddChildrenForm = () => {//an add parent function that can be called inside the component
-
-    const [addNewFamily, {//an object that calls the status when we execute the newParentForm function
+    const {children, setChildren}= useContext(StepperContext)
+    const {family, setFamily}= useContext(StepperContext)
+    const{canSaveChildren,  setCanSaveChildren }= useContext(StepperContext)
+const Navigate = useNavigate()
+    
+const [addNewFamily, {//an object that calls the status when we execute the newParentForm function
         isLoading:isAddFamilyLoading,
         isSuccess:isAddFamilySuccess,
         isError:isAddFamilyError,
@@ -33,7 +33,7 @@ const NewFamilyAddChildrenForm = () => {//an add parent function that can be cal
         isSuccess: isStudentListSuccess,
         isError: isStudentListError,
         error: studentListError
-      } = useGetStudentsByYearQuery({selectedYear:'1000' ,endpointName: 'studentsList'}||{},{//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+      } = useGetStudentsByYearQuery({selectedYear:'1000' , criteria:'No Family',endpointName: 'studentsList'}||{},{//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
         //pollingInterval: 60000,//will refetch data every 60seconds
         refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
         refetchOnMountOrArgChange: true//refetch when we remount the component
@@ -52,479 +52,97 @@ const NewFamilyAddChildrenForm = () => {//an add parent function that can be cal
 
 
 
-      const generateRandomUsername = () => {
-        const randomChars = Math.random().toString(36).substring(2, 10); // generate random characters
-        return `user${randomChars}`; // prefix with 'user'
+      const handleChildChange = (index, value) => {
+        const newChildren = [...children];
+        newChildren[index] = value;
+        setChildren(newChildren);
     };
-    const Navigate = useNavigate()
+    
+    const addChildDropdown = () => {
+        setChildren([...children, '']);
+    };
+    
+    const removeChildDropdown = (index) => {
+        setChildren(children.filter((_, i) => i !== index));
+    };
+    
+    const onSaveParentClicked = () => {
+        console.log('hello');
+    };
 
-
-    const [partner, setPartner] = useState(null); // Single partner selection
-    const [children, setChildren] = useState([]); // Array for multiple child selections
-    //initialisation of states for each input
-    const [username, setUsername] = useState(generateRandomUsername())
-    // const [validUsername, setValidUsername] = useState(false)//will be true when the parentname is validated
-    const [password, setPassword] = useState('12345678')
-    // const [validPassword, setValidPassword] = useState(false)//will be true when the passwrod is validated
-    const [userRoles, setUserRoles] = useState(["Parent"])//the roles array is defaulted to employee
-    const [userAllowedActions, setUserAllowedActions] = useState([])
-    const [userFullName, setUserFullName] = useState('')
-    const [validUserFullName, setValidUserFullName] = useState(false)
-    const [userFirstName, setUserFirstName] = useState('')
-    const [validUserFirstName, setValidUserFirstName] = useState(false)
-    const [userMiddleName, setUserMiddleName] = useState('')
-    const [userLastName, setUserLastName] = useState('')
-    const [validUserLastName, setValidUserLastName] = useState(false)
-    const[ isParent,setIsParent ]= useState('')
-    const[ isEmployee,setIsEmployee ]= useState('')
-    const[ userDob,setUserDob ]= useState('')
-    const[ userSex,setUserSex ]= useState('')
-    const[ validUserDob,setValidUserDob ]= useState(false)
-    const[ userIsActive,setUserIsActive ]= useState(false)
-    const[ userPhoto,setUserPhoto ]= useState('')
-    //const[ parentPhotoLabel,setParentPhotoLabel ]= useState('')
-    //const[ parentPhotoFormat,setParentPhotoFormat ]= useState('')
-    //const[ size,setSize ]= useState()
-    //const[ format,setFormat ]= useState('')
-    const[ userAddress,setUserAddress ]= useState('')
-    const[ validUserAddress,setValidUserAddress ]= useState(false)
-    const[ house,setHouse ]= useState('')
-    const[ validHouse,setValidHouse ]= useState(false)
-    const[ street,setStreet ]= useState('')
-    const[ validStreet,setValidStreet ]= useState(false)
-    const[ area,setArea ]= useState('')
-    const[ validArea,setValidArea ]= useState(false)
-    const[ postCode,setPostCode ]= useState('')
-    const[ validPostCode,setValidPostCode ]= useState(false)
-    const[ city,setCity ]= useState('')
-    const[ validCity,setValidCity ]= useState(false)
-    const[userContact, setUserContact ]= useState('')
-    const[validParentContact, setValidParentContact ]= useState(false)
-    const[primaryPhone, setPrimaryPhone ]= useState()
-    const[validPrimaryPhone, setValidPrimaryPhone ]= useState(false)
-    const[secondaryPhone, setSecondaryPhone ]= useState()
-    const[email, setEmail ]= useState('')
-    const[validEmail, setValidEmail ]= useState(false)
-
-//use effect is used to validate the inputs against the defined REGEX above
-//the previous constrains have to be verified on the form for teh parent to know 
-    // useEffect(() => {
-    //     setValidUsername(USER_REGEX.test(username))
-    // }, [username])
-
-    // useEffect(() => {
-    //     setValidPassword(PWD_REGEX.test(password))
-    // }, [password])
-
-    useEffect(() => {
-        setValidUserFirstName(NAME_REGEX.test(userFirstName))
-    }, [userFirstName])
-
-    useEffect(() => {
-        setValidUserLastName(NAME_REGEX.test(userLastName))
-    }, [userLastName])
-
-    useEffect(() => {
-        setValidUserDob(DOB_REGEX.test(userDob))
-    }, [userDob])
-
-    useEffect(() => {
-        setValidStreet(NAME_REGEX.test(street))
-    }, [street])
-
-    useEffect(() => {
-        setValidPrimaryPhone(PHONE_REGEX.test(primaryPhone))
-    }, [primaryPhone])
-
-   
-    useEffect(() => {
-        setValidEmail(EMAIL_REGEX.test(email))
-    }, [email])
-
-    useEffect(() => {
-        if (isAddFamilySuccess) {//if the add of new parent using the mutation is success, empty all the individual states and navigate back to the parents list
-            setUsername('')
-            setPassword('')
-            setUserRoles([])
-            setUserAllowedActions([])
-            setUserFirstName('')
-            setUserMiddleName('')
-            setUserLastName('')
-            setUserFullName({userFirstName:'', userMiddleName:'', userLastName:''})
-            setIsParent('')
-            setIsEmployee('')
-            setUserDob('')
-            setUserSex('')
-            setUserIsActive(false) 
-            //setSize() 
-            setUserPhoto('')
-            //setParentPhotoLabel('')
-            //setParentPhotoFormat('')
-            setHouse('')
-            setStreet('')
-            setArea('')
-            setPostCode('')
-            setCity('')
-            setUserAddress({house:'', street:'', area:'', postcode:'', city:''})
-            setPrimaryPhone()
-            setSecondaryPhone()
-            setEmail('')
-            setUserContact({primaryPhone:'', secondaryPhone:'', email:'' })
-            Navigate('/students/studentsParents/parents/')//will navigate here after saving
-        }
-    }, [isAddFamilySuccess, Navigate])//even if no success it will navigate and not show any warning if failed or success
-
-    //handlers to get the individual states from the input
-    //const onUsernameChanged = e => setUsername(e.target.value)
-    //const onPasswordChanged = e => setPassword(e.target.value)
-    const onUserFirstNameChanged = e => setUserFirstName(e.target.value)
-    const onUserMiddleNameChanged = e => setUserMiddleName(e.target.value)
-    const onUserLastNameChanged = e => setUserLastName(e.target.value)
-    const onIsParentChanged = e => setIsParent(e.target.value)
-    const onIsEmployeeChanged = e => setIsEmployee(e.target.value)
-    const onUserDobChanged = e => setUserDob(e.target.value)
-    const onUserSexChanged = e => setUserSex(e.target.value)
-    const onUserIsActiveChanged = e => setUserIsActive(prev => !prev)//will invert the previous state
-    const onUserPhotoChanged = e => {setUserPhoto(e.target.files[0])}
-    //const onParentPhotoLabelChanged = e => setParentPhotoLabel(e.target.value)
-    //const onParentPhotoFormatChanged = e => setParentPhotoFormat(e.target.value)
-    //const onSizeChanged = e => setSize(e.target.value)  
-    const onHouseChanged = e => setHouse(e.target.value)
-    const onStreetChanged = e => setStreet(e.target.value)
-    const onAreaChanged = e => setArea(e.target.value)
-    const onPostCodeChanged = e => setPostCode(e.target.value)
-    const onCityChanged = e => setCity(e.target.value)
-    const onPrimaryPhoneChanged = e => setPrimaryPhone(e.target.value)
-    const onSecondaryPhoneChanged = e => setSecondaryPhone(e.target.value)
-    const onEmailChanged = e => setEmail(e.target.value)
-    const onPartnerSelected = (e) => setPartner(e.target.value);
-
-    const onUserRolesChanged = (e) => {
-        const { value, checked } = e.target
-        setUserRoles((prevRoles) =>
-          checked ? [...prevRoles, value] : prevRoles.filter((role) => role !== value)
-        )
-      }
-    const onUserAllowedActionsChanged = (e) => {
-        const { value, checked } = e.target
-        setUserAllowedActions((prevActions) =>
-          checked ? [...prevActions, value] : prevActions.filter((action) => action !== value)
-        )
-      }
- 
-  // Handle child selection
-  const handleChildChange = (index, value) => {
-    const newChildren = [...children];
-    newChildren[index] = value;
-    setChildren(newChildren);
-  };
-
-  // Add a new child dropdown
-  const addChildDropdown = () => {
-    setChildren([...children, '']);
-  };
-
-  // Remove a child dropdown
-  const removeChildDropdown = (index) => {
-    setChildren(children.filter((_, i) => i !== index));
-  };
-
-//we do not  need to retriev the employee and parent ids from the DB ans set their state because they are saved before the parent
-//check if the parent and employee id is available or delete the variable
-
-
-useEffect(()=>{
-setUserFullName({userFirstName:userFirstName, userMiddleName:userMiddleName, userLastName:userLastName})},
-[userFirstName, userMiddleName, userLastName])
-
-useEffect(()=>{
-setUserAddress({house:house, street:street, area:area, postCode:postCode, city:city})},
-[house, street, street, area, postCode, city])
-
-useEffect(()=>{
-setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:email})},
-[primaryPhone, secondaryPhone, email])
-
-//to check if we can save before onsave, if every one is true, and also if we are not loading status
-    const canSave = [validUserFirstName, validUserLastName, validUserDob, userSex, validStreet,  validPrimaryPhone, userRoles.length ].every(Boolean) && !isAddFamilyLoading
-//console.log(` ${validUserFirstName}, ${validUserLastName}, ${validUsername}, ${validPassword}, ${validUserDob},${userSex}    ${ validStreet},  ${validPrimaryPhone},  ${userRoles.length}` )
-    const onSaveParentClicked = async (e) => {
-        e.preventDefault()
-        
-        if (canSave) {//if cansave is true
-            //generate the objects before saving
-          
-            await addNewFamily({ username, password,  userFullName, isParent, isEmployee, userDob, userSex, userPhoto, userIsActive, userRoles, partner, children, userAllowedActions, userAddress, userContact })//we call the add new parent mutation and set the arguments to be saved
-            //added this to confirm save
-            if (isAddFamilyError) {console.log('error savingg', addFamilyError)//handle the error msg to be shown  in the logs??
-            }
-        }
-    }
     const handleCancel= ()=>{
         Navigate ('/students/studentsParents/families/')
     }
-   console.log(partner,'partner')
-//the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
-    const errClass = isAddFamilyError ? "errmsg" : "offscreen"
-    
-    const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
+  // Function to get filtered student list
+const getFilteredStudents = (currentChildren, selectedIndex) => {
+    return studentsList.filter(student => !currentChildren.includes(student.id) || student.id === currentChildren[selectedIndex]);
+};
 
-
+setCanSaveChildren(children?.isArray())
     const content = (
         <>
-        <StudentsParents/>
-            <p className={errClass}>{addFamilyError?.data?.message}</p>  {/*will display if there is an error message, some of the error messagees are defined in the back end responses*/}
+  <form className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg">
+    <div className="mb-6 text-center">
+      <h2 className="text-2xl font-bold text-gray-800">Add Children</h2>
+    </div>
 
-            <form className="form" onSubmit={onSaveParentClicked}>
-                <div className="form__title-row">
-                    <h2>Add Children</h2>
-                    
-                </div>
-                <div>
-                <label className="form__label" htmlFor="userFirstName">
-                    Parent First Name* : <span className="nowrap">[3-20 letters]</span></label>
-                <input
-                    className={`form__input`}
-                    id="userFirstName"
-                    name="userFirstName"
-                    type="text"
-                    autoComplete="off"
-                    value={userFirstName}
-                    onChange={onUserFirstNameChanged}
-                />
-                <label className="form__label" htmlFor="userMiddleName">
-                    Parent Middle Name : <span className="nowrap"></span></label>
-                <input
-                    className={`form__input`}
-                    id="userMiddleName"
-                    name="userMiddleName"
-                    type="text"
-                    autoComplete="off"
-                    value={userMiddleName}
-                    onChange={onUserMiddleNameChanged}
-                />
-                </div>
-                <div>
-                <label className="form__label" htmlFor="userLastName">
-                    Parent Last Name* : <span className="nowrap">[3-20 letters]</span></label>
-                <input
-                    className={`form__input `}
-                    id="userLastName"
-                    name="userLastName"
-                    type="text"
-                    autoComplete="off"
-                    value={userLastName}
-                    onChange={onUserLastNameChanged}
-                />
-                 <label className="form__label" htmlFor="userDob">
-                    Date Of Birth* : <span className="nowrap">[dd/mm/yyyy]</span></label>
-                <input
-                    className={`form__input `}
-                    id="userDob"
-                    name="userDob"
-                    type="date"
-                    autoComplete="off"
-                    value={userDob}
-                    onChange={onUserDobChanged}
-                />
-                </div>
-                <div>
-                <label> <div style={{ marginTop: '10px' }}>
-                    Selected Sex: {userSex || 'None'}
-                </div><br/>
-                    <input
-                    type="radio"
-                    value="Male"
-                    checked={userSex === 'Male'}
-                    onChange={onUserSexChanged}
-                    />
-                    Male
-                </label>
+    {children.map((child, index) => (
+      <div key={index} className="mb-4 flex items-center space-x-4">
+        <select
+          value={child}
+          onChange={(e) => handleChildChange(index, e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">Select a child</option>
+          {getFilteredStudents(children, index).map((option) => (
+            <option key={option.id} value={option.id}>
+              {option.studentName.firstName} {option.studentName.middleName}{' '}
+              {option.studentName.lastName}
+            </option>
+          ))}
+        </select>
 
-                <label style={{ marginLeft: '10px' }}>
-                    <input
-                    type="radio"
-                    value="Female"
-                    checked={userSex === 'Female'}
-                    onChange={onUserSexChanged}
-                    />
-                    Female
-                </label>
-
-                
-                </div>
-               
-            
-               
-                
-                <label className="form__label" htmlFor="house">
-                    House* : <span className="nowrap">[3-20 letters]</span></label>
-                <input
-                    className={`form__input `}
-                    id="house"
-                    name="house"
-                    type="text"
-                    autoComplete="off"
-                    value={house}
-                    onChange={onHouseChanged}
-                />
-                <label className="form__label" htmlFor="street">
-                    Street* : <span className="nowrap">[3-20 letters]</span></label>
-                <input
-                    className={`form__input `}
-                    id="street"
-                    name="street"
-                    type="text"
-                    autoComplete="off"
-                    value={street}
-                    onChange={onStreetChanged}
-                />
-                <div>
-                <label className="form__label" htmlFor="area">
-                    Area: <span className="nowrap"></span></label>
-                <input
-                    className={`form__input `}
-                    id="area"
-                    name="area"
-                    type="text"
-                    autoComplete="off"
-                    value={area}
-                    onChange={onAreaChanged}
-                />
-                <label className="form__label" htmlFor="city">
-                    City* : <span className="nowrap">[3-20 letters]</span></label>
-                <input
-                    className={`form__input `}
-                    id="city"
-                    name="city"
-                    type="text"
-                    autoComplete="off"
-                    value={city}
-                    onChange={onCityChanged}
-                />
-                </div>
-                <label className="form__label" htmlFor="postCode">
-                    Post Code: <span className="nowrap"></span></label>
-                <input
-                    className={`form__input `}
-                    id="postCode"
-                    name="postCode"
-                    type="text"
-                    autoComplete="off"
-                    value={postCode}
-                    onChange={onPostCodeChanged}
-                />
-                <div>
-                <label className="form__label" htmlFor="primaryPhone">
-                    Primary Phone* : <span className="nowrap">[6 to 15 Digits]</span></label>
-                <input
-                    className={`form__input `}
-                    id="primaryPhone"
-                    name="primaryPhone"
-                    type="tel"
-                    autoComplete="off"
-                    value={primaryPhone}
-                    onChange={onPrimaryPhoneChanged}
-                />
-
-                <label className="form__label" htmlFor="secondaryPhone">
-                    Secondary Phone: <span className="nowrap"></span></label>
-                <input
-                    className={`form__input `}
-                    id="secondaryPhone"
-                    name="secondaryPhone"
-                    type="tel"
-                    autoComplete="off"
-                    value={secondaryPhone}
-                    onChange={onSecondaryPhoneChanged}
-                />
-                </div>
-                <label className="form__label" htmlFor="email">
-                    Email: <span className="nowrap"></span></label>
-                <input
-                    className={`form__input `}
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="off"
-                    value={email}
-                    onChange={onEmailChanged}
-                />
-                {/* <label htmlFor="partner">Partner:</label>
-                <select id="partner" value={partner || ''} onChange={onPartnerSelected} className="form__select">
-                    <option value="">Select Partner</option>
-                    {familiesList.map(family => (
-                        <option key={family.id} value={family.id}>
-                            {family.father.userFullName.userFirstName} {family.father.userFullName.userMiddleName} {family.father.userFullName.userLastName}
-                        </option>
-                    ))}
-                </select> */}
-                    
-
-                <h2>Manage Children</h2>
-      
-      {children.map((child, index) => (
-        <div key={index} className="child-dropdown">
-          <select
-            value={child}
-            onChange={(e) => handleChildChange(index, e.target.value)}
-            className="dropdown"
+        {children.length > 1 && (
+          <button
+            type="button"
+            onClick={() => removeChildDropdown(index)}
+            className="px-3 py-2 text-white bg-red-500 hover:bg-red-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
           >
-            <option value="">Select a child</option>
-            {studentsList.map(option => (
-              <option key={option.id} value={option.id}>
-                {option.studentName.firstName} {option.studentName.middleName} {option.studentName.lastName}
-              </option>
-            ))}
-          </select>
-          
-          {children.length > 1 && (
-            <button
-              type="button"
-              onClick={() => removeChildDropdown(index)}
-              className="remove-button"
-            >
-              Remove
-            </button>
-          )}
-        </div>
-      ))}
+            Remove
+          </button>
+        )}
+      </div>
+    ))}
 
+    <div className="mb-6">
       <button
         type="button"
         onClick={addChildDropdown}
-        className="add-button"
+        className="w-full px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
         Add Child
       </button>
-           
-                
-               
+    </div>
 
-                    
-              
-
-              <div className="flex justify-end items-center space-x-4">
-                    <button 
-                        className=" px-4 py-2 bg-green-500 text-white rounded"
-                        type='submit'
-                        title="Save"
-                        onClick={onSaveParentClicked}
-                        disabled={!canSave}
-                        >
-                        Save Changes
-                    </button>
-                    <button 
-                    className=" px-4 py-2 bg-red-500 text-white rounded"
-                    onClick={handleCancel }
-                    >
-                    Cancel
-                    </button>
-                </div>
-
-
-            </form>
-        </>
+    {/* <div className="flex justify-end space-x-4">
+      <button
+        className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+        type="submit"
+        title="Save"
+        onClick={onSaveParentClicked}
+        disabled={!canSave}
+      >
+        Save Changes
+      </button>
+      <button
+        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+        onClick={handleCancel}
+      >
+        Cancel
+      </button>
+    </div> */}
+  </form>
+</>
     )
 
     return content

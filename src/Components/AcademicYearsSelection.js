@@ -10,7 +10,7 @@ import {academicYearSelected,  setAcademicYears} from '../features/AppSettings/A
 import { useState , useEffect} from 'react'
 //import useAcademicYears from '../../../hooks/useAcademicYears'
 import { useSelectedAcademicYear } from '../hooks/useSelectedAcademicYears'
-
+import useAuth from '../hooks/useAuth'
 
 //we could include permissions to only allow some users to select
 const AcademicYearsSelection = () => {
@@ -23,7 +23,7 @@ useEffect(()=>{
   dispatch(setAcademicYears(academicYears))//dispatch list to state,this only shows tehn redux state not empty in the browser tools, check later if this is needed as the query updated the state in apislice
 },[academicYears, dispatch])// added dispatch here
 
-
+const {isAdmin, isManager}=useAuth()
 
 //update the state when we select a year using the reducer from slice
 const handleSelectedAcademicYear =(e) =>{
@@ -49,7 +49,9 @@ const handleSelectedAcademicYear =(e) =>{
             onChange={handleSelectedAcademicYear}  
             className="relative mt-1 w-36 pl-3 pr-8 py-2 text-md text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
-          {academicYears.map(year=> (<option key= {year.id} value ={year.id}  className=''> {year.title} </option> ))}
+          {academicYears.map(year=> (
+            <option key= {year.id} value ={year.id}  className=''> {year.title} </option> ))}
+            {isManager&&<option  value ='1000' > 1000 </option>}
           </Select>
         </div>
       </Field>

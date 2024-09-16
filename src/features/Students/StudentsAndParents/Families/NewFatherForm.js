@@ -22,6 +22,7 @@ export default function NewFatherForm () {//an add parent function that can be c
  //const {userData, setUserData} = useContext(StepperContext)
  const {father, setFather} = useContext(StepperContext)
  const{familySituation, setFamilySituation }= useContext(StepperContext)
+ const{canSaveFather,  setCanSaveFather }= useContext(StepperContext)
 
 
 //  const handleChange=(e)=>{
@@ -107,10 +108,6 @@ export default function NewFatherForm () {//an add parent function that can be c
         setValidPrimaryPhone(PHONE_REGEX.test(primaryPhone))
     }, [primaryPhone])
 
-   
-    useEffect(() => {
-        setValidEmail(EMAIL_REGEX.test(email))
-    }, [email])
 
     // useEffect(() => {
     //     if (isAddFamilySuccess) {//if the add of new parent using the mutation is success, empty all the individual states and navigate back to the parents list
@@ -204,218 +201,246 @@ useEffect(()=>{
     // const errClass = isAddFamilyError ? "errmsg" : "offscreen"
     
    // const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
-
+   setCanSaveFather ([validUserFirstName, validUserLastName,  validUserDob, validStreet, validCity, validPrimaryPhone ].every(Boolean))
 
     const content = (
-        <div className="flex flex-col p-4 space-y-6">
-       
-            {/* <p className={errClass}>{addFamilyError?.data?.message}</p>  */}
-             {/*will display if there is an error message, some of the error messagees are defined in the back end responses*/}
+        <div className="flex flex-col p-6 space-y-6 max-w-2xl mx-auto bg-white shadow-lg rounded-lg">
+  {/* Error message placeholder */}
+  {/* <p className={errClass}>{addFamilyError?.data?.message}</p> */}
 
-            <form className="w-full flex flex-col space-y-4" >
-                {/* onSubmit={onSaveFatherClicked}> */}
-                <div className="form__title-row mb-4">
-                    <h2 className="text-xl font-semibold">Father Details</h2>
-                    
-                </div>
-                
-                <label className="form__label" htmlFor="userFirstName">
-                    Father First Name* : <span className="nowrap">[3-20 letters]</span></label>
-                <input
-                    className={`form__input w-full`}
-                    id="userFirstName"
-                    name="userFirstName"
-                    type="text"
-                    autoComplete="off"
-                    value={userFirstName}
-                    onChange={onUserFirstNameChanged}
-                />
-                <label className="form__label" htmlFor="userMiddleName">
-                    Father Middle Name : <span className="nowrap"></span></label>
-                <input
-                    className={`form__input w-full`}
-                    id="userMiddleName"
-                    name="userMiddleName"
-                    type="text"
-                    autoComplete="off"
-                    value={userMiddleName}
-                    onChange={onUserMiddleNameChanged}
-                />
-                
-                <div>
-                <label className="form__label" htmlFor="userLastName">
-                    Father Last Name* : <span className="nowrap">[3-20 letters]</span></label>
-                <input
-                    className={`form__input w-full nowrap`}
-                    id="userLastName"
-                    name="userLastName"
-                    type="text"
-                    autoComplete="off"
-                    value={userLastName}
-                    onChange={onUserLastNameChanged}
-                />
-                 <label className="form__label" htmlFor="userDob">
-                    Date Of Birth* : <span className="nowrap">[dd/mm/yyyy]</span></label>
-                <input
-                    className={`form__input `}
-                    id="userDob"
-                    name="userDob"
-                    type="date"
-                    autoComplete="off"
-                    value={userDob}
-                    onChange={onUserDobChanged}
-                />
-                </div>
-            
-               
-                <div>
-                <label> <div style={{ marginTop: '10px' }}>
-                    Family Situation: {familySituation || 'None'}
-                </div><br/>
-                    <input
-                    type="radio"
-                    value="Joint"
-                    checked={familySituation === 'Joint'}
-                    onChange={onFamilySituationChanged}
-                    />
-                    Joint
-                </label>
+  <form className="w-full flex flex-col space-y-6">
+    <div className="mb-4">
+      <h2 className="text-2xl font-bold text-gray-800">Father Details</h2>
+    </div>
 
-                <label style={{ marginLeft: '10px' }}>
-                    <input
-                    type="radio"
-                    value="Separated"
-                    checked={familySituation === 'Separated'}
-                    onChange={onFamilySituationChanged}
-                    />
-                    Separated
-                </label>
+    <div className="space-y-4">
+      <div>
+        <label className="text-gray-700 font-semibold" htmlFor="userFirstName">
+          Father First Name* <span className="text-sm text-gray-500">[3-20 letters]</span>
+        </label>
+        <input
+          className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          id="userFirstName"
+          name="userFirstName"
+          type="text"
+          autoComplete="off"
+          value={userFirstName}
+          onChange={onUserFirstNameChanged}
+        />
+      </div>
 
-                
-                </div>
-            
-               
-                
-                <label className="form__label" htmlFor="house">
-                    House* : <span className="nowrap">[3-20 letters]</span></label>
-                <input
-                    className={`form__input `}
-                    id="house"
-                    name="house"
-                    type="text"
-                    autoComplete="off"
-                    value={house}
-                    onChange={onHouseChanged}
-                />
-                <label className="form__label" htmlFor="street">
-                    Street* : <span className="nowrap">[3-20 letters]</span></label>
-                <input
-                    className={`form__input `}
-                    id="street"
-                    name="street"
-                    type="text"
-                    autoComplete="off"
-                    value={street}
-                    onChange={onStreetChanged}
-                />
-                <div>
-                <label className="form__label" htmlFor="area">
-                    Area: <span className="nowrap"></span></label>
-                <input
-                    className={`form__input `}
-                    id="area"
-                    name="area"
-                    type="text"
-                    autoComplete="off"
-                    value={area}
-                    onChange={onAreaChanged}
-                />
-                <label className="form__label" htmlFor="city">
-                    City* : <span className="nowrap">[3-20 letters]</span></label>
-                <input
-                    className={`form__input `}
-                    id="city"
-                    name="city"
-                    type="text"
-                    autoComplete="off"
-                    value={city}
-                    onChange={onCityChanged}
-                />
-                </div>
-                <label className="form__label" htmlFor="postCode">
-                    Post Code: <span className="nowrap"></span></label>
-                <input
-                    className={`form__input `}
-                    id="postCode"
-                    name="postCode"
-                    type="text"
-                    autoComplete="off"
-                    value={postCode}
-                    onChange={onPostCodeChanged}
-                />
-                <div>
-                <label className="form__label" htmlFor="primaryPhone">
-                    Primary Phone* : <span className="nowrap">[6 to 15 Digits]</span></label>
-                <input
-                    className={`form__input `}
-                    id="primaryPhone"
-                    name="primaryPhone"
-                    type="tel"
-                    autoComplete="off"
-                    value={primaryPhone}
-                    onChange={onPrimaryPhoneChanged}
-                />
+      <div>
+        <label className="text-gray-700 font-semibold" htmlFor="userMiddleName">
+          Father Middle Name
+        </label>
+        <input
+          className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          id="userMiddleName"
+          name="userMiddleName"
+          type="text"
+          autoComplete="off"
+          value={userMiddleName}
+          onChange={onUserMiddleNameChanged}
+        />
+      </div>
 
-                <label className="form__label" htmlFor="secondaryPhone">
-                    Secondary Phone: <span className="nowrap"></span></label>
-                <input
-                    className={`form__input `}
-                    id="secondaryPhone"
-                    name="secondaryPhone"
-                    type="tel"
-                    autoComplete="off"
-                    value={secondaryPhone}
-                    onChange={onSecondaryPhoneChanged}
-                />
-                </div>
-                <label className="form__label" htmlFor="email">
-                    Email: <span className="nowrap"></span></label>
-                <input
-                    className={`form__input `}
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="off"
-                    value={email}
-                    onChange={onEmailChanged}
-                />
-                
-               
+      <div>
+        <label className="text-gray-700 font-semibold" htmlFor="userLastName">
+          Father Last Name* <span className="text-sm text-gray-500">[3-20 letters]</span>
+        </label>
+        <input
+          className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          id="userLastName"
+          name="userLastName"
+          type="text"
+          autoComplete="off"
+          value={userLastName}
+          onChange={onUserLastNameChanged}
+        />
+      </div>
 
-                    
-              
-{/* 
-              <div className="flex justify-end items-center space-x-4">
-                    <button 
-                        className=" px-4 py-2 bg-green-500 text-white rounded"
-                        type='submit'
-                        title="Save"
-                        onClick={onSaveFatherClicked}
-                        disabled={!canSave}//||!stepSuccess}
-                        >
-                        Save Father
-                    </button>
-                    <button 
-                    className=" px-4 py-2 bg-red-500 text-white rounded"
-                    onClick={handleCancel }
-                    >
-                    Cancel
-                    </button>
-                </div> */}
+      <div>
+        <label className="text-gray-700 font-semibold" htmlFor="userDob">
+          Date of Birth* <span className="text-sm text-gray-500">[dd/mm/yyyy]</span>
+        </label>
+        <input
+          className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          id="userDob"
+          name="userDob"
+          type="date"
+          autoComplete="off"
+          value={userDob}
+          onChange={onUserDobChanged}
+        />
+      </div>
 
-
-            </form>
+      <div className="mt-4">
+        <label className="text-gray-700 font-semibold">Family Situation</label>
+        <div className="flex items-center space-x-4">
+          <label className="inline-flex items-center">
+            <input
+              type="radio"
+              value="Joint"
+              checked={familySituation === 'Joint'}
+              onChange={onFamilySituationChanged}
+              className="form-radio text-blue-600"
+            />
+            <span className="ml-2">Joint</span>
+          </label>
+          <label className="inline-flex items-center">
+            <input
+              type="radio"
+              value="Separated"
+              checked={familySituation === 'Separated'}
+              onChange={onFamilySituationChanged}
+              className="form-radio text-blue-600"
+            />
+            <span className="ml-2">Separated</span>
+          </label>
         </div>
+      </div>
+
+      {/* Address Section */}
+      <div>
+        <label className="text-gray-700 font-semibold" htmlFor="house">
+          House* <span className="text-sm text-gray-500">[3-20 letters]</span>
+        </label>
+        <input
+          className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          id="house"
+          name="house"
+          type="text"
+          autoComplete="off"
+          value={house}
+          onChange={onHouseChanged}
+        />
+      </div>
+
+      <div>
+        <label className="text-gray-700 font-semibold" htmlFor="street">
+          Street* <span className="text-sm text-gray-500">[3-20 letters]</span>
+        </label>
+        <input
+          className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          id="street"
+          name="street"
+          type="text"
+          autoComplete="off"
+          value={street}
+          onChange={onStreetChanged}
+        />
+      </div>
+
+      <div>
+        <label className="text-gray-700 font-semibold" htmlFor="area">
+          Area
+        </label>
+        <input
+          className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          id="area"
+          name="area"
+          type="text"
+          autoComplete="off"
+          value={area}
+          onChange={onAreaChanged}
+        />
+      </div>
+
+      <div>
+        <label className="text-gray-700 font-semibold" htmlFor="city">
+          City* <span className="text-sm text-gray-500">[3-20 letters]</span>
+        </label>
+        <input
+          className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          id="city"
+          name="city"
+          type="text"
+          autoComplete="off"
+          value={city}
+          onChange={onCityChanged}
+        />
+      </div>
+
+      <div>
+        <label className="text-gray-700 font-semibold" htmlFor="postCode">
+          Post Code
+        </label>
+        <input
+          className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          id="postCode"
+          name="postCode"
+          type="text"
+          autoComplete="off"
+          value={postCode}
+          onChange={onPostCodeChanged}
+        />
+      </div>
+
+      <div>
+        <label className="text-gray-700 font-semibold" htmlFor="primaryPhone">
+          Primary Phone* <span className="text-sm text-gray-500">[6 to 15 digits]</span>
+        </label>
+        <input
+          className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          id="primaryPhone"
+          name="primaryPhone"
+          type="tel"
+          autoComplete="off"
+          value={primaryPhone}
+          onChange={onPrimaryPhoneChanged}
+        />
+      </div>
+
+      <div>
+        <label className="text-gray-700 font-semibold" htmlFor="secondaryPhone">
+          Secondary Phone
+        </label>
+        <input
+          className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          id="secondaryPhone"
+          name="secondaryPhone"
+          type="tel"
+          autoComplete="off"
+          value={secondaryPhone}
+          onChange={onSecondaryPhoneChanged}
+        />
+      </div>
+
+      <div>
+        <label className="text-gray-700 font-semibold" htmlFor="email">
+          Email
+        </label>
+        <input
+          className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          id="email"
+          name="email"
+          type="email"
+          autoComplete="off"
+          value={email}
+          onChange={onEmailChanged}
+        />
+      </div>
+    </div>
+
+    {/* Button Section */}
+    {/* <div className="flex justify-end space-x-4">
+      <button
+        className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+        type="submit"
+        onClick={onSaveFatherClicked}
+        disabled={!canSave}
+      >
+        Save Father
+      </button>
+      <button
+        className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+        onClick={handleCancel}
+      >
+        Cancel
+      </button>
+    </div> */}
+  </form>
+</div>
     )
 
     return content

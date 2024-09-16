@@ -21,20 +21,17 @@ const NewFamily = () => {//an add parent function that can be called inside the 
 
  
 
-
-
-
-
-
-
-
   
 const [currentStep, setCurrentStep] =useState(1)
 const [father, setFather] =useState({})
 const [mother, setMother] =useState({})
 const [familySituation, setFamilySituation] =useState("Joint")
+const [children, setChildren]= useState([])
 const [family, setFamily]= useState([])
-const [stepSuccess, setStepSuccess] = useState(false)
+
+const [canSaveFather,  setCanSaveFather]= useState(false)
+const [canSaveMother,  setCanSaveMother]= useState(false)
+const [canSaveChildren,  setCanSaveChildren]= useState(false)
 
 const steps=[
     "Father Details",
@@ -42,6 +39,14 @@ const steps=[
     "Children",
     "Completed"
 ]
+
+const [addNewFamily, {//an object that calls the status when we execute the newUserForm function
+    isLoading,
+    isSuccess,
+    isError,
+    error
+}] = useAddNewFamilyMutation()//it will not execute the mutation nownow but when called
+
 
 const displayStep =(step)=>{
     switch(step){
@@ -60,14 +65,31 @@ const displayStep =(step)=>{
 
 const handleClick=(direction)=>{
     let newStep=currentStep
-    direction==="Next"? newStep++ :  newStep--
+    if (direction==="Next"){ newStep++ }else{newStep--}
+    if (direction ==="confirm"){ handleSaveFamily()} // added this
     //check if step are within bounds
     newStep>0 && newStep <= steps.length &&setCurrentStep(newStep)
 }
-console.log( father, mother)
+
+
+
+const handleSaveFamily=async(e)=>{
+   
+        e.preventDefault()
+        
+        if (canSaveFather&&canSaveMother&&canSaveChildren) {//if cansave is true
+          
+            
+            await addNewFamily({ father, mother, children, familySituation })//we call the add new user mutation and set the arguments to be saved
+            //added this to confirm save
+            if (isError) {console.log('error savingg', error)//handle the error msg to be shown  in the logs??
+            }
+        }
+}
+console.log( father, mother, children, familySituation,'data to ber saved')
 //maybe check here and allow steps to move on
 
-    const content = (
+    const content = 
         <>
         <StudentsParents/>
        <div className='md:w-3/4 mx-auto shadow-xl rounded-2xl pb-2 bg-white'>
@@ -79,7 +101,9 @@ console.log( father, mother)
                 />
                 {/* display componentns */}
                 <div className="my-10 p-10">
-                    <StepperContext.Provider value={{father, setFather, mother , setMother, familySituation, setFamilySituation, family, setFamily, stepSuccess, setStepSuccess}}>
+                    <StepperContext.Provider value={{father, setFather, mother , setMother, familySituation, setFamilySituation, family, setFamily, 
+                        canSaveFather,  setCanSaveFather, canSaveMother,  setCanSaveMother, canSaveChildren,  setCanSaveChildren
+                    }}>
                         {displayStep(currentStep)}
                     </StepperContext.Provider >
                 </div>
@@ -88,7 +112,7 @@ console.log( father, mother)
             <div >
                 {currentStep!==steps.length &&
                 <StepperControl 
-                    stepSuccess={stepSuccess}
+                   
                     handleClick={handleClick} 
                     currentStep={currentStep}
                     steps={steps}
@@ -100,8 +124,8 @@ console.log( father, mother)
 
            
         </>
-    )
-
+    
+    
     return content
 }
 export default NewFamily

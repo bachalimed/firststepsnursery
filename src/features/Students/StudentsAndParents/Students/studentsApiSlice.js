@@ -46,10 +46,11 @@ export const studentsApiSlice = apiSlice.injectEndpoints({
             },
            
             transformResponse: responseData => {
-                //const {loadedStudents} =
+             
                 
-                //console.log('academicYears length  in the APIslice',responseData.total)
-                //console.log('academicYears in the APIslice', academicYears)
+               
+               // console.log('  in the APIslice',responseData.total)
+               
                 const newLoadedStudents = responseData.map(student => { 
                     
                     student.id = student._id//changed the _id from mongoDB to id
