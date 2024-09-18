@@ -1,9 +1,9 @@
 import React from 'react'
-import { LuUserCircle2 } from "react-icons/lu";
+import { LuUserCircle2 } from "react-icons/lu"
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {  TbLogout } from "react-icons/tb";
+import {  TbLogout } from "react-icons/tb"
 import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons"
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { useSendLogoutMutation } from '../../../features/auth/authApiSlice'

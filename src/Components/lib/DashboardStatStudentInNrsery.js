@@ -1,7 +1,7 @@
 //example of stats for the dashbordm should be replaced by DB imports
 
 import React from 'react'
-import { GrUserExpert } from "react-icons/gr";
+import { GrUserExpert } from "react-icons/gr"
 
 const DashboardStatStudentInNrsery = () => {
   return (

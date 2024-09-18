@@ -25,7 +25,7 @@ const [father, setFather] =useState({})
 const [mother, setMother] =useState({})
 const [familySituation, setFamilySituation] =useState("Joint")
 const [children, setChildren]= useState([])
-const [family, setFamily]= useState([])
+const [family, setFamily]= useState({})
 
 const [canSaveFather,  setCanSaveFather]= useState(false)
 const [canSaveMother,  setCanSaveMother]= useState(false)

@@ -118,4 +118,4 @@ const PublicHeader = () => {
   return content
 }
 
-export default PublicHeader;
+export default PublicHeader

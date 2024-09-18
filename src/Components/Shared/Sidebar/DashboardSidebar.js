@@ -30,7 +30,7 @@ import {sidebarMenuUp} from '../../lib/Consts/SidebarMenu'
 import { LuChevronLeft } from "react-icons/lu"
 import { GrUserAdmin, GrTask } from "react-icons/gr"
 
-// import { CgPushChevronLeftR } from "react-icons/cg";
+// import { CgPushChevronLeftR } from "react-icons/cg"
 
 
 
@@ -46,7 +46,7 @@ const DashboardSidebar = () => {
 	const [adminOpen, setAdminOpen] = useState(false)
 
 	const location = useLocation()
-	const company ={label:"First Steps", type:"Nursery"};
+	const company ={label:"First Steps", type:"Nursery"}
 
 	
   let content
@@ -313,4 +313,4 @@ const DashboardSidebar = () => {
 
 )
 return content}
-export default DashboardSidebar;
+export default DashboardSidebar

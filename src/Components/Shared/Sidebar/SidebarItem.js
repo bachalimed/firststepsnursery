@@ -9,7 +9,7 @@
 
 // const SidebarItem = (props) => {
 // const [submenuOpen, setSubmenuOpen] = useState(false)
-// const {pathname} = useLocation();//to know which link is selected and then set the active to different color
+// const {pathname} = useLocation()//to know which link is selected and then set the active to different color
 // // onClick={()=> props.setOpen(true)}
 // //onClick={()=> props.setOpen(!props.open)}
 // const {username, userRoles}=useAuth()

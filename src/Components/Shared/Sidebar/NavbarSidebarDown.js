@@ -1,8 +1,8 @@
 // import React from 'react'
-// // import { useState } from 'react';
-// import { Link, useNavigate } from 'react-router-dom';
-// import SidebarItem from './SidebarItem.js';
-// import {sidebarMenuDown} from '../../lib/Consts/SidebarMenu';
+// // import { useState } from 'react'
+// import { Link, useNavigate } from 'react-router-dom'
+// import SidebarItem from './SidebarItem.js'
+// import {sidebarMenuDown} from '../../lib/Consts/SidebarMenu'
 
 // import { BsChevronDown } from "react-icons/bs"
 
@@ -17,7 +17,7 @@
 // const NavbarSidebarDown = (props) => {
 
 
-// 	// const [submenuOpen, setSubmenuOpen] = useState(false);
+// 	// const [submenuOpen, setSubmenuOpen] = useState(false)
 // 	let content
 // 	content =(
 		
@@ -55,4 +55,4 @@
 // 	return content
 //   }
 
-// export default NavbarSidebarDown;
+// export default NavbarSidebarDown

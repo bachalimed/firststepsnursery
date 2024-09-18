@@ -1,7 +1,7 @@
 import React from 'react'
-import { HiOutlineChatAlt } from "react-icons/hi";
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { HeaderChatSample } from '../../lib/Consts/HeaderChatSample.js';
+import { HiOutlineChatAlt } from "react-icons/hi"
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
+import { HeaderChatSample } from '../../lib/Consts/HeaderChatSample.js'
 
 const HeaderChat = () => {
   return (

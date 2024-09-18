@@ -1,7 +1,7 @@
-import React from 'react';
-import Modal from 'react-modal';
+import React from 'react'
+import Modal from 'react-modal'
 
-Modal.setAppElement('#root'); // Adjust this selector based on your app structure
+Modal.setAppElement('#root') // Adjust this selector based on your app structure
 
 const DeleteConfirmModal = ({ isOpen, onClose, onConfirm }) => {
 
@@ -23,7 +23,7 @@ const DeleteConfirmModal = ({ isOpen, onClose, onConfirm }) => {
         </div>
       </div>
     </Modal>
-  );
-};
+  )
+}
 
-export default DeleteConfirmModal;
+export default DeleteConfirmModal

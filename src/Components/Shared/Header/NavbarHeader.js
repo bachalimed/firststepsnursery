@@ -1,4 +1,4 @@
-//import { Link } from "react-router-dom";
+//import { Link } from "react-router-dom"
 
 
 
@@ -24,6 +24,6 @@ const NavbarHeader = () => {
          
    </div>
   )
-};
+}
 
-export default NavbarHeader;
+export default NavbarHeader

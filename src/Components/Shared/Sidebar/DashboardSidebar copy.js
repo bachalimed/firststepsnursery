@@ -4,16 +4,16 @@
 // import NavbarSidebarDown from './NavbarSidebarDown'
 // import logo from './../../../Data/logo.jpg'
 
-// import { LuChevronLeft } from "react-icons/lu";
-// // import { CgPushChevronLeftR } from "react-icons/cg";
+// import { LuChevronLeft } from "react-icons/lu"
+// // import { CgPushChevronLeftR } from "react-icons/cg"
 
 
 
 // const DashboardSidebar = () => {
 // 	//to set the open close of side bar
-// 	const [open, setOpen]= useState(true);
+// 	const [open, setOpen]= useState(true)
 	
-// 	const company ={label:"First Steps", type:"Nursery"};
+// 	const company ={label:"First Steps", type:"Nursery"}
 
 	
 //   return (
@@ -31,4 +31,4 @@
 //   )}
 
   
-// export default DashboardSidebar;
+// export default DashboardSidebar

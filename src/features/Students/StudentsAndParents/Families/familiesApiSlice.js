@@ -57,7 +57,7 @@ export const familiesApiSlice = apiSlice.injectEndpoints({
             //     } else return [{ type: 'parent', id: 'LIST' }]
             // }
         }),
-        getParentById: builder.query({
+        getFamilyById: builder.query({
             query: (params) =>{
                 const queryString = new URLSearchParams(params).toString() 
                 return `/students/studentsParents/families?${queryString}`
@@ -81,14 +81,7 @@ export const familiesApiSlice = apiSlice.injectEndpoints({
                 return familiesAdapter.upsertMany(initialState, newLoadedFamily)
             },
             providesTags:['family']
-            // providesTags: (result, error, arg) => {
-            //     if (result?.ids) {
-            //         return [
-            //             { type: 'parent', id: 'LIST' },
-            //             ...result.ids.map(id => ({ type: 'parent', id }))
-            //         ]
-            //     } else return [{ type: 'parent', id: 'LIST' }]
-            // }
+          
         }),
         addNewFamily: builder.mutation({
             query: initialFamilyData => ({
