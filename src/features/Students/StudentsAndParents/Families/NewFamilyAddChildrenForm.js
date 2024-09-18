@@ -48,45 +48,46 @@ const [addNewFamily, {//an object that calls the status when we execute the newP
         const {entities}=students
         //we need to change into array to be read??
         studentsList = Object.values(entities)
+        //console.log(studentsList, 'studetns list')
       }
-
 
 
       const handleChildChange = (index, value) => {
         const newChildren = [...children];
-        newChildren[index] = value;
+        newChildren[index] = { child: value };  // Store the value as an object with 'child' as key
         setChildren(newChildren);
     };
     
     const addChildDropdown = () => {
-        setChildren([...children, '']);
+        setChildren([...children, { child: '' }]);  // Add a new object to the array
     };
     
     const removeChildDropdown = (index) => {
         setChildren(children.filter((_, i) => i !== index));
     };
     
-    const onSaveParentClicked = () => {
-        console.log('hello');
-    };
+console.log('children', children)
 
     const handleCancel= ()=>{
         Navigate ('/students/studentsParents/families/')
     }
-  // Function to get filtered student list
+  // Function to get remaining studetns after seledction
 const getFilteredStudents = (currentChildren, selectedIndex) => {
     return studentsList.filter(student => !currentChildren.includes(student.id) || student.id === currentChildren[selectedIndex]);
-};
-
-setCanSaveChildren(children?.isArray())
-    const content = (
+}
+let content
+if (isStudentListSuccess){
+setCanSaveChildren(Array.isArray(children)&&children[0]!=='')//will ensure children is not an empty array or with only an emptry value
+//console.log(canSaveChildren,'canSaveChildren')
+//console.log(children, 'children array')
+    content = (
         <>
   <form className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg">
     <div className="mb-6 text-center">
       <h2 className="text-2xl font-bold text-gray-800">Add Children</h2>
     </div>
 
-    {children.map((child, index) => (
+    {children?.map((child, index) => (
       <div key={index} className="mb-4 flex items-center space-x-4">
         <select
           value={child}
@@ -143,7 +144,7 @@ setCanSaveChildren(children?.isArray())
     </div> */}
   </form>
 </>
-    )
+    )}
 
     return content
 }

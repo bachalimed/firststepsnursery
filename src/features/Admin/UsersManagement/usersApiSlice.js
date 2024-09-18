@@ -24,14 +24,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({//inject the ends points 
                 });
                 return usersAdapter.setAll(initialState, loadedUsers)//loaded the users into usersadapter into state
             },
-            providesTags: (result, error, arg) => {
-                if (result?.ids) {
-                    return [
-                        { type: 'user', id: 'LIST' },
-                        ...result.ids.map(id => ({ type: 'user', id }))
-                    ]
-                } else return [{ type: 'user', id: 'LIST' }]
-            }
+            providesTags: ['user']
         }),
         addNewUser: builder.mutation({
             query: initialUserData => ({
@@ -41,9 +34,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({//inject the ends points 
                     ...initialUserData,
                 }
             }),
-            invalidatesTags: [//forces the cache in RTK query to update
-                { type: 'user', id: "LIST" }//the user list will be unvalidated and updated
-            ]
+            invalidatesTags: ['user']
         }),
         updateUser: builder.mutation({
             query: initialUserData => ({
@@ -53,9 +44,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({//inject the ends points 
                     ...initialUserData,
                 }
             }),
-            invalidatesTags: (result, error, arg) => [//we re not updating all the list, butonly update the user in the cache by using the arg.id
-                { type: 'user', id: arg.id }
-            ]
+            invalidatesTags: ['user']
         }),
         updateUserPhoto: builder.mutation({
             query: initialUserData => ({
@@ -65,9 +54,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({//inject the ends points 
                     ...initialUserData,
                 }
             }),
-            invalidatesTags: (result, error, arg) => [//we re not updating all the list, butonly update the user in the cache by using the arg.id
-                { type: 'user', id: arg.id }
-            ]
+            invalidatesTags:['user']
         }),
         deleteUser: builder.mutation({
             query: ({ id }) => ({

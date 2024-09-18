@@ -17,6 +17,7 @@ export const store = configureStore({
         student: studentsReducer,
         family: familiesReducer,
         studentDocument:studentDocumentsReducer,
+       
         //studentDocumentsList:studentDocumentsListReducer,
         //task: tasksReducer,
         

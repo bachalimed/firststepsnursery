@@ -46,7 +46,7 @@ const NewUserForm = () => {//an add user function that can be called inside the 
     const[ userSex,setUserSex ]= useState('')
     const[ validUserDob,setValidUserDob ]= useState(false)
     const[ userIsActive,setUserIsActive ]= useState(false)
-    const[ userPhoto,setUserPhoto ]= useState('')
+    //const[ userPhoto,setUserPhoto ]= useState('')
     //const[ userPhotoLabel,setUserPhotoLabel ]= useState('')
     //const[ userPhotoFormat,setUserPhotoFormat ]= useState('')
     //const[ size,setSize ]= useState()
@@ -100,11 +100,11 @@ const NewUserForm = () => {//an add user function that can be called inside the 
     useEffect(() => {
         setValidPrimaryPhone(PHONE_REGEX.test(primaryPhone))
     }, [primaryPhone])
+    useEffect(() => {
+        setValidCity(NAME_REGEX.test(city))
+    }, [city])
 
    
-    useEffect(() => {
-        setValidEmail(EMAIL_REGEX.test(email))
-    }, [email])
 
     useEffect(() => {
         if (isSuccess) {//if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
@@ -122,7 +122,7 @@ const NewUserForm = () => {//an add user function that can be called inside the 
             setUserSex('')
             setUserIsActive(false) 
             //setSize() 
-            setUserPhoto('')
+            //setUserPhoto('')
             //setUserPhotoLabel('')
             //setUserPhotoFormat('')
             setHouse('')
@@ -150,7 +150,7 @@ const NewUserForm = () => {//an add user function that can be called inside the 
     const onUserDobChanged = e => setUserDob(e.target.value)
     const onUserSexChanged = e => setUserSex(e.target.value)
     const onUserIsActiveChanged = e => setUserIsActive(prev => !prev)//will invert the previous state
-    const onUserPhotoChanged = e => {setUserPhoto(e.target.files[0])}
+    //const onUserPhotoChanged = e => {setUserPhoto(e.target.files[0])}
     //const onUserPhotoLabelChanged = e => setUserPhotoLabel(e.target.value)
     //const onUserPhotoFormatChanged = e => setUserPhotoFormat(e.target.value)
     //const onSizeChanged = e => setSize(e.target.value)  
@@ -178,10 +178,7 @@ const NewUserForm = () => {//an add user function that can be called inside the 
       }
 
 
-//we do not  need to retriev the employee and parent ids from the DB ans set their state because they are saved before the user
-//check if the parent and employee id is available or delete the variable
-if (isParent===''){ setIsParent(undefined)}
-if (isEmployee===''){ setIsEmployee(undefined)}
+
 
 useEffect(()=>{
 setUserFullName({userFirstName:userFirstName, userMiddleName:userMiddleName, userLastName:userLastName})},
@@ -196,7 +193,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
 [primaryPhone, secondaryPhone, email])
 
 //to check if we can save before onsave, if every one is true, and also if we are not loading status
-    const canSave = [validUserFirstName, validUserLastName, validUsername, validPassword, validUserDob, userSex, validStreet,  validPrimaryPhone, userRoles.length ].every(Boolean) && !isLoading
+    const canSave = [validUserFirstName, validUserLastName, validUsername, validPassword, validUserDob, userSex, validStreet, validCity,  validPrimaryPhone, userRoles.length ].every(Boolean) && !isLoading
 //console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validPassword}, ${validUserDob},${userAllowedActions}    ${ validStreet},  ${validPrimaryPhone}, ${validEmail}, ${userRoles.length}, ${isParent}, ${isEmployee}, ${userIsActive}` )
     const onSaveUserClicked = async (e) => {
         e.preventDefault()
@@ -204,7 +201,7 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
         if (canSave) {//if cansave is true
             //generate the objects before saving
             //console.log(` 'first name' ${userFirstName}', fullfirstname,' ${userFullName.userFirstName}', house: '${house}', usercontact house' ${userContact.house},    ${userRoles.length},${isParent}, ${isEmployee}` )
-            await addNewUser({ username, password,  userFullName, isParent, isEmployee, userDob, userSex, userPhoto, userIsActive, userRoles, userAllowedActions, userAddress, userContact })//we call the add new user mutation and set the arguments to be saved
+            await addNewUser({ username, password,  userFullName, isParent, isEmployee, userDob, userSex,  userIsActive, userRoles, userAllowedActions, userAddress, userContact })//we call the add new user mutation and set the arguments to be saved
             //added this to confirm save
             if (isError) {console.log('error savingg', error)//handle the error msg to be shown  in the logs??
             }

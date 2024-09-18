@@ -23,7 +23,7 @@ export default function NewFatherForm () {//an add parent function that can be c
  const {father, setFather} = useContext(StepperContext)
  const{familySituation, setFamilySituation }= useContext(StepperContext)
  const{canSaveFather,  setCanSaveFather }= useContext(StepperContext)
-
+ 
 
 //  const handleChange=(e)=>{
 //     const {name, value} = e.target
@@ -38,45 +38,39 @@ export default function NewFatherForm () {//an add parent function that can be c
 
 
     //initialisation of states for each input
-    const [username, setUsername] = useState(generateRandomUsername())
-    // const [validUsername, setValidUsername] = useState(false)//will be true when the parentname is validated
-    const [password, setPassword] = useState('12345678')
-    // const [validPassword, setValidPassword] = useState(false)//will be true when the passwrod is validated
-    const [userRoles, setUserRoles] = useState(["Parent"])//the roles array is defaulted to employee
-    const [userAllowedActions, setUserAllowedActions] = useState([])
-    const [userFullName, setUserFullName] = useState('')
-    const [validUserFullName, setValidUserFullName] = useState(false)
-    const [userFirstName, setUserFirstName] = useState('')
+    
+    
+   
     const [validUserFirstName, setValidUserFirstName] = useState(false)
-    const [userMiddleName, setUserMiddleName] = useState('')
-    const [userLastName, setUserLastName] = useState('')
     const [validUserLastName, setValidUserLastName] = useState(false)
-    const[ isParent,setIsParent ]= useState('')
-    const[ userDob,setUserDob ]= useState('')
-    const[ userSex,setUserSex ]= useState('Male')
+  
     const[ validUserDob,setValidUserDob ]= useState(false)
-    const[ userIsActive,setUserIsActive ]= useState(false)
     const[ userAddress,setUserAddress ]= useState('')
-    const[ validUserAddress,setValidUserAddress ]= useState(false)
-    const[ house,setHouse ]= useState('')
     const[ validHouse,setValidHouse ]= useState(false)
-    const[ street,setStreet ]= useState('')
-    const[ validStreet,setValidStreet ]= useState(false)
-    const[ area,setArea ]= useState('')
-    const[ validArea,setValidArea ]= useState(false)
-    const[ postCode,setPostCode ]= useState('')
-    const[ validPostCode,setValidPostCode ]= useState(false)
-    const[ city,setCity ]= useState('')
+    const[ validStreet,setValidStreet ]= useState(false) 
     const[ validCity,setValidCity ]= useState(false)
-    const[userContact, setUserContact ]= useState('')
-    const[validParentContact, setValidParentContact ]= useState(false)
-    const[primaryPhone, setPrimaryPhone ]= useState()
     const[validPrimaryPhone, setValidPrimaryPhone ]= useState(false)
-    const[secondaryPhone, setSecondaryPhone ]= useState()
-    const[email, setEmail ]= useState('')
-    const[validEmail, setValidEmail ]= useState(false)
     
-    
+    const [username, setUsername] = useState(father?.username || generateRandomUsername());
+    const [password, setPassword] = useState(father?.password || '12345678');
+    const [userRoles, setUserRoles] = useState(father?.userRoles || ["Parent"]);
+    const [userFullName, setUserFullName] = useState(father?.userFullName || { userFirstName: '', userMiddleName: '', userLastName: '' });
+    const [userFirstName, setUserFirstName] = useState(father?.userFullName?.userFirstName || '');
+    const [userMiddleName, setUserMiddleName] = useState(father?.userFullName?.userMiddleName || '');
+    const [userLastName, setUserLastName] = useState(father?.userFullName?.userLastName || '');
+    const [userDob, setUserDob] = useState(father?.userDob || '');
+    const [userSex, setUserSex] = useState(father?.userSex || 'Male');
+    const [userIsActive, setUserIsActive] = useState(father?.userIsActive || false);
+    const [house, setHouse] = useState(father?.userAddress?.house || '');
+    const [street, setStreet] = useState(father?.userAddress?.street || '');
+    const [area, setArea] = useState(father?.userAddress?.area || '');
+    const [postCode, setPostCode] = useState(father?.userAddress?.postCode || '');
+    const [city, setCity] = useState(father?.userAddress?.city || '');
+    const [primaryPhone, setPrimaryPhone] = useState(father?.userContact?.primaryPhone || '');
+    const [secondaryPhone, setSecondaryPhone] = useState(father?.userContact?.secondaryPhone || '');
+    const [email, setEmail] = useState(father?.userContact?.email || '');
+    const [userAllowedActions, setUserAllowedActions] = useState([])
+    const[userContact, setUserContact ]= useState('')
 
 //use effect is used to validate the inputs against the defined REGEX above
 //the previous constrains have to be verified on the form for teh parent to know 
@@ -101,8 +95,14 @@ export default function NewFatherForm () {//an add parent function that can be c
     }, [userDob])
 
     useEffect(() => {
+        setValidHouse(NAME_REGEX.test(house))
+    }, [house])
+    useEffect(() => {
         setValidStreet(NAME_REGEX.test(street))
     }, [street])
+    useEffect(() => {
+        setValidCity(NAME_REGEX.test(city))
+    }, [city])
 
     useEffect(() => {
         setValidPrimaryPhone(PHONE_REGEX.test(primaryPhone))
@@ -120,7 +120,7 @@ export default function NewFatherForm () {//an add parent function that can be c
     //         setUserMiddleName('')
     //         setUserLastName('')
     //         setUserFullName({userFirstName:'', userMiddleName:'', userLastName:''})
-    //         setIsParent('')
+    //        
           
     //         setUserDob('')
     //         setUserIsActive(false) 
@@ -142,6 +142,7 @@ export default function NewFatherForm () {//an add parent function that can be c
     //const onUsernameChanged = e => setUsername(e.target.value)
     //const onPasswordChanged = e => setPassword(e.target.value)
     const onUserFirstNameChanged = e => setUserFirstName(e.target.value)
+   
     const onUserMiddleNameChanged = e => setUserMiddleName(e.target.value)
     const onUserLastNameChanged = e => setUserLastName(e.target.value)
     const onUserDobChanged = e => setUserDob(e.target.value)
@@ -173,35 +174,17 @@ useEffect(()=>{
 setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:email})},
 [primaryPhone, secondaryPhone, email])
 useEffect(()=>{
-    setFather({ username, password,  userFullName, isParent,  userDob, userSex,  userIsActive, userRoles,  userAllowedActions, userAddress, userContact })},
-[username, password,  userFullName, isParent,  userDob, userSex,  userIsActive, userRoles,  userAllowedActions, userAddress, userContact])
+  setFather({ username:username, password:password,  userFullName:userFullName,  userDob:userDob, userSex:userSex,  userIsActive:userIsActive, userRoles:userRoles,
+      userAllowedActions:userAllowedActions, userAddress:userAddress, userContact:userContact })},
+[username, password,  userFullName,  userDob, userSex,  userIsActive, userRoles,  userAllowedActions, userAddress, userContact])
+//console.log('father in father', father)
 
-//to check if we can save before onsave, if every one is true, and also if we are not loading status
-   // const canSave = [validUserFirstName, validUserLastName, validUserDob, userSex, validStreet,  validPrimaryPhone, userRoles.length ].every(Boolean) && !isAddFamilyLoading
-//console.log(` ${validUserFirstName}, ${validUserLastName}, ${validUsername}, ${validPassword}, ${validUserDob},${userSex}    ${ validStreet},  ${validPrimaryPhone},  ${userRoles.length}` )
-    // const onSaveFatherClicked = async (e) => {
-    //     e.preventDefault()
-        
-    //     if (canSave) {//if cansave is true
-    //         //generate the objects before saving
-            
-    //         await addNewFamily({father:father, familySituation:familySituation})//we call the add new parent mutation and set the arguments to be saved
-    //         //added this to confirm save
-            
-            
-    //         if (isAddFamilyError) {console.log('error savingg', addFamilyError)//handle the error msg to be shown  in the logs??
-    //         }
-    //     }
-    // }
-    // const handleCancel= ()=>{
-    //     Navigate ('/students/studentsParents/families/')
-    // }
-   
 //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
     // const errClass = isAddFamilyError ? "errmsg" : "offscreen"
     
    // const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
-   setCanSaveFather ([validUserFirstName, validUserLastName,  validUserDob, validStreet, validCity, validPrimaryPhone ].every(Boolean))
+   setCanSaveFather ([validUserFirstName, validUserLastName,  validUserDob, validHouse, validStreet, validCity, validPrimaryPhone ].every(Boolean))
+   //console.log('cansavefatehr', canSaveFather)
 
     const content = (
         <div className="flex flex-col p-6 space-y-6 max-w-2xl mx-auto bg-white shadow-lg rounded-lg">

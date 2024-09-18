@@ -20,8 +20,6 @@ import { StepperContext } from "../../../../contexts/StepperContext"
 const NewFamily = () => {//an add parent function that can be called inside the component
 
  
-
-  
 const [currentStep, setCurrentStep] =useState(1)
 const [father, setFather] =useState({})
 const [mother, setMother] =useState({})
@@ -41,10 +39,10 @@ const steps=[
 ]
 
 const [addNewFamily, {//an object that calls the status when we execute the newUserForm function
-    isLoading,
-    isSuccess,
-    isError,
-    error
+    isLoading:isAddLoading,
+    isSuccess:isAddSuccess,
+    isError:isAddError,
+    error:addError
 }] = useAddNewFamilyMutation()//it will not execute the mutation nownow but when called
 
 
@@ -65,28 +63,45 @@ const displayStep =(step)=>{
 
 const handleClick=(direction)=>{
     let newStep=currentStep
-    if (direction==="Next"){ newStep++ }else{newStep--}
-    if (direction ==="confirm"){ handleSaveFamily()} // added this
+    if (currentStep===3){
+        handleSubmit()
+        if (isAddLoading||isAddError){ setCurrentStep(3)}
+        
+        if (isAddSuccess){
+            if (direction==="Next"){ newStep++ }else{newStep--}
+    
+        //check if step are within bounds
+        setCurrentStep(4)
+
+        }
+    }
+
+    if ( currentStep<=2 && direction==="Next"){ newStep++ }else{newStep--}
+    
     //check if step are within bounds
     newStep>0 && newStep <= steps.length &&setCurrentStep(newStep)
 }
 
 
 
-const handleSaveFamily=async(e)=>{
+const handleSubmit=async()=>{
    
-        e.preventDefault()
+      
         
-        if (canSaveFather&&canSaveMother&&canSaveChildren) {//if cansave is true
-          
+        //remove last element of children if it is empty
+        if (children[children.length - 1] === '') {
+            // Remove the last element using slice
+            setChildren(children.slice(0, -1));
+          }
+       
             
-            await addNewFamily({ father, mother, children, familySituation })//we call the add new user mutation and set the arguments to be saved
+            await addNewFamily({ father:father, mother:mother, children:children, familySituation:familySituation })//we call the add new user mutation and set the arguments to be saved
             //added this to confirm save
-            if (isError) {console.log('error savingg', error)//handle the error msg to be shown  in the logs??
+            if (isAddError) {console.log('error savingg', addError)//handle the error msg to be shown  in the logs??
             }
-        }
+       
 }
-console.log( father, mother, children, familySituation,'data to ber saved')
+//console.log( father, 'father', mother, 'mother', children, familySituation,'data in parent form')
 //maybe check here and allow steps to move on
 
     const content = 
@@ -102,7 +117,7 @@ console.log( father, mother, children, familySituation,'data to ber saved')
                 {/* display componentns */}
                 <div className="my-10 p-10">
                     <StepperContext.Provider value={{father, setFather, mother , setMother, familySituation, setFamilySituation, family, setFamily, 
-                        canSaveFather,  setCanSaveFather, canSaveMother,  setCanSaveMother, canSaveChildren,  setCanSaveChildren
+                        canSaveFather,  setCanSaveFather, canSaveMother,  setCanSaveMother, canSaveChildren,  setCanSaveChildren, children, setChildren
                     }}>
                         {displayStep(currentStep)}
                     </StepperContext.Provider >
@@ -112,8 +127,11 @@ console.log( father, mother, children, familySituation,'data to ber saved')
             <div >
                 {currentStep!==steps.length &&
                 <StepperControl 
-                   
+                    canSaveFather={canSaveFather}
+                    canSaveMother={canSaveMother}
+                    canSaveChildren={canSaveChildren}
                     handleClick={handleClick} 
+                    handleSubmit={handleSubmit}
                     currentStep={currentStep}
                     steps={steps}
 

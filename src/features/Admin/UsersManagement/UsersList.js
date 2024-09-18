@@ -28,10 +28,10 @@ const UsersList = () => {
 //import users using RTK query
     const {
         data: users,//deconstructing data into users
-        isLoading,
-        isSuccess,
-        isError,
-        error
+        isLoading: isUsersLoading,
+        isSuccess: isUsersSuccess,
+        isError: isUsersError,
+        error: usersError
     } = useGetUsersQuery('usersList', {//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
         pollingInterval: 60000,//will refetch data every 60seconds
         refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
@@ -46,16 +46,18 @@ const UsersList = () => {
  
 //normally we will remove the prefetch since we wont need all users for any login and we import rtk here
     //get the users fromthe state
-    const allUsers = useSelector(state => selectAllUsers(state))
-    //prepare the permission variables
-
-  // State to hold selected rows
-
-  //state to hold the search query
+    //const allUsers = useSelector(state => selectAllUsers(state))
+   
    
 
     //the serach result data
-    const filteredUsers = allUsers?.filter(item => {
+let usersList
+let filteredUsers
+    if (isUsersSuccess){
+
+      const {entities}=users
+      usersList = Object.values(entities)
+     filteredUsers = usersList?.filter(item => {
       const firstNameMatch = item.userFullName.userFirstName.toLowerCase().includes(searchQuery)
       const middleNameMatch = item.userFullName.userMiddleName.toLowerCase().includes(searchQuery)
       const lastNameMatch = item.userFullName.userLastName.toLowerCase().includes(searchQuery)
@@ -63,7 +65,7 @@ const UsersList = () => {
           String(val).toLowerCase().includes(searchQuery.toLowerCase())
       )||firstNameMatch||middleNameMatch||lastNameMatch)
     })
-
+  }
     const handleSearch = (e) => {
         setSearchQuery(e.target.value)
     }
@@ -104,7 +106,7 @@ const toDuplicate = selectedRows[-1]
     setSelectedRows([]); // Clear selection after delete
   }
 
-  const errContent = (error?.data?.message || delerror?.data?.message) ?? ''
+  const errContent = (usersError?.data?.message || delerror?.data?.message) ?? ''
   const column =[
     { 
       name: "#", // New column for entry number
@@ -218,13 +220,13 @@ const toDuplicate = selectedRows[-1]
   ]
   let content
   
-  if (isLoading) content = <p>Loading...</p>
+  if (isUsersLoading) content = <p>Loading...</p>
   
-  if (isError) {
-      content = <p className="errmsg">{error?.data?.message}</p>//errormessage class defined in the css, the error has data and inside we have message of error
+  if (isUsersError) {
+      content = <p className="errmsg">{usersError?.data?.message}</p>//errormessage class defined in the css, the error has data and inside we have message of error
   }
   
-  if (isSuccess||isDelSuccess) {
+  if (isUsersSuccess||isDelSuccess) {
   
   content= (
     <>

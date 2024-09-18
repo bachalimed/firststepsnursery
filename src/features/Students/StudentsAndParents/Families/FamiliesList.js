@@ -66,7 +66,7 @@ if (isFamilySuccess){
   //we need to change into array to be read??
   familiesList = Object.values(entities)//we are using entity adapter in this query
   Dispatch(setSomeFamilies(familiesList))//timing issue to update the state and use it the same time
- console.log(entities)
+ //console.log(entities)
   //the serach result data
  filteredFamilies = familiesList?.filter(item => {
 //the nested objects need extra logic to separate them

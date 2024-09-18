@@ -114,7 +114,7 @@ let filteredStudents = []
     
     //we need to change into array to be read??
     studentsList = Object.values(entities)//we are using entity adapter in this query
-    Dispatch(setSomeStudents(studentsList))//timing issue to update the state and use it the same time
+    //Dispatch(setSomeStudents(studentsList))//timing issue to update the state and use it the same time
     
    
     //the serach result data
