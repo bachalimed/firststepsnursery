@@ -180,7 +180,7 @@ const column =[
   
   { name: "Name",
   selector:row=>( <div>
-    <div><Link to={`/changepath/${row._id}`}> {row.father.userFullName.userFirstName+" "+row.father.userFullName.userMiddleName+" "+row.father.userFullName.userLastName}</Link></div>
+    <div><Link to={`/changepath/${row._id}`}> {row.father?.userFullName.userFirstName+" "+row.father?.userFullName.userMiddleName+" "+row.father?.userFullName.userLastName}</Link></div>
     <div><Link to={`/changepath/${row._id}`}> {row.mother?.userFullName.userFirstName+" "+row.mother?.userFullName.userMiddleName+" "+row.mother?.userFullName.userLastName}</Link></div>
   </div>
   ) ,
@@ -215,8 +215,8 @@ const column =[
     }, 
   { name: "Address",
     selector:row=>( <div>
-      <div> {row.father.userAddress?.house}  {row.father.userAddress?.street}  {row.father.userAddress?.area}  {row.father.userAddress?.postCode}  {row.father.userAddress?.city}</div>
-      {row.familySituation!=="Joint"&&<div> {row.mother.userAddress?.house}  {row.mother.userAddress?.street}  {row.mother.userAddress?.area}  {row.mother.userAddress?.postCode}  {row.mother.userAddress?.city}</div>}
+      <div> {row.father?.userAddress?.house}  {row.father?.userAddress?.street}  {row.father?.userAddress?.area}  {row.father?.userAddress?.postCode}  {row.father?.userAddress?.city}</div>
+      {row.familySituation!=="Joint"&&<div> {row.mother?.userAddress?.house}  {row.mother?.userAddress?.street}  {row.mother?.userAddress?.area}  {row.mother?.userAddress?.postCode}  {row.mother?.userAddress?.city}</div>}
     </div>
     ) ,
     sortable:true,

@@ -52,34 +52,38 @@ const [addNewFamily, {//an object that calls the status when we execute the newP
       }
 
 
+
       const handleChildChange = (index, value) => {
         const newChildren = [...children];
-        newChildren[index] = { child: value };  // Store the value as an object with 'child' as key
+        newChildren[index] = { child: value }
         setChildren(newChildren);
     };
     
     const addChildDropdown = () => {
-        setChildren([...children, { child: '' }]);  // Add a new object to the array
+        setChildren([...children, { child: '' }])
     };
     
     const removeChildDropdown = (index) => {
         setChildren(children.filter((_, i) => i !== index));
     };
     
-console.log('children', children)
+//console.log('children', children)
 
     const handleCancel= ()=>{
         Navigate ('/students/studentsParents/families/')
     }
   // Function to get remaining studetns after seledction
-const getFilteredStudents = (currentChildren, selectedIndex) => {
-    return studentsList.filter(student => !currentChildren.includes(student.id) || student.id === currentChildren[selectedIndex]);
-}
+  const getFilteredStudents = (currentChildren, selectedIndex) => {
+    return studentsList.filter(student => 
+        !currentChildren.some(childObj => childObj.child === student.id) || 
+        student.id === currentChildren[selectedIndex]?.child
+    );
+};
 let content
 if (isStudentListSuccess){
 setCanSaveChildren(Array.isArray(children)&&children[0]!=='')//will ensure children is not an empty array or with only an emptry value
 //console.log(canSaveChildren,'canSaveChildren')
-//console.log(children, 'children array')
+console.log(children, 'children array')
     content = (
         <>
   <form className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg">
@@ -87,21 +91,20 @@ setCanSaveChildren(Array.isArray(children)&&children[0]!=='')//will ensure child
       <h2 className="text-2xl font-bold text-gray-800">Add Children</h2>
     </div>
 
-    {children?.map((child, index) => (
-      <div key={index} className="mb-4 flex items-center space-x-4">
-        <select
-          value={child}
-          onChange={(e) => handleChildChange(index, e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="">Select a child</option>
-          {getFilteredStudents(children, index).map((option) => (
-            <option key={option.id} value={option.id}>
-              {option.studentName.firstName} {option.studentName.middleName}{' '}
-              {option.studentName.lastName}
-            </option>
-          ))}
-        </select>
+    {children?.map((childObj, index) => (
+  <div key={index} className="mb-4 flex items-center space-x-4">
+    <select
+      value={childObj.child} // Use childObj.child as the value
+      onChange={(e) => handleChildChange(index, e.target.value)} // Pass the new value to handleChildChange
+      className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+      <option value="">Select a child</option>
+      {getFilteredStudents(children, index).map((option) => (
+        <option key={option.id} value={option.id}>
+          {option.studentName.firstName} {option.studentName.middleName} {option.studentName.lastName}
+        </option>
+      ))}
+    </select>
 
         {children.length > 1 && (
           <button

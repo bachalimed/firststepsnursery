@@ -64,19 +64,11 @@ const displayStep =(step)=>{
 const handleClick=(direction)=>{
     let newStep=currentStep
     if (currentStep===3){
-        handleSubmit()
-        if (isAddLoading||isAddError){ setCurrentStep(3)}
-        
-        if (isAddSuccess){
-            if (direction==="Next"){ newStep++ }else{newStep--}
-    
-        //check if step are within bounds
-        setCurrentStep(4)
-
-        }
+        handleSubmit()  
     }
 
-    if ( currentStep<=2 && direction==="Next"){ newStep++ }else{newStep--}
+    if ( currentStep<=2 && direction==="Next"){ newStep++ }
+    if ( currentStep<=2 && direction==="Back"){newStep--}
     
     //check if step are within bounds
     newStep>0 && newStep <= steps.length &&setCurrentStep(newStep)
@@ -89,16 +81,17 @@ const handleSubmit=async()=>{
       
         
         //remove last element of children if it is empty
-        if (children[children.length - 1] === '') {
+        if (children[children.length - 1]?.child === '') {
             // Remove the last element using slice
-            setChildren(children.slice(0, -1));
+            setChildren(children.slice(0, -1))
           }
-       
+          console.log('children', children)
             
             await addNewFamily({ father:father, mother:mother, children:children, familySituation:familySituation })//we call the add new user mutation and set the arguments to be saved
             //added this to confirm save
             if (isAddError) {console.log('error savingg', addError)//handle the error msg to be shown  in the logs??
             }
+            if (!isAddLoading){ setCurrentStep(4)}
        
 }
 //console.log( father, 'father', mother, 'mother', children, familySituation,'data in parent form')
