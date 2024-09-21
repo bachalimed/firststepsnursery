@@ -118,13 +118,7 @@ const FamiliesList = () => {
     setSelectedRows(state.selectedRows);
     //console.log('selectedRows', selectedRows)
   };
-  //add child to family
-  const handleAddChildren = async (selectedRows) => {};
 
-  //handle edit
-  const handleEdit = (id) => {
-    Navigate(`/students/studentsParents/students/${id}/`); //the path to be set in app.js and to be checked with server.js in backend, this is editing page of user
-  };
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idFamilyToDelete, setIdFamilyToDelete] = useState(null);
