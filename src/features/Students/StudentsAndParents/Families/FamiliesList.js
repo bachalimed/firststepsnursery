@@ -1,8 +1,6 @@
 import React from "react";
 import { HiOutlineSearch } from "react-icons/hi";
-import {
-  useGetFamiliesByYearQuery,
-} from "./familiesApiSlice";
+import { useGetFamiliesByYearQuery } from "./familiesApiSlice";
 import { setSomeFamilies } from "./familiesSlice";
 import StudentsParents from "../../StudentsParents";
 import DataTable from "react-data-table-component";

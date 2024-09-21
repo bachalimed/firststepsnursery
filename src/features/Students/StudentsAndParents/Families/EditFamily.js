@@ -1,182 +1,251 @@
-import { useState, useEffect } from "react"
-import { useAddNewFamilyMutation } from "./familiesApiSlice"
-import { useNavigate, useParams } from "react-router-dom"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faSave } from "@fortawesome/free-solid-svg-icons"
-import { ROLES } from "../../../../config/UserRoles"
-import { ACTIONS } from "../../../../config/UserActions"
-import StudentsParents from "../../StudentsParents"
-import { useGetFamilyByIdQuery } from "./familiesApiSlice"
-import { useGetStudentsByYearQuery } from "../Students/studentsApiSlice"
-import Stepper from "./Stepper"
-import StepperControl from "./StepperControl"
-import EditFatherForm from "./EditFatherForm"
-import NewMotherForm from "./NewMotherForm"
-import NewFamilyAddChildrenForm from "./NewFamilyAddChildrenForm"
-import NewFamilyCompleted from "./NewFamilyCompleted"
-import { StepperContext } from "../../../../contexts/StepperContext"
+import { useState, useEffect } from "react";
+import { useUpdateFamilyMutation } from "./familiesApiSlice";
+import { useNavigate, useParams } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSave } from "@fortawesome/free-solid-svg-icons";
+import { ROLES } from "../../../../config/UserRoles";
+import { ACTIONS } from "../../../../config/UserActions";
+import StudentsParents from "../../StudentsParents";
+import { useGetFamilyByIdQuery } from "./familiesApiSlice";
+import { useGetStudentsByYearQuery } from "../Students/studentsApiSlice";
+import Stepper from "./Stepper";
+import StepperControl from "./StepperControl";
+import EditFatherForm from "./EditFatherForm";
+import EditMotherForm from "./EditMotherForm";
+import EditFamilyAddChildrenForm from "./EditFamilyAddChildrenForm";
+import FamilyCompleted from "./FamilyCompleted";
+import { StepperContext } from "../../../../contexts/StepperContext";
 
-import { useSelector } from "react-redux"
-
+import { useSelector } from "react-redux";
+import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 const EditFamily = () => {
   //an add parent function that can be called inside the component
-  const { id } = useParams()
-  console.log(id, "id")
+  const { id } = useParams();
+  //console.log(id, "id");
+
+  const [family, setFamily] = useState({});
+  const [father, setFather] = useState({});
+  const [currentStep, setCurrentStep] = useState(1);
+  const [canSaveFather, setCanSaveFather] = useState(false);
+  const [canSaveMother, setCanSaveMother] = useState(false);
+  const [canSaveChildren, setCanSaveChildren] = useState(false);
+  const [mother, setMother] = useState({});
+  const [familySituation, setFamilySituation] = useState("");
+  const [children, setChildren] = useState([]);
+  const [isUpdatingFather, setIsUpdatingFather] = useState(false); // Track state updates
+  const [isUpdatingChildren, setIsUpdatingChildren] = useState(false); // Track state updates
   const {
     data: familyToEdit, //the data is renamed families
     isLoading: isFamilyLoading, //monitor several situations
     isSuccess: isFamilySuccess,
     isError: isFamilyError,
     error: familyError,
-  } = useGetFamilyByIdQuery({ id: id, endpointName: "families" } || {}, {
+  } = useGetFamilyByIdQuery({ id: id, criteria: "Dry", endpointName: "family" } || {}, {// "dry" will not ppoulate children fully
     //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
     //pollingInterval: 60000,//will refetch data every 60seconds
     refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
     refetchOnMountOrArgChange: true, //refetch when we remount the component
-  })
-  let familyInit
-  const [family, setFamily] = useState({})
-  if (isFamilySuccess) {
-    const { entities } = familyToEdit
-    familyInit = Object.values(entities)
-    //console.log(familyInit)
-  }
+  });
 
   useEffect(() => {
-    setFamily(familyInit)
-  }, [isFamilySuccess])
+    if (isFamilySuccess) {
+      const { entities } = familyToEdit;
+      //const familyInit = Object.values(entities)
+      setFamily(Object.values(entities)[0]); // Set family state to the first object
+    }
+  }, [isFamilySuccess, familyToEdit]);
 
-  const [currentStep, setCurrentStep] = useState(1)
-  const [father, setFather] = useState(family?.father)
-  const [mother, setMother] = useState(family?.mother)
-  const [familySituation, setFamilySituation] = useState(
-    family?.familySituation
-  )
-  const [children, setChildren] = useState(family?.children)
+  // Update father, mother, familySituation, and children when family changes
+  useEffect(() => {
+    if (Object.keys(family).length > 0) { // Ensure family is not an empty object
+      setIsUpdatingFather(true); // Start updating
+      setFather(family.father); // Update father state
+      setIsUpdatingChildren(true); // Start updating
+      setChildren(family.children)
+    }
+  }, [family]);
 
-  const [canSaveFather, setCanSaveFather] = useState(false)
-  const [canSaveMother, setCanSaveMother] = useState(false)
-  const [canSaveChildren, setCanSaveChildren] = useState(false)
+  useEffect(() => {
+    // Only runs after father state is set
+    if (isUpdatingFather) {
+      //console.log(father, 'father in parent1'); // Log the updated state
+      setIsUpdatingFather(false); // Finish updating
+    }
+  }, [father, isUpdatingFather]);
+  useEffect(() => {
+    // Only runs after father state is set
+    if (isUpdatingChildren) {
+      
+      setIsUpdatingChildren(false); // Finish updating
+    }
+  }, [children, isUpdatingChildren]);
+  useEffect(() => {
+    if (family != {}) {
+     
+      setMother(family.mother); // Update mother state
+      setFamilySituation(family.familySituation); // Update family situation
+      
+    }
+  }, [family]);
 
-  const steps = ["Father Details", "Mother Details", "Children", "Completed"]
+  //   useEffect(() => {
+  //   // Ensure children are formatted correctly when component mounts or children updates
+  //   console.log('isUpdatingChildren', isUpdatingChildren)
+  //   if ( children?.length > 1 && !isUpdatingChildren) {
+  //     console.log('children before formatting in parent', children)
+  //     const formattedChildren = children.map((child) => (
+        
+  //         {
+  //       _id: child?.child?._id ||child?._id,
+  //       studentFullName: `${child?.studentName.firstName} ${child?.studentName.middleName || ""} ${child?.tudentName.lastName}`.trim()||child?.studentFullName,
+      
+  //   }));
+      
+  //     setChildren(formattedChildren);
+  //     setIsUpdatingChildren(false);
+  //     console.log('children afterrrrrrrrr formatting in parent', children)
+  //   }
+  // }, [children, setChildren]);
+ 
+
+  const steps = ["Father Details", "Mother Details", "Children", "Completed"];
 
   const [
-    addNewFamily,
+    updateFamily,
     {
       //an object that calls the status when we execute the newUserForm function
-      isLoading: isAddLoading,
-      isSuccess: isAddSuccess,
-      isError: isAddError,
-      error: addError,
+      isLoading: isUpdateLoading,
+      isSuccess: isUpdateSuccess,
+      isError: isUpdateError,
+      error: updateError,
     },
-  ] = useAddNewFamilyMutation() //it will not execute the mutation nownow but when called
+  ] = useUpdateFamilyMutation(); //it will not execute the mutation nownow but when called
 
   const displayStep = (step) => {
     switch (step) {
       case 1:
-        return <EditFatherForm />
+        if(isUpdatingFather){ return <LoadingStateIcon/>}
+       else { return <EditFatherForm />};
       case 2:
-        return <NewMotherForm />
+        return <EditMotherForm />;
       case 3:
-        return <NewFamilyAddChildrenForm />
+        if(isUpdatingChildren){ return <LoadingStateIcon/>}
+        else{ return <EditFamilyAddChildrenForm />}
       case 4:
-        return <NewFamilyCompleted />
+        return <FamilyCompleted />;
 
       default:
     }
-  }
+  };
 
   const handleClick = (direction) => {
-    let newStep = currentStep
+    let newStep = currentStep;
     if (currentStep === 3) {
-      handleSubmit()
+      handleSubmit();
     }
 
     if (currentStep <= 2 && direction === "Next") {
-      newStep++
+      newStep++;
     }
     if (currentStep <= 2 && direction === "Back") {
-      newStep--
+      newStep--;
     }
 
     //check if step are within bounds
-    newStep > 0 && newStep <= steps.length && setCurrentStep(newStep)
-  }
-
+    newStep > 0 && newStep <= steps.length && setCurrentStep(newStep);
+  };
   const handleSubmit = async () => {
-    //remove last element of children if it is empty
+    // Check if the last element of children is empty and remove it
+    console.log("children to submit after cleanup:", children);
     if (children[children.length - 1]?.child === "") {
       // Remove the last element using slice
-      setChildren(children.slice(0, -1))
+      setChildren((prevChildren) => prevChildren.slice(0, -1));
     }
-    console.log("children", children)
+  
+    // Log the cleaned-up children array for verification
+  
+    try {
+      // Call the updateFamily function with the cleaned-up data
+      await updateFamily({
+        _id:id,
+        father:father,
+        mother:mother,
+        children:children,
+        familySituation:familySituation,
+      });
+  
+      // Handle the success state, e.g., move to the next step
+      if (isUpdateSuccess) {
+        setCurrentStep(4); // Navigate to the next step
+      }
+    } catch (error) {
+      // Handle any errors during update
+      console.log("Error saving:", updateError);
+    }
+  };
 
-    await addNewFamily({
-      father: father,
-      mother: mother,
-      children: children,
-      familySituation: familySituation,
-    }) //we call the add new user mutation and set the arguments to be saved
-    //added this to confirm save
-    if (isAddError) {
-      console.log("error savingg", addError) //handle the error msg to be shown  in the logs??
-    }
-    if (!isAddLoading) {
-      setCurrentStep(4)
-    }
-  }
+  let content;
   //console.log( father, 'father', mother, 'mother', children, familySituation,'data in parent form')
   //maybe check here and allow steps to move on
+ 
+  if (isFamilyLoading) {
+    content = <>
+        <StudentsParents />
+        <LoadingStateIcon />
+        </>;
+  }
+  if (isFamilySuccess) {
+    content = (
+      <>
+        <StudentsParents />
 
-  const content = (
-    <>
-      <StudentsParents />
-      <div className="md:w-3/4 mx-auto shadow-xl rounded-2xl pb-2 bg-white">
-        <div className="container horizontal mt-5">
-          <Stepper steps={steps} currentStep={currentStep} />
-          {/* display componentns */}
-          <div className="my-10 p-10">
-            <StepperContext.Provider
-              value={{
-                father,
-                setFather,
-                mother,
-                setMother,
-                familySituation,
-                setFamilySituation,
-                family,
-                setFamily,
-                canSaveFather,
-                setCanSaveFather,
-                canSaveMother,
-                setCanSaveMother,
-                canSaveChildren,
-                setCanSaveChildren,
-                children,
-                setChildren,
-              }}
-            >
-              {displayStep(currentStep)}
-            </StepperContext.Provider>
+       <div className="md:w-3/4 mx-auto shadow-xl rounded-2xl pb-2 bg-white">
+          <div className="container horizontal mt-5">
+            <Stepper steps={steps} currentStep={currentStep} />
+            {/* display componentns */}
+            <div className="my-10 p-10">
+              <StepperContext.Provider
+                value={{
+                  father: father,
+                  setFather: setFather,
+                  mother: mother,
+                  setMother: setMother,
+                  familySituation: familySituation,
+                  setFamilySituation: setFamilySituation,
+                  // family: family,
+                  // setFamily: setFamily,
+                  children: children,
+                  setChildren: setChildren,
+                  canSaveFather,
+                  setCanSaveFather,
+                  canSaveMother,
+                  setCanSaveMother,
+                  canSaveChildren,
+                  setCanSaveChildren,
+                }}
+              >
+                {displayStep(currentStep)}
+              </StepperContext.Provider>
+            </div>
+          </div>
+          <div>
+            {currentStep !== steps.length && (
+              <StepperControl
+                canSaveFather={canSaveFather}
+                canSaveMother={canSaveMother}
+                canSaveChildren={canSaveChildren}
+                handleClick={handleClick}
+                handleSubmit={handleSubmit}
+                currentStep={currentStep}
+                steps={steps}
+              />
+            )}
           </div>
         </div>
-        <div>
-          {currentStep !== steps.length && (
-            <StepperControl
-              canSaveFather={canSaveFather}
-              canSaveMother={canSaveMother}
-              canSaveChildren={canSaveChildren}
-              handleClick={handleClick}
-              handleSubmit={handleSubmit}
-              currentStep={currentStep}
-              steps={steps}
-            />
-          )}
-        </div>
-      </div>
-    </>
-  )
+      </>
+    );
+  }
 
-  return content
-}
-export default EditFamily
+  return content;
+};
+export default EditFamily;
