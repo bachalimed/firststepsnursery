@@ -9,6 +9,8 @@ import familiesReducer from  '../features/Students/StudentsAndParents/Families/f
 import studentDocumentsReducer from  '../features/Students/StudentsAndParents/Students/studentDocumentsSlice'
 import studentDocumentsListReducer from  '../features/AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsSlice'
 
+import employeeDocumentsListReducer from '../features/AppSettings/HRSet/EmployeeDocumentsLists/EmployeeDocumentsListsSlice'
+
 export const store = configureStore({
     reducer: {// Add the generated reducer as a specific top-level slice
         [apiSlice.reducerPath]: apiSlice.reducer,//what ever we name in the reducerpath will be given the name to this apislice, the default is 'api'
@@ -17,6 +19,7 @@ export const store = configureStore({
         student: studentsReducer,
         family: familiesReducer,
         studentDocument:studentDocumentsReducer,
+        employeeDocument:employeeDocumentsListReducer,
        
         //studentDocumentsList:studentDocumentsListReducer,
         //task: tasksReducer,

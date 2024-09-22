@@ -1,10 +1,11 @@
 
 
-import { Link } from 'react-router-dom'
-import AcademicYearsSelection from '../../Components/AcademicYearsSelection'
 
-//we will  find the object corresponding to the page and extract the section tabs
+import { Link, useLocation } from 'react-router-dom';
+import AcademicYearsSelection from '../../Components/AcademicYearsSelection';
+
 const HRSet = () => {
+  const location = useLocation();
 
 const hRSetTabs= 
 {title:"HR",
@@ -12,19 +13,36 @@ const hRSetTabs=
   allowedRoles:["Employee","Parent","ContentManager", "Animator", "Academic", "Director", "Finance", "HR", "Desk", "Manager", "Admin"]
     }
 
-let content
-content = (
   
-  <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6"> 
-      
-        <Link to={'/settings/HRSet/'}><li  className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">HR set</li></Link>
-        <Link to={'/settings/HRSet/'}><li  className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">Parents</li></Link>
-        <Link to={'/settings/HRSet/'}><li  className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">New Student</li></Link>
-        <AcademicYearsSelection/>
-      
-    </div>
-  )
- return content
-}
+
+ // Define the tabs with their titles and paths
+ const tabs = [
+  { title: 'Employee Documents List', path: '/settings/HRSet/EmployeeDocumentsListsList' },
+  { title: ' Sectionjhgfhg', path: '/settings/HRSett/' },
+  { title: 'Otherkjhhj', path: '/settings/HRSet/' },
+];
+
+// Function to determine if the tab is active based on the current path
+const isActive = (path) => location.pathname === path;
+
+return (
+  <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6">
+    {tabs.map((tab) => (
+      <Link key={tab.path} to={tab.path}>
+        <li
+          className={`list-none cursor-pointer ${
+            isActive(tab.path) ? 'text-blue-500' : 'text-gray-800 hover:text-blue-500'
+          }`}
+        >
+          {tab.title}
+        </li>
+      </Link>
+    ))}
+    <AcademicYearsSelection />
+  </div>
+);
+};
+
+
 
 export default HRSet

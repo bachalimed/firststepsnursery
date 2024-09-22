@@ -39,8 +39,11 @@ import CollectionDrop from './features/Academics/CollectionDrop'
 import Invoices from './features/Finances/Invoices'
 import Payments from './features/Finances/Payments'
 import Expenses from './features/Finances/Expenses'
+
 import EmployeesList from './features/HR/Employees/EmployeesList'
+import NewEmployeeForm from './features/HR/Employees/NewEmployeeForm'
 import EmployeeDetails from './features/HR/Employees/EmployeeDetails'
+
 import Payroll from './features/HR/Payroll'
 import Leave from './features/HR/Leave'
 import Chat from './features/Desk/Chat'
@@ -55,7 +58,11 @@ import AcademicsSet from './features/AppSettings/AcademicsSet'
 import CmsSet from './features/AppSettings/CmsSet'
 import FinancesSet from './features/AppSettings/FinancesSet'
 import StudentsSet from './features/AppSettings/StudentsSet'
+
 import HRSet from './features/AppSettings/HRSet'
+import EmployeeDocumentsListsList from './features/AppSettings/HRSet/EmployeeDocumentsLists/EmployeeDocumentsListsList' 									
+import NewEmployeeDocumentsListForm from './features/AppSettings/HRSet/EmployeeDocumentsLists/NewEmployeeDocumentsListForm'
+import EditEmployeeDocumentsList from './features/AppSettings/HRSet/EmployeeDocumentsLists/EditEmployeeDocumentsList'
 import DeskSet from './features/AppSettings/DeskSet'
 
 import UsersManagement from './features/Admin/UsersManagement'
@@ -140,7 +147,7 @@ const App = () => {
 									<Route path="studentDocumentsList/:id/" element={<StudentDocuments />}/>												
 									<Route path="studentDocuments/upload/:id/" element={<StudentDocumentsForm />}/>	
 									<Route path="studentDetails/:id/" element={<StudentDetails/>}/>
-									<Route path="edit/:id/" element={<EditStudent/>}/>
+									<Route path="editStudent/:id/" element={<EditStudent/>}/>
 									<Route path="editFamily/:id/" element={<EditFamily/>}/>
 									
 																					
@@ -206,12 +213,13 @@ const App = () => {
 								</Route> {/* end of expenses route */}
 							</Route> {/* end of finances route */}
 
-							<Route path="HR" element={<DashboardLayout />} >	 				
+							<Route path="hr" element={<DashboardLayout />} >	 				
 								<Route index element={<EmployeesList />} />   
 
 								<Route path="employees/" element={<EmployeesList />} > 					
+									<Route path="newEmployee" element={<NewEmployeeForm />} /> 					
 								
-								<Route path=":employeeId" element={<EmployeeDetails />}/>
+									<Route path=":employeeId" element={<EmployeeDetails />}/>
 
 								</Route> {/* end of employees route */}
 
@@ -290,6 +298,9 @@ const App = () => {
 
 								<Route path="HRSet" > 					
 								<Route index element={<HRSet />} /> 
+									<Route path="employeeDocumentsListsList/" element={<EmployeeDocumentsListsList />} /> 									
+									<Route path="newEmployeeDocumentsList" element={<NewEmployeeDocumentsListForm />}/>
+									<Route path="employeeDocumentsList/edit/:id" element={<EditEmployeeDocumentsList />}/>
 								</Route> {/* end of HRSet route */}
 
 								<Route path="deskSet" > 					
@@ -309,7 +320,9 @@ const App = () => {
 									<Route path="users/" element={<UsersList />}/> 						
 									<Route path="newUser/" element={<NewUserForm />}/> 		{/*is part of the path*/}			
 									<Route path="userDetails/:id/" element={<UserDetails />}/> 		{/*is part of the path*/}			
-									<Route path=":id/" element={<EditUser />}/> 		{/*id is part of the path*/}																
+									<Route path=":id/" element={<EditUser />}/> 		{/*id is part of the path*/}	
+										
+
 								</Route>{/*end of usersManagement route*/}
 								
 								<Route path="blabla" > 					

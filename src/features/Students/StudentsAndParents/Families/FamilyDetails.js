@@ -1,107 +1,125 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { selectFamilyById } from "./familiesSlice";
 import { useParams } from "react-router";
+import axios from "axios";
+import { useGetStudentDocumentsByYearByIdQuery } from "../../../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice";
 import StudentsParents from "../../StudentsParents";
-import { IoCheckmarkSharp } from "react-icons/io5";
-import { GrDocumentUpload, GrView } from "react-icons/gr";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYears";
+
 const FamilyDetails = () => {
-  const { id } = useParams(); //this is the raference used in app.js for the route
-  const parent = useSelector((state) => state.parent?.entities[id]);
-  console.log(id, "parentid ");
-  console.log(parent, "parent ");
+  const { id } = useParams();
+  const family = useSelector((state) => selectFamilyById(state, id));
+  const { father, mother, children, familySituation } = family;
+
+  const token = useSelector((state) => state.auth.token);
+  const selectedAcademicYear = useSelectedAcademicYear();
+  const [studentDocumentYear, setStudentDocumentYear] = useState(selectedAcademicYear.title || "");
+  const [fatherPhotoUrl, setFatherPhotoUrl] = useState(null);
+  const [motherPhotoUrl, setMotherPhotoUrl] = useState(null);
+  const [childrenPhotoUrls, setChildrenPhotoUrls] = useState([]);
+
+  const {
+    data: studentDocumentsListing,
+    isSuccess: listIsSuccess,
+  } = useGetStudentDocumentsByYearByIdQuery(
+    { studentId: id, year: studentDocumentYear, endpointName: "studentsDocumentsList" },
+    { pollingInterval: 60000, refetchOnFocus: true, refetchOnMountOrArgChange: true }
+  );
+
+  useEffect(() => {
+    if (listIsSuccess && studentDocumentsListing) {
+      const findPhoto = (title) => {
+        const photoDocument = studentDocumentsListing.find(doc => doc.documentTitle === title);
+        return photoDocument ? photoDocument.studentDocumentId : null;
+      };
+
+      const fatherPhotoId = findPhoto("Father Photo");
+      const motherPhotoId = findPhoto("Mother Photo");
+      const childrenPhotosIds = children.map(child => findPhoto(`${child.child.studentName.firstName} Photo`));
+
+      // Fetch photos
+      const fetchPhotos = async (id, setUrl) => {
+        if (!id) return;
+        try {
+          const response = await axios.get(`http://localhost:3500/students/studentsParents/studentDocuments/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+            responseType: "blob",
+          });
+          const url = window.URL.createObjectURL(new Blob([response.data], { type: response.headers["content-type"] }));
+          setUrl(url);
+        } catch (error) {
+          console.error(`Error fetching photo:`, error);
+        }
+      };
+
+      fetchPhotos(fatherPhotoId, setFatherPhotoUrl);
+      fetchPhotos(motherPhotoId, setMotherPhotoUrl);
+      childrenPhotosIds.forEach(id => fetchPhotos(id, (url) => setChildrenPhotoUrls(prev => [...prev, url])));
+    }
+  }, [listIsSuccess, studentDocumentsListing, children, token]);
+
   return (
     <>
       <StudentsParents />
       <div className="flex-1 bg-white px-6 py-4 rounded-sm border border-gray-200">
-        <h2 className="text-xl font-bold mb-4">Parents Details</h2>
+        <h2 className="text-xl font-bold mb-4">Family Details</h2>
+        <div className="grid grid-cols-3 gap-6 mb-6">
+          {fatherPhotoUrl && (
+            <div className="flex flex-col items-center">
+              <img src={fatherPhotoUrl} alt="Father Photo" className="w-32 h-32 object-cover rounded-full border border-gray-300" />
+              <h3 className="mt-2 font-semibold">Father</h3>
+            </div>
+          )}
+          {motherPhotoUrl && (
+            <div className="flex flex-col items-center">
+              <img src={motherPhotoUrl} alt="Mother Photo" className="w-32 h-32 object-cover rounded-full border border-gray-300" />
+              <h3 className="mt-2 font-semibold">Mother</h3>
+            </div>
+          )}
+          {childrenPhotoUrls.length > 0 && childrenPhotoUrls.map((url, index) => (
+            <div key={index} className="flex flex-col items-center">
+              <img src={url} alt={`Child Photo ${index + 1}`} className="w-32 h-32 object-cover rounded-full border border-gray-300" />
+              <h3 className="mt-2 font-semibold">Child {index + 1}</h3>
+            </div>
+          ))}
+        </div>
 
         <div className="mb-4">
           <h3 className="text-lg font-semibold">Father Personal Information</h3>
-          <p>
-            <strong>Name:</strong>{" "}
-            {parent.userProfile.userFullName.userFirstName}{" "}
-            {parent.userProfile.userFullName.userMiddleName}{" "}
-            {parent.userProfile.userFullName.userLastName}
-          </p>
-          <p>
-            <strong>Date of Birth:</strong>{" "}
-            {new Date(parent.userProfile.userDob).toLocaleDateString()}
-          </p>
-          <p>
-            <strong>Sex:</strong> {parent.userProfile.userSex}
-          </p>
-          <p>
-            <strong>Active:</strong>{" "}
-            {parent.userProfile.userIsActive ? "Yes" : "No"}
-          </p>
-          <p>
-            <strong>Address:</strong> {parent.userProfile.userAddress.house}{" "}
-            {parent.userProfile.userAddress.street}
-          </p>
-          <p>
-            <strong>Address:</strong> {parent.userProfile.userAddress.area}{" "}
-            {parent.userProfile.userAddress.postCode}
-          </p>
-          <p>
-            <strong>Address:</strong> {parent.userProfile.userAddress.city}{" "}
-          </p>
+          <p><strong>Name:</strong> {father.userFullName.userFirstName} {father.userFullName.userMiddleName} {father.userFullName.userLastName}</p>
+          <p><strong>Date of Birth:</strong> {new Date(father.userDob).toLocaleDateString()}</p>
+          <p><strong>Sex:</strong> {father.userSex}</p>
+          <p><strong>Active:</strong> {father.userIsActive ? "Yes" : "No"}</p>
+          <p><strong>Address:</strong> {`${father.userAddress.house} ${father.userAddress.street}, ${father.userAddress.area} ${father.userAddress.postCode}, ${father.userAddress.city}`}</p>
         </div>
+
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold">Family Situation</h3>
+          <p>{familySituation ? "Joint" : "Separated"}</p>
+        </div>
+
         <div className="mb-4">
           <h3 className="text-lg font-semibold">Mother Personal Information</h3>
-          <p>
-            <strong>Name:</strong>{" "}
-            {parent.partner.userProfile.userFullName.userFirstName}{" "}
-            {parent.userProfile.userFullName.userMiddleName}{" "}
-            {parent.userProfile.userFullName.userLastName}
-          </p>
-          <p>
-            <strong>Date of Birth:</strong>{" "}
-            {new Date(parent.partner.userProfile.userDob).toLocaleDateString()}
-          </p>
-          <p>
-            <strong>Sex:</strong> {parent.userProfile.userSex}
-          </p>
-          <p>
-            <strong>Active:</strong>{" "}
-            {parent.partner.userProfile.userIsActive ? "Yes" : "No"}
-          </p>
-          <p>
-            <strong>Address:</strong>{" "}
-            {parent.partner.userProfile.userAddress.house}{" "}
-            {parent.userProfile.userAddress.street}
-          </p>
-          <p>
-            <strong>Address:</strong>{" "}
-            {parent.partner.userProfile.userAddress.area}{" "}
-            {parent.userProfile.userAddress.postCode}
-          </p>
-          <p>
-            <strong>Address:</strong>{" "}
-            {parent.partner.userProfile.userAddress.city}{" "}
-          </p>
+          <p><strong>Name:</strong> {mother.userFullName.userFirstName} {mother.userFullName.userMiddleName} {mother.userFullName.userLastName}</p>
+          <p><strong>Date of Birth:</strong> {new Date(mother.userDob).toLocaleDateString()}</p>
+          <p><strong>Sex:</strong> {mother.userSex}</p>
+          <p><strong>Active:</strong> {mother.userIsActive ? "Yes" : "No"}</p>
+          <p><strong>Address:</strong> {`${mother.userAddress.house} ${mother.userAddress.street}, ${mother.userAddress.area} ${mother.userAddress.postCode}, ${mother.userAddress.city}`}</p>
         </div>
-        {parent.children && parent.children.length > 0 ? (
-          parent.children.map((child, index) => (
-            <div className="mb-4">
-              <h3 className="text-lg font-semibold">Children</h3>
-              <p>
-                <strong>child Name:</strong> {child.studentName.firstName}{" "}
-                {child.studentName.middleName} {child.studentName.lastName}
-              </p>
-              <p>
-                <strong>Date of Birth:</strong>{" "}
-                {new Date(child.studentDob).toLocaleDateString()}
-              </p>
-              <p>
-                <strong>Sex:</strong> {child.studentSex}
-              </p>
-              <p>
-                <strong>Joint Family:</strong>{" "}
-                {child.studentJointFamily ? "Yes" : "No"}
-              </p>
-            </div>
-          ))
+
+        {children && children.length > 0 ? (
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold">Children</h3>
+            {children.map((child, index) => (
+              <div key={index} className="mb-2">
+                <p><strong>Child Name:</strong> {child.child.studentName.firstName} {child.child.studentName.middleName} {child.child.studentName.lastName}</p>
+                <p><strong>Date of Birth:</strong> {new Date(child.child.studentDob).toLocaleDateString()}</p>
+                <p><strong>Sex:</strong> {child.child.studentSex}</p>
+                <p><strong>Joint Family:</strong> {child.child.studentJointFamily ? "Yes" : "No"}</p>
+              </div>
+            ))}
+          </div>
         ) : (
           <p>No children profiles available.</p>
         )}

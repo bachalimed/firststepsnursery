@@ -1,8 +1,9 @@
-import { Link } from 'react-router-dom'
+import {useLocation, Link } from 'react-router-dom'
 import AcademicYearsSelection from '../../Components/AcademicYearsSelection'
 
 //we will  find the object corresponding to the page and extract the section tabs
 const Employees = () => {
+  const location = useLocation();
 
 const employeesTabs= 
 {title:"Employees",
@@ -10,18 +11,35 @@ const employeesTabs=
   allowedRoles:["Employee","Animator", "Academic", "Director", "HR", "Desk", "Manager", "Admin"]
   }
 
-let content
-content = (
   
-  <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6">  
+    // Define the tab data with paths and labels
+    const tabs = [
+      { label: 'Employees', path: '/hr/employees/' },
+      { label: 'new Employee', path: '/hr/employees/newEmployee/' },
+      { label: 'New blbls', path: '/hr/employeedddddds/' },
+      
+      ];
+   // Function to determine if a tab is active based on the current path
+   const isActive = (path) => location.pathname === path;
 
-        <Link to={'/hr/employees/employees/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer" >All Employees</li></Link>
-        <Link to={'/hr/employees/newEmployee'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer" >New Employee </li></Link>
-        <Link to={'/hr/employees/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">option3</li ></Link>
-    
-    </div>
-  )
- return content
-}
+   // Render the component content
+   return (
+   <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6">
+       {tabs.map((tab) => (
+       <Link key={tab.path} to={tab.path}>
+           <li
+           className={`list-none cursor-pointer ${
+               isActive(tab.path) ? 'text-blue-500' : 'text-gray-800 hover:text-blue-500'
+           }`}
+           >
+           {tab.label}
+           </li>
+       </Link>
+       ))}
+       <AcademicYearsSelection />
+   </div>
+   );
+};
+
 
 export default Employees

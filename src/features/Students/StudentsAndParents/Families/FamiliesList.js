@@ -1,7 +1,7 @@
 import React from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { useGetFamiliesByYearQuery } from "./familiesApiSlice";
-import { setSomeFamilies } from "./familiesSlice";
+import { setSomeFamilies, setFamilies } from "./familiesSlice";
 import StudentsParents from "../../StudentsParents";
 import DataTable from "react-data-table-component";
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
@@ -10,6 +10,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDeleteFamilyMutation } from "./familiesApiSlice";
 import { FiEdit, FiDelete } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { MdOutlineFamilyRestroom } from "react-icons/md";
+
 import useAuth from "../../../../hooks/useAuth";
 import { ImProfile } from "react-icons/im";
 import { useDispatch } from "react-redux";
@@ -59,7 +61,7 @@ const FamiliesList = () => {
     const { entities } = families;
     //we need to change into array to be read??
     familiesList = Object.values(entities); //we are using entity adapter in this query
-    Dispatch(setSomeFamilies(familiesList)); //timing issue to update the state and use it the same time
+    Dispatch(setFamilies(familiesList)); //timing issue to update the state and use it the same time
     //console.log(entities)
     //the serach result data
     filteredFamilies = familiesList?.filter((item) => {
@@ -296,7 +298,7 @@ const FamiliesList = () => {
               Navigate(`/students/studentsParents/familyDetails/${row.id}`)
             }
           >
-            <ImProfile fontSize={20} />
+            <ImProfile className="text-2xl" />
           </button>
           {/* /////////////////////condition is canEdit and not ! of it */}
           {canEdit ? (
@@ -306,7 +308,7 @@ const FamiliesList = () => {
                 Navigate(`/students/studentsParents/editFamily/${row.id}`)
               }
             >
-              <FiEdit fontSize={20} />
+              <FiEdit className="text-2xl" />
             </button>
           ) : null}
           {isAdmin && canDelete ? (
@@ -314,7 +316,7 @@ const FamiliesList = () => {
               className="text-red-500"
               onClick={() => onDeleteFamilyClicked(row._id)}
             >
-              <RiDeleteBin6Line fontSize={20} />
+              <RiDeleteBin6Line className="text-2xl" />
             </button>
           ) : null}
         </div>
@@ -370,7 +372,7 @@ const FamiliesList = () => {
             onClick={handleDetailsSelected}
             disabled={selectedRows.length !== 1} // Disable if no rows are selected
           >
-            User Details
+            User bla bla
           </button>
 
           <button
@@ -379,7 +381,7 @@ const FamiliesList = () => {
             disabled={selectedRows.length !== 1} // Disable if no rows are selected
             // hidden={!canCreate}
           >
-            Duplicate Selected
+            Duplicate bla bla
           </button>
           {/* <button 
               className="px-3 py-2 bg-yellow-400 text-white rounded"

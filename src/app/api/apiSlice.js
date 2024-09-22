@@ -57,6 +57,6 @@ export const apiSlice = createApi({
     // baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3500' }),//this baseurl will be changed when deploying to the backend url and port
     //it is replaced by the following since basequery is defined up in the basequery
     baseQuery: baseQueryWithReauth,
-    tagTypes: ['student', 'user', 'family', 'task', 'employee', 'academicYear', 'studentDocument', 'studentDocumentsList'],//will be used for cached data so when we invalidate data, it will updated
+    tagTypes: ['student', 'user', 'family', 'task', 'employee', 'academicYear', 'studentDocument', 'studentDocumentsList', 'employeeDocument', 'employeeDocumentsList'],//will be used for cached data so when we invalidate data, it will updated
     endpoints: builder => ({})//the extended ApiSlices will be the actual endpoints]
 })

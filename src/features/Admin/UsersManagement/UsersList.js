@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux'
 import useAuth from "../../../hooks/useAuth"
 import { Link , useNavigate} from 'react-router-dom'
 import UsersManagement from '../UsersManagement'
-
+import { IoDocumentAttachOutline } from "react-icons/io5";
 import { HiOutlineSearch } from 'react-icons/hi'
 import { FiEdit, FiDelete  } from 'react-icons/fi'
 import { RiDeleteBin6Line } from 'react-icons/ri'
@@ -178,7 +178,7 @@ const toDuplicate = selectedRows[-1]
     sortable:true
   }, 
   {name: "Employee ?",
-    selector:row=>row.isEmployee,
+    selector:row=>row.employeeId,
     sortable:true,
     width:'200px'
   }, 
@@ -197,6 +197,7 @@ const toDuplicate = selectedRows[-1]
     sortable:true,
     width:'150px'
   },
+  
   { 
     name: "Manage",
     cell: row => (

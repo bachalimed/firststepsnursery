@@ -11,7 +11,7 @@ const initialState = employeesAdapter.getInitialState()
 export const employeesApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         getEmployees: builder.query({
-            query: () => '/students/studentsEmployees/employees',//as defined in server.js
+            query: () => `/hr/employees`,//as defined in server.js
             validateStatus: (response, result) => {
                 return response.status === 200 && !result.isError
             },
@@ -23,14 +23,41 @@ export const employeesApiSlice = apiSlice.injectEndpoints({
                 });
                 return employeesAdapter.setAll(initialState, loadedEmployees)
             },
-            providesTags: (result, error, arg) => {
-                if (result?.ids) {
-                    return [
-                        { type: 'employee', id: 'LIST' },
-                        ...result.ids.map(id => ({ type: 'employee', id }))
-                    ]
-                } else return [{ type: 'employee', id: 'LIST' }]
-            }
+            providesTags: ['employee']
+            // providesTags: (result, error, arg) => {
+            //     if (result?.ids) {
+            //         return [
+            //             { type: 'employee', id: 'LIST' },
+            //             ...result.ids.map(id => ({ type: 'employee', id }))
+            //         ]
+            //     } else return [{ type: 'employee', id: 'LIST' }]
+            // }
+        }),
+        getEmployeesByYear: builder.query({
+            query: (params) =>{
+                const queryString = new URLSearchParams(params).toString() 
+                return `/hr/employees?${queryString}`
+                },
+            
+            validateStatus: (response, result) => {
+                return response.status === 200 && !result.isError
+            },
+           
+            transformResponse: responseData => {
+             
+                console.log('  in the APIslice',responseData.total)
+               
+                const newLoadedEmployees = responseData.map(employee => { 
+
+                    employee.id = employee._id//changed the _id from mongoDB to id
+                    delete employee._id//added to delete the extra original _id from mongo but careful when planning to save to db again
+                    return employee
+                })
+                return employeesAdapter.setAll(initialState, newLoadedEmployees)
+            },
+            providesTags:['employee']
+           
+           
         }),
         addNewEmployee: builder.mutation({
             query: initialEmployeeData => ({
@@ -52,9 +79,7 @@ export const employeesApiSlice = apiSlice.injectEndpoints({
                     ...initialEmployeeData,
                 }
             }),
-            invalidatesTags: (result, error, arg) => [//we re not updating all the list, butonly update the employee in the cache by using the arg.id
-                { type: 'employee', id: arg.id }
-            ]
+            invalidatesTags: ['employee']
         }),
         deleteEmployee: builder.mutation({
             query: ({ id }) => ({
@@ -62,15 +87,14 @@ export const employeesApiSlice = apiSlice.injectEndpoints({
                 method: 'DELETE',
                 body: { id }
             }),
-            invalidatesTags: (result, error, arg) => [
-                { type: 'employee', id: arg.id }
-            ]
+            invalidatesTags: ['employee']
         }),
     }),
 })
 
 export const {
     useGetEmployeesQuery,
+    useGetEmployeesByYearQuery,
     useAddNewEmployeeMutation,
     useUpdateEmployeeMutation,
     useDeleteEmployeeMutation,

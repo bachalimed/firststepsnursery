@@ -36,6 +36,5 @@ export const currentFamiliesList = (state) => state.parent;
 //export reducer
 export default familiesSlice.reducer; //to be sent to the store
 //export selectors
-export const { selectAll: selectAllFamilies } = familiesAdapter.getSelectors(
-  (state) => state.family
-); //added this one
+export const { selectAll: selectAllFamilies, selectById: selectFamilyById } =
+  familiesAdapter.getSelectors((state) => state.family); //added this one

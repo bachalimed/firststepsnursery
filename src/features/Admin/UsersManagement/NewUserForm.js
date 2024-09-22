@@ -41,7 +41,7 @@ const NewUserForm = () => {//an add user function that can be called inside the 
     const [userLastName, setUserLastName] = useState('')
     const [validUserLastName, setValidUserLastName] = useState(false)
     const[ isParent,setIsParent ]= useState('')
-    const[ isEmployee,setIsEmployee ]= useState('')
+    const[ employeeId,setEmployeeId ]= useState('')
     const[ userDob,setUserDob ]= useState('')
     const[ userSex,setUserSex ]= useState('')
     const[ validUserDob,setValidUserDob ]= useState(false)
@@ -117,7 +117,7 @@ const NewUserForm = () => {//an add user function that can be called inside the 
             setUserLastName('')
             setUserFullName({userFirstName:'', userMiddleName:'', userLastName:''})
             setIsParent('')
-            setIsEmployee('')
+            setEmployeeId('')
             setUserDob('')
             setUserSex('')
             setUserIsActive(false) 
@@ -146,7 +146,7 @@ const NewUserForm = () => {//an add user function that can be called inside the 
     const onUserMiddleNameChanged = e => setUserMiddleName(e.target.value)
     const onUserLastNameChanged = e => setUserLastName(e.target.value)
     const onIsParentChanged = e => setIsParent(e.target.value)
-    const onIsEmployeeChanged = e => setIsEmployee(e.target.value)
+    const onEmployeeIdChanged = e => setEmployeeId(e.target.value)
     const onUserDobChanged = e => setUserDob(e.target.value)
     const onUserSexChanged = e => setUserSex(e.target.value)
     const onUserIsActiveChanged = e => setUserIsActive(prev => !prev)//will invert the previous state
@@ -194,14 +194,14 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
 
 //to check if we can save before onsave, if every one is true, and also if we are not loading status
     const canSave = [validUserFirstName, validUserLastName, validUsername, validPassword, validUserDob, userSex, validStreet, validCity,  validPrimaryPhone, userRoles.length ].every(Boolean) && !isLoading
-//console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validPassword}, ${validUserDob},${userAllowedActions}    ${ validStreet},  ${validPrimaryPhone}, ${validEmail}, ${userRoles.length}, ${isParent}, ${isEmployee}, ${userIsActive}` )
+//console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validPassword}, ${validUserDob},${userAllowedActions}    ${ validStreet},  ${validPrimaryPhone}, ${validEmail}, ${userRoles.length}, ${isParent}, ${employeeId}, ${userIsActive}` )
     const onSaveUserClicked = async (e) => {
         e.preventDefault()
         
         if (canSave) {//if cansave is true
             //generate the objects before saving
-            //console.log(` 'first name' ${userFirstName}', fullfirstname,' ${userFullName.userFirstName}', house: '${house}', usercontact house' ${userContact.house},    ${userRoles.length},${isParent}, ${isEmployee}` )
-            await addNewUser({ username, password,  userFullName, isParent, isEmployee, userDob, userSex,  userIsActive, userRoles, userAllowedActions, userAddress, userContact })//we call the add new user mutation and set the arguments to be saved
+            //console.log(` 'first name' ${userFirstName}', fullfirstname,' ${userFullName.userFirstName}', house: '${house}', usercontact house' ${userContact.house},    ${userRoles.length},${isParent}, ${employeeId}` )
+            await addNewUser({ username, password,  userFullName, isParent, employeeId, userDob, userSex,  userIsActive, userRoles, userAllowedActions, userAddress, userContact })//we call the add new user mutation and set the arguments to be saved
             //added this to confirm save
             if (isError) {console.log('error savingg', error)//handle the error msg to be shown  in the logs??
             }
@@ -431,16 +431,16 @@ setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:
                     value={isParent}
                     onChange={onIsParentChanged}
                 />
-                 <label className="form__label" htmlFor="isEmployee">
+                 <label className="form__label" htmlFor="employeeId">
                  User Is Employee: <span className="nowrap">[24 digits]</span></label>
                 <input
                     className={`form__input ${validUserClass}`}
-                    id="isEmployee"
-                    name="isEmployee"
+                    id="employeeId"
+                    name="employeeId"
                     type="text"
                     autoComplete="off"
-                    value={isEmployee}
-                    onChange={onIsEmployeeChanged}
+                    value={employeeId}
+                    onChange={onEmployeeIdChanged}
                 />
                
 

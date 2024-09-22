@@ -30,7 +30,10 @@ const studentsSlice = createSlice({
 
 
         
-    }
+    },
+    extraReducers: (builder) => {
+        // Extra reducers will handle actions from the query
+      },
 })
 //export actions
 export const { setStudents, updateStudent,   setResult, setSomeStudents } = studentsSlice.actions//to be used with dispatch in the components
@@ -40,6 +43,7 @@ export const currentStudentsList = (state) => state.student
 export default studentsSlice.reducer//to be sent to the store
 //export selectors
  export const { selectAll: selectAllStudents,
+    selectById:selectStudentById,
     
    
   } = studentsAdapter.getSelectors(state => state.student)//added this one

@@ -44,7 +44,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
     const [userFullName, setUserFullName] = useState({userFirstName:user.userFullName.userFirstName, userMiddleName:user.userFullName.userMiddleName, userLastName:user.userFullName.userLastName})
     const [validUserFullName, setValidUserFullName] = useState(false)
     const[ isParent,setIsParent ]= useState(user.isParent)
-    const[ isEmployee,setIsEmployee ]= useState(user.isEmployee)
+    const[ employeeId,setEmployeeId]= useState(user.employeeId)
 //change date format from mongo db
     const[ userDob,setUserDob ]= useState(user.userDob.split('T')[0])
     const[ userSex,setUserSex ]= useState(user.userSex)
@@ -121,7 +121,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
             setUserLastName('')
             setUserFullName({userFirstName:'', userMiddleName:'', userLastName:''})
             setIsParent('')
-            setIsEmployee('')
+            employeeId('')
             setUserDob('')
             setUserSex('')
             setUserIsActive(false)
@@ -153,7 +153,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
      const onUserMiddleNameChanged = e => setUserMiddleName(e.target.value)
      const onUserLastNameChanged = e => setUserLastName(e.target.value)
      const onIsParentChanged = e => setIsParent(e.target.value)
-     const onIsEmployeeChanged = e => setIsEmployee(e.target.value)
+     const onEmployeeIdChanged = e => setEmployeeId(e.target.value)
      const onUserDobChanged = e => setUserDob(e.target.value)
      const onUserSexChanged = e => setUserSex(e.target.value)
      const onUserIsActiveChanged = e => setUserIsActive(prev => !prev)
@@ -183,7 +183,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
     
     //check if the parent and employee id is available or delete the variable
     if (isParent===''){ setIsParent(undefined)}
-    if (isEmployee===''){ setIsEmployee(undefined)}
+    if (employeeId===''){ setEmployeeId(undefined)}
    
 
 //this will ensure the update of the states
@@ -195,17 +195,17 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
       }, [userFullName,  userAddress, userContact])
 
      //console.log( validUserFirstName,userFirstName, validUserLastName, validUsername, validPassword, validUserDob, 
-        //validStreet,  validPrimaryPhone, userRoles, validEmail, userRoles.length, isParent, isEmployee, userIsActive )
+        //validStreet,  validPrimaryPhone, userRoles, validEmail, userRoles.length, isParent, employeeId, userIsActive )
      
         const onSaveUserClicked = async (e) => {        
-            //console.log(` 'first name' ${userFirstName}', fullfirstname,' ${userFullName.userFirstName}', house: '${house}', usercontact house' ${userContact.house},    ${userRoles.length},${isParent}, ${isEmployee}` )
+            //console.log(` 'first name' ${userFirstName}', fullfirstname,' ${userFullName.userFirstName}', house: '${house}', usercontact house' ${userContact.house},    ${userRoles.length},${isParent}, ${employeeId}` )
      
         if (password) {
            
-            await updateUser({ id: user.id, userFullName, userAllowedActions, username, password, userPhoto, isParent, isEmployee, userDob, userSex, userIsActive, userRoles,  userAddress, userContact })
+            await updateUser({ id: user.id, userFullName, userAllowedActions, username, password, userPhoto, isParent, employeeId, userDob, userSex, userIsActive, userRoles,  userAddress, userContact })
         } else {
            
-            await updateUser({ id: user.id, userFullName, userAllowedActions, username, isParent, userPhoto, isEmployee, userDob, userSex, userIsActive, userRoles,  userAddress, userContact })
+            await updateUser({ id: user.id, userFullName, userAllowedActions, username, isParent, userPhoto, employeeId, userDob, userSex, userIsActive, userRoles,  userAddress, userContact })
         }
     }
 
@@ -455,12 +455,12 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                  User Is Employee: <span className="nowrap">[24 digits]</span></label>
                 <input
                     className={`form__input ${validUserClass}`}
-                    id="isEmployee"
-                    name="isEmployee"
+                    id="employeeId"
+                    name="employeeId"
                     type="text"
                     autoComplete="off"
-                    value={isEmployee}
-                    onChange={onIsEmployeeChanged}
+                    value={employeeId}
+                    onChange={onEmployeeIdChanged}
                 />
 
 

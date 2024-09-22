@@ -3,6 +3,7 @@
 import {  useGetStudentsQuery, useUpdateStudentMutation, useGetStudentsByYearQuery, useDeleteStudentMutation } from "./studentsApiSlice"
 import { HiOutlineSearch } from 'react-icons/hi'
 import StudentsParents from "../../StudentsParents"
+import { useDispatch } from "react-redux"
 import DataTable from 'react-data-table-component'
 import { useGetStudentDocumentsByYearByIdQuery } from "../../../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice"
 import { useSelector } from 'react-redux'
@@ -20,7 +21,7 @@ import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYe
 import useAuth from '../../../../hooks/useAuth'
 import getCurrentAcademicYear from '../../../../config/CurrentYear'
 import { LiaMaleSolid, LiaFemaleSolid  } from "react-icons/lia";
-import { useDispatch } from "react-redux"
+
 import { setSomeStudents, setStudents, currentStudentsList } from "./studentsSlice"
 import { IoDocumentAttachOutline } from "react-icons/io5";
 import {selectAllAcademicYears} from '../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
@@ -114,7 +115,7 @@ let filteredStudents = []
     
     //we need to change into array to be read??
     studentsList = Object.values(entities)//we are using entity adapter in this query
-    //Dispatch(setSomeStudents(studentsList))//timing issue to update the state and use it the same time
+    Dispatch(setStudents(studentsList))//timing issue to update the state and use it the same time
     
    
     //the serach result data
@@ -242,9 +243,9 @@ width:'200px'
   cell: row => (
    <span>
      {row.studentSex==='Male' ? (
-       <LiaMaleSolid className='text-blue-500 text-2xl' />
+       <LiaMaleSolid className='text-blue-500 text-3xl' />
      ) : (
-       <LiaFemaleSolid  className='text-orange-500 text-2xl' />
+       <LiaFemaleSolid  className='text-rose-500 text-3xl' />
      )}
    </span>
  ),
@@ -280,12 +281,11 @@ width:'200px'
   width:'110px',
 },
 {name: "Documents",
-  selector:row=>( <Link to={`/students/studentsParents/studentDocumentsList/${row.id}`} > <IoDocumentAttachOutline className='text-gray-500 text-2xl'/></Link> ),
+  selector:row=>( <Link to={`/students/studentsParents/studentDocumentsList/${row.id}`} > <IoDocumentAttachOutline className='text-slate-800 text-2xl'/></Link> ),
   sortable:true,
   removableRows:true,
   width:'120px',
 },
-
 
 { 
   name: "Actions",
@@ -293,13 +293,13 @@ width:'200px'
     <div className="space-x-1">
     
       <button className="text-blue-500" fontSize={20}  onClick={() => Navigate(`/students/studentsParents/studentDetails/${row.id}`)}  > 
-        <ImProfile fontSize={20}/> 
+        <ImProfile className="text-2xl"/> 
         </button>
-      {canEdit?(<button  className="text-yellow-400" onClick={() => Navigate(`/students/studentsParents/edit/${row.id}`)}  > 
-      <FiEdit fontSize={20}/> 
+      {canEdit?(<button  className="text-yellow-400" onClick={() => Navigate(`/students/studentsParents/editStudent/${row.id}`)}  > 
+      <FiEdit className="text-2xl"/> 
       </button>):null}
       {canDelete&&!isDelLoading&&(<button className="text-red-500"  onClick={() => onDeleteStudentClicked(row.id)}>
-        <RiDeleteBin6Line fontSize={20}/>
+        <RiDeleteBin6Line className="text-2xl"/>
       </button>)}
     </div>
   ),
