@@ -292,11 +292,25 @@ width:'180px'
   removableRows:true,
   width:'110px',
 },
-{name: "Employment",
-  selector:row=>row.employeeData.employeeContractType,
+
+{name: "Position",
+  selector:row=>(` ${row.employeeData.employeeCurrentEmployment.contractType} ${row.employeeData.employeeCurrentEmployment.currentPosition}`),
   sortable:true,
-  width:'120px'
+  width:'180px'
 }, 
+
+{name: "Package",
+  selector:row=>( 
+  <div>
+    <div>{`Basic ${row.employeeData.employeeCurrentEmployment.salaryPackage.basic} ${row.employeeData.employeeCurrentEmployment.salaryPackage.payment}`}</div>
+    <div>{`cnss ${row.employeeData.employeeCurrentEmployment.salaryPackage.cnss}`}</div>
+    <div>{`other ${row.employeeData.employeeCurrentEmployment.salaryPackage.other}`}</div>
+    
+  </div>),
+  sortable:true,
+  removableRows:true,
+  width:'150px',
+},
 
 {name: "Documents",
   selector:row=>( <Link to={`/hr/employees/employeeDocumentsList/${row.id}`} > <IoDocumentAttachOutline className='text-slate-800 text-2xl'/></Link> ),

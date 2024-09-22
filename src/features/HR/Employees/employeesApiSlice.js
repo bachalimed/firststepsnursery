@@ -45,7 +45,7 @@ export const employeesApiSlice = apiSlice.injectEndpoints({
            
             transformResponse: responseData => {
              
-                console.log('  in the APIslice',responseData.total)
+                //console.log('  in the APIslice',responseData.total)
                
                 const newLoadedEmployees = responseData.map(employee => { 
 

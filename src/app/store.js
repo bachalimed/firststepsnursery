@@ -8,7 +8,7 @@ import studentsReducer from  '../features/Students/StudentsAndParents/Students/s
 import familiesReducer from  '../features/Students/StudentsAndParents/Families/familiesSlice'
 import studentDocumentsReducer from  '../features/Students/StudentsAndParents/Students/studentDocumentsSlice'
 import studentDocumentsListReducer from  '../features/AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsSlice'
-
+import employeeReducer from '../features/HR/Employees/employeesSlice'
 import employeeDocumentsListReducer from '../features/AppSettings/HRSet/EmployeeDocumentsLists/EmployeeDocumentsListsSlice'
 
 export const store = configureStore({
@@ -19,7 +19,8 @@ export const store = configureStore({
         student: studentsReducer,
         family: familiesReducer,
         studentDocument:studentDocumentsReducer,
-        employeeDocument:employeeDocumentsListReducer,
+        //employeeDocument:employeeDocumentsListReducer,
+        employee:employeeReducer,
        
         //studentDocumentsList:studentDocumentsListReducer,
         //task: tasksReducer,

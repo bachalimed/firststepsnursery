@@ -213,23 +213,29 @@ const App = () => {
 								</Route> {/* end of expenses route */}
 							</Route> {/* end of finances route */}
 
-							<Route path="hr" element={<DashboardLayout />} >	 				
-								<Route index element={<EmployeesList />} />   
 
-								<Route path="employees/" element={<EmployeesList />} > 					
-									<Route path="newEmployee" element={<NewEmployeeForm />} /> 					
-								
-									<Route path=":employeeId" element={<EmployeeDetails />}/>
+	
+
+
+							<Route path="hr" element={<DashboardLayout />} >	
+								<Route path="employees" >  				
+									<Route index element={<EmployeesList />} />   
+
+														
+										<Route path="newEmployee" element={<NewEmployeeForm />} /> 					
+									
+										<Route path=":employeeId/" element={<EmployeeDetails />}/>
 
 								</Route> {/* end of employees route */}
+									
 
-								<Route path="payroll" > 					
-								<Route index element={<Payroll />} /> 
-								</Route> {/* end of payroll route */}
+									<Route path="payroll" > 					
+									<Route index element={<Payroll />} /> 
+									</Route> {/* end of payroll route */}
 
-								<Route path="leave" > 					
-								<Route index element={<Leave />} /> 
-								</Route> {/* end of leave route */}
+									<Route path="leave" > 					
+									<Route index element={<Leave />} /> 
+									</Route> {/* end of leave route */}
 							</Route> {/* end of HR route */}
 
 
