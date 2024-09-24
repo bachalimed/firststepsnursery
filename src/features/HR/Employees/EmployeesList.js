@@ -115,7 +115,7 @@ let filteredEmployees = []
     
     //we need to change into array to be read??
     employeesList = Object.values(entities)//we are using entity adapter in this query
-    console.log(employeesList,'employeesList')
+    //console.log(employeesList,'employeesList')
     Dispatch(setEmployees(employeesList))//timing issue to update the state and use it the same time
     
    
@@ -285,7 +285,7 @@ width:'180px'
 
 {name: "Years",
   selector:row=>( 
-  <div>{row.employeeData.employeeYears.map(year=> (
+  <div>{row.employeeData?.employeeYears?.map(year=> (
     <div key ={year.academicYear}>{year.academicYear}</div>))}
   </div>),
   sortable:true,

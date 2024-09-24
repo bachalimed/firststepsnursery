@@ -251,6 +251,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     autoComplete="off"
                     value={userFirstName}
                     onChange={onUserFirstNameChanged}
+                    required
                 />
                 <label className="form__label" htmlFor="userMiddleName">
                     User Middle Name : <span className="nowrap"></span></label>
@@ -275,6 +276,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     autoComplete="off"
                     value={userLastName}
                     onChange={onUserLastNameChanged}
+                    required
                 />
                  <label className="form__label" htmlFor="userDob">
                     Date Of Birth* : <span className="nowrap">[dd/mm/yyyy]</span></label>
@@ -286,6 +288,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     autoComplete="off"
                     value={userDob}
                     onChange={onUserDobChanged}
+                    required
                 />
                 </div>
                 <label> <div style={{ marginTop: '10px' }}>
@@ -311,7 +314,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                 </label>
                
                <label className="form__label" htmlFor="username">
-                    Username: <span className="nowrap">[6-20 Characters]</span></label>
+                    Username* : <span className="nowrap">[6-20 Characters]</span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="username"
@@ -320,9 +323,10 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     autoComplete="off"
                     value={username}
                     onChange={onUsernameChanged}
+                    required
                 />
                  <label className="form__label" htmlFor="password">
-                    Password: <span className="nowrap">[8-20 chars incl. !@#$-_%]</span></label>
+                    Password* : <span className="nowrap">[8-20 chars incl. !@#$-_%]</span></label>
                 <input
                     className={`form__input ${validPwdClass}`}
                     id="password"
@@ -330,6 +334,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     type="password"
                     value={password}
                     onChange={onPasswordChanged}
+                    required
                 />
                 <div>
                 
@@ -343,11 +348,12 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     autoComplete="off"
                     value={userDob}
                     onChange={onUserDobChanged}
+                    required
                 />
                 </div>
 
                 <label className="form__label" htmlFor="house">
-                    House: <span className="nowrap">[3-20 letters]</span></label>
+                    House* : <span className="nowrap">[3-20 letters]</span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="house"
@@ -356,9 +362,10 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     autoComplete="off"
                     value={house}
                     onChange={onHouseChanged}
+                    required
                 />
                 <label className="form__label" htmlFor="street">
-                    Street: <span className="nowrap"></span></label>
+                    Street* : <span className="nowrap"></span></label>
                 <input
                     className={`form__input ${validUserClass}`}
                     id="street"
@@ -367,6 +374,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     autoComplete="off"
                     value={street}
                     onChange={onStreetChanged}
+                    required
                 />
                 <div>
                 <label className="form__label" htmlFor="area">
@@ -390,6 +398,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     autoComplete="off"
                     value={city}
                     onChange={onCityChanged}
+                    required
                 />
                 </div>
                 <label className="form__label" htmlFor="postCode">
@@ -414,6 +423,7 @@ const EditUserForm = ({ user }) => {//user was passed as prop in editUser
                     autoComplete="off"
                     value={primaryPhone}
                     onChange={onPrimaryPhoneChanged}
+                    required
                 />
 
                 <label className="form__label" htmlFor="secondaryPhone">

@@ -314,6 +314,7 @@ const handleRemoveEntry = (index) => {
                   autoComplete="off"
                   value={firstName}
                   onChange={onFirstNameChanged}
+                  required
                 />
               </div>
               
@@ -344,6 +345,7 @@ const handleRemoveEntry = (index) => {
                   autoComplete="off"
                   value={lastName}
                   onChange={onLastNameChanged}
+                  required
                 />
               </div>
       
@@ -359,6 +361,7 @@ const handleRemoveEntry = (index) => {
                   autoComplete="off"
                   value={studentDob}
                   onChange={onStudentDobChanged}
+                  required
                 />
               </div>
             </div>

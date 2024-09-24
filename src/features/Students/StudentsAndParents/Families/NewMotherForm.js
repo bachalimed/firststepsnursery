@@ -239,6 +239,7 @@ export default function NewMotherForm() {
               autoComplete="off"
               value={userFirstName}
               onChange={onUserFirstNameChanged}
+              required
             />
           </div>
 
@@ -276,6 +277,7 @@ export default function NewMotherForm() {
               autoComplete="off"
               value={userLastName}
               onChange={onUserLastNameChanged}
+              required
             />
           </div>
 
@@ -292,6 +294,7 @@ export default function NewMotherForm() {
               autoComplete="off"
               value={userDob}
               onChange={onUserDobChanged}
+              required
             />
           </div>
 
@@ -309,6 +312,7 @@ export default function NewMotherForm() {
               autoComplete="off"
               value={house}
               onChange={onHouseChanged}
+              required
             />
           </div>
 
@@ -325,6 +329,7 @@ export default function NewMotherForm() {
               autoComplete="off"
               value={street}
               onChange={onStreetChanged}
+              required
             />
           </div>
 
@@ -356,6 +361,7 @@ export default function NewMotherForm() {
               autoComplete="off"
               value={city}
               onChange={onCityChanged}
+              required
             />
           </div>
 
@@ -390,6 +396,7 @@ export default function NewMotherForm() {
               autoComplete="off"
               value={primaryPhone}
               onChange={onPrimaryPhoneChanged}
+              required
             />
           </div>
 

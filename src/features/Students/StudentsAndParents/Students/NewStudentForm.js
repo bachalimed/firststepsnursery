@@ -212,7 +212,7 @@ if (yearIsSuccess){
     setStudentGardien(updatedEntries);
   };
 
-  // Handler to add a new education entry
+  // Handler to add a new gardien entry
   const handleAddGardienEntry = () => {
     setStudentGardien([
       ...studentGardien,
@@ -220,7 +220,7 @@ if (yearIsSuccess){
     ])
   }
 
-  // Handler to remove an education entry
+  // Handler to remove an gardien entry
   const handleRemoveGardienEntry = (index) => {
     const updatedEntries = studentGardien.filter((_, i) => i !== index);
     setStudentGardien(updatedEntries);
@@ -302,6 +302,7 @@ if (yearIsSuccess){
                   autoComplete="off"
                   value={firstName}
                   onChange={onFirstNameChanged}
+                  required
                 />
               </div>
               
@@ -332,6 +333,7 @@ if (yearIsSuccess){
                   autoComplete="off"
                   value={lastName}
                   onChange={onLastNameChanged}
+                  required
                 />
               </div>
       
@@ -347,6 +349,7 @@ if (yearIsSuccess){
                   autoComplete="off"
                   value={studentDob}
                   onChange={onStudentDobChanged}
+                  required
                 />
               </div>
             </div>
@@ -360,6 +363,7 @@ if (yearIsSuccess){
                   checked={studentSex === 'Male'}
                   onChange={onStudentSexChanged}
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  
                 />
                 <label htmlFor="male" className="ml-2 text-sm font-medium text-gray-700">Male</label>
       
@@ -397,6 +401,7 @@ if (yearIsSuccess){
                 onChange={onAcademicYearChanged}
                 
                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                 required
                 />
                 
             <label htmlFor="studentYears" className="ml-2 text-sm font-medium text-gray-700">Student Year*: {selectedYear}</label>            

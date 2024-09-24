@@ -6,534 +6,1019 @@ import { faSave } from "@fortawesome/free-solid-svg-icons"
 import { ROLES } from "../../../config/UserRoles"
 import { ACTIONS } from "../../../config/UserActions"
 import Employees from '../Employees'
-
-
+import { useSelectedAcademicYear } from "../../../hooks/useSelectedAcademicYears"
+import { useSelector } from 'react-redux'
+import { useGetAcademicYearsQuery, selectAllAcademicYears } from '../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
 //constrains on inputs when creating new user
-const USER_REGEX = /^[A-z]{6,20}$/
-const NAME_REGEX= /^[A-z 0-9]{3,20}$/
+const USER_REGEX = /^[A-z 0-9]{6,20}$/
+const NAME_REGEX= /^[A-z 0-9]{3,18}$/
+const NUMBER_REGEX = /^[0-9]{1,4}(\.[0-9]{0,3})?$/;
 const PHONE_REGEX= /^[0-9]{6,15}$/
 const DOB_REGEX = /^[0-9/-]{4,10}$/
+const YEAR_REGEX = /^[0-9]{4}\/[0-9]{4}$/
+const NewEmployeeForm = () => {
+	const navigate = useNavigate();
+	const academicYears = useSelector(selectAllAcademicYears)// to be used to show all academic years
+	const [selectedYear, setSelectedYear] = useState('')
+	const {
+		data: academicYearsList,//the data is renamed parents
+		isLoading: yearIsLoading,//monitor several situations
+		isSuccess: yearIsSuccess,
+		isError: yearIsError,
+		error: yearError
+	  } = useGetAcademicYearsQuery({endpointName: 'academicYearsList'}||{},{//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+		//pollingInterval: 60000,//will refetch data every 60seconds
+		refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
+		refetchOnMountOrArgChange: true//refetch when we remount the component
+	  })
+	
+	let yearsList
+	if (yearIsSuccess){
+		const {entities} = academicYearsList
+		yearsList = Object.values(entities)
+		//console.log(yearsList)
+	}
+	
+ //this to be used to only select current year from check box
+ const selectedAcademicYear = useSelectedAcademicYear()
+ useEffect(() => {
+    if (selectedAcademicYear?.title) {
+      setSelectedYear(selectedAcademicYear.title)
+      //console.log('Selected year updated:', selectedAcademicYear.title)
+    }
+  }, [selectedAcademicYear])
+     
 
-const NewEmployeeForm = () => {//an add user function that can be called inside the component
-  const Navigate = useNavigate()
-
-    const [addNewEmployee, {//an object that calls the status when we execute the newUserForm function
-        isLoading:isEmployeeLoading,
-        isSuccess:isEmployeeSuccess,
-        isError:isEmployeeError,
-        error:employeeError
-    }] = useAddNewEmployeeMutation()//it will not execute the mutation nownow but when called
-
-
-    const generateRandomUsername = () => {
-      const randomChars = Math.random().toString(36).substring(2, 10); // generate random characters
-      return `user${randomChars}`; // prefix with 'user'
-    };
-
-    //initialisation of states for each input
-    const [username, setUsername] = useState(generateRandomUsername())
-    const [password, setPassword] = useState( "12345678")
-    const [userRoles, setUserRoles] = useState(["Employee"])//the roles array is defaulted to employee
-    
-    const [validUsername, setValidUsername] = useState(false)//will be true when the username is validated
-    const [validPassword, setValidPassword] = useState(false)//will be true when the passwrod is validated
-    const[ validHouse,setValidHouse ]= useState(false)
-    const [validUserLastName, setValidUserLastName] = useState(false)
-    const [validUserFirstName, setValidUserFirstName] = useState(false)
-    const[ validStreet,setValidStreet ]= useState(false)
-    const[ validCity,setValidCity ]= useState(false)
-    const[ validUserDob,setValidUserDob ]= useState(false)
-    const[validPrimaryPhone, setValidPrimaryPhone ]= useState(false)
-
-    const [userFullName, setUserFullName] = useState('')
-    const [userFirstName, setUserFirstName] = useState('')
-    const [userMiddleName, setUserMiddleName] = useState('')
-    const [userLastName, setUserLastName] = useState('')
-    const[ userDob,setUserDob ]= useState('')
-    const[ userSex,setUserSex ]= useState('')
-    const[ userIsActive,setUserIsActive ]= useState(false)
-    const[ userAddress,setUserAddress ]= useState('')
-    const[ house,setHouse ]= useState('')
-    const[ street,setStreet ]= useState('')
-    const[ area,setArea ]= useState('')
-    const[ postCode,setPostCode ]= useState('')
-    const[ city,setCity ]= useState('')
-    const[userContact, setUserContact ]= useState('')
-    const[primaryPhone, setPrimaryPhone ]= useState()
-    const[secondaryPhone, setSecondaryPhone ]= useState()
-    const[email, setEmail ]= useState('')
-
-    const[employeeAssessment,setEmployeeAssessment] = useState([])
-    const[date,setDate] = useState('')
-    const[assessor, setAssessor] = useState('')
-    const[assessmentComment, setAssessorComment] = useState('')
-    const[assessmentScore, setAssessmentScore] = useState('')
-    const[employeeWorkHistory, setEmployeeWorkHistory] = useState('')
-    const[from, setFrom] = useState('')
-    const[to, setTo] = useState('')
-    const[position, setPosition] = useState('')
-    const[contractType, setContractType] = useState('')
-    const[salaryPackage, setSalaryPackage] = useState('')
-    const[basic, setBasic] = useState('')
-    const[cnss, setCnss] = useState('')
-    const[other, setOther] = useState('')
-    const[payment, setPayment] = useState('')
-    const[instituttion, setInstituttion] = useState('')
-    const[employeeYears, setEmployeeYears] = useState('')
-    const[academicYear, setAcademicYear] = useState('')
-    const[employeeIsActive, setEmployeeIsActive] = useState('')
-    const[employeeCurrentEmployment, setEmployeeCurrentEmployment] = useState('')
-    const[joinDate, setJoinDate] = useState('')
-    const[currentContractType, setCurrentContractType] = useState('')
-    const[currentPosition, setCurrentPosition] = useState('')
-    const[currentSalaryPackage, setCurrentSalaryPackage] = useState('')
-    const[currentBasic, setCurrentBasic] = useState('')
-    const[currentCnss, setCurrentCnss] = useState('')
-    const[currentOther, setCurrentOther] = useState('')
-    const[currentPayment, setCurrentPayment] = useState('')
-   
+	const [addNewEmployee, { isLoading, isSuccess, isError, error }] = useAddNewEmployeeMutation();
   
-
-//use effect is used to validate the inputs against the defined REGEX above
-//the previous constrains have to be verified on the form for teh user to know 
-
-
-    useEffect(() => {
-        setValidUserFirstName(NAME_REGEX.test(userFirstName))
-    }, [userFirstName])
-
-    useEffect(() => {
-        setValidUserLastName(NAME_REGEX.test(userLastName))
-    }, [userLastName])
-
-    useEffect(() => {
-        setValidUserDob(DOB_REGEX.test(userDob))
-    }, [userDob])
-
-    useEffect(() => {
-        setValidHouse(NAME_REGEX.test(house))
-    }, [house])
-
-    useEffect(() => {
-        setValidStreet(NAME_REGEX.test(street))
-    }, [street])
-
-    useEffect(() => {
-      setValidCity(NAME_REGEX.test(city))
-    }, [city])
-
-    useEffect(() => {
-        setValidPrimaryPhone(PHONE_REGEX.test(primaryPhone))
-    }, [primaryPhone])
-
-   
-
-    useEffect(() => {
-        if (isEmployeeSuccess) {//if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
-            setUsername('')
-            setPassword('')
-            setUserFirstName('')
-            setUserMiddleName('')
-            setUserLastName('')
-            setUserFullName({userFirstName:'', userMiddleName:'', userLastName:''})
-            setEmployeeId('')
-			setUserIsActive (false)
-            setUserDob('')
-            setUserSex('')
-            setEmployeeIsActive(false) 
-            setHouse('')
-            setStreet('')
-            setArea('')
-            setPostCode('')
-            setCity('')
-            setUserAddress({house:'', street:'', area:'', postcode:'', city:''})
-            setPrimaryPhone()
-            setSecondaryPhone()
-            setEmail('')
-            setUserContact({primaryPhone:'', secondaryPhone:'', email:'' })
-			setEmployeeAssessment([])
-			setDate('')
-			setAssessor('')
-			setAssessorComment('')
-			setAssessmentScore('')
-			setEmployeeWorkHistory([])
-			setFrom('')
-			setTo('')
-			setPosition('')
-			setContractType('')
-			setSalaryPackage({basic:'', cnss:'', other:'', payment:''})
-			setBasic('')
-			setCnss('')
-			setOther('')
-			setPayment('')
-			setInstituttion('')
-			setEmployeeYears('')
-			setAcademicYear('')
-			setEmployeeIsActive('')
-			setJoinDate('')
-			setCurrentContractType('')
-			setCurrentPosition('')
-			setCurrentSalaryPackage('')
-			setEmployeeCurrentEmployment({currentPosition:'', joinDate:'', contractType:'', currentSalaryPackage:''})
-			setCurrentBasic('')
-			setCurrentCnss('')
-			setCurrentOther('')
-			setCurrentPayment('')
-		   
-            Navigate('/hr/employees/')//will navigate here after saving
-        }
-    }, [isEmployeeSuccess, Navigate])//even if no success it will navigate and not show any warning if failed or success
-
-    //handlers to get the individual states from the input
-
-    const onUserFirstNameChanged = e => setUserFirstName(e.target.value)
-    const onUserMiddleNameChanged = e => setUserMiddleName(e.target.value)
-    const onUserLastNameChanged = e => setUserLastName(e.target.value)
-   
-    const onUserDobChanged = e => setUserDob(e.target.value)
-    const onUserSexChanged = e => setUserSex(e.target.value)
-    const onEmployeeIsActiveChanged = e => setEmployeeIsActive(prev => !prev)//will invert the previous state
-
-    const onHouseChanged = e => setHouse(e.target.value)
-    const onStreetChanged = e => setStreet(e.target.value)
-    const onAreaChanged = e => setArea(e.target.value)
-    const onPostCodeChanged = e => setPostCode(e.target.value)
-    const onCityChanged = e => setCity(e.target.value)
-    const onPrimaryPhoneChanged = e => setPrimaryPhone(e.target.value)
-    const onSecondaryPhoneChanged = e => setSecondaryPhone(e.target.value)
-    const onEmailChanged = e => setEmail(e.target.value)
-    const onEmployeeIdChanged = e => setEmployeeId(e.target.value)
- 
-    const onDateChanged = e => setDate(e.target.value)
-    const onAssessorChanged = e => setAssessor(e.target.value)
-    const onAssessorCommentChanged = e => setAssessorComment(e.target.value)
-    const onAssessmentScoreChanged = e => setAssessmentScore(e.target.value)
-    const onFromChanged = e => setFrom(e.target.value)
-    const onToChanged = e => setTo(e.target.value)
-    const onPositionChanged = e => setPosition(e.target.value)
-    const onContractTypeChanged = e => setContractType(e.target.value)
-    const onChanged = e => setBasic(e.target.value)
-    const onChanged = e => setCnss(e.target.value)
-    const onChanged = e => setOther(e.target.value)
-    const onChanged = e => setPayment(e.target.value)
-    const onChanged = e => setInstituttion(e.target.value)
-    const onChanged = e => setEmployeeYears(e.target.value)
-    const onChanged = e => setAcademicYear(e.target.value)
-    const onChanged = e => setEmployeeIsActive(e.target.value)
-    const onChanged = e => setJoinDate(e.target.value)
-    const onChanged = e => setCurrentContractType(e.target.value)
-    const onChanged = e => setCurrentPosition(e.target.value)
-    const onChanged = e => setCurrentSalaryPackage(e.target.value)
-    const onChanged = e => setCurrentBasic(e.target.value)
-    const onChanged = e => setCurrentCnss(e.target.value)
-    const onChanged = e => setCurrentOther(e.target.value)
-    const onChanged = e => setCurrentPayment(e.target.value)
-    		
-            setUserFullName({userFirstName:'', userMiddleName:'', userLastName:''})
-            setUserAddress({house:'', street:'', area:'', postcode:'', city:''})
-            setUserContact({primaryPhone:'', secondaryPhone:'', email:'' })
-			setEmployeeAssessment([])
-			setEmployeeWorkHistory([])
-
-			setSalaryPackage({basic:'', cnss:'', other:'', payment:''})
-			setEmployeeCurrentEmployment({currentPosition:'', joinDate:'', contractType:'', currentSalaryPackage:''})
+	const generateRandomUsername = () => `user${Math.random().toString(36).substring(2, 10)}`;
+  
+	// Consolidated form state
+	const [formData, setFormData] = useState({
+	  username: generateRandomUsername(),
+	  password: '12345678',
+	  userRoles: ['Employee'],
+	  userAllowedActions: [],
+	  userFullName:{
+		userFirstName: '',
+		userMiddleName: '',
+		userLastName: '',
+	  },
+	 
+	  userDob: '',
+	  userSex: '',
+	  userIsActive: false,
+	  userAddress: {
+		house: '',
+		street: '',
+		area: '',
+		postCode: '',
+		city: ''
+	  },
+	  userContact: {
+		primaryPhone: '',
+		secondaryPhone: '',
+		email: '',
+	  },
+	 
+	  employeeAssessment: [],
+	  employeeWorkHistory: [],
+	  employeeIsActive: false,
+	  employeeYears: [{academicYear: selectedYear}],
+	  employeeCurrentEmployment: {
+      position: '',
+      joinDate: '',
+      contractType: '',
+      salaryPackage: {
+        basic: '',
+        cnss: '',
+        other: '',
+        payment: '',
+		},
+	  },
+	});
+  
+	const [validity, setValidity] = useState({
+	  validUsername: false,
+	  validFirstName: false,
+	  validLastName: false,
+	  validDob: false,
+	  validUserSex: false,
+	  validHouse: false,
+	  validStreet: false,
+	  validCity: false,
+	  validPrimaryPhone: false,
+	  validCurrentPosition: false,
+	  validJoinDate: false,
+	  validContractType: false,
+	  validBasic: false,
+	  validPayment: false,
+	  validEmployeeYear: false,
+	  
 
 
+	});
+  
+	// Validate inputs using regex patterns
+	useEffect(() => {
+	  setValidity((prev) => ({
+		...prev,
+		validUsername: USER_REGEX.test(formData.username),
+		validFirstName: NAME_REGEX.test(formData.userFullName.userFirstName),
+		validLastName: NAME_REGEX.test(formData.userFullName.userLastName),
+		validDob: DOB_REGEX.test(formData.userDob),
+		validUserSex: NAME_REGEX.test(formData.userSex),
+		validHouse: NAME_REGEX.test(formData.userAddress.house),
+		validStreet: NAME_REGEX.test(formData.userAddress.street),
+		validCity: NAME_REGEX.test(formData.userAddress.city),
+		validPrimaryPhone: PHONE_REGEX.test(formData.userContact.primaryPhone),
+		validCurrentPosition: USER_REGEX.test(formData.employeeCurrentEmployment.position),
+		validJoinDate: DOB_REGEX.test(formData.employeeCurrentEmployment.joinDate),
+		validContractType: USER_REGEX.test(formData.employeeCurrentEmployment.contractType),
+		validBasic: NUMBER_REGEX.test(formData.employeeCurrentEmployment.salaryPackage.basic),
+		validPayment: NAME_REGEX.test(formData.employeeCurrentEmployment.salaryPackage.payment),
+		validEmployeeYear: YEAR_REGEX.test(formData.employeeYears[0].academicYear)
+	  }));
+	}, [formData]);
+	
+	
+  
+	useEffect(() => {
+	  if (isSuccess) {
+		setFormData({
+		  username: generateRandomUsername(),
+		  password: '12345678',
+		  userRoles: ['Employee'],
+		  userAllowedActions: [],
+		  userFullName:{
+			userFirstName: '',
+			userMiddleName: '',
+			userLastName: ''
+		  },
+		  userDob: '',
+		  userSex: '',
+		  userIsActive: false,
+		  userAddress: {
+			house: '',
+			street: '',
+			area: '',
+			postCode: '',
+			city: ''
+		  },
+		  userContact: {
+			primaryPhone: '',
+			secondaryPhone: '',
+			email: ''
+		  },
+		  employeeAssessment: [],
+		  employeeWorkHistory: [],
+		  employeeIsActive: false,
+		  employeeYears: [{academicYear: ''}],
+		  employeeCurrentEmployment: {
+			position: '',
+			joinDate: '',
+			contractType: '',
+			salaryPackage: {
+			  basic: '',
+			  cnss: '',
+			  other: '',
+			  payment: '',
+			},
+		  },
+		});
+		navigate('/hr/employees/');
+	  }
+	}, [isSuccess, navigate]);
+  
+	const handleInputChange = (e) => {
+	  const { name, value } = e.target;
+	  setFormData((prev) => ({ ...prev, [name]: value }));
+	};
 
-useEffect(()=>{
-setUserFullName({userFirstName:userFirstName, userMiddleName:userMiddleName, userLastName:userLastName})},
-[userFirstName, userMiddleName, userLastName])
+	const onAcademicYearChanged = (e, index) => {
+		const { checked } = e.target;
+		setFormData((prev) => {
+		  const updatedYears = [...prev.employeeYears];
+		  // Update based on checked state
+		  updatedYears[index].academicYear = checked ? selectedYear : '';
+		  return { ...prev, employeeYears: updatedYears };
+		});
+	  };
+	  
+  
+	const handleWorkHistoryChange = (index, field, value) => {
+	  const updatedWorkHistory = [...formData.employeeWorkHistory];
+	  updatedWorkHistory[index][field] = value;
+	  setFormData((prev) => ({ ...prev, employeeWorkHistory: updatedWorkHistory }));
+	};
+  
+	const handleAddWorkHistory = () => {
+	  setFormData((prev) => ({
+		...prev,
+		employeeWorkHistory: [
+		  ...prev.employeeWorkHistory,
+		  { institution: '', fromDate: '', toDate: '', position: '', contractType: '', salaryPackage: '' },
+		],
+	  }));
+	};
+  
+	const handleRemoveWorkHistory = (index) => {
+	  setFormData((prev) => ({
+		...prev,
+		employeeWorkHistory: prev.employeeWorkHistory.filter((_, i) => i !== index),
+	  }));
+	};
+	const canSave =
+	Object.values(validity).every(Boolean) &&
+	// ((formData.employeeYears[0].academicYear)!=='') &&
+	
+	!isLoading;
+	//console.log(validity,'validity')
+	 //console.log(formData,'formData')
+	// console.log(canSave,'canSave')
+	// console.log(validity.validUsername,
+	// 	validity.validFirstName,
+	// 	validity.validLastName,
+	// 	validity.validDob,
+	// 	validity.validUserSex,
+	// 	validity.validHouse,
+	// 	validity.validStreet,
+	// 	validity.validCity,
+	// 	validity.validPrimaryPhone,
+	// 	validity.validCurrentPosition,
+	// 	validity.validJoinDate,
+	// 	validity.validContractType,
+	// 	validity.validBasic,
+	// 	validity.validPayment,
+	// 	validity.validEmployeeYear)
+	
 
-useEffect(()=>{
-setUserAddress({house:house, street:street, area:area, postCode:postCode, city:city})},
-[house, street, street, area, postCode, city])
 
-useEffect(()=>{
-setUserContact({primaryPhone:primaryPhone, secondaryPhone:secondaryPhone, email:email})},
-[primaryPhone, secondaryPhone, email])
-
-//to check if we can save before onsave, if every one is true, and also if we are not loading status
-    const canSave = [validUserFirstName, validUserLastName, validUsername, validPassword, validUserDob, userSex, validStreet, validCity,  validPrimaryPhone, userRoles.length ].every(Boolean) && !isEmployeeLoading
-//console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validPassword}, ${validUserDob},${userAllowedActions}    ${ validStreet},  ${validPrimaryPhone}, ${validEmail}, ${userRoles.length}, ${isParent}, ${employeeId}, ${userIsActive}` )
-    const onSaveUserClicked = async (e) => {
-        e.preventDefault()
-        
-        if (canSave) {//if cansave is true
-            //generate the objects before saving
-            //console.log(` 'first name' ${userFirstName}', fullfirstname,' ${userFullName.userFirstName}', house: '${house}', usercontact house' ${userContact.house},    ${userRoles.length},${isParent}, ${employeeId}` )
-            await addNewEmployee({ username, password,  userFullName, userDob, userSex,  employeeIsActive, userRoles, userAllowedActions, userAddress, userContact })//we call the add new user mutation and set the arguments to be saved
-            //added this to confirm save
-            if (isEmployeeError) {console.log('error savingg', employeeError)//handle the error msg to be shown  in the logs??
-            }
-        }
-    }
+	const onSaveEmployeeClicked = async (e) => {
+	  e.preventDefault();
+	  if (canSave) {
+		try {
+		  await addNewEmployee(formData);
+		} catch (err) {
+		  console.error('Failed to save the employee:', err);
+		}
+	  }
+	};
     const handleCancel= ()=>{
-        Navigate ('/admin/usersManagement/users/')
+        navigate ('/hr/employees/')
     }
-   
-//the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
-    // const errClass = isEmployeeError ? "errmsg" : "offscreen"
-    // const validUserClass = !validUsername ? 'form__input--incomplete' : ''
-    // const validPwdClass = !validPassword ? 'form__input--incomplete' : ''
-    // const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
 
 
     const content = (
         <>
         <Employees/>
-           
+       
+    <section className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold mb-4">Add New Employee: {`${formData.userFullName.userFirstName} ${formData.userFullName.userMiddleName} ${formData.userFullName.userLastName}`}</h2>
+      {isError && <p className="text-red-500">Error: {error?.data?.message}</p>}
+      <form onSubmit={onSaveEmployeeClicked} className="space-y-6">
+       
 
-            <form className="form" onSubmit={onSaveUserClicked}>
-                <div className="form__title-row">
-                    <h2>New Employee</h2>
-                    
-                </div>
-                <div>
-                <label className="form__label" htmlFor="userFirstName">
-                    First Name* : <span className="nowrap">[3-20 letters]</span></label>
-                <input
-                    className={`form__input `}
-                    id="userFirstName"
-                    name="userFirstName"
-                    type="text"
-                    autoComplete="off"
-                    value={userFirstName}
-                    onChange={onUserFirstNameChanged}
-                />
-                <label className="form__label" htmlFor="userMiddleName">
-                    Middle Name : <span className="nowrap"></span></label>
-                <input
-                    className={`form__input `}
-                    id="userMiddleName"
-                    name="userMiddleName"
-                    type="text"
-                    autoComplete="off"
-                    value={userMiddleName}
-                    onChange={onUserMiddleNameChanged}
-                />
-                </div>
-                <div>
-                <label className="form__label" htmlFor="userLastName">
-                    Last Name* : <span className="nowrap">[3-20 letters]</span></label>
-                <input
-                    className={`form__input `}
-                    id="userLastName"
-                    name="userLastName"
-                    type="text"
-                    autoComplete="off"
-                    value={userLastName}
-                    onChange={onUserLastNameChanged}
-                />
-                 <label className="form__label" htmlFor="userDob">
-                    Date Of Birth* : <span className="nowrap">[dd/mm/yyyy]</span></label>
-                <input
-                    className={`form__input `}
-                    id="userDob"
-                    name="userDob"
-                    type="date"
-                    autoComplete="off"
-                    value={userDob}
-                    onChange={onUserDobChanged}
-                />
-                </div>
-                <div>
-                <label> <div style={{ marginTop: '10px' }}>
-                    Selected Sex: {userSex || 'None'}
-                </div><br/>
-                    <input
-                    type="radio"
-                    value="Male"
-                    checked={userSex === 'Male'}
-                    onChange={onUserSexChanged}
-                    />
-                    Male
-                </label>
+        {/* username and password should be visible for admin isAdmin&& */}
+        {/* <div>
+          <label className="block text-sm font-medium text-gray-700">
+            username*
+          </label>
+          <input
+            type="text"
+            name="userFirstName"
+            value={formData.userFirstName}
+            onChange={handleInputChange}
+            className={`mt-1 block w-full border ${
+              validity.validFirstName ? "border-gray-300" : "border-red-500"
+            } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+            placeholder="Enter First Name"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Password*
+          </label>
+          <input
+            type="text"
+            name="userFirstName"
+            value={formData.userFirstName}
+            onChange={handleInputChange}
+            className={`mt-1 block w-full border ${
+              validity.validFirstName ? "border-gray-300" : "border-red-500"
+            } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+            placeholder="Enter First Name"
+            required
+          />
+        </div> */}
+        <div>
+        <label className="block text-sm font-medium text-gray-700">
+		First Name {!validity.validFirstName && <span className="text-red-500">*</span>} 
+      </label>
+          <input
+            type="text"
+            name="userFirstName"
+            value={formData.userFullName.userFirstName}
+            onChange={(e) =>
+				setFormData((prev) => ({
+				...prev,
+				userFullName: {
+					...prev.userFullName,
+					userFirstName: e.target.value,
+				},
+				}))
+			}
+            className={`mt-1 block w-full border ${
+              validity.validFirstName ? "border-gray-300" : "border-red-500"
+            } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+            placeholder="Enter First Name"
+            required
+          />
+        </div>
+        {/* Middle Name */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Middle Name
+          </label>
+          <input
+            type="text"
+            name="userMiddleName"
+            value={formData.userFullName.userMiddleName}
+            onChange={(e) =>
+				setFormData((prev) => ({
+				...prev,
+				userFullName: {
+					...prev.userFullName,
+					userMiddleName: e.target.value,
+				},
+				}))
+			}
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            placeholder="Enter Middle Name"
+            
+          />
+        </div>
 
-                <label style={{ marginLeft: '10px' }}>
-                    <input
-                    type="radio"
-                    value="Female"
-                    checked={userSex === 'Female'}
-                    onChange={onUserSexChanged}
-                    />
-                    Female
-                </label>
+        {/* Last Name */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Last Name {!validity.validLastName && <span className="text-red-500">*</span>}
+          </label>
+          <input
+            type="text"
+            name="userLastName"
+            value={formData.userFullName.userLastName}
+			onChange={(e) =>
+				setFormData((prev) => ({
+				...prev,
+				userFullName: {
+					...prev.userFullName,
+					userLastName: e.target.value,
+				},
+				}))
+			}
+			
+            className={`mt-1 block w-full border ${
+              validity.validLastName ? "border-gray-300" : "border-red-500"
+            } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+            placeholder="Enter Last Name"
+            required
+          />
+        </div>
 
-                
-                </div>
-               <div>Address
-                <label className="form__label" htmlFor="house">
-                    House* : <span className="nowrap">[3-20 letters]</span></label>
-                <input
-                    className={`form__input `}
-                    id="house"
-                    name="house"
-                    type="text"
-                    autoComplete="off"
-                    value={house}
-                    onChange={onHouseChanged}
-                />
-                <label className="form__label" htmlFor="street">
-                    Street* : <span className="nowrap">[3-20 letters]</span></label>
-                <input
-                    className={`form__input `}
-                    id="street"
-                    name="street"
-                    type="text"
-                    autoComplete="off"
-                    value={street}
-                    onChange={onStreetChanged}
-                />
-                <div>
-                <label className="form__label" htmlFor="area">
-                    Area: <span className="nowrap"></span></label>
-                <input
-                    className={`form__input `}
-                    id="area"
-                    name="area"
-                    type="text"
-                    autoComplete="off"
-                    value={area}
-                    onChange={onAreaChanged}
-                />
-                <label className="form__label" htmlFor="city">
-                    City* : <span className="nowrap">[3-20 letters]</span></label>
-                <input
-                    className={`form__input `}
-                    id="city"
-                    name="city"
-                    type="text"
-                    autoComplete="off"
-                    value={city}
-                    onChange={onCityChanged}
-                />
-                </div>
-                <label className="form__label" htmlFor="postCode">
-                    Post Code: <span className="nowrap"></span></label>
-                <input
-                    className={`form__input `}
-                    id="postCode"
-                    name="postCode"
-                    type="text"
-                    autoComplete="off"
-                    value={postCode}
-                    onChange={onPostCodeChanged}
-                />
-                </div>
-                <div> contact Details
-                <label className="form__label" htmlFor="primaryPhone">
-                    Primary Phone* : <span className="nowrap">[6 to 15 Digits]</span></label>
-                <input
-                    className={`form__input `}
-                    id="primaryPhone"
-                    name="primaryPhone"
-                    type="tel"
-                    autoComplete="off"
-                    value={primaryPhone}
-                    onChange={onPrimaryPhoneChanged}
-                />
+        {/* Date of Birth */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Date of Birth {!validity.validDob && <span className="text-red-500">*</span>}
+          </label>
+          <input
+            type="date"
+            name="userDob"
+            value={formData.userDob}
+            onChange={handleInputChange}
+            className={`mt-1 block w-full border ${
+              validity.validDob ? "border-gray-300" : "border-red-500"
+            } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+            required
+          />
+        </div>
 
-                <label className="form__label" htmlFor="secondaryPhone">
-                    Secondary Phone: <span className="nowrap"></span></label>
-                <input
-                    className={`form__input `}
-                    id="secondaryPhone"
-                    name="secondaryPhone"
-                    type="tel"
-                    autoComplete="off"
-                    value={secondaryPhone}
-                    onChange={onSecondaryPhoneChanged}
-                />
-                </div>
-                <label className="form__label" htmlFor="email">
-                    Email: <span className="nowrap"></span></label>
-                <input
-                    className={`form__input `}
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="off"
-                    value={email}
-                    onChange={onEmailChanged}
-                />
-               
-                {/* <label className="form__label" htmlFor="isParent">
-                    User Is Parent: <span className="nowrap">[24 digits]</span></label>
-                <input
-                    className={`form__input `}
-                    id="isParent"
-                    name="isParent"
-                    type="text"
-                    autoComplete="off"
-                    value={isParent}
-                    onChange={onIsParentChanged}
-                />
-                 <label className="form__label" htmlFor="employeeId">
-                 User Is Employee: <span className="nowrap">[24 digits]</span></label>
-                <input
-                    className={`form__input `}
-                    id="employeeId"
-                    name="employeeId"
-                    type="text"
-                    autoComplete="off"
-                    value={employeeId}
-                    onChange={onEmployeeIdChanged}
-                /> */}
-               
+        {/* Sex Selection */}
+       
+<div>
+  <label className="block text-sm font-medium text-gray-700">Sex {!validity.validUserSex && <span className="text-red-500">*</span>}</label>
+  <div className="flex items-center space-x-4 mt-1">
+    <div className="flex items-center">
+      <input
+        type="checkbox"
+        name="userSex"
+        value="Male"
+        checked={formData.userSex === "Male"}
+        onChange={(e) => {
+          setFormData((prev) => ({
+            ...prev,
+            userSex: e.target.checked ? "Male" : formData.userSex === "Male" ? "" : formData.userSex
+          }));
+        }}
+        className={`h-4 w-4 ${
+			validity.validUserSex ? "border-gray-300 rounded" : "border-red-500 rounded"
+		  } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+      />
+      <label className="ml-2 text-sm text-gray-700">Male</label>
+    </div>
 
-                    <label>
-                    <input
-                    type="checkbox"
-                    value={employeeIsActive}
-                    checked={employeeIsActive}
-                    onChange={onEmployeeIsActiveChanged}
-                    />
-                    Employee Is Active
-                    </label>
-                    
-                    {/* <h1>User Roles: </h1>
-                    <div className="flex flex-wrap space-x-4">
-                    {Object.keys(ROLES).map((key) => (
-                    
-                    <label  key={key} className="flex items-center">
-                        <input
-                        type="checkbox"
-                        value={ROLES[key]}
-                        checked={userRoles.includes(ROLES[key])}
-                        onChange={onUserRolesChanged}
-                        />
-                        {ROLES[key]}
-                    </label>
-                    
-                    ))}
-                    </div> */}
-                    
-              
+    <div className="flex items-center">
+      <input
+        type="checkbox"
+        name="userSex"
+        value="Female"
+        checked={formData.userSex === "Female"}
+        onChange={(e) => {
+          setFormData((prev) => ({
+            ...prev,
+            userSex: e.target.checked ? "Female" : formData.userSex === "Female" ? "" : formData.userSex
+          }));
+        }}
+        className="h-4 w-4 border-gray-300 rounded focus:ring-indigo-500"
+      />
+      <label className="ml-2 text-sm text-gray-700">Female</label>
+    </div>
+  </div>
+</div>
+       {/* Employee Years Selection */}
+{formData.employeeYears.map((year, index) => (
+  <div key={index} className="flex items-center mb-2">
+    <input
+      type="checkbox"
+      id={`employeeYear-${index}`}
+      value={year.academicYear}
+      checked={year.academicYear === selectedYear}
+      onChange={(e) => onAcademicYearChanged(e, index)}
+      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+    />
+    <label
+      htmlFor={`employeeYear-${index}`}
+      className="ml-2 text-sm font-medium text-gray-700"
+    >
+      Academic Year  {!validity.validEmployeeYear && <span className="text-red-500">*</span>} : {selectedYear}
+    </label>
+  </div>
+))}
 
-              <div className="flex justify-end items-center space-x-4">
-                    
-                    <button 
-                    className=" px-4 py-2 bg-gray-500 text-white rounded"
-                    onClick={handleCancel }
-                    >
-                    Cancel
-                    </button>
-                    <button 
-                        className=" px-4 py-2 bg-green-500 text-white rounded"
-                        type='submit'
-                        title="Save"
-                        onClick={onSaveUserClicked}
-                        disabled={!canSave}
-                        >
-                        Save Employee
-                    </button>
-                </div>
+<div className="flex items-center mb-2">
+  <input
+    type="checkbox"
+    id="employeeIsActive"
+    name="employeeIsActive"
+    checked={formData.employeeIsActive === true}
+    onChange={(e) => {
+      setFormData((prev) => ({
+        ...prev,
+        employeeIsActive: e.target.checked,
+      }));
+    }}
+    className='h-4 w-4  "text-blue-600"  focus:ring-blue-500 border-gray-300 rounded'
+  />
+  
+  <label htmlFor="employeeIsActive" className="ml-2 text-sm font-medium text-gray-700">
+    Employee IsActive {validity.validEmployeeIsActive && "*"}
+  </label>
+</div>
 
 
-            </form>
-        </>
-    )
+        {/* Contact Information */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Primary Phone {!validity.validPrimaryPhone && <span className="text-red-500">*</span>}
+            </label>
+            <input
+              type="text"
+              name="primaryPhone"
+              value={formData.userContact.primaryPhone}
+              onChange={(e) =>
+				setFormData((prev) => ({
+				...prev,
+				userContact: {
+					...prev.userContact,
+					primaryPhone: e.target.value,
+				},
+				}))
+			}
+              className={`mt-1 block w-full border ${
+                validity.validPrimaryPhone ? "border-gray-300" : "border-red-500"
+              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+              placeholder="Enter Primary Phone"
+              required
+            />
+          </div>
 
-    return content
-}
-export default NewEmployeeForm
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Secondary Phone
+            </label>
+            <input
+              type="text"
+              name="secondaryPhone"
+              value={formData.userContact.secondaryPhone}
+              onChange={(e) =>
+				setFormData((prev) => ({
+				...prev,
+				userContact: {
+					...prev.userContact,
+					secondaryPhone: e.target.value,
+				},
+				}))
+			}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              placeholder="Enter Secondary Phone"
+            />
+          </div>
+        </div>
+
+        {/* Address Information */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              House {!validity.validHouse && <span className="text-red-500">*</span>}
+            </label>
+            <input
+              type="text"
+              name="house"
+              value={formData.userAddress.house}
+			  onChange={(e) =>
+				setFormData((prev) => ({
+				...prev,
+				userAddress: {
+					...prev.userAddress,
+					house: e.target.value,
+				},
+				}))
+			}
+              className={`mt-1 block w-full border ${
+                validity.validHouse ? "border-gray-300" : "border-red-500"
+              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+              placeholder="Enter House"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Street {!validity.validStreet && <span className="text-red-500">*</span>}
+            </label>
+            <input
+              type="text"
+              name="street"
+              value={formData.street}
+              onChange={(e) =>
+				setFormData((prev) => ({
+				...prev,
+				userAddress: {
+					...prev.userAddress,
+					street: e.target.value,
+				},
+				}))
+			}
+              className={`mt-1 block w-full border ${
+                validity.validStreet ? "border-gray-300" : "border-red-500"
+              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+              placeholder="Enter Street"
+            />
+          </div>
+
+          <div className="col-span-2">
+            <label className="block text-sm font-medium text-gray-700">
+              Area
+            </label>
+            <input
+              type="text"
+              name="area"
+              value={formData.userAddress.area}
+              onChange={(e) =>
+				setFormData((prev) => ({
+				...prev,
+				userAddress: {
+					...prev.userAddress,
+					area: e.target.value,
+				},
+				}))
+			}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              placeholder="Enter Area"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              City {!validity.validCity && <span className="text-red-500">*</span>}
+            </label>
+            <input
+              type="text"
+              name="city"
+              value={formData.userAddress.city}
+              onChange={(e) =>
+				setFormData((prev) => ({
+				...prev,
+				userAddress: {
+					...prev.userAddress,
+					city: e.target.value,
+				},
+				}))
+			}
+              className={`mt-1 block w-full border ${
+                validity.validCity ? "border-gray-300" : "border-red-500"
+              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+              placeholder="Enter City"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Post Code
+            </label>
+            <input
+              type="text"
+              name="postCode"
+              value={formData.userAddress.postCode}
+              onChange={(e) =>
+				setFormData((prev) => ({
+				...prev,
+				userAddress: {
+					...prev.userAddress,
+					postCode: e.target.value,
+				},
+				}))
+			}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              placeholder="Enter Post Code"
+            />
+          </div>
+        </div>
+
+        {/* Email */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Email
+          </label>
+          <input
+            type="email"
+            name="email"
+            value={formData.userContact.email}
+            onChange={(e) =>
+				setFormData((prev) => ({
+				...prev,
+				userContact: {
+					...prev.userContact,
+					email: e.target.value,
+				},
+				}))
+			}
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            placeholder="Enter Email Address"
+          />
+        </div>
+
+       
+	{/* Current Employment */}
+<div className="space-y-4">
+  <div>
+    <label className="block text-sm font-medium text-gray-700">
+      Current Position {!validity.validCurrentPosition && <span className="text-red-500">*</span>}
+    </label>
+    <input
+      type="text"
+      name="position"
+      value={formData.employeeCurrentEmployment.position}
+      onChange={(e) =>
+        setFormData((prev) => ({
+          ...prev,
+          employeeCurrentEmployment: {
+            ...prev.employeeCurrentEmployment,
+            position: e.target.value,
+          },
+        }))
+      }
+      className={`mt-1 block w-full border ${
+        validity.validCurrentPosition ? "border-gray-300" : "border-red-500"
+      } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+      placeholder="Enter Position"
+      required
+    />
+  </div>
+
+  <div>
+    <label className="block text-sm font-medium text-gray-700">
+      Join Date {!validity.validJoinDate && <span className="text-red-500">*</span>}
+    </label>
+    <input
+      type="date"
+      name="joinDate"
+      value={formData.employeeCurrentEmployment.joinDate}
+      onChange={(e) =>
+        setFormData((prev) => ({
+          ...prev,
+          employeeCurrentEmployment: {
+            ...prev.employeeCurrentEmployment,
+            joinDate: e.target.value,
+          },
+        }))
+      }
+      className={`mt-1 block w-full border ${
+        validity.validJoinDate ? "border-gray-300" : "border-red-500"
+      } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+      required
+    />
+  </div>
+
+  <div>
+    <label className="block text-sm font-medium text-gray-700">
+      Contract Type {!validity.validContractType && <span className="text-red-500">*</span>}
+    </label>
+    <input
+      type="text"
+      name="contractType"
+      value={formData.employeeCurrentEmployment.contractType}
+      onChange={(e) =>
+        setFormData((prev) => ({
+          ...prev,
+          employeeCurrentEmployment: {
+            ...prev.employeeCurrentEmployment,
+            contractType: e.target.value,
+          },
+        }))
+      }
+      className={`mt-1 block w-full border ${
+        validity.validContractType ? "border-gray-300" : "border-red-500"
+      } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+      placeholder="Enter Contract Type"
+      required
+    />
+  </div>
+
+  <div>
+    <label className="block text-sm font-medium text-gray-700">
+      Salary Package
+    </label>
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Basic {!validity.validBasic && <span className="text-red-500">*</span>}</label>
+        <input
+          type="number"
+          name="basic"
+          value={formData.employeeCurrentEmployment.salaryPackage.basic}
+          onChange={(e) =>
+            setFormData((prev) => ({
+              ...prev,
+              employeeCurrentEmployment: {
+                ...prev.employeeCurrentEmployment,
+                salaryPackage: {
+                  ...prev.employeeCurrentEmployment.salaryPackage,
+                  basic: e.target.value,
+                },
+              },
+            }))
+          }
+          className={`mt-1 block w-full border ${
+            validity.validCity ? "border-gray-300" : "border-red-500"
+          } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+          
+          placeholder="Enter Basic Salary"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Payment {!validity.validPayment && <span className="text-red-500">*</span>}</label>
+        <input
+          type="text"
+          name="payment"
+          value={formData.employeeCurrentEmployment.salaryPackage.payment}
+          onChange={(e) =>
+            setFormData((prev) => ({
+              ...prev,
+              employeeCurrentEmployment: {
+                ...prev.employeeCurrentEmployment,
+                salaryPackage: {
+                  ...prev.employeeCurrentEmployment.salaryPackage,
+                  payment: e.target.value,
+                },
+              },
+            }))
+          }
+          className={`mt-1 block w-full border ${
+            validity.validPayment ? "border-gray-300" : "border-red-500"
+          } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+          placeholder="Enter Salary payment period"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700">CNSS</label>
+        <input
+          type="number"
+          name="cnss"
+          value={formData.employeeCurrentEmployment.salaryPackage.cnss}
+          onChange={(e) =>
+            setFormData((prev) => ({
+              ...prev,
+              employeeCurrentEmployment: {
+                ...prev.employeeCurrentEmployment,
+                salaryPackage: {
+                  ...prev.employeeCurrentEmployment.salaryPackage,
+                  cnss: e.target.value,
+                },
+              },
+            }))
+          }
+          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          placeholder="Enter CNSS"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Other</label>
+        <input
+          type="number"
+          name="other"
+          value={formData.employeeCurrentEmployment.salaryPackage.other}
+          onChange={(e) =>
+            setFormData((prev) => ({
+              ...prev,
+              employeeCurrentEmployment: {
+                ...prev.employeeCurrentEmployment,
+                salaryPackage: {
+                  ...prev.employeeCurrentEmployment.salaryPackage,
+                  other: e.target.value,
+                },
+              },
+            }))
+          }
+          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          placeholder="Enter Other Salary"
+        />
+      </div>
+      
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+		<div className="space-y-4">
+  <h3 className="text-lg font-semibold">Employee Work History</h3>
+  {formData.employeeWorkHistory.map((work, index) => (
+    <div
+      key={index}
+      className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2"
+    >
+      {/* Institution */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Institution {!work.institution && <span className="text-red-500">*</span>}
+        </label>
+        <input
+          type="text"
+          name="institution"
+          value={work.institution}
+          onChange={(e) =>
+            handleWorkHistoryChange(index, "institution", e.target.value)
+          }
+          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          placeholder="Enter Institution"
+        />
+      </div>
+
+      {/* From Date */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          From Date {!work.fromDate && <span className="text-red-500">*</span>}
+        </label>
+        <input
+          type="date"
+          name="fromDate"
+          value={work.fromDate}
+          onChange={(e) =>
+            handleWorkHistoryChange(index, "fromDate", e.target.value)
+          }
+          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+        />
+      </div>
+
+      {/* To Date */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700">To Date {!work.toDate && <span className="text-red-500">*</span>}</label>
+        <input
+          type="date"
+          name="toDate"
+          value={work.toDate}
+          onChange={(e) =>
+            handleWorkHistoryChange(index, "toDate", e.target.value)
+          }
+          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+        />
+      </div>
+
+      {/* Position */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Position {!work.position && <span className="text-red-500">*</span>}</label>
+        <input
+          type="text"
+          name="position"
+          value={work.position}
+          onChange={(e) =>
+            handleWorkHistoryChange(index, "position", e.target.value)
+          }
+          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          placeholder="Enter Position"
+        />
+      </div>
+
+      {/* Contract Type */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Contract Type {!work.contractType && <span className="text-red-500">*</span>}
+        </label>
+        <input
+          type="text"
+          name="contractType"
+          value={work.contractType}
+          onChange={(e) =>
+            handleWorkHistoryChange(index, "contractType", e.target.value)
+          }
+          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          placeholder="Enter Contract Type"
+        />
+      </div>
+
+      {/* Salary Package */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Salary Package
+        </label>
+        <input
+          type="text"
+          name="salaryPackage"
+          value={work.salaryPackage}
+          onChange={(e) =>
+            handleWorkHistoryChange(index, "salaryPackage", e.target.value)
+          }
+          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          placeholder="Enter Salary Package"
+        />
+      </div>
+
+      {/* Remove Work History Button */}
+      <button
+        type="button"
+        onClick={() => handleRemoveWorkHistory(index)}
+        className="mt-2 text-red-600 hover:text-red-800 text-sm font-medium"
+      >
+        Remove
+      </button>
+    </div>
+  ))}
+
+  {/* Add Work History Button */}
+  <button
+    type="button"
+    onClick={handleAddWorkHistory}
+    className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+  >
+    Add Work History
+  </button>
+</div>
+
+		
+
+        {/* Submit Button */}
+        <div className="flex justify-end gap-4">
+          <button
+            type="button"
+            onClick={() => navigate("/hr/employees")}
+            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-500 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={!canSave}
+            className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
+              canSave
+                ? "bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500"
+                : "bg-gray-400 cursor-not-allowed"
+            } focus:outline-none focus:ring-2 focus:ring-offset-2`}
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </section>
+  </>
+  )
+  return content
+};
+
+export default NewEmployeeForm;

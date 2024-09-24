@@ -272,6 +272,7 @@ export default function NewFatherForm() {
               autoComplete="off"
               value={userFirstName}
               onChange={onUserFirstNameChanged}
+              required
             />
           </div>
 
@@ -309,6 +310,7 @@ export default function NewFatherForm() {
               autoComplete="off"
               value={userLastName}
               onChange={onUserLastNameChanged}
+              required
             />
           </div>
 
@@ -325,6 +327,7 @@ export default function NewFatherForm() {
               autoComplete="off"
               value={userDob}
               onChange={onUserDobChanged}
+              required
             />
           </div>
 
@@ -340,6 +343,7 @@ export default function NewFatherForm() {
                   checked={familySituation === "Joint"}
                   onChange={onFamilySituationChanged}
                   className="form-radio text-blue-600"
+                 
                 />
                 <span className="ml-2">Joint</span>
               </label>
@@ -370,6 +374,7 @@ export default function NewFatherForm() {
               autoComplete="off"
               value={house}
               onChange={onHouseChanged}
+              required
             />
           </div>
 
@@ -386,6 +391,7 @@ export default function NewFatherForm() {
               autoComplete="off"
               value={street}
               onChange={onStreetChanged}
+              required
             />
           </div>
 
@@ -417,6 +423,7 @@ export default function NewFatherForm() {
               autoComplete="off"
               value={city}
               onChange={onCityChanged}
+              required
             />
           </div>
 
@@ -451,6 +458,7 @@ export default function NewFatherForm() {
               autoComplete="off"
               value={primaryPhone}
               onChange={onPrimaryPhoneChanged}
+              required
             />
           </div>
 
