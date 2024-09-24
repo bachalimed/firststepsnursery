@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useAddNewEmployeeMutation } from "./employeesApiSlice"
+import { useUpdateEmployeeMutation } from "./employeesApiSlice"
 import { useNavigate } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave } from "@fortawesome/free-solid-svg-icons"
@@ -16,7 +16,7 @@ const NUMBER_REGEX = /^[0-9]{1,4}(\.[0-9]{0,3})?$/;
 const PHONE_REGEX= /^[0-9]{6,15}$/
 const DOB_REGEX = /^[0-9/-]{4,10}$/
 const YEAR_REGEX = /^[0-9]{4}\/[0-9]{4}$/
-const NewEmployeeForm = () => {
+const EditEmployeeForm = ({employee}) => {
 	const navigate = useNavigate();
 	const academicYears = useSelector(selectAllAcademicYears)// to be used to show all academic years
 	const [selectedYear, setSelectedYear] = useState('')
@@ -49,53 +49,38 @@ const NewEmployeeForm = () => {
   }, [selectedAcademicYear])
      
 
-	const [addNewEmployee, { isLoading, isSuccess, isError, error }] = useAddNewEmployeeMutation();
-  
-	const generateRandomUsername = () => `user${Math.random().toString(36).substring(2, 10)}`;
+  //console.log(employee,'employee')
+
+	const [updateEmployee, { isLoading, isSuccess, isError, error }] = useUpdateEmployeeMutation();
+ 
   
 	// Consolidated form state
 	const [formData, setFormData] = useState({
-	  username: generateRandomUsername(),
-	  password: '12345678',
-	  userRoles: ['Employee'],
-	  userAllowedActions: [],
-	  userFullName:{
-		userFirstName: '',
-		userMiddleName: '',
-		userLastName: '',
-	  },
+	  username: employee.username,
+	  password: employee.password,
+	  userRoles: employee.userRoles ||[],
+	  userAllowedActions: employee.userAllowedActions ||[],
+	  userFullName:employee.userFullName,
 	 
-	  userDob: '',
-	  userSex: '',
-	  userIsActive: false,
-	  userAddress: {
-		house: '',
-		street: '',
-		area: '',
-		postCode: '',
-		city: ''
-	  },
-	  userContact: {
-		primaryPhone: '',
-		secondaryPhone: '',
-		email: '',
-	  },
-	 
-	  employeeAssessment: [],
-	  employeeWorkHistory: [],
-	  employeeIsActive: false,
-	  employeeYears: [{academicYear: selectedYear}],
-	  employeeCurrentEmployment: {
+	  userDob: employee.userDob.split("T")[0],
+	  userSex: employee.userSex,
+	  userIsActive: employee.userIsActive || false,
+	  userAddress: employee.userAddress,
+	  userContact: employee.userContact,
+	  employeeAssessment: employee.employeeData.employeeAssessment,
+	  employeeWorkHistory: employee.employeeData.employeeWorkHistory ||[],
+	  employeeIsActive: employee.employeeData.employeeIsActive,
+	  employeeYears: employee.employeeData.employeeYears ||[],
+	  employeeCurrentEmployment: employee.employeeData.employeeCurrentEmployment ||{
       position: '',
       joinDate: '',
       contractType: '',
       salaryPackage: {
-        basic: '',
-        cnss: '',
-        other: '',
-        payment: '',
-		},
-	  },
+          basic: '',
+          payment: '',
+      },}
+	  
+
 	});
   
 	const [validity, setValidity] = useState({
@@ -137,7 +122,7 @@ const NewEmployeeForm = () => {
 		validContractType: USER_REGEX.test(formData.employeeCurrentEmployment.contractType),
 		validBasic: NUMBER_REGEX.test(formData.employeeCurrentEmployment.salaryPackage.basic),
 		validPayment: NAME_REGEX.test(formData.employeeCurrentEmployment.salaryPackage.payment),
-		validEmployeeYear: YEAR_REGEX.test(formData.employeeYears[0].academicYear)
+		//validEmployeeYear: YEAR_REGEX.test(formData.employeeYears[0].academicYear)
 	  }));
 	}, [formData]);
 	
@@ -145,254 +130,139 @@ const NewEmployeeForm = () => {
   
 	useEffect(() => {
 	  if (isSuccess) {
-		setFormData({
-		  username: generateRandomUsername(),
-		  password: '12345678',
-		  userRoles: ['Employee'],
-		  userAllowedActions: [],
-		  userFullName:{
-			userFirstName: '',
-			userMiddleName: '',
-			userLastName: ''
-		  },
-		  userDob: '',
-		  userSex: '',
-		  userIsActive: false,
-		  userAddress: {
-			house: '',
-			street: '',
-			area: '',
-			postCode: '',
-			city: ''
-		  },
-		  userContact: {
-			primaryPhone: '',
-			secondaryPhone: '',
-			email: ''
-		  },
-		  employeeAssessment: [],
-		  employeeWorkHistory: [],
-		  employeeIsActive: false,
-		  employeeYears: [{academicYear: ''}],
-		  employeeCurrentEmployment: {
-			position: '',
-			joinDate: '',
-			contractType: '',
-			salaryPackage: {
-			  basic: '',
-			  cnss: '',
-			  other: '',
-			  payment: '',
-			},
-		  },
-		});
-		navigate('/hr/employees/');
-	  }
-	}, [isSuccess, navigate]);
-  
-	const handleInputChange = (e) => {
-	  const { name, value } = e.target;
-	  setFormData((prev) => ({ ...prev, [name]: value }));
-	};
-
-	const onAcademicYearChanged = (e, index) => {
-		const { checked } = e.target;
-		setFormData((prev) => {
-		  const updatedYears = [...prev.employeeYears];
-		  // Update based on checked state
-		  updatedYears[index].academicYear = checked ? selectedYear : '';
-		  return { ...prev, employeeYears: updatedYears };
-		});
-	  };
+		setFormData({})
+		
+		navigate('/hr/employees/')
+  }
 	  
-  
-	const handleWorkHistoryChange = (index, field, value) => {
-	  const updatedWorkHistory = [...formData.employeeWorkHistory];
-	  updatedWorkHistory[index][field] = value;
-	  setFormData((prev) => ({ ...prev, employeeWorkHistory: updatedWorkHistory }));
-	};
-  
-	const handleAddWorkHistory = () => {
-	  setFormData((prev) => ({
-		...prev,
-		employeeWorkHistory: [
-		  ...prev.employeeWorkHistory,
-		  { institution: '', fromDate: '', toDate: '', position: '', contractType: '', salaryPackage: '' },
-		],
-	  }));
-	};
-  
-	const handleRemoveWorkHistory = (index) => {
-	  setFormData((prev) => ({
-		...prev,
-		employeeWorkHistory: prev.employeeWorkHistory.filter((_, i) => i !== index),
-	  }));
-	};
-	const canSave =
-	Object.values(validity).every(Boolean) &&
-	// ((formData.employeeYears[0].academicYear)!=='') &&
-	
-	!isLoading;
-	//console.log(validity,'validity')
-	 //console.log(formData,'formData')
-	// console.log(canSave,'canSave')
-	// console.log(validity.validUsername,
-	// 	validity.validFirstName,
-	// 	validity.validLastName,
-	// 	validity.validDob,
-	// 	validity.validUserSex,
-	// 	validity.validHouse,
-	// 	validity.validStreet,
-	// 	validity.validCity,
-	// 	validity.validPrimaryPhone,
-	// 	validity.validCurrentPosition,
-	// 	validity.validJoinDate,
-	// 	validity.validContractType,
-	// 	validity.validBasic,
-	// 	validity.validPayment,
-	// 	validity.validEmployeeYear)
-	
+	}, [isSuccess, navigate]);
+  const handleInputChange = (e) => {
+    console.log(e.target.name, e.target.value); // Debugging line
+    const { name, value } = e.target;
 
-
-	const onSaveEmployeeClicked = async (e) => {
-	  e.preventDefault();
-	  if (canSave) {
-		try {
-		  await addNewEmployee(formData);
-		} catch (err) {
-		  console.error('Failed to save the employee:', err);
-		}
-	  }
-	};
-    const handleCancel= ()=>{
-        navigate ('/hr/employees/')
+    // Handle nested object updates
+    if (name.startsWith('userFullName.')) {
+        const field = name.split('.')[1]; // Get the field name after 'userFullName.'
+        setFormData((prev) => ({
+            ...prev,
+            userFullName: {
+                ...prev.userFullName,
+                [field]: value,
+            },
+        }));
+    } else {
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
     }
+};
 
+const onAcademicYearChanged = (e, index) => {
+    if (formData.employeeYears[index]) {
+        const { checked } = e.target;
+        setFormData((prev) => {
+            const updatedYears = [...prev.employeeYears];
+            updatedYears[index].academicYear = checked ? selectedYear : '';
+            return { ...prev, employeeYears: updatedYears };
+        });
+    }
+};
+
+const handleWorkHistoryChange = (index, field, value) => {
+    const updatedWorkHistory = [...formData.employeeWorkHistory];
+    updatedWorkHistory[index][field] = value;
+    setFormData((prev) => ({ ...prev, employeeWorkHistory: updatedWorkHistory }));
+};
+
+const handleAddWorkHistory = () => {
+    setFormData((prev) => ({
+        ...prev,
+        employeeWorkHistory: [
+            ...prev.employeeWorkHistory,
+            { institution: '', fromDate: '', toDate: '', position: '', contractType: '', salaryPackage: '' },
+        ],
+    }));
+};
+
+const handleRemoveWorkHistory = (index) => {
+    setFormData((prev) => ({
+        ...prev,
+        employeeWorkHistory: prev.employeeWorkHistory.filter((_, i) => i !== index),
+    }));
+};
+
+const canSave = Object.values(validity).every(Boolean) && !isLoading;
+
+const onSaveEmployeeClicked = async (e) => {
+    e.preventDefault();
+    if (canSave) {
+        try {
+            await updateEmployee(formData);
+        } catch (err) {
+            console.error('Failed to save the employee:', err);
+        }
+    }
+};
+
+const handleCancel = () => {
+    navigate('/hr/employees/');
+};
 
     const content = (
         <>
         <Employees/>
-       
-    <section className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4">Add New Employee: {`${formData.userFullName.userFirstName} ${formData.userFullName.userMiddleName} ${formData.userFullName.userLastName}`}</h2>
-      {isError && <p className="text-red-500">Error: {error?.data?.message}</p>}
-      <form onSubmit={onSaveEmployeeClicked} className="space-y-6">
-       
-
-        {/* username and password should be visible for admin isAdmin&& */}
-        {/* <div>
-          <label className="block text-sm font-medium text-gray-700">
-            username*
-          </label>
-          <input
-            type="text"
-            name="userFirstName"
-            value={formData.userFirstName}
-            onChange={handleInputChange}
-            className={`mt-1 block w-full border ${
-              validity.validFirstName ? "border-gray-300" : "border-red-500"
-            } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-            placeholder="Enter First Name"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Password*
-          </label>
-          <input
-            type="text"
-            name="userFirstName"
-            value={formData.userFirstName}
-            onChange={handleInputChange}
-            className={`mt-1 block w-full border ${
-              validity.validFirstName ? "border-gray-300" : "border-red-500"
-            } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-            placeholder="Enter First Name"
-            required
-          />
-        </div> */}
-        <div>
-        <label className="block text-sm font-medium text-gray-700">
-		First Name {!validity.validFirstName && <span className="text-red-500">*</span>} 
-      </label>
-          <input
-            type="text"
-            name="userFirstName"
-            value={formData.userFullName.userFirstName}
-            onChange={(e) =>
-				setFormData((prev) => ({
-				...prev,
-				userFullName: {
-					...prev.userFullName,
-					userFirstName: e.target.value,
-				},
-				}))
-			}
-            className={`mt-1 block w-full border ${
-              validity.validFirstName ? "border-gray-300" : "border-red-500"
-            } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-            placeholder="Enter First Name"
-            required
-          />
-        </div>
-        {/* Middle Name */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Middle Name
-          </label>
-          <input
-            type="text"
-            name="userMiddleName"
-            value={formData.userFullName.userMiddleName}
-            onChange={(e) =>
-				setFormData((prev) => ({
-				...prev,
-				userFullName: {
-					...prev.userFullName,
-					userMiddleName: e.target.value,
-				},
-				}))
-			}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            placeholder="Enter Middle Name"
-            
-          />
-        </div>
-
-        {/* Last Name */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Last Name {!validity.validLastName && <span className="text-red-500">*</span>}
-          </label>
-          <input
-            type="text"
-            name="userLastName"
-            value={formData.userFullName.userLastName}
-			onChange={(e) =>
-				setFormData((prev) => ({
-				...prev,
-				userFullName: {
-					...prev.userFullName,
-					userLastName: e.target.value,
-				},
-				}))
-			}
-			
-            className={`mt-1 block w-full border ${
-              validity.validLastName ? "border-gray-300" : "border-red-500"
-            } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-            placeholder="Enter Last Name"
-            required
-          />
-        </div>
-
-        {/* Date of Birth */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700" htmlFor="userDob">
+        <section className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
+        <h2 className="text-2xl font-bold mb-4">
+            Edit Employee : {`${formData.userFullName.userFirstName} ${formData.userFullName.userMiddleName} ${formData.userFullName.userLastName}`}</h2>
+            <form onSubmit={onSaveEmployeeClicked} className="space-y-6">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">
+                            First Name {!validity.validFirstName && <span className="text-red-500">*</span>}
+                        </label>
+                        <input
+                            type="text"
+                            name="userFullName.userFirstName" // Changed to match the nested structure
+                            value={formData.userFullName.userFirstName}
+                            onChange={handleInputChange}
+                            className={`mt-1 block w-full border ${
+                                validity.validFirstName ? "border-gray-300" : "border-red-500"
+                            } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                            placeholder="Enter First Name"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">
+                            Middle Name 
+                        </label>
+                        <input
+                            type="text"
+                            name="userFullName.userMiddleName" // Changed to match the nested structure
+                            value={formData.userFullName.userMiddleName}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">
+                            Last Name {!validity.validLastName && <span className="text-red-500">*</span>}
+                        </label>
+                        <input
+                            type="text"
+                            name="userFullName.userLastName" // Changed to match the nested structure
+                            value={formData.userFullName.userLastName}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </div>
+{/* DOB and Sex */}
+<div className="space-y-4">
+    <div>
+        <label className="block text-sm font-medium text-gray-700" htmlFor="userDob">
             Date of Birth {!validity.validDob && <span className="text-red-500">*</span>}
-          </label>
-          <input
+        </label>
+        <input
             type="date"
             name="userDob"
             value={formData.userDob}
@@ -401,12 +271,9 @@ const NewEmployeeForm = () => {
               validity.validDob ? "border-gray-300" : "border-red-500"
             } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
             required
-          />
-        </div>
-
-        {/* Sex Selection */}
-       
-<div>
+        />
+    </div>
+    <div>
   <label className="block text-sm font-medium text-gray-700">Sex {!validity.validUserSex && <span className="text-red-500">*</span>}</label>
   <div className="flex items-center space-x-4 mt-1">
     <div className="flex items-center">
@@ -446,239 +313,83 @@ const NewEmployeeForm = () => {
     </div>
   </div>
 </div>
-       {/* Employee Years Selection */}
-{formData.employeeYears.map((year, index) => (
-  <div key={index} className="flex items-center mb-2">
-    <input
-      type="checkbox"
-      id={`employeeYear-${index}`}
-      value={year.academicYear}
-      checked={year.academicYear === selectedYear}
-      onChange={(e) => onAcademicYearChanged(e, index)}
-      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-    />
-    <label
-      htmlFor={`employeeYear-${index}`}
-      className="ml-2 text-sm font-medium text-gray-700"
-    >
-      Academic Year  {!validity.validEmployeeYear && <span className="text-red-500">*</span>} : {selectedYear}
-    </label>
-  </div>
-))}
-
-<div className="flex items-center mb-2">
-  <input
-    type="checkbox"
-    id="employeeIsActive"
-    name="employeeIsActive"
-    checked={formData.employeeIsActive === true}
-    onChange={(e) => {
-      setFormData((prev) => ({
-        ...prev,
-        employeeIsActive: e.target.checked,
-      }));
-    }}
-    className='h-4 w-4  "text-blue-600"  focus:ring-blue-500 border-gray-300 rounded'
-  />
-  
-  <label htmlFor="employeeIsActive" className="ml-2 text-sm font-medium text-gray-700">
-    Employee IsActive {validity.validEmployeeIsActive && "*"}
-  </label>
 </div>
 
 
-        {/* Contact Information */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Primary Phone {!validity.validPrimaryPhone && <span className="text-red-500">*</span>}
-            </label>
-            <input
-              type="text"
-              name="primaryPhone"
-              value={formData.userContact.primaryPhone}
-              onChange={(e) =>
-				setFormData((prev) => ({
-				...prev,
-				userContact: {
-					...prev.userContact,
-					primaryPhone: e.target.value,
-				},
-				}))
-			}
-              className={`mt-1 block w-full border ${
-                validity.validPrimaryPhone ? "border-gray-300" : "border-red-500"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-              placeholder="Enter Primary Phone"
-              required
-            />
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Secondary Phone
+
+            {/* Employee Work History */}
+            <h3>Work History</h3>
+            {formData.employeeWorkHistory.map((work, index) => (
+                <div key={index}>
+                    <label htmlFor={`institution_${index}`}>Institution:</label>
+                    <input
+                        type="text"
+                        id={`institution_${index}`}
+                        value={work.institution}
+                        onChange={(e) => handleWorkHistoryChange(index, 'institution', e.target.value)}
+                    />
+                    <label htmlFor={`fromDate_${index}`}>From Date:</label>
+                    <input
+                        type="text"
+                        id={`fromDate_${index}`}
+                        value={work.fromDate}
+                        onChange={(e) => handleWorkHistoryChange(index, 'fromDate', e.target.value)}
+                    />
+                    <label htmlFor={`toDate_${index}`}>To Date:</label>
+                    <input
+                        type="text"
+                        id={`toDate_${index}`}
+                        value={work.toDate}
+                        onChange={(e) => handleWorkHistoryChange(index, 'toDate', e.target.value)}
+                    />
+                    <label htmlFor={`position_${index}`}>Position:</label>
+                    <input
+                        type="text"
+                        id={`position_${index}`}
+                        value={work.position}
+                        onChange={(e) => handleWorkHistoryChange(index, 'position', e.target.value)}
+                    />
+                    <label htmlFor={`contractType_${index}`}>Contract Type:</label>
+                    <input
+                        type="text"
+                        id={`contractType_${index}`}
+                        value={work.contractType}
+                        onChange={(e) => handleWorkHistoryChange(index, 'contractType', e.target.value)}
+                    />
+                    <label htmlFor={`salaryPackage_${index}`}>Salary Package:</label>
+                    <input
+                        type="text"
+                        id={`salaryPackage_${index}`}
+                        value={work.salaryPackage}
+                        onChange={(e) => handleWorkHistoryChange(index, 'salaryPackage', e.target.value)}
+                    />
+                    <button type="button" onClick={() => handleRemoveWorkHistory(index)}>Remove Work History</button>
+                </div>
+            ))}
+            <button type="button" onClick={handleAddWorkHistory}>Add Work History</button>
+
+           {/* Employee Years */}
+<h3>Employee Years</h3>
+{yearsList && yearsList.length > 0 ? (
+    yearsList.map((year, index) => (
+        <div key={index}>
+            <label>
+                <input
+                    type="checkbox"
+                    checked={formData.employeeYears[index]?.academicYear === selectedYear}
+                    onChange={(e) => onAcademicYearChanged(e, index)}
+                />
+                {year.title}
             </label>
-            <input
-              type="text"
-              name="secondaryPhone"
-              value={formData.userContact.secondaryPhone}
-              onChange={(e) =>
-				setFormData((prev) => ({
-				...prev,
-				userContact: {
-					...prev.userContact,
-					secondaryPhone: e.target.value,
-				},
-				}))
-			}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              placeholder="Enter Secondary Phone"
-            />
-          </div>
         </div>
+    ))
+) : (
+    <p>No academic years available.</p>
+)}
 
-        {/* Address Information */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              House {!validity.validHouse && <span className="text-red-500">*</span>}
-            </label>
-            <input
-              type="text"
-              name="house"
-              value={formData.userAddress.house}
-			  onChange={(e) =>
-				setFormData((prev) => ({
-				...prev,
-				userAddress: {
-					...prev.userAddress,
-					house: e.target.value,
-				},
-				}))
-			}
-              className={`mt-1 block w-full border ${
-                validity.validHouse ? "border-gray-300" : "border-red-500"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-              placeholder="Enter House"
-            />
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Street {!validity.validStreet && <span className="text-red-500">*</span>}
-            </label>
-            <input
-              type="text"
-              name="street"
-              value={formData.street}
-              onChange={(e) =>
-				setFormData((prev) => ({
-				...prev,
-				userAddress: {
-					...prev.userAddress,
-					street: e.target.value,
-				},
-				}))
-			}
-              className={`mt-1 block w-full border ${
-                validity.validStreet ? "border-gray-300" : "border-red-500"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-              placeholder="Enter Street"
-            />
-          </div>
-
-          <div className="col-span-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Area
-            </label>
-            <input
-              type="text"
-              name="area"
-              value={formData.userAddress.area}
-              onChange={(e) =>
-				setFormData((prev) => ({
-				...prev,
-				userAddress: {
-					...prev.userAddress,
-					area: e.target.value,
-				},
-				}))
-			}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              placeholder="Enter Area"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              City {!validity.validCity && <span className="text-red-500">*</span>}
-            </label>
-            <input
-              type="text"
-              name="city"
-              value={formData.userAddress.city}
-              onChange={(e) =>
-				setFormData((prev) => ({
-				...prev,
-				userAddress: {
-					...prev.userAddress,
-					city: e.target.value,
-				},
-				}))
-			}
-              className={`mt-1 block w-full border ${
-                validity.validCity ? "border-gray-300" : "border-red-500"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-              placeholder="Enter City"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Post Code
-            </label>
-            <input
-              type="text"
-              name="postCode"
-              value={formData.userAddress.postCode}
-              onChange={(e) =>
-				setFormData((prev) => ({
-				...prev,
-				userAddress: {
-					...prev.userAddress,
-					postCode: e.target.value,
-				},
-				}))
-			}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              placeholder="Enter Post Code"
-            />
-          </div>
-        </div>
-
-        {/* Email */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Email
-          </label>
-          <input
-            type="email"
-            name="email"
-            value={formData.userContact.email}
-            onChange={(e) =>
-				setFormData((prev) => ({
-				...prev,
-				userContact: {
-					...prev.userContact,
-					email: e.target.value,
-				},
-				}))
-			}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            placeholder="Enter Email Address"
-          />
-        </div>
-
+        
        
 	{/* Current Employment */}
 <div className="space-y-4">
@@ -1015,10 +726,11 @@ const NewEmployeeForm = () => {
           </button>
         </div>
       </form>
-    </section>
-  </>
+      </section>
+      </>
+    
   )
   return content
 };
 
-export default NewEmployeeForm;
+export default EditEmployeeForm;

@@ -43,6 +43,7 @@ import Expenses from './features/Finances/Expenses'
 import EmployeesList from './features/HR/Employees/EmployeesList'
 import NewEmployeeForm from './features/HR/Employees/NewEmployeeForm'
 import EmployeeDetails from './features/HR/Employees/EmployeeDetails'
+import EditEmployee from './features/HR/Employees/EditEmployee'
 
 import Payroll from './features/HR/Payroll'
 import Leave from './features/HR/Leave'
@@ -223,8 +224,8 @@ const App = () => {
 
 														
 										<Route path="newEmployee" element={<NewEmployeeForm />} /> 					
-									
 										<Route path=":employeeId/" element={<EmployeeDetails />}/>
+										<Route path="editEmployee/:id/" element={<EditEmployee/>}/>
 
 								</Route> {/* end of employees route */}
 									

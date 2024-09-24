@@ -28,8 +28,8 @@ import {selectAllAcademicYears} from '../../AppSettings/AcademicsSet/AcademicYea
 
 const EmployeesList = () => {
   //this is for the academic year selection
-  const Navigate = useNavigate()
-  const Dispatch = useDispatch()
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
   const academicYears = useSelector(selectAllAcademicYears)
   const [selectedYear, setSelectedYear]=useState('')
   const{canEdit, isAdmin, canDelete, canCreate, status2}=useAuth()
@@ -116,7 +116,7 @@ let filteredEmployees = []
     //we need to change into array to be read??
     employeesList = Object.values(entities)//we are using entity adapter in this query
     //console.log(employeesList,'employeesList')
-    Dispatch(setEmployees(employeesList))//timing issue to update the state and use it the same time
+    dispatch(setEmployees(employeesList))//timing issue to update the state and use it the same time
     
    
     //the serach result data
@@ -324,10 +324,10 @@ width:'180px'
   cell: row => (
     <div className="space-x-1">
     
-      <button className="text-blue-500" fontSize={20}  onClick={() => Navigate(`/hr/employees/employeeDetails/${row.id}`)}  > 
+      <button className="text-blue-500" fontSize={20}  onClick={() => navigate(`/hr/employees/employeeDetails/${row.id}`)}  > 
         <ImProfile className="text-2xl"/> 
         </button>
-      {canEdit?(<button  className="text-yellow-400" onClick={() => Navigate(`/hr/employees/editEmployee/${row.id}`)}  > 
+      {canEdit?(<button  className="text-yellow-400" onClick={() => navigate(`/hr/employees/editEmployee/${row.id}`)}  > 
       <FiEdit className="text-2xl"/> 
       </button>):null}
       {canDelete&&!isDelLoading&&(<button className="text-red-500"  onClick={() => onDeleteEmployeeClicked(row.id)}>
