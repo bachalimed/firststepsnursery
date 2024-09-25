@@ -51,7 +51,7 @@ const handleSelectedAcademicYear =(e) =>{
           >
           {academicYears.map(year=> (
             <option key= {year.id} value ={year.id}  className=''> {year.title} </option> ))}
-            {isManager&&<option  value ='1000' > 1000 </option>}
+            {/* {isManager&&<option  value ='1000' > 1000 </option>} */}
           </Select>
         </div>
       </Field>

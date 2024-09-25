@@ -178,7 +178,7 @@ const toDuplicate = selectedRows[-1]
 
     //setSelectedRows([]); // Clear selection after process
   }
-  
+  console.log(filteredEmployees,'filteredEmployees')
   // This is called when saving the updated employee years from the modal
   const onUpdateEmployeeClicked = async (updatedYears) => {
     console.log('Updated employeeYears from modal:', updatedYears);
@@ -294,7 +294,7 @@ width:'180px'
 },
 
 {name: "Position",
-  selector:row=>(` ${row.employeeData.employeeCurrentEmployment.contractType} ${row.employeeData.employeeCurrentEmployment.currentPosition}`),
+  selector:row=>(` ${row.employeeData?.employeeCurrentEmployment?.contractType} ${row.employeeData?.employeeCurrentEmployment?.currentPosition}`),
   sortable:true,
   width:'180px'
 }, 
@@ -302,9 +302,9 @@ width:'180px'
 {name: "Package",
   selector:row=>( 
   <div>
-    <div>{`Basic ${row.employeeData.employeeCurrentEmployment.salaryPackage.basic} ${row.employeeData.employeeCurrentEmployment.salaryPackage.payment}`}</div>
-    <div>{`cnss ${row.employeeData.employeeCurrentEmployment.salaryPackage.cnss}`}</div>
-    <div>{`other ${row.employeeData.employeeCurrentEmployment.salaryPackage.other}`}</div>
+    <div>{`Basic ${row.employeeData?.employeeCurrentEmployment?.salaryPackage?.basic} ${row.employeeData?.employeeCurrentEmployment?.salaryPackage?.payment}`}</div>
+    <div>{`cnss ${row.employeeData?.employeeCurrentEmployment?.salaryPackage?.cnss}`}</div>
+    <div>{`other ${row.employeeData?.employeeCurrentEmployment?.salaryPackage?.other}`}</div>
     
   </div>),
   sortable:true,
