@@ -237,10 +237,10 @@ width:'200px'
  }, 
  { 
   name: "Active",
-  selector:row=>row.employeeData.employeeIsActive ,
+  selector:row=>row.employeeData?.employeeIsActive ,
   cell: row => (
     <span>
-      {row.employeeData.employeeIsActive ? (
+      {row.employeeData?.employeeIsActive ? (
         <IoShieldCheckmarkOutline className='text-green-500 text-2xl' />
       ) : (
         <IoShieldOutline  className='text-yellow-400 text-2xl' />
@@ -252,7 +252,7 @@ width:'200px'
    },
   { 
 name: "Employee Name",
-selector:row=>( <Link to={`/hr/employees/employeeDetails/${row.id}`}> {row.userFullName.userFirstName+" "+row.userFullName.userMiddleName+" "+row.userFullName.userLastName}</Link>
+selector:row=>( <Link to={`/hr/employees/employeeDetails/${row.id}`}> {row.userFullName?.userFirstName+" "+row.userFullName?.userMiddleName+" "+row.userFullName?.userLastName}</Link>
   
 ),
 sortable:true,
@@ -285,7 +285,7 @@ width:'180px'
 
 {name: "Years",
   selector:row=>( 
-  <div>{row.employeeData?.employeeYears?.map(year=> (
+  <div>{(row?.employeeData?.employeeYears).map(year=> (
     <div key ={year.academicYear}>{year.academicYear}</div>))}
   </div>),
   sortable:true,

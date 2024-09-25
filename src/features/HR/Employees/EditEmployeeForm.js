@@ -73,7 +73,7 @@ const EditEmployeeForm = ({ employee }) => {
     employeeAssessment: employee.employeeData.employeeAssessment,
     employeeWorkHistory: employee.employeeData.employeeWorkHistory || [],
     employeeIsActive: employee.employeeData.employeeIsActive,
-    employeeYears: employee.employeeData.employeeYears || [],
+    employeeYears: employee.employeeData?.employeeYears || [],
     employeeCurrentEmployment: employee.employeeData
       .employeeCurrentEmployment || {
       position: "",
@@ -457,7 +457,7 @@ const EditEmployeeForm = ({ employee }) => {
                 <input
                   type="date"
                   name="joinDate"
-                  value={formData.employeeCurrentEmployment.joinDate}
+                  value={formData.employeeCurrentEmployment.joinDate.split("T")[0]}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
