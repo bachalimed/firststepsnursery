@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit"
 import { apiSlice } from './api/apiSlice'
 import { setupListeners } from "@reduxjs/toolkit/query"
 import authReducer from "../features/auth/authSlice"
+import usersReducer from "../features/Admin/UsersManagement/usersSlice"
 import academicYearsReducer from '../features/AppSettings/AcademicsSet/AcademicYears/academicYearsSlice'
 import tasksReducer from '../features/Desk/Tasks/tasksSlice'
 import studentsReducer from  '../features/Students/StudentsAndParents/Students/studentsSlice'
@@ -15,6 +16,7 @@ export const store = configureStore({
     reducer: {// Add the generated reducer as a specific top-level slice
         [apiSlice.reducerPath]: apiSlice.reducer,//what ever we name in the reducerpath will be given the name to this apislice, the default is 'api'
         auth: authReducer,
+        user: usersReducer,
         academicYear: academicYearsReducer,
         student: studentsReducer,
         family: familiesReducer,

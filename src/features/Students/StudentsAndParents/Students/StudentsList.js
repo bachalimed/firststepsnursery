@@ -29,7 +29,7 @@ import {selectAllAcademicYears} from '../../../AppSettings/AcademicsSet/Academic
 const StudentsList = () => {
   //this is for the academic year selection
   const Navigate = useNavigate()
-  const Dispatch = useDispatch()
+  const dispatch = useDispatch()
   const academicYears = useSelector(selectAllAcademicYears)
   const [selectedYear, setSelectedYear]=useState('')
   const{canEdit, isAdmin, canDelete, canCreate, status2}=useAuth()
@@ -115,7 +115,7 @@ let filteredStudents = []
     
     //we need to change into array to be read??
     studentsList = Object.values(entities)//we are using entity adapter in this query
-    Dispatch(setStudents(studentsList))//timing issue to update the state and use it the same time
+    dispatch(setStudents(studentsList))//timing issue to update the state and use it the same time
     
    
     //the serach result data

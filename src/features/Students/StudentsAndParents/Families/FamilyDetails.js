@@ -6,7 +6,7 @@ import axios from "axios";
 import { useGetStudentDocumentsByYearByIdQuery } from "../../../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice";
 import StudentsParents from "../../StudentsParents";
 import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYears";
-
+import { useNavigate } from "react-router";
 const FamilyDetails = () => {
   const { id } = useParams();
   const family = useSelector((state) => selectFamilyById(state, id));
@@ -18,7 +18,7 @@ const FamilyDetails = () => {
   const [fatherPhotoUrl, setFatherPhotoUrl] = useState(null);
   const [motherPhotoUrl, setMotherPhotoUrl] = useState(null);
   const [childrenPhotoUrls, setChildrenPhotoUrls] = useState([]);
-
+  const navigate = useNavigate()
   const {
     data: studentDocumentsListing,
     isSuccess: listIsSuccess,
@@ -59,6 +59,10 @@ const FamilyDetails = () => {
     }
   }, [listIsSuccess, studentDocumentsListing, children, token]);
 
+  const handleBack = () => {
+    navigate("students/studentsParents/families/");
+  };
+
   return (
     <>
       <StudentsParents />
@@ -87,11 +91,11 @@ const FamilyDetails = () => {
 
         <div className="mb-4">
           <h3 className="text-lg font-semibold">Father Personal Information</h3>
-          <p><strong>Name:</strong> {father.userFullName.userFirstName} {father.userFullName.userMiddleName} {father.userFullName.userLastName}</p>
-          <p><strong>Date of Birth:</strong> {new Date(father.userDob).toLocaleDateString()}</p>
-          <p><strong>Sex:</strong> {father.userSex}</p>
-          <p><strong>Active:</strong> {father.userIsActive ? "Yes" : "No"}</p>
-          <p><strong>Address:</strong> {`${father.userAddress.house} ${father.userAddress.street}, ${father.userAddress.area} ${father.userAddress.postCode}, ${father.userAddress.city}`}</p>
+          <p><strong>Name:</strong> {father?.userFullName?.userFirstName} {father?.userFullName?.userMiddleName} {father?.userFullName?.userLastName}</p>
+          <p><strong>Date of Birth:</strong> {new Date(father?.userDob).toLocaleDateString()}</p>
+          
+         
+          <p><strong>Address:</strong> {`${father?.userAddress?.house} ${father?.userAddress?.street}, ${father?.userAddress?.area} ${father?.userAddress?.postCode}, ${father?.userAddress?.city}`}</p>
         </div>
 
         <div className="mb-4">
@@ -101,11 +105,11 @@ const FamilyDetails = () => {
 
         <div className="mb-4">
           <h3 className="text-lg font-semibold">Mother Personal Information</h3>
-          <p><strong>Name:</strong> {mother.userFullName.userFirstName} {mother.userFullName.userMiddleName} {mother.userFullName.userLastName}</p>
-          <p><strong>Date of Birth:</strong> {new Date(mother.userDob).toLocaleDateString()}</p>
-          <p><strong>Sex:</strong> {mother.userSex}</p>
-          <p><strong>Active:</strong> {mother.userIsActive ? "Yes" : "No"}</p>
-          <p><strong>Address:</strong> {`${mother.userAddress.house} ${mother.userAddress.street}, ${mother.userAddress.area} ${mother.userAddress.postCode}, ${mother.userAddress.city}`}</p>
+          <p><strong>Name:</strong> {mother?.userFullName?.userFirstName} {mother?.userFullName?.userMiddleName} {mother?.userFullName?.userLastName}</p>
+          <p><strong>Date of Birth:</strong> {new Date(mother?.userDob).toLocaleDateString()}</p>
+
+          
+          <p><strong>Address:</strong> {`${mother?.userAddress?.house} ${mother?.userAddress?.street}, ${mother?.userAddress?.area} ${mother?.userAddress?.postCode}, ${mother?.userAddress?.city}`}</p>
         </div>
 
         {children && children.length > 0 ? (
@@ -113,16 +117,24 @@ const FamilyDetails = () => {
             <h3 className="text-lg font-semibold">Children</h3>
             {children.map((child, index) => (
               <div key={index} className="mb-2">
-                <p><strong>Child Name:</strong> {child.child.studentName.firstName} {child.child.studentName.middleName} {child.child.studentName.lastName}</p>
-                <p><strong>Date of Birth:</strong> {new Date(child.child.studentDob).toLocaleDateString()}</p>
-                <p><strong>Sex:</strong> {child.child.studentSex}</p>
-                <p><strong>Joint Family:</strong> {child.child.studentJointFamily ? "Yes" : "No"}</p>
+                <p><strong>Child Name:</strong> {child?.child?.studentName?.firstName} {child?.child?.studentName?.middleName} {child?.child?.studentName?.lastName}</p>
+                <p><strong>Date of Birth:</strong> {new Date(child?.child?.studentDob).toLocaleDateString()}</p>
+                <p><strong>Sex:</strong> {child?.child?.studentSex}</p>
+                <p><strong>Joint Family:</strong> {child?.child?.studentJointFamily ? "Yes" : "No"}</p>
               </div>
             ))}
           </div>
         ) : (
           <p>No children profiles available.</p>
         )}
+         <div className="mt-8">
+        <button
+          onClick={handleBack}
+          className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+        >
+          Back to  List
+        </button>
+      </div>
       </div>
     </>
   );

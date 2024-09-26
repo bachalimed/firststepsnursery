@@ -7,6 +7,7 @@ import { StepperContext } from "../../../../contexts/StepperContext";
 //constrains on inputs when creating new parent
 
 const NAME_REGEX = /^[A-z 0-9]{3,20}$/;
+const HOUSE_REGEX = /^[A-z 0-9]{1,20}$/;
 const PHONE_REGEX = /^[0-9]{6,15}$/;
 const DOB_REGEX = /^[0-9/-]{4,10}$/;
 
@@ -70,7 +71,7 @@ export default function EditFatherForm() {
   }, [userDob]);
 
   useEffect(() => {
-    setValidHouse(NAME_REGEX.test(house));
+    setValidHouse(HOUSE_REGEX.test(house));
   }, [house]);
   useEffect(() => {
     setValidStreet(NAME_REGEX.test(street));
@@ -119,7 +120,7 @@ export default function EditFatherForm() {
   // const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
 
   setCanSaveFather ([validUserFirstName, validUserLastName,  validUserDob, validHouse, validStreet, validCity, validPrimaryPhone ].every(Boolean))
-  //console.log('cansavefatehr', canSaveFather)
+  console.log('cansavefatehr', canSaveFather)
  
 
   const content = (

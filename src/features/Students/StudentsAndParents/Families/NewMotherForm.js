@@ -14,6 +14,7 @@ import { StepperContext } from "../../../../contexts/StepperContext";
 const USER_REGEX = /^[A-z0-9]{6,20}$/;
 const PWD_REGEX = /^[A-z0-9!@#-_$%]{8,20}$/;
 const NAME_REGEX = /^[A-z 0-9]{3,20}$/;
+const HOUSE_REGEX = /^[A-z 0-9]{1,20}$/;
 const PHONE_REGEX = /^[0-9]{6,15}$/;
 const DOB_REGEX = /^[0-9/-]{4,10}$/;
 const EMAIL_REGEX = /^[A-z0-9.@-_]{6,20}$/;
@@ -111,7 +112,7 @@ export default function NewMotherForm() {
     setValidUserDob(DOB_REGEX.test(userDob));
   }, [userDob]);
   useEffect(() => {
-    setValidHouse(NAME_REGEX.test(house));
+    setValidHouse(HOUSE_REGEX.test(house));
   }, [house]);
   useEffect(() => {
     setValidStreet(NAME_REGEX.test(street));

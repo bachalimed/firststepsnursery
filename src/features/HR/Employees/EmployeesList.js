@@ -256,7 +256,7 @@ selector:row=>( <Link to={`/hr/employees/employeeDetails/${row.id}`}> {row.userF
   
 ),
 sortable:true,
-width:'180px'
+width:'200px'
  }, 
   { 
   name: "Sex",
@@ -294,17 +294,30 @@ width:'180px'
 },
 
 {name: "Position",
-  selector:row=>(` ${row.employeeData?.employeeCurrentEmployment?.contractType} ${row.employeeData?.employeeCurrentEmployment?.currentPosition}`),
+  selector:row=>(` ${row.employeeData?.employeeCurrentEmployment?.contractType} ${row.employeeData?.employeeCurrentEmployment?.position}`),
   sortable:true,
   width:'180px'
 }, 
 
+
+{name: "Roles",
+  selector:row=>( 
+  <div>{(row?.userRoles).map(role=> (
+    <div key ={role}>{role}</div>))}
+  </div>),
+  sortable:true,
+  removableRows:true,
+  width:'130px',
+},
+
+
+
 {name: "Package",
   selector:row=>( 
   <div>
-    <div>{`Basic ${row.employeeData?.employeeCurrentEmployment?.salaryPackage?.basic} ${row.employeeData?.employeeCurrentEmployment?.salaryPackage?.payment}`}</div>
-    <div>{`cnss ${row.employeeData?.employeeCurrentEmployment?.salaryPackage?.cnss}`}</div>
-    <div>{`other ${row.employeeData?.employeeCurrentEmployment?.salaryPackage?.other}`}</div>
+    <div>{`Basic:  ${row.employeeData?.employeeCurrentEmployment?.salaryPackage?.basic} ${row.employeeData?.employeeCurrentEmployment?.salaryPackage?.payment}`}</div>
+    {(row.employeeData?.employeeCurrentEmployment?.salaryPackage?.cnss)&&<div>{`cnss: ${row.employeeData?.employeeCurrentEmployment?.salaryPackage?.cnss}`}</div>}
+    {(row.employeeData?.employeeCurrentEmployment?.salaryPackage?.other)&&<div>{`other: ${row.employeeData?.employeeCurrentEmployment?.salaryPackage?.other}`}</div>}
     
   </div>),
   sortable:true,

@@ -226,6 +226,7 @@ const App = () => {
 										<Route path="newEmployee" element={<NewEmployeeForm />} /> 					
 										<Route path=":employeeId/" element={<EmployeeDetails />}/>
 										<Route path="editEmployee/:id/" element={<EditEmployee/>}/>
+										<Route path="employeeDetails/:id/" element={<EmployeeDetails/>}/>
 
 								</Route> {/* end of employees route */}
 									

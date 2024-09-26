@@ -164,7 +164,7 @@ let firstAvailableStudent
     // Set the save button's availability based on whether valid children exist
     setCanSaveChildren(Array.isArray(children) && children.length > 0 && children[0]?.child !== "");
   }, [children, setCanSaveChildren]);
-
+console.log(canSaveChildren,'canSaveChildren')
   let content;
   if (isStudentListSuccess&&(!isUpdatingChildren)) {
     content = (

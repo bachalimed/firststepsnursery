@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../../config/UserRoles";
 import { ACTIONS } from "../../../config/UserActions";
+import useAuth from "../../../hooks/useAuth";
 import Employees from "../Employees";
 import { useSelectedAcademicYear } from "../../../hooks/useSelectedAcademicYears";
 import { useSelector } from "react-redux";
@@ -23,6 +24,7 @@ const EditEmployeeForm = ({ employee }) => {
   const navigate = useNavigate();
   const academicYears = useSelector(selectAllAcademicYears); // to be used to show all academic years
   const [selectedYear, setSelectedYear] = useState("");
+  const {isAdmin, isManager} = useAuth()
   const {
     data: academicYearsList, //the data is renamed parents
     isLoading: yearIsLoading, //monitor several situations
@@ -59,22 +61,19 @@ const EditEmployeeForm = ({ employee }) => {
 
   // Consolidated form state
   const [formData, setFormData] = useState({
-    username: employee.username,
-    password: employee.password,
-    userRoles: employee.userRoles || [],
-    userAllowedActions: employee.userAllowedActions || [],
-    userFullName: employee.userFullName,
-
-    userDob: employee.userDob.split("T")[0],
-    userSex: employee.userSex,
-    userIsActive: employee.userIsActive || false,
-    userAddress: employee.userAddress,
-    userContact: employee.userContact,
-    employeeAssessment: employee.employeeData.employeeAssessment,
-    employeeWorkHistory: employee.employeeData.employeeWorkHistory || [],
-    employeeIsActive: employee.employeeData.employeeIsActive,
-    employeeYears: employee.employeeData?.employeeYears || [],
-    employeeCurrentEmployment: employee.employeeData
+    employeeId: employee?.employeeId,
+	userId:employee?.id,
+    userFullName: employee?.userFullName,
+    userDob: employee?.userDob.split("T")[0],
+    userSex: employee?.userSex,
+    userAddress: employee?.userAddress,
+    userContact: employee?.userContact,
+    userRoles: employee?.userRoles,
+    employeeAssessment: employee?.employeeData?.employeeAssessment,
+    employeeWorkHistory: employee.employeeData?.employeeWorkHistory || [],
+    employeeIsActive: employee?.employeeData?.employeeIsActive,
+    employeeYears: employee?.employeeData?.employeeYears || [],
+    employeeCurrentEmployment: employee?.employeeData
       .employeeCurrentEmployment || {
       position: "",
       joinDate: "",
@@ -85,14 +84,15 @@ const EditEmployeeForm = ({ employee }) => {
       },
     },
   });
-
+  console.log(formData.userRoles);
   const [validity, setValidity] = useState({
-    validUsername: false,
+    
     validFirstName: false,
     validLastName: false,
     validDob: false,
     validUserSex: false,
     validHouse: false,
+   
     validStreet: false,
     validCity: false,
     validPrimaryPhone: false,
@@ -108,34 +108,53 @@ const EditEmployeeForm = ({ employee }) => {
   useEffect(() => {
     setValidity((prev) => ({
       ...prev,
-      validUsername: USER_REGEX.test(formData.username),
-      validFirstName: NAME_REGEX.test(formData.userFullName.userFirstName),
-      validLastName: NAME_REGEX.test(formData.userFullName.userLastName),
-      validDob: DOB_REGEX.test(formData.userDob),
+     
+      validFirstName: NAME_REGEX.test(formData.userFullName?.userFirstName),
+      validLastName: NAME_REGEX.test(formData.userFullName?.userLastName),
+      validDob: DOB_REGEX.test(formData.userDob.split("T")[0]),
       validUserSex: NAME_REGEX.test(formData.userSex),
-      validHouse: NAME_REGEX.test(formData.userAddress.house),
-      validStreet: NAME_REGEX.test(formData.userAddress.street),
-      validCity: NAME_REGEX.test(formData.userAddress.city),
-      validPrimaryPhone: PHONE_REGEX.test(formData.userContact.primaryPhone),
+      validHouse: NAME_REGEX.test(formData.userAddress?.house),
+      validStreet: NAME_REGEX.test(formData.userAddress?.street),
+      validCity: NAME_REGEX.test(formData.userAddress?.city),
+      validPrimaryPhone: PHONE_REGEX.test(formData.userContact?.primaryPhone),
       validCurrentPosition: USER_REGEX.test(
-        formData.employeeCurrentEmployment.position
+        formData.employeeCurrentEmployment?.position
       ),
       validJoinDate: DOB_REGEX.test(
-        formData.employeeCurrentEmployment.joinDate
+        formData.employeeCurrentEmployment.joinDate.split("T")[0]
       ),
       validContractType: USER_REGEX.test(
-        formData.employeeCurrentEmployment.contractType
+        formData.employeeCurrentEmployment?.contractType
       ),
       validBasic: NUMBER_REGEX.test(
-        formData.employeeCurrentEmployment.salaryPackage.basic
+        formData.employeeCurrentEmployment?.salaryPackage?.basic
       ),
       validPayment: NAME_REGEX.test(
-        formData.employeeCurrentEmployment.salaryPackage.payment
+        formData.employeeCurrentEmployment?.salaryPackage?.payment
       ),
-      //validEmployeeYear: YEAR_REGEX.test(formData.employeeYears[0].academicYear)
+      validEmployeeYear: YEAR_REGEX.test(
+        formData.employeeYears[0].academicYear
+      ),
     }));
   }, [formData]);
 
+  console.log(
+    
+    validity.validFirstName,
+    validity.validLastName,
+    validity.validDob,
+    validity.validUserSex,
+    validity.validHouse,
+    validity.validStreet,
+    validity.validCity,
+    validity.validPrimaryPhone,
+    validity.validCurrentPosition,
+    validity.validJoinDate,
+    validity.validContractType,
+    validity.validBasic,
+    validity.validPayment,
+    validity.validEmployeeYear
+  );
   useEffect(() => {
     if (isSuccess) {
       setFormData({});
@@ -188,44 +207,89 @@ const EditEmployeeForm = ({ employee }) => {
       return { ...prev, employeeYears: updatedYears };
     });
   };
+  const onuserRolesChanged = (e, role) => {
+    const { checked } = e.target;
 
+    setFormData((prev) => {
+      // Clone the previous userRoles array to avoid direct mutation
+      const updatedUserRoles = [...prev.userRoles];
+
+      if (checked) {
+        // Add the selected role if it's checked and not already in the array
+        if (!updatedUserRoles.includes(role)) {
+          updatedUserRoles.push(role);
+        }
+      } else {
+        // Remove the role if unchecked
+        const filteredRoles = updatedUserRoles.filter(
+          (userRole) => userRole !== role
+        );
+        return { ...prev, userRoles: filteredRoles };
+      }
+
+      return { ...prev, userRoles: updatedUserRoles };
+    });
+  };
+  // Handler to update work history
   const handleWorkHistoryChange = (index, field, value) => {
-    const updatedWorkHistory = [...formData.employeeWorkHistory];
-    updatedWorkHistory[index][field] = value;
-    setFormData((prev) => ({
-      ...prev,
+    // Create a new copy of employeeWorkHistory
+    const updatedWorkHistory = formData.employeeWorkHistory.map((work, i) => {
+      if (i === index) {
+        return {
+          ...work, // Spread the existing work object
+          [field]: value, // Update the specific field
+        };
+      }
+      return work; // Return the existing work object for others
+    });
+
+    // Update the formData state
+    setFormData((prevState) => ({
+      ...prevState,
+      employeeWorkHistory: updatedWorkHistory, // Set the updated work history
+    }));
+  };
+
+  // Handler to remove work history
+  const handleRemoveWorkHistory = (index) => {
+    // Filter out the work history item to be removed
+    const updatedWorkHistory = formData.employeeWorkHistory.filter(
+      (_, i) => i !== index
+    );
+
+    // Update the formData state
+    setFormData((prevState) => ({
+      ...prevState,
       employeeWorkHistory: updatedWorkHistory,
     }));
   };
 
+  // Handler to add work history
   const handleAddWorkHistory = () => {
-    setFormData((prev) => ({
-      ...prev,
-      employeeWorkHistory: [
-        ...prev.employeeWorkHistory,
-        {
-          institution: "",
-          fromDate: "",
-          toDate: "",
-          position: "",
-          contractType: "",
-          salaryPackage: "",
-        },
-      ],
+    // Add a new empty work history object
+    const newWorkHistory = {
+      institution: "",
+      fromDate: "",
+      toDate: "",
+      position: "",
+      contractType: "",
+      salaryPackage: "",
+    };
+
+    // Update the formData state
+    setFormData((prevState) => ({
+      ...prevState,
+      employeeWorkHistory: [...prevState.employeeWorkHistory, newWorkHistory],
     }));
   };
 
-  const handleRemoveWorkHistory = (index) => {
-    setFormData((prev) => ({
-      ...prev,
-      employeeWorkHistory: prev.employeeWorkHistory.filter(
-        (_, i) => i !== index
-      ),
-    }));
-  };
+  const canSave =
+    Object.values(validity).every(Boolean) &&
+    (formData?.userRoles?.length > 0) &&
+    !isLoading;
 
-  const canSave = Object.values(validity).every(Boolean) && !isLoading;
-  console.log(formData,'formData')
+  console.log(formData, "formData");
+  console.log(canSave, "canSave");
   const onSaveEmployeeClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
@@ -283,7 +347,7 @@ const EditEmployeeForm = ({ employee }) => {
                   name="userFullName.userMiddleName" // Changed to match the nested structure
                   value={formData.userFullName.userMiddleName}
                   onChange={handleInputChange}
-                  required
+                
                 />
               </div>
               <div>
@@ -324,6 +388,13 @@ const EditEmployeeForm = ({ employee }) => {
                     required
                   />
                 </div>
+				
+				
+				
+
+
+
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Sex{" "}
@@ -383,6 +454,7 @@ const EditEmployeeForm = ({ employee }) => {
 
                   {/* Employee Years */}
                   <h3 className="text-lg font-semibold mt-6">Employee Years</h3>
+				 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {yearsList && yearsList.length > 0 ? (
                     yearsList.map((year, index) => {
                       const isChecked = formData.employeeYears.some(
@@ -406,6 +478,17 @@ const EditEmployeeForm = ({ employee }) => {
                   ) : (
                     <p>No academic years available.</p>
                   )}
+				  </div>
+
+
+		
+
+
+
+
+
+
+
                 </div>
               </div>
             </div>
@@ -417,6 +500,25 @@ const EditEmployeeForm = ({ employee }) => {
               Employee Current EmploymentWork History
             </h3>
             <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
+
+
+			<div className="flex items-center space-x-3">
+  <input
+    type="checkbox"
+    id="employeeIsActive"
+    checked={formData.employeeIsActive === true}
+    onChange={(e) => {
+      setFormData((prev) => ({
+        ...prev,
+        employeeIsActive: e.target.checked ? true : false,
+      }));
+    }}
+    className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+  />
+  <label htmlFor="employeeIsActive" className="text-sm font-medium text-gray-700">
+    Employee is Active
+  </label>
+</div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Current Position{" "}
@@ -457,7 +559,9 @@ const EditEmployeeForm = ({ employee }) => {
                 <input
                   type="date"
                   name="joinDate"
-                  value={formData.employeeCurrentEmployment.joinDate.split("T")[0]}
+                  value={
+                    formData.employeeCurrentEmployment.joinDate.split("T")[0]
+                  }
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
@@ -634,9 +738,34 @@ const EditEmployeeForm = ({ employee }) => {
                 </div>
               </div>
             </div>
-          </div>
+            {(isAdmin||isManager)&&<div className="space-y-4">
+              <h3 className="text-lg font-semibold">Assign User Roles</h3>
 
-          {/* work history 2 */}
+              <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
+                <div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {Object.values(ROLES).map((role) => (
+                      <div key={role} className="flex items-center space-x-3">
+                        <input
+                          type="checkbox"
+                          id={`role-${role}`}
+                          checked={formData.userRoles.includes(role)}
+                          onChange={(e) => onuserRolesChanged(e, role)}
+                          className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                        />
+                        <label
+                          htmlFor={`role-${role}`}
+                          className="text-sm font-medium text-gray-700"
+                        >
+                          {role}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>}
+          </div>
 
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Employee Work History</h3>
@@ -678,7 +807,7 @@ const EditEmployeeForm = ({ employee }) => {
                   <input
                     type="date"
                     name="fromDate"
-                    value={work.fromDate.split("T")[0]}
+                    value={work.fromDate}
                     onChange={(e) =>
                       handleWorkHistoryChange(index, "fromDate", e.target.value)
                     }
@@ -695,7 +824,7 @@ const EditEmployeeForm = ({ employee }) => {
                   <input
                     type="date"
                     name="toDate"
-                    value={work.toDate.split("T")[0]}
+                    value={work.toDate}
                     onChange={(e) =>
                       handleWorkHistoryChange(index, "toDate", e.target.value)
                     }

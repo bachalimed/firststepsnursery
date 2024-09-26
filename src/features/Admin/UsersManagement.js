@@ -26,7 +26,7 @@ const usersManagementTabs=
   const tabs = [
     { label: 'All Users', path: '/admin/usersManagement/users/' },
     { label: 'New User', path: '/admin/usersManagement/newUser/' },
-    { label: 'Option 3', path: '/admin/usersManagement/' }, // Option 3 placeholder
+    { label: 'Option 3', path: '/admin/usersManagement/blabla' }, // Option 3 placeholder
   ];
 
   // Function to determine if a tab is active based on the current path
