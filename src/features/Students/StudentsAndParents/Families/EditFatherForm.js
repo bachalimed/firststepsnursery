@@ -14,26 +14,41 @@ const DOB_REGEX = /^[0-9/-]{4,10}$/;
 export default function EditFatherForm() {
   //an add parent function that can be called inside the component
   //const {userData, setUserData} = useContext(StepperContext)
-  const { father, setFather, familySituation, setFamilySituation, canSaveFather, setCanSaveFather } = useContext(StepperContext);
+  const {
+    father,
+    setFather,
+    familySituation,
+    setFamilySituation,
+    canSaveFather,
+    setCanSaveFather,
+  } = useContext(StepperContext);
   //console.log('fatehr in edit father', father)
-
-
 
   //initialisation of states for each input
 
-  const [userFirstName, setUserFirstName] = useState(father?.userFullName?.userFirstName);
-  const [userMiddleName, setUserMiddleName] = useState(father?.userFullName?.userMiddleName);
-  const [userLastName, setUserLastName] = useState(father?.userFullName?.userLastName);
+  const [userFirstName, setUserFirstName] = useState(
+    father?.userFullName?.userFirstName
+  );
+  const [userMiddleName, setUserMiddleName] = useState(
+    father?.userFullName?.userMiddleName
+  );
+  const [userLastName, setUserLastName] = useState(
+    father?.userFullName?.userLastName
+  );
   const [userDob, setUserDob] = useState(father?.userDob?.split("T")[0]);
   const [house, setHouse] = useState(father?.userAddress?.house);
   const [street, setStreet] = useState(father?.userAddress?.street);
   const [area, setArea] = useState(father?.userAddress?.area);
   const [postCode, setPostCode] = useState(father?.userAddress?.postCode);
   const [city, setCity] = useState(father?.userAddress?.city);
-  const [primaryPhone, setPrimaryPhone] = useState(father?.userContact?.primaryPhone);
-  const [secondaryPhone, setSecondaryPhone] = useState(father?.userContact?.secondaryPhone);
+  const [primaryPhone, setPrimaryPhone] = useState(
+    father?.userContact?.primaryPhone
+  );
+  const [secondaryPhone, setSecondaryPhone] = useState(
+    father?.userContact?.secondaryPhone
+  );
   const [email, setEmail] = useState(father?.userContact?.email);
-  
+
   const [validUserFirstName, setValidUserFirstName] = useState(false);
   const [validUserLastName, setValidUserLastName] = useState(false);
   const [validUserDob, setValidUserDob] = useState(false);
@@ -84,7 +99,6 @@ export default function EditFatherForm() {
     setValidPrimaryPhone(PHONE_REGEX.test(primaryPhone));
   }, [primaryPhone]);
 
-
   useEffect(() => {
     setFather((prev) => ({
       ...prev,
@@ -119,9 +133,18 @@ export default function EditFatherForm() {
 
   // const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
 
-  setCanSaveFather ([validUserFirstName, validUserLastName,  validUserDob, validHouse, validStreet, validCity, validPrimaryPhone ].every(Boolean))
-  console.log('cansavefatehr', canSaveFather)
- 
+  setCanSaveFather(
+    [
+      validUserFirstName,
+      validUserLastName,
+      validUserDob,
+      validHouse,
+      validStreet,
+      validCity,
+      validPrimaryPhone,
+    ].every(Boolean)
+  );
+  console.log("cansavefatehr", canSaveFather);
 
   const content = (
     <div className="flex flex-col p-6 space-y-6 max-w-2xl mx-auto bg-white shadow-lg rounded-lg">

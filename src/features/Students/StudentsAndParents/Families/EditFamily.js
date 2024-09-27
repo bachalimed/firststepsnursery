@@ -40,12 +40,16 @@ const EditFamily = () => {
     isSuccess: isFamilySuccess,
     isError: isFamilyError,
     error: familyError,
-  } = useGetFamilyByIdQuery({ id: id, criteria: "Dry", endpointName: "family" } || {}, {// "dry" will not ppoulate children fully
-    //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-    //pollingInterval: 60000,//will refetch data every 60seconds
-    refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
-    refetchOnMountOrArgChange: true, //refetch when we remount the component
-  });
+  } = useGetFamilyByIdQuery(
+    { id: id, criteria: "Dry", endpointName: "family" } || {},
+    {
+      // "dry" will not ppoulate children fully
+      //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+      //pollingInterval: 60000,//will refetch data every 60seconds
+      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
+      refetchOnMountOrArgChange: true, //refetch when we remount the component
+    }
+  );
 
   useEffect(() => {
     if (isFamilySuccess) {
@@ -57,11 +61,12 @@ const EditFamily = () => {
 
   // Update father, mother, familySituation, and children when family changes
   useEffect(() => {
-    if (Object.keys(family).length > 0) { // Ensure family is not an empty object
+    if (Object.keys(family).length > 0) {
+      // Ensure family is not an empty object
       setIsUpdatingFather(true); // Start updating
       setFather(family.father); // Update father state
       setIsUpdatingChildren(true); // Start updating
-      setChildren(family.children)
+      setChildren(family.children);
     }
   }, [family]);
 
@@ -75,16 +80,13 @@ const EditFamily = () => {
   useEffect(() => {
     // Only runs after father state is set
     if (isUpdatingChildren) {
-      
       setIsUpdatingChildren(false); // Finish updating
     }
   }, [children, isUpdatingChildren]);
   useEffect(() => {
     if (family != {}) {
-     
       setMother(family.mother); // Update mother state
       setFamilySituation(family.familySituation); // Update family situation
-      
     }
   }, [family]);
 
@@ -94,19 +96,18 @@ const EditFamily = () => {
   //   if ( children?.length > 1 && !isUpdatingChildren) {
   //     console.log('children before formatting in parent', children)
   //     const formattedChildren = children.map((child) => (
-        
+
   //         {
   //       _id: child?.child?._id ||child?._id,
   //       studentFullName: `${child?.studentName.firstName} ${child?.studentName.middleName || ""} ${child?.tudentName.lastName}`.trim()||child?.studentFullName,
-      
+
   //   }));
-      
+
   //     setChildren(formattedChildren);
   //     setIsUpdatingChildren(false);
   //     console.log('children afterrrrrrrrr formatting in parent', children)
   //   }
   // }, [children, setChildren]);
- 
 
   const steps = ["Father Details", "Mother Details", "Children", "Completed"];
 
@@ -124,13 +125,19 @@ const EditFamily = () => {
   const displayStep = (step) => {
     switch (step) {
       case 1:
-        if(isUpdatingFather){ return <LoadingStateIcon/>}
-       else { return <EditFatherForm />};
+        if (isUpdatingFather) {
+          return <LoadingStateIcon />;
+        } else {
+          return <EditFatherForm />;
+        }
       case 2:
         return <EditMotherForm />;
       case 3:
-        if(isUpdatingChildren){ return <LoadingStateIcon/>}
-        else{ return <EditFamilyAddChildrenForm />}
+        if (isUpdatingChildren) {
+          return <LoadingStateIcon />;
+        } else {
+          return <EditFamilyAddChildrenForm />;
+        }
       case 4:
         return <FamilyCompleted />;
 
@@ -161,19 +168,19 @@ const EditFamily = () => {
       // Remove the last element using slice
       setChildren((prevChildren) => prevChildren.slice(0, -1));
     }
-  
+
     // Log the cleaned-up children array for verification
-  
+
     try {
       // Call the updateFamily function with the cleaned-up data
       await updateFamily({
-        _id:id,
-        father:father,
-        mother:mother,
-        children:children,
-        familySituation:familySituation,
+        _id: id,
+        father: father,
+        mother: mother,
+        children: children,
+        familySituation: familySituation,
       });
-  
+
       // Handle the success state, e.g., move to the next step
       if (isUpdateSuccess) {
         setCurrentStep(4); // Navigate to the next step
@@ -187,19 +194,21 @@ const EditFamily = () => {
   let content;
   //console.log( father, 'father', mother, 'mother', children, familySituation,'data in parent form')
   //maybe check here and allow steps to move on
- 
+
   if (isFamilyLoading) {
-    content = <>
+    content = (
+      <>
         <StudentsParents />
         <LoadingStateIcon />
-        </>;
+      </>
+    );
   }
   if (isFamilySuccess) {
     content = (
       <>
         <StudentsParents />
 
-       <div className="md:w-3/4 mx-auto shadow-xl rounded-2xl pb-2 bg-white">
+        <div className="md:w-3/4 mx-auto shadow-xl rounded-2xl pb-2 bg-white">
           <div className="container horizontal mt-5">
             <Stepper steps={steps} currentStep={currentStep} />
             {/* display componentns */}

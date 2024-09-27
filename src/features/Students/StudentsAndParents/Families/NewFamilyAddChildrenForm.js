@@ -9,8 +9,8 @@ import { StepperContext } from "../../../../contexts/StepperContext";
 
 const NewFamilyAddChildrenForm = () => {
   //an add parent function that can be called inside the component
-  const { children, setChildren, canSaveChildren, setCanSaveChildren } = useContext(StepperContext);
-  
+  const { children, setChildren, canSaveChildren, setCanSaveChildren } =
+    useContext(StepperContext);
 
   const {
     data: students, //the data is renamed parents

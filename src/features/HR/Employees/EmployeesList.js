@@ -44,7 +44,6 @@ const EmployeesList = () => {
   const [requiredDocNumber, setRequiredDocNumber] = useState("");
   const [employeeDocNumber, setEmployeeDocNumber] = useState("");
 
- 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idEmployeeToDelete, setIdEmployeeToDelete] = useState(null); // State to track which document to delete
 
@@ -53,7 +52,6 @@ const EmployeesList = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-  
 
   const {
     data: employees, //the data is renamed employees

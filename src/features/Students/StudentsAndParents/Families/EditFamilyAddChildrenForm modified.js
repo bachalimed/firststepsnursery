@@ -46,25 +46,25 @@ export default function EditFamilyAddChildrenForm() {
   }, [students, children, isStudentListSuccess]);
 
   const handleChildChange = (id) => {
-	// Find the selected student by ID
-	const selectedStudent = allStudents.find((student) => student._id === id);
-  
-	// Update allStudents to mark the selected student as selected
-	const updatedStudents = allStudents.map((student) => {
-	  if (student._id === selectedStudent._id) {
-		return { ...student, isSelected: true };
-	  }
-	  return student; // Return the student as is if not selected
-	});
-  
-	// Set the updated state for allStudents
-	setAllStudents(updatedStudents);
-  
-	// Update the children array by adding a new object with the selected student's ID
-	const updatedChildren = [...children, { child: selectedStudent._id }];
-  
-	// Set the updated state for children
-	setChildren(updatedChildren);
+    // Find the selected student by ID
+    const selectedStudent = allStudents.find((student) => student._id === id);
+
+    // Update allStudents to mark the selected student as selected
+    const updatedStudents = allStudents.map((student) => {
+      if (student._id === selectedStudent._id) {
+        return { ...student, isSelected: true };
+      }
+      return student; // Return the student as is if not selected
+    });
+
+    // Set the updated state for allStudents
+    setAllStudents(updatedStudents);
+
+    // Update the children array by adding a new object with the selected student's ID
+    const updatedChildren = [...children, { child: selectedStudent._id }];
+
+    // Set the updated state for children
+    setChildren(updatedChildren);
   };
 
   // UseEffect to update save button state
@@ -88,9 +88,8 @@ export default function EditFamilyAddChildrenForm() {
       const updatedStudents = allStudents.map((student) => {
         if (student._id === firstAvailableStudent._id) {
           const updatedStudent = { ...student, isSelected: true };
-          setChildren({...children, child:updatedStudent});
+          setChildren({ ...children, child: updatedStudent });
           setAllStudents(updatedStudents);
-		 
         }
       });
     }
@@ -122,54 +121,50 @@ export default function EditFamilyAddChildrenForm() {
 
         {/* Display selected children */}
         {children.map((childObj) => {
-          
-            const selectedChild = childObj.child;
+          const selectedChild = childObj.child;
 
-            return (
-              <div
-                key={selectedChild._id}
-                className="mb-4 flex items-center space-x-4"
+          return (
+            <div
+              key={selectedChild._id}
+              className="mb-4 flex items-center space-x-4"
+            >
+              <select
+                value={selectedChild?._id}
+                onChange={(e) => handleChildChange(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <select
-                  value={selectedChild?._id}
-                  onChange={(e) =>
-                    handleChildChange(e.target.value)
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Select a child</option>
+                <option value="">Select a child</option>
 
-                  {/* Display all students with their selection status */}
-                  {allStudents.map((option) => (
-                    <option
-                      key={option._id}
-                      value={option?._id}
-                      disabled={
-                        option?.isSelected //&& option?._id !== selectedChild?._id
-                      }
-                    >
-                      {option?.studentName?.firstName}{" "}
-                      {option?.studentName?.middleName || ""}{" "}
-                      {option?.studentName?.lastName}
-                      {/* {option.isSelected &&
+                {/* Display all students with their selection status */}
+                {allStudents.map((option) => (
+                  <option
+                    key={option._id}
+                    value={option?._id}
+                    disabled={
+                      option?.isSelected //&& option?._id !== selectedChild?._id
+                    }
+                  >
+                    {option?.studentName?.firstName}{" "}
+                    {option?.studentName?.middleName || ""}{" "}
+                    {option?.studentName?.lastName}
+                    {/* {option.isSelected &&
                         option._id !== selectedChild?._id &&
                         " (Already Selected)"} */}
-                    </option>
-                  ))}
-                </select>
+                  </option>
+                ))}
+              </select>
 
-                {children.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeChildDropdown(selectedChild._id)}
-                    className="px-3 py-2 text-white bg-red-500 hover:bg-red-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
-                  >
-                    Remove
-                  </button>
-                )}
-              </div>
-            );
-        
+              {children.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removeChildDropdown(selectedChild._id)}
+                  className="px-3 py-2 text-white bg-red-500 hover:bg-red-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+                  Remove
+                </button>
+              )}
+            </div>
+          );
         })}
 
         <div className="mb-6">

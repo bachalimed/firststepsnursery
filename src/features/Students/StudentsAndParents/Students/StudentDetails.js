@@ -3,19 +3,24 @@ import { useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGetStudentByIdQuery } from "./studentsApiSlice";
 import { selectStudentById } from "./studentsSlice";
-import { selectCurrentAcademicYearId, selectAcademicYearById, selectAllAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice"
+import {
+  selectCurrentAcademicYearId,
+  selectAcademicYearById,
+  selectAllAcademicYears,
+} from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { useGetStudentDocumentsByYearByIdQuery } from "../../../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice";
 import StudentsParents from "../../StudentsParents";
 import useFetchPhoto from "../../../../hooks/useFetchPhoto";
-
 
 const StudentDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [photoId, setPhotoId] = useState(null);
   const [student, setStudent] = useState(null);
-  
-  const studentFromSelector = useSelector((state) => selectStudentById(state, id));
+
+  const studentFromSelector = useSelector((state) =>
+    selectStudentById(state, id)
+  );
   const {
     data: studentOrg,
     isLoading: studentOrgIsLoading,
@@ -23,21 +28,37 @@ const StudentDetails = () => {
     isError: studentOrgIsError,
   } = useGetStudentByIdQuery(
     { id: id, endpointName: "studentById" },
-    { pollingInterval: 60000, refetchOnFocus: true, refetchOnMountOrArgChange: true }
+    {
+      pollingInterval: 60000,
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
+    }
   );
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
-  const selectedAcademicYear = useSelector((state) => selectAcademicYearById(state, selectedAcademicYearId)); // Get the full academic year object
-  const academicYears = useSelector(selectAllAcademicYears)
- 
-  const [studentDocumentYear, setStudentDocumentYear] = useState(selectedAcademicYear.title || "");
+  const selectedAcademicYear = useSelector((state) =>
+    selectAcademicYearById(state, selectedAcademicYearId)
+  ); // Get the full academic year object
+  const academicYears = useSelector(selectAllAcademicYears);
+
+  const [studentDocumentYear, setStudentDocumentYear] = useState(
+    selectedAcademicYear.title || ""
+  );
 
   const {
     data: studentDocumentsListing,
     isLoading: listIsLoading,
     isSuccess: listIsSuccess,
   } = useGetStudentDocumentsByYearByIdQuery(
-    { studentId: id, year: studentDocumentYear, endpointName: "studentsDocumentsList" },
-    { pollingInterval: 60000, refetchOnFocus: true, refetchOnMountOrArgChange: true }
+    {
+      studentId: id,
+      year: studentDocumentYear,
+      endpointName: "studentsDocumentsList",
+    },
+    {
+      pollingInterval: 60000,
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
+    }
   );
 
   // Use effect to set student data
@@ -54,12 +75,14 @@ const StudentDetails = () => {
 
   useEffect(() => {
     if (!listIsLoading && studentDocumentsListing) {
-      console.log(studentDocumentsListing,'studentDocumentsListing')
+      console.log(studentDocumentsListing, "studentDocumentsListing");
       const findStudentPhotoId = (documents) => {
         const studentPhotoDocument = documents.find(
           (doc) => doc.documentTitle === "Student Photo"
         );
-        return studentPhotoDocument ? studentPhotoDocument.studentDocumentId : null;
+        return studentPhotoDocument
+          ? studentPhotoDocument.studentDocumentId
+          : null;
       };
 
       const photoId = findStudentPhotoId(studentDocumentsListing);
@@ -73,12 +96,19 @@ const StudentDetails = () => {
 
   if (studentOrgIsLoading || !listIsSuccess || !studentDocumentsListing) {
     content = <div>Loading...</div>;
-  } else if (studentOrgIsSuccess && student && listIsSuccess && studentDocumentsListing ) {
+  } else if (
+    studentOrgIsSuccess &&
+    student &&
+    listIsSuccess &&
+    studentDocumentsListing
+  ) {
     content = (
       <>
         <StudentsParents />
         <div className="container mx-auto p-6 bg-white rounded-sm border border-gray-200">
-          <h2 className="text-2xl font-bold mb-6 text-center">Student Profile</h2>
+          <h2 className="text-2xl font-bold mb-6 text-center">
+            Student Profile
+          </h2>
           {photoUrl && (
             <div className="flex justify-center mb-6">
               <img
@@ -91,11 +121,25 @@ const StudentDetails = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Personal Information */}
             <div className="bg-gray-50 p-4 rounded shadow-sm">
-              <h3 className="text-lg font-semibold mb-2">Personal Information</h3>
-              <p><strong>Name:</strong> {student?.studentName?.firstName} {student?.studentName?.middleName} {student?.studentName?.lastName}</p>
-              <p><strong>Date of Birth:</strong> {new Date(student?.studentDob).toLocaleDateString()}</p>
-              <p><strong>Sex:</strong> {student?.studentSex}</p>
-              <p><strong>Active:</strong> {student?.studentIsActive ? "Yes" : "No"}</p>
+              <h3 className="text-lg font-semibold mb-2">
+                Personal Information
+              </h3>
+              <p>
+                <strong>Name:</strong> {student?.studentName?.firstName}{" "}
+                {student?.studentName?.middleName}{" "}
+                {student?.studentName?.lastName}
+              </p>
+              <p>
+                <strong>Date of Birth:</strong>{" "}
+                {new Date(student?.studentDob).toLocaleDateString()}
+              </p>
+              <p>
+                <strong>Sex:</strong> {student?.studentSex}
+              </p>
+              <p>
+                <strong>Active:</strong>{" "}
+                {student?.studentIsActive ? "Yes" : "No"}
+              </p>
             </div>
 
             {/* Admissions */}
@@ -103,9 +147,16 @@ const StudentDetails = () => {
               <h3 className="text-lg font-semibold mb-2">Admissions</h3>
               {student?.studentAdmissions?.length > 0 ? (
                 student.studentAdmissions.map((admission, index) => (
-                  <div key={index} className="mb-2 border-b border-gray-300 pb-2">
-                    <p><strong>Year:</strong> {admission?.admissionYear}</p>
-                    <p><strong>Admission:</strong> {admission?.admission}</p>
+                  <div
+                    key={index}
+                    className="mb-2 border-b border-gray-300 pb-2"
+                  >
+                    <p>
+                      <strong>Year:</strong> {admission?.admissionYear}
+                    </p>
+                    <p>
+                      <strong>Admission:</strong> {admission?.admission}
+                    </p>
                   </div>
                 ))
               ) : (
@@ -118,8 +169,13 @@ const StudentDetails = () => {
               <h3 className="text-lg font-semibold mb-2">Academic Years</h3>
               {student?.studentYears?.length > 0 ? (
                 student.studentYears.map((year, index) => (
-                  <div key={index} className="mb-2 border-b border-gray-300 pb-2">
-                    <p><strong>Year:</strong> {year?.academicYear}</p>
+                  <div
+                    key={index}
+                    className="mb-2 border-b border-gray-300 pb-2"
+                  >
+                    <p>
+                      <strong>Year:</strong> {year?.academicYear}
+                    </p>
                   </div>
                 ))
               ) : (
@@ -132,10 +188,20 @@ const StudentDetails = () => {
               <h3 className="text-lg font-semibold mb-2">Education</h3>
               {student?.studentEducation?.length > 0 ? (
                 student.studentEducation.map((education, index) => (
-                  <div key={index} className="mb-2 border-b border-gray-300 pb-2">
-                    <p><strong>School Year:</strong> {education?.schoolYear}</p>
-                    <p><strong>Attended School:</strong> {education?.attendedSchool}</p>
-                    <p><strong>Note:</strong> {education?.note}</p>
+                  <div
+                    key={index}
+                    className="mb-2 border-b border-gray-300 pb-2"
+                  >
+                    <p>
+                      <strong>School Year:</strong> {education?.schoolYear}
+                    </p>
+                    <p>
+                      <strong>Attended School:</strong>{" "}
+                      {education?.attendedSchool}
+                    </p>
+                    <p>
+                      <strong>Note:</strong> {education?.note}
+                    </p>
                   </div>
                 ))
               ) : (
@@ -148,11 +214,23 @@ const StudentDetails = () => {
               <h3 className="text-lg font-semibold mb-2">Guardians</h3>
               {student?.studentGardien?.length > 0 ? (
                 student.studentGardien.map((gardien, index) => (
-                  <div key={index} className="mb-2 border-b border-gray-300 pb-2">
-                    <p><strong>Year:</strong> {gardien?.gardienYear}</p>
-                    <p><strong>Name:</strong> {gardien?.gardienFirstName} {gardien?.gardienMiddleName} {gardien?.gardienLastName}</p>
-                    <p><strong>Relation:</strong> {gardien?.gardienRelation}</p>
-                    <p><strong>Phone:</strong> {gardien?.gardienPhone}</p>
+                  <div
+                    key={index}
+                    className="mb-2 border-b border-gray-300 pb-2"
+                  >
+                    <p>
+                      <strong>Year:</strong> {gardien?.gardienYear}
+                    </p>
+                    <p>
+                      <strong>Name:</strong> {gardien?.gardienFirstName}{" "}
+                      {gardien?.gardienMiddleName} {gardien?.gardienLastName}
+                    </p>
+                    <p>
+                      <strong>Relation:</strong> {gardien?.gardienRelation}
+                    </p>
+                    <p>
+                      <strong>Phone:</strong> {gardien?.gardienPhone}
+                    </p>
                   </div>
                 ))
               ) : (
@@ -169,7 +247,9 @@ const StudentDetails = () => {
               Back to List
             </button>
             <button
-              onClick={() => navigate(`/students/studentsParents/editStudent/${id}`)}
+              onClick={() =>
+                navigate(`/students/studentsParents/editStudent/${id}`)
+              }
               className="px-4 py-2 bg-yellow-400 text-white rounded"
             >
               Edit Student

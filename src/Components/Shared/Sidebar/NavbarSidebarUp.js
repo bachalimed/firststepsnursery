@@ -1,4 +1,3 @@
-
 // import SidebarItem from './SidebarItem.js'
 // import { Link } from 'react-router-dom'
 // import { BsChevronDown } from "react-icons/bs"
@@ -26,218 +25,217 @@
 // import {sidebarMenuUp} from '../../lib/Consts/SidebarMenu'
 // import useAuth from '../../../hooks/useAuth'
 
-// const NavbarSidebarUp = (props) => {	
+// const NavbarSidebarUp = (props) => {
 // 	const {username, userRoles, status1, status2, isEmployee, isManager, isParent, isContentManager, isAnimator, isAcademic, isFinance, isHR, isDesk, isDirector,  isAdmin}=useAuth()
-// 	let content 
+// 	let content
 // 	content =
 // 	 (
 // 		<ul  className='pt-2 '>
-// 			<Link to='/dashboard/'> 
-// 				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>    
+// 			<Link to='/dashboard/'>
+// 				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>
 // 				<span className='text-2xl block float-left'  ><VscDashboard/> </span>
 // 				<span className={`text-base font-light flex-1 `} > Dashboard</span>
 // 				</li >
 // 			</Link>
-// 			<Link to='/students/'> 
-// 				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>    
+// 			<Link to='/students/'>
+// 				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>
 // 				<span className='text-2xl block float-left'  ><PiStudent/> </span>
 // 				<span className={`text-base font-light flex-1 `} > Students</span><BsChevronDown/>
 // 				</li >
 // 			</Link>
-// 				<ul>						
-// 					<Link to='/students/studentsParents/' className= ''> 
+// 				<ul>
+// 					<Link to='/students/studentsParents/' className= ''>
 // 					<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md '>
 // 						<span className='text-1xl block float-left'> <RiParentLine/> </span>
 // 						Student & Parents
 // 					</li>
-// 					</Link>		
-// 					<Link to='/students/admissions/' className= ''> 
+// 					</Link>
+// 					<Link to='/students/admissions/' className= ''>
 // 					<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md '>
 // 						<span className='text-1xl block float-left'> <IoFileTrayStackedOutline/> </span>
 // 						Admissions
 // 					</li>
-// 					</Link>		
-// 					<Link to='/students/enrolments/' className= ''> 
+// 					</Link>
+// 					<Link to='/students/enrolments/' className= ''>
 // 					<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md '>
 // 						<span className='text-1xl block float-left'> <FaListCheck/> </span>
 // 						Enrolments
 // 					</li>
-// 					</Link>		
+// 					</Link>
 // 				</ul>
-// 			<Link to='/Academics/'> 
-// 				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>    
+// 			<Link to='/Academics/'>
+// 				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>
 // 				<span className='text-2xl block float-left'  ><IoSchoolOutline/> </span>
 // 				<span className={`text-base font-light flex-1 `} > Academics</span><BsChevronDown/>
 // 				</li >
 // 			</Link>
-// 				<ul>						
-// 					<Link to='/academics/schoolPlannings/' className= ''> 
+// 				<ul>
+// 					<Link to='/academics/schoolPlannings/' className= ''>
 // 					<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md '>
 // 						<span className='text-1xl block float-left'> <MdOutlineBusinessCenter/> </span>
 // 						School Plannings
 // 					</li>
-// 					</Link>		
-// 					<Link to='/academics/nurseryPlannings/' className= ''> 
+// 					</Link>
+// 					<Link to='/academics/nurseryPlannings/' className= ''>
 // 					<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md '>
 // 						<span className='text-1xl block float-left'> <LuSchool/> </span>
 // 						Nursery Plannings
 // 					</li>
-// 					</Link>		
-// 					<Link to='/academics/collectionDrop/' className= ''> 
+// 					</Link>
+// 					<Link to='/academics/collectionDrop/' className= ''>
 // 					<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md '>
 // 						<span className='text-1xl block float-left'> <HiMiniArrowsUpDown/> </span>
 // 						Collection&Drop
 // 					</li>
-// 					</Link>		
+// 					</Link>
 // 				</ul>
-// 			<Link to='/Finances/'> 
-// 				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>    
+// 			<Link to='/Finances/'>
+// 				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>
 // 				<span className='text-2xl block float-left'  ><LuCircleDollarSign/> </span>
 // 				<span className={`text-base font-light flex-1 `} > Finances</span><BsChevronDown/>
 // 				</li >
 // 			</Link>
-// 				<ul>						
-// 					<Link to='/finances/invoices/' className= ''> 
+// 				<ul>
+// 					<Link to='/finances/invoices/' className= ''>
 // 					<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md '>
 // 						<span className='text-1xl block float-left'> <LiaFileInvoiceDollarSolid/> </span>
 // 						Invoices
 // 					</li>
-// 					</Link>		
-// 					<Link to='/finances/payments/' className= ''> 
+// 					</Link>
+// 					<Link to='/finances/payments/' className= ''>
 // 					<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md '>
 // 						<span className='text-1xl block float-left'> <GiReceiveMoney/> </span>
 // 						Payments
 // 					</li>
-// 					</Link>		
-// 					<Link to='/finances/expenses/' className= ''> 
+// 					</Link>
+// 					<Link to='/finances/expenses/' className= ''>
 // 					<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md '>
 // 						<span className='text-1xl block float-left'> <GiPayMoney/> </span>
 // 						Expenses
 // 					</li>
-// 					</Link>		
+// 					</Link>
 // 				</ul>
-// 			<Link to='/HR/'> 
-// 				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>    
+// 			<Link to='/HR/'>
+// 				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>
 // 				<span className='text-2xl block float-left'  ><GiHumanPyramid/> </span>
 // 				<span className={`text-base font-light flex-1 `} > HR</span><BsChevronDown/>
 // 				</li >
 // 			</Link>
-// 				<ul>						
-// 					<Link to='/hr/employees/' className= ''> 
+// 				<ul>
+// 					<Link to='/hr/employees/' className= ''>
 // 					<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md '>
 // 						<span className='text-1xl block float-left'> <VscPerson/> </span>
 // 						Employees
 // 					</li>
-// 					</Link>		
-// 					<Link to='/hr/payroll/' className= ''> 
+// 					</Link>
+// 					<Link to='/hr/payroll/' className= ''>
 // 					<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md '>
 // 						<span className='text-1xl block float-left'> <TbCreditCardPay/> </span>
 // 						Payroll
 // 					</li>
-// 					</Link>		
-// 					<Link to='/hr/leave/' className= ''> 
+// 					</Link>
+// 					<Link to='/hr/leave/' className= ''>
 // 					<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md '>
 // 						<span className='text-1xl block float-left'> <MdOutlinePermContactCalendar/> </span>
 // 						Leave
 // 					</li>
-// 					</Link>		
+// 					</Link>
 // 				</ul>
-// 			<Link to='/desk/'> 
-// 				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>    
+// 			<Link to='/desk/'>
+// 				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>
 // 				<span className='text-2xl block float-left'  ><FaMailBulk/> </span>
 // 				<span className={`text-base font-light flex-1 `} > Desk</span><BsChevronDown/>
 // 				</li >
 // 			</Link>
-// 				<ul>						
-// 					<Link to='/desk/inquiries/' className= ''> 
+// 				<ul>
+// 					<Link to='/desk/inquiries/' className= ''>
 // 					<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md '>
 // 						<span className='text-1xl block float-left'> <BsQuestionSquare/> </span>
 // 						Inquiries
 // 					</li>
-// 					</Link>		
-// 					<Link to='/desk/tasks/' className= ''> 
+// 					</Link>
+// 					<Link to='/desk/tasks/' className= ''>
 // 					<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md '>
 // 						<span className='text-1xl block float-left'> <GrTask/> </span>
 // 						Tasks
 // 					</li>
-// 					</Link>		
-// 					<Link to='/desk/Chat/' className= ''> 
+// 					</Link>
+// 					<Link to='/desk/Chat/' className= ''>
 // 					<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md '>
 // 						<span className='text-1xl block float-left'> <HiOutlineChatAlt/> </span>
 // 						Chat
 // 					</li>
-// 					</Link>		
-// 					<Link to='/desk/mails/' className= ''> 
+// 					</Link>
+// 					<Link to='/desk/mails/' className= ''>
 // 					<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md '>
 // 						<span className='text-1xl block float-left'> <LuMail/> </span>
 // 						Mails
 // 					</li>
-// 					</Link>		
+// 					</Link>
 // 				</ul>
-// 			<Link to='/cms/'> 
-// 				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>    
+// 			<Link to='/cms/'>
+// 				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>
 // 				<span className='text-2xl block float-left'  ><SiWebmoney/> </span>
 // 				<span className={`text-base font-light flex-1 `} > CMS</span><BsChevronDown/>
 // 				</li >
 // 			</Link>
-// 			<Link to='/public/'> 
-// 				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>    
+// 			<Link to='/public/'>
+// 				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>
 // 				<span className='text-2xl block float-left'  ><BiHome/> </span>
 // 				<span className={`text-base font-light flex-1 `} > Public</span><BsChevronDown/>
 // 				</li >
 // 			</Link>
-// 			<Link to='/settings/'> 
-// 				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>    
+// 			<Link to='/settings/'>
+// 				<li className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}>
 // 				<span className='text-2xl block float-left'  ><FaMailBulk/> </span>
 // 				<span className={`text-base font-light flex-1 `} > Settings</span><BsChevronDown/>
 // 				</li >
 // 			</Link>
-// 				<ul>						
-// 					<Link to='/settings/dashboardSet/' className= ''> 
+// 				<ul>
+// 					<Link to='/settings/dashboardSet/' className= ''>
 // 					<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md '>
 // 						<span className='text-1xl block float-left'> <VscDashboard/> </span>
 // 						Dashboard
 // 					</li>
-// 					</Link>		
-// 					<Link to='/settings/studentsSet/' className= ''> 
+// 					</Link>
+// 					<Link to='/settings/studentsSet/' className= ''>
 // 					<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md '>
 // 						<span className='text-1xl block float-left'> <PiStudent/> </span>
 // 						Students
 // 					</li>
-// 					</Link>		
-// 					<Link to='/settings/academicsSet/' className= ''> 
+// 					</Link>
+// 					<Link to='/settings/academicsSet/' className= ''>
 // 					<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md '>
 // 						<span className='text-1xl block float-left'> <IoSchoolOutline/> </span>
 // 						Academics
 // 					</li>
-// 					</Link>		
-// 					<Link to='/settings/financesSet/' className= ''> 
+// 					</Link>
+// 					<Link to='/settings/financesSet/' className= ''>
 // 					<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md '>
 // 						<span className='text-1xl block float-left'> <LiaFileInvoiceDollarSolid/> </span>
 // 						Finances
 // 					</li>
-// 					</Link>		
-// 					<Link to='/settings/HRSet/' className= ''> 
+// 					</Link>
+// 					<Link to='/settings/HRSet/' className= ''>
 // 					<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md '>
 // 						<span className='text-1xl block float-left'> <GiHumanPyramid/> </span>
 // 						HR
 // 					</li>
-// 					</Link>		
-// 					<Link to='/settings/deskSet/' className= ''> 
+// 					</Link>
+// 					<Link to='/settings/deskSet/' className= ''>
 // 					<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md '>
 // 						<span className='text-1xl block float-left'> <FaMailBulk/> </span>
 // 						Desk
 // 					</li>
-// 					</Link>		
-// 					<Link to='/settings/cmsSet/' className= ''> 
+// 					</Link>
+// 					<Link to='/settings/cmsSet/' className= ''>
 // 					<li className='  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md '>
 // 						<span className='text-1xl block float-left'> <SiWebmoney/> </span>
 // 						CMS
 // 					</li>
-// 					</Link>		
+// 					</Link>
 // 				</ul>
-			
-				
+
 // 		 {/* <Link to= {!props.menu.submenu?props.menu.path: null}  className={pathname===props.menu.path? 'text-teal-200':''}>
 // 			<li key={props.key} className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md ${props.menu.spaced ? "mt-8" : "mt-0" } `}>
 // 				<span className='text-2xl block float-left' onClick={()=>props.menu.submenu? props.setOpen(true):null}   >  {props.menu.icon? props.menu.icon:<PiDotsThreeVerticalLight/>}</span>
@@ -250,33 +248,21 @@
 
 // 			{/* <ul>
 // 				{props.menu.submenuItems.map((submenuItem, index)=>(
-					
-// 						<Link to={submenuItem.path} className={pathname===submenuItem.path? 'text-teal-200':''}> 
+
+// 						<Link to={submenuItem.path} className={pathname===submenuItem.path? 'text-teal-200':''}>
 // 						<li key={index} className={userRoles.some(value => submenuItem.allowedRoles.includes(value))?'  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md ':'hidden'}>
 // 							<span className='text-1xl block float-left'> {submenuItem.icon} </span>
 // 							{submenuItem.title}
 
 // 						</li>
 // 						</Link>
-					
+
 // 				))}
 // 			</ul> */}
-			
 
-
-
-		 
-		 
-		 
-		 
-		 
-		 
 // 		 { sidebarMenuUp.map((menu, index) => <SidebarItem key={index} menu={menu} open={props.open} setOpen={props.setOpen}/>
-// 		) }	
+// 		) }
 // 		</ul>
-	
-
-
 
 // )
 // 	return content

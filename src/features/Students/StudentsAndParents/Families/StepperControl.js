@@ -13,8 +13,6 @@ const StepperControl = ({
   handleSubmit,
 }) => {
   //console.log(currentStep)
- 
- 
 
   return (
     <div className="container flex justify-around mt-4 mb-8">
@@ -28,7 +26,7 @@ const StepperControl = ({
         {" "}
         back{" "}
       </button>
-     
+
       <button
         onClick={() => handleClick("Next")}
         className={`bg-green-500 text-white uppercase py-2 px-4 rounded-xl font-semibold cursor-pointer  hover:bg-slate-700 hover:text-white

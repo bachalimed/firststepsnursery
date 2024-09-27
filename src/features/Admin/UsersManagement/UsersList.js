@@ -159,8 +159,8 @@ const UsersList = () => {
     },
     {
       name: "ID",
-      selector: (row) => row._id,  // Use _id for sorting
-      
+      selector: (row) => row._id, // Use _id for sorting
+
       cell: (row) => (
         <div>
           <Link to={`/admin/usersManagement/userDetails/${row._id}`}>
@@ -193,7 +193,7 @@ const UsersList = () => {
       sortFunction: (rowA, rowB) => {
         const usernameA = rowA.username.toLowerCase();
         const usernameB = rowB.username.toLowerCase();
-    
+
         if (usernameA < usernameB) {
           return -1;
         }
@@ -207,27 +207,30 @@ const UsersList = () => {
     //   name: "Full Name",
     //   selector: (row) => (
     //     <Link to={`/admin/usersManagement/userDetails/${row._id}`}>
-          
+
     //       {row.userFullName.userFirstName} {row.userFullName.userMiddleName} {row.userFullName.userLastName}
     //     </Link>
     //   ),
     //   sortable: true,
     //   width: "210px",
     // },
-    
+
     {
       name: "Full Name",
       selector: (row) => (
         <Link to={`/admin/usersManagement/userDetails/${row._id}`}>
-          {row.userFullName.userFirstName} {row.userFullName.userMiddleName} {row.userFullName.userLastName}
+          {row.userFullName.userFirstName} {row.userFullName.userMiddleName}{" "}
+          {row.userFullName.userLastName}
         </Link>
       ),
       sortable: true,
       width: "210px",
       sortFunction: (rowA, rowB) => {
-        const fullNameA = `${rowA.userFullName.userFirstName} ${rowA.userFullName.userMiddleName} ${rowA.userFullName.userLastName}`.toLowerCase();
-        const fullNameB = `${rowB.userFullName.userFirstName} ${rowB.userFullName.userMiddleName} ${rowB.userFullName.userLastName}`.toLowerCase();
-        
+        const fullNameA =
+          `${rowA.userFullName.userFirstName} ${rowA.userFullName.userMiddleName} ${rowA.userFullName.userLastName}`.toLowerCase();
+        const fullNameB =
+          `${rowB.userFullName.userFirstName} ${rowB.userFullName.userMiddleName} ${rowB.userFullName.userLastName}`.toLowerCase();
+
         if (fullNameA < fullNameB) {
           return -1;
         }

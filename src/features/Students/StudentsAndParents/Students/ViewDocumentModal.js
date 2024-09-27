@@ -1,6 +1,6 @@
-import React from 'react';
-import Modal from 'react-modal';
-import handleDownloadDocument from './StudentDocumentsList'
+import React from "react";
+import Modal from "react-modal";
+import handleDownloadDocument from "./StudentDocumentsList";
 
 const ViewDocumentModal = ({ isOpen, onRequestClose, documentUrl }) => {
   return (
@@ -11,15 +11,19 @@ const ViewDocumentModal = ({ isOpen, onRequestClose, documentUrl }) => {
       className="modal"
       overlayClassName="overlay"
     >
-      <button onClick={onRequestClose} className="close-btn">Close</button>
+      <button onClick={onRequestClose} className="close-btn">
+        Close
+      </button>
       {documentUrl && (
         <>
           {/* Handling PDFs */}
-          {documentUrl.endsWith('.pdf') ? handleDownloadDocument(documentUrl) : (
+          {documentUrl.endsWith(".pdf") ? (
+            handleDownloadDocument(documentUrl)
+          ) : (
             <img
               src={documentUrl}
               alt="Document"
-              style={{ width: '100%', height: 'auto' }}
+              style={{ width: "100%", height: "auto" }}
             />
           )}
         </>

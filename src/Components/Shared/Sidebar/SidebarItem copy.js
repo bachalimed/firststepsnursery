@@ -6,7 +6,6 @@
 
 // import useAuth from '../../../hooks/useAuth'
 
-
 // const SidebarItem = (props) => {
 // const [submenuOpen, setSubmenuOpen] = useState(false)
 // const {pathname} = useLocation()//to know which link is selected and then set the active to different color
@@ -22,7 +21,7 @@
 // // console.log('canEdit', canEdit)
 // // console.log('canEdit', canEdit)
 
-// 	return (   
+// 	return (
 // 		<>
 // 		{/* if the link has submenum it will not linkm if selected, it will have a color */}
 // 		{isAnyValueInMenu?(
@@ -35,28 +34,25 @@
 // 				)}
 // 			</li>
 // 		</Link>):null}
-		
+
 // 		{props.menu.submenu && submenuOpen && props.open  && (
 // 			<ul>
 // 				{props.menu.submenuItems.map((submenuItem, index)=>(
-					
-// 						<Link to={submenuItem.path} className={pathname===submenuItem.path? 'text-teal-200':''}> 
+
+// 						<Link to={submenuItem.path} className={pathname===submenuItem.path? 'text-teal-200':''}>
 // 						<li key={index} className={userRoles.some(value => submenuItem.allowedRoles.includes(value))?'  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md ':'hidden'}>
 // 							<span className='text-1xl block float-left'> {submenuItem.icon} </span>
 // 							{submenuItem.title}
 
 // 						</li>
 // 						</Link>
-					
-				
 
 // 				))}
 // 			</ul>
 
 // 			)}
-			
-			
-// 		</>	
+
+// 		</>
 //   )
 // }
 // export default SidebarItem

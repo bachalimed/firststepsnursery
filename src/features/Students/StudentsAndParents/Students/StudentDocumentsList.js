@@ -28,7 +28,7 @@ import { selectAllStudentsByYear, selectAllStudents } from "./studentsApiSlice";
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
 import { setAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 
-import getCurrentAcademicYear from "../../../../config/CurrentYear";
+
 import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
 import {
   MdOutlineRadioButtonChecked,

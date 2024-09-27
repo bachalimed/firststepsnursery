@@ -1,155 +1,168 @@
+import DataTable from "react-data-table-component";
+import { useEffect, useState } from "react";
+import {
+  selectCurrentAcademicYearId,
+  selectAcademicYearById,
+  selectAllAcademicYears,
+} from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
+import { useNavigate } from "react-router-dom";
+import { FiEdit } from "react-icons/fi";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { setAcademicYears } from "./academicYearsSlice";
 
-
-import DataTable from 'react-data-table-component'
-import { useEffect, useState } from "react"
-import { selectCurrentAcademicYearId, selectAcademicYearById, selectAllAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice"
-import { useNavigate } from "react-router-dom"
-import { FiEdit } from "react-icons/fi"
-import { RiDeleteBin6Line } from "react-icons/ri"
-import { setAcademicYears } from "./academicYearsSlice"
-
-import useAuth from '../../../../hooks/useAuth'
-import { useGetAcademicYearsQuery} from "./academicYearsApiSlice"
-import { useSelector, useDispatch } from 'react-redux'
-import AcademicsSet from "../../AcademicsSet"
+import useAuth from "../../../../hooks/useAuth";
+import { useGetAcademicYearsQuery } from "./academicYearsApiSlice";
+import { useSelector, useDispatch } from "react-redux";
+import AcademicsSet from "../../AcademicsSet";
 
 const AcademicYearsList = () => {
-  const Navigate = useNavigate()
-  const dispatch = useDispatch()
-//get several things from the query
+  const Navigate = useNavigate();
+  const dispatch = useDispatch();
+  //get several things from the query
 
-//we do not want to import from state but from DB
-const [selectedRows, setSelectedRows] = useState([])
+  //we do not want to import from state but from DB
+  const [selectedRows, setSelectedRows] = useState([]);
 
-// Handler for selecting rows
-const handleRowSelected = (state) => {
-  setSelectedRows(state.selectedRows)
-  //console.log('selectedRows', selectedRows)
-}
-const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
-  const selectedAcademicYear = useSelector((state) => selectAcademicYearById(state, selectedAcademicYearId)); // Get the full academic year object
-  const academicYears = useSelector(selectAllAcademicYears)
-//handle delete
+  // Handler for selecting rows
+  const handleRowSelected = (state) => {
+    setSelectedRows(state.selectedRows);
+    //console.log('selectedRows', selectedRows)
+  };
+  const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
+  const selectedAcademicYear = useSelector((state) =>
+    selectAcademicYearById(state, selectedAcademicYearId)
+  ); // Get the full academic year object
+  const academicYears = useSelector(selectAllAcademicYears);
+  //handle delete
 
-const handleDelete=()=>{
-console.log('deleting')
-}
+  const handleDelete = () => {
+    console.log("deleting");
+  };
 
-const handleNextSelected = () => {
-  console.log('Selected Rows to duplicate forward:', selectedRows);
-  // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
-//ensure only one can be selected: the last one
-const toDuplicate = selectedRows[-1]
+  const handleNextSelected = () => {
+    console.log("Selected Rows to duplicate forward:", selectedRows);
+    // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
+    //ensure only one can be selected: the last one
+    const toDuplicate = selectedRows[-1];
 
-  setSelectedRows([]); // Clear selection after delete
-}
+    setSelectedRows([]); // Clear selection after delete
+  };
 
+  const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
+  //console.log(academicYears)
 
+  //define the content to be conditionally rendered
+  const column = [
+    {
+      name: "ID",
+      selector: (row) => row.id,
+      sortable: true,
+      width: "200px",
+    },
+    {
+      name: "Title",
+      selector: (row) => row?.title,
+      sortable: true,
+      width: "100px",
+    },
+    {
+      name: "Period",
+      selector: (row) => (
+        <div>
+          <div>
+            Start{" "}
+            {new Date(row?.yearStart).toLocaleDateString("en-US", {
+              day: "numeric",
+              month: "numeric",
+              year: "numeric",
+            })}
+          </div>
+          <div>
+            End{" "}
+            {new Date(row?.yearEnd).toLocaleDateString("en-US", {
+              day: "numeric",
+              month: "numeric",
+              year: "numeric",
+            })}
+          </div>
+        </div>
+      ),
+      sortable: true,
+      width: "120px",
+    },
 
-const{canEdit, isAdmin, canDelete, canCreate, status2}=useAuth()
-//console.log(academicYears)
+    {
+      name: "Creator",
+      selector: (row) => row?.academicYearCreator,
+      sortable: true,
+      width: "200px",
+    },
+    {
+      name: "Action",
+      selector: null,
 
+      removableRows: true,
+    },
+    {
+      name: "Actions",
+      cell: (row) => (
+        <div className="space-x-1">
+          {canEdit ? (
+            <button
+              className="text-yellow-400"
+              onClick={() =>
+                Navigate(`/students/studentsParents/edit/${row.id}`)
+              }
+            >
+              <FiEdit fontSize={20} />
+            </button>
+          ) : null}
+          {canDelete ? (
+            <button
+              className="text-red-500"
+              onClick={() => handleDelete(row.id)}
+            >
+              <RiDeleteBin6Line fontSize={20} />
+            </button>
+          ) : null}
+        </div>
+      ),
+      ignoreRowClick: true,
 
+      button: true,
+    },
+  ];
+  let content;
 
-//define the content to be conditionally rendered
-const column =[
-  { 
-name: "ID",
-selector:row=>row.id,
-sortable:true,
-width: "200px",
- }, 
-  { 
-name: "Title",
-selector:row=>row?.title,
-sortable:true,
-width: "100px",
- }, 
-  { 
-    name: "Period",
-    selector: row => (
-      <div>
-        <div>Start {new Date(row?.yearStart).toLocaleDateString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' })}</div>
-        <div>End {new Date(row?.yearEnd).toLocaleDateString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' })}</div>
-      </div>
-    )
-,
-sortable:true,
-width: "120px",
- }, 
+  return (
+    <>
+      <AcademicsSet />
 
-
-{name: "Creator",
-  selector:row=>row?.academicYearCreator,
-  sortable:true,
-  width: "200px",
-}, 
-{name: "Action",
-  selector:null,
-  
-  removableRows:true
-},
-{ 
-  name: "Actions",
-  cell: row => (
-    <div className="space-x-1">
-      
-      {canEdit?(<button  className="text-yellow-400" onClick={() => Navigate(`/students/studentsParents/edit/${row.id}`)}  > 
-      <FiEdit fontSize={20}/> 
-      </button>):null}
-      {canDelete?(<button className="text-red-500"  onClick={() => handleDelete(row.id)}>
-        <RiDeleteBin6Line fontSize={20}/>
-      </button>):null}
-    </div>
-  ),
-  ignoreRowClick: true,
-  
-  button: true,
-}
-]
-let content
-
-
-
-  
-
-return (
-  <>
-  <AcademicsSet/>
- 
-  <div className=' flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200' >
-     {/* <div>
+      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+        {/* <div>
     <input type="text" placeholder="search" onChange={handleFilter}/>
    </div> */}
-   
-   <DataTable
-    columns={column}
-    data={academicYears}
-    pagination
-    selectableRows
-    removableRows
-    pageSizeControl>
-   </DataTable>
-   <div className="flex justify-end items-center space-x-4">
-      
-      
-		
-        <button 
-			className="px-3 py-2 bg-yellow-400 text-white rounded"
-			onClick={() => Navigate('/settings/academicsSet/newAcademicYear')}
-			disabled={selectedRows.length !== 0} // Disable if no rows are selected
-      hidden={!canCreate}
-			>
-			New academic Year
-		</button>
-     
-	</div>
 
-  </div>
-  </>
-)
-
-
-
-}
-export default AcademicYearsList
+        <DataTable
+          columns={column}
+          data={academicYears}
+          pagination
+          selectableRows
+          removableRows
+          pageSizeControl
+        ></DataTable>
+        <div className="flex justify-end items-center space-x-4">
+          <button
+            className="px-3 py-2 bg-yellow-400 text-white rounded"
+            onClick={() => Navigate("/settings/academicsSet/newAcademicYear")}
+            disabled={selectedRows.length !== 0} // Disable if no rows are selected
+            hidden={!canCreate}
+          >
+            New academic Year
+          </button>
+        </div>
+      </div>
+    </>
+  );
+};
+export default AcademicYearsList;

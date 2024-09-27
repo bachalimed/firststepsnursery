@@ -1,17 +1,15 @@
-
-
-import React from 'react'
-import NewUserPhotoForm from "./NewUserPhotoForm"
-import UsersManagement from '../UsersManagement'
+import React from "react";
+import NewUserPhotoForm from "./NewUserPhotoForm";
+import UsersManagement from "../UsersManagement";
 
 const UserDetails = () => {
   return (
     <>
-    <UsersManagement/>
-    <div>UserDetails</div>
-    {/* <NewUserPhotoForm/> */}
+      <UsersManagement />
+      <div>UserDetails</div>
+      {/* <NewUserPhotoForm/> */}
     </>
-  )
-}
+  );
+};
 
-export default UserDetails
+export default UserDetails;

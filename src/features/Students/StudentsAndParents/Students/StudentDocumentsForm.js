@@ -10,43 +10,41 @@
 //         import { ROLES } from "../../../../config/UserRoles"
 //         import { ACTIONS } from "../../../../config/UserActions"
 //         import useAuth from '../../../../hooks/useAuth'
-//     
+//
 //         import { useSelector } from 'react-redux'
-    
+
 //         import { selectAllAcademicYears } from '../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
 //         import { useGetAcademicYearsQuery } from '../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
 // import { useGetStudentDocumentsListsQuery } from '../../../AppSettings/StudentsSet/StudentDocumentLists/studentDocumentListsApiSlice'
 //         //constrains on inputs when creating new user
-    
+
 //         const NAME_REGEX= /^[A-z 0-9.-_]{6,20}$/
 
 //     const StudentDocumentsForm = ({student}) => {
-      
+
 //       const Navigate = useNavigate()
 //       //get the student details from the passed data
 //        const {id, studentName}= student
 //        console.log(studentName)
 //        const [studentFile, setStudentFile]=useState([])
 //        //initialisation of states for each input
-//         const [studentId, setStudentId] = useState(id)// we get from previous page 
-        
+//         const [studentId, setStudentId] = useState(id)// we get from previous page
+
 //         const [documents, setDocuments] = useState([]);
-        
-        
+
 //         const [studentDocumentLabel, setStudentDocumentLabel] = useState('')
 //         const [validStudentDocumentLabel, setValidStudentDocumentLabel] = useState('')
 //         const [studentDocumentReference, setStudentDocumentReference] = useState('')
-      
+
 //         const [addStudentDocuments, {//an object that calls the status when we execute the newUserForm function
 //           isLoading,
 //           isSuccess,
 //           isError,
 //           error
 //       }] = useAddStudentDocumentsMutation()//it will not execute the mutation nownow but when called
-  
+
 //       //prepare the permission variables
 //  const{userId,canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
-
 
 // const {
 //     data: studentDocumentsListsList,//the data is renamed parents
@@ -60,12 +58,11 @@
 //     refetchOnMountOrArgChange: true
 //   })
 
-
 //  //this to be used to only select current year from check box
 
 //  const [studentDocumentYear, setStudentDocumentYear] = useState(selectedAcademicYear.title)
 //   const[filteredList, setFilteredList]=useState([])
- 
+
 //   useEffect(() => {
 //     if (listsListIsSuccess) {
 //       const { entities } = studentDocumentsListsList;
@@ -80,7 +77,7 @@
 //     }
 //   }, [listsListIsSuccess, studentDocumentsListsList, selectedAcademicYear]);
 //  console.log(filteredList,'filteredList')
-  
+
 //  const handleAddDocument = () => {
 //     setDocuments([...documents, { studentId, studentDocumentYear, studentDocumentReference: '', studentDocumentLabel: '', file: null }]);
 //   };
@@ -104,21 +101,19 @@
 
 //   const handleSubmit = async (e) => {
 //     e.preventDefault()
-    
+
 //     const formData = new FormData()
 // const doc = documents[0]
 //     // Append each document to the FormData
-    
+
 //       formData.append('studentId', doc.studentId);
 //       formData.append('studentDocumentYear', doc.studentDocumentYear);
 //       formData.append('studentDocumentReference', doc.studentDocumentReference)///!!!must upload the id and not the title
 //       formData.append('studentDocumentLabel', doc.studentDocumentLabel);
 //       formData.append('file', doc.file);
-    
-  
+
 //     try {
 //       const response = await addStudentDocuments(formData)//.unwrap()
-
 
 //     if (!response.ok) {
 //       throw new Error('Something went wrong!');
@@ -133,7 +128,7 @@
 //  console.log(documents,'documents')
 
 // //add conditions of !loading for saving the documents tomake sure no bugs!!!!
-  
+
 //       useEffect(() => {
 //           if (isSuccess) {//if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
 //             setStudentId('')
@@ -141,16 +136,15 @@
 //             setStudentDocumentLabel('')
 //             setStudentDocumentReference('')
 //             setDocuments([])
-            
+
 //             Navigate('/students/studentsParents/students')//will navigate here after saving
 //           }
 //       }, [isSuccess, Navigate])//even if no success it will navigate and not show any warning if failed or success
-  
- 
+
 //         //to check if we can save before onsave, if every one is true, and also if we are not loading status
 //       const canSave = [validStudentDocumentLabel ].every(Boolean) && !isLoading
-        
-// //     
+
+// //
 // //           if (canSave) {//if cansave is true
 // //               //generate the objects before saving
 // //               //console.log(studentName, studentDob, studentSex, studentIsActive, studentYears, studentPhoto, studentJointFamily, studentEducation)
@@ -163,18 +157,17 @@
 //       const handleCancel= ()=>{
 //           Navigate ('/students/studentsParents/students/')
 //       }
-     
+
 // //         //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
 //        //const errClass = isError ? "errmsg" : "offscreen"
 // //       //const validStudentClass = !validStudentName ? 'form__input--incomplete' : ''
 // //       //const validPwdClass = !validPassword ? 'form__input--incomplete' : ''
 // //       //const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
-  
+
 // return (
 //   <>
 //     <StudentsParents />
 //     <form onSubmit={handleSubmit}>
-
 
 //       <div>
 

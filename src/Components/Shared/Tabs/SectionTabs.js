@@ -11,7 +11,7 @@
 // //loop through the menu and get the submenus, them filter the submeu that has the  same beginni gof the pathname and then get the sections
 
 // useEffect(() => {
-  
+
 //   const currentPath = location.pathname;
 //   //console.log(currentPath)
 //   let foundSectionTabs = []
@@ -23,7 +23,7 @@
 //     if (menuItem.submenuItems){const submenu = menuItem.submenuItems.find(submenuItem => currentPath.startsWith(submenuItem.path))
 //     if (submenu) {
 //       foundSectionTabs = submenu.sectionTabs
-      
+
 //      // console.log(`foundSectionTabs ${foundSectionTabs}`)
 //            break;
 //     }}}
@@ -31,7 +31,7 @@
 //   setSectionTabs(foundSectionTabs)
 // }, [location.pathname]);
 
-// return (  
+// return (
 //     <ul className='flex gap-2 px-2 py-2 bg-gray-300'>
 //       {sectionTabs.map((tab, index) => (
 //        <Link to={tab.path}concat><li key={index}>{tab.title}</li></Link>
@@ -40,6 +40,3 @@
 // )}
 
 // export default SectionTabs
-
- 
-    

@@ -4,7 +4,6 @@
 // } from "@reduxjs/toolkit";
 // import { apiSlice } from '../../../../app/api/apiSlice'
 
-
 // // Initialize the entity adapter
 // const employeeDocumentsListsAdapter = createEntityAdapter({})//we can iterate on the id but not on the entities
 // // Initial state using the adapter
@@ -18,12 +17,12 @@
 //             query: () => '/settings/employeesSet/employeeDocumentsLists/',//this route is as defined in the backend server.js to give all employeeDocumentsLists
 //             validateStatus: (response, result) => {//to validate the status as per documentation
 //                 return response.status === 200 && !result.isError
-            
+
 //             },
 //             //keepUnusedDataFor: 5,//default is 60seconds or data will be removed from the cache
 //             transformResponse: responseData => {
-//                 const newLoadedEmployeeDocumentsLists = responseData.map(employeeDocumentsList => { 
-                    
+//                 const newLoadedEmployeeDocumentsLists = responseData.map(employeeDocumentsList => {
+
 //                     employeeDocumentsList.id = employeeDocumentsList._id//changed the _id from mongoDB to id
 //                     delete employeeDocumentsList._id//added to delete the extra original _id from mongo but careful when planning to save to db again
 //                     return employeeDocumentsList
@@ -34,20 +33,19 @@
 //         }),
 //         getEmployeeDocumentsByYearById: builder.query({//will get the list for that year and append studtn document id if exisits
 //             query: (params) =>{
-//                 const queryString = new URLSearchParams(params).toString() 
+//                 const queryString = new URLSearchParams(params).toString()
 //                 return `/employees/employeesParents/employeeDocuments?${queryString}`
 //             },
-            
+
 //             validateStatus: (response, result) => {
 //                 return response.status === 200 && !result.isError
 //             },
-            
-            
+
 //             transformResponse: responseData => {
 //                     return responseData
 //                 },
 //             providesTags:['employeeDocument']
-                
+
 //             }),
 //         updateEmployeeDocumentsList: builder.mutation({
 //             query: initialEmployeeDocumentsListData => ({

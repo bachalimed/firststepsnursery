@@ -7,8 +7,8 @@
 // import DataTable from 'react-data-table-component'
 // import DeletionConfirmModal from '../../../../Components/Shared/Modals/DeletionConfirmModal'
 // import { useSelector } from 'react-redux'
-// import { selectParentById, selectAllParents } from './familiesApiSlice'//use the memoized selector 
-// import { selectAllUsers, selectUserById } from '../../../Admin/UsersManagement/usersApiSlice'//use the memoized selector 
+// import { selectParentById, selectAllParents } from './familiesApiSlice'//use the memoized selector
+// import { selectAllUsers, selectUserById } from '../../../Admin/UsersManagement/usersApiSlice'//use the memoized selector
 // import { useState, useEffect } from "react"
 // import { Link , useNavigate} from 'react-router-dom'
 // import { useDeleteParentMutation } from './familiesApiSlice'
@@ -23,7 +23,7 @@
 // import { useGetStudentsQuery, useGetStudentsByYearQuery } from '../Students/studentsApiSlice';
 // const ManageFamilies = () => {
 //   //this is for the academic year selection
-  
+
 //   const [selectedRows, setSelectedRows] = useState([])
 
 // const Navigate = useNavigate()
@@ -59,7 +59,6 @@
 //   refetchOnMountOrArgChange: true//refetch when we remount the component
 // })
 
-
 // // State to hold selected rows
 // //state to hold the search query
 // const [searchQuery, setSearchQuery] = useState('')
@@ -68,7 +67,7 @@
 // let filteredParents=[]
 // if (isParentSuccess){
 //   //set to the state to be used for other component s and edit student component
-  
+
 //   const {entities}=parents
 //   //we need to change into array to be read??
 //   parentsList = Object.values(entities)//we are using entity adapter in this query
@@ -92,19 +91,15 @@
 // })
 // }
 
-
-
 // //console.log('allParents', allParents)
 
 // const{canEdit, canDelete, canCreate, status2}=useAuth()
-
 
 // const handleSearch = (e) => {
 //   setSearchQuery(e.target.value)
 // }
 
 // //console.log('filtered', filteredParents)
-
 
 // // Handler for selecting rows
 // const handleRowSelected = (state) => {
@@ -127,7 +122,6 @@
 //   }
 // };
 
-
 // const handleConfirmAssignChild = (studentId) => {
 //   // Logic to add the child to the parent
 //   console.log('Adding child:', studentId, 'to parent:', selectedFatherId);
@@ -143,46 +137,39 @@
 // Navigate(`/students/studentsParents/students/${id}/`)//the path to be set in app.js and to be checked with server.js in backend, this is editing page of user
 // }
 
-
-
-
-
-
 // const errContent = (isParentError?.data?.message || isStudentError?.data?.message) ?? ''
 // //define the content to be conditionally rendered
 
 // const column =[
-//   { 
+//   {
 //     name: "#", // New column for entry number
 //     cell: (row, index) => index + 1, // Display the index + 1 (for 1-based numbering)
 //     sortable: false,
 //     width: '50px',
-    
+
 //   },
-  
-  
+
 //   { name: "Father Name",
 //   selector:row=>( <Link to={`/changepath/${row._id}`}> {row.userProfile.userFullName.userFirstName+" "+row.userProfile.userFullName.userMiddleName+" "+row.userProfile.userFullName.userLastName}</Link>),
 //   sortable:true,
 //   width:'150px'
-//   }, 
+//   },
 //   { name: "Mother Name",
 //   selector:row=>( <Link to={`/changepath/${row._id}`}> {row.partner.userProfile.userFullName.userFirstName+" "+row.partner.userProfile.userFullName.userMiddleName+" "+row.partner.userProfile.userFullName.userLastName}</Link>),
 //   sortable:true,
 //   width:'150px'
-//   }, 
+//   },
 //   {name: "Situation",
 //     selector:row=>row.children[0].studentJointFamily?'Joint':'Separated',
 //     sortable:true
 //   },
-  
+
 //   //  {name: "DOB",
 //   //   selector:row=>new Date(row.userProfile.userDob).toLocaleString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' }),
 //   //   width:'100px',
 //   //   sortable:true
-//   // },  
+//   // },
 
- 
 // {name: "Father Phone",
 //   selector:row=>row.userProfile.userContact.primaryPhone,
 //   sortable:true,
@@ -194,38 +181,36 @@
 //   width:'130px'
 // },
 
- 
 // {name: "Children",
-//   selector:row=>( 
+//   selector:row=>(
 //     <div>{row.children.map(child=> (
 //       <div key ={child._id}>{child.studentName.firstName} {child.studentName.middleName} {child.studentName.lastName}</div>))}
 //     </div>),
-  
+
 //   sortable:true,
 //   width: '180px',
 // },
-// { 
+// {
 //   name: "Manage",
 //   cell: row => (
 //     <div className="space-x-1">
-//      <button className="text-blue-500" fontSize={20}  onClick={() => Navigate(`/students/studentsParents/parentDetails/${row.id}`)}  > 
-//       <ImProfile fontSize={20}/> 
+//      <button className="text-blue-500" fontSize={20}  onClick={() => Navigate(`/students/studentsParents/parentDetails/${row.id}`)}  >
+//       <ImProfile fontSize={20}/>
 //       </button>
 //       {/* /////////////////////condition is canEdit and not ! of it */}
-//       {canEdit?(<button className="text-yellow-400"  onClick={() => Navigate(`/students/studentsParents/editParent/${row.id}`)} > 
-//       <FiEdit fontSize={20}/> 
+//       {canEdit?(<button className="text-yellow-400"  onClick={() => Navigate(`/students/studentsParents/editParent/${row.id}`)} >
+//       <FiEdit fontSize={20}/>
 //       </button>):null}
 
 //     </div>
 //   ),
 //   ignoreRowClick: true,
-  
+
 //   button: true,
 // }
 
 // ]
 // let content
-
 
 // if (isParentLoading) content = <p>Loading...</p>
 
@@ -248,7 +233,7 @@
 //      {/* <div>
 //     <input type="text" placeholder="search" onChange={handleFilter}/>
 //    </div> */}
-   
+
 //    <DataTable
 //     columns={column}
 //     data={filteredParents}
@@ -259,15 +244,15 @@
 //     pageSizeControl>
 //    </DataTable>
 //    <div className="flex justify-end items-center space-x-4">
-//           <button 
+//           <button
 //                className="px-3 py-2 bg-yellow-400 text-white rounded"
 //                onClick={handleAssignChild}
 //               disabled={selectedRows.length !== 1} // Disable if no rows are selected
 //                 >
 //               Assign Child
 //             </button>
-          
-//           <button 
+
+//           <button
 //               className="px-3 py-2 bg-blue-400 text-white rounded"
 //               onClick={handleAssignPartner}
 //               disabled={selectedRows.length !== 1} // Disable if no rows are selected
@@ -275,14 +260,13 @@
 //               >
 //               Assign Partner
 //           </button>
-         
+
 //       </div>
 //   </div>
-  
 
-// {isStudentSuccess&&(<AssignChildModal 
-//         isOpen={isAssignChildModalOpen} 
-//         onClose={() => setIsAssignChildModalOpen(false)} 
+// {isStudentSuccess&&(<AssignChildModal
+//         isOpen={isAssignChildModalOpen}
+//         onClose={() => setIsAssignChildModalOpen(false)}
 //         onConfirm={handleConfirmAssignChild}
 //         students={studentsList || []} // Pass the students to the modal
 //          className="modal"
@@ -290,7 +274,6 @@
 //       />)}
 //   </>
 // )
-
 
 // //}
 // return content

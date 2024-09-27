@@ -7,18 +7,15 @@
 // import { LuChevronLeft } from "react-icons/lu"
 // // import { CgPushChevronLeftR } from "react-icons/cg"
 
-
-
 // const DashboardSidebar = () => {
 // 	//to set the open close of side bar
 // 	const [open, setOpen]= useState(true)
-	
+
 // 	const company ={label:"First Steps", type:"Nursery"}
 
-	
 //   return (
-    
-// 	<div className={`bg-gray-900 ${open?"w-56":"w-20" } p-3 flex flex-1 flex-col min-h-screen text-white  duration-300 relative`}> 
+
+// 	<div className={`bg-gray-900 ${open?"w-56":"w-20" } p-3 flex flex-1 flex-col min-h-screen text-white  duration-300 relative`}>
 // 		<div className='inline-flex items-center '>
 // 			<img  src = {logo} className='h-14 w-14 rounded block float-left mr-2 mt-4 ' alt='logo image' />
 // 			<span className={`origin-left font-medium duration-300 ${!open&&"scale-0"  }`}>{company.label} <br/>{company.type}</span>
@@ -30,5 +27,4 @@
 // 	</div>
 //   )}
 
-  
 // export default DashboardSidebar

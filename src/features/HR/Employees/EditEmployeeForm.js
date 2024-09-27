@@ -7,11 +7,14 @@ import { ROLES } from "../../../config/UserRoles";
 import { ACTIONS } from "../../../config/UserActions";
 import useAuth from "../../../hooks/useAuth";
 import Employees from "../Employees";
-import {  selectAllAcademicYears, selectCurrentAcademicYearId, selectAcademicYearById } from '../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice'
+import {
+  selectAllAcademicYears,
+  selectCurrentAcademicYearId,
+  selectAcademicYearById,
+} from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { useSelector } from "react-redux";
 
-import {
-  useGetAcademicYearsQuery} from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
+import { useGetAcademicYearsQuery } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
 //constrains on inputs when creating new user
 const USER_REGEX = /^[A-z 0-9]{6,20}$/;
 const NAME_REGEX = /^[A-z 0-9]{3,18}$/;
@@ -22,11 +25,12 @@ const YEAR_REGEX = /^[0-9]{4}\/[0-9]{4}$/;
 const EditEmployeeForm = ({ employee }) => {
   const navigate = useNavigate();
 
-
   const { isAdmin, isManager } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
-  const selectedAcademicYear = useSelector((state) => selectAcademicYearById(state, selectedAcademicYearId)); // Get the full academic year object
-  const academicYears = useSelector(selectAllAcademicYears)
+  const selectedAcademicYear = useSelector((state) =>
+    selectAcademicYearById(state, selectedAcademicYearId)
+  ); // Get the full academic year object
+  const academicYears = useSelector(selectAllAcademicYears);
   // console.log(employee,'employee')
 
   const [updateEmployee, { isLoading, isSuccess, isError, error }] =

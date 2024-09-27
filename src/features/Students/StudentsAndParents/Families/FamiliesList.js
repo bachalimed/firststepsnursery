@@ -12,25 +12,30 @@ import { useDeleteFamilyMutation } from "./familiesApiSlice";
 import { FiEdit, FiDelete } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdOutlineFamilyRestroom } from "react-icons/md";
-import { selectCurrentAcademicYearId, selectAcademicYearById, selectAllAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice"
+import {
+  selectCurrentAcademicYearId,
+  selectAcademicYearById,
+  selectAllAcademicYears,
+} from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import useAuth from "../../../../hooks/useAuth";
 import { ImProfile } from "react-icons/im";
 import { useDispatch } from "react-redux";
 
-
 const FamiliesList = () => {
   //this is for the academic year selection
- 
+
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
-  const selectedAcademicYear = useSelector((state) => selectAcademicYearById(state, selectedAcademicYearId)); // Get the full academic year object
-  const academicYears = useSelector(selectAllAcademicYears)
+  const selectedAcademicYear = useSelector((state) =>
+    selectAcademicYearById(state, selectedAcademicYearId)
+  ); // Get the full academic year object
+  const academicYears = useSelector(selectAllAcademicYears);
   // useEffect(() => {
   //     if (selectedAcademicYearId) {
   //         // Fetch the students for the selected academic year, if required
   //         console.log('Fetch students for academic year Id:', selectedAcademicYearId);
   //     }
   // }, [selectedAcademicYearId]);
- 
+
   const Navigate = useNavigate();
   const Dispatch = useDispatch();
 
@@ -42,7 +47,8 @@ const FamiliesList = () => {
     isError: isFamilyError,
     error: familyError,
   } = useGetFamiliesByYearQuery(
-    { selectedYear: selectedAcademicYear?.title, endpointName: "families" } || {},
+    { selectedYear: selectedAcademicYear?.title, endpointName: "families" } ||
+      {},
     {
       //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
       //pollingInterval: 60000,//will refetch data every 60seconds
@@ -51,7 +57,6 @@ const FamiliesList = () => {
     }
   );
 
-  
   // //this ensures teh selected year is chosen before running hte useeffect it is working perfectly to dispaptch the selected year
   // useEffect(() => {
   //   if (selectedAcademicYear?.title) {
@@ -290,7 +295,10 @@ const FamiliesList = () => {
       selector: (row) => (
         <div>
           {row.children.map((child) => (
-            <Link key={child?.child?._id} to={`/students/studentsParents/studentDetails/${child?.child?._id}`}>
+            <Link
+              key={child?.child?._id}
+              to={`/students/studentsParents/studentDetails/${child?.child?._id}`}
+            >
               <div>
                 {child?.child?.studentName?.firstName}{" "}
                 {child?.child?.studentName?.middleName}{" "}

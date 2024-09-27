@@ -1,29 +1,37 @@
-import { useParams } from 'react-router-dom' //because we will get the userId from the url
-import { useSelector } from 'react-redux'
-import EditEmployeeDocumentsListForm from './EditEmployeeDocumentsListForm'
-import { useGetEmployeeDocumentsListsQuery } from './employeeDocumentsListsApiSlice'
-import useAuth from '../../../../hooks/useAuth'
-import { Puff  } from 'react-loading-icons'
+import { useParams } from "react-router-dom"; //because we will get the userId from the url
+import { useSelector } from "react-redux";
+import EditEmployeeDocumentsListForm from "./EditEmployeeDocumentsListForm";
+import { useGetEmployeeDocumentsListsQuery } from "./employeeDocumentsListsApiSlice";
+import useAuth from "../../../../hooks/useAuth";
+import { Puff } from "react-loading-icons";
 
 const EditEmployeeDocumentsList = () => {
   //pull the id from use params from the url
-  const { id } = useParams()
+  const { id } = useParams();
   //console.log(id,'idddd')
   //RTK query the employeeDocumentsList and not from the state to reduce cache data
-  const { employeeDocumentsList } = useGetEmployeeDocumentsListsQuery("employeeDocumentsList", {
-    selectFromResult: ({ data }) => ({
-      employeeDocumentsList: data?.entities[id]
-    }),
-})
+  const { employeeDocumentsList } = useGetEmployeeDocumentsListsQuery(
+    "employeeDocumentsList",
+    {
+      selectFromResult: ({ data }) => ({
+        employeeDocumentsList: data?.entities[id],
+      }),
+    }
+  );
 
   // will not get from the state because not set to state already
   // const employeeDocumentsListToEdit = useSelector(state=> state.employeeDocumentsList?.entities[id])
   //console.log('helllllow',employeeDocumentsList, 'list id')
-  if (!employeeDocumentsList) return <Puff    stroke="#98ff98" strokeOpacity={.125} speed={.75}  />
-  let content
+  if (!employeeDocumentsList)
+    return <Puff stroke="#98ff98" strokeOpacity={0.125} speed={0.75} />;
+  let content;
 
-   content = employeeDocumentsList ? <EditEmployeeDocumentsListForm listToEdit={employeeDocumentsList} /> : <p>Loading...</p>
+  content = employeeDocumentsList ? (
+    <EditEmployeeDocumentsListForm listToEdit={employeeDocumentsList} />
+  ) : (
+    <p>Loading...</p>
+  );
 
-  return content
-}
-export default EditEmployeeDocumentsList
+  return content;
+};
+export default EditEmployeeDocumentsList;

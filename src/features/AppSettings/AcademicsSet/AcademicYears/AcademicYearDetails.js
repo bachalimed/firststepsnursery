@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const AcademicYearDetails = () => {
-  return (
-    <div>AcademicYearDetails</div>
-  )
-}
+  return <div>AcademicYearDetails</div>;
+};
 
-export default AcademicYearDetails
+export default AcademicYearDetails;

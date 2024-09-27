@@ -344,7 +344,6 @@ export default function NewFatherForm() {
                   checked={familySituation === "Joint"}
                   onChange={onFamilySituationChanged}
                   className="form-radio text-blue-600"
-                 
                 />
                 <span className="ml-2">Joint</span>
               </label>

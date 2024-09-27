@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { selectStudentById } from "./studentsSlice";
 
@@ -14,7 +14,7 @@ const StudentDetails = () => {
   const [photoId, setPhotoId] = useState(null);
   const student = useSelector((state) => selectStudentById(state, id));
   //const token = useSelector((state) => state.auth.token);
-  
+
   const [studentDocumentYear, setStudentDocumentYear] = useState(
     selectedAcademicYear.title || ""
   );
@@ -170,18 +170,20 @@ const StudentDetails = () => {
         </div>
 
         <div className="flex justify-end items-center space-x-4 mt-6">
-        <button 
-        onClick={() => Navigate(`/students/studentsParents/students`)}
-        className="px-4 py-2 bg-gray-500 text-white rounded">
+          <button
+            onClick={() => Navigate(`/students/studentsParents/students`)}
+            className="px-4 py-2 bg-gray-500 text-white rounded"
+          >
             Back to List
           </button>
           <button
-            onClick={() => Navigate(`/students/studentsParents/editStudent/${id}`)}
+            onClick={() =>
+              Navigate(`/students/studentsParents/editStudent/${id}`)
+            }
             className="px-4 py-2 bg-yellow-400 text-white rounded"
           >
             Edit Student
           </button>
-        
         </div>
       </div>
     </>
