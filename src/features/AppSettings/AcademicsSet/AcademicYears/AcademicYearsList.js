@@ -2,12 +2,12 @@
 
 import DataTable from 'react-data-table-component'
 import { useEffect, useState } from "react"
-
+import { selectCurrentAcademicYearId, selectAcademicYearById, selectAllAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice"
 import { useNavigate } from "react-router-dom"
 import { FiEdit } from "react-icons/fi"
 import { RiDeleteBin6Line } from "react-icons/ri"
 import { setAcademicYears } from "./academicYearsSlice"
-import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYear"
+
 import useAuth from '../../../../hooks/useAuth'
 import { useGetAcademicYearsQuery} from "./academicYearsApiSlice"
 import { useSelector, useDispatch } from 'react-redux'
@@ -17,13 +17,7 @@ const AcademicYearsList = () => {
   const Navigate = useNavigate()
   const dispatch = useDispatch()
 //get several things from the query
-const {
-  data: academicYearsData,//the data is renamed academicYearsData
-        isLoading,//monitor several situations is loading...
-        isSuccess,
-        isError,
-        error
-} = useGetAcademicYearsQuery('academicYearsList')//this should match the endpoint defined in your API slice.!! what does it mean?
+
 //we do not want to import from state but from DB
 const [selectedRows, setSelectedRows] = useState([])
 
@@ -32,7 +26,9 @@ const handleRowSelected = (state) => {
   setSelectedRows(state.selectedRows)
   //console.log('selectedRows', selectedRows)
 }
-
+const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
+  const selectedAcademicYear = useSelector((state) => selectAcademicYearById(state, selectedAcademicYearId)); // Get the full academic year object
+  const academicYears = useSelector(selectAllAcademicYears)
 //handle delete
 
 const handleDelete=()=>{
@@ -51,55 +47,42 @@ const toDuplicate = selectedRows[-1]
 
 
 const{canEdit, isAdmin, canDelete, canCreate, status2}=useAuth()
-//console.log(academicYearsData)
-const [academicYears, setAcademicYearsState] = useState([])
-useEffect(()=>{
-  // console.log('isLoading:', isLoading)
-  // console.log('isSuccess:', isSuccess)
-  // console.log('isError:', isError)
-  if (isError) {
-    console.log('error:', error)
-  }
-  if (isSuccess ) {
-    //console.log('academicYearsData',academicYearsData)
-    //transform into an array
-    const {entities}=academicYearsData
-    const academicYearsArray =Object.values(entities)
-    setAcademicYearsState(academicYearsArray)
-    //console.log('academic years from list call', academicYears)
-    dispatch(setAcademicYears(entities)); // Dispatch to state  using setALL which will create the ids and entities automatically
-    //console.log('academicYears',academicYears)
-  } else {
-    //console.log('academicYearsData is not an array')
-  }
-}, [isSuccess, academicYearsData, isError, error, dispatch])
+//console.log(academicYears)
+
+
 
 //define the content to be conditionally rendered
 const column =[
   { 
 name: "ID",
 selector:row=>row.id,
-sortable:true
+sortable:true,
+width: "200px",
  }, 
   { 
 name: "Title",
-selector:row=>row.title,
-sortable:true
+selector:row=>row?.title,
+sortable:true,
+width: "100px",
  }, 
   { 
-name: "Academic Year start",
-selector:row=>new Date(row.yearStart).toLocaleString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' }),
-sortable:true
+    name: "Period",
+    selector: row => (
+      <div>
+        <div>Start {new Date(row?.yearStart).toLocaleDateString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' })}</div>
+        <div>End {new Date(row?.yearEnd).toLocaleDateString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' })}</div>
+      </div>
+    )
+,
+sortable:true,
+width: "120px",
  }, 
-{name: "Academic Year End",
-  selector:row=>new Date(row.yearEnd).toLocaleString('en-US', { day: 'numeric', month: 'numeric', year: 'numeric' }),
-  
-  sortable:true
-}, 
+
 
 {name: "Creator",
-  selector:row=>row.academicYearCreator,
-  sortable:true
+  selector:row=>row?.academicYearCreator,
+  sortable:true,
+  width: "200px",
 }, 
 {name: "Action",
   selector:null,
@@ -126,13 +109,6 @@ sortable:true
 ]
 let content
 
-if (isLoading) content = <p>Loading...</p>
-
-if (isError) {
-    content = <p className="errmsg">{error?.data?.message}</p>//errormessage class defined in the css, the error has data and inside we have message of error
-}
-
-if (isSuccess ) {
 
 
   
@@ -173,7 +149,7 @@ return (
   </>
 )
 
-}
+
 
 }
 export default AcademicYearsList

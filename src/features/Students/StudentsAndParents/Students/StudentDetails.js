@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGetStudentByIdQuery } from "./studentsApiSlice";
 import { selectStudentById } from "./studentsSlice";
-import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYear";
+import { selectCurrentAcademicYearId, selectAcademicYearById, selectAllAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice"
 import { useGetStudentDocumentsByYearByIdQuery } from "../../../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice";
 import StudentsParents from "../../StudentsParents";
 import useFetchPhoto from "../../../../hooks/useFetchPhoto";
@@ -25,8 +25,10 @@ const StudentDetails = () => {
     { id: id, endpointName: "studentById" },
     { pollingInterval: 60000, refetchOnFocus: true, refetchOnMountOrArgChange: true }
   );
-
-  const selectedAcademicYear = useSelectedAcademicYear();
+  const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
+  const selectedAcademicYear = useSelector((state) => selectAcademicYearById(state, selectedAcademicYearId)); // Get the full academic year object
+  const academicYears = useSelector(selectAllAcademicYears)
+ 
   const [studentDocumentYear, setStudentDocumentYear] = useState(selectedAcademicYear.title || "");
 
   const {

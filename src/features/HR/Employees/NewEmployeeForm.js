@@ -6,10 +6,10 @@ import { faSave } from "@fortawesome/free-solid-svg-icons"
 import { ROLES } from "../../../config/UserRoles"
 import { ACTIONS } from "../../../config/UserActions"
 import Employees from '../Employees'
-import { useSelectedAcademicYear } from "../../../hooks/useSelectedAcademicYear"
+
 import { useSelector } from 'react-redux'
-import {  selectAllAcademicYears } from '../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice'
-import { useGetAcademicYearsQuery } from '../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
+import {  selectAllAcademicYears, selectCurrentAcademicYearId, selectAcademicYearById } from '../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice'
+
 //constrains on inputs when creating new user
 const USER_REGEX = /^[A-z 0-9]{6,20}$/
 const NAME_REGEX= /^[A-z 0-9]{3,18}$/
@@ -19,35 +19,12 @@ const DOB_REGEX = /^[0-9/-]{4,10}$/
 const YEAR_REGEX = /^[0-9]{4}\/[0-9]{4}$/
 const NewEmployeeForm = () => {
 	const navigate = useNavigate();
-	const academicYears = useSelector(selectAllAcademicYears)// to be used to show all academic years
-	const [selectedYear, setSelectedYear] = useState('')
-	const {
-		data: academicYearsList,//the data is renamed parents
-		isLoading: yearIsLoading,//monitor several situations
-		isSuccess: yearIsSuccess,
-		isError: yearIsError,
-		error: yearError
-	  } = useGetAcademicYearsQuery({endpointName: 'academicYearsList'}||{},{//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-		//pollingInterval: 60000,//will refetch data every 60seconds
-		refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
-		refetchOnMountOrArgChange: true//refetch when we remount the component
-	  })
 	
-	let yearsList
-	if (yearIsSuccess){
-		const {entities} = academicYearsList
-		yearsList = Object.values(entities)
-		//console.log(yearsList)
-	}
+  const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
+  const selectedAcademicYear = useSelector((state) => selectAcademicYearById(state, selectedAcademicYearId)); // Get the full academic year object
+  const academicYears = useSelector(selectAllAcademicYears)
+
 	
- //this to be used to only select current year from check box
- const selectedAcademicYear = useSelectedAcademicYear()
- useEffect(() => {
-    if (selectedAcademicYear?.title) {
-      setSelectedYear(selectedAcademicYear.title)
-      //console.log('Selected year updated:', selectedAcademicYear.title)
-    }
-  }, [selectedAcademicYear])
      
 
 	const [addNewEmployee, { isLoading, isSuccess, isError, error }] = useAddNewEmployeeMutation();
@@ -85,7 +62,7 @@ const NewEmployeeForm = () => {
 	  employeeAssessment: [],
 	  employeeWorkHistory: [],
 	  employeeIsActive: false,
-	  employeeYears: [{academicYear: selectedYear}],
+	  employeeYears: [{academicYear: selectedAcademicYear}],
 	  employeeCurrentEmployment: {
       position: '',
       joinDate: '',
@@ -201,7 +178,7 @@ const NewEmployeeForm = () => {
 		setFormData((prev) => {
 		  const updatedYears = [...prev.employeeYears];
 		  // Update based on checked state
-		  updatedYears[index].academicYear = checked ? selectedYear : '';
+		  updatedYears[index].academicYear = checked ? selectedAcademicYear : '';
 		  return { ...prev, employeeYears: updatedYears };
 		});
 	  };
@@ -454,7 +431,7 @@ const NewEmployeeForm = () => {
       type="checkbox"
       id={`employeeYear-${index}`}
       value={year.academicYear}
-      checked={year.academicYear === selectedYear}
+      checked={year.academicYear === selectedAcademicYear}
       onChange={(e) => onAcademicYearChanged(e, index)}
       className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
     />
@@ -462,7 +439,7 @@ const NewEmployeeForm = () => {
       htmlFor={`employeeYear-${index}`}
       className="ml-2 text-sm font-medium text-gray-700"
     >
-      Academic Year  {!validity.validEmployeeYear && <span className="text-red-500">*</span>} : {selectedYear}
+      Academic Year  {!validity.validEmployeeYear && <span className="text-red-500">*</span>} : {selectedAcademicYear}
     </label>
   </div>
 ))}

@@ -1,6 +1,6 @@
         import React from 'react'
         import StudentsParents from '../../StudentsParents'
-
+        import { selectCurrentAcademicYearId, selectAcademicYearById } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice"
         import { useGetAttendedSchoolsQuery } from '../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice'
         import { useState, useEffect } from "react"
         import { useAddNewStudentMutation } from "./studentsApiSlice"
@@ -10,7 +10,7 @@
         import { ROLES } from "../../../../config/UserRoles"
         import { ACTIONS } from "../../../../config/UserActions"
         import useAuth from '../../../../hooks/useAuth'
-        import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYear"
+   
         import { useSelector } from 'react-redux'
        
         import { useGetAcademicYearsQuery} from '../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
@@ -25,9 +25,9 @@
 
     const NewStudentForm = () => {
        
-       const [selectedYear, setSelectedYear] = useState('')
+       
         const Navigate = useNavigate()
-        const academicYears = useSelector(selectAllAcademicYears)// to be used to show all academic years
+       
 
       const [addNewStudent, {//an object that calls the status when we execute the newUserForm function
           isLoading,
@@ -58,35 +58,11 @@ if (schoolIsSuccess){
     //console.log(attendedSchools)
 }
 
-const {
-    data: academicYearsList,//the data is renamed parents
-    isLoading: yearIsLoading,//monitor several situations
-    isSuccess: yearIsSuccess,
-    isError: yearIsError,
-    error: yearError
-  } = useGetAcademicYearsQuery({endpointName: 'academicYearsList'}||{},{//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-    //pollingInterval: 60000,//will refetch data every 60seconds
-    refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
-    refetchOnMountOrArgChange: true//refetch when we remount the component
-  })
-
-let yearsList
-if (yearIsSuccess){
-    const {entities} = academicYearsList
-    yearsList = Object.values(entities)
-    //console.log(yearsList)
-}
+const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
+const selectedAcademicYear = useSelector((state) => selectAcademicYearById(state, selectedAcademicYearId)); // Get the full academic year object
+const academicYears = useSelector(selectAllAcademicYears)
 
 
-
- //this to be used to only select current year from check box
- const selectedAcademicYear = useSelectedAcademicYear()
- useEffect(() => {
-    if (selectedAcademicYear?.title) {
-      setSelectedYear(selectedAcademicYear.title)
-      //console.log('Selected year updated:', selectedAcademicYear.title)
-    }
-  }, [selectedAcademicYear])
      
 
         //initialisation of states for each input
@@ -287,7 +263,7 @@ if (yearIsSuccess){
       
           <form className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md" onSubmit={onSaveStudentClicked}>
             <div className="mb-6">
-              <h2 className="text-2xl font-semibold">New student for the academic year {selectedYear}</h2>
+              <h2 className="text-2xl font-semibold">New student for the academic year {selectedAcademicYear?.title}</h2>
             </div>
       
             <div className="grid gap-6 mb-6 md:grid-cols-2">
@@ -397,15 +373,15 @@ if (yearIsSuccess){
                 <input
                 type="checkbox"
                 id="studentYears"
-                value={selectedYear}
-                checked={studentYears.some(year => year.academicYear === selectedYear)}
+                value={selectedAcademicYear.title}
+                checked={studentYears.some(year => year.academicYear === selectedAcademicYear.title)}
                 onChange={onAcademicYearChanged}
                 
                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                  required
                 />
                 
-            <label htmlFor="studentYears" className="ml-2 text-sm font-medium text-gray-700">Student Year*: {selectedYear}</label>            
+            <label htmlFor="studentYears" className="ml-2 text-sm font-medium text-gray-700">Student Year*: {selectedAcademicYear.title}</label>            
                      
              </div>
             </div>
@@ -454,7 +430,7 @@ if (yearIsSuccess){
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
                       >
                         <option value="">Select Year</option>
-                        {yearsList.map((year) => (
+                        {academicYears.map((year) => (
                           <option key={year.id} value={year.title}>
                             {year.title}
                           </option>
@@ -521,7 +497,7 @@ if (yearIsSuccess){
                       className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
                     >
                       <option value="">Select Year</option>
-                      {yearsList.map((year) => (
+                      {academicYears.map((year) => (
                         <option key={year.id} value={year.title}>
                           {year.title}
                         </option>

@@ -5,7 +5,7 @@ import { useParams } from "react-router";
 import axios from "axios";
 import { useGetStudentDocumentsByYearByIdQuery } from "../../../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice";
 import StudentsParents from "../../StudentsParents";
-import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYear";
+import { selectCurrentAcademicYearId, selectAcademicYearById, selectAllAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice"
 import { useNavigate } from "react-router";
 const FamilyDetails = () => {
   const { id } = useParams();
@@ -13,7 +13,7 @@ const FamilyDetails = () => {
   const { father = {}, mother = {}, children = [], familySituation = "" } = family ||{}
 
   const token = useSelector((state) => state.auth.token);
-  const selectedAcademicYear = useSelectedAcademicYear();
+  
   const [studentDocumentYear, setStudentDocumentYear] = useState(selectedAcademicYear.title || "");
   const [fatherPhotoUrl, setFatherPhotoUrl] = useState(null);
   const [motherPhotoUrl, setMotherPhotoUrl] = useState(null);
@@ -27,6 +27,10 @@ const FamilyDetails = () => {
     { pollingInterval: 60000, refetchOnFocus: true, refetchOnMountOrArgChange: true }
   );
 
+
+  const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
+  const selectedAcademicYear = useSelector((state) => selectAcademicYearById(state, selectedAcademicYearId)); // Get the full academic year object
+  const academicYears = useSelector(selectAllAcademicYears)
   useEffect(() => {
     if (listIsSuccess && studentDocumentsListing) {
       const findPhoto = (title) => {

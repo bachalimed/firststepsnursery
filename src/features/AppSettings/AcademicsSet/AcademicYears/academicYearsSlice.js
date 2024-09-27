@@ -5,7 +5,9 @@ import { createSlice, createEntityAdapter  } from '@reduxjs/toolkit'
 
 //const initialState=[] 
 const academicYearsAdapter = createEntityAdapter()//this was added
-const initialState= academicYearsAdapter.getInitialState()
+const initialState= academicYearsAdapter.getInitialState({
+    selectedAcademicYearId: null, // Add selectedAcademicYearId to track the selected year
+})
 const academicYearsSlice = createSlice({
     name: 'academicYear',
     initialState,
@@ -17,12 +19,12 @@ const academicYearsSlice = createSlice({
         },        
         academicYearSelected: (state, action) => {
             const { id } = action.payload //get the id from the payload that was passed in from the component selection
-           
-            const newAcademicYears=Object.values(state.entities).map(item  => ({//Converts the entities object from the state into an array of its values. Each value is an entity, Iterates over each entity in the array.
-                 ...item,
-                  isSelected: item.id===id}))
+            state.selectedAcademicYearId = id; // Update the selectedAcademicYearId
+            // const newAcademicYears=Object.values(state.entities).map(item  => ({//Converts the entities object from the state into an array of its values. Each value is an entity, Iterates over each entity in the array.
+            //      ...item,
+            //       isSelected: item.id===id}))
                 
-                academicYearsAdapter.setAll(state, newAcademicYears)
+            //     academicYearsAdapter.setAll(state, newAcademicYears)
             },
             
            
@@ -41,8 +43,12 @@ const academicYearsSlice = createSlice({
 })
 export const { setAcademicYears, updateAcademicYear, activateAcademicYear,  academicYearSelected } = academicYearsSlice.actions
 
-export const currentAcademicYearsList = (state) => state.academicYear
+export const selectCurrentAcademicYearId = (state) => state.academicYear.selectedAcademicYearId; // Selector for the selected academic year
+export const selectAcademicYearById = (state, id) => state.academicYear.entities[id];
+//export const selectAllAcademicYears = (state) => state.academicYear.entities;
+// export const currentAcademicYearsList = (state) => state.academicYear
 export default academicYearsSlice.reducer//to be sent to the store
- export const { selectAll: selectAllAcademicYears } = academicYearsAdapter.getSelectors(state => state.academicYear)//added this one
-
+ export const { selectAll:selectAllAcademicYears
+  } = academicYearsAdapter.getSelectors(state => state.academicYear)//added this one
+ // export const selectAcademicYearById = (state, id) => state.academicYear.entities[id];
 

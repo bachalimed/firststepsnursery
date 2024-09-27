@@ -4,7 +4,7 @@ import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom"
 import axios from "axios";
 import { selectStudentById } from "./studentsSlice";
-import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYear";
+
 import { useGetStudentDocumentsByYearByIdQuery } from "../../../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice";
 import StudentsParents from "../../StudentsParents";
 import useFetchPhoto from "../../../../hooks/useFetchPhoto";
@@ -14,7 +14,7 @@ const StudentDetails = () => {
   const [photoId, setPhotoId] = useState(null);
   const student = useSelector((state) => selectStudentById(state, id));
   //const token = useSelector((state) => state.auth.token);
-  const selectedAcademicYear = useSelectedAcademicYear();
+  
   const [studentDocumentYear, setStudentDocumentYear] = useState(
     selectedAcademicYear.title || ""
   );

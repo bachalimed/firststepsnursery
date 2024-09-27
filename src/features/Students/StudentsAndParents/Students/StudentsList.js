@@ -5,6 +5,7 @@ import {
   useDeleteStudentMutation,
 } from "./studentsApiSlice";
 import { HiOutlineSearch } from "react-icons/hi";
+import { selectCurrentAcademicYearId, selectAcademicYearById, selectAllAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice"
 
 import StudentsParents from "../../StudentsParents";
 import { useDispatch } from "react-redux";
@@ -21,7 +22,7 @@ import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { setAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYear";
+
 import useAuth from "../../../../hooks/useAuth";
 import getCurrentAcademicYear from "../../../../config/CurrentYear";
 import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
@@ -31,22 +32,33 @@ import {
   currentStudentsList,
 } from "./studentsSlice";
 import { IoDocumentAttachOutline } from "react-icons/io5";
-import { selectAllAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
+
 
 const StudentsList = () => {
   //this is for the academic year selection
   const Navigate = useNavigate();
   const dispatch = useDispatch();
-  const academicYears = useSelector(selectAllAcademicYears);
-  const [selectedYear, setSelectedYear] = useState("");
+ 
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
   const [requiredDocNumber, setRequiredDocNumber] = useState("");
   const [studentDocNumber, setStudentDocNumber] = useState("");
 
-  const selectedAcademicYear = useSelectedAcademicYear();
+  const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
+  const selectedAcademicYear = useSelector((state) => selectAcademicYearById(state, selectedAcademicYearId)); // Get the full academic year object
+  const academicYears = useSelector(selectAllAcademicYears)
+  // useEffect(() => {
+  //     if (selectedAcademicYearId) {
+  //         // Fetch the students for the selected academic year, if required
+  //         console.log('Fetch students for academic year Id:', selectedAcademicYearId);
+  //     }
+  // }, [selectedAcademicYearId]);
+
+
+ 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idStudentToDelete, setIdStudentToDelete] = useState(null); // State to track which document to delete
 
+  console.log('Fetch students for academic year:', selectedAcademicYear);
   const {
     data: students, //the data is renamed students
     isLoading, //monitor several situations is loading...
@@ -54,7 +66,7 @@ const StudentsList = () => {
     isError,
     error,
   } = useGetStudentsByYearQuery(
-    { selectedYear: selectedYear, endpointName: "studentsList" } || {},
+    { selectedYear: selectedAcademicYear?.title, endpointName: "studentsList" } || {},
     {
       //this param will be passed in req.params to select only students for taht year
       //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
@@ -94,12 +106,12 @@ const StudentsList = () => {
   };
 
   //this ensures teh selected year is chosen before running hte useeffect it is working perfectly to dispaptch the selected year
-  useEffect(() => {
-    if (selectedAcademicYear?.title) {
-      setSelectedYear(selectedAcademicYear.title);
-      //console.log('Selected year updated:', selectedAcademicYear.title)
-    }
-  }, [selectedAcademicYear]);
+  // useEffect(() => {
+  //   if (selectedAcademicYear?.title) {
+  //     setSelectedYear(selectedAcademicYear.title);
+  //     //console.log('Selected year updated:', selectedAcademicYear.title)
+  //   }
+  // }, [selectedAcademicYear]);
   //console.log('selectedAcademicYear',selectedAcademicYear)
 
   // const myStu = useSelector(state=> state.student)

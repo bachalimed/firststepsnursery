@@ -9,11 +9,11 @@ import { faSave } from "@fortawesome/free-solid-svg-icons"
 import { ROLES } from "../../../../config/UserRoles"
 import { ACTIONS } from '../../../../config/UserActions'
 import useAuth from '../../../../hooks/useAuth'
-import { useSelectedAcademicYear } from '../../../../hooks/useSelectedAcademicYear'
+
 import { useSelector } from 'react-redux'
 import { selectAllAcademicYears} from '../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice'
 import {  useGetAcademicYearsQuery } from '../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
-
+import { selectCurrentAcademicYearId, selectAcademicYearById } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice"
  //constrains on inputs when creating new user
  const USER_REGEX = /^[A-z]{6,20}$/
  const PWD_REGEX = /^[A-z0-9!@#-_$%]{8,20}$/
@@ -26,11 +26,13 @@ import {  useGetAcademicYearsQuery } from '../../../AppSettings/AcademicsSet/Aca
 const EditStudentForm = ({student}) => {
  //initialising state variables and hooks
  const Navigate = useNavigate()
- const [selectedYear, setSelectedYear] = useState('')
- const academicYears = useSelector(selectAllAcademicYears)// to be used to show all academic years
+ 
   const[id, setId] = useState(student.id)
  const{userId,canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
  
+ const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
+ const selectedAcademicYear = useSelector((state) => selectAcademicYearById(state, selectedAcademicYearId)); // Get the full academic year object
+ const academicYears = useSelector(selectAllAcademicYears)
   //initialising the function
   const [updateStudent, {
     isLoading: isUpdateLoading,
@@ -41,24 +43,6 @@ const EditStudentForm = ({student}) => {
 
 
 
-const {
-  data: academicYearsList,//the data is renamed parents
-  isLoading: yearIsLoading,//monitor several situations
-  isSuccess: yearIsSuccess,
-  isError: yearIsError,
-  error: yearError
-} = useGetAcademicYearsQuery({endpointName: 'academicYearsList'}||{},{//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-  //pollingInterval: 60000,//will refetch data every 60seconds
-  refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
-  refetchOnMountOrArgChange: true//refetch when we remount the component
-})
-
-let yearsList
-if (yearIsSuccess){
-  const {entities} = academicYearsList
-  yearsList = Object.values(entities)
-  console.log(yearsList,'yearsList')
-}
 
 const {
   data: attendedSchoolsList,//the data is renamed parents
@@ -83,16 +67,7 @@ if (schoolIsSuccess){
 
 //prepare the permission variables
 
- //this to be used to only select current year from check box
- const selectedAcademicYear = useSelectedAcademicYear()
- useEffect(() => {
-    if (selectedAcademicYear?.title) {
-      setSelectedYear(selectedAcademicYear.title)
-      //console.log('Selected year updated:', selectedAcademicYear.title)
-    }
-  }, [selectedAcademicYear])
 
-   
   //initialisation of states for each input
     const [studentName, setStudentName] = useState(student.studentName)
     const [firstName, setFirstName] = useState(student.studentName.firstName)
@@ -200,13 +175,13 @@ if (schoolIsSuccess){
 
       
       // //adds to the previous entries in arrays for gardien, schools...
-      // const onStudentYearsChanged = (e, selectedYear) => {
+      // const onStudentYearsChanged = (e, selectedAcademicYear) => {
       //   if (e.target.checked) {
-      //     // Add the selectedYear to studentYears if it's checked
-      //     setStudentYears([...studentYears, selectedYear]);
+      //     // Add the selectedAcademicYear to studentYears if it's checked
+      //     setStudentYears([...studentYears, selectedAcademicYear]);
       //   } else {
-      //     // Remove the selectedYear from studentYears if it's unchecked
-      //     setStudentYears(studentYears.filter(year => year !== selectedYear))
+      //     // Remove the selectedAcademicYear from studentYears if it's unchecked
+      //     setStudentYears(studentYears.filter(year => year !== selectedAcademicYear))
       //   }
       // }
      
@@ -291,7 +266,7 @@ const handleRemoveEntry = (index) => {
         
         let content
       
-      content = ( yearIsSuccess&&schoolIsSuccess&&   <>
+      content = ( schoolIsSuccess&&   <>
         <StudentsParents/>
         <p className={`text-red-500 ${errClass}`}>{updateError?.data?.message}</p> {/* Display error messages */}
               <p className={errClass}>{updateError?.data?.message}</p>  {/*will display if there is an error message, some of the error messagees are defined in the back end responses*/}
@@ -462,7 +437,7 @@ const handleRemoveEntry = (index) => {
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
                       >
                         
-                        {yearsList.map((year,i) => (
+                        {academicYears.map((year,i) => (
                         <option key={year.id} value={year.title}>
                           {year.title}
                         </option>
@@ -523,7 +498,7 @@ const handleRemoveEntry = (index) => {
                       className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
                     >
                       <option value="">Select Year</option>
-                      {yearsList.map((year,i) => (
+                      {academicYears.map((year,i) => (
                         <option key={year.id} value={year.title}>
                           {year.title}
                         </option>

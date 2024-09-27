@@ -7,9 +7,9 @@ import { ROLES } from "../../../config/UserRoles";
 import { ACTIONS } from "../../../config/UserActions";
 import useAuth from "../../../hooks/useAuth";
 import Employees from "../Employees";
-import { useSelectedAcademicYear } from "../../../hooks/useSelectedAcademicYear";
+import {  selectAllAcademicYears, selectCurrentAcademicYearId, selectAcademicYearById } from '../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice'
 import { useSelector } from "react-redux";
-import {  selectAllAcademicYears} from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
+
 import {
   useGetAcademicYearsQuery} from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
 //constrains on inputs when creating new user
@@ -21,38 +21,12 @@ const DOB_REGEX = /^[0-9/-]{4,10}$/;
 const YEAR_REGEX = /^[0-9]{4}\/[0-9]{4}$/;
 const EditEmployeeForm = ({ employee }) => {
   const navigate = useNavigate();
-  const academicYears = useSelector(selectAllAcademicYears); // to be used to show all academic years
-  const [selectedYear, setSelectedYear] = useState("");
+
+
   const { isAdmin, isManager } = useAuth();
-  const {
-    data: academicYearsList, //the data is renamed parents
-    isLoading: yearIsLoading, //monitor several situations
-    isSuccess: yearIsSuccess,
-    isError: yearIsError,
-    error: yearError,
-  } = useGetAcademicYearsQuery({ endpointName: "academicYearsList" } || {}, {
-    //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-    //pollingInterval: 60000,//will refetch data every 60seconds
-    refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
-    refetchOnMountOrArgChange: true, //refetch when we remount the component
-  });
-
-  let yearsList;
-  if (yearIsSuccess) {
-    const { entities } = academicYearsList;
-    yearsList = Object.values(entities);
-    //console.log(yearsList)
-  }
-
-  //this to be used to only select current year from check box
-  const selectedAcademicYear = useSelectedAcademicYear();
-  useEffect(() => {
-    if (selectedAcademicYear?.title) {
-      setSelectedYear(selectedAcademicYear.title);
-      //console.log('Selected year updated:', selectedAcademicYear.title)
-    }
-  }, [selectedAcademicYear]);
-
+  const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
+  const selectedAcademicYear = useSelector((state) => selectAcademicYearById(state, selectedAcademicYearId)); // Get the full academic year object
+  const academicYears = useSelector(selectAllAcademicYears)
   // console.log(employee,'employee')
 
   const [updateEmployee, { isLoading, isSuccess, isError, error }] =
@@ -445,8 +419,8 @@ const EditEmployeeForm = ({ employee }) => {
                   {/* Employee Years */}
                   <h3 className="text-lg font-semibold mt-6">Employee Years</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {yearsList && yearsList.length > 0 ? (
-                      yearsList.map((year, index) => {
+                    {academicYears && academicYears.length > 0 ? (
+                      academicYears.map((year, index) => {
                         const isChecked = formData.employeeYears.some(
                           (empYear) => empYear.academicYear === year.title
                         );

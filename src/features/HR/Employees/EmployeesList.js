@@ -9,10 +9,6 @@ import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
 //import { useGetEmployeeDocumentsByYearByIdQuery } from "../../../AppSettings/EmployeesSet/EmployeeDocumentsLists/employeeDocumentsListsApiSlice"
 import { useSelector } from "react-redux";
-import {
-  selectAllEmployeesByYear,
-  selectAllEmployees,
-} from "./employeesApiSlice"; //use the memoized selector
 import { useEffect, useState } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
 // import RegisterModal from './RegisterModal'
@@ -21,10 +17,11 @@ import { useNavigate } from "react-router-dom";
 import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { setAcademicYears, selectAllAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import { useSelectedAcademicYear } from "../../../hooks/useSelectedAcademicYear";
+import {
+  setAcademicYears,
+  selectAllAcademicYears,
+} from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import useAuth from "../../../hooks/useAuth";
-import getCurrentAcademicYear from "../../../config/CurrentYear";
 import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
 import { IoShieldCheckmarkOutline, IoShieldOutline } from "react-icons/io5";
 import {
@@ -33,20 +30,30 @@ import {
   currentEmployeesList,
 } from "./employeesSlice";
 import { IoDocumentAttachOutline } from "react-icons/io5";
+import {
+  selectCurrentAcademicYearId,
+  selectAcademicYearById,
+} from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 
 const EmployeesList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const academicYears = useSelector(selectAllAcademicYears);
-  const [selectedYear, setSelectedYear] = useState("");
+
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
   const [requiredDocNumber, setRequiredDocNumber] = useState("");
   const [employeeDocNumber, setEmployeeDocNumber] = useState("");
 
-  const selectedAcademicYear = useSelectedAcademicYear();
+ 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idEmployeeToDelete, setIdEmployeeToDelete] = useState(null); // State to track which document to delete
+
+  const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
+  const selectedAcademicYear = useSelector((state) =>
+    selectAcademicYearById(state, selectedAcademicYearId)
+  ); // Get the full academic year object
+  const academicYears = useSelector(selectAllAcademicYears);
+  
 
   const {
     data: employees, //the data is renamed employees
@@ -55,7 +62,10 @@ const EmployeesList = () => {
     isError: isEmployeesError,
     error: employeesError,
   } = useGetEmployeesByYearQuery(
-    { selectedYear: selectedYear, endpointName: "employeesList" } || {},
+    {
+      selectedYear: selectedAcademicYear?.title,
+      endpointName: "employeesList",
+    } || {},
     {
       //this param will be passed in req.params to select only employees for taht year
       //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
@@ -95,12 +105,12 @@ const EmployeesList = () => {
   };
 
   //this ensures teh selected year is chosen before running hte useeffect it is working perfectly to dispaptch the selected year
-  useEffect(() => {
-    if (selectedAcademicYear?.title) {
-      setSelectedYear(selectedAcademicYear.title);
-      //console.log('Selected year updated:', selectedAcademicYear.title)
-    }
-  }, [selectedAcademicYear]);
+  // useEffect(() => {
+  //   if (selectedAcademicYear?.title) {
+  //     setSelectedYear(selectedAcademicYear.title);
+  //     //console.log('Selected year updated:', selectedAcademicYear.title)
+  //   }
+  // }, [selectedAcademicYear]);
   //console.log('selectedAcademicYear',selectedAcademicYear)
 
   // const myStu = useSelector(state=> state.employee)
@@ -249,8 +259,9 @@ const EmployeesList = () => {
           <Link to={`/admin/users/userManagement/userDetails/${row.id}`}>
             <div>User {row.id} </div>
           </Link>
-          <Link to={`/hr/employees/employeeDetails/${row.id}`}> {/* the employee details use the user Id and not employeeId */}
+          <Link to={`/hr/employees/employeeDetails/${row.id}`}>
             {" "}
+            {/* the employee details use the user Id and not employeeId */}{" "}
             {row.employeeId && <div>Employee {row.employeeId} </div>}
           </Link>
         </div>

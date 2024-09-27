@@ -15,7 +15,7 @@ import NewMotherForm from "./NewMotherForm";
 import NewFamilyAddChildrenForm from "./NewFamilyAddChildrenForm";
 import FamilyCompleted from "./FamilyCompleted";
 import { StepperContext } from "../../../../contexts/StepperContext";
-
+import { selectAllAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice"
 const NewFamily = () => {
   //an add parent function that can be called inside the component
 

@@ -10,7 +10,7 @@
 //         import { ROLES } from "../../../../config/UserRoles"
 //         import { ACTIONS } from "../../../../config/UserActions"
 //         import useAuth from '../../../../hooks/useAuth'
-//         import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYear"
+//     
 //         import { useSelector } from 'react-redux'
     
 //         import { selectAllAcademicYears } from '../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
@@ -62,7 +62,7 @@
 
 
 //  //this to be used to only select current year from check box
-//  const selectedAcademicYear = useSelectedAcademicYear()
+
 //  const [studentDocumentYear, setStudentDocumentYear] = useState(selectedAcademicYear.title)
 //   const[filteredList, setFilteredList]=useState([])
  
