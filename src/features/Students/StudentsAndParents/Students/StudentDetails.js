@@ -8,6 +8,7 @@ import { useGetStudentDocumentsByYearByIdQuery } from "../../../AppSettings/Stud
 import StudentsParents from "../../StudentsParents";
 import useFetchPhoto from "../../../../hooks/useFetchPhoto";
 
+
 const StudentDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -15,7 +16,6 @@ const StudentDetails = () => {
   const [student, setStudent] = useState(null);
   
   const studentFromSelector = useSelector((state) => selectStudentById(state, id));
-
   const {
     data: studentOrg,
     isLoading: studentOrgIsLoading,
@@ -51,7 +51,8 @@ const StudentDetails = () => {
   }, [studentFromSelector, studentOrgIsSuccess, studentOrg]);
 
   useEffect(() => {
-    if (listIsSuccess && studentDocumentsListing) {
+    if (!listIsLoading && studentDocumentsListing) {
+      console.log(studentDocumentsListing,'studentDocumentsListing')
       const findStudentPhotoId = (documents) => {
         const studentPhotoDocument = documents.find(
           (doc) => doc.documentTitle === "Student Photo"
