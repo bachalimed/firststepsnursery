@@ -13,7 +13,8 @@
         import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYear"
         import { useSelector } from 'react-redux'
        
-        import { useGetAcademicYearsQuery, selectAllAcademicYears } from '../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
+        import { useGetAcademicYearsQuery} from '../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
+        import {selectAllAcademicYears } from '../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice'
         //constrains on inputs when creating new user
         const USER_REGEX = /^[A-z]{6,20}$/
         const PWD_REGEX = /^[A-z0-9!@#-_$%]{8,20}$/

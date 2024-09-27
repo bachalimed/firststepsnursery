@@ -43,6 +43,6 @@ export const { setAcademicYears, updateAcademicYear, activateAcademicYear,  acad
 
 export const currentAcademicYearsList = (state) => state.academicYear
 export default academicYearsSlice.reducer//to be sent to the store
-// export const { selectAll: selectAllAcademicYears } = academicYearsAdapter.getSelectors(state => state.academicYear)//added this one
+ export const { selectAll: selectAllAcademicYears } = academicYearsAdapter.getSelectors(state => state.academicYear)//added this one
 
 

@@ -18,10 +18,10 @@ const AcademicYearsSelection = () => {
 //const listOfAcademicYears = useSelector(state => selectAllAcademicYears(state))//this is original but not working if we did not use the query in the list
 const academicYears = useSelector(selectAllAcademicYears)//this works because prefetch?
 
-//very important to dispatch every time there is a refresh
-useEffect(()=>{
-  dispatch(setAcademicYears(academicYears))//dispatch list to state,this only shows tehn redux state not empty in the browser tools, check later if this is needed as the query updated the state in apislice
-},[academicYears, dispatch])// added dispatch here
+// //very important to dispatch every time there is a refresh
+// useEffect(()=>{
+//   dispatch(setAcademicYears(academicYears))//dispatch list to state,this only shows tehn redux state not empty in the browser tools, check later if this is needed as the query updated the state in apislice
+// },[academicYears, dispatch])// added dispatch here
 
 const {isAdmin, isManager}=useAuth()
 

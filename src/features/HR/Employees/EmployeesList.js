@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { setAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
+import { setAcademicYears, selectAllAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { useSelectedAcademicYear } from "../../../hooks/useSelectedAcademicYear";
 import useAuth from "../../../hooks/useAuth";
 import getCurrentAcademicYear from "../../../config/CurrentYear";
@@ -33,7 +33,6 @@ import {
   currentEmployeesList,
 } from "./employeesSlice";
 import { IoDocumentAttachOutline } from "react-icons/io5";
-import { selectAllAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
 
 const EmployeesList = () => {
   //this is for the academic year selection

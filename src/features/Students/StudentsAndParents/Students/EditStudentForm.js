@@ -11,7 +11,8 @@ import { ACTIONS } from '../../../../config/UserActions'
 import useAuth from '../../../../hooks/useAuth'
 import { useSelectedAcademicYear } from '../../../../hooks/useSelectedAcademicYear'
 import { useSelector } from 'react-redux'
-import { selectAllAcademicYears, useGetAcademicYearsQuery } from '../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
+import { selectAllAcademicYears} from '../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice'
+import {  useGetAcademicYearsQuery } from '../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
 
  //constrains on inputs when creating new user
  const USER_REGEX = /^[A-z]{6,20}$/

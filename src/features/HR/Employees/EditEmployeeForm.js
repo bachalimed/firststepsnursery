@@ -9,10 +9,9 @@ import useAuth from "../../../hooks/useAuth";
 import Employees from "../Employees";
 import { useSelectedAcademicYear } from "../../../hooks/useSelectedAcademicYear";
 import { useSelector } from "react-redux";
+import {  selectAllAcademicYears} from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import {
-  useGetAcademicYearsQuery,
-  selectAllAcademicYears,
-} from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
+  useGetAcademicYearsQuery} from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
 //constrains on inputs when creating new user
 const USER_REGEX = /^[A-z 0-9]{6,20}$/;
 const NAME_REGEX = /^[A-z 0-9]{3,18}$/;

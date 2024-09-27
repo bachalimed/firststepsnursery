@@ -8,7 +8,8 @@ import { ACTIONS } from "../../../config/UserActions"
 import Employees from '../Employees'
 import { useSelectedAcademicYear } from "../../../hooks/useSelectedAcademicYear"
 import { useSelector } from 'react-redux'
-import { useGetAcademicYearsQuery, selectAllAcademicYears } from '../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
+import {  selectAllAcademicYears } from '../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice'
+import { useGetAcademicYearsQuery } from '../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'
 //constrains on inputs when creating new user
 const USER_REGEX = /^[A-z 0-9]{6,20}$/
 const NAME_REGEX= /^[A-z 0-9]{3,18}$/

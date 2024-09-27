@@ -11,7 +11,7 @@ import { ACTIONS } from "../../../../config/UserActions"
 import useAuth from '../../../../hooks/useAuth'
 import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYear"
 import { useSelector } from 'react-redux'
-import { selectAllAcademicYears } from '../../AcademicsSet/AcademicYears/academicYearsApiSlice'
+import { selectAllAcademicYears } from '../../AcademicsSet/AcademicYears/academicYearsSlice'
 import { useGetAcademicYearsQuery } from '../../AcademicsSet/AcademicYears/academicYearsApiSlice'
 //constrains on inputs when creating new user
 
