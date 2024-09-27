@@ -24,7 +24,7 @@ const EditEmployeeForm = ({ employee }) => {
   const navigate = useNavigate();
   const academicYears = useSelector(selectAllAcademicYears); // to be used to show all academic years
   const [selectedYear, setSelectedYear] = useState("");
-  const {isAdmin, isManager} = useAuth()
+  const { isAdmin, isManager } = useAuth();
   const {
     data: academicYearsList, //the data is renamed parents
     isLoading: yearIsLoading, //monitor several situations
@@ -62,7 +62,7 @@ const EditEmployeeForm = ({ employee }) => {
   // Consolidated form state
   const [formData, setFormData] = useState({
     employeeId: employee?.employeeId,
-	userId:employee?.id,
+    userId: employee?.id,
     userFullName: employee?.userFullName,
     userDob: employee?.userDob.split("T")[0],
     userSex: employee?.userSex,
@@ -86,13 +86,12 @@ const EditEmployeeForm = ({ employee }) => {
   });
   console.log(formData.userRoles);
   const [validity, setValidity] = useState({
-    
     validFirstName: false,
     validLastName: false,
     validDob: false,
     validUserSex: false,
     validHouse: false,
-   
+
     validStreet: false,
     validCity: false,
     validPrimaryPhone: false,
@@ -108,7 +107,7 @@ const EditEmployeeForm = ({ employee }) => {
   useEffect(() => {
     setValidity((prev) => ({
       ...prev,
-     
+
       validFirstName: NAME_REGEX.test(formData.userFullName?.userFirstName),
       validLastName: NAME_REGEX.test(formData.userFullName?.userLastName),
       validDob: DOB_REGEX.test(formData.userDob.split("T")[0]),
@@ -139,7 +138,6 @@ const EditEmployeeForm = ({ employee }) => {
   }, [formData]);
 
   console.log(
-    
     validity.validFirstName,
     validity.validLastName,
     validity.validDob,
@@ -285,7 +283,7 @@ const EditEmployeeForm = ({ employee }) => {
 
   const canSave =
     Object.values(validity).every(Boolean) &&
-    (formData?.userRoles?.length > 0) &&
+    formData?.userRoles?.length > 0 &&
     !isLoading;
 
   console.log(formData, "formData");
@@ -347,7 +345,6 @@ const EditEmployeeForm = ({ employee }) => {
                   name="userFullName.userMiddleName" // Changed to match the nested structure
                   value={formData.userFullName.userMiddleName}
                   onChange={handleInputChange}
-                
                 />
               </div>
               <div>
@@ -388,12 +385,6 @@ const EditEmployeeForm = ({ employee }) => {
                     required
                   />
                 </div>
-				
-				
-				
-
-
-
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
@@ -454,41 +445,33 @@ const EditEmployeeForm = ({ employee }) => {
 
                   {/* Employee Years */}
                   <h3 className="text-lg font-semibold mt-6">Employee Years</h3>
-				 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {yearsList && yearsList.length > 0 ? (
-                    yearsList.map((year, index) => {
-                      const isChecked = formData.employeeYears.some(
-                        (empYear) => empYear.academicYear === year.title
-                      );
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {yearsList && yearsList.length > 0 ? (
+                      yearsList.map((year, index) => {
+                        const isChecked = formData.employeeYears.some(
+                          (empYear) => empYear.academicYear === year.title
+                        );
 
-                      return (
-                        <div key={index} className="flex items-center">
-                          <input
-                            type="checkbox"
-                            checked={isChecked}
-                            onChange={(e) =>
-                              onAcademicYearChanged(e, year.title)
-                            }
-                            className="mr-2"
-                          />
-                          <label className="text-gray-700">{year.title}</label>
-                        </div>
-                      );
-                    })
-                  ) : (
-                    <p>No academic years available.</p>
-                  )}
-				  </div>
-
-
-		
-
-
-
-
-
-
-
+                        return (
+                          <div key={index} className="flex items-center">
+                            <input
+                              type="checkbox"
+                              checked={isChecked}
+                              onChange={(e) =>
+                                onAcademicYearChanged(e, year.title)
+                              }
+                              className="mr-2"
+                            />
+                            <label className="text-gray-700">
+                              {year.title}
+                            </label>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <p>No academic years available.</p>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -500,25 +483,26 @@ const EditEmployeeForm = ({ employee }) => {
               Employee Current EmploymentWork History
             </h3>
             <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
-
-
-			<div className="flex items-center space-x-3">
-  <input
-    type="checkbox"
-    id="employeeIsActive"
-    checked={formData.employeeIsActive === true}
-    onChange={(e) => {
-      setFormData((prev) => ({
-        ...prev,
-        employeeIsActive: e.target.checked ? true : false,
-      }));
-    }}
-    className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-  />
-  <label htmlFor="employeeIsActive" className="text-sm font-medium text-gray-700">
-    Employee is Active
-  </label>
-</div>
+              <div className="flex items-center space-x-3">
+                <input
+                  type="checkbox"
+                  id="employeeIsActive"
+                  checked={formData.employeeIsActive === true}
+                  onChange={(e) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      employeeIsActive: e.target.checked ? true : false,
+                    }));
+                  }}
+                  className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                />
+                <label
+                  htmlFor="employeeIsActive"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  Employee is Active
+                </label>
+              </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Current Position{" "}
@@ -738,33 +722,35 @@ const EditEmployeeForm = ({ employee }) => {
                 </div>
               </div>
             </div>
-            {(isAdmin||isManager)&&<div className="space-y-4">
-              <h3 className="text-lg font-semibold">Assign User Roles</h3>
+            {(isAdmin || isManager) && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Assign User Roles</h3>
 
-              <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
-                <div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {Object.values(ROLES).map((role) => (
-                      <div key={role} className="flex items-center space-x-3">
-                        <input
-                          type="checkbox"
-                          id={`role-${role}`}
-                          checked={formData.userRoles.includes(role)}
-                          onChange={(e) => onuserRolesChanged(e, role)}
-                          className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                        />
-                        <label
-                          htmlFor={`role-${role}`}
-                          className="text-sm font-medium text-gray-700"
-                        >
-                          {role}
-                        </label>
-                      </div>
-                    ))}
+                <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
+                  <div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {Object.values(ROLES).map((role) => (
+                        <div key={role} className="flex items-center space-x-3">
+                          <input
+                            type="checkbox"
+                            id={`role-${role}`}
+                            checked={formData.userRoles.includes(role)}
+                            onChange={(e) => onuserRolesChanged(e, role)}
+                            className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                          />
+                          <label
+                            htmlFor={`role-${role}`}
+                            className="text-sm font-medium text-gray-700"
+                          >
+                            {role}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>}
+            )}
           </div>
 
           <div className="space-y-4">
@@ -920,7 +906,7 @@ const EditEmployeeForm = ({ employee }) => {
           <div className="flex justify-end gap-4">
             <button
               type="button"
-              onClick={() => navigate("/hr/employees")}
+              onClick={() => navigate("/hr/employees/employees")}
               className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-500 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               Cancel

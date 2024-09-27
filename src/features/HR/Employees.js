@@ -7,16 +7,16 @@ const Employees = () => {
 
 const employeesTabs= 
 {title:"Employees",
-  path:"/hr/employees/",
+  path:"/hr/employees/employees/",
   allowedRoles:["Employee","Animator", "Academic", "Director", "HR", "Desk", "Manager", "Admin"]
   }
 
   
     // Define the tab data with paths and labels
     const tabs = [
-      { label: 'Employees', path: '/hr/employees/' },
+      { label: 'Employees', path: '/hr/employees/employees/' },
       { label: 'New Employee', path: '/hr/employees/newEmployee/' },
-      { label: 'New blbls', path: '/hr/employeedddddds/' },
+      { label: 'New blbls', path: '/hr/employees/employeedddddds/' },
       
       ];
    // Function to determine if a tab is active based on the current path

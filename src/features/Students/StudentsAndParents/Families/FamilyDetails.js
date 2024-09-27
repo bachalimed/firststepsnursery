@@ -9,8 +9,8 @@ import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYe
 import { useNavigate } from "react-router";
 const FamilyDetails = () => {
   const { id } = useParams();
-  const family = useSelector((state) => selectFamilyById(state, id));
-  const { father, mother, children, familySituation } = family;
+  const family = useSelector((state) => selectFamilyById(state, id)) ;
+  const { father = {}, mother = {}, children = [], familySituation = "" } = family ||{}
 
   const token = useSelector((state) => state.auth.token);
   const selectedAcademicYear = useSelectedAcademicYear();
@@ -127,14 +127,19 @@ const FamilyDetails = () => {
         ) : (
           <p>No children profiles available.</p>
         )}
-         <div className="mt-8">
-        <button
-          onClick={handleBack}
-          className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-        >
-          Back to  List
-        </button>
-      </div>
+         <div className="flex justify-end items-center space-x-4 mt-6">
+        <button 
+        onClick={() => navigate(`/students/studentsParents/familiesList`)}
+        className="px-4 py-2 bg-gray-500 text-white rounded">
+            Back to List
+          </button>
+          <button
+            onClick={() => navigate(`/students/studentsParents/editFamily/${id}`)}
+            className="px-4 py-2 bg-yellow-400 text-white rounded"
+          >
+            Edit Family    </button>
+        
+        </div>
       </div>
     </>
   );

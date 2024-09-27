@@ -14,14 +14,14 @@ import { HiOutlineSearch } from "react-icons/hi";
 import { FiEdit, FiDelete } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { ImProfile } from "react-icons/im";
-import { setUsers} from "./usersSlice"
+import { setUsers } from "./usersSlice";
 import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
 import { IoShieldCheckmarkOutline, IoShieldOutline } from "react-icons/io5";
-import { useDispatch } from "react-redux"
+import { useDispatch } from "react-redux";
 const UsersList = () => {
   //initialise state variables and hooks
   const Navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const { canEdit, canDelete, canAdd, canCreate, isParent, status2 } =
     useAuth();
   const [selectedRows, setSelectedRows] = useState([]);
@@ -56,7 +56,7 @@ const UsersList = () => {
     const { entities } = users;
     usersList = Object.values(entities);
 
-	dispatch(setUsers(usersList))//timing issue to update the state and use it the same time
+    dispatch(setUsers(usersList)); //timing issue to update the state and use it the same time
     filteredUsers = usersList?.filter((item) => {
       const firstNameMatch = item.userFullName.userFirstName
         .toLowerCase()
@@ -159,12 +159,24 @@ const UsersList = () => {
     },
     {
       name: "ID",
-      selector: (row) => (
-        <Link to={`/admin/usersManagement/userDetails/${row._id}`}>
-          <div>User {row._id} </div>
-          {row.employeeId && <div>Employee {row.employeeId} </div>}
-          {row.familyId && <div>Parent {row.familyId} </div>}
-        </Link>
+      selector: (row) => row._id,  // Use _id for sorting
+      
+      cell: (row) => (
+        <div>
+          <Link to={`/admin/usersManagement/userDetails/${row._id}`}>
+            <div>User {row._id}</div>
+          </Link>
+          {row.employeeId && (
+            <Link to={`/hr/employees/employeeDetails/${row._id}`}>
+              <div>Employee {row.employeeId}</div>
+            </Link>
+          )}
+          {row.familyId && (
+            <Link to={`/students/studentsParents/familyDetails/${row._id}`}>
+              <div>Family {row.familyId}</div>
+            </Link>
+          )}
+        </div>
       ),
       sortable: true,
       width: "260px",
@@ -173,38 +185,58 @@ const UsersList = () => {
       name: "Username",
       selector: (row) => (
         <Link to={`/admin/usersManagement/userDetails/${row._id}`}>
-          {" "}
           {row.username}
         </Link>
       ),
       sortable: true,
       width: "120px",
+      sortFunction: (rowA, rowB) => {
+        const usernameA = rowA.username.toLowerCase();
+        const usernameB = rowB.username.toLowerCase();
+    
+        if (usernameA < usernameB) {
+          return -1;
+        }
+        if (usernameA > usernameB) {
+          return 1;
+        }
+        return 0;
+      },
     },
+    // {
+    //   name: "Full Name",
+    //   selector: (row) => (
+    //     <Link to={`/admin/usersManagement/userDetails/${row._id}`}>
+          
+    //       {row.userFullName.userFirstName} {row.userFullName.userMiddleName} {row.userFullName.userLastName}
+    //     </Link>
+    //   ),
+    //   sortable: true,
+    //   width: "210px",
+    // },
+    
     {
-      name: "first Name",
+      name: "Full Name",
       selector: (row) => (
         <Link to={`/admin/usersManagement/userDetails/${row._id}`}>
-          {" "}
-          {row.userFullName.userFirstName +
-            " " +
-            row.userFullName.userMiddleName}
+          {row.userFullName.userFirstName} {row.userFullName.userMiddleName} {row.userFullName.userLastName}
         </Link>
       ),
       sortable: true,
-      width: "150px",
+      width: "210px",
+      sortFunction: (rowA, rowB) => {
+        const fullNameA = `${rowA.userFullName.userFirstName} ${rowA.userFullName.userMiddleName} ${rowA.userFullName.userLastName}`.toLowerCase();
+        const fullNameB = `${rowB.userFullName.userFirstName} ${rowB.userFullName.userMiddleName} ${rowB.userFullName.userLastName}`.toLowerCase();
+        
+        if (fullNameA < fullNameB) {
+          return -1;
+        }
+        if (fullNameA > fullNameB) {
+          return 1;
+        }
+        return 0;
+      },
     },
-    {
-      name: "Last Name",
-      selector: (row) => (
-        <Link to={`/admin/usersManagement/userDetails/${row._id}`}>
-          {" "}
-          {row.userFullName.userLastName}
-        </Link>
-      ),
-      sortable: true,
-      width: "150px",
-    },
-
     {
       name: "DOB",
       selector: (row) =>

@@ -997,7 +997,7 @@ const NewEmployeeForm = () => {
         <div className="flex justify-end gap-4">
           <button
             type="button"
-            onClick={() => navigate("/hr/employees")}
+            onClick={() => navigate("/hr/employees/employees/")}
             className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-500 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Cancel

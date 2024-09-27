@@ -110,14 +110,20 @@ const EmployeeDetails = () => {
         </div>
       </div>
 
-      <div className="mt-8">
-        <button
-          onClick={handleBack}
-          className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-        >
-          Back to Employees List
-        </button>
-      </div>
+      <div className="flex justify-end items-center space-x-4 mt-6">
+        <button 
+        onClick={() => navigate(`/hr/employees/employeesList`)}
+        className="px-4 py-2 bg-gray-500 text-white rounded">
+            Back to List
+          </button>
+          <button
+            onClick={() => navigate(`/hr/employees/editEmployee/${id}`)}
+            className="px-4 py-2 bg-yellow-400 text-white rounded"
+          >
+            Edit Employee
+          </button>
+        
+        </div>
     </div>
   );
 };

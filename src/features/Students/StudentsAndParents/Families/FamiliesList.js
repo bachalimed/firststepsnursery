@@ -121,7 +121,6 @@ const FamiliesList = () => {
     //console.log('selectedRows', selectedRows)
   };
 
-
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idFamilyToDelete, setIdFamilyToDelete] = useState(null);
   const onDeleteFamilyClicked = (id) => {
@@ -176,30 +175,26 @@ const FamiliesList = () => {
       name: "Name",
       selector: (row) => (
         <div>
-          <div>
-            <Link to={`/changepath/${row._id}`}>
-              {" "}
+          <Link to={`/students/studentsParents/familyDetails/${row._id}`}>
+            <div>
               {row.father?.userFullName.userFirstName +
                 " " +
                 row.father?.userFullName.userMiddleName +
                 " " +
                 row.father?.userFullName.userLastName}
-            </Link>
-          </div>
-          <div>
-            <Link to={`/changepath/${row._id}`}>
-              {" "}
+            </div>
+            <div>
               {row.mother?.userFullName.userFirstName +
                 " " +
                 row.mother?.userFullName.userMiddleName +
                 " " +
                 row.mother?.userFullName.userLastName}
-            </Link>
-          </div>
+            </div>
+          </Link>
         </div>
       ),
       sortable: true,
-      width: "180px",
+      width: "210px",
     },
 
     {
@@ -249,18 +244,28 @@ const FamiliesList = () => {
       selector: (row) => (
         <div>
           <div>
-            {" "}
-            {row.father?.userAddress?.house} {row.father?.userAddress?.street}{" "}
-            {row.father?.userAddress?.area} {row.father?.userAddress?.postCode}{" "}
-            {row.father?.userAddress?.city}
+            <div>
+              {" "}
+              {row.father?.userAddress?.house} {row.father?.userAddress?.street}
+            </div>
+            <div>
+              {row.father?.userAddress?.area}
+              {row.father?.userAddress?.postCode}
+            </div>
+            <div> {row.father?.userAddress?.city}</div>
           </div>
           {row.familySituation !== "Joint" && (
             <div>
-              {" "}
-              {row.mother?.userAddress?.house} {row.mother?.userAddress?.street}{" "}
-              {row.mother?.userAddress?.area}{" "}
-              {row.mother?.userAddress?.postCode}{" "}
-              {row.mother?.userAddress?.city}
+              <div>
+                {" "}
+                {row.mother?.userAddress?.house}{" "}
+                {row.mother?.userAddress?.street}
+              </div>
+              <div>
+                {row.mother?.userAddress?.area}
+                {row.mother?.userAddress?.postCode}
+              </div>
+              <div> {row.mother?.userAddress?.city}</div>
             </div>
           )}
         </div>
@@ -274,11 +279,13 @@ const FamiliesList = () => {
       selector: (row) => (
         <div>
           {row.children.map((child) => (
-            <div key={child._id}>
-              {child.child?.studentName.firstName}{" "}
-              {child.child?.studentName.middleName}{" "}
-              {child.child?.studentName.lastName}
-            </div>
+            <Link key={child?.child?._id} to={`/students/studentsParents/studentDetails/${child?.child?._id}`}>
+              <div>
+                {child?.child?.studentName?.firstName}{" "}
+                {child?.child?.studentName?.middleName}{" "}
+                {child?.child?.studentName?.lastName}
+              </div>
+            </Link>
           ))}
         </div>
       ),

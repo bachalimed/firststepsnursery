@@ -44,6 +44,7 @@ import EmployeesList from './features/HR/Employees/EmployeesList'
 import NewEmployeeForm from './features/HR/Employees/NewEmployeeForm'
 import EmployeeDetails from './features/HR/Employees/EmployeeDetails'
 import EditEmployee from './features/HR/Employees/EditEmployee'
+import Employees from './features/HR/Employees'
 
 import Payroll from './features/HR/Payroll'
 import Leave from './features/HR/Leave'
@@ -215,14 +216,17 @@ const App = () => {
 							</Route> {/* end of finances route */}
 
 
+
+
 	
 
 
 							<Route path="hr" element={<DashboardLayout />} >	
 								<Route path="employees" >  				
-									<Route index element={<EmployeesList />} />   
+									<Route index element={<Employees />} />   
 
 														
+										<Route path="Employees" element={<EmployeesList />} /> 					
 										<Route path="newEmployee" element={<NewEmployeeForm />} /> 					
 										<Route path=":employeeId/" element={<EmployeeDetails />}/>
 										<Route path="editEmployee/:id/" element={<EditEmployee/>}/>
