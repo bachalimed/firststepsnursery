@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGetStudentByIdQuery } from "./studentsApiSlice";
 import { selectStudentById } from "./studentsSlice";
-import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYears";
+import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYear";
 import { useGetStudentDocumentsByYearByIdQuery } from "../../../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice";
 import StudentsParents from "../../StudentsParents";
 import useFetchPhoto from "../../../../hooks/useFetchPhoto";

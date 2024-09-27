@@ -5,7 +5,7 @@ import { useParams } from "react-router";
 import axios from "axios";
 import { useGetStudentDocumentsByYearByIdQuery } from "../../../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice";
 import StudentsParents from "../../StudentsParents";
-import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYears";
+import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYear";
 import { useNavigate } from "react-router";
 const FamilyDetails = () => {
   const { id } = useParams();

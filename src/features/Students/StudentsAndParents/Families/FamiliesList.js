@@ -15,7 +15,7 @@ import { MdOutlineFamilyRestroom } from "react-icons/md";
 import useAuth from "../../../../hooks/useAuth";
 import { ImProfile } from "react-icons/im";
 import { useDispatch } from "react-redux";
-import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYears";
+import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYear";
 
 const FamiliesList = () => {
   //this is for the academic year selection

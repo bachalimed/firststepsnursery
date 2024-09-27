@@ -4,7 +4,7 @@ import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom"
 import axios from "axios";
 import { selectStudentById } from "./studentsSlice";
-import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYears";
+import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYear";
 import { useGetStudentDocumentsByYearByIdQuery } from "../../../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice";
 import StudentsParents from "../../StudentsParents";
 import useFetchPhoto from "../../../../hooks/useFetchPhoto";

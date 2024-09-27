@@ -22,7 +22,7 @@ import DataTable from 'react-data-table-component'
 import {  selectAllStudentsByYear, selectAllStudents } from './studentsApiSlice'//use the memoized selector 
 import DeletionConfirmModal from '../../../../Components/Shared/Modals/DeletionConfirmModal'
 import { setAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice"
-import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYears"
+import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYear"
 import getCurrentAcademicYear from '../../../../config/CurrentYear'
 import { LiaMaleSolid, LiaFemaleSolid  } from "react-icons/lia";
 import { MdOutlineRadioButtonChecked, MdRadioButtonUnchecked  } from "react-icons/md";

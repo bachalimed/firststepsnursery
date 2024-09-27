@@ -12,7 +12,7 @@ import { studentDocumentsListsApiSlice } from '../AppSettings/StudentsSet/Studen
 import { useEffect, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 
-import { useSelectedAcademicYear } from "../../hooks/useSelectedAcademicYears"
+import  useSelectedAcademicYear  from "../../hooks/useSelectedAcademicYear"
 
 const Prefetch = () => {
     // const selectedAcademicYear = useSelectedAcademicYear()

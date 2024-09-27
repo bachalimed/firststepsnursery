@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom"
 import { FiEdit } from "react-icons/fi"
 import { RiDeleteBin6Line } from "react-icons/ri"
 import { setAcademicYears } from "./academicYearsSlice"
-import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYears"
+import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYear"
 import useAuth from '../../../../hooks/useAuth'
 import { useGetAcademicYearsQuery} from "./academicYearsApiSlice"
 import { useSelector, useDispatch } from 'react-redux'

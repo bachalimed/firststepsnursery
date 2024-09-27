@@ -10,7 +10,7 @@
         import { ROLES } from "../../../../config/UserRoles"
         import { ACTIONS } from "../../../../config/UserActions"
         import useAuth from '../../../../hooks/useAuth'
-        import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYears"
+        import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYear"
         import { useSelector } from 'react-redux'
        
         import { useGetAcademicYearsQuery, selectAllAcademicYears } from '../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice'

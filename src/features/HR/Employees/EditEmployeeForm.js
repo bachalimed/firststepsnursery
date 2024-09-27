@@ -7,7 +7,7 @@ import { ROLES } from "../../../config/UserRoles";
 import { ACTIONS } from "../../../config/UserActions";
 import useAuth from "../../../hooks/useAuth";
 import Employees from "../Employees";
-import { useSelectedAcademicYear } from "../../../hooks/useSelectedAcademicYears";
+import { useSelectedAcademicYear } from "../../../hooks/useSelectedAcademicYear";
 import { useSelector } from "react-redux";
 import {
   useGetAcademicYearsQuery,

@@ -22,7 +22,7 @@ import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { setAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import { useSelectedAcademicYear } from "../../../hooks/useSelectedAcademicYears";
+import { useSelectedAcademicYear } from "../../../hooks/useSelectedAcademicYear";
 import useAuth from "../../../hooks/useAuth";
 import getCurrentAcademicYear from "../../../config/CurrentYear";
 import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";

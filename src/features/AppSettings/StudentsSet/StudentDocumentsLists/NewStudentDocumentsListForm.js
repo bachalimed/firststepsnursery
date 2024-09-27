@@ -9,7 +9,7 @@ import { faSave } from "@fortawesome/free-solid-svg-icons"
 import { ROLES } from "../../../../config/UserRoles"
 import { ACTIONS } from "../../../../config/UserActions"
 import useAuth from '../../../../hooks/useAuth'
-import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYears"
+import { useSelectedAcademicYear } from "../../../../hooks/useSelectedAcademicYear"
 import { useSelector } from 'react-redux'
 import { selectAllAcademicYears } from '../../AcademicsSet/AcademicYears/academicYearsApiSlice'
 import { useGetAcademicYearsQuery } from '../../AcademicsSet/AcademicYears/academicYearsApiSlice'
