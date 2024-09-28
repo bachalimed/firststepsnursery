@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGetStudentByIdQuery } from "./studentsApiSlice";
 import { selectStudentById } from "./studentsSlice";
+import LoadingStateIcon from '../../../../Components/LoadingStateIcon'
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
@@ -40,9 +41,9 @@ const StudentDetails = () => {
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
 
-  const [studentDocumentYear, setStudentDocumentYear] = useState(
-    selectedAcademicYear.title || ""
-  );
+//   const [studentDocumentYear, setStudentDocumentYear] = useState(
+//     selectedAcademicYear.title || ""
+//   );
 
   const {
     data: studentDocumentsListing,
@@ -51,7 +52,7 @@ const StudentDetails = () => {
   } = useGetStudentDocumentsByYearByIdQuery(
     {
       studentId: id,
-      year: studentDocumentYear,
+      year: selectedAcademicYear.title,
       endpointName: "studentsDocumentsList",
     },
     {
@@ -92,10 +93,20 @@ const StudentDetails = () => {
 
   const { photoUrl } = useFetchPhoto(photoId);
 
+//if academic year changed while inthe page, check if studetn years correspond
+const isYearFound = student?.studentYears?.some(
+	(year) => year.academicYear === selectedAcademicYear.title
+  );
+  
+
+  
   let content;
+  
+  
+  if(!isYearFound) return <p>Student not registered for that Year</p> 
 
   if (studentOrgIsLoading || !listIsSuccess || !studentDocumentsListing) {
-    content = <div>Loading...</div>;
+    content = <LoadingStateIcon/>
   } else if (
     studentOrgIsSuccess &&
     student &&
@@ -107,7 +118,13 @@ const StudentDetails = () => {
         <StudentsParents />
         <div className="container mx-auto p-6 bg-white rounded-sm border border-gray-200">
           <h2 className="text-2xl font-bold mb-6 text-center">
-            Student Profile
+            {/* First Line: Student Name */}
+            {`Student Profile: ${student?.studentName?.firstName} 
+				${student?.studentName?.middleName} 
+				${student?.studentName?.lastName}`}
+            <br />
+            {/* Second Line: Academic Year */}
+            {`for ${selectedAcademicYear.title} Academic Year`}
           </h2>
           {photoUrl && (
             <div className="flex justify-center mb-6">

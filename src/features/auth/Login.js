@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-
+import LoadingStateIcon from "../../Components/LoadingStateIcon";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "./authSlice";
 import { useLoginMutation } from "./authApiSlice";
@@ -59,60 +59,102 @@ const Login = () => {
 
   const errClass = errMsg ? "errmsg" : "offscreen";
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <LoadingStateIcon />;
 
   const content = (
-    <section className="public">
-      <div>
-        <h1>User Login</h1>
-      </div>
-      <main className="login">
-        <p ref={errRef} className={errClass} aria-live="assertive">
+    <section className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-sm">
+        <h1 className="text-2xl font-semibold text-center mb-6">User Login</h1>
+
+        <p
+          ref={errRef}
+          className={`${errClass} text-red-500 text-center mb-4`}
+          aria-live="assertive"
+        >
           {errMsg}
         </p>
 
-        <form className="form" onSubmit={handleSubmit}>
-          <label htmlFor="username">Username:</label>
-          <input
-            className="form__input"
-            type="text"
-            id="username"
-            ref={userRef}
-            value={username}
-            onChange={handleUserInput}
-            autoComplete="off"
-            required
-          />
-
-          <label htmlFor="password">Password:</label>
-          <input
-            className="form__input"
-            type="password"
-            id="password"
-            onChange={handlePwdInput}
-            value={password}
-            required
-          />
-          <button className="form__submit-button">Sign In</button>
-          {/*no need to set the type=submit because it is the only button */}
-          <label htmlFor="persist" className="form__persist">
+        <form className="space-y-6" onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label
+              htmlFor="username"
+              className="block text-gray-700 text-sm font-bold mb-2"
+            >
+              Username:
+            </label>
             <input
-              type="checkbox"
-              className="form__checkbox"
-              id="persist"
-              onChange={handleToggle}
-              checked={persist}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              type="text"
+              id="username"
+              ref={userRef}
+              value={username}
+              onChange={handleUserInput}
+              autoComplete="off"
+              required
             />
-            Keep Me Signed In
-          </label>
+          </div>
+
+          <div className="mb-4">
+            <label
+              htmlFor="password"
+              className="block text-gray-700 text-sm font-bold mb-2"
+            >
+              Password:
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              type="password"
+              id="password"
+              onChange={handlePwdInput}
+              value={password}
+              required
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label
+              htmlFor="persist"
+              className="inline-flex items-center text-sm text-gray-600"
+            >
+              <input
+                type="checkbox"
+                className="form-checkbox text-indigo-600 h-4 w-4"
+                id="persist"
+                onChange={handleToggle}
+                checked={persist}
+              />
+              <span className="ml-2">Keep Me Signed In</span>
+            </label>
+          </div>
+
+          <div className="flex items-center justify-between mt-6">
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+              type="submit"
+            >
+              Sign In
+            </button>
+          </div>
         </form>
-      </main>
-      <footer>
-        <Link to="/">Back to Home</Link>
+
+        {/* Forgot Password Link */}
+        <div className="mt-4 text-center">
+          <Link
+            to="/forgot-password"
+            className="text-blue-500 hover:text-blue-700 text-sm"
+          >
+            Forgot Password?
+          </Link>
+        </div>
+      </div>
+
+      <footer className="text-gray-500">
+        <Link to="/" className="hover:text-blue-500">
+          Back to Home
+        </Link>
       </footer>
     </section>
   );
-
   return content;
 };
 export default Login;

@@ -54,8 +54,9 @@ const AcademicYearsSelection = () => {
           value={selectedAcademicYearId || ""} // Set the value to the currently selected academic year
           className="relative mt-1 w-36 pl-3 pr-8 py-2 text-md text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         >
+          
           {academicYears.map((year) => (
-            <option key={year.id} value={year.id}>
+            <option key={year.id} value={year.id} aria-placeholder="select AcademicYear">
               {year.title}
             </option>
           ))}
