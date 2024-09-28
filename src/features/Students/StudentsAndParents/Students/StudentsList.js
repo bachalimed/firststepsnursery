@@ -61,7 +61,7 @@ const StudentsList = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idStudentToDelete, setIdStudentToDelete] = useState(null); // State to track which document to delete
 
-  console.log("Fetch students for academic year:", selectedAcademicYear);
+  //console.log("Fetch students for academic year:", selectedAcademicYear);
   const {
     data: students, //the data is renamed students
     isLoading, //monitor several situations is loading...
@@ -206,11 +206,11 @@ const StudentsList = () => {
     //console.log('Selected Rows to detail:', selectedRows)
 
     setStudentObject(selectedRows[0]);
-    console.log(studentObject, "studentObject");
+    //console.log(studentObject, "studentObject");
     //const {studentYears}= (studentObject)
 
     setStudentYears(studentObject.studentYears);
-    console.log("student years and id", studentYears);
+    //console.log("student years and id", studentYears);
     setIsRegisterModalOpen(true);
 
     //setSelectedRows([]); // Clear selection after process
@@ -218,14 +218,14 @@ const StudentsList = () => {
 
   // This is called when saving the updated student years from the modal
   const onUpdateStudentClicked = async (updatedYears) => {
-    console.log("Updated studentYears from modal:", updatedYears);
+    //console.log("Updated studentYears from modal:", updatedYears);
 
     const updatedStudentObject = {
       ...studentObject,
       studentYears: updatedYears, // Merge updated studentYears
     };
 
-    console.log("Saving updated student:", updatedStudentObject);
+    //console.log("Saving updated student:", updatedStudentObject);
 
     try {
       await updateStudent(updatedStudentObject); // Save updated student to backend

@@ -76,7 +76,7 @@ const StudentDetails = () => {
 
   useEffect(() => {
     if (!listIsLoading && studentDocumentsListing) {
-      console.log(studentDocumentsListing, "studentDocumentsListing");
+      //console.log(studentDocumentsListing, "studentDocumentsListing");
       const findStudentPhotoId = (documents) => {
         const studentPhotoDocument = documents.find(
           (doc) => doc.documentTitle === "Student Photo"

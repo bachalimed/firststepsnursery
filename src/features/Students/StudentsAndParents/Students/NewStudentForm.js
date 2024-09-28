@@ -445,7 +445,7 @@ const NewStudentForm = () => {
             <input
               type="checkbox"
               id="studentYears"
-              value={selectedAcademicYear.title}
+              value={selectedAcademicYear?.title}
               checked={studentYears.some(
                 (year) => year.academicYear === selectedAcademicYear.title
               )}

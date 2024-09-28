@@ -13,6 +13,13 @@ import {
 import { useNavigate } from "react-router";
 const FamilyDetails = () => {
   const { id } = useParams();
+
+  
+  const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
+  const selectedAcademicYear = useSelector((state) =>
+    selectAcademicYearById(state, selectedAcademicYearId)
+  ); // Get the full academic year object
+  const academicYears = useSelector(selectAllAcademicYears);
   const family = useSelector((state) => selectFamilyById(state, id));
   const {
     father = {},
@@ -44,11 +51,6 @@ const FamilyDetails = () => {
       }
     );
 
-  const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
-  const selectedAcademicYear = useSelector((state) =>
-    selectAcademicYearById(state, selectedAcademicYearId)
-  ); // Get the full academic year object
-  const academicYears = useSelector(selectAllAcademicYears);
   useEffect(() => {
     if (listIsSuccess && studentDocumentsListing) {
       const findPhoto = (title) => {

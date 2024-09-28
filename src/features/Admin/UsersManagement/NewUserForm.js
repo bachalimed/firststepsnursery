@@ -8,16 +8,14 @@ import { ACTIONS } from "../../../config/UserActions";
 import UsersManagement from "../UsersManagement";
 
 //constrains on inputs when creating new user
-const USER_REGEX = /^[A-z]{6,20}$/;
+const USER_REGEX = /^[A-z0-9]{6,20}$/;
 const PWD_REGEX = /^[A-z0-9!@#-_$%]{8,20}$/;
 const NAME_REGEX = /^[A-z 0-9]{3,20}$/;
 const PHONE_REGEX = /^[0-9]{6,15}$/;
 const DOB_REGEX = /^[0-9/-]{4,10}$/;
-const EMAIL_REGEX = /^[A-z0-9.@-_]{6,20}$/;
-
+const IDOBJECT_REGEX = /^(?:[a-f0-9]{24}|undefined)$/;
 const NewUserForm = () => {
   //an add user function that can be called inside the component
-
   const [
     addNewUser,
     {
@@ -28,233 +26,164 @@ const NewUserForm = () => {
       error,
     },
   ] = useAddNewUserMutation(); //it will not execute the mutation nownow but when called
+ 
 
-  const Navigate = useNavigate();
-  //initialisation of states for each input
-  const [username, setUsername] = useState("");
-  const [validUsername, setValidUsername] = useState(false); //will be true when the username is validated
-  const [password, setPassword] = useState("");
-  const [validPassword, setValidPassword] = useState(false); //will be true when the passwrod is validated
-  const [userRoles, setUserRoles] = useState(["Employee"]); //the roles array is defaulted to employee
-  const [userAllowedActions, setUserAllowedActions] = useState([]);
-  const [userFullName, setUserFullName] = useState("");
-  const [validUserFullName, setValidUserFullName] = useState(false);
-  const [userFirstName, setUserFirstName] = useState("");
-  const [validUserFirstName, setValidUserFirstName] = useState(false);
-  const [userMiddleName, setUserMiddleName] = useState("");
-  const [userLastName, setUserLastName] = useState("");
-  const [validUserLastName, setValidUserLastName] = useState(false);
-  const [isParent, setIsParent] = useState("");
-  const [employeeId, setEmployeeId] = useState("");
-  const [userDob, setUserDob] = useState("");
-  const [userSex, setUserSex] = useState("");
-  const [validUserDob, setValidUserDob] = useState(false);
-  const [userIsActive, setUserIsActive] = useState(false);
-  //const[ userPhoto,setUserPhoto ]= useState('')
-  //const[ userPhotoLabel,setUserPhotoLabel ]= useState('')
-  //const[ userPhotoFormat,setUserPhotoFormat ]= useState('')
-  //const[ size,setSize ]= useState()
-  //const[ format,setFormat ]= useState('')
-  const [userAddress, setUserAddress] = useState("");
-  const [validUserAddress, setValidUserAddress] = useState(false);
-  const [house, setHouse] = useState("");
-  const [validHouse, setValidHouse] = useState(false);
-  const [street, setStreet] = useState("");
-  const [validStreet, setValidStreet] = useState(false);
-  const [area, setArea] = useState("");
-  const [validArea, setValidArea] = useState(false);
-  const [postCode, setPostCode] = useState("");
-  const [validPostCode, setValidPostCode] = useState(false);
-  const [city, setCity] = useState("");
-  const [validCity, setValidCity] = useState(false);
-  const [userContact, setUserContact] = useState("");
-  const [validUserContact, setValidUserContact] = useState(false);
-  const [primaryPhone, setPrimaryPhone] = useState();
-  const [validPrimaryPhone, setValidPrimaryPhone] = useState(false);
-  const [secondaryPhone, setSecondaryPhone] = useState();
-  const [email, setEmail] = useState("");
-  const [validEmail, setValidEmail] = useState(false);
+  const navigate = useNavigate();
 
-  //use effect is used to validate the inputs against the defined REGEX above
-  //the previous constrains have to be verified on the form for teh user to know
-  useEffect(() => {
-    setValidUsername(USER_REGEX.test(username));
-  }, [username]);
+  // Consolidated form state
+  const [formData, setFormData] = useState({
+    username: `user${Math.random().toString(36).substring(2, 10)}`,
+    password: "",
+    userRoles: [],
+    userAllowedActions: [],
+    userFullName: {
+      userFirstName: "",
+      userMiddleName: "",
+      userLastName: "",
+    },
+    userDob: "",
+    userSex: "",
+    userIsActive: false,
+    userAddress: {
+      house: "",
+      street: "",
+      area: "",
+      postCode: "",
+      city: "",
+    },
+    userContact: {
+      primaryPhone: "",
+      secondaryPhone: "",
+      email: "",
+    },
+    familyId:undefined,
+    employeeId:undefined
+  });
 
+  const [validity, setValidity] = useState({
+    validUsername: false,
+    validPassword:false,
+    validFirstName: false,
+    validLastName: false,
+    validDob: false,
+    validUserSex: false,
+    validHouse: false,
+    validStreet: false,
+    validCity: false,
+    validPrimaryPhone: false,
+    validEmployeeId: false,
+    validFamilyId: false,
+  });
+  // Validate inputs using regex patterns
   useEffect(() => {
-    setValidPassword(PWD_REGEX.test(password));
-  }, [password]);
+    setValidity((prev) => ({
+      ...prev,
+      validUsername: USER_REGEX.test(formData.username),
+      validPassword: PWD_REGEX.test(formData.password),
+      validFirstName: NAME_REGEX.test(formData.userFullName.userFirstName),
+      validLastName: NAME_REGEX.test(formData.userFullName.userLastName),
+      validDob: DOB_REGEX.test(formData.userDob),
+      validUserSex: NAME_REGEX.test(formData.userSex),
+      validHouse: NAME_REGEX.test(formData.userAddress.house),
+      validStreet: NAME_REGEX.test(formData.userAddress.street),
+      validCity: NAME_REGEX.test(formData.userAddress.city),
+      validPrimaryPhone: PHONE_REGEX.test(formData.userContact.primaryPhone),
+      validEmployeeId: IDOBJECT_REGEX.test(formData.employeeId),
+      validFamilyId: IDOBJECT_REGEX.test(formData.familyId),
+      validUserRoles: formData.userRoles.length > 0, // At least one role should be selected
+      // validUserAllowedActions: formData.userAllowedActions.length > 0, // At least one action should be selected
+    }));
+  }, [formData]);
 
-  useEffect(() => {
-    setValidUserFirstName(NAME_REGEX.test(userFirstName));
-  }, [userFirstName]);
-
-  useEffect(() => {
-    setValidUserLastName(NAME_REGEX.test(userLastName));
-  }, [userLastName]);
-
-  useEffect(() => {
-    setValidUserDob(DOB_REGEX.test(userDob));
-  }, [userDob]);
-
-  useEffect(() => {
-    setValidStreet(NAME_REGEX.test(street));
-  }, [street]);
-
-  useEffect(() => {
-    setValidPrimaryPhone(PHONE_REGEX.test(primaryPhone));
-  }, [primaryPhone]);
-  useEffect(() => {
-    setValidCity(NAME_REGEX.test(city));
-  }, [city]);
+console.log(validity.validUsername,
+validity.validPassword,
+validity.validFirstName,
+validity.validLastName,
+validity.validDob,
+validity.validUserSex,
+validity.validHouse,
+validity.validStreet,
+validity.validCity,
+validity.validPrimaryPhone,
+validity.validEmployeeId,
+validity.validFamilyId,
+validity.validUserRoles)
 
   useEffect(() => {
     if (isSuccess) {
-      //if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
-      setUsername("");
-      setPassword("");
-      setUserRoles([]);
-      setUserAllowedActions([]);
-      setUserFirstName("");
-      setUserMiddleName("");
-      setUserLastName("");
-      setUserFullName({
-        userFirstName: "",
-        userMiddleName: "",
-        userLastName: "",
+      setFormData({
+        username: "",
+        password: "",
+        userRoles: [],
+        userAllowedActions: [],
+        userFullName: {
+          userFirstName: "",
+          userMiddleName: "",
+          userLastName: "",
+        },
+        userDob: "",
+        userSex: "",
+        userIsActive: false,
+        userAddress: {
+          house: "",
+          street: "",
+          area: "",
+          postCode: "",
+          city: "",
+        },
+        userContact: {
+          primaryPhone: "",
+          secondaryPhone: "",
+          email: "",
+          familyId:undefined,
+      employeeId:undefined
+        },
       });
-      setIsParent("");
-      setEmployeeId("");
-      setUserDob("");
-      setUserSex("");
-      setUserIsActive(false);
-      //setSize()
-      //setUserPhoto('')
-      //setUserPhotoLabel('')
-      //setUserPhotoFormat('')
-      setHouse("");
-      setStreet("");
-      setArea("");
-      setPostCode("");
-      setCity("");
-      setUserAddress({
-        house: "",
-        street: "",
-        area: "",
-        postcode: "",
-        city: "",
-      });
-      setPrimaryPhone();
-      setSecondaryPhone();
-      setEmail("");
-      setUserContact({ primaryPhone: "", secondaryPhone: "", email: "" });
-      Navigate("/admin/usersManagement/users/"); //will navigate here after saving
+      navigate("/admin/usersManagement/users/");
     }
-  }, [isSuccess, Navigate]); //even if no success it will navigate and not show any warning if failed or success
+  }, [isSuccess, navigate]);
 
-  //handlers to get the individual states from the input
-  const onUsernameChanged = (e) => setUsername(e.target.value);
-  const onPasswordChanged = (e) => setPassword(e.target.value);
-  const onUserFirstNameChanged = (e) => setUserFirstName(e.target.value);
-  const onUserMiddleNameChanged = (e) => setUserMiddleName(e.target.value);
-  const onUserLastNameChanged = (e) => setUserLastName(e.target.value);
-  const onIsParentChanged = (e) => setIsParent(e.target.value);
-  const onEmployeeIdChanged = (e) => setEmployeeId(e.target.value);
-  const onUserDobChanged = (e) => setUserDob(e.target.value);
-  const onUserSexChanged = (e) => setUserSex(e.target.value);
-  const onUserIsActiveChanged = (e) => setUserIsActive((prev) => !prev); //will invert the previous state
-  //const onUserPhotoChanged = e => {setUserPhoto(e.target.files[0])}
-  //const onUserPhotoLabelChanged = e => setUserPhotoLabel(e.target.value)
-  //const onUserPhotoFormatChanged = e => setUserPhotoFormat(e.target.value)
-  //const onSizeChanged = e => setSize(e.target.value)
-  const onHouseChanged = (e) => setHouse(e.target.value);
-  const onStreetChanged = (e) => setStreet(e.target.value);
-  const onAreaChanged = (e) => setArea(e.target.value);
-  const onPostCodeChanged = (e) => setPostCode(e.target.value);
-  const onCityChanged = (e) => setCity(e.target.value);
-  const onPrimaryPhoneChanged = (e) => setPrimaryPhone(e.target.value);
-  const onSecondaryPhoneChanged = (e) => setSecondaryPhone(e.target.value);
-  const onEmailChanged = (e) => setEmail(e.target.value);
-
-  const onUserRolesChanged = (e) => {
-    const { value, checked } = e.target;
-    setUserRoles((prevRoles) =>
-      checked
-        ? [...prevRoles, value]
-        : prevRoles.filter((role) => role !== value)
-    );
+  // Handle form field changes generically
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
-  const onUserAllowedActionsChanged = (e) => {
+  const handleRoleChange = (e) => {
     const { value, checked } = e.target;
-    setUserAllowedActions((prevActions) =>
-      checked
-        ? [...prevActions, value]
-        : prevActions.filter((action) => action !== value)
-    );
+    setFormData((prev) => ({
+      ...prev,
+      userRoles: checked
+        ? [...prev.userRoles, value] // Add role
+        : prev.userRoles.filter((role) => role !== value), // Remove role
+    }));
   };
 
-  useEffect(() => {
-    setUserFullName({
-      userFirstName: userFirstName,
-      userMiddleName: userMiddleName,
-      userLastName: userLastName,
-    });
-  }, [userFirstName, userMiddleName, userLastName]);
-
-  useEffect(() => {
-    setUserAddress({
-      house: house,
-      street: street,
-      area: area,
-      postCode: postCode,
-      city: city,
-    });
-  }, [house, street, street, area, postCode, city]);
-
-  useEffect(() => {
-    setUserContact({
-      primaryPhone: primaryPhone,
-      secondaryPhone: secondaryPhone,
-      email: email,
-    });
-  }, [primaryPhone, secondaryPhone, email]);
+  // Handle action change
+  const handleActionChange = (e) => {
+    const { value, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      userAllowedActions: checked
+        ? [...prev.userAllowedActions, value] // Add action
+        : prev.userAllowedActions.filter((action) => action !== value), // Remove action
+    }));
+  };
+  
 
   //to check if we can save before onsave, if every one is true, and also if we are not loading status
   const canSave =
-    [
-      validUserFirstName,
-      validUserLastName,
-      validUsername,
-      validPassword,
-      validUserDob,
-      userSex,
-      validStreet,
-      validCity,
-      validPrimaryPhone,
-      userRoles.length,
-    ].every(Boolean) && !isLoading;
-  //console.log(` ${userFirstName}, ${validUserLastName}, ${validUsername}, ${validPassword}, ${validUserDob},${userAllowedActions}    ${ validStreet},  ${validPrimaryPhone}, ${validEmail}, ${userRoles.length}, ${isParent}, ${employeeId}, ${userIsActive}` )
+    Object.values(validity).every(Boolean) &&
+   
+    !isLoading;
+
   const onSaveUserClicked = async (e) => {
     e.preventDefault();
 
     if (canSave) {
-      //if cansave is true
-      //generate the objects before saving
-      //console.log(` 'first name' ${userFirstName}', fullfirstname,' ${userFullName.userFirstName}', house: '${house}', usercontact house' ${userContact.house},    ${userRoles.length},${isParent}, ${employeeId}` )
-      await addNewUser({
-        username,
-        password,
-        userFullName,
-        isParent,
-        employeeId,
-        userDob,
-        userSex,
-        userIsActive,
-        userRoles,
-        userAllowedActions,
-        userAddress,
-        userContact,
-      }); //we call the add new user mutation and set the arguments to be saved
+      await addNewUser({ formData }); //we call the add new user mutation and set the arguments to be saved
       //added this to confirm save
       if (isError) {
         console.log("error savingg", error); //handle the error msg to be shown  in the logs??
@@ -262,323 +191,535 @@ const NewUserForm = () => {
     }
   };
   const handleCancel = () => {
-    Navigate("/admin/usersManagement/users/");
+    navigate("/admin/usersManagement/users/");
   };
-
-  //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
-  const errClass = isError ? "errmsg" : "offscreen";
-  const validUserClass = !validUsername ? "form__input--incomplete" : "";
-  const validPwdClass = !validPassword ? "form__input--incomplete" : "";
-  const validRolesClass = !Boolean(userRoles.length)
-    ? "form__input--incomplete"
-    : "";
-
+console.log(formData,'formData')
   const content = (
     <>
       <UsersManagement />
-      <p className={errClass}>{error?.data?.message}</p>{" "}
-      {/*will display if there is an error message, some of the error messagees are defined in the back end responses*/}
-      <form className="form" onSubmit={onSaveUserClicked}>
-        <div className="form__title-row">
-          <h2>New User Form</h2>
-        </div>
-        <div>
-          <label className="form__label" htmlFor="userFirstName">
-            User First Name* : <span className="nowrap">[3-20 letters]</span>
-          </label>
-          <input
-            className={`form__input ${validUserClass}`}
-            id="userFirstName"
-            name="userFirstName"
-            type="text"
-            autoComplete="off"
-            value={userFirstName}
-            onChange={onUserFirstNameChanged}
-            required
-          />
-          <label className="form__label" htmlFor="userMiddleName">
-            User Middle Name : <span className="nowrap"></span>
-          </label>
-          <input
-            className={`form__input ${validUserClass}`}
-            id="userMiddleName"
-            name="userMiddleName"
-            type="text"
-            autoComplete="off"
-            value={userMiddleName}
-            onChange={onUserMiddleNameChanged}
-          />
-        </div>
-        <div>
-          <label className="form__label" htmlFor="userLastName">
-            User Last Name* : <span className="nowrap">[3-20 letters]</span>
-          </label>
-          <input
-            className={`form__input ${validUserClass}`}
-            id="userLastName"
-            name="userLastName"
-            type="text"
-            autoComplete="off"
-            value={userLastName}
-            onChange={onUserLastNameChanged}
-            required
-          />
-          <label className="form__label" htmlFor="userDob">
-            Date Of Birth* : <span className="nowrap">[dd/mm/yyyy]</span>
-          </label>
-          <input
-            className={`form__input ${validUserClass}`}
-            id="userDob"
-            name="userDob"
-            type="date"
-            autoComplete="off"
-            value={userDob}
-            onChange={onUserDobChanged}
-            required
-          />
-        </div>
-        <div>
-          <label>
-            {" "}
-            <div style={{ marginTop: "10px" }}>
-              Selected Sex: {userSex || "None"}
+      <section className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+          Create New User{" "}
+          {`${formData.userFullName.userFirstName} ${formData.userFullName.userMiddleName} ${formData.userFullName.userLastName}`}
+        </h2>
+        {isError && <p className="text-red-600">{error?.data?.message}</p>}
+
+        <form onSubmit={onSaveUserClicked} className="space-y-6">
+          
+            <div>
+            <label className="block text-sm font-medium text-gray-700">
+              UserName 
+              {!validity.validUsername && (
+                <span className="text-red-500">*</span>
+              )}
+            </label>
+            <input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  username: e.target.value,
+                  
+                }))
+              }
+              className={`mt-1 block w-full border ${
+                validity.validUsername ? "border-gray-300" : "border-red-500"
+              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+              placeholder="Enter username"
+              required
+            />
             </div>
-            <br />
+            <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Password 
+              {!validity.validPassword && (
+                <span className="text-red-500">*</span>
+              )}
+            </label>
             <input
-              type="radio"
-              value="Male"
-              checked={userSex === "Male"}
-              onChange={onUserSexChanged}
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  password: e.target.value,
+                  
+                }))
+              }
+              className={`mt-1 block w-full border ${
+                validity.validFirstName ? "border-gray-300" : "border-red-500"
+              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+              placeholder="Enter password"
+              required
             />
-            Male
-          </label>
 
-          <label style={{ marginLeft: "10px" }}>
+
+           
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              First Name 
+              {!validity.validFirstName && (
+                <span className="text-red-500">*</span>
+              )}
+            </label>
             <input
-              type="radio"
-              value="Female"
-              checked={userSex === "Female"}
-              onChange={onUserSexChanged}
+              type="text"
+              name="userFirstName"
+              value={formData.userFullName.userFirstName}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  userFullName: {
+                    ...prev.userFullName,
+                    userFirstName: e.target.value,
+                  },
+                }))
+              }
+              className={`mt-1 block w-full border ${
+                validity.validFirstName ? "border-gray-300" : "border-red-500"
+              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+              placeholder="Enter First Name"
+              required
             />
-            Female
-          </label>
-        </div>
+          </div>
+          {/* Middle Name */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Middle Name
+            </label>
+            <input
+              type="text"
+              name="userMiddleName"
+              value={formData.userFullName.userMiddleName}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  userFullName: {
+                    ...prev.userFullName,
+                    userMiddleName: e.target.value,
+                  },
+                }))
+              }
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              placeholder="Enter Middle Name"
+            />
+          </div>
 
-        <label className="form__label" htmlFor="username">
-          Username* : <span className="nowrap">[6-20 Characters]</span>
-        </label>
-        <input
-          className={`form__input ${validUserClass}`}
-          id="username"
-          name="username"
-          type="text"
-          autoComplete="off"
-          value={username}
-          onChange={onUsernameChanged}
-          required
-        />
-        <label className="form__label" htmlFor="password">
-          Password* : <span className="nowrap">[8-20 chars incl. !@#$-_%]</span>
-        </label>
-        <input
-          className={`form__input ${validPwdClass}`}
-          id="password"
-          name="password"
-          type="password"
-          value={password}
-          onChange={onPasswordChanged}
-          required
-        />
+          {/* Last Name */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Last Name{" "}
+              {!validity.validLastName && (
+                <span className="text-red-500">*</span>
+              )}
+            </label>
+            <input
+              type="text"
+              name="userLastName"
+              value={formData.userFullName.userLastName}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  userFullName: {
+                    ...prev.userFullName,
+                    userLastName: e.target.value,
+                  },
+                }))
+              }
+              className={`mt-1 block w-full border ${
+                validity.validLastName ? "border-gray-300" : "border-red-500"
+              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+              placeholder="Enter Last Name"
+              required
+            />
+          </div>
 
-        <label className="form__label" htmlFor="house">
-          House* : <span className="nowrap">[3-20 letters]</span>
-        </label>
-        <input
-          className={`form__input ${validUserClass}`}
-          id="house"
-          name="house"
-          type="text"
-          autoComplete="off"
-          value={house}
-          onChange={onHouseChanged}
-          required
-        />
-        <label className="form__label" htmlFor="street">
-          Street* : <span className="nowrap">[3-20 letters]</span>
-        </label>
-        <input
-          className={`form__input ${validUserClass}`}
-          id="street"
-          name="street"
-          type="text"
-          autoComplete="off"
-          value={street}
-          onChange={onStreetChanged}
-          required
-        />
-        <div>
-          <label className="form__label" htmlFor="area">
-            Area: <span className="nowrap"></span>
-          </label>
-          <input
-            className={`form__input ${validUserClass}`}
-            id="area"
-            name="area"
-            type="text"
-            autoComplete="off"
-            value={area}
-            onChange={onAreaChanged}
-          />
-          <label className="form__label" htmlFor="city">
-            City* : <span className="nowrap">[3-20 letters]</span>
-          </label>
-          <input
-            className={`form__input ${validUserClass}`}
-            id="city"
-            name="city"
-            type="text"
-            autoComplete="off"
-            value={city}
-            onChange={onCityChanged}
-            required
-          />
-        </div>
-        <label className="form__label" htmlFor="postCode">
-          Post Code: <span className="nowrap"></span>
-        </label>
-        <input
-          className={`form__input ${validUserClass}`}
-          id="postCode"
-          name="postCode"
-          type="text"
-          autoComplete="off"
-          value={postCode}
-          onChange={onPostCodeChanged}
-        />
-        <div>
-          <label className="form__label" htmlFor="primaryPhone">
-            Primary Phone* : <span className="nowrap">[6 to 15 Digits]</span>
-          </label>
-          <input
-            className={`form__input ${validUserClass}`}
-            id="primaryPhone"
-            name="primaryPhone"
-            type="tel"
-            autoComplete="off"
-            value={primaryPhone}
-            onChange={onPrimaryPhoneChanged}
-            required
-          />
+          {/* Date of Birth */}
+          <div>
+            <label
+              className="block text-sm font-medium text-gray-700"
+              htmlFor="userDob"
+            >
+              Date of Birth{" "}
+              {!validity.validDob && <span className="text-red-500">*</span>}
+            </label>
+            <input
+              type="date"
+              name="userDob"
+              value={formData.userDob}
+              onChange={handleInputChange}
+              className={`mt-1 block w-full border ${
+                validity.validDob ? "border-gray-300" : "border-red-500"
+              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+              required
+            />
+          </div>
 
-          <label className="form__label" htmlFor="secondaryPhone">
-            Secondary Phone: <span className="nowrap"></span>
-          </label>
-          <input
-            className={`form__input ${validUserClass}`}
-            id="secondaryPhone"
-            name="secondaryPhone"
-            type="tel"
-            autoComplete="off"
-            value={secondaryPhone}
-            onChange={onSecondaryPhoneChanged}
-          />
-        </div>
-        <label className="form__label" htmlFor="email">
-          Email: <span className="nowrap"></span>
-        </label>
-        <input
-          className={`form__input ${validUserClass}`}
-          id="email"
-          name="email"
-          type="email"
-          autoComplete="off"
-          value={email}
-          onChange={onEmailChanged}
-        />
+          {/* Sex Selection */}
 
-        <label className="form__label" htmlFor="isParent">
-          User Is Parent: <span className="nowrap">[24 digits]</span>
-        </label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Sex{" "}
+              {!validity.validUserSex && (
+                <span className="text-red-500">*</span>
+              )}
+            </label>
+            <div className="flex items-center space-x-4 mt-1">
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="userSex"
+                  value="Male"
+                  checked={formData.userSex === "Male"}
+                  onChange={(e) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      userSex: e.target.checked
+                        ? "Male"
+                        : formData.userSex === "Male"
+                        ? ""
+                        : formData.userSex,
+                    }));
+                  }}
+                  className={`h-4 w-4 ${
+                    validity.validUserSex
+                      ? "border-gray-300 rounded"
+                      : "border-red-500 rounded"
+                  } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                />
+                <label className="ml-2 text-sm text-gray-700">Male</label>
+              </div>
+
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="userSex"
+                  value="Female"
+                  checked={formData.userSex === "Female"}
+                  onChange={(e) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      userSex: e.target.checked
+                        ? "Female"
+                        : formData.userSex === "Female"
+                        ? ""
+                        : formData.userSex,
+                    }));
+                  }}
+                  className="h-4 w-4 border-gray-300 rounded focus:ring-indigo-500"
+                />
+                <label className="ml-2 text-sm text-gray-700">Female</label>
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Information */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Primary Phone{" "}
+                {!validity.validPrimaryPhone && (
+                  <span className="text-red-500">*</span>
+                )}
+              </label>
+              <input
+                type="text"
+                name="primaryPhone"
+                value={formData.userContact.primaryPhone}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    userContact: {
+                      ...prev.userContact,
+                      primaryPhone: e.target.value,
+                    },
+                  }))
+                }
+                className={`mt-1 block w-full border ${
+                  validity.validPrimaryPhone
+                    ? "border-gray-300"
+                    : "border-red-500"
+                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                placeholder="Enter Primary Phone"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Secondary Phone
+              </label>
+              <input
+                type="text"
+                name="secondaryPhone"
+                value={formData.userContact.secondaryPhone}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    userContact: {
+                      ...prev.userContact,
+                      secondaryPhone: e.target.value,
+                    },
+                  }))
+                }
+                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                placeholder="Enter Secondary Phone"
+              />
+            </div>
+          </div>
+
+          {/* Address Information */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                House{" "}
+                {!validity.validHouse && (
+                  <span className="text-red-500">*</span>
+                )}
+              </label>
+              <input
+                type="text"
+                name="house"
+                value={formData.userAddress.house}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    userAddress: {
+                      ...prev.userAddress,
+                      house: e.target.value,
+                    },
+                  }))
+                }
+                className={`mt-1 block w-full border ${
+                  validity.validHouse ? "border-gray-300" : "border-red-500"
+                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                placeholder="Enter House"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Street{" "}
+                {!validity.validStreet && (
+                  <span className="text-red-500">*</span>
+                )}
+              </label>
+              <input
+                type="text"
+                name="street"
+                value={formData.street}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    userAddress: {
+                      ...prev.userAddress,
+                      street: e.target.value,
+                    },
+                  }))
+                }
+                className={`mt-1 block w-full border ${
+                  validity.validStreet ? "border-gray-300" : "border-red-500"
+                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                placeholder="Enter Street"
+              />
+            </div>
+
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Area
+              </label>
+              <input
+                type="text"
+                name="area"
+                value={formData.userAddress.area}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    userAddress: {
+                      ...prev.userAddress,
+                      area: e.target.value,
+                    },
+                  }))
+                }
+                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                placeholder="Enter Area"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                City{" "}
+                {!validity.validCity && <span className="text-red-500">*</span>}
+              </label>
+              <input
+                type="text"
+                name="city"
+                value={formData.userAddress.city}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    userAddress: {
+                      ...prev.userAddress,
+                      city: e.target.value,
+                    },
+                  }))
+                }
+                className={`mt-1 block w-full border ${
+                  validity.validCity ? "border-gray-300" : "border-red-500"
+                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                placeholder="Enter City"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Post Code
+              </label>
+              <input
+                type="text"
+                name="postCode"
+                value={formData.userAddress.postCode}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    userAddress: {
+                      ...prev.userAddress,
+                      postCode: e.target.value,
+                    },
+                  }))
+                }
+                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                placeholder="Enter Post Code"
+              />
+            </div>
+          </div>
+
+          {/* Email */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={formData.userContact.email}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  userContact: {
+                    ...prev.userContact,
+                    email: e.target.value,
+                  },
+                }))
+              }
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              placeholder="Enter Email Address"
+            />
+          </div>
+
+          {/* Family ID Input */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Family ID</label>
         <input
-          className={`form__input ${validUserClass}`}
-          id="isParent"
-          name="isParent"
           type="text"
-          autoComplete="off"
-          value={isParent}
-          onChange={onIsParentChanged}
+          name="familyId"
+          value={formData.familyId}
+          onChange={handleInputChange}
+          className="form-input mt-1 block w-full"
         />
-        <label className="form__label" htmlFor="employeeId">
-          User Is Employee: <span className="nowrap">[24 digits]</span>
-        </label>
+      </div>
+         
+      {/* Employee ID Input */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Employee ID</label>
         <input
-          className={`form__input ${validUserClass}`}
-          id="employeeId"
+          type="text"
           name="employeeId"
-          type="text"
-          autoComplete="off"
-          value={employeeId}
-          onChange={onEmployeeIdChanged}
+          value={formData.employeeId}
+          onChange={handleInputChange}
+          className="form-input mt-1 block w-full"
         />
+      </div>
 
-        <label>
-          <input
-            type="checkbox"
-            value={userIsActive}
-            checked={userIsActive}
-            onChange={onUserIsActiveChanged}
-          />
-          User Is Active
-        </label>
-
-        <h1>User Roles: </h1>
-        <div className="flex flex-wrap space-x-4">
-          {Object.keys(ROLES).map((key) => (
-            <label key={key} className="flex items-center">
-              <input
-                type="checkbox"
-                value={ROLES[key]}
-                checked={userRoles.includes(ROLES[key])}
-                onChange={onUserRolesChanged}
-              />
-              {ROLES[key]}
-            </label>
+      {/* User Is Active Checkbox */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700">User Is Active</label>
+        <input
+          type="checkbox"
+          name="userIsActive"
+          checked={formData.userIsActive}
+          onChange={handleInputChange}
+          className="h-4 w-4"
+        />
+      </div>
+         {/* User role selection */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700">User Roles</label>
+        <div className="flex flex-wrap">
+          {Object.keys(ROLES).map((role) => (
+            <div key={role} className="mr-4">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="userRoles"
+                  value={role}
+                  checked={formData.userRoles.includes(role)}
+                  onChange={handleRoleChange}
+                  className="h-4 w-4"
+                />
+                <span className="ml-2">{role}</span>
+              </label>
+            </div>
           ))}
         </div>
-        <h1>User Actions Permissions: </h1>
-        <div className="flex flex-wrap space-x-4">
-          {Object.keys(ACTIONS).map((key) => (
-            <label key={key} className="flex items-center">
-              <input
-                className=""
-                type="checkbox"
-                value={ACTIONS[key]}
-                checked={userAllowedActions.includes(ACTIONS[key])}
-                onChange={onUserAllowedActionsChanged}
-              />
-              {ACTIONS[key]}
-            </label>
+      </div>
+
+      {/* User action selection */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Allowed Actions</label>
+        <div className="flex flex-wrap">
+          {Object.keys(ACTIONS).map((action) => (
+            <div key={action} className="mr-4">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="userAllowedActions"
+                  value={action}
+                  checked={formData.userAllowedActions.includes(action)}
+                  onChange={handleActionChange}
+                  className="h-4 w-4"
+                />
+                <span className="ml-2">{action}</span>
+              </label>
+            </div>
           ))}
         </div>
+      </div>
 
-        <div className="flex justify-end items-center space-x-4">
-          <button
-            className=" px-4 py-2 bg-green-500 text-white rounded"
-            type="submit"
-            title="Save"
-            onClick={onSaveUserClicked}
-            disabled={!canSave}
-          >
-            Save Changes
-          </button>
-          <button
-            className=" px-4 py-2 bg-red-500 text-white rounded"
-            onClick={handleCancel}
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
+
+          <div className="flex justify-end items-center space-x-4">
+            <button
+              className=" px-4 py-2 bg-green-500 text-white rounded"
+              type="submit"
+              title="Save"
+              onClick={onSaveUserClicked}
+              disabled={!canSave}
+            >
+              Save Changes
+            </button>
+            <button
+              className=" px-4 py-2 bg-red-500 text-white rounded"
+              onClick={handleCancel}
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </section>
     </>
   );
 
