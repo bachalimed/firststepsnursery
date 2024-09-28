@@ -31,6 +31,17 @@ export const attendedSchoolsApiSlice = apiSlice.injectEndpoints({
             },
             providesTags:['attendedSchool']
         }),
+        getAttendedSchoolById: builder.query({
+            query: (params) => {
+              const queryString = new URLSearchParams(params).toString();
+              return `/settings/academicsSet/attendedSchools?${queryString}`;
+            },
+            validateStatus: (response, result) => {
+              return response.status === 200 && !result.isError;
+            },
+            
+            providesTags: ["attendedSchool"],
+          }),
         addNewAttendedSchool: builder.mutation({
             query: initialAttendedSchoolData => ({
                 url: '/settings/academicsSet/attendedSchools/',
@@ -63,6 +74,7 @@ export const attendedSchoolsApiSlice = apiSlice.injectEndpoints({
 })
 export const {//hooks created automatically from endpoint
     useGetAttendedSchoolsQuery,//this can be used whereven we want to fetch the data
+    useGetAttendedSchoolByIdQuery,
     useAddNewAttendedSchoolMutation,
     useUpdateAttendedSchoolMutation,
     useDeleteAttendedSchoolMutation,

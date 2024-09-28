@@ -219,14 +219,14 @@ const FamiliesList = () => {
         <div>
           <div>
             {" "}
-            {new Date(row.father?.userDob).toLocaleString("en-US", {
+            {new Date(row.father?.userDob).toLocaleString("en-GB", {
               day: "numeric",
               month: "numeric",
               year: "numeric",
             })}
           </div>
           <div>
-            {new Date(row.mother?.userDob).toLocaleString("en-US", {
+            {new Date(row.mother?.userDob).toLocaleString("en-GB", {
               day: "numeric",
               month: "numeric",
               year: "numeric",

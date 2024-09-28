@@ -93,7 +93,9 @@ import AcademicYearDetails from './features/AppSettings/AcademicsSet/AcademicYea
 import AttendedSchoolList from './features/AppSettings/AcademicsSet/attendedSchools/AttendedSchoolsList'
 import AttendedSchoolsList from './features/AppSettings/AcademicsSet/attendedSchools/AttendedSchoolsList'
 import NewAttendedSchoolForm from './features/AppSettings/AcademicsSet/attendedSchools/NewAttendedSchoolForm'
+import EditAttendedSchool from './features/AppSettings/AcademicsSet/attendedSchools/EditAttendedSchool'
 import NewAcademicYearForm from './features/AppSettings/AcademicsSet/AcademicYears/NewAcademicYearForm'
+import EditAcademicYear from './features/AppSettings/AcademicsSet/AcademicYears/EditAcademicYear'
 
 // import Parents from './features/Students/Parents'
 // import NewStudent from './features/Students/NewStudent'
@@ -283,8 +285,8 @@ const App = () => {
 								<Route path="studentsSet" > 					
 								<Route index element={<StudentsSet />} />
 									<Route path="studentDocumentsListsList/" element={<StudentDocumentsListsList />} /> 									
-									<Route path="newStudentDocumentsList" element={<NewStudentDocumentsListForm />}/>
-									<Route path="studentDocumentsList/edit/:id" element={<EditStudentDocumentsList />}/>
+									<Route path="newStudentDocumentsList/" element={<NewStudentDocumentsListForm />}/>
+									<Route path="studentDocumentsList/edit/:id/" element={<EditStudentDocumentsList />}/>
 
 
 								</Route> {/* end of studentsSet route */}
@@ -293,10 +295,12 @@ const App = () => {
 								<Route index  element={<AcademicsSet />} /> 	{/*the path link is in sidebarmenu*/ }				
 									
 									<Route path="academicYears/" element={<AcademicYearsList />} /> 									
-									<Route path="newAcademicYear" element={<NewAcademicYearForm />}/>
+									<Route path="newAcademicYear/" element={<NewAcademicYearForm />}/>
+									<Route path="editAcademicYear/:id/" element={<EditAcademicYear />}/>
 								
 									<Route path="attendedSchools/" element={<AttendedSchoolsList />} /> 									
 									<Route path="newSchool/" element={<NewAttendedSchoolForm />}/>
+									<Route path="editAttendedSchool/:id/" element={<EditAttendedSchool />}/>
 									
 
 

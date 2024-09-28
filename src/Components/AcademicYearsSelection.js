@@ -30,7 +30,7 @@ const AcademicYearsSelection = () => {
   }, [academicYears, dispatch]); // added dispatch here
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the currently selected academic year
   const { isAdmin, isManager } = useAuth();
-  console.log("selected year idnow", selectedAcademicYearId);
+  //console.log("selected year idnow", selectedAcademicYearId);
   //update the state when we select a year using the reducer from slice
   const handleSelectedAcademicYear = (e) => {
     const id = e.target.value;

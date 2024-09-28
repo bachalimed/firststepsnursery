@@ -308,12 +308,11 @@ const StudentsList = () => {
 
     {
       name: "DOB",
-      selector: (row) =>
-        new Date(row.studentDob).toLocaleString("en-US", {
-          day: "numeric",
-          month: "numeric",
-          year: "numeric",
-        }),
+      selector: (row) =>new Date(row.studentDob).toLocaleDateString("en-GB", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }),
 
       sortable: true,
       width: "100px",

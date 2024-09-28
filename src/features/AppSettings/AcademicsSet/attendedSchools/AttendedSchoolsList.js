@@ -10,11 +10,11 @@ import { ImProfile } from "react-icons/im"
 import { FiEdit } from "react-icons/fi"
 import { RiDeleteBin6Line } from "react-icons/ri"
 import { setAttendedSchools } from "./attendedSchoolsSlice"
-
+import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
 import useAuth from '../../../../hooks/useAuth'
 
 
-import { useGetAttendedSchoolsQuery} from "./attendedSchoolsApiSlice"
+import { useGetAttendedSchoolsQuery,  useDeleteAttendedSchoolMutation,} from "./attendedSchoolsApiSlice"
 
 
 import { useSelector, useDispatch } from 'react-redux'
@@ -34,6 +34,39 @@ const {
 } = useGetAttendedSchoolsQuery('attendedSchoolsList')||{}//this should match the endpoint defined in your API slice.!! what does it mean?
 //we do not want to import from state but from DB
 const [selectedRows, setSelectedRows] = useState([])
+
+const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
+  const [idAttendedSchoolToDelete, setIdAttendedSchoolToDelete] = useState(null); // State to track which document to delete
+
+  //initialising the delete Mutation
+  const [
+    deleteAttendedSchool,
+    {
+      isLoading: isDelLoading,
+      isSuccess: isDelSuccess,
+      isError: isDelError,
+      error: delerror,
+    },
+  ] = useDeleteAttendedSchoolMutation();
+
+  // Function to handle the delete button click
+  const onDeleteAttendedSchoolClicked = (id) => {
+    setIdAttendedSchoolToDelete(id); // Set the document to delete
+    setIsDeleteModalOpen(true); // Open the modal
+  };
+
+  // Function to confirm deletion in the modal
+  const handleConfirmDelete = async () => {
+    await deleteAttendedSchool({ id: idAttendedSchoolToDelete });
+    setIsDeleteModalOpen(false); // Close the modal
+  };
+
+  // Function to close the modal without deleting
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setIdAttendedSchoolToDelete(null);
+  };
+
 
 // Handler for selecting rows
 const handleRowSelected = (state) => {
@@ -79,22 +112,25 @@ const column =[
   { 
 name: "ID",
 selector:row=>row.id,
-sortable:true
+sortable:true,
+width:"210px"
  }, 
   { 
 name: "School Name",
 selector:row=>row.schoolName,
-sortable:true
+sortable:true,
+width:"150px"
  }, 
   { 
 name: "School Type",
 selector:row=>row.schoolType,
-sortable:true
+sortable:true,
+width:"160px"
  }, 
 {name: "School City",
   selector:row=>row.schoolCity,
-  
-  sortable:true
+  sortable:true,
+  width:"160px"
 }, 
 
 { 
@@ -102,10 +138,10 @@ sortable:true
   cell: row => (
     <div className="space-x-1">
       
-      {canEdit?(<button  className="text-yellow-400" onClick={() => Navigate(`/students/studentsParents/edit/${row.id}`)}  > 
+      {canEdit?(<button  className="text-yellow-400" onClick={() => Navigate(`/settings/academicsSet/editAttendedSchool/${row.id}`)}  > 
       <FiEdit fontSize={20}/> 
       </button>):null}
-      {canDelete?(<button className="text-red-500"  onClick={() => handleDelete(row.id)}>
+      {canDelete?(<button className="text-red-500"  onClick={() => onDeleteAttendedSchoolClicked(row.id)}>
         <RiDeleteBin6Line fontSize={20}/>
       </button>):null}
     </div>
@@ -161,6 +197,11 @@ return (
 	</div>
 
   </div>
+  <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
   </>
 )
 

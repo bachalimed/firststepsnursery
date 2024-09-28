@@ -36,6 +36,9 @@ const attendedSchoolsSlice = createSlice({
 
             },
            
+            attendedSchoolAdded: (state, action) => {
+                attendedSchoolsAdapter.updateOne(state, action.payload)
+            },
             updateAttendedSchool: (state, action) => {
                 attendedSchoolsAdapter.updateOne(state, action.payload)
             },
@@ -50,7 +53,7 @@ const attendedSchoolsSlice = createSlice({
         
     }
 })
-export const { setAttendedSchools, updateAttendedSchool, activateAttendedSchool,  selectAttendedSchool } = attendedSchoolsSlice.actions
+export const { setAttendedSchools, updateAttendedSchool, attendedSchoolAdded,  selectAttendedSchool } = attendedSchoolsSlice.actions
 
 export const currentAttendedSchoolsList = (state) => state.attendedSchool
 export default attendedSchoolsSlice.reducer//to be sent to the store

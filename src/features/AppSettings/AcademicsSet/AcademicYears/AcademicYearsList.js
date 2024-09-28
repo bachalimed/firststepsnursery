@@ -9,9 +9,9 @@ import { useNavigate } from "react-router-dom";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { setAcademicYears } from "./academicYearsSlice";
-
+import DeletionConfirmModal from '../../../../Components/Shared/Modals/DeletionConfirmModal'
 import useAuth from "../../../../hooks/useAuth";
-import { useGetAcademicYearsQuery } from "./academicYearsApiSlice";
+import {  useDeleteAcademicYearMutation } from "./academicYearsApiSlice";
 import { useSelector, useDispatch } from "react-redux";
 import AcademicsSet from "../../AcademicsSet";
 
@@ -35,9 +35,41 @@ const AcademicYearsList = () => {
   const academicYears = useSelector(selectAllAcademicYears);
   //handle delete
 
-  const handleDelete = () => {
-    console.log("deleting");
+  
+  //initialising the delete Mutation
+  const [
+    deleteAcademicYear,
+    {
+      isLoading: isDelLoading,
+      isSuccess: isDelSuccess,
+      isError: isDelError,
+      error: delerror,
+    },
+  ] = useDeleteAcademicYearMutation();
+
+
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [idYearToDelete, setIdYearToDelete] = useState(null);
+  const handleDelete = (id) => {
+    // Function to handle the delete button click
+  
+    setIdYearToDelete(id); // Set the document to delete
+    setIsDeleteModalOpen(true); // Open the modal
   };
+  
+  
+  // Function to confirm deletion in the modal
+  const handleConfirmDelete = async () => {
+    await deleteAcademicYear({ id: idYearToDelete });
+    setIsDeleteModalOpen(false); // Close the modal
+  };
+
+  // Function to close the modal without deleting
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setIdYearToDelete(null);
+  };
+
 
   const handleNextSelected = () => {
     console.log("Selected Rows to duplicate forward:", selectedRows);
@@ -70,16 +102,16 @@ const AcademicYearsList = () => {
       selector: (row) => (
         <div>
           <div>
-            Start{" "}
-            {new Date(row?.yearStart).toLocaleDateString("en-US", {
+            {"start: "}
+            {new Date(row.yearStart).toLocaleString("en-GB", {
               day: "numeric",
               month: "numeric",
               year: "numeric",
             })}
           </div>
           <div>
-            End{" "}
-            {new Date(row?.yearEnd).toLocaleDateString("en-US", {
+          {"End: "}
+            {new Date(row.yearEnd).toLocaleString("en-GB", {
               day: "numeric",
               month: "numeric",
               year: "numeric",
@@ -88,9 +120,9 @@ const AcademicYearsList = () => {
         </div>
       ),
       sortable: true,
-      width: "120px",
+      width: "140px", // Adjust the width as needed to fit both dates
     },
-
+   
     {
       name: "Creator",
       selector: (row) => row?.academicYearCreator,
@@ -111,7 +143,7 @@ const AcademicYearsList = () => {
             <button
               className="text-yellow-400"
               onClick={() =>
-                Navigate(`/students/studentsParents/edit/${row.id}`)
+                Navigate(`/settings/academicsSet/editAcademicYear/${row.id}`)
               }
             >
               <FiEdit fontSize={20} />
@@ -162,6 +194,12 @@ const AcademicYearsList = () => {
           </button>
         </div>
       </div>
+
+      <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
     </>
   );
 };
