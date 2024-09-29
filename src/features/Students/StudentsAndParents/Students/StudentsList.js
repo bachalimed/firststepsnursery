@@ -76,7 +76,7 @@ const StudentsList = () => {
     {
       //this param will be passed in req.params to select only students for taht year
       //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-      //pollingInterval: 60000,//will refetch data every 60seconds
+      pollingInterval: 60000,//will refetch data every 60seconds
       refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
       refetchOnMountOrArgChange: true, //refetch when we remount the component
     }
@@ -215,7 +215,7 @@ const StudentsList = () => {
 
     //setSelectedRows([]); // Clear selection after process
   };
-
+  
   // This is called when saving the updated student years from the modal
   const onUpdateStudentClicked = async (updatedYears) => {
     //console.log("Updated studentYears from modal:", updatedYears);
@@ -470,6 +470,9 @@ const StudentsList = () => {
         isOpen={isRegisterModalOpen}
         onClose={() => setIsRegisterModalOpen(false)}
         studentYears={studentYears}
+        studentObject={studentObject}
+        setStudentObject={setStudentObject}
+        setStudentYears={setStudentYears}
         academicYears={academicYears}
         onSave={onUpdateStudentClicked}
       />

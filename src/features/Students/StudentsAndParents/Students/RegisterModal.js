@@ -3,6 +3,9 @@ import Modal from "react-modal";
 const RegisterModal = ({
   isOpen,
   onClose,
+  studentObject,
+  setStudentObject,
+  
   studentYears,
   academicYears,
   onSave,
@@ -32,6 +35,7 @@ const RegisterModal = ({
     }
   }, [isOpen, studentYears, academicYears]);
   const [years, setYears] = useState([]);
+
   const handleCheckboxChange = (index) => {
     const updatedYears = [...modifiedYears];
     updatedYears[index].selected = !updatedYears[index].selected;
@@ -42,6 +46,7 @@ const RegisterModal = ({
     setYears(updatedStudentYears);
     setModifiedYears(updatedYears);
     console.log("updatedStudentYears", updatedStudentYears);
+    setStudentObject({...studentObject, studentYears:updatedStudentYears})//added this ////////////
   };
   const handleSave = () => {
     onSave(years);
