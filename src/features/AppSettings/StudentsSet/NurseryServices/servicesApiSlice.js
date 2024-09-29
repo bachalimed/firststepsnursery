@@ -1,5 +1,5 @@
 import { createSelector, createEntityAdapter } from "@reduxjs/toolkit";
-import { apiSlice } from "../../../app/api/apiSlice";
+import { apiSlice } from "../../../../app/api/apiSlice"
 
 const servicesAdapter = createEntityAdapter({});
 
@@ -21,14 +21,7 @@ export const servicesApiSlice = apiSlice.injectEndpoints({
         return servicesAdapter.setAll(initialState, loadedServices);
       },
       providesTags: ["service"],
-      // providesTags: (result, error, arg) => {
-      //     if (result?.ids) {
-      //         return [
-      //             { type: 'service', id: 'LIST' },
-      //             ...result.ids.map(id => ({ type: 'service', id }))
-      //         ]
-      //     } else return [{ type: 'service', id: 'LIST' }]
-      // }
+   
     }),
     getServicesByYear: builder.query({
       query: (params) => {
@@ -41,7 +34,7 @@ export const servicesApiSlice = apiSlice.injectEndpoints({
       },
 
       transformResponse: (responseData) => {
-        //console.log('  in the APIslice',responseData.total)
+        console.log('  in the APIslice',responseData)
 
         const newLoadedServices = responseData.map((service) => {
           service.id = service._id; //changed the _id from mongoDB to id

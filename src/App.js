@@ -23,6 +23,8 @@ import StudentDocumentsList from './features/Students/StudentsAndParents/Student
 import StudentDocumentsForm from './features/Students/StudentsAndParents/Students/StudentDocumentsList'
 import NewStudentDocumentsListForm from './features/AppSettings/StudentsSet/StudentDocumentsLists/NewStudentDocumentsListForm'
 import EditStudentDocumentsList from './features/AppSettings/StudentsSet/StudentDocumentsLists/EditStudentDocumentsList'
+import ServicesList from './features/AppSettings/StudentsSet/NurseryServices/ServicesList'
+import NewServiceForm from './features/AppSettings/StudentsSet/NurseryServices/NewServiceForm'
 
 import NewFamily from './features/Students/StudentsAndParents/Families/NewFamily'
 import FamilyDetails from './features/Students/StudentsAndParents/Families/FamilyDetails'
@@ -289,6 +291,8 @@ const App = () => {
 									<Route path="studentDocumentsList/edit/:id/" element={<EditStudentDocumentsList />}/>
 
 
+									<Route path="services/" element={<ServicesList />}/>
+									<Route path="newService/" element={<NewServiceForm />}/>
 								</Route> {/* end of studentsSet route */}
 
 								<Route path="academicsSet">

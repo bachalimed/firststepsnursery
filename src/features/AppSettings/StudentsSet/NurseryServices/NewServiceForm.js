@@ -3,16 +3,16 @@ import { useAddNewServiceMutation } from "./servicesApiSlice";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { ROLES } from "../../../config/UserRoles";
-import { ACTIONS } from "../../../config/UserActions";
-import Service from "../Service";
+import { ROLES } from "../../../../config/UserRoles";
+import { ACTIONS } from "../../../../config/UserActions";
+import StudentsSet from '../../StudentsSet'
 
 import { useSelector } from "react-redux";
 import {
   selectAllAcademicYears,
   selectCurrentAcademicYearId,
   selectAcademicYearById,
-} from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
+} from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 
 //constrains on inputs when creating new user
 const USER_REGEX = /^[A-z 0-9]{6,20}$/;
@@ -33,103 +33,32 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
   const [addNewService, { isLoading, isSuccess, isError, error }] =
     useAddNewServiceMutation();
 
-  const generateRandomUsername = () =>
-    `user${Math.random().toString(36).substring(2, 10)}`;
+ 
 
   // Consolidated form state
   const [formData, setFormData] = useState({
-    username: generateRandomUsername(),
-    password: "12345678",
-    userRoles: ["Service"],
-    userAllowedActions: [],
-    userFullName: {
-      userFirstName: "",
-      userMiddleName: "",
-      userLastName: "",
-    },
-
-    userDob: "",
-    userSex: "",
-    userIsActive: false,
-    userAddress: {
-      house: "",
-      street: "",
-      area: "",
-      postCode: "",
-      city: "",
-    },
-    userContact: {
-      primaryPhone: "",
-      secondaryPhone: "",
-      email: "",
-    },
-
-    serviceAssessment: [],
-    serviceWorkHistory: [],
-    serviceIsActive: false,
-    serviceYears: [{ academicYear: selectedAcademicYear?.title }],
-    serviceCurrentEmployment: {
-      position: "",
-      joinDate: "",
-      contractType: "",
-      salaryPackage: {
-        basic: "",
-        cnss: "",
-        other: "",
-        payment: "",
-      },
-    },
+    serviceType: "",
+    serviceYear: "",
+    fee: 0,
+    servicePeriodicity: "",
   });
 
   const [validity, setValidity] = useState({
-    validUsername: false,
-    validFirstName: false,
-    validLastName: false,
-    validDob: false,
-    validUserSex: false,
-    validHouse: false,
-    validStreet: false,
-    validCity: false,
-    validPrimaryPhone: false,
-    validCurrentPosition: false,
-    validJoinDate: false,
-    validContractType: false,
-    validBasic: false,
-    validPayment: false,
+    validServiceType: false,
     validServiceYear: false,
+    validFee: false,
+    validServicePeriodicity: false,
   });
 
   // Validate inputs using regex patterns
   useEffect(() => {
     setValidity((prev) => ({
       ...prev,
-      validUsername: USER_REGEX.test(formData.username),
-      validFirstName: NAME_REGEX.test(formData.userFullName.userFirstName),
-      validLastName: NAME_REGEX.test(formData.userFullName.userLastName),
-      validDob: DOB_REGEX.test(formData.userDob),
-      validUserSex: NAME_REGEX.test(formData.userSex),
-      validHouse: NAME_REGEX.test(formData.userAddress.house),
-      validStreet: NAME_REGEX.test(formData.userAddress.street),
-      validCity: NAME_REGEX.test(formData.userAddress.city),
-      validPrimaryPhone: PHONE_REGEX.test(formData.userContact.primaryPhone),
-      validCurrentPosition: USER_REGEX.test(
-        formData.serviceCurrentEmployment.position
-      ),
-      validJoinDate: DOB_REGEX.test(
-        formData.serviceCurrentEmployment.joinDate
-      ),
-      validContractType: USER_REGEX.test(
-        formData.serviceCurrentEmployment.contractType
-      ),
-      validBasic: NUMBER_REGEX.test(
-        formData.serviceCurrentEmployment.salaryPackage.basic
-      ),
-      validPayment: NAME_REGEX.test(
-        formData.serviceCurrentEmployment.salaryPackage.payment
-      ),
-      validServiceYear: YEAR_REGEX.test(
-        formData.serviceYears[0].academicYear
-      ),
+      validServiceType: USER_REGEX.test(formData.serviceType),//droppdown selection
+      validServiceYear: NAME_REGEX.test(formData.serviceYear),
+      validFee: NAME_REGEX.test(formData.fee),
+      validServicePeriodicity: DOB_REGEX.test(formData.servicePeriodicity),
+      
     }));
   }, [formData]);
 
@@ -269,7 +198,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
 
   const content = (
     <>
-      <Service />
+      <StudentsSet />
 
       <section className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold mb-4">

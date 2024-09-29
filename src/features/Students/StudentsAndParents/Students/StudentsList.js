@@ -10,6 +10,7 @@ import {
   selectAcademicYearById,
   selectAllAcademicYears,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
+import LoadingStateIcon from '../../../../Components/LoadingStateIcon'
 
 import StudentsParents from "../../StudentsParents";
 import { useDispatch } from "react-redux";
@@ -397,7 +398,7 @@ const StudentsList = () => {
     },
   ];
   let content;
-  if (isLoading) content = <p>Loading...</p>;
+  if (isLoading) content = <LoadingStateIcon/>;
   if (isError) {
     content = <p className="errmsg">{error?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
   }
