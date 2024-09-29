@@ -39,5 +39,7 @@ export const currentUsersList = (state) => state.user;
 //export reducer
 export default usersSlice.reducer; //to be sent to the store
 //export selectors
-export const { selectAll: selectAllUsers, selectById: selectUserById } =
+export const { selectAll: selectAllUsers,
+   //selectById: selectUserById 
+  } =
   usersAdapter.getSelectors((state) => state.user); //added this one

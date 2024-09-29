@@ -143,7 +143,7 @@ const EmployeeDetails = () => {
 
       <div className="flex justify-end items-center space-x-4 mt-6">
         <button
-          onClick={() => navigate(`/hr/employees/employeesList`)}
+          onClick={() => navigate(`/hr/employees/employees/`)}
           className="px-4 py-2 bg-gray-500 text-white rounded"
         >
           Back to List

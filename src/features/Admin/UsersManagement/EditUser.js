@@ -4,14 +4,17 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUserById } from "./usersApiSlice"; //we will pull the user  data from the state and not use query
 import EditUserForm from "./EditUserForm";
-
+import LoadingStateIcon from '../../../Components/LoadingStateIcon'
 const EditUser = () => {
   //get the userId from the url
   const { id } = useParams();
+  //console.log(id, 'idddddddd')
   //get the user details from the state using a memoised selctor
-  const user = useSelector((state) => selectUserById(state, id)); //selectUserById is a memoized selector created in the user API
+  const userToEdit = useSelector((state) => state.user?.entities[id]);
+  //const user = useSelector((state) => selectUserById(state, id)); //selectUserById is a memoized selector created in the user API
+  //console.log(userToEdit, 'userrrrrr')
   //call the edit user form and pass the user details
-  const content = user ? <EditUserForm user={user} /> : <p>Loading...</p>;
+  const content = userToEdit ? <EditUserForm user={userToEdit} /> : <LoadingStateIcon/>;
 
   return content;
 };

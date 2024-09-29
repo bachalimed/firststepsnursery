@@ -198,16 +198,16 @@ const EmployeesList = () => {
     //console.log('Selected Rows to detail:', selectedRows)
 
     setEmployeeObject(selectedRows[0]);
-    console.log(employeeObject, "employeeObject");
+    //console.log(employeeObject, "employeeObject");
     //const {employeeYears}= (employeeObject)
 
     setEmployeeYears(employeeObject.employeeYears);
-    console.log("employee years and id", employeeYears);
+    //console.log("employee years and id", employeeYears);
     setIsRegisterModalOpen(true);
 
     //setSelectedRows([]); // Clear selection after process
   };
-  console.log(filteredEmployees, "filteredEmployees");
+  //console.log(filteredEmployees, "filteredEmployees");
   // This is called when saving the updated employee years from the modal
   const onUpdateEmployeeClicked = async (updatedYears) => {
     console.log("Updated employeeYears from modal:", updatedYears);

@@ -29,7 +29,7 @@ const NewEmployeeForm = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-
+console.log(selectedAcademicYear.title,'selectedAcademicYear')
   const [addNewEmployee, { isLoading, isSuccess, isError, error }] =
     useAddNewEmployeeMutation();
 
@@ -67,7 +67,7 @@ const NewEmployeeForm = () => {
     employeeAssessment: [],
     employeeWorkHistory: [],
     employeeIsActive: false,
-    employeeYears: [{ academicYear: selectedAcademicYear }],
+    employeeYears: [{ academicYear: selectedAcademicYear?.title }],
     employeeCurrentEmployment: {
       position: "",
       joinDate: "",
@@ -190,7 +190,7 @@ const NewEmployeeForm = () => {
     setFormData((prev) => {
       const updatedYears = [...prev.employeeYears];
       // Update based on checked state
-      updatedYears[index].academicYear = checked ? selectedAcademicYear : "";
+      updatedYears[index].academicYear = checked ? selectedAcademicYear?.title : "";
       return { ...prev, employeeYears: updatedYears };
     });
   };
@@ -477,7 +477,7 @@ const NewEmployeeForm = () => {
                 type="checkbox"
                 id={`employeeYear-${index}`}
                 value={year.academicYear}
-                checked={year.academicYear === selectedAcademicYear}
+                checked={year.academicYear === selectedAcademicYear?.title}
                 onChange={(e) => onAcademicYearChanged(e, index)}
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
@@ -489,7 +489,7 @@ const NewEmployeeForm = () => {
                 {!validity.validEmployeeYear && (
                   <span className="text-red-500">*</span>
                 )}{" "}
-                : {selectedAcademicYear}
+                : {selectedAcademicYear?.title}
               </label>
             </div>
           ))}

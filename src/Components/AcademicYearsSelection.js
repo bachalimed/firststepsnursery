@@ -70,11 +70,11 @@ const AcademicYearsSelection = () => {
 export default AcademicYearsSelection;
 
 // Selector to get the full academic year object based on the selected id
-export const selectCurrentAcademicYear = createSelector(
-  [
-    selectAllAcademicYears,
-    (state) => state.academicYear.selectedAcademicYearId,
-  ],
-  (academicYears, selectedId) =>
-    academicYears.find((year) => year.id === selectedId)
-);
+// export const selectCurrentAcademicYear = createSelector(
+//   [
+//     selectAllAcademicYears,
+//     (state) => state.academicYear.selectedAcademicYearId,
+//   ],
+//   (academicYears, selectedId) =>
+//     academicYears.find((year) => year.id === selectedId)
+// );

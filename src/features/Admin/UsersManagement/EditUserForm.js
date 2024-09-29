@@ -119,7 +119,7 @@ const EditUserForm = ({ user }) => {
   }, [email]);
 
   useEffect(() => {
-    console.log(isSuccess, "isSuccess in edit user form");
+    //console.log(isSuccess, "isSuccess in edit user form");
     if (isSuccess) {
       setUsername("");
       setPassword("");
