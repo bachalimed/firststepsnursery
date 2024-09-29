@@ -263,7 +263,7 @@ const StudentDocumentsListsList = () => {
             disabled={selectedRows.length !== 0}
             hidden={!canCreate}
           >
-            Create List
+            New Documents List
           </button>
         </div>
       </div>

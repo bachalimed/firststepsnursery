@@ -21,20 +21,31 @@ const AcademicYearsSelection = () => {
   const dispatch = useDispatch();
   //const listOfAcademicYears = useSelector(state => selectAllAcademicYears(state))//this is original but not working if we did not use the query in the list
   const academicYears = useSelector(selectAllAcademicYears); //this works because prefetch and from apislice not slice not in teh state redux yet
-  //console.log(academicYears,'academicYears from apislice')
-  //very important to dispatch every time there is a refresh
-
-  //const academicYears = useSelector(selectAllAcademicYears)//we are trying to get from the state of the slice after it was updated in the usehook later we will get from teh hook directly
-  useEffect(() => {
-    dispatch(setAcademicYears(academicYears)); //dispatch list to state,this only shows tehn redux state not empty in the browser tools, check later if this is needed as the query updated the state in apislice
-  }, [academicYears, dispatch]); // added dispatch here
-  const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the currently selected academic year
+  const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId ); // Get the currently selected academic year
   const { isAdmin, isManager } = useAuth();
+  
+  //to ensure update of value every render
+  useEffect(() => {
+    if (academicYears && academicYears.length > 0) {
+    dispatch(setAcademicYears(academicYears))
+    } //dispatch list to state,this only shows tehn redux state not empty in the browser tools, check later if this is needed as the query updated the state in apislice
+  }, [academicYears, dispatch]); // added dispatch here
+  
+
+  // Automatically select the first academic year if none is selected
+  useEffect(() => {
+    if (!selectedAcademicYearId && academicYears.length > 0) {
+      const defaultYearId = academicYears[0].id;
+      dispatch(academicYearSelected({ id: defaultYearId }));
+    }
+  }, [selectedAcademicYearId, academicYears, dispatch]);
+
+  
   //console.log("selected year idnow", selectedAcademicYearId);
   //update the state when we select a year using the reducer from slice
   const handleSelectedAcademicYear = (e) => {
     const id = e.target.value;
-    //console.log(selectedTitle)
+    console.log(selectedAcademicYearId)
     //this will publish the curretn selectiont ob eused by other components
     dispatch(academicYearSelected({ id }));
   };
@@ -51,7 +62,7 @@ const AcademicYearsSelection = () => {
         <Select
           name="SelectedAcademicYear"
           onChange={handleSelectedAcademicYear}
-          value={selectedAcademicYearId || ""} // Set the value to the currently selected academic year
+          value={selectedAcademicYearId } // Set the value to the currently selected academic year
           className="relative mt-1 w-36 pl-3 pr-8 py-2 text-md text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         >
           
@@ -69,12 +80,12 @@ const AcademicYearsSelection = () => {
 
 export default AcademicYearsSelection;
 
-// Selector to get the full academic year object based on the selected id
-// export const selectCurrentAcademicYear = createSelector(
-//   [
-//     selectAllAcademicYears,
-//     (state) => state.academicYear.selectedAcademicYearId,
-//   ],
-//   (academicYears, selectedId) =>
-//     academicYears.find((year) => year.id === selectedId)
-// );
+//Selector to get the full academic year object based on the selected id
+export const selectCurrentAcademicYear = createSelector(
+  [
+    selectAllAcademicYears,
+    (state) => state.academicYear.selectedAcademicYearId,
+  ],
+  (academicYears, selectedId) =>
+    academicYears.find((year) => year.id === selectedId)
+);
