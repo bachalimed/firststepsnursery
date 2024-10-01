@@ -1,7 +1,12 @@
-import { Link } from "react-router-dom";
+
 import { IoFileTrayStackedOutline } from "react-icons/io5";
 import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
+
+import { useLocation, Link } from "react-router-dom";
+
 const Admissions = () => {
+  const location = useLocation();
+  
   const admissionsTabs = {
     title: "Admissions",
     path: "/students/admissions",
@@ -18,28 +23,40 @@ const Admissions = () => {
     ],
   };
 
-  let content;
-  content = (
+
+
+
+
+  // Define the tab data with paths and labels
+  const tabs = [
+    { label: "Admissions", path: "/students/admissions/admissions/" },
+    { label: "New Admission", path: "/students/admissions/newAdmission/" },
+    { label: "blabla", path: "/students/admissions/bla/" },
+    
+  ];
+
+  // Function to determine if a tab is active based on the current path
+  const isActive = (path) => location.pathname === path;
+
+  // Render the component content
+  return (
     <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6">
-      <Link to={"/students/admissions/allAdmissions/"}>
-        <li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">
-          All Admissions
-        </li>
-      </Link>
-      <Link to={"/students/admissions/newAdmission/"}>
-        <li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">
-          New Admission
-        </li>
-      </Link>
-      <Link to={"/students/admissions/blablabla/"}>
-        <li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">
-          blabla
-        </li>
-      </Link>
+      {tabs.map((tab) => (
+        <Link key={tab.path} to={tab.path}>
+          <li
+            className={`list-none cursor-pointer ${
+              isActive(tab.path)
+                ? "text-blue-500"
+                : "text-gray-800 hover:text-blue-500"
+            }`}
+          >
+            {tab.label}
+          </li>
+        </Link>
+      ))}
       <AcademicYearsSelection />
     </div>
   );
-  return content;
 };
 
 export default Admissions;

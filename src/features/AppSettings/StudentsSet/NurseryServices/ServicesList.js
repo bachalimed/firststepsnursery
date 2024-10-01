@@ -220,14 +220,20 @@ const ServicesList = () => {
       name: "Service",
       cell: (row) => (
         
-          <div>{row.servicePeriodicity} {row.serviceType}</div>
+          <div> {row.serviceType}</div>
        
       ),
-      width: "150px",
+      width: "120px",
     },
     {
-      name: "Fee",
-      selector: (row) => row.fee,
+      name: "Anchor",
+      selector: (row) => (
+        <>
+          {row.serviceAnchor?.monthly && <div> Monthly {row.serviceAnchor.monthly}</div>}
+          {row.serviceAnchor?.weekly && <div> Weekly {row.serviceAnchor.weekly}</div>}
+          {row.serviceAnchor?.oneTimeOff && <div> OneTimeOff {row.serviceAnchor.oneTimeOff}</div>}
+        </>
+      ),
       width: "130px",
     },
     {

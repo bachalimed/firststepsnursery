@@ -1,83 +1,78 @@
 import {
-  useGetStudentsQuery,
-  useUpdateStudentMutation,
-  useGetStudentsByYearQuery,
-  useDeleteStudentMutation,
-} from "./studentsApiSlice";
+  useGetAdmissionsQuery,
+  useUpdateAdmissionMutation,
+  useGetAdmissionsByYearQuery,
+  useDeleteAdmissionMutation,
+} from "./admissionsApiSlice";
 import { HiOutlineSearch } from "react-icons/hi";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
   selectAllAcademicYears,
-} from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import LoadingStateIcon from '../../../../Components/LoadingStateIcon'
+} from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
+import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 
-import StudentsParents from "../../StudentsParents";
+import Admissions from "../Admissions";
 import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
-import { useGetStudentDocumentsByYearByIdQuery } from "../../../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice";
+
 import { useSelector } from "react-redux";
-import { selectAllStudentsByYear, selectAllStudents } from "./studentsApiSlice"; //use the memoized selector
+import {
+  selectAllAdmissionsByYear,
+  selectAllAdmissions,
+} from "./admissionsApiSlice"; //use the memoized selector
 import { useEffect, useState } from "react";
-import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
-import RegisterModal from "./RegisterModal";
+import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
+import RegisterModal from "./AdmissionModal";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { setAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
+import { setAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 
-import useAuth from "../../../../hooks/useAuth";
+import useAuth from "../../../hooks/useAuth";
 
 import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
 import {
-  setSomeStudents,
-  setStudents,
-  currentStudentsList,
-} from "./studentsSlice";
+  setSomeAdmissions,
+  setAdmissions,
+  currentAdmissionsList,
+} from "./admissionsSlice";
 import { IoDocumentAttachOutline } from "react-icons/io5";
 
-const StudentsList = () => {
+const AdmissionsList = () => {
   //this is for the academic year selection
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
-  const [requiredDocNumber, setRequiredDocNumber] = useState("");
-  const [studentDocNumber, setStudentDocNumber] = useState("");
 
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-  // useEffect(() => {
-  //     if (selectedAcademicYearId) {
-  //         // Fetch the students for the selected academic year, if required
-  //         console.log('Fetch students for academic year Id:', selectedAcademicYearId);
-  //     }
-  // }, [selectedAcademicYearId]);
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
-  const [idStudentToDelete, setIdStudentToDelete] = useState(null); // State to track which document to delete
+  const [idAdmissionToDelete, setIdAdmissionToDelete] = useState(null); // State to track which document to delete
 
-  //console.log("Fetch students for academic year:", selectedAcademicYear);
+  //console.log("Fetch admissions for academic year:", selectedAcademicYear);
   const {
-    data: students, //the data is renamed students
+    data: admissions, //the data is renamed admissions
     isLoading, //monitor several situations is loading...
     isSuccess,
     isError,
     error,
-  } = useGetStudentsByYearQuery(
+  } = useGetAdmissionsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
-      endpointName: "studentsList",
+      endpointName: "admissionsList",
     } || {},
     {
-      //this param will be passed in req.params to select only students for taht year
+      //this param will be passed in req.params to select only admissions for taht year
       //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-      pollingInterval: 60000,//will refetch data every 60seconds
+      pollingInterval: 60000, //will refetch data every 60seconds
       refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
       refetchOnMountOrArgChange: true, //refetch when we remount the component
     }
@@ -85,78 +80,63 @@ const StudentsList = () => {
 
   //initialising the delete Mutation
   const [
-    deleteStudent,
+    deleteAdmission,
     {
       isLoading: isDelLoading,
       isSuccess: isDelSuccess,
       isError: isDelError,
       error: delerror,
     },
-  ] = useDeleteStudentMutation();
+  ] = useDeleteAdmissionMutation();
 
   // Function to handle the delete button click
-  const onDeleteStudentClicked = (id) => {
-    setIdStudentToDelete(id); // Set the document to delete
+  const onDeleteAdmissionClicked = (id) => {
+    setIdAdmissionToDelete(id); // Set the document to delete
     setIsDeleteModalOpen(true); // Open the modal
   };
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    await deleteStudent({ id: idStudentToDelete });
+    await deleteAdmission({ id: idAdmissionToDelete });
     setIsDeleteModalOpen(false); // Close the modal
   };
 
   // Function to close the modal without deleting
   const handleCloseDeleteModal = () => {
     setIsDeleteModalOpen(false);
-    setIdStudentToDelete(null);
+    setIdAdmissionToDelete(null);
   };
 
-  //this ensures teh selected year is chosen before running hte useeffect it is working perfectly to dispaptch the selected year
-  // useEffect(() => {
-  //   if (selectedAcademicYear?.title) {
-  //     setSelectedYear(selectedAcademicYear.title);
-  //     //console.log('Selected year updated:', selectedAcademicYear.title)
-  //   }
-  // }, [selectedAcademicYear]);
-  //console.log('selectedAcademicYear',selectedAcademicYear)
-
-  // const myStu = useSelector(state=> state.student)
-  // console.log(myStu, 'mystu')
-
-  //const allStudents = useSelector(selectAllStudents)// not the same cache list we re looking for this is from getstudents query and not getstudentbyyear wuery
-
-  //console.log('allStudents from the state by year',allStudents)
   // State to hold selected rows
   const [selectedRows, setSelectedRows] = useState([]);
   //state to hold the search query
   const [searchQuery, setSearchQuery] = useState("");
-  //const [filteredStudents, setFilteredStudents] = useState([])
+  //const [filteredAdmissions, setFilteredAdmissions] = useState([])
   //we need to declare the variable outside of if statement to be able to use it outside later
-  let studentsList = [];
-  let filteredStudents = [];
+  let admissionsList = [];
+  let filteredAdmissions = [];
   if (isSuccess) {
-    //set to the state to be used for other component s and edit student component
+    //set to the state to be used for other component s and edit admission component
 
-    const { entities } = students;
+    const { entities } = admissions;
 
     //we need to change into array to be read??
-    studentsList = Object.values(entities); //we are using entity adapter in this query
-    dispatch(setStudents(studentsList)); //timing issue to update the state and use it the same time
+    admissionsList = Object.values(entities); //we are using entity adapter in this query
+    dispatch(setAdmissions(admissionsList)); //timing issue to update the state and use it the same time
 
     //the serach result data
-    filteredStudents = studentsList?.filter((item) => {
+    filteredAdmissions = admissionsList?.filter((item) => {
       //the nested objects need extra logic to separate them
-      const firstNameMatch = item?.studentName?.firstName
+      const firstNameMatch = item?.admissionName?.firstName
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
-      const middleNameMatch = item?.studentName?.middleName
+      const middleNameMatch = item?.admissionName?.middleName
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
-      const lastNameMatch = item?.studentName?.lastName
+      const lastNameMatch = item?.admissionName?.lastName
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
-      //console.log('filteredStudents in the success', item)
+      //console.log('filteredAdmissions in the success', item)
       return (
         Object.values(item).some((val) =>
           String(val).toLowerCase().includes(searchQuery.toLowerCase())
@@ -188,65 +168,65 @@ const StudentsList = () => {
   };
 
   const [
-    updateStudent,
+    updateAdmission,
     {
       isLoading: isUpdateLoading,
       isSuccess: isUpdateSuccess,
       isError: isUpdateError,
       error: updateError,
     },
-  ] = useUpdateStudentMutation(); //it will not execute the mutation nownow but when called
-  const [studentObject, setStudentObject] = useState("");
+  ] = useUpdateAdmissionMutation(); //it will not execute the mutation nownow but when called
+  const [admissionObject, setAdmissionObject] = useState("");
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
 
   //console.log(academicYears)
   // Handler for registering selected row,
-  const [studentYears, setStudentYears] = useState([]);
+  const [admissionYears, setAdmissionYears] = useState([]);
   const handleRegisterSelected = () => {
     //we already allowed only one to be selected in the button options
     //console.log('Selected Rows to detail:', selectedRows)
 
-    setStudentObject(selectedRows[0]);
-    //console.log(studentObject, "studentObject");
-    //const {studentYears}= (studentObject)
+    setAdmissionObject(selectedRows[0]);
+    //console.log(admissionObject, "admissionObject");
+    //const {admissionYears}= (admissionObject)
 
-    setStudentYears(studentObject.studentYears);
-    //console.log("student years and id", studentYears);
+    setAdmissionYears(admissionObject.admissionYears);
+    //console.log("admission years and id", admissionYears);
     setIsRegisterModalOpen(true);
 
     //setSelectedRows([]); // Clear selection after process
   };
-  
-  // This is called when saving the updated student years from the modal
-  const onUpdateStudentClicked = async (updatedYears) => {
-    //console.log("Updated studentYears from modal:", updatedYears);
 
-    const updatedStudentObject = {
-      ...studentObject,
-      studentYears: updatedYears, // Merge updated studentYears
+  // This is called when saving the updated admission years from the modal
+  const onUpdateAdmissionClicked = async (updatedYears) => {
+    //console.log("Updated admissionYears from modal:", updatedYears);
+
+    const updatedAdmissionObject = {
+      ...admissionObject,
+      admissionYears: updatedYears, // Merge updated admissionYears
     };
 
-    //console.log("Saving updated student:", updatedStudentObject);
+    //console.log("Saving updated admission:", updatedAdmissionObject);
 
     try {
-      await updateStudent(updatedStudentObject); // Save updated student to backend
-      console.log("Student updated successfully");
+      await updateAdmission(updatedAdmissionObject); // Save updated admission to backend
+      console.log("Admission updated successfully");
     } catch (error) {
-      console.log("Error saving student:", error);
+      console.log("Error saving admission:", error);
     }
 
     setIsRegisterModalOpen(false); // Close modal
   };
 
-  //   const [studentYears, setStudentYears] = useState([])
+  //   const [admissionYears, setAdmissionYears] = useState([])
   // //adds to the previous entries in arrays for gardien, schools...
-  //       const onStudentYearsChanged = (e, selectedYear) => {
+  //       const onAdmissionYearsChanged = (e, selectedYear) => {
   //         if (e.target.checked) {
-  //           // Add the selectedYear to studentYears if it's checked
-  //           setStudentYears([...studentYears, selectedYear]);
+  //           // Add the selectedYear to admissionYears if it's checked
+  //           setAdmissionYears([...admissionYears, selectedYear]);
   //         } else {
-  //           // Remove the selectedYear from studentYears if it's unchecked
-  //           setStudentYears(studentYears.filter(year => year !== selectedYear))
+  //           // Remove the selectedYear from admissionYears if it's unchecked
+  //           setAdmissionYears(admissionYears.filter(year => year !== selectedYear))
   //         }
   //       }
 
@@ -259,97 +239,125 @@ const StudentsList = () => {
     },
     //show this column only if user is a parent and not employee
 
-    isAdmin && {
-      name: "ID",
-      selector: (row) => (
-        <Link to={`/students/studentsParents/studentDetails/${row.id}`}>
-          {row.id}{" "}
-        </Link>
-      ),
-      sortable: true,
-      width: "200px",
-    },
+    isAdmin
+      ? {
+          name: "ID",
+          selector: (row) => (
+            <Link
+              to={`/admissions/admissionsParents/admissionDetails/${row.id}`}
+            >
+              {row.id}
+            </Link>
+          ),
+          sortable: true,
+          width: "200px",
+        }
+      : null,
 
     {
       name: "Student Name",
       selector: (row) =>
-        row.studentName?.firstName +
+        row.student.studentName.firstName +
         " " +
-        row.studentName?.middleName +
+        row.student.studentName?.middleName +
         " " +
-        row.studentName?.lastName,
+        row.student.studentName?.lastName,
       sortable: true,
-      width: "200px",
-      cell: (row) => (
-        <Link to={`/students/studentsParents/studentDetails/${row.id}`}>
-          {row.studentName?.firstName +
-            " " +
-            row.studentName?.middleName +
-            " " +
-            row.studentName?.lastName}
-        </Link>
-      ),
-    },
-    {
-      name: "Sex",
-      selector: (row) => row.studentSex, //changed from userSex
-      cell: (row) => (
-        <span>
-          {row.studentSex === "Male" ? (
-            <LiaMaleSolid className="text-blue-500 text-3xl" />
-          ) : (
-            <LiaFemaleSolid className="text-rose-500 text-3xl" />
-          )}
-        </span>
-      ),
-      sortable: true,
-      removableRows: true,
-      width: "70px",
+      width: "180px",
     },
 
     {
-      name: "DOB",
-      selector: (row) =>new Date(row.studentDob).toLocaleDateString("en-GB", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      }),
+      name: "Admission Date",
+      selector: (row) =>
+        new Date(row.admissionDate).toLocaleDateString("en-GB", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }),
 
       sortable: true,
-      width: "100px",
+      width: "140px",
     },
-    // {name: "Father",
-    //   selector:row=>row.studentFather._id,
-    //   sortable:true
-    // },
-    // {name: "Mother",
-    //   selector:row=>row.studentMother._id,
-    //   sortable:true
-    // },
 
     {
-      name: "Admissions",
+      name: "Agreed Services",
 
       selector: (row) => (
         <div>
-          {row.studentYears.map((year) => (
-            <Link
-              to={`/students/admissions/admissionDetails/${row.id}`}
-            >
+          {row.agreedFees.map((feeObj, index) => (
+            <div key={index}>
               {" "}
-              <div key={year.academicYear}>{year.academicYear}</div>
-            </Link>
+              {feeObj?.feePeriod} {feeObj?.service?.serviceType}{" "}
+            </div>
           ))}
         </div>
       ),
       sortable: true,
       removableRows: true,
-      width: "110px",
+      width: "180px",
+    },
+    {
+      name: "Anchor",
+
+      selector: (row) => (
+        <div>
+          {row.agreedFees.map((feeObj, index) => (
+            <div key={index}>
+              {feeObj?.service?.serviceAnchor[feeObj.feePeriod]}
+            </div>
+          ))}
+        </div>
+      ),
+      sortable: true,
+      removableRows: true,
+      width: "90px",
+    },
+    // {
+    //   name: "Agreed Fees",
+
+    //   selector: (row) => (
+    //     <div>
+    //       {row.agreedFees.map((feeObj, index) => (
+    //         <div key={index}>{feeObj?.feeValue} </div>
+    //       ))}
+    //     </div>
+    //   ),
+    //   sortable: true,
+    //   removableRows: true,
+    //   width: "120px",
+    // }, 
+    {
+      name: "Agreed Fees",
+      selector: (row) => (
+        <div>
+          {row.agreedFees.map((feeObj, index) => {
+            const anchorValue = feeObj?.service?.serviceAnchor[feeObj.feePeriod];
+            const feeValue = feeObj?.feeValue;
+    
+            // Determine the text color based on the comparison
+            let textColorClass = "text-black"; // Default is black
+            if (feeValue < anchorValue) {
+              textColorClass = "text-red-500"; // Red if less than anchor
+            } else if (feeValue > anchorValue) {
+              textColorClass = "text-green-500"; // Green if greater than anchor
+            }
+    
+            return (
+              <div key={index} className={textColorClass}>
+                {feeValue}
+              </div>
+            );
+          })}
+        </div>
+      ),
+      sortable: true,
+      removableRows: true,
+      width: "120px",
     },
     {
       name: "Documents",
       selector: (row) => (
-        <Link to={`/students/studentsParents/studentDocumentsList/${row.id}`}>
+        <Link to={`/students/admissions/studentDocumentsList/${row.id}`}>
           {" "}
           <IoDocumentAttachOutline className="text-slate-800 text-2xl" />
         </Link>
@@ -367,7 +375,7 @@ const StudentsList = () => {
             className="text-blue-500"
             fontSize={20}
             onClick={() =>
-              Navigate(`/students/studentsParents/studentDetails/${row.id}`)
+              navigate(`/students/admissions/admissionDetails/${row.id}`)
             }
           >
             <ImProfile className="text-2xl" />
@@ -376,7 +384,7 @@ const StudentsList = () => {
             <button
               className="text-yellow-400"
               onClick={() =>
-                Navigate(`/students/studentsParents/editStudent/${row.id}`)
+                navigate(`/students/admissions/editAdmission/${row.id}`)
               }
             >
               <FiEdit className="text-2xl" />
@@ -385,7 +393,7 @@ const StudentsList = () => {
           {canDelete && !isDelLoading && (
             <button
               className="text-red-500"
-              onClick={() => onDeleteStudentClicked(row.id)}
+              onClick={() => onDeleteAdmissionClicked(row.id)}
             >
               <RiDeleteBin6Line className="text-2xl" />
             </button>
@@ -398,7 +406,7 @@ const StudentsList = () => {
     },
   ];
   let content;
-  if (isLoading) content = <LoadingStateIcon/>;
+  if (isLoading) content = <LoadingStateIcon />;
   if (isError) {
     content = <p className="errmsg">{error?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
   }
@@ -406,7 +414,7 @@ const StudentsList = () => {
 
   content = (
     <>
-      <StudentsParents />
+      <Admissions />
 
       <div className="relative h-10 mr-2 ">
         <HiOutlineSearch
@@ -423,7 +431,7 @@ const StudentsList = () => {
       <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
         <DataTable
           columns={column}
-          data={filteredStudents}
+          data={filteredAdmissions}
           pagination
           selectableRows
           removableRows
@@ -470,16 +478,16 @@ const StudentsList = () => {
       <RegisterModal
         isOpen={isRegisterModalOpen}
         onClose={() => setIsRegisterModalOpen(false)}
-        studentYears={studentYears}
-        studentObject={studentObject}
-        setStudentObject={setStudentObject}
-        setStudentYears={setStudentYears}
+        admissionYears={admissionYears}
+        admissionObject={admissionObject}
+        setAdmissionObject={setAdmissionObject}
+        setAdmissionYears={setAdmissionYears}
         academicYears={academicYears}
-        onSave={onUpdateStudentClicked}
+        onSave={onUpdateAdmissionClicked}
       />
     </>
   );
   //}
   return content;
 };
-export default StudentsList;
+export default AdmissionsList;

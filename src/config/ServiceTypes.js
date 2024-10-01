@@ -1,8 +1,9 @@
 export const SERVICETYPES = {
+  Admission: "Admission",
   Nursery: "Nursery",
-  Tuition: "Tuition",
   Catering: "Catering",
-  Dropping: "Dropping",
+  Collection: "Collection",
+  Tuition: "Tuition",
   Club: "Club",
   Activity: "Activity",
   Action: "Action",

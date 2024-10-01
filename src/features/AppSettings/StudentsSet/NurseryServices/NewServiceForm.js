@@ -5,7 +5,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../../../config/UserRoles";
 import { ACTIONS } from "../../../../config/UserActions";
+import { SERVICETYPES } from "../../../../config/ServiceTypes";
 import StudentsSet from '../../StudentsSet'
+import useAuth from "../../../../hooks/useAuth";
 
 import { useSelector } from "react-redux";
 import {
@@ -14,174 +16,112 @@ import {
   selectAcademicYearById,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 
-//constrains on inputs when creating new user
-const USER_REGEX = /^[A-z 0-9]{6,20}$/;
-const NAME_REGEX = /^[A-z 0-9]{3,18}$/;
-const NUMBER_REGEX = /^[0-9]{1,4}(\.[0-9]{0,3})?$/;
-const PHONE_REGEX = /^[0-9]{6,15}$/;
-const DOB_REGEX = /^[0-9/-]{4,10}$/;
-const YEAR_REGEX = /^[0-9]{4}\/[0-9]{4}$/;
+
+
+const FEE_REGEX = /^(0|[0-9]{1,4}(\.[0-9]{0,3})?)$/;
+
 const NewServiceForm = () => {
   const navigate = useNavigate();
-
+const {isAdmin, userId} = useAuth()
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-console.log(selectedAcademicYear.title,'selectedAcademicYear')
+console.log(selectedAcademicYear?.title,'selectedAcademicYear')
   const [addNewService, { isLoading, isSuccess, isError, error }] =
     useAddNewServiceMutation();
 
  
-
   // Consolidated form state
   const [formData, setFormData] = useState({
     serviceType: "",
     serviceYear: "",
-    fee: 0,
-    servicePeriodicity: "",
+    serviceAnchor: {
+      monthly:0,
+      weekly:0,
+      oneTimeOff:0
+    },
+    
+    serviceCreator:userId,
+    serviceOperator:userId
   });
 
   const [validity, setValidity] = useState({
     validServiceType: false,
     validServiceYear: false,
-    validFee: false,
-    validServicePeriodicity: false,
+    validMonthlyAnchor: false,
+    validWeeklyAnchor: false,
+    validOneTimeOffAnchor: false,
+    
   });
+console.log(
+  validity.validServiceType,
+  validity.validServiceYear,
+  validity.validMonthlyAnchor,
+  validity.validWeeklyAnchor,
+  validity.validOneTimeOffAnchor
 
-  // Validate inputs using regex patterns
+
+
+
+)
+  // Validate form inputs on every state change
   useEffect(() => {
-    setValidity((prev) => ({
-      ...prev,
-      validServiceType: USER_REGEX.test(formData.serviceType),//droppdown selection
-      validServiceYear: NAME_REGEX.test(formData.serviceYear),
-      validFee: NAME_REGEX.test(formData.fee),
-      validServicePeriodicity: DOB_REGEX.test(formData.servicePeriodicity),
+    setValidity({
+      validServiceType: formData.serviceType !== "",
+      validServiceYear: formData.serviceYear !== "",
+      validMonthlyAnchor: FEE_REGEX.test(formData.serviceAnchor.monthly),
+      validWeeklyAnchor: FEE_REGEX.test(formData.serviceAnchor.weekly),
+      validOneTimeOffAnchor: FEE_REGEX.test(formData.serviceAnchor.oneTimeOff),
       
-    }));
+    });
   }, [formData]);
 
+  
+  // If the service is added successfully, reset the form and navigate
   useEffect(() => {
     if (isSuccess) {
       setFormData({
-        username: generateRandomUsername(),
-        password: "12345678",
-        userRoles: ["Service"],
-        userAllowedActions: [],
-        userFullName: {
-          userFirstName: "",
-          userMiddleName: "",
-          userLastName: "",
+        serviceType: "",
+        serviceYear: "",
+        serviceAnchor: {
+          monthly:0,
+          weekly:0,
+          oneTimeOff:0
         },
-        userDob: "",
-        userSex: "",
-        userIsActive: false,
-        userAddress: {
-          house: "",
-          street: "",
-          area: "",
-          postCode: "",
-          city: "",
-        },
-        userContact: {
-          primaryPhone: "",
-          secondaryPhone: "",
-          email: "",
-        },
-        serviceAssessment: [],
-        serviceWorkHistory: [],
-        serviceIsActive: false,
-        serviceYears: [{ academicYear: "" }],
-        serviceCurrentEmployment: {
-          position: "",
-          joinDate: "",
-          contractType: "",
-          salaryPackage: {
-            basic: "",
-            cnss: "",
-            other: "",
-            payment: "",
-          },
-        },
+        serviceCreator:"",
+        serviceOperator:""
       });
-      navigate("/hr/service/");
+      navigate("/settings/studentsSet/services");
     }
   }, [isSuccess, navigate]);
+ 
+ // Handle input changes
+ const handleInputChange = (e) => {
+   const { name, value } = e.target;
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+   // Check for service anchor fields and update nested object
+   if (["monthlyAnchor", "weeklyAnchor", "oneTimeOffAnchor"].includes(name)) {
+     setFormData((prev) => ({
+       ...prev,
+       serviceAnchor: {
+         ...prev.serviceAnchor,
+         [name.replace("Anchor", "")]: parseFloat(value) || 0, // Handle the numeric input properly
+       },
+     }));
+   } else {
+     setFormData((prev) => ({
+       ...prev,
+       [name]: value, // Handle other form fields
+     }));
+   }
+ };
 
-  const onAcademicYearChanged = (e, index) => {
-    const { checked } = e.target;
-    setFormData((prev) => {
-      const updatedYears = [...prev.serviceYears];
-      // Update based on checked state
-      updatedYears[index].academicYear = checked ? selectedAcademicYear?.title : "";
-      return { ...prev, serviceYears: updatedYears };
-    });
-  };
-
-  const handleWorkHistoryChange = (index, field, value) => {
-    const updatedWorkHistory = [...formData.serviceWorkHistory];
-    updatedWorkHistory[index][field] = value;
-    setFormData((prev) => ({
-      ...prev,
-      serviceWorkHistory: updatedWorkHistory,
-    }));
-  };
-
-  const handleAddWorkHistory = () => {
-    setFormData((prev) => ({
-      ...prev,
-      serviceWorkHistory: [
-        ...prev.serviceWorkHistory,
-        {
-          institution: "",
-          fromDate: "",
-          toDate: "",
-          position: "",
-          contractType: "",
-          salaryPackage: "",
-        },
-      ],
-    }));
-  };
-
-  const handleRemoveWorkHistory = (index) => {
-    setFormData((prev) => ({
-      ...prev,
-      serviceWorkHistory: prev.serviceWorkHistory.filter(
-        (_, i) => i !== index
-      ),
-    }));
-  };
-  const canSave =
-    Object.values(validity).every(Boolean) &&
-    // ((formData.serviceYears[0].academicYear)!=='') &&
-
-    !isLoading;
-  //console.log(validity,'validity')
-  //console.log(formData,'formData')
-  // console.log(canSave,'canSave')
-  // console.log(validity.validUsername,
-  // 	validity.validFirstName,
-  // 	validity.validLastName,
-  // 	validity.validDob,
-  // 	validity.validUserSex,
-  // 	validity.validHouse,
-  // 	validity.validStreet,
-  // 	validity.validCity,
-  // 	validity.validPrimaryPhone,
-  // 	validity.validCurrentPosition,
-  // 	validity.validJoinDate,
-  // 	validity.validContractType,
-  // 	validity.validBasic,
-  // 	validity.validPayment,
-  // 	validity.validServiceYear)
-
+  // Check if the form can be submitted
+  const canSave = Object.values(validity).every(Boolean) && !isLoading;
+console.log(formData,'formData')
+  // Handle form submission
   const onSaveServiceClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
@@ -192,834 +132,124 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
       }
     }
   };
-  const handleCancel = () => {
-    navigate("/hr/service/");
-  };
+  
 
-  const content = (
+  return (
     <>
       <StudentsSet />
-
       <section className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold mb-4">
-          Add New Service:{" "}
-          {`${formData.userFullName.userFirstName} ${formData.userFullName.userMiddleName} ${formData.userFullName.userLastName}`}
+          Add New Service: {`${formData.servicePeriodicity} ${formData.serviceType} ${formData.serviceYear}`}
         </h2>
-        {isError && (
-          <p className="text-red-500">Error: {error?.data?.message}</p>
-        )}
+        {isError && <p className="text-red-500">Error: {error?.data?.message}</p>}
+        
         <form onSubmit={onSaveServiceClicked} className="space-y-6">
-          {/* username and password should be visible for admin isAdmin&& */}
-          {/* <div>
-          <label className="block text-sm font-medium text-gray-700">
-            username*
-          </label>
-          <input
-            type="text"
-            name="userFirstName"
-            value={formData.userFirstName}
-            onChange={handleInputChange}
-            className={`mt-1 block w-full border ${
-              validity.validFirstName ? "border-gray-300" : "border-red-500"
-            } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-            placeholder="Enter First Name"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Password*
-          </label>
-          <input
-            type="text"
-            name="userFirstName"
-            value={formData.userFirstName}
-            onChange={handleInputChange}
-            className={`mt-1 block w-full border ${
-              validity.validFirstName ? "border-gray-300" : "border-red-500"
-            } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-            placeholder="Enter First Name"
-            required
-          />
-        </div> */}
+          {/* Service Type */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              First Name{" "}
-              {!validity.validFirstName && (
-                <span className="text-red-500">*</span>
-              )}
+              Service Type {validity.validServiceType ? "" : <span className="text-red-500">*</span>}
             </label>
-            <input
-              type="text"
-              name="userFirstName"
-              value={formData.userFullName.userFirstName}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  userFullName: {
-                    ...prev.userFullName,
-                    userFirstName: e.target.value,
-                  },
-                }))
-              }
-              className={`mt-1 block w-full border ${
-                validity.validFirstName ? "border-gray-300" : "border-red-500"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-              placeholder="Enter First Name"
-              required
-            />
-          </div>
-          {/* Middle Name */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Middle Name
-            </label>
-            <input
-              type="text"
-              name="userMiddleName"
-              value={formData.userFullName.userMiddleName}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  userFullName: {
-                    ...prev.userFullName,
-                    userMiddleName: e.target.value,
-                  },
-                }))
-              }
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              placeholder="Enter Middle Name"
-            />
-          </div>
-
-          {/* Last Name */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Last Name{" "}
-              {!validity.validLastName && (
-                <span className="text-red-500">*</span>
-              )}
-            </label>
-            <input
-              type="text"
-              name="userLastName"
-              value={formData.userFullName.userLastName}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  userFullName: {
-                    ...prev.userFullName,
-                    userLastName: e.target.value,
-                  },
-                }))
-              }
-              className={`mt-1 block w-full border ${
-                validity.validLastName ? "border-gray-300" : "border-red-500"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-              placeholder="Enter Last Name"
-              required
-            />
-          </div>
-
-          {/* Date of Birth */}
-          <div>
-            <label
-              className="block text-sm font-medium text-gray-700"
-              htmlFor="userDob"
-            >
-              Date of Birth{" "}
-              {!validity.validDob && <span className="text-red-500">*</span>}
-            </label>
-            <input
-              type="date"
-              name="userDob"
-              value={formData.userDob}
+            <select
+              name="serviceType"
+              value={formData.serviceType}
               onChange={handleInputChange}
               className={`mt-1 block w-full border ${
-                validity.validDob ? "border-gray-300" : "border-red-500"
+                validity.validServiceType ? "border-gray-300" : "border-red-500"
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
               required
-            />
+            >
+              <option value="">Select Service Type</option>
+              {Object.values(SERVICETYPES).map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
           </div>
-
-          {/* Sex Selection */}
-
+          
+          {/* Service Year */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Sex{" "}
-              {!validity.validUserSex && (
-                <span className="text-red-500">*</span>
-              )}
+              Service Year {validity.validServiceYear ? "" : <span className="text-red-500">*</span>}
             </label>
-            <div className="flex items-center space-x-4 mt-1">
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="userSex"
-                  value="Male"
-                  checked={formData.userSex === "Male"}
-                  onChange={(e) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      userSex: e.target.checked
-                        ? "Male"
-                        : formData.userSex === "Male"
-                        ? ""
-                        : formData.userSex,
-                    }));
-                  }}
-                  className={`h-4 w-4 ${
-                    validity.validUserSex
-                      ? "border-gray-300 rounded"
-                      : "border-red-500 rounded"
-                  } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                />
-                <label className="ml-2 text-sm text-gray-700">Male</label>
-              </div>
-
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="userSex"
-                  value="Female"
-                  checked={formData.userSex === "Female"}
-                  onChange={(e) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      userSex: e.target.checked
-                        ? "Female"
-                        : formData.userSex === "Female"
-                        ? ""
-                        : formData.userSex,
-                    }));
-                  }}
-                  className="h-4 w-4 border-gray-300 rounded focus:ring-indigo-500"
-                />
-                <label className="ml-2 text-sm text-gray-700">Female</label>
-              </div>
-            </div>
-          </div>
-          {/* Service Years Selection */}
-          {formData.serviceYears.map((year, index) => (
-            <div key={index} className="flex items-center mb-2">
-              <input
-                type="checkbox"
-                id={`serviceYear-${index}`}
-                value={year.academicYear}
-                checked={year.academicYear === selectedAcademicYear?.title}
-                onChange={(e) => onAcademicYearChanged(e, index)}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <label
-                htmlFor={`serviceYear-${index}`}
-                className="ml-2 text-sm font-medium text-gray-700"
-              >
-                Academic Year{" "}
-                {!validity.validServiceYear && (
-                  <span className="text-red-500">*</span>
-                )}{" "}
-                : {selectedAcademicYear?.title}
-              </label>
-            </div>
-          ))}
-
-          <div className="flex items-center mb-2">
-            <input
-              type="checkbox"
-              id="serviceIsActive"
-              name="serviceIsActive"
-              checked={formData.serviceIsActive === true}
-              onChange={(e) => {
-                setFormData((prev) => ({
-                  ...prev,
-                  serviceIsActive: e.target.checked,
-                }));
-              }}
-              className='h-4 w-4  "text-blue-600"  focus:ring-blue-500 border-gray-300 rounded'
-            />
-
-            <label
-              htmlFor="serviceIsActive"
-              className="ml-2 text-sm font-medium text-gray-700"
+            <select
+              name="serviceYear"
+              value={formData.serviceYear}
+              onChange={handleInputChange}
+              className={`mt-1 block w-full border ${
+                validity.validServiceYear ? "border-gray-300" : "border-red-500"
+              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+              required
             >
-              Service IsActive {validity.validServiceIsActive && "*"}
-            </label>
+              <option value="">Select Year</option>
+              {academicYears.map((year) => (
+                <option key={year.id} value={year.title}>
+                  {year.title}
+                </option>
+              ))}
+            </select>
           </div>
 
-          {/* Contact Information */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Primary Phone{" "}
-                {!validity.validPrimaryPhone && (
-                  <span className="text-red-500">*</span>
-                )}
-              </label>
-              <input
-                type="text"
-                name="primaryPhone"
-                value={formData.userContact.primaryPhone}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    userContact: {
-                      ...prev.userContact,
-                      primaryPhone: e.target.value,
-                    },
-                  }))
-                }
-                className={`mt-1 block w-full border ${
-                  validity.validPrimaryPhone
-                    ? "border-gray-300"
-                    : "border-red-500"
-                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                placeholder="Enter Primary Phone"
-                required
-              />
-            </div>
+         
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Secondary Phone
-              </label>
-              <input
-                type="text"
-                name="secondaryPhone"
-                value={formData.userContact.secondaryPhone}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    userContact: {
-                      ...prev.userContact,
-                      secondaryPhone: e.target.value,
-                    },
-                  }))
-                }
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                placeholder="Enter Secondary Phone"
-              />
-            </div>
-          </div>
-
-          {/* Address Information */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                House{" "}
-                {!validity.validHouse && (
-                  <span className="text-red-500">*</span>
-                )}
-              </label>
-              <input
-                type="text"
-                name="house"
-                value={formData.userAddress.house}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    userAddress: {
-                      ...prev.userAddress,
-                      house: e.target.value,
-                    },
-                  }))
-                }
-                className={`mt-1 block w-full border ${
-                  validity.validHouse ? "border-gray-300" : "border-red-500"
-                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                placeholder="Enter House"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Street{" "}
-                {!validity.validStreet && (
-                  <span className="text-red-500">*</span>
-                )}
-              </label>
-              <input
-                type="text"
-                name="street"
-                value={formData.street}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    userAddress: {
-                      ...prev.userAddress,
-                      street: e.target.value,
-                    },
-                  }))
-                }
-                className={`mt-1 block w-full border ${
-                  validity.validStreet ? "border-gray-300" : "border-red-500"
-                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                placeholder="Enter Street"
-              />
-            </div>
-
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Area
-              </label>
-              <input
-                type="text"
-                name="area"
-                value={formData.userAddress.area}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    userAddress: {
-                      ...prev.userAddress,
-                      area: e.target.value,
-                    },
-                  }))
-                }
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                placeholder="Enter Area"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                City{" "}
-                {!validity.validCity && <span className="text-red-500">*</span>}
-              </label>
-              <input
-                type="text"
-                name="city"
-                value={formData.userAddress.city}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    userAddress: {
-                      ...prev.userAddress,
-                      city: e.target.value,
-                    },
-                  }))
-                }
-                className={`mt-1 block w-full border ${
-                  validity.validCity ? "border-gray-300" : "border-red-500"
-                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                placeholder="Enter City"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Post Code
-              </label>
-              <input
-                type="text"
-                name="postCode"
-                value={formData.userAddress.postCode}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    userAddress: {
-                      ...prev.userAddress,
-                      postCode: e.target.value,
-                    },
-                  }))
-                }
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                placeholder="Enter Post Code"
-              />
-            </div>
-          </div>
-
-          {/* Email */}
+          {/* Monthly Service anchor */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Email
+              Monthly Service Anchor {validity.validMonthlyAnchor ? "" : <span className="text-red-500">*</span>}
             </label>
             <input
-              type="email"
-              name="email"
-              value={formData.userContact.email}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  userContact: {
-                    ...prev.userContact,
-                    email: e.target.value,
-                  },
-                }))
-              }
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              placeholder="Enter Email Address"
+              type="number"
+              name="monthlyAnchor"
+              value={formData.monthlyAnchor}
+              onChange={handleInputChange}
+              className={`mt-1 block w-full border ${
+                validity.validMonthlyAnchor ? "border-gray-300" : "border-red-500"
+              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+              placeholder="Enter Monthly Service Anchor"
+              
             />
           </div>
 
-          {/* Current Employment */}
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Current Position{" "}
-                {!validity.validCurrentPosition && (
-                  <span className="text-red-500">*</span>
-                )}
-              </label>
-              <input
-                type="text"
-                name="position"
-                value={formData.serviceCurrentEmployment.position}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    serviceCurrentEmployment: {
-                      ...prev.serviceCurrentEmployment,
-                      position: e.target.value,
-                    },
-                  }))
-                }
-                className={`mt-1 block w-full border ${
-                  validity.validCurrentPosition
-                    ? "border-gray-300"
-                    : "border-red-500"
-                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                placeholder="Enter Position"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Join Date{" "}
-                {!validity.validJoinDate && (
-                  <span className="text-red-500">*</span>
-                )}
-              </label>
-              <input
-                type="date"
-                name="joinDate"
-                value={formData.serviceCurrentEmployment.joinDate}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    serviceCurrentEmployment: {
-                      ...prev.serviceCurrentEmployment,
-                      joinDate: e.target.value,
-                    },
-                  }))
-                }
-                className={`mt-1 block w-full border ${
-                  validity.validJoinDate ? "border-gray-300" : "border-red-500"
-                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Contract Type{" "}
-                {!validity.validContractType && (
-                  <span className="text-red-500">*</span>
-                )}
-              </label>
-              <input
-                type="text"
-                name="contractType"
-                value={formData.serviceCurrentEmployment.contractType}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    serviceCurrentEmployment: {
-                      ...prev.serviceCurrentEmployment,
-                      contractType: e.target.value,
-                    },
-                  }))
-                }
-                className={`mt-1 block w-full border ${
-                  validity.validContractType
-                    ? "border-gray-300"
-                    : "border-red-500"
-                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                placeholder="Enter Contract Type"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Salary Package
-              </label>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Basic{" "}
-                    {!validity.validBasic && (
-                      <span className="text-red-500">*</span>
-                    )}
-                  </label>
-                  <input
-                    type="number"
-                    name="basic"
-                    value={
-                      formData.serviceCurrentEmployment.salaryPackage.basic
-                    }
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        serviceCurrentEmployment: {
-                          ...prev.serviceCurrentEmployment,
-                          salaryPackage: {
-                            ...prev.serviceCurrentEmployment.salaryPackage,
-                            basic: e.target.value,
-                          },
-                        },
-                      }))
-                    }
-                    className={`mt-1 block w-full border ${
-                      validity.validCity ? "border-gray-300" : "border-red-500"
-                    } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                    placeholder="Enter Basic Salary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Payment{" "}
-                    {!validity.validPayment && (
-                      <span className="text-red-500">*</span>
-                    )}
-                  </label>
-                  <input
-                    type="text"
-                    name="payment"
-                    value={
-                      formData.serviceCurrentEmployment.salaryPackage.payment
-                    }
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        serviceCurrentEmployment: {
-                          ...prev.serviceCurrentEmployment,
-                          salaryPackage: {
-                            ...prev.serviceCurrentEmployment.salaryPackage,
-                            payment: e.target.value,
-                          },
-                        },
-                      }))
-                    }
-                    className={`mt-1 block w-full border ${
-                      validity.validPayment
-                        ? "border-gray-300"
-                        : "border-red-500"
-                    } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                    placeholder="Enter Salary payment period"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    CNSS
-                  </label>
-                  <input
-                    type="number"
-                    name="cnss"
-                    value={
-                      formData.serviceCurrentEmployment.salaryPackage.cnss
-                    }
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        serviceCurrentEmployment: {
-                          ...prev.serviceCurrentEmployment,
-                          salaryPackage: {
-                            ...prev.serviceCurrentEmployment.salaryPackage,
-                            cnss: e.target.value,
-                          },
-                        },
-                      }))
-                    }
-                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Enter CNSS"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Other
-                  </label>
-                  <input
-                    type="number"
-                    name="other"
-                    value={
-                      formData.serviceCurrentEmployment.salaryPackage.other
-                    }
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        serviceCurrentEmployment: {
-                          ...prev.serviceCurrentEmployment,
-                          salaryPackage: {
-                            ...prev.serviceCurrentEmployment.salaryPackage,
-                            other: e.target.value,
-                          },
-                        },
-                      }))
-                    }
-                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Enter Other Salary"
-                  />
-                </div>
-              </div>
-            </div>
+          {/* Weekly Service anchor */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Weekly Service Anchor {validity.validWeeklyAnchor ? "" : <span className="text-red-500">*</span>}
+            </label>
+            <input
+              type="number"
+              name="monthlyAnchor"
+              value={formData.weeklyAnchor}
+              onChange={handleInputChange}
+              className={`mt-1 block w-full border ${
+                validity.validWeeklyAnchor ? "border-gray-300" : "border-red-500"
+              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+              placeholder="Enter Weekly Service Anchor"
+              
+            />
+          </div>
+          {/* Weekly Service anchor */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              One-time Off Service Anchor {validity.validOneTimeOffAnchor ? "" : <span className="text-red-500">*</span>}
+            </label>
+            <input
+              type="number"
+              name="oneTimeOffAnchor"
+              value={formData.oneTimeOffAnchor}
+              onChange={handleInputChange}
+              className={`mt-1 block w-full border ${
+                validity.validOneTimeOffAnchor ? "border-gray-300" : "border-red-500"
+              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+              placeholder="Enter One-time off  Service Anchor"
+              
+            />
           </div>
 
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Service Work History</h3>
-            {formData.serviceWorkHistory.map((work, index) => (
-              <div
-                key={index}
-                className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2"
-              >
-                {/* Institution */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Institution{" "}
-                    {!work.institution && (
-                      <span className="text-red-500">*</span>
-                    )}
-                  </label>
-                  <input
-                    type="text"
-                    name="institution"
-                    value={work.institution}
-                    onChange={(e) =>
-                      handleWorkHistoryChange(
-                        index,
-                        "institution",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Enter Institution"
-                  />
-                </div>
-
-                {/* From Date */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    From Date{" "}
-                    {!work.fromDate && <span className="text-red-500">*</span>}
-                  </label>
-                  <input
-                    type="date"
-                    name="fromDate"
-                    value={work.fromDate}
-                    onChange={(e) =>
-                      handleWorkHistoryChange(index, "fromDate", e.target.value)
-                    }
-                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  />
-                </div>
-
-                {/* To Date */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    To Date{" "}
-                    {!work.toDate && <span className="text-red-500">*</span>}
-                  </label>
-                  <input
-                    type="date"
-                    name="toDate"
-                    value={work.toDate}
-                    onChange={(e) =>
-                      handleWorkHistoryChange(index, "toDate", e.target.value)
-                    }
-                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  />
-                </div>
-
-                {/* Position */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Position{" "}
-                    {!work.position && <span className="text-red-500">*</span>}
-                  </label>
-                  <input
-                    type="text"
-                    name="position"
-                    value={work.position}
-                    onChange={(e) =>
-                      handleWorkHistoryChange(index, "position", e.target.value)
-                    }
-                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Enter Position"
-                  />
-                </div>
-
-                {/* Contract Type */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Contract Type{" "}
-                    {!work.contractType && (
-                      <span className="text-red-500">*</span>
-                    )}
-                  </label>
-                  <input
-                    type="text"
-                    name="contractType"
-                    value={work.contractType}
-                    onChange={(e) =>
-                      handleWorkHistoryChange(
-                        index,
-                        "contractType",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Enter Contract Type"
-                  />
-                </div>
-
-                {/* Salary Package */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Salary Package
-                  </label>
-                  <input
-                    type="text"
-                    name="salaryPackage"
-                    value={work.salaryPackage}
-                    onChange={(e) =>
-                      handleWorkHistoryChange(
-                        index,
-                        "salaryPackage",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Enter Salary Package"
-                  />
-                </div>
-
-                {/* Remove Work History Button */}
-                <button
-                  type="button"
-                  onClick={() => handleRemoveWorkHistory(index)}
-                  className="mt-2 text-red-600 hover:text-red-800 text-sm font-medium"
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
-
-            {/* Add Work History Button */}
-            <button
-              type="button"
-              onClick={handleAddWorkHistory}
-              className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Add Work History
-            </button>
-          </div>
-
-          {/* Submit Button */}
+          {/* Form Actions */}
           <div className="flex justify-end gap-4">
             <button
               type="button"
-              onClick={() => navigate("/hr/service/service/")}
+              onClick={()=> navigate("/settings/studentsSet/services")}
               className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-500 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               Cancel
@@ -1040,7 +270,6 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
       </section>
     </>
   );
-  return content;
 };
 
 export default NewServiceForm;

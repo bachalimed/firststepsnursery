@@ -30,7 +30,7 @@ import NewFamily from './features/Students/StudentsAndParents/Families/NewFamily
 import FamilyDetails from './features/Students/StudentsAndParents/Families/FamilyDetails'
 
 import Admissions from "./features/Students/Admissions"
-import AllAdmissions from "./features/Students/Admissions/AllAdmissions"
+import AdmissionsList from "./features/Students/Admissions/AdmissionsList"
 import EditAdmission from "./features/Students/Admissions/EditAdmission"
 import NewAdmissionForm from './features/Students/Admissions/NewAdmissionForm'
 
@@ -159,9 +159,6 @@ const App = () => {
 																					
 										{/* <Route path=":id/" element={<EditStudentForm/>}/> */}
 										
-									
-
-
 									<Route path="families/" element={<FamiliesList />}/>
 									<Route path="familyDetails/:id/" element={<FamilyDetails/>}/>
 										{/* <Route path=":id/" element={<ParentDetails />}/> */}
@@ -174,9 +171,9 @@ const App = () => {
 
 								<Route path="admissions" > 					
 								<Route index element={<Admissions />} /> 
-									<Route path="allAdmissions/" element={<AllAdmissions/>}>												
-									<Route path="newAdmission" element={<NewAdmissionForm/>}/>
-									<Route path=":admission" element={<EditAdmission/>}/>
+									<Route path="admissions/" element={<AdmissionsList/>}>												
+									<Route path="newAdmission/" element={<NewAdmissionForm/>}/>
+									<Route path="edit/:id" element={<EditAdmission/>}/>
 									</Route> {/* end of admissions route */}
 
 								</Route> {/* end of Admissions route */}
