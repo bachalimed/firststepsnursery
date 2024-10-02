@@ -284,7 +284,7 @@ const AdmissionsList = () => {
 
       selector: (row) => (
         <div>
-          {row.agreedFees.map((feeObj, index) => (
+          {row.agreedServices.map((feeObj, index) => (
             <div key={index}>
               {" "}
               {feeObj?.feePeriod} {feeObj?.service?.serviceType}{" "}
@@ -301,7 +301,7 @@ const AdmissionsList = () => {
 
       selector: (row) => (
         <div>
-          {row.agreedFees.map((feeObj, index) => (
+          {row.agreedServices.map((feeObj, index) => (
             <div key={index}>
               {feeObj?.service?.serviceAnchor[feeObj.feePeriod]}
             </div>
@@ -317,7 +317,7 @@ const AdmissionsList = () => {
 
     //   selector: (row) => (
     //     <div>
-    //       {row.agreedFees.map((feeObj, index) => (
+    //       {row.agreedServices.map((feeObj, index) => (
     //         <div key={index}>{feeObj?.feeValue} </div>
     //       ))}
     //     </div>
@@ -330,7 +330,7 @@ const AdmissionsList = () => {
       name: "Agreed Fees",
       selector: (row) => (
         <div>
-          {row.agreedFees.map((feeObj, index) => {
+          {row.agreedServices.map((feeObj, index) => {
             const anchorValue = feeObj?.service?.serviceAnchor[feeObj.feePeriod];
             const feeValue = feeObj?.feeValue;
     

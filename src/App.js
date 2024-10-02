@@ -147,6 +147,7 @@ const App = () => {
 							<Route path="students" element={<DashboardLayout />} >	 												
 								<Route path="studentsParents" > 					
 								<Route index element={<StudentsParents />} /> 
+
 									<Route path="students/" element={<StudentsList />}/>												
 									<Route path="newStudent/" element={<NewStudentForm />}/>												
 									<Route path="newFamily/" element={<NewFamily />}/>												
@@ -154,27 +155,21 @@ const App = () => {
 									<Route path="studentDocuments/upload/:id/" element={<StudentDocumentsForm />}/>	
 									<Route path="studentDetails/:id/" element={<StudentDetails/>}/>
 									<Route path="editStudent/:id/" element={<EditStudent/>}/>
-									<Route path="editFamily/:id/" element={<EditFamily/>}/>
-									
-																					
-										{/* <Route path=":id/" element={<EditStudentForm/>}/> */}
-										
+									<Route path="editFamily/:id/" element={<EditFamily/>}/>								
 									<Route path="families/" element={<FamiliesList />}/>
 									<Route path="familyDetails/:id/" element={<FamilyDetails/>}/>
 										{/* <Route path=":id/" element={<ParentDetails />}/> */}
-										
-									
-
-																											
+																							
 																													
 								</Route> {/* end of studentsParents route */}
 
 								<Route path="admissions" > 					
 								<Route index element={<Admissions />} /> 
-									<Route path="admissions/" element={<AdmissionsList/>}>												
+								
+									<Route path="admissions/" element={<AdmissionsList/>}/>												
 									<Route path="newAdmission/" element={<NewAdmissionForm/>}/>
 									<Route path="edit/:id" element={<EditAdmission/>}/>
-									</Route> {/* end of admissions route */}
+									
 
 								</Route> {/* end of Admissions route */}
 

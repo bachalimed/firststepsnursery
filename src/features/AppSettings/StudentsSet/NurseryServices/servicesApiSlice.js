@@ -34,7 +34,7 @@ export const servicesApiSlice = apiSlice.injectEndpoints({
       },
 
       transformResponse: (responseData) => {
-        console.log('  in the APIslice',responseData)
+        //console.log('  in the APIslice',responseData)
 
         const newLoadedServices = responseData.map((service) => {
           service.id = service._id; //changed the _id from mongoDB to id

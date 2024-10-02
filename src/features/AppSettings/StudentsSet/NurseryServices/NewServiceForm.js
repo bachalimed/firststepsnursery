@@ -18,7 +18,7 @@ import {
 
 
 
-const FEE_REGEX = /^(0|[0-9]{1,4}(\.[0-9]{0,3})?)$/;
+const FEE_REGEX = /^(0|[1-9][0-9]{0,3})(\.[0-9]{1,3})?$/;
 
 const NewServiceForm = () => {
   const navigate = useNavigate();
