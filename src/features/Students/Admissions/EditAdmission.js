@@ -17,7 +17,7 @@ console.log(id,'idddddddd')
     isError: isAdmissionError,
     error: admissionError,
   } = useGetAdmissionByIdQuery(
-    { id: id,  endpointName: "admission" } || {},
+    { id: id,  endpointName: "editAdmission" } ,////in the backend we populate studetn to get his name
     {
       // "dry" will not ppoulate children fully
       //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
@@ -31,13 +31,17 @@ console.log(id,'idddddddd')
   const admissionToEdit = isAdmissionSuccess
   ? Object.values(admToEdit.entities)
   : [];
-  
-  
-  content = admissionToEdit ? (
-    <EditAdmissionForm admission={admissionToEdit} />
-  ) : (
-    <LoadingStateIcon/>
-  );
+ 
+
+  if (admissionToEdit.length===1) {
+    const admission = admissionToEdit[0][0]
+    //console.log(admissionToEdit,'admissionToEdit first')
+    //console.log(admission,'admission first')
+  content = 
+    <EditAdmissionForm admission={admission} />
+  }else{
+    content =<LoadingStateIcon/>
+  }
 
   //}
   //if(isError){<h1>is error</h1>}

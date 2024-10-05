@@ -1,6 +1,4 @@
-
-
-  import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 import { useSelector } from "react-redux"; // Assuming you're using Redux for state management
 import { useNavigate } from "react-router-dom";
@@ -47,8 +45,7 @@ const useDebounce = (value, delay) => {
 };
 
 const EditAdmissionForm = ({ admission }) => {
-const {student} = admission
-  console.log(admission,student, 'admission')
+  console.log(admission, "admission");
   // initialising states
   const { isAdmin, userId } = useAuth();
   const navigate = useNavigate();
@@ -68,26 +65,7 @@ const {student} = admission
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
 
-  const {
-    data: students, //the data is renamed students
-    isLoading: isStudentsLoading, //monitor several situations is loading...
-    isSuccess: isStudentsSuccess,
-    isError: isStudentsError,
-    error: studentsError,
-  } = useGetStudentsByYearQuery(
-    {
-      //selectedYear: selectedAcademicYear?.title,
-      selectedYear: "1000",
-      endpointName: "studentsList",
-    } || {},
-    {
-      //this param will be passed in req.params to select only students for taht year
-      //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-      // pollingInterval: 60000,//will refetch data every 60seconds
-      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
-      refetchOnMountOrArgChange: true, //refetch when we remount the component
-    }
-  );
+  
 
   const {
     data: services,
@@ -110,31 +88,24 @@ const {student} = admission
   );
   // Local state for form data
   const [formData, setFormData] = useState({
-    student: admission.student,
+    student: admission.student._id,
     admissionYear: admission.admissionYear,
-    admissionDate: admission.admissionDate,
-    agreedServices: admission.agreedServices,
-     
+    admissionDate: admission.admissionDate? new Date(admission?.admissionDate).toISOString().split('T')[0]:"",
+    agreedServices: admission.agreedServices || [
+      {
+        service: "",
+        feeValue: "",
+        feePeriod: "",
+        feeStartDate: "",
+        feeEndDate: "",
+        isFlagged: false,
+        comment: "",
+      },
+    ],
     admissionOperator: userId, // Set to the operator id
   });
 
-  // Convert data into array format for dropdowns add only students with no admission in their studentYears
-  const studentsList = isStudentsSuccess
-    ? Object.values(students.entities)
-    : [];
-
-  const [noAdmissionStudents, setNoAdmissionStudents] = useState([]);
-  useEffect(() => {
-    // retreive teh studetns that have no admissin in their studentYEars array under admission key
-    setNoAdmissionStudents(
-      studentsList.filter((student) =>
-        student.studentYears.some(
-          (year) => !("admission" in year) || year.admission === ""
-        )
-      )
-    );
-    //console.log(noAdmissionStudents,'noAdmissionStudents')
-  }, [isStudentsSuccess]);
+ 
 
   const servicesList = isServicesSuccess
     ? Object.values(services.entities)
@@ -142,7 +113,7 @@ const {student} = admission
 
   // Set default admission service
   useEffect(() => {
-    if (isServicesSuccess && formData.agreedServices[0].service === "") {
+    if (isServicesSuccess && formData.agreedServices.length === 0) {
       const admissionService = servicesList.find(
         (service) => service.serviceType === "Admission"
       );
@@ -151,10 +122,14 @@ const {student} = admission
           ...prevData,
           agreedServices: [
             {
-              ...prevData.agreedServices[0],
               service: admissionService.id,
+              feeValue: "",
+              feePeriod: "",
+              feeStartDate: "",
+              feeEndDate: "",
+              isFlagged: false,
+              comment: "",
             },
-            ...prevData.agreedServices.slice(1),
           ],
         }));
       }
@@ -180,6 +155,30 @@ const {student} = admission
   const [feeValue, setFeeValue] = useState("");
   const debouncedFeeValue = useDebounce(feeValue, 500); //delay500
 
+  const validateService = (services) => {
+    const updatedValidity = services.map((service) => {
+      if (!service) return {}; // Handle undefined or incomplete service
+
+      const validService = OBJECTID_REGEX.test(service.service);
+      const validFeePeriod = service.feePeriod !== "";
+      const validFeeValue = FEE_REGEX.test(service.feeValue);
+      const validFeeStartDate = DATE_REGEX.test(service.feeStartDate);
+      const validComment = COMMENT_REGEX.test(service.comment);
+
+      return {
+        validService,
+        validFeePeriod,
+        validFeeValue,
+        validFeeStartDate,
+        validComment,
+      };
+    });
+
+    if (JSON.stringify(updatedValidity) !== JSON.stringify(admissionValidity)) {
+      setAdmissionValidity(updatedValidity);
+    }
+  };
+
   // Validate services when debouncedFeeValue changes
   useEffect(() => {
     if (debouncedFeeValue) {
@@ -188,34 +187,7 @@ const {student} = admission
     }
   }, [debouncedFeeValue, formData.agreedServices]);
 
-  const validateService = (services) => {
-    const updatedValidity = services.map((service) => {
-      const validService = OBJECTID_REGEX.test(service.service);
-      const validFeePeriod = service.feePeriod !== "";
-      const validFeeValue = FEE_REGEX.test(service.feeValue);
-      const validFeeStartDate = DATE_REGEX.test(service.feeStartDate);
-      const validComment = COMMENT_REGEX.test(service.comment);
-      // Other validations...
-
-      return {
-        validService,
-        validFeePeriod,
-        validFeeValue,
-        validFeeStartDate,
-        validComment,
-
-        // Other validity checks...
-      };
-    });
-
-    console.log(admissionValidity, "admissionvalidity");
-    // Only set state if there is a change
-    if (JSON.stringify(updatedValidity) !== JSON.stringify(admissionValidity)) {
-      setAdmissionValidity(updatedValidity);
-    }
-  };
-
-  console.log(admissionValidity, "admissionValidity");
+  console.log(admissionValidity, "admissionValidity2");
   const [primaryValidity, setPrimaryValidity] = useState({
     validStudent: OBJECTID_REGEX.test(formData.student),
     validAdmissionYear: formData.admissionYear !== "",
@@ -263,16 +235,6 @@ const {student} = admission
         },
       ],
     }));
-  };
-  // Submit the form
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await updateAdmission(formData).unwrap();
-      // navigate("/students/admissions/admissions");
-    } catch (error) {
-      console.error("Error submitting form", error);
-    }
   };
 
   useEffect(() => {
@@ -362,23 +324,42 @@ const {student} = admission
       });
     }
   }, [formData.agreedServices]);
-  // const canSave =
-  //   Object.values(admissionValidity).every(Boolean) && !isAdmissionLoading;
+
+
 
   const removeAgreedService = (index) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      agreedServices: prevData.agreedServices.filter((_, idx) => idx !== index),
-    }));
+    if (index > 0) {
+      setFormData((prevData) => ({
+        ...prevData,
+        agreedServices: prevData.agreedServices.filter(
+          (_, idx) => idx !== index
+        ),
+      }));
+    }
   };
   // For checking whether the form is valid
   const canSave =
-    admissionValidity.length > 0 &&
-    admissionValidity.every((validity) =>
-      Object.values(validity).every(Boolean)
-    ) &&
-    Object.values(primaryValidity).every(Boolean) &&
-    !isAdmissionLoading;
+    admissionValidity.length > 0 
+    &&admissionValidity.every(
+      (validity) => validity && Object.values(validity).every(Boolean)
+    )
+    && Object.values(primaryValidity).every(Boolean) 
+    && !isAdmissionLoading;
+
+  // Submit the form
+
+  if (canSave) {
+    console.log("Form is ready to be saved");
+   }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await updateAdmission(formData).unwrap();
+      // navigate("/students/admissions/admissions");
+    } catch (error) {
+      console.error("Error submitting form", error);
+    }
+  };
 
   console.log(formData, "formData");
   const content = (
@@ -388,7 +369,7 @@ const {student} = admission
         onSubmit={handleSubmit}
         className="space-y-6 bg-white p-6 shadow rounded-md"
       >
-        <h2 className="text-xl font-bold">New Admission</h2>
+        <h2 className="text-xl font-bold">Edit Admission</h2>
         <div>
           <label
             htmlFor="student"
@@ -411,16 +392,16 @@ const {student} = admission
             }
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
             required
+            disabled
           >
-            <option value="">Select Student</option>
-            {isStudentsSuccess &&
-              noAdmissionStudents.map((student) => (
-                <option key={student.id} value={student.id}>
-                  {student.studentName?.firstName}{" "}
-                  {student.studentName?.middleName}{" "}
-                  {student.studentName?.lastName}
+            
+            
+                <option key={admission.student._id} value={admission.student._id}>
+                  {admission.student?.studentName?.firstName}{" "}
+                  {admission.student.studentName?.middleName}{" "}
+                  {admission.student.studentName?.lastName}
                 </option>
-              ))}
+              
           </select>
         </div>
 
@@ -446,19 +427,16 @@ const {student} = admission
             }
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
             required
+            disabled
           >
-            <option value="">Select Year</option>
+           
             <option
-              key={selectedAcademicYear?._id}
-              value={selectedAcademicYear?.title}
+              key={formData.admissionYear}
+              value={formData.admissionYear}
             >
-              {selectedAcademicYear?.title}
+              {formData.admissionYear}
             </option>
-            {/* {academicYears.map((year) => (
-              <option key={year._id} value={year.title}>
-                {year.title}
-              </option>
-            ))} */}
+           
           </select>
         </div>
 
@@ -500,7 +478,7 @@ const {student} = admission
                 className="block text-sm font-medium text-gray-700"
               >
                 Service{" "}
-                {!admissionValidity[index].validService && (
+                {!admissionValidity[index]?.validService && (
                   <span className="text-red-500">*</span>
                 )}
                 {index === 0 && "(Default: Admission)"}
@@ -534,14 +512,14 @@ const {student} = admission
                   className="block text-sm font-medium text-gray-700"
                 >
                   Fee Period{" "}
-                  {!admissionValidity[index].validFeePeriod && (
+                  {!admissionValidity[index]?.validFeePeriod && (
                     <span className="text-red-500">*</span>
                   )}
                 </label>
                 <select
                   id={`feePeriod-${index}`}
                   name="feePeriod"
-                  value={service.feePeriod}
+                  value={service?.feePeriod}
                   onChange={(e) => handleAgreedServicesChange(index, e)}
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
                   required
@@ -574,7 +552,7 @@ const {student} = admission
                   className="block text-sm font-medium text-gray-700"
                 >
                   Fee Value{" "}
-                  {!admissionValidity[index].validFeeValue && (
+                  {!admissionValidity[index]?.validFeeValue && (
                     <span className="text-red-500">*</span>
                   )}
                 </label>
@@ -598,7 +576,7 @@ const {student} = admission
                   className="block text-sm font-medium text-gray-700"
                 >
                   Fee Start Date{" "}
-                  {!admissionValidity[index].validFeeStartDate && (
+                  {!admissionValidity[index]?.validFeeStartDate && (
                     <span className="text-red-500">*</span>
                   )}
                 </label>
@@ -659,13 +637,15 @@ const {student} = admission
                 />
               </div>
             </div>
-            {(index!==0)&&<button
-              type="button"
-              onClick={() => removeAgreedService(index)}
-              className="ml-2 inline-flex items-center px-2 py-1 border border-red-300 rounded-md shadow-sm text-sm font-medium text-red-700 hover:bg-red-100 focus:outline-none"
-            >
-              Remove Service
-            </button>}
+            {index !== 0 && (
+              <button
+                type="button"
+                onClick={() => removeAgreedService(index)}
+                className="ml-2 inline-flex items-center px-2 py-1 border border-red-300 rounded-md shadow-sm text-sm font-medium text-red-700 hover:bg-red-100 focus:outline-none"
+              >
+                Remove Service
+              </button>
+            )}
           </div>
         ))}
         {/* we should only add the number of services availble */}
@@ -698,8 +678,8 @@ const {student} = admission
     </>
   );
 
-  if (noAdmissionStudents.length === 0) return <LoadingStateIcon />
-  if (noAdmissionStudents.length) return content;
+  // if (noAdmissionStudents.length === 0) return <LoadingStateIcon />;
+  //if (noAdmissionStudents.length) return content;
   return content;
 };
 

@@ -360,6 +360,44 @@ const AdmissionsList = () => {
       sortable: true,
       width: "120px",
     },
+    {
+      name: "Fee start",
+      
+      
+      selector: (row) => (
+        <div>
+          {row.agreedServices.map((feeObj, index) => (
+            <div key={index}>{new Date(feeObj?.feeStartDate).toLocaleDateString("en-GB", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+            }) }</div>
+          ))}
+        </div>
+      ),
+
+      sortable: true,
+      width: "120px",
+    },
+    {
+      name: "Fee start",
+      
+      
+      selector: (row) => (
+        <div>
+          {row.agreedServices.map((feeObj, index) => (
+           (feeObj?.feeEndDate)? <div key={index}>{new Date(feeObj?.feeEndDate).toLocaleDateString("en-GB", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+            }) }</div> : <div>---</div>
+          ))}
+        </div>
+      ),
+
+      sortable: true,
+      width: "120px",
+    },
 
     {
       name: "Actions",

@@ -507,7 +507,7 @@ const NewAdmissionForm = () => {
                 className="block text-sm font-medium text-gray-700"
               >
                 Service{" "}
-                {!admissionValidity[index].validService && (
+                {!admissionValidity[index]?.validService && (
                   <span className="text-red-500">*</span>
                 )}
                 {index === 0 && "(Default: Admission)"}
@@ -541,7 +541,7 @@ const NewAdmissionForm = () => {
                   className="block text-sm font-medium text-gray-700"
                 >
                   Fee Period{" "}
-                  {!admissionValidity[index].validFeePeriod && (
+                  {!admissionValidity[index]?.validFeePeriod && (
                     <span className="text-red-500">*</span>
                   )}
                 </label>
@@ -581,7 +581,7 @@ const NewAdmissionForm = () => {
                   className="block text-sm font-medium text-gray-700"
                 >
                   Fee Value{" "}
-                  {!admissionValidity[index].validFeeValue && (
+                  {!admissionValidity[index]?.validFeeValue && (
                     <span className="text-red-500">*</span>
                   )}
                 </label>
@@ -605,7 +605,7 @@ const NewAdmissionForm = () => {
                   className="block text-sm font-medium text-gray-700"
                 >
                   Fee Start Date{" "}
-                  {!admissionValidity[index].validFeeStartDate && (
+                  {!admissionValidity[index]?.validFeeStartDate && (
                     <span className="text-red-500">*</span>
                   )}
                 </label>
@@ -707,7 +707,7 @@ const NewAdmissionForm = () => {
 
   if (noAdmissionStudents.length === 0) return <LoadingStateIcon />;
   if (noAdmissionStudents.length) return content;
-  return content;
+  //return content;
 };
 
 export default NewAdmissionForm;

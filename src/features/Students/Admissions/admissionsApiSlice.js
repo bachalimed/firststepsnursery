@@ -75,7 +75,6 @@ export const admissionsApiSlice = apiSlice.injectEndpoints({
 
       transformResponse: (responseData) => {
         //const {loadedAdmissions} =
-
         //console.log('academicYears length  in the APIslice',responseData.total)
         //console.log('academicYears in the APIslice', academicYears)
         const newLoadedAdmissions = responseData.map((admission) => {
@@ -134,11 +133,11 @@ export const admissionsApiSlice = apiSlice.injectEndpoints({
 
 export const {
   useGetAdmissionsQuery,
+  useGetAdmissionsByYearQuery,
+  useGetAdmissionByIdQuery,
   useAddNewAdmissionMutation,
   useUpdateAdmissionMutation,
   useDeleteAdmissionMutation,
-  useGetAdmissionsByYearQuery,
-  useGetAdmissionByIdQuery,
 } = admissionsApiSlice;
 
 // returns the query result object and not only the data we need for this reason we need the createselector!!! thsi selcetor decides which query is used??
