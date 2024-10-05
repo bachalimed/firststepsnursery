@@ -4,20 +4,39 @@ import { selectAdmissionById, useGetAdmissionByIdQuery } from "./admissionsApiSl
 import EditAdmissionForm from "./EditAdmissionForm";
 import useAuth from "../../../hooks/useAuth";
 import { currentAdmissionsList } from "./admissionsSlice";
+import LoadingStateIcon from "../../../Components/LoadingStateIcon";
+import { GiConsoleController } from "react-icons/gi";
 
 const EditAdmission = () => {
   const { id } = useParams(); //pull the id from use params from the url
-
-  //will get hte admission from the state
-  const admissionToEdit = useSelector((state) => state.admission?.entities[id]);
-  //console.log('helllllow',admissionToEdit, 'mystu')
+console.log(id,'idddddddd')
+  const {
+    data: admToEdit, //the data is renamed families
+    isLoading: isAdmissionLoading, //monitor several situations
+    isSuccess: isAdmissionSuccess,
+    isError: isAdmissionError,
+    error: admissionError,
+  } = useGetAdmissionByIdQuery(
+    { id: id,  endpointName: "admission" } || {},
+    {
+      // "dry" will not ppoulate children fully
+      //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+      //pollingInterval: 60000,//will refetch data every 60seconds
+      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
+      refetchOnMountOrArgChange: true, //refetch when we remount the component
+    }
+  );
 
   let content;
-
+  const admissionToEdit = isAdmissionSuccess
+  ? Object.values(admToEdit.entities)
+  : [];
+  
+  
   content = admissionToEdit ? (
     <EditAdmissionForm admission={admissionToEdit} />
   ) : (
-    <p>Loading...</p>
+    <LoadingStateIcon/>
   );
 
   //}

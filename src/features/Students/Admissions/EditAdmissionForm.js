@@ -1,749 +1,705 @@
-import React from "react";
-import Admissions from "../Admissions";
-import { useState, useEffect } from "react";
-import { useUpdateAdmissionMutation } from "./admissionsApiSlice";
-import { useGetAttendedSchoolsQuery } from "../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
+
+
+  import React, { useState, useEffect } from "react";
+
+import { useSelector } from "react-redux"; // Assuming you're using Redux for state management
 import { useNavigate } from "react-router-dom";
+import Admissions from "../Admissions";
+import {
+  selectCurrentAcademicYearId,
+  selectAcademicYearById,
+} from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
+import {
+  useGetStudentsQuery,
+  useGetStudentsByYearQuery,
+} from "../../Students/StudentsAndParents/Students/studentsApiSlice";
+import { useGetServicesByYearQuery } from "../../AppSettings/StudentsSet/NurseryServices/servicesApiSlice";
+import { useUpdateAdmissionMutation } from "./admissionsApiSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../../config/UserRoles";
 import { ACTIONS } from "../../../config/UserActions";
 import useAuth from "../../../hooks/useAuth";
-
-import { useSelector } from "react-redux";
-import { selectAllAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
+import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import { useGetAcademicYearsQuery } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
+import { selectAllAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import {
-  selectCurrentAcademicYearId,
-  selectAcademicYearById,
-} from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-//constrains on inputs when creating new user
-const USER_REGEX = /^[A-z]{6,20}$/;
-const PWD_REGEX = /^[A-z0-9!@#-_$%]{8,20}$/;
-const NAME_REGEX = /^[A-z 0-9]{3,20}$/;
-const PHONE_REGEX = /^[0-9]{6,15}$/;
-const DOB_REGEX = /^[0-9/-]{4,10}$/;
-const EMAIL_REGEX = /^[A-z0-9.@-_]{6,20}$/;
+  FEE_REGEX,
+  DATE_REGEX,
+  COMMENT_REGEX,
+  OBJECTID_REGEX,
+} from "../../../Components/lib/Utils/REGEX";
+
+const useDebounce = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+};
 
 const EditAdmissionForm = ({ admission }) => {
-  //initialising state variables and hooks
-  const Navigate = useNavigate();
-
-  const [id, setId] = useState(admission.id);
-  const { userId, canEdit, canDelete, canAdd, canCreate, isParent, status2 } =
-    useAuth();
-
+const {student} = admission
+  console.log(admission,student, 'admission')
+  // initialising states
+  const { isAdmin, userId } = useAuth();
+  const navigate = useNavigate();
+  const [
+    updateAdmission,
+    {
+      isLoading: isAdmissionLoading,
+      isSuccess: isAdmissionSuccess,
+      isError: isAdmissionError,
+      error: admissionError,
+    },
+  ] = useUpdateAdmissionMutation();
+  //academic years states
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-  //initialising the function
-  const [
-    updateAdmission,
-    {
-      isLoading: isUpdateLoading,
-      isSuccess: isUpdateSuccess,
-      isError: isUpdateError,
-      error: updateError,
-    },
-  ] = useUpdateAdmissionMutation(); //it will not execute the mutation nownow but when called
 
   const {
-    data: attendedSchoolsList, //the data is renamed parents
-    isLoading: schoolIsLoading, //monitor several situations
-    isSuccess: schoolIsSuccess,
-    isError: schoolIsError,
-    error: schoolError,
-  } = useGetAttendedSchoolsQuery(
-    { endpointName: "attendedSchoolsList" } || {},
+    data: students, //the data is renamed students
+    isLoading: isStudentsLoading, //monitor several situations is loading...
+    isSuccess: isStudentsSuccess,
+    isError: isStudentsError,
+    error: studentsError,
+  } = useGetStudentsByYearQuery(
     {
+      //selectedYear: selectedAcademicYear?.title,
+      selectedYear: "1000",
+      endpointName: "studentsList",
+    } || {},
+    {
+      //this param will be passed in req.params to select only students for taht year
+      //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+      // pollingInterval: 60000,//will refetch data every 60seconds
+      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
+      refetchOnMountOrArgChange: true, //refetch when we remount the component
+    }
+  );
+
+  const {
+    data: services,
+    isLoading: isServicesLoading,
+    isSuccess: isServicesSuccess,
+    isError: isServicesError,
+    error: servicesError,
+  } = useGetServicesByYearQuery(
+    {
+      selectedYear: selectedAcademicYear?.title,
+      endpointName: "servicesList",
+    } || {},
+    {
+      //this param will be passed in req.params to select only services for taht year
       //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
       //pollingInterval: 60000,//will refetch data every 60seconds
       refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
       refetchOnMountOrArgChange: true, //refetch when we remount the component
     }
   );
+  // Local state for form data
+  const [formData, setFormData] = useState({
+    student: admission.student,
+    admissionYear: admission.admissionYear,
+    admissionDate: admission.admissionDate,
+    agreedServices: admission.agreedServices,
+     
+    admissionOperator: userId, // Set to the operator id
+  });
 
-  let attendedSchools;
-  if (schoolIsSuccess) {
-    const { entities } = attendedSchoolsList;
-    attendedSchools = Object.values(entities);
-    //console.log(attendedSchools)
-  }
+  // Convert data into array format for dropdowns add only students with no admission in their studentYears
+  const studentsList = isStudentsSuccess
+    ? Object.values(students.entities)
+    : [];
 
-  //prepare the permission variables
-
-  //initialisation of states for each input
-  const [admissionName, setAdmissionName] = useState(admission.admissionName);
-  const [firstName, setFirstName] = useState(admission.admissionName.firstName);
-  const [validFirstName, setValidFirstName] = useState(false);
-  const [middleName, setMiddleName] = useState(admission.admissionName.middleName);
-  const [lastName, setLastName] = useState(admission.admissionName.lastName);
-  const [validLastName, setValidLastName] = useState(false);
-  const [admissionDob, setAdmissionDob] = useState(
-    admission.admissionDob.split("T")[0]
-  );
-  const [validAdmissionDob, setValidAdmissionDob] = useState(false);
-  const [admissionSex, setAdmissionSex] = useState(admission.admissionSex);
-  const [admissionIsActive, setAdmissionIsActive] = useState(
-    admission.admissionIsActive
-  );
-  const [admissionYears, setAdmissionYears] = useState(admission.admissionYears);
-  // const [admissionJointFamily, setAdmissionJointFamily] = useState(admission.admissionJointFamily)
-
-  const [admissionGardien, setAdmissionGardien] = useState(admission.admissionGardien); //an object
-  const [gardienFirstName, setGardienFirstName] = useState(
-    admission.admissionGardien.gardienFirstName
-  );
-  const [gardienMiddleName, setgardienMiddleName] = useState(
-    admission.admissionGardien.gardienMiddleName
-  );
-  const [gardienLastName, setGardienLastName] = useState(
-    admission.admissionGardien.gardienLastName
-  );
-  const [gardienPhone, setGardienPhone] = useState(
-    admission.admissionGardien.gardienPhone
-  );
-  const [gardienRelation, setGardienRelation] = useState(
-    admission.admissionGardien.gardienRelation
-  );
-  //console.log('studddds',admission)
-  //console.log(admission.admissionGardien)
-
-  const [admissionEducation, setAdmissionEducation] = useState(
-    admission.admissionEducation
-  ); //an array
-  const [schoolYear, setSchoolYear] = useState(admission.schoolYear);
-  const [attendedSchool, setAttendedSchool] = useState(admission.attendedSchool);
-  const [note, setNote] = useState(admission.note);
-
-  const [operator, setOperator] = useState(userId); //id of the user logged in already
-
-  //use effect is used to validate the inputs against the defined REGEX above
-  //the previous constrains have to be verified on the form for teh user to know
-
+  const [noAdmissionStudents, setNoAdmissionStudents] = useState([]);
   useEffect(() => {
-    setValidFirstName(NAME_REGEX.test(firstName));
-  }, [firstName]);
+    // retreive teh studetns that have no admissin in their studentYEars array under admission key
+    setNoAdmissionStudents(
+      studentsList.filter((student) =>
+        student.studentYears.some(
+          (year) => !("admission" in year) || year.admission === ""
+        )
+      )
+    );
+    //console.log(noAdmissionStudents,'noAdmissionStudents')
+  }, [isStudentsSuccess]);
 
+  const servicesList = isServicesSuccess
+    ? Object.values(services.entities)
+    : [];
+
+  // Set default admission service
   useEffect(() => {
-    setValidLastName(NAME_REGEX.test(lastName));
-  }, [lastName]);
-
-  useEffect(() => {
-    setValidAdmissionDob(DOB_REGEX.test(admissionDob));
-  }, [admissionDob]);
-
-  useEffect(() => {
-    if (isUpdateSuccess) {
-      //if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
-      console.log("updated!!!!!!");
-      setId(admission.id);
-      setFirstName("");
-      setValidFirstName(false);
-      setMiddleName("");
-      setLastName("");
-      setValidLastName(false);
-      setAdmissionName({ firstName: "", middleName: "", lastName: "" });
-      setAdmissionDob("");
-      setValidAdmissionDob("");
-      setAdmissionSex("");
-      setAdmissionIsActive(false);
-      setAdmissionYears([]); //will be true when the username is validated
-
-      // setAdmissionJointFamily('')
-      setGardienFirstName("");
-      setgardienMiddleName("");
-      setGardienLastName("");
-      setGardienPhone("");
-      setGardienRelation("");
-      setAdmissionGardien({});
-      setSchoolYear("");
-      setAttendedSchool("");
-      setNote("");
-      setAdmissionEducation([]);
-      setOperator("");
-      Navigate("/admissions/admissionsParents/admissions/"); //will navigate here after saving
+    if (isServicesSuccess && formData.agreedServices[0].service === "") {
+      const admissionService = servicesList.find(
+        (service) => service.serviceType === "Admission"
+      );
+      if (admissionService) {
+        setFormData((prevData) => ({
+          ...prevData,
+          agreedServices: [
+            {
+              ...prevData.agreedServices[0],
+              service: admissionService.id,
+            },
+            ...prevData.agreedServices.slice(1),
+          ],
+        }));
+      }
     }
-  }, [isUpdateSuccess, Navigate]); //even if no success it will navigate and not show any warning if failed or success
+  }, [isServicesSuccess]);
 
-  //handlers to get the individual states from the input
+  const [admissionValidity, setAdmissionValidity] = useState([]);
 
-  const onFirstNameChanged = (e) => setFirstName(e.target.value);
-  const onMiddleNameChanged = (e) => setMiddleName(e.target.value);
-  const onLastNameChanged = (e) => setLastName(e.target.value);
-  const onAdmissionDobChanged = (e) => setAdmissionDob(e.target.value);
-  const onAdmissionSexChanged = (e) => setAdmissionSex(e.target.value);
-  const onAdmissionIsActiveChanged = (e) => setAdmissionIsActive((prev) => !prev);
-  //const onAdmissionJointFamilyChanged = e => setAdmissionJointFamily(prev=>!prev)
-  const onGardienFirstNameChanged = (e) => setGardienFirstName(e.target.value);
-  const onGardienMiddleNameChanged = (e) =>
-    setgardienMiddleName(e.target.value);
-  const onGardienLastNameChanged = (e) => setGardienLastName(e.target.value);
-  const onGardienPhoneChanged = (e) => setGardienPhone(e.target.value);
-  const onGardienRelationChanged = (e) => setGardienRelation(e.target.value);
-  const onSchoolYearChanged = (e) => setSchoolYear(e.target.value);
-  const onAttendedSchoolChanged = (e) => setAttendedSchool(e.target.value);
-  const onNoteChanged = (e) => setNote(e.target.value);
+  const handleInputChange = (index, field, value) => {
+    const updatedServices = [...formData.agreedServices];
 
+    // Ensure that the service at the specified index exists
+    if (!updatedServices[index]) {
+      updatedServices[index] = {}; // Initialize if undefined
+    }
+
+    updatedServices[index][field] = value; // Set the value
+
+    setFormData({ ...formData, agreedServices: updatedServices });
+  };
+
+  // Debounce feeValue updates
+  const [feeValue, setFeeValue] = useState("");
+  const debouncedFeeValue = useDebounce(feeValue, 500); //delay500
+
+  // Validate services when debouncedFeeValue changes
   useEffect(() => {
-    setAdmissionName({
-      firstName: firstName,
-      middleName: middleName,
-      lastName: lastName,
+    if (debouncedFeeValue) {
+      const updatedServices = [...formData.agreedServices];
+      validateService(updatedServices);
+    }
+  }, [debouncedFeeValue, formData.agreedServices]);
+
+  const validateService = (services) => {
+    const updatedValidity = services.map((service) => {
+      const validService = OBJECTID_REGEX.test(service.service);
+      const validFeePeriod = service.feePeriod !== "";
+      const validFeeValue = FEE_REGEX.test(service.feeValue);
+      const validFeeStartDate = DATE_REGEX.test(service.feeStartDate);
+      const validComment = COMMENT_REGEX.test(service.comment);
+      // Other validations...
+
+      return {
+        validService,
+        validFeePeriod,
+        validFeeValue,
+        validFeeStartDate,
+        validComment,
+
+        // Other validity checks...
+      };
     });
-  }, [firstName, middleName, lastName]);
 
-  // //adds to the previous entries in arrays for gardien, schools...
-  // const onAdmissionYearsChanged = (e, selectedAcademicYear) => {
-  //   if (e.target.checked) {
-  //     // Add the selectedAcademicYear to admissionYears if it's checked
-  //     setAdmissionYears([...admissionYears, selectedAcademicYear]);
-  //   } else {
-  //     // Remove the selectedAcademicYear from admissionYears if it's unchecked
-  //     setAdmissionYears(admissionYears.filter(year => year !== selectedAcademicYear))
-  //   }
-  // }
-
-  // to deal with admission gardien entries:
-  // Handler to update an entry field
-  const handleGardienFieldChange = (index, field, value) => {
-    // Create a deep copy of the admissionGardien array
-    const updatedEntries = admissionGardien.map((entry, i) =>
-      i === index ? { ...entry, [field]: value } : entry
-    );
-
-    // Update the state with the new array
-    setAdmissionGardien(updatedEntries);
-  };
-
-  // Handler to add a new education entry
-  const handleAddGardienEntry = () => {
-    setAdmissionGardien([
-      ...admissionGardien,
-      {
-        gardienFirstName: "",
-        gardienMiddleName: "",
-        gardienLastName: "",
-        gardienPhone: "",
-        gardienRelation: "",
-        gardienYear: "",
-      },
-    ]);
-  };
-
-  // Handler to remove an education entry
-  const handleRemoveGardienEntry = (index) => {
-    const updatedEntries = admissionGardien.filter((_, i) => i !== index);
-    setAdmissionGardien(updatedEntries);
-  };
-
-  // to deal with admission education entries:
-  // Handler to update an entry field
-  const handleFieldChange = (index, field, value) => {
-    const updatedEntries = admissionEducation.map((entry, i) =>
-      i === index ? { ...entry, [field]: value } : entry
-    );
-    setAdmissionEducation(updatedEntries);
-  };
-
-  // Handler to add a new education entry
-  const handleAddEntry = () => {
-    setAdmissionEducation([
-      ...admissionEducation,
-      { schoolYear: "", attendedSchool: "", note: "" },
-    ]);
-  };
-
-  // Handler to remove an education entry
-  const handleRemoveEntry = (index) => {
-    const updatedEntries = admissionEducation.filter((_, i) => i !== index);
-    setAdmissionEducation(updatedEntries);
-  };
-
-  //to check if we can save before onsave, if every one is true, and also if we are not loading status
-  const canSave =
-    [validFirstName, validLastName, validAdmissionDob, admissionSex].every(
-      Boolean
-    ) && !isUpdateLoading;
-
-  const onUpdateAdmissionClicked = async (e) => {
-    e.preventDefault();
-    //generate the objects before saving
-    const toSave = {
-      id,
-      admissionName,
-      admissionDob,
-      admissionSex,
-      admissionIsActive,
-      admissionYears,
-      admissionEducation,
-      admissionGardien,
-      operator,
-    };
-    console.log(toSave);
-    await updateAdmission({
-      id,
-      admissionName,
-      admissionDob,
-      admissionSex,
-      admissionIsActive,
-      admissionYears,
-      admissionEducation,
-      admissionGardien,
-      operator,
-    }); //we call the add new user mutation and set the arguments to be saved
-    //added this to confirm save
-    if (isUpdateError) {
-      console.log("error savingg", updateError); //handle the error msg to be shown  in the logs??
+    console.log(admissionValidity, "admissionvalidity");
+    // Only set state if there is a change
+    if (JSON.stringify(updatedValidity) !== JSON.stringify(admissionValidity)) {
+      setAdmissionValidity(updatedValidity);
     }
   };
 
-  const handleCancel = () => {
-    Navigate("/admissions/admissionsParents/admissions/");
+  console.log(admissionValidity, "admissionValidity");
+  const [primaryValidity, setPrimaryValidity] = useState({
+    validStudent: OBJECTID_REGEX.test(formData.student),
+    validAdmissionYear: formData.admissionYear !== "",
+    validAdmissionDate: DATE_REGEX.test(formData.admissionDate),
+  });
+
+  useEffect(() => {
+    setPrimaryValidity((prev) => ({
+      ...prev,
+      validStudent: OBJECTID_REGEX.test(formData.student),
+      validAdmissionYear: formData.admissionYear !== "",
+      validAdmissionDate: DATE_REGEX.test(formData.admissionDate),
+    }));
+  }, [formData.student, formData.admissionYear, formData.admissionDate]); // run whenever formData changes
+
+  console.log(primaryValidity, "primaryValidity");
+  // Modify handleAgreedServicesChange
+  const handleAgreedServicesChange = (index, e) => {
+    if (e && e.target) {
+      const { name, value } = e.target;
+      const updatedServices = [...formData.agreedServices];
+      updatedServices[index][name] = value;
+      setFormData((prevData) => ({
+        ...prevData,
+        agreedServices: updatedServices,
+      }));
+    } else {
+      console.error("Event is not properly passed or malformed:", e);
+    }
+  };
+  //Add another agreed service
+  const addAgreedService = () => {
+    setFormData((prevData) => ({
+      ...prevData,
+      agreedServices: [
+        ...prevData.agreedServices,
+        {
+          service: "",
+          feeValue: "",
+          feePeriod: "",
+          feeStartDate: "",
+          feeEndDate: "",
+          isFlagged: false,
+          comment: "",
+        },
+      ],
+    }));
+  };
+  // Submit the form
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await updateAdmission(formData).unwrap();
+      // navigate("/students/admissions/admissions");
+    } catch (error) {
+      console.error("Error submitting form", error);
+    }
   };
 
-  //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
-  const errClass = isUpdateError ? "errmsg" : "offscreen";
-  //const validAdmissionClass = !validAdmissionName ? 'form__input--incomplete' : ''
-  //const validPwdClass = !validPassword ? 'form__input--incomplete' : ''
-  //const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
+  useEffect(() => {
+    if (isAdmissionSuccess) {
+      //if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
+      setFormData({
+        student: "",
+        admissionYear: "",
+        admissionDate: "",
+        agreedServices: [
+          {
+            service: "",
+            feeValue: "",
+            feePeriod: "",
+            feeStartDate: "",
+            feeEndDate: "",
+            isFlagged: false,
+            //authorisedBy:"", it will generate error in mongo if ""
+            comment: "",
+          },
+        ],
+        admissionCreator: "", // Set to the logged-in user id
+        admissionOperator: "", // Set to the operator id
+      });
+      navigate("/students/admissions/admissions"); //will navigate here after saving
+    }
+  }, [isAdmissionSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success
 
-  let content;
+  // Function to filter available services based on previous selections
 
-  content = schoolIsSuccess && (
+  const getAvailableServices = (index) => {
+    const selectedServiceIds = formData.agreedServices
+      .map((service, i) => (i !== index ? service.service : null))
+      .filter((serviceId) => serviceId);
+
+    return servicesList.filter(
+      (service) => !selectedServiceIds.includes(service.id)
+    );
+  };
+
+  // Function to handle agreed services check and set isFlagged if necessary
+  const handleAgreedServicesCheck = (index) => {
+    // Find the selected service from servicesList
+    const selectedService = servicesList.find(
+      (service) => service.id === formData?.agreedServices[index]?.service
+    );
+
+    // Check if the selected service and its serviceAnchor exist
+    if (selectedService && selectedService.serviceAnchor) {
+      // Check if the agreed service period exists in serviceAnchor
+      if (
+        formData?.agreedServices[index]?.feePeriod &&
+        selectedService.serviceAnchor[
+          formData?.agreedServices[index]?.feePeriod
+        ]
+      ) {
+        const serviceAnchorValue =
+          selectedService.serviceAnchor[
+            formData?.agreedServices[index]?.feePeriod
+          ]; // Get the corresponding serviceAnchor value
+
+        const isFlaggedNew =
+          parseFloat(formData?.agreedServices[index]?.feeValue) <
+          parseFloat(serviceAnchorValue); // Determine if the new flag should be true or false
+
+        // Only update state if `isFlagged` changes
+        if (formData?.agreedServices[index]?.isFlagged !== isFlaggedNew) {
+          setFormData((prevData) => ({
+            ...prevData,
+            agreedServices: prevData.agreedServices.map((serv, idx) =>
+              idx === index
+                ? { ...serv, isFlagged: isFlaggedNew } // Set new flag value
+                : serv
+            ),
+          }));
+        }
+      }
+    }
+  };
+
+  // Call handleAgreedServicesCheck whenever agreedServices or service selection changes
+  useEffect(() => {
+    // Call handleAgreedServicesCheck when formData.agreedServices[index] changes
+    if (formData?.agreedServices) {
+      formData.agreedServices.forEach((_, index) => {
+        handleAgreedServicesCheck(index);
+      });
+    }
+  }, [formData.agreedServices]);
+  // const canSave =
+  //   Object.values(admissionValidity).every(Boolean) && !isAdmissionLoading;
+
+  const removeAgreedService = (index) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      agreedServices: prevData.agreedServices.filter((_, idx) => idx !== index),
+    }));
+  };
+  // For checking whether the form is valid
+  const canSave =
+    admissionValidity.length > 0 &&
+    admissionValidity.every((validity) =>
+      Object.values(validity).every(Boolean)
+    ) &&
+    Object.values(primaryValidity).every(Boolean) &&
+    !isAdmissionLoading;
+
+  console.log(formData, "formData");
+  const content = (
     <>
       <Admissions />
-      <p className={`text-red-500 ${errClass}`}>
-        {updateError?.data?.message}
-      </p>{" "}
-      {/* Display error messages */}
-      <p className={errClass}>{updateError?.data?.message}</p>{" "}
-      {/*will display if there is an error message, some of the error messagees are defined in the back end responses*/}
-      <form className="form" onSubmit={(e) => e.preventDefault()}>
-        <div className="form__title-row">
-          <h2 className="text-2xl font-semibold">
-            Editing {firstName} {middleName} {lastName} Profile
-          </h2>
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-6 bg-white p-6 shadow rounded-md"
+      >
+        <h2 className="text-xl font-bold">New Admission</h2>
+        <div>
+          <label
+            htmlFor="student"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Student{" "}
+            {!primaryValidity.validStudent && (
+              <span className="text-red-500">*</span>
+            )}
+          </label>
+          <select
+            id="student"
+            name="student"
+            value={formData.student}
+            onChange={(e) =>
+              setFormData((prevData) => ({
+                ...prevData,
+                student: e.target.value, // update formData with input value
+              }))
+            }
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+            required
+          >
+            <option value="">Select Student</option>
+            {isStudentsSuccess &&
+              noAdmissionStudents.map((student) => (
+                <option key={student.id} value={student.id}>
+                  {student.studentName?.firstName}{" "}
+                  {student.studentName?.middleName}{" "}
+                  {student.studentName?.lastName}
+                </option>
+              ))}
+          </select>
         </div>
 
-        <div className="grid gap-6 mb-6 md:grid-cols-2">
-          <div>
-            <label
-              className="block text-sm font-medium text-gray-700"
-              htmlFor="firstName"
+        <div>
+          <label
+            htmlFor="admissionYear"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Admission Year{" "}
+            {!primaryValidity.validAdmissionYear && (
+              <span className="text-red-500">*</span>
+            )}
+          </label>
+          <select
+            id="admissionYear"
+            name="admissionYear"
+            value={formData.admissionYear}
+            onChange={(e) =>
+              setFormData((prevData) => ({
+                ...prevData,
+                admissionYear: e.target.value, // update formData with input value
+              }))
+            }
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+            required
+          >
+            <option value="">Select Year</option>
+            <option
+              key={selectedAcademicYear?._id}
+              value={selectedAcademicYear?.title}
             >
-              First Name*{" "}
-              <span className="text-gray-500 text-xs">[3-20 letters]</span>
-            </label>
-            <input
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
-              id="firstName"
-              name="firstName"
-              type="text"
-              autoComplete="off"
-              value={firstName}
-              onChange={onFirstNameChanged}
-              required
-            />
-          </div>
-
-          <div>
-            <label
-              className="block text-sm font-medium text-gray-700"
-              htmlFor="middleName"
-            >
-              Middle Name
-            </label>
-            <input
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
-              id="middleName"
-              name="middleName"
-              type="text"
-              autoComplete="off"
-              value={middleName}
-              onChange={onMiddleNameChanged}
-            />
-          </div>
-
-          <div>
-            <label
-              className="block text-sm font-medium text-gray-700"
-              htmlFor="lastName"
-            >
-              Last Name*{" "}
-              <span className="text-gray-500 text-xs">[3-20 letters]</span>
-            </label>
-            <input
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
-              id="lastName"
-              name="lastName"
-              type="text"
-              autoComplete="off"
-              value={lastName}
-              onChange={onLastNameChanged}
-              required
-            />
-          </div>
-
-          <div>
-            <label
-              className="block text-sm font-medium text-gray-700"
-              htmlFor="admissionDob"
-            >
-              Date Of Birth*{" "}
-              <span className="text-gray-500 text-xs">[dd/mm/yyyy]</span>
-            </label>
-            <input
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
-              id="admissionDob"
-              name="admissionDob"
-              type="date"
-              autoComplete="off"
-              value={admissionDob}
-              onChange={onAdmissionDobChanged}
-              required
-            />
-          </div>
+              {selectedAcademicYear?.title}
+            </option>
+            {/* {academicYears.map((year) => (
+              <option key={year._id} value={year.title}>
+                {year.title}
+              </option>
+            ))} */}
+          </select>
         </div>
 
-        <div className="mb-6">
-          <div className="flex items-center mb-2">
-            <input
-              type="checkbox"
-              id="male"
-              value="Male"
-              checked={admissionSex === "Male"}
-              onChange={onAdmissionSexChanged}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label
-              htmlFor="male"
-              className="ml-2 text-sm font-medium text-gray-700"
-            >
-              Male
-            </label>
+        {/* Admission Date Input */}
+        <div>
+          <label
+            htmlFor="admissionDate"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Admission Starting Date{" "}
+            {!primaryValidity.validAdmissionDate && (
+              <span className="text-red-500">*</span>
+            )}
+          </label>
+          <input
+            type="date"
+            id="admissionDate"
+            name="admissionDate"
+            value={formData.admissionDate}
+            onChange={(e) =>
+              setFormData((prevData) => ({
+                ...prevData,
+                admissionDate: e.target.value, // update formData with input value
+              }))
+            }
+            placeholder="YYYY-MM-DD"
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+            required
+          />
+        </div>
 
-            <input
-              type="checkbox"
-              id="female"
-              value="Female"
-              checked={admissionSex === "Female"}
-              onChange={onAdmissionSexChanged}
-              className="ml-6 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label
-              htmlFor="female"
-              className="ml-2 text-sm font-medium text-gray-700"
-            >
-              Female
-            </label>
-          </div>
+        {/* Agreed Services Section */}
 
-          <div className="flex items-center mb-2">
-            <input
-              type="checkbox"
-              id="active"
-              value={admissionIsActive}
-              checked={admissionIsActive}
-              onChange={onAdmissionIsActiveChanged}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label
-              htmlFor="active"
-              className="ml-2 text-sm font-medium text-gray-700"
-            >
-              Admission Is Active
-            </label>
-          </div>
-          {/* <div className="flex items-center mb-2">
+        {formData.agreedServices.map((service, index) => (
+          <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
+            <div key={index} className="space-y-4">
+              <label
+                htmlFor={`service-${index}`}
+                className="block text-sm font-medium text-gray-700"
+              >
+                Service{" "}
+                {!admissionValidity[index].validService && (
+                  <span className="text-red-500">*</span>
+                )}
+                {index === 0 && "(Default: Admission)"}
+              </label>
+              <select
+                id={`service-${index}`}
+                name="service"
+                value={service.id}
+                onChange={(e) => handleAgreedServicesChange(index, e)}
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                disabled={index === 0} // Disable the first service since it's "Admission"
+                required
+              >
+                {index === 0 ? (
+                  <option value="Admission">Admission</option>
+                ) : (
+                  <>
+                    <option value="">Select Service</option>
+                    {getAvailableServices(index).map((serviceOption) => (
+                      <option key={serviceOption.id} value={serviceOption.id}>
+                        {serviceOption.serviceType}
+                      </option>
+                    ))}
+                  </>
+                )}
+              </select>
+
+              <div>
+                <label
+                  htmlFor={`feePeriod-${index}`}
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Fee Period{" "}
+                  {!admissionValidity[index].validFeePeriod && (
+                    <span className="text-red-500">*</span>
+                  )}
+                </label>
+                <select
+                  id={`feePeriod-${index}`}
+                  name="feePeriod"
+                  value={service.feePeriod}
+                  onChange={(e) => handleAgreedServicesChange(index, e)}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                  required
+                >
+                  <option value="">Select Period</option>
+                  {/* Ensure the correct serviceAnchor object is passed */}
+                  {servicesList.find(
+                    (service) =>
+                      service.id === formData?.agreedServices[index]?.service
+                  )?.serviceAnchor &&
+                    Object.entries(
+                      servicesList.find(
+                        (service) =>
+                          service.id ===
+                          formData?.agreedServices[index]?.service
+                      )?.serviceAnchor
+                    ).map(([periodKey, value]) => (
+                      <option key={periodKey} value={periodKey}>
+                        {`${
+                          periodKey.charAt(0).toUpperCase() + periodKey.slice(1)
+                        } (anchor: ${value})`}
+                      </option>
+                    ))}
+                </select>
+              </div>
+
+              <div>
+                <label
+                  htmlFor={`feeValue-${index}`}
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Fee Value{" "}
+                  {!admissionValidity[index].validFeeValue && (
+                    <span className="text-red-500">*</span>
+                  )}
+                </label>
                 <input
-                  type="checkbox"
-                  id="jointFAmily"
-                  value={admissionJointFamily}
-                  checked={admissionJointFamily}
-                  onChange={onAdmissionJointFamilyChanged}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  type="number"
+                  id={`feeValue-${index}`}
+                  name="feeValue"
+                  value={service.feeValue}
+                  onChange={(e) => {
+                    setFeeValue(e.target.value);
+                    handleInputChange(index, "feeValue", e.target.value);
+                  }}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                  required
                 />
-                <label htmlFor="active" className="ml-2 text-sm font-medium text-gray-700">Admission Joint Family</label>
-              </div> */}
-        </div>
-
-        <div className="mb-6">
-          <h3 className="text-xl font-semibold mb-2">Admission Gardien</h3>
-          {Array.isArray(admissionGardien) &&
-            admissionGardien.length > 0 &&
-            admissionGardien.map((entry, index) => (
-              <div
-                key={index}
-                className="bg-gray-50 p-4 rounded-lg shadow-sm mb-4"
-              >
-                <div className="mb-2">
-                  <label
-                    className="block text-sm font-medium text-gray-700"
-                    htmlFor={`gardienFirstName-${index}`}
-                  >
-                    First Name:
-                  </label>
-                  <input
-                    id={`gardienFirstName-${index}`}
-                    type="text"
-                    value={entry.gardienFirstName}
-                    onChange={(e) =>
-                      handleGardienFieldChange(
-                        index,
-                        "gardienFirstName",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
-                  />
-                </div>
-                <div className="mb-2">
-                  <label
-                    className="block text-sm font-medium text-gray-700"
-                    htmlFor={`gardienMiddleName-${index}`}
-                  >
-                    Middle Name:
-                  </label>
-                  <input
-                    id={`gardienMiddleName-${index}`}
-                    type="text"
-                    value={entry.gardienMiddleName}
-                    onChange={(e) =>
-                      handleGardienFieldChange(
-                        index,
-                        "gardienMiddleName",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
-                  />
-                </div>
-                <div className="mb-2">
-                  <label
-                    className="block text-sm font-medium text-gray-700"
-                    htmlFor={`gardienLastName-${index}`}
-                  >
-                    Last Name:
-                  </label>
-                  <input
-                    id={`gardienLastName-${index}`}
-                    type="text"
-                    value={entry.gardienLastName}
-                    onChange={(e) =>
-                      handleGardienFieldChange(
-                        index,
-                        "gardienLastName",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
-                  />
-                </div>
-                <div className="mb-2">
-                  <label
-                    className="block text-sm font-medium text-gray-700"
-                    htmlFor={`gardienYear-${index}`}
-                  >
-                    gardienYear:
-                  </label>
-
-                  <select
-                    id={`gardienYear-${index}`}
-                    value={entry.gardienYear}
-                    onChange={(e) =>
-                      handleGardienFieldChange(
-                        index,
-                        "gardienYear",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
-                  >
-                    {academicYears.map((year, i) => (
-                      <option key={year.id} value={year.title}>
-                        {year.title}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="mb-2">
-                  <label
-                    className="block text-sm font-medium text-gray-700"
-                    htmlFor={`gardienRelation-${index}`}
-                  >
-                    Relation To Admission :
-                  </label>
-                  <input
-                    id={`gardienRelation-${index}`}
-                    type="text"
-                    value={entry.gardienRelation}
-                    onChange={(e) =>
-                      handleGardienFieldChange(
-                        index,
-                        "gardienRelation",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
-                  />
-                </div>
-                <div className="mb-2">
-                  <label
-                    className="block text-sm font-medium text-gray-700"
-                    htmlFor={`gardienPhone-${index}`}
-                  >
-                    Phone Number:
-                  </label>
-                  <input
-                    id={`gardienPhone-${index}`}
-                    type="text"
-                    value={entry.gardienPhone}
-                    onChange={(e) =>
-                      handleGardienFieldChange(
-                        index,
-                        "gardienPhone",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
-                  />
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => handleRemoveGardienEntry(index)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  Remove Entry
-                </button>
               </div>
-            ))}
+
+              <div>
+                <label
+                  htmlFor={`feeStartDate-${index}`}
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Fee Start Date{" "}
+                  {!admissionValidity[index].validFeeStartDate && (
+                    <span className="text-red-500">*</span>
+                  )}
+                </label>
+                <input
+                  type="date"
+                  id={`feeStartDate-${index}`}
+                  name="feeStartDate"
+                  value={service.feeStartDate}
+                  onChange={(e) => handleAgreedServicesChange(index, e)}
+                  placeholder="YYYY-MM-DD"
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                  required
+                />
+              </div>
+
+              {index !== 0 && (
+                <div>
+                  <label
+                    htmlFor={`feeEndDate-${index}`}
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Fee End Date
+                  </label>
+                  <input
+                    type="date"
+                    id={`feeEndDate-${index}`}
+                    name="feeEndDate"
+                    value={service.feeEndDate}
+                    onChange={(e) => handleAgreedServicesChange(index, e)}
+                    placeholder="YYYY-MM-DD"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                  />
+                </div>
+              )}
+
+              <div>
+                {service.isFlagged && (
+                  <div className="text-red-500">
+                    The agreed fee value is below the minimum required fee for
+                    this service, please add comment for management
+                    authorisation processing.
+                  </div>
+                )}
+                <label
+                  htmlFor={`comment-${index}`}
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Comment
+                </label>
+                <input
+                  type="text"
+                  id={`comment-${index}`}
+                  name="comment"
+                  value={service.comment}
+                  onChange={(e) => handleAgreedServicesChange(index, e)}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                  maxLength="150"
+                />
+              </div>
+            </div>
+            {(index!==0)&&<button
+              type="button"
+              onClick={() => removeAgreedService(index)}
+              className="ml-2 inline-flex items-center px-2 py-1 border border-red-300 rounded-md shadow-sm text-sm font-medium text-red-700 hover:bg-red-100 focus:outline-none"
+            >
+              Remove Service
+            </button>}
+          </div>
+        ))}
+        {/* we should only add the number of services availble */}
+        {formData.agreedServices.length <= servicesList.length && (
           <button
             type="button"
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-            onClick={handleAddGardienEntry}
+            onClick={addAgreedService}
+            className="mt-2 inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none"
           >
-            Add Admission Gardien
+            Add Another Service
           </button>
-        </div>
+        )}
 
-        <div className="mb-6">
-          <h3 className="text-xl font-semibold mb-2">Admission Education</h3>
-          {Array.isArray(admissionEducation) &&
-            admissionEducation.length > 0 &&
-            admissionEducation.map((entry, index) => (
-              <div
-                key={index}
-                className="bg-gray-50 p-4 rounded-lg shadow-sm mb-4"
-              >
-                <div className="mb-2">
-                  <label
-                    className="block text-sm font-medium text-gray-700"
-                    htmlFor={`schoolYear-${index}`}
-                  >
-                    School Year:
-                  </label>
-                  <select
-                    id={`schoolYear-${index}`}
-                    value={entry.schoolYear}
-                    onChange={(e) =>
-                      handleFieldChange(index, "schoolYear", e.target.value)
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
-                  >
-                    <option value="">Select Year</option>
-                    {academicYears.map((year, i) => (
-                      <option key={year.id} value={year.title}>
-                        {year.title}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="mb-2">
-                  <label
-                    className="block text-sm font-medium text-gray-700"
-                    htmlFor={`attendedSchool-${index}`}
-                  >
-                    Attended School:
-                  </label>
-                  <select
-                    id={`attendedSchool-${index}`}
-                    value={entry.attendedSchool}
-                    onChange={(e) =>
-                      handleFieldChange(index, "attendedSchool", e.target.value)
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
-                  >
-                    <option value="">Select School</option>
-                    {schoolIsSuccess &&
-                      attendedSchools.map((school) => (
-                        <option key={school.id} value={school.id}>
-                          {school.schoolName}
-                        </option>
-                      ))}
-                  </select>
-                </div>
-                <div className="mb-2">
-                  <label
-                    className="block text-sm font-medium text-gray-700"
-                    htmlFor={`note-${index}`}
-                  >
-                    Note:
-                  </label>
-                  <input
-                    id={`note-${index}`}
-                    type="text"
-                    value={entry.note}
-                    onChange={(e) =>
-                      handleFieldChange(index, "note", e.target.value)
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
-                  />
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => handleRemoveEntry(index)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  Remove Entry
-                </button>
-              </div>
-            ))}
-          <button
-            type="button"
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-            onClick={handleAddEntry}
-          >
-            Add Admission Education
-          </button>
-        </div>
-
-        <div className="flex justify-end space-x-4">
+        {/* Submit Button */}
+        <div className="mt-6">
           <button
             type="submit"
-            className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-            title="Save"
-            onClick={onUpdateAdmissionClicked}
             disabled={!canSave}
+            className={`inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+              canSave
+                ? "bg-blue-600 hover:bg-blue-700"
+                : "bg-gray-400 cursor-not-allowed"
+            }`}
           >
-            Save Changes
-          </button>
-          <button
-            type="button"
-            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-            onClick={handleCancel}
-          >
-            Cancel
+            <FontAwesomeIcon icon={faSave} className="mr-2" />
+            {isAdmissionLoading ? "Saving..." : "Save Admission"}
           </button>
         </div>
       </form>
     </>
   );
+
+  if (noAdmissionStudents.length === 0) return <LoadingStateIcon />
+  if (noAdmissionStudents.length) return content;
   return content;
 };
 

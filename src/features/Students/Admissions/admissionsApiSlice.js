@@ -83,7 +83,7 @@ export const admissionsApiSlice = apiSlice.injectEndpoints({
           delete admission._id; //added to delete the extra original _id from mongo but careful when planning to save to db again
           return admission;
         });
-        return admissionsAdapter.upsertMany(initialState, newLoadedAdmissions);
+        return admissionsAdapter.upsertOne(initialState, newLoadedAdmissions);
       },
       providesTags: ["admission"],
       // providesTags: (result, error, arg) => {

@@ -168,7 +168,7 @@ const App = () => {
 								
 									<Route path="admissions/" element={<AdmissionsList/>}/>												
 									<Route path="newAdmission/" element={<NewAdmissionForm/>}/>
-									<Route path="edit/:id" element={<EditAdmission/>}/>
+									<Route path="editAdmission/:id" element={<EditAdmission/>}/>
 									
 
 								</Route> {/* end of Admissions route */}
