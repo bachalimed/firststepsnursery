@@ -21,15 +21,28 @@ import useAuth from "../../../hooks/useAuth";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import { useGetAcademicYearsQuery } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
 import { selectAllAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-//constrains on inputs when creating new user
-const USER_REGEX = /^[A-z]{6,20}$/;
-const COMMENT_REGEX = /^[A-z0-9]{0,150}$/;
-const PWD_REGEX = /^[A-z0-9!@#-_$%]{8,20}$/;
-const OBJECTID_REGEX = /^[A-z 0-9]{24}$/;
-const PHONE_REGEX = /^[0-9]{6,15}$/;
-const DOB_REGEX = /^[0-9/-]{4,10}$/;
-const EMAIL_REGEX = /^[A-z0-9.@-_]{6,20}$/;
-const FEE_REGEX = /^(0|[1-9][0-9]{0,3})(\.[0-9]{1,3})?$/;
+import {
+  FEE_REGEX,
+  DATE_REGEX,
+  COMMENT_REGEX,
+  OBJECTID_REGEX,
+} from "../../../Components/lib/Utils/REGEX";
+
+const useDebounce = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+};
 
 const NewAdmissionForm = () => {
   // initialising states
@@ -111,7 +124,7 @@ const NewAdmissionForm = () => {
     admissionCreator: userId, // Set to the logged-in user id
     admissionOperator: userId, // Set to the operator id
   });
-  
+
   // Convert data into array format for dropdowns add only students with no admission in their studentYears
   const studentsList = isStudentsSuccess
     ? Object.values(students.entities)
@@ -134,78 +147,112 @@ const NewAdmissionForm = () => {
     ? Object.values(services.entities)
     : [];
 
- // Set default admission service
- useEffect(() => {
-  if (isServicesSuccess && formData.agreedServices[0].service === "") {
-    const admissionService = servicesList.find(service => service.serviceType === "Admission");
-    if (admissionService) {
+  // Set default admission service
+  useEffect(() => {
+    if (isServicesSuccess && formData.agreedServices[0].service === "") {
+      const admissionService = servicesList.find(
+        (service) => service.serviceType === "Admission"
+      );
+      if (admissionService) {
+        setFormData((prevData) => ({
+          ...prevData,
+          agreedServices: [
+            {
+              ...prevData.agreedServices[0],
+              service: admissionService.id,
+            },
+            ...prevData.agreedServices.slice(1),
+          ],
+        }));
+      }
+    }
+  }, [isServicesSuccess]);
+
+  const [admissionValidity, setAdmissionValidity] = useState([]);
+
+  const handleInputChange = (index, field, value) => {
+    const updatedServices = [...formData.agreedServices];
+
+    // Ensure that the service at the specified index exists
+    if (!updatedServices[index]) {
+      updatedServices[index] = {}; // Initialize if undefined
+    }
+
+    updatedServices[index][field] = value; // Set the value
+
+    setFormData({ ...formData, agreedServices: updatedServices });
+  };
+
+  // Debounce feeValue updates
+  const [feeValue, setFeeValue] = useState("");
+  const debouncedFeeValue = useDebounce(feeValue, 500); //delay500
+
+  // Validate services when debouncedFeeValue changes
+  useEffect(() => {
+    if (debouncedFeeValue) {
+      const updatedServices = [...formData.agreedServices];
+      validateService(updatedServices);
+    }
+  }, [debouncedFeeValue, formData.agreedServices]);
+
+  const validateService = (services) => {
+    const updatedValidity = services.map((service) => {
+      const validService = OBJECTID_REGEX.test(service.service);
+      const validFeePeriod = service.feePeriod !== "";
+      const validFeeValue = FEE_REGEX.test(service.feeValue);
+      const validFeeStartDate = DATE_REGEX.test(service.feeStartDate);
+      const validComment = COMMENT_REGEX.test(service.comment);
+      // Other validations...
+
+      return {
+        validService,
+        validFeePeriod,
+        validFeeValue,
+        validFeeStartDate,
+        validComment,
+
+        // Other validity checks...
+      };
+    });
+
+    console.log(admissionValidity, "admissionvalidity");
+    // Only set state if there is a change
+    if (JSON.stringify(updatedValidity) !== JSON.stringify(admissionValidity)) {
+      setAdmissionValidity(updatedValidity);
+    }
+  };
+
+  console.log(admissionValidity, "admissionValidity");
+  const [primaryValidity, setPrimaryValidity] = useState({
+    validStudent: OBJECTID_REGEX.test(formData.student),
+    validAdmissionYear: formData.admissionYear !== "",
+    validAdmissionDate: DATE_REGEX.test(formData.admissionDate),
+  });
+
+  useEffect(() => {
+    setPrimaryValidity((prev) => ({
+      ...prev,
+      validStudent: OBJECTID_REGEX.test(formData.student),
+      validAdmissionYear: formData.admissionYear !== "",
+      validAdmissionDate: DATE_REGEX.test(formData.admissionDate),
+    }));
+  }, [formData.student, formData.admissionYear, formData.admissionDate]); // run whenever formData changes
+
+  console.log(primaryValidity, "primaryValidity");
+  // Modify handleAgreedServicesChange
+  const handleAgreedServicesChange = (index, e) => {
+    if (e && e.target) {
+      const { name, value } = e.target;
+      const updatedServices = [...formData.agreedServices];
+      updatedServices[index][name] = value;
       setFormData((prevData) => ({
         ...prevData,
-        agreedServices: [
-          {
-            ...prevData.agreedServices[0],
-            service: admissionService.id,
-          },
-          ...prevData.agreedServices.slice(1),
-        ],
+        agreedServices: updatedServices,
       }));
+    } else {
+      console.error("Event is not properly passed or malformed:", e);
     }
-  }
-}, [isServicesSuccess]);
-
-
-  const [admissionValidity, setAdmissionValidity] = useState({
-    validStudent: false,
-    validAdmissionYear: false,
-    validAdmissionDate: false,
-    validService: false,
-    validFeeValue: false,
-    validFeePeriod: false,
-    validFeeStartDate: false,
-    validComment: false,
-  });
- 
-  // Validate form inputs
-  useEffect(() => {
-    const validStudent = OBJECTID_REGEX.test(formData.student);
-    const validAdmissionYear = formData.admissionYear !== "";
-    const validAdmissionDate = DOB_REGEX.test(formData.admissionDate);
-    const validService = OBJECTID_REGEX.test(formData.agreedServices[0].service);
-    const validFeePeriod = formData.agreedServices[0].feePeriod !== "";
-    const validFeeValue = FEE_REGEX.test(formData.agreedServices[0].feeValue);
-    const validFeeStartDate = DOB_REGEX.test(formData.agreedServices[0].feeStartDate);
-    const validComment = COMMENT_REGEX.test(formData.agreedServices[0].comment);
-
-    setAdmissionValidity({
-      validStudent,
-      validAdmissionYear,
-      validAdmissionDate,
-      validService,
-      validFeePeriod,
-      validFeeValue,
-      validFeeStartDate,
-      validComment,
-    });
-  }, [formData]);
-
-  // State to track selected services
-  const [selectedServices, setSelectedServices] = useState(["Admission"]);
-
-  
-  // Handle input change
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
-
-  // Handle agreed services change
-  const handleAgreedServicesChange = (index, e) => {
-    const { name, value } = e.target;
-    const updatedServices = [...formData.agreedServices];
-    updatedServices[index][name] = value;
-    setFormData((prevData) => ({ ...prevData, agreedServices: updatedServices }));
-  };
-
   //Add another agreed service
   const addAgreedService = () => {
     setFormData((prevData) => ({
@@ -214,7 +261,7 @@ const NewAdmissionForm = () => {
         ...prevData.agreedServices,
         {
           service: "",
-          feeValue: 0,
+          feeValue: "",
           feePeriod: "",
           feeStartDate: "",
           feeEndDate: "",
@@ -235,11 +282,10 @@ const NewAdmissionForm = () => {
     }
   };
 
-  
   useEffect(() => {
     if (isAdmissionSuccess) {
       //if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
-      setFormData ({
+      setFormData({
         student: "",
         admissionYear: "",
         admissionDate: "",
@@ -257,14 +303,13 @@ const NewAdmissionForm = () => {
         ],
         admissionCreator: "", // Set to the logged-in user id
         admissionOperator: "", // Set to the operator id
-      })
+      });
       navigate("/students/admissions/admissions"); //will navigate here after saving
     }
   }, [isAdmissionSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success
 
-
   // Function to filter available services based on previous selections
- 
+
   const getAvailableServices = (index) => {
     const selectedServiceIds = formData.agreedServices
       .map((service, i) => (i !== index ? service.service : null))
@@ -275,7 +320,6 @@ const NewAdmissionForm = () => {
     );
   };
 
-  
   // Function to handle agreed services check and set isFlagged if necessary
   const handleAgreedServicesCheck = (index) => {
     // Find the selected service from servicesList
@@ -297,25 +341,18 @@ const NewAdmissionForm = () => {
             formData?.agreedServices[index]?.feePeriod
           ]; // Get the corresponding serviceAnchor value
 
-        // If the agreedFee is less than the serviceAnchor value, set isFlagged to true
-        if (
+        const isFlaggedNew =
           parseFloat(formData?.agreedServices[index]?.feeValue) <
-          parseFloat(serviceAnchorValue)
-        ) {
+          parseFloat(serviceAnchorValue); // Determine if the new flag should be true or false
+
+        // Only update state if `isFlagged` changes
+        if (formData?.agreedServices[index]?.isFlagged !== isFlaggedNew) {
           setFormData((prevData) => ({
             ...prevData,
             agreedServices: prevData.agreedServices.map((serv, idx) =>
-              idx === index // Set isFlagged for the current index
-                ? { ...serv, isFlagged: true }
+              idx === index
+                ? { ...serv, isFlagged: isFlaggedNew } // Set new flag value
                 : serv
-            ),
-          }));
-        } else {
-          // Reset the flag if the agreedFee is not less
-          setFormData((prevData) => ({
-            ...prevData,
-            agreedServices: prevData.agreedServices.map((serv, idx) =>
-              idx === index ? { ...serv, isFlagged: false } : serv
             ),
           }));
         }
@@ -325,17 +362,31 @@ const NewAdmissionForm = () => {
 
   // Call handleAgreedServicesCheck whenever agreedServices or service selection changes
   useEffect(() => {
-    // Iterate through agreedServices and check feeValue
-    formData.agreedServices.forEach((service, index) => {
-      if (service.feeValue) {
-        // Check if feeValue exists
+    // Call handleAgreedServicesCheck when formData.agreedServices[index] changes
+    if (formData?.agreedServices) {
+      formData.agreedServices.forEach((_, index) => {
         handleAgreedServicesCheck(index);
-      }
-    });
+      });
+    }
   }, [formData.agreedServices]);
+  // const canSave =
+  //   Object.values(admissionValidity).every(Boolean) && !isAdmissionLoading;
 
+  const removeAgreedService = (index) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      agreedServices: prevData.agreedServices.filter((_, idx) => idx !== index),
+    }));
+  };
+  // For checking whether the form is valid
   const canSave =
-    Object.values(admissionValidity).every(Boolean) && !isAdmissionLoading;
+    admissionValidity.length > 0 &&
+    admissionValidity.every((validity) =>
+      Object.values(validity).every(Boolean)
+    ) &&
+    Object.values(primaryValidity).every(Boolean) &&
+    !isAdmissionLoading;
+
   console.log(formData, "formData");
   const content = (
     <>
@@ -350,13 +401,21 @@ const NewAdmissionForm = () => {
             htmlFor="student"
             className="block text-sm font-medium text-gray-700"
           >
-            Student
+            Student{" "}
+            {!primaryValidity.validStudent && (
+              <span className="text-red-500">*</span>
+            )}
           </label>
           <select
             id="student"
             name="student"
             value={formData.student}
-            onChange={handleInputChange}
+            onChange={(e) =>
+              setFormData((prevData) => ({
+                ...prevData,
+                student: e.target.value, // update formData with input value
+              }))
+            }
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
             required
           >
@@ -377,13 +436,21 @@ const NewAdmissionForm = () => {
             htmlFor="admissionYear"
             className="block text-sm font-medium text-gray-700"
           >
-            Admission Year
+            Admission Year{" "}
+            {!primaryValidity.validAdmissionYear && (
+              <span className="text-red-500">*</span>
+            )}
           </label>
           <select
             id="admissionYear"
             name="admissionYear"
             value={formData.admissionYear}
-            onChange={handleInputChange}
+            onChange={(e) =>
+              setFormData((prevData) => ({
+                ...prevData,
+                admissionYear: e.target.value, // update formData with input value
+              }))
+            }
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
             required
           >
@@ -408,14 +475,22 @@ const NewAdmissionForm = () => {
             htmlFor="admissionDate"
             className="block text-sm font-medium text-gray-700"
           >
-            Admission Starting Date
+            Admission Starting Date{" "}
+            {!primaryValidity.validAdmissionDate && (
+              <span className="text-red-500">*</span>
+            )}
           </label>
           <input
             type="date"
             id="admissionDate"
             name="admissionDate"
             value={formData.admissionDate}
-            onChange={handleInputChange}
+            onChange={(e) =>
+              setFormData((prevData) => ({
+                ...prevData,
+                admissionDate: e.target.value, // update formData with input value
+              }))
+            }
             placeholder="YYYY-MM-DD"
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
             required
@@ -425,164 +500,191 @@ const NewAdmissionForm = () => {
         {/* Agreed Services Section */}
 
         {formData.agreedServices.map((service, index) => (
-           <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
-          <div key={index} className="space-y-4">
-            <label
-              htmlFor={`service-${index}`}
-              className="block text-sm font-medium text-gray-700"
-            >
-              Service {index === 0 && "(Default: Admission)"}
-            </label>
-            <select
-              id={`service-${index}`}
-              name="service"
-              value={service.id}
-              onChange={(e) => handleAgreedServicesChange(index, e)}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              disabled={index === 0} // Disable the first service since it's "Admission"
-              required
-            >
-              {index === 0 ? (
-                <option value="Admission">Admission</option>
-              ) : (
-                <>
-                  <option value="">Select Service</option>
-                  {(getAvailableServices(index)).map((serviceOption) => (
-                    <option key={serviceOption.id} value={serviceOption.id}>
-                      {serviceOption.serviceType}
-                    </option>
-                  ))}
-                </>
-              )}
-            </select>
-
-            <div>
+          <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
+            <div key={index} className="space-y-4">
               <label
-                htmlFor={`feePeriod-${index}`}
+                htmlFor={`service-${index}`}
                 className="block text-sm font-medium text-gray-700"
               >
-                Fee Period
+                Service{" "}
+                {!admissionValidity[index].validService && (
+                  <span className="text-red-500">*</span>
+                )}
+                {index === 0 && "(Default: Admission)"}
               </label>
               <select
-                id={`feePeriod-${index}`}
-                name="feePeriod"
-                value={service.feePeriod}
+                id={`service-${index}`}
+                name="service"
+                value={service.id}
                 onChange={(e) => handleAgreedServicesChange(index, e)}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                disabled={index === 0} // Disable the first service since it's "Admission"
                 required
               >
-                <option value="">Select Period</option>
-                {/* Ensure the correct serviceAnchor object is passed */}
-                {servicesList.find(
-                  (service) =>
-                    service.id === formData?.agreedServices[index]?.service
-                )?.serviceAnchor &&
-                  Object.entries(
-                    servicesList.find(
-                      (service) =>
-                        service.id === formData?.agreedServices[index]?.service
-                    )?.serviceAnchor
-                  ).map(([periodKey, value]) => (
-                    <option key={periodKey} value={periodKey}>
-                      {`${
-                        periodKey.charAt(0).toUpperCase() + periodKey.slice(1)
-                      } (anchor: ${value})`}
-                    </option>
-                  ))}
+                {index === 0 ? (
+                  <option value="Admission">Admission</option>
+                ) : (
+                  <>
+                    <option value="">Select Service</option>
+                    {getAvailableServices(index).map((serviceOption) => (
+                      <option key={serviceOption.id} value={serviceOption.id}>
+                        {serviceOption.serviceType}
+                      </option>
+                    ))}
+                  </>
+                )}
               </select>
-            </div>
 
-            <div>
-              <label
-                htmlFor={`feeValue-${index}`}
-                className="block text-sm font-medium text-gray-700"
-              >
-                Fee Value
-              </label>
-              <input
-                type="number"
-                id={`feeValue-${index}`}
-                name="feeValue"
-                value={service.feeValue}
-                onChange={(e) => handleAgreedServicesChange(index, e)}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                required
-              />
-            </div>
+              <div>
+                <label
+                  htmlFor={`feePeriod-${index}`}
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Fee Period{" "}
+                  {!admissionValidity[index].validFeePeriod && (
+                    <span className="text-red-500">*</span>
+                  )}
+                </label>
+                <select
+                  id={`feePeriod-${index}`}
+                  name="feePeriod"
+                  value={service.feePeriod}
+                  onChange={(e) => handleAgreedServicesChange(index, e)}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                  required
+                >
+                  <option value="">Select Period</option>
+                  {/* Ensure the correct serviceAnchor object is passed */}
+                  {servicesList.find(
+                    (service) =>
+                      service.id === formData?.agreedServices[index]?.service
+                  )?.serviceAnchor &&
+                    Object.entries(
+                      servicesList.find(
+                        (service) =>
+                          service.id ===
+                          formData?.agreedServices[index]?.service
+                      )?.serviceAnchor
+                    ).map(([periodKey, value]) => (
+                      <option key={periodKey} value={periodKey}>
+                        {`${
+                          periodKey.charAt(0).toUpperCase() + periodKey.slice(1)
+                        } (anchor: ${value})`}
+                      </option>
+                    ))}
+                </select>
+              </div>
 
-            <div>
-              <label
-                htmlFor={`feeStartDate-${index}`}
-                className="block text-sm font-medium text-gray-700"
-              >
-                Fee Start Date
-              </label>
-              <input
-                type="date"
-                id={`feeStartDate-${index}`}
-                name="feeStartDate"
-                value={service.feeStartDate}
-                onChange={(e) => handleAgreedServicesChange(index, e)}
-                placeholder="YYYY-MM-DD"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                required
-              />
-            </div>
+              <div>
+                <label
+                  htmlFor={`feeValue-${index}`}
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Fee Value{" "}
+                  {!admissionValidity[index].validFeeValue && (
+                    <span className="text-red-500">*</span>
+                  )}
+                </label>
+                <input
+                  type="number"
+                  id={`feeValue-${index}`}
+                  name="feeValue"
+                  value={service.feeValue}
+                  onChange={(e) => {
+                    setFeeValue(e.target.value);
+                    handleInputChange(index, "feeValue", e.target.value);
+                  }}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                  required
+                />
+              </div>
 
-            {(index!==0)&&<div>
-              <label
-                htmlFor={`feeEndDate-${index}`}
-                className="block text-sm font-medium text-gray-700"
-              >
-                Fee End Date
-              </label>
-              <input
-                type="date"
-                id={`feeEndDate-${index}`}
-                name="feeEndDate"
-                value={service.feeEndDate}
-                onChange={(e) => handleAgreedServicesChange(index, e)}
-                placeholder="YYYY-MM-DD"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                
-              />
-            </div>}
+              <div>
+                <label
+                  htmlFor={`feeStartDate-${index}`}
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Fee Start Date{" "}
+                  {!admissionValidity[index].validFeeStartDate && (
+                    <span className="text-red-500">*</span>
+                  )}
+                </label>
+                <input
+                  type="date"
+                  id={`feeStartDate-${index}`}
+                  name="feeStartDate"
+                  value={service.feeStartDate}
+                  onChange={(e) => handleAgreedServicesChange(index, e)}
+                  placeholder="YYYY-MM-DD"
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                  required
+                />
+              </div>
 
-            <div>
-              {service.isFlagged && (
-                <div className="text-red-500">
-                  The agreed fee value is below the minimum required fee for
-                  this service, please add comment for management authorisation
-                  processing.
+              {index !== 0 && (
+                <div>
+                  <label
+                    htmlFor={`feeEndDate-${index}`}
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Fee End Date
+                  </label>
+                  <input
+                    type="date"
+                    id={`feeEndDate-${index}`}
+                    name="feeEndDate"
+                    value={service.feeEndDate}
+                    onChange={(e) => handleAgreedServicesChange(index, e)}
+                    placeholder="YYYY-MM-DD"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                  />
                 </div>
               )}
-              <label
-                htmlFor={`comment-${index}`}
-                className="block text-sm font-medium text-gray-700"
-              >
-                Comment
-              </label>
-              <input
-                type="text"
-                id={`comment-${index}`}
-                name="comment"
-                value={service.comment}
-                onChange={(e) => handleAgreedServicesChange(index, e)}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                maxLength="150"
-              />
+
+              <div>
+                {service.isFlagged && (
+                  <div className="text-red-500">
+                    The agreed fee value is below the minimum required fee for
+                    this service, please add comment for management
+                    authorisation processing.
+                  </div>
+                )}
+                <label
+                  htmlFor={`comment-${index}`}
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Comment
+                </label>
+                <input
+                  type="text"
+                  id={`comment-${index}`}
+                  name="comment"
+                  value={service.comment}
+                  onChange={(e) => handleAgreedServicesChange(index, e)}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                  maxLength="150"
+                />
+              </div>
             </div>
-          </div>
+            {(index!==0)&&<button
+              type="button"
+              onClick={() => removeAgreedService(index)}
+              className="ml-2 inline-flex items-center px-2 py-1 border border-red-300 rounded-md shadow-sm text-sm font-medium text-red-700 hover:bg-red-100 focus:outline-none"
+            >
+              Remove Service
+            </button>}
           </div>
         ))}
         {/* we should only add the number of services availble */}
-        {(formData.agreedServices.length <= servicesList.length)&&<button
-          type="button"
-          onClick={addAgreedService}
-          className="mt-2 inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none"
-        >
-          Add Another Service
-        </button>}
+        {formData.agreedServices.length <= servicesList.length && (
+          <button
+            type="button"
+            onClick={addAgreedService}
+            className="mt-2 inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none"
+          >
+            Add Another Service
+          </button>
+        )}
 
         {/* Submit Button */}
         <div className="mt-6">
