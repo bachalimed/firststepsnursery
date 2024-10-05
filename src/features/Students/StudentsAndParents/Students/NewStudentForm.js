@@ -468,9 +468,10 @@ const NewStudentForm = () => {
           {Array.isArray(studentGardien) &&
             studentGardien.length > 0 &&
             studentGardien.map((entry, index) => (
+              <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
               <div
                 key={index}
-                className="bg-gray-50 p-4 rounded-lg shadow-sm mb-4"
+                className="bg-gray-50 p-4 rounded-lg shadow-sm mb-4 "
               >
                 <div className="mb-2">
                   <label
@@ -615,6 +616,7 @@ const NewStudentForm = () => {
                   Remove Entry
                 </button>
               </div>
+              </div>
             ))}
           <button
             type="button"
@@ -630,6 +632,9 @@ const NewStudentForm = () => {
           {Array.isArray(studentEducation) &&
             studentEducation.length > 0 &&
             studentEducation.map((entry, index) => (
+              
+              
+              <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
               <div
                 key={index}
                 className="bg-gray-50 p-4 rounded-lg shadow-sm mb-4"
@@ -706,6 +711,7 @@ const NewStudentForm = () => {
                 >
                   Remove Entry
                 </button>
+              </div>
               </div>
             ))}
           <button

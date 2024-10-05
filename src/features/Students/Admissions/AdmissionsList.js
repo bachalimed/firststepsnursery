@@ -11,11 +11,12 @@ import {
   selectAllAcademicYears,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
-
+import { useGetServicesByYearQuery } from "../../AppSettings/StudentsSet/NurseryServices/servicesApiSlice";
 import Admissions from "../Admissions";
 import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
-
+import { IoMdAddCircleOutline } from "react-icons/io";
+import AddServiceToAdmissionModal from "./AddServiceToAdmissionModal";
 import { useSelector } from "react-redux";
 import {
   selectAllAdmissionsByYear,
@@ -30,6 +31,7 @@ import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { setAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
+import { IoAddCircleOutline } from "react-icons/io5";
 
 import useAuth from "../../../hooks/useAuth";
 
@@ -123,31 +125,23 @@ const AdmissionsList = () => {
     //we need to change into array to be read??
     admissionsList = Object.values(entities); //we are using entity adapter in this query
     dispatch(setAdmissions(admissionsList)); //timing issue to update the state and use it the same time
-
-    //the serach result data
     filteredAdmissions = admissionsList?.filter((item) => {
-      //the nested objects need extra logic to separate them
-      const firstNameMatch = item?.admissionName?.firstName
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
-      const middleNameMatch = item?.admissionName?.middleName
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
-      const lastNameMatch = item?.admissionName?.lastName
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
-      //console.log('filteredAdmissions in the success', item)
-      return (
-        Object.values(item).some((val) =>
-          String(val).toLowerCase().includes(searchQuery.toLowerCase())
-        ) ||
-        firstNameMatch ||
-        middleNameMatch ||
-        lastNameMatch
-      );
+      // Check if the student's name or any other field contains the search query
+      const nameMatches = [
+        item?.student?.studentName?.firstName,
+        item?.student?.studentName?.middleName,
+        item?.student?.studentName?.lastName,
+      ].some((name) => name?.toLowerCase().includes(searchQuery.toLowerCase()));
+    
+      // Add more criteria as needed, e.g., admissionDate, services, etc.
+      const otherMatches = Object.values(item)
+        .flat()
+        .some((val) => val?.toString().toLowerCase().includes(searchQuery.toLowerCase()));
+    
+      return nameMatches || otherMatches;
     });
   }
-
+ 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
@@ -197,26 +191,11 @@ const AdmissionsList = () => {
     //setSelectedRows([]); // Clear selection after process
   };
 
-  // This is called when saving the updated admission years from the modal
-  const onUpdateAdmissionClicked = async (updatedYears) => {
-    //console.log("Updated admissionYears from modal:", updatedYears);
-
-    const updatedAdmissionObject = {
-      ...admissionObject,
-      admissionYears: updatedYears, // Merge updated admissionYears
-    };
-
-    //console.log("Saving updated admission:", updatedAdmissionObject);
-
-    try {
-      await updateAdmission(updatedAdmissionObject); // Save updated admission to backend
-      console.log("Admission updated successfully");
-    } catch (error) {
-      console.log("Error saving admission:", error);
-    }
-
-    setIsRegisterModalOpen(false); // Close modal
-  };
+  // const [agreedServices, setAgreedServices] = useState([]);
+  // const handleAddServiceToAdmission = () => {
+  //   setAgreedServices([...agreedServices, newService]);
+  // };
+  
 
   //   const [admissionYears, setAdmissionYears] = useState([])
   // //adds to the previous entries in arrays for gardien, schools...
@@ -280,7 +259,7 @@ const AdmissionsList = () => {
     },
 
     {
-      name: "Agreed Services",
+      name: "Admission & Services",
 
       selector: (row) => (
         <div>
@@ -325,15 +304,16 @@ const AdmissionsList = () => {
     //   sortable: true,
     //   removableRows: true,
     //   width: "120px",
-    // }, 
+    // },
     {
       name: "Agreed Fees",
       selector: (row) => (
         <div>
           {row.agreedServices.map((feeObj, index) => {
-            const anchorValue = feeObj?.service?.serviceAnchor[feeObj.feePeriod];
+            const anchorValue =
+              feeObj?.service?.serviceAnchor[feeObj.feePeriod];
             const feeValue = feeObj?.feeValue;
-    
+
             // Determine the text color based on the comparison
             let textColorClass = "text-black"; // Default is black
             if (feeValue < anchorValue) {
@@ -341,7 +321,7 @@ const AdmissionsList = () => {
             } else if (feeValue > anchorValue) {
               textColorClass = "text-green-500"; // Green if greater than anchor
             }
-    
+
             return (
               <div key={index} className={textColorClass}>
                 {feeValue}
@@ -355,15 +335,29 @@ const AdmissionsList = () => {
       width: "120px",
     },
     {
-      name: "Documents",
+      name: "Flagged",
       selector: (row) => (
-        <Link to={`/students/admissions/studentDocumentsList/${row.id}`}>
-          {" "}
-          <IoDocumentAttachOutline className="text-slate-800 text-2xl" />
-        </Link>
+        <div>
+          {row.agreedServices.map((feeObj, index) => (
+            <div key={index}>{feeObj?.isFlagged ? "Yes" : "No"}</div>
+          ))}
+        </div>
       ),
+
       sortable: true,
-      removableRows: true,
+      width: "90px",
+    },
+    {
+      name: "Authorised",
+      selector: (row) => (
+        <div>
+          {row.agreedServices.map((feeObj, index) => (
+            <div key={index}>{feeObj?.authorisedBy ? "Yes" : "No"}</div>
+          ))}
+        </div>
+      ),
+
+      sortable: true,
       width: "120px",
     },
 
@@ -371,6 +365,13 @@ const AdmissionsList = () => {
       name: "Actions",
       cell: (row) => (
         <div className="space-x-1">
+          {/* <button
+            className="text-green-500"
+            fontSize={20}
+            onClick={() => handleAddServiceToAdmission(row.agreedServices)}
+          >
+            <IoMdAddCircleOutline className="text-2xl" />
+          </button> */}
           <button
             className="text-blue-500"
             fontSize={20}
@@ -403,6 +404,7 @@ const AdmissionsList = () => {
       ignoreRowClick: true,
 
       button: true,
+      width: "120px",
     },
   ];
   let content;
@@ -475,7 +477,7 @@ const AdmissionsList = () => {
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
       />
-      <RegisterModal
+      {/* <RegisterModal
         isOpen={isRegisterModalOpen}
         onClose={() => setIsRegisterModalOpen(false)}
         admissionYears={admissionYears}
@@ -484,7 +486,14 @@ const AdmissionsList = () => {
         setAdmissionYears={setAdmissionYears}
         academicYears={academicYears}
         onSave={onUpdateAdmissionClicked}
-      />
+      /> */}
+      {/* <AddServiceToAdmissionModal
+        availableServices={servicesList}
+        agreedServices={agreedServices}
+        setAgreedServices={setAgreedServices}
+        onAddService={handleAddServiceToAdmission}
+        anchor={anchor}
+      /> */}
     </>
   );
   //}

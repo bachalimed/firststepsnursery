@@ -20,7 +20,7 @@ import { useSelector } from "react-redux";
 import { selectAllStudentsByYear, selectAllStudents } from "./studentsApiSlice"; //use the memoized selector
 import { useEffect, useState } from "react";
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
-import RegisterModal from "./RegisterModal";
+//import RegisterModal from "./RegisterModal";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { ImProfile } from "react-icons/im";
@@ -467,7 +467,7 @@ const StudentsList = () => {
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
       />
-      <RegisterModal
+      {/* <RegisterModal
         isOpen={isRegisterModalOpen}
         onClose={() => setIsRegisterModalOpen(false)}
         studentYears={studentYears}
@@ -476,7 +476,7 @@ const StudentsList = () => {
         setStudentYears={setStudentYears}
         academicYears={academicYears}
         onSave={onUpdateStudentClicked}
-      />
+      /> */}
     </>
   );
   //}
