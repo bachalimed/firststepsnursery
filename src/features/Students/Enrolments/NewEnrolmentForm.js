@@ -72,8 +72,9 @@ const NewEnrolmentForm = () => {
     error: studentsError,
   } = useGetStudentsByYearQuery(
     {
-      //selectedYear: selectedAcademicYear?.title,
+      // we import only students  that have already an admission perfomred
       selectedYear: selectedAcademicYear?.title,
+      criteria:"withAdmission",
       endpointName: "studentsList",
     } || {},
     {
@@ -131,17 +132,17 @@ const NewEnrolmentForm = () => {
     : [];
 
   const [noEnrolmentStudents, setNoEnrolmentStudents] = useState([]);
-  useEffect(() => {
-    // retreive teh studetns that have no admissin in their studentYEars array under enrolment key
-    setNoEnrolmentStudents(
-      studentsList.filter((student) =>
-        student.studentYears.some(
-          (year) => !("enrolment" in year) || year.enrolment === ""
-        )
-      )
-    );
-    //console.log(noEnrolmentStudents,'noEnrolmentStudents')
-  }, [isStudentsSuccess]);
+  // useEffect(() => {
+  //   // retreive teh studetns that have no admissin in their studentYEars array under enrolment key
+  //   setNoEnrolmentStudents(
+  //     studentsList.filter((student) =>
+  //       student.studentYears.some(
+  //         (year) => !("enrolment" in year) || year.enrolment === ""
+  //       )
+  //     )
+  //   );
+  //   //console.log(noEnrolmentStudents,'noEnrolmentStudents')
+  // }, [isStudentsSuccess]);
 
   const servicesList = isServicesSuccess
     ? Object.values(services.entities)
@@ -705,9 +706,9 @@ const NewEnrolmentForm = () => {
     </>
   );
 
-  if (noEnrolmentStudents.length === 0) return <LoadingStateIcon />;
-  if (noEnrolmentStudents.length) return content;
-  //return content;
+  //if (noEnrolmentStudents.length === 0) return <LoadingStateIcon />;
+  //if (noEnrolmentStudents.length) return content;
+  return content;
 };
 
 export default NewEnrolmentForm;

@@ -64,16 +64,17 @@ const NewAdmissionForm = () => {
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
 
+  
   const {
-    data: students, //the data is renamed students
-    isLoading: isStudentsLoading, //monitor several situations is loading...
+    data: students, 
+    isLoading: isStudentsLoading, 
     isSuccess: isStudentsSuccess,
     isError: isStudentsError,
     error: studentsError,
   } = useGetStudentsByYearQuery(
     {
-      //selectedYear: selectedAcademicYear?.title,
-      selectedYear: "1000",
+     // we will only import students that that have been registered for that year 
+      selectedYear: selectedAcademicYear.title,
       endpointName: "studentsList",
     } || {},
     {
