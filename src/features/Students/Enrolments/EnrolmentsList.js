@@ -161,9 +161,6 @@ const EnrolmentsList = () => {
     setSelectedRows([]); // Clear selection after delete
   };
 
-
- 
-
   const column = [
     {
       name: "#", // New column for entry number
@@ -187,7 +184,7 @@ const EnrolmentsList = () => {
       : null,
 
     {
-      name: "Active",
+      name: " Student Is Active",
       selector: (row) => row.student.studentIsActive,
       cell: (row) => (
         <span>
@@ -236,6 +233,20 @@ const EnrolmentsList = () => {
         }`,
       sortable: true,
       width: "150px",
+    },
+    {
+      name: "Amount",
+      selector: (row) => `${row.admission.agreedServices?.feeValue}`,
+
+      sortable: true,
+      width: "100px",
+    },
+    {
+      name: "Validated",//means authorised 
+      selector: (row) => (row.admission.agreedServices?.isAuthorised ? "yes" : "No"),
+
+      sortable: true,
+      width: "120px",
     },
     {
       name: "Admission Fee Dates",
@@ -306,16 +317,14 @@ const EnrolmentsList = () => {
       selector: (row) => (
         <>
           <div>
-            on {" "}
+            on{" "}
             {new Date(row.enrolmentStartDate).toLocaleDateString("en-GB", {
               year: "numeric",
               month: "2-digit",
               day: "2-digit",
             })}
           </div>
-          <div>
-            for 110
-          </div>
+          <div>for 110</div>
         </>
       ),
 
@@ -327,16 +336,14 @@ const EnrolmentsList = () => {
       selector: (row) => (
         <>
           <div>
-            on {" "}
+            on{" "}
             {new Date(row.enrolmentStartDate).toLocaleDateString("en-GB", {
               year: "numeric",
               month: "2-digit",
               day: "2-digit",
             })}
           </div>
-          <div>
-             110
-          </div>
+          <div>110</div>
         </>
       ),
 
@@ -427,7 +434,6 @@ const EnrolmentsList = () => {
         <div className="flex justify-end items-center space-x-4">
           <button
             className=" px-4 py-2 bg-green-500 text-white rounded"
-            
             disabled={selectedRows.length !== 1} // Disable if no rows are selected
             hidden={!canCreate}
           >
@@ -460,7 +466,6 @@ const EnrolmentsList = () => {
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
       />
-    
     </>
   );
   //}

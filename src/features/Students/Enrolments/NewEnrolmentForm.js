@@ -73,7 +73,7 @@ const NewEnrolmentForm = () => {
   } = useGetStudentsByYearQuery(
     {
       //selectedYear: selectedAcademicYear?.title,
-      selectedYear: "1000",
+      selectedYear: selectedAcademicYear?.title,
       endpointName: "studentsList",
     } || {},
     {

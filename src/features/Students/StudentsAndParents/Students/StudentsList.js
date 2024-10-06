@@ -11,7 +11,7 @@ import {
   selectAllAcademicYears,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import LoadingStateIcon from '../../../../Components/LoadingStateIcon'
-
+import RegisterModal from "./RegisterModal";
 import StudentsParents from "../../StudentsParents";
 import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
@@ -238,17 +238,17 @@ const StudentsList = () => {
     setIsRegisterModalOpen(false); // Close modal
   };
 
-  //   const [studentYears, setStudentYears] = useState([])
-  // //adds to the previous entries in arrays for gardien, schools...
-  //       const onStudentYearsChanged = (e, selectedYear) => {
-  //         if (e.target.checked) {
-  //           // Add the selectedYear to studentYears if it's checked
-  //           setStudentYears([...studentYears, selectedYear]);
-  //         } else {
-  //           // Remove the selectedYear from studentYears if it's unchecked
-  //           setStudentYears(studentYears.filter(year => year !== selectedYear))
-  //         }
-  //       }
+    //const [studentYears, setStudentYears] = useState([])
+  //adds to the previous entries in arrays for gardien, schools...
+        const onStudentYearsChanged = (e, selectedYear) => {
+          if (e.target.checked) {
+            // Add the selectedYear to studentYears if it's checked
+            setStudentYears([...studentYears, selectedYear]);
+          } else {
+            // Remove the selectedYear from studentYears if it's unchecked
+            setStudentYears(studentYears.filter(year => year !== selectedYear))
+          }
+        }
 
   const column = [
     {
@@ -467,7 +467,7 @@ const StudentsList = () => {
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
       />
-      {/* <RegisterModal
+      <RegisterModal
         isOpen={isRegisterModalOpen}
         onClose={() => setIsRegisterModalOpen(false)}
         studentYears={studentYears}
@@ -476,7 +476,7 @@ const StudentsList = () => {
         setStudentYears={setStudentYears}
         academicYears={academicYears}
         onSave={onUpdateStudentClicked}
-      /> */}
+      />
     </>
   );
   //}
