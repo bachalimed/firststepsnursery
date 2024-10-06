@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { useSelector } from "react-redux"; // Assuming you're using Redux for state management
 import { useNavigate } from "react-router-dom";
-import Admissions from "../Admissions";
+import Enrolments from "../Enrolments";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
@@ -10,9 +10,9 @@ import {
 import {
   useGetStudentsQuery,
   useGetStudentsByYearQuery,
-} from "../../Students/StudentsAndParents/Students/studentsApiSlice";
+} from "../StudentsAndParents/Students/studentsApiSlice";
 import { useGetServicesByYearQuery } from "../../AppSettings/StudentsSet/NurseryServices/servicesApiSlice";
-import { useUpdateAdmissionMutation } from "./admissionsApiSlice";
+import { useUpdateEnrolmentMutation } from "./enrolmentsApiSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../../config/UserRoles";
@@ -44,20 +44,20 @@ const useDebounce = (value, delay) => {
   return debouncedValue;
 };
 
-const EditAdmissionForm = ({ admission }) => {
-  console.log(admission, "admission");
+const EditEnrolmentForm = ({ enrolment }) => {
+  console.log(enrolment, "enrolment");
   // initialising states
   const { isAdmin, userId } = useAuth();
   const navigate = useNavigate();
   const [
-    updateAdmission,
+    updateEnrolment,
     {
-      isLoading: isAdmissionLoading,
-      isSuccess: isAdmissionSuccess,
-      isError: isAdmissionError,
-      error: admissionError,
+      isLoading: isEnrolmentLoading,
+      isSuccess: isEnrolmentSuccess,
+      isError: isEnrolmentError,
+      error: enrolmentError,
     },
-  ] = useUpdateAdmissionMutation();
+  ] = useUpdateEnrolmentMutation();
   //academic years states
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
@@ -88,11 +88,11 @@ const EditAdmissionForm = ({ admission }) => {
   );
   // Local state for form data
   const [formData, setFormData] = useState({
-    admissionId:admission?.id,
-    student: admission?.student._id,
-    admissionYear: admission?.admissionYear,
-    admissionDate: admission?.admissionDate? new Date(admission?.admissionDate).toISOString().split('T')[0]:"",
-    agreedServices: admission?.agreedServices || [
+    enrolmentId:enrolment?.id,
+    student: enrolment?.student._id,
+    enrolmentYear: enrolment?.enrolmentYear,
+    enrolmentDate: enrolment?.enrolmentDate? new Date(enrolment?.enrolmentDate).toISOString().split('T')[0]:"",
+    agreedServices: enrolment?.agreedServices || [
       {
         service: "",
         feeValue: "",
@@ -103,7 +103,7 @@ const EditAdmissionForm = ({ admission }) => {
         comment: "",
       },
     ],
-    admissionOperator: userId, // Set to the operator id
+    enrolmentOperator: userId, // Set to the operator id
   });
 
  
@@ -112,18 +112,18 @@ const EditAdmissionForm = ({ admission }) => {
     ? Object.values(services.entities)
     : [];
 
-  // Set default admission service
+  // Set default enrolment service
   useEffect(() => {
     if (isServicesSuccess && formData.agreedServices.length === 0) {
-      const admissionService = servicesList.find(
-        (service) => service.serviceType === "Admission"
+      const enrolmentService = servicesList.find(
+        (service) => service.serviceType === "Enrolment"
       );
-      if (admissionService) {
+      if (enrolmentService) {
         setFormData((prevData) => ({
           ...prevData,
           agreedServices: [
             {
-              service: admissionService.id,
+              service: enrolmentService.id,
               feeValue: "",
               feePeriod: "",
               feeStartDate: "",
@@ -137,7 +137,7 @@ const EditAdmissionForm = ({ admission }) => {
     }
   }, [isServicesSuccess]);
 
-  const [admissionValidity, setAdmissionValidity] = useState([]);
+  const [enrolmentValidity, setEnrolmentValidity] = useState([]);
 
   const handleInputChange = (index, fieldName, value) => {
     // Clone the agreedServices array deeply to avoid mutating read-only properties
@@ -183,8 +183,8 @@ const EditAdmissionForm = ({ admission }) => {
       };
     });
 
-    if (JSON.stringify(updatedValidity) !== JSON.stringify(admissionValidity)) {
-      setAdmissionValidity(updatedValidity);
+    if (JSON.stringify(updatedValidity) !== JSON.stringify(enrolmentValidity)) {
+      setEnrolmentValidity(updatedValidity);
     }
   };
 
@@ -196,21 +196,21 @@ const EditAdmissionForm = ({ admission }) => {
     }
   }, [debouncedFeeValue, formData.agreedServices]);
 
-  console.log(admissionValidity, "admissionValidity2");
+  console.log(enrolmentValidity, "enrolmentValidity2");
   const [primaryValidity, setPrimaryValidity] = useState({
     validStudent: OBJECTID_REGEX.test(formData.student),
-    validAdmissionYear: formData.admissionYear !== "",
-    validAdmissionDate: DATE_REGEX.test(formData.admissionDate),
+    validEnrolmentYear: formData.enrolmentYear !== "",
+    validEnrolmentDate: DATE_REGEX.test(formData.enrolmentDate),
   });
 
   useEffect(() => {
     setPrimaryValidity((prev) => ({
       ...prev,
       validStudent: OBJECTID_REGEX.test(formData.student),
-      validAdmissionYear: formData.admissionYear !== "",
-      validAdmissionDate: DATE_REGEX.test(formData.admissionDate),
+      validEnrolmentYear: formData.enrolmentYear !== "",
+      validEnrolmentDate: DATE_REGEX.test(formData.enrolmentDate),
     }));
-  }, [formData.student, formData.admissionYear, formData.admissionDate]); // run whenever formData changes
+  }, [formData.student, formData.enrolmentYear, formData.enrolmentDate]); // run whenever formData changes
 
   console.log(primaryValidity, "primaryValidity");
   // Modify handleAgreedServicesChange
@@ -258,13 +258,13 @@ const EditAdmissionForm = ({ admission }) => {
   };
 
   useEffect(() => {
-    if (isAdmissionSuccess) {
+    if (isEnrolmentSuccess) {
       //if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
       setFormData({
-        admissionId:"",
+        enrolmentId:"",
         student: "",
-        admissionYear: "",
-        admissionDate: "",
+        enrolmentYear: "",
+        enrolmentDate: "",
         agreedServices: [
           {
             service: "",
@@ -277,12 +277,12 @@ const EditAdmissionForm = ({ admission }) => {
             comment: "",
           },
         ],
-        admissionCreator: "", // Set to the logged-in user id
-        admissionOperator: "", // Set to the operator id
+        enrolmentCreator: "", // Set to the logged-in user id
+        enrolmentOperator: "", // Set to the operator id
       });
-      navigate("/students/admissions/admissions"); //will navigate here after saving
+      navigate("/students/enrolments/enrolments"); //will navigate here after saving
     }
-  }, [isAdmissionSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success
+  }, [isEnrolmentSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success
 
   // Function to filter available services based on previous selections
 
@@ -360,12 +360,12 @@ const EditAdmissionForm = ({ admission }) => {
   };
   // For checking whether the form is valid
   const canSave =
-    admissionValidity.length > 0 
-    &&admissionValidity.every(
+    enrolmentValidity.length > 0 
+    &&enrolmentValidity.every(
       (validity) => validity && Object.values(validity).every(Boolean)
     )
     && Object.values(primaryValidity).every(Boolean) 
-    && !isAdmissionLoading;
+    && !isEnrolmentLoading;
 
   // Submit the form
 
@@ -375,8 +375,8 @@ const EditAdmissionForm = ({ admission }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await updateAdmission(formData).unwrap();
-      // navigate("/students/admissions/admissions");
+      await updateEnrolment(formData).unwrap();
+      // navigate("/students/enrolments/enrolments");
     } catch (error) {
       console.error("Error submitting form", error);
     }
@@ -385,12 +385,12 @@ const EditAdmissionForm = ({ admission }) => {
   console.log(formData, "formData");
   const content = (
     <>
-      <Admissions />
+      <Enrolments />
       <form
         onSubmit={handleSubmit}
         className="space-y-6 bg-white p-6 shadow rounded-md"
       >
-        <h2 className="text-xl font-bold">Edit Admission</h2>
+        <h2 className="text-xl font-bold">Edit Enrolment</h2>
         <div>
           <label
             htmlFor="student"
@@ -417,10 +417,10 @@ const EditAdmissionForm = ({ admission }) => {
           >
             
             
-                <option key={admission.student._id} value={admission.student._id}>
-                  {admission.student?.studentName?.firstName}{" "}
-                  {admission.student.studentName?.middleName}{" "}
-                  {admission.student.studentName?.lastName}
+                <option key={enrolment.student._id} value={enrolment.student._id}>
+                  {enrolment.student?.studentName?.firstName}{" "}
+                  {enrolment.student.studentName?.middleName}{" "}
+                  {enrolment.student.studentName?.lastName}
                 </option>
               
           </select>
@@ -428,22 +428,22 @@ const EditAdmissionForm = ({ admission }) => {
 
         <div>
           <label
-            htmlFor="admissionYear"
+            htmlFor="enrolmentYear"
             className="block text-sm font-medium text-gray-700"
           >
-            Admission Year{" "}
-            {!primaryValidity.validAdmissionYear && (
+            Enrolment Year{" "}
+            {!primaryValidity.validEnrolmentYear && (
               <span className="text-red-500">*</span>
             )}
           </label>
           <select
-            id="admissionYear"
-            name="admissionYear"
-            value={formData.admissionYear}
+            id="enrolmentYear"
+            name="enrolmentYear"
+            value={formData.enrolmentYear}
             onChange={(e) =>
               setFormData((prevData) => ({
                 ...prevData,
-                admissionYear: e.target.value, // update formData with input value
+                enrolmentYear: e.target.value, // update formData with input value
               }))
             }
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
@@ -452,35 +452,35 @@ const EditAdmissionForm = ({ admission }) => {
           >
            
             <option
-              key={formData.admissionYear}
-              value={formData.admissionYear}
+              key={formData.enrolmentYear}
+              value={formData.enrolmentYear}
             >
-              {formData.admissionYear}
+              {formData.enrolmentYear}
             </option>
            
           </select>
         </div>
 
-        {/* Admission Date Input */}
+        {/* Enrolment Date Input */}
         <div>
           <label
-            htmlFor="admissionDate"
+            htmlFor="enrolmentDate"
             className="block text-sm font-medium text-gray-700"
           >
-            Admission Starting Date{" "}
-            {!primaryValidity.validAdmissionDate && (
+            Enrolment Starting Date{" "}
+            {!primaryValidity.validEnrolmentDate && (
               <span className="text-red-500">*</span>
             )}
           </label>
           <input
             type="date"
-            id="admissionDate"
-            name="admissionDate"
-            value={formData.admissionDate}
+            id="enrolmentDate"
+            name="enrolmentDate"
+            value={formData.enrolmentDate}
             onChange={(e) =>
               setFormData((prevData) => ({
                 ...prevData,
-                admissionDate: e.target.value, // update formData with input value
+                enrolmentDate: e.target.value, // update formData with input value
               }))
             }
             placeholder="YYYY-MM-DD"
@@ -499,10 +499,10 @@ const EditAdmissionForm = ({ admission }) => {
                 className="block text-sm font-medium text-gray-700"
               >
                 Service{" "}
-                {!admissionValidity[index]?.validService && (
+                {!enrolmentValidity[index]?.validService && (
                   <span className="text-red-500">*</span>
                 )}
-                {index === 0 && "(Default: Admission)"}
+                {index === 0 && "(Default: Enrolment)"}
               </label>
               <select
                 id={`service-${index}`}
@@ -510,11 +510,11 @@ const EditAdmissionForm = ({ admission }) => {
                 value={service.id}
                 onChange={(e) => handleAgreedServicesChange(index, e)}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                disabled={index === 0} // Disable the first service since it's "Admission"
+                disabled={index === 0} // Disable the first service since it's "Enrolment"
                 required
               >
                 {index === 0 ? (
-                  <option value="Admission">Admission</option>
+                  <option value="Enrolment">Enrolment</option>
                 ) : (
                   <>
                     
@@ -533,7 +533,7 @@ const EditAdmissionForm = ({ admission }) => {
                   className="block text-sm font-medium text-gray-700"
                 >
                   Fee Period{" "}
-                  {!admissionValidity[index]?.validFeePeriod && (
+                  {!enrolmentValidity[index]?.validFeePeriod && (
                     <span className="text-red-500">*</span>
                   )}
                 </label>
@@ -573,7 +573,7 @@ const EditAdmissionForm = ({ admission }) => {
                   className="block text-sm font-medium text-gray-700"
                 >
                   Fee Value{" "}
-                  {!admissionValidity[index]?.validFeeValue && (
+                  {!enrolmentValidity[index]?.validFeeValue && (
                     <span className="text-red-500">*</span>
                   )}
                 </label>
@@ -597,7 +597,7 @@ const EditAdmissionForm = ({ admission }) => {
                   className="block text-sm font-medium text-gray-700"
                 >
                   Fee Start Date{" "}
-                  {!admissionValidity[index]?.validFeeStartDate && (
+                  {!enrolmentValidity[index]?.validFeeStartDate && (
                     <span className="text-red-500">*</span>
                   )}
                 </label>
@@ -692,16 +692,16 @@ const EditAdmissionForm = ({ admission }) => {
             }`}
           >
             <FontAwesomeIcon icon={faSave} className="mr-2" />
-            {isAdmissionLoading ? "Saving..." : "Save Admission"}
+            {isEnrolmentLoading ? "Saving..." : "Save Enrolment"}
           </button>
         </div>
       </form>
     </>
   );
 
-  // if (noAdmissionStudents.length === 0) return <LoadingStateIcon />;
-  //if (noAdmissionStudents.length) return content;
+  // if (noEnrolmentStudents.length === 0) return <LoadingStateIcon />;
+  //if (noEnrolmentStudents.length) return content;
   return content;
 };
 
-export default EditAdmissionForm;
+export default EditEnrolmentForm;

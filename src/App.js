@@ -34,7 +34,12 @@ import AdmissionsList from "./features/Students/Admissions/AdmissionsList"
 import EditAdmission from "./features/Students/Admissions/EditAdmission"
 import NewAdmissionForm from './features/Students/Admissions/NewAdmissionForm'
 
+
 import Enrolments from "./features/Students/Enrolments"
+import EnrolmentsList from "./features/Students/Enrolments/EnrolmentsList"
+import EditEnrolment from "./features/Students/Enrolments/EditEnrolment"
+import NewEnrolmentForm from './features/Students/Enrolments/NewEnrolmentForm'
+
 import NurseryPlannings from './features/Academics/NurseryPlannings'
 import SchoolPlannings from './features/Academics/SchoolPlannings'
 import CollectionDrop from './features/Academics/CollectionDrop'
@@ -173,9 +178,17 @@ const App = () => {
 
 								</Route> {/* end of Admissions route */}
 
-								<Route path="enrolments" > 					
+								<Route path="Enrolments" > 					
 								<Route index element={<Enrolments />} /> 
+								
+									<Route path="enrolments/" element={<EnrolmentsList/>}/>												
+									<Route path="newEnrolment/" element={<NewEnrolmentForm/>}/>
+									<Route path="editEnrolment/:id" element={<EditEnrolment/>}/>
+									
+
 								</Route> {/* end of Enrolments route */}
+
+								
 							</Route> {/* end of Students route */}
 
 
