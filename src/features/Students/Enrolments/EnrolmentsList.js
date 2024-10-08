@@ -184,7 +184,7 @@ const EnrolmentsList = () => {
       : null,
 
     {
-      name: " Student Is Active",
+      name: " Active Student",
       selector: (row) => row.student.studentIsActive,
       cell: (row) => (
         <span>
@@ -242,11 +242,11 @@ const EnrolmentsList = () => {
       width: "100px",
     },
     {
-      name: "Validated",//means authorised 
+      name: "Authorised",//means authorised 
       selector: (row) => (row.admission.agreedServices?.isAuthorised ? "yes" : "No"),
 
       sortable: true,
-      width: "120px",
+      width: "140px",
     },
     {
       name: "Admission Fee Dates",

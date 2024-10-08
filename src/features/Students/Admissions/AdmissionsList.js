@@ -380,17 +380,13 @@ const AdmissionsList = () => {
       width: "120px",
     },
     {
-      name: "Fee start",
+      name: "Fee Months",
       
       
       selector: (row) => (
         <div>
           {row.agreedServices.map((feeObj, index) => (
-           (feeObj?.feeEndDate)? <div key={index}>{new Date(feeObj?.feeEndDate).toLocaleDateString("en-GB", {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-            }) }</div> : <div>---</div>
+           (feeObj?.feeMonths)? <div >{feeObj?.feeMonths} </div> : <div>---</div>
           ))}
         </div>
       ),
