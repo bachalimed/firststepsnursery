@@ -43,8 +43,7 @@ import {
     const dispatch = useDispatch();
   
     const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
-    const [requiredDocNumber, setRequiredDocNumber] = useState("");
-    const [studentDocNumber, setStudentDocNumber] = useState("");
+   
   
     const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
     const selectedAcademicYear = useSelector((state) =>
@@ -71,57 +70,18 @@ import {
     } = useGetStudentsByYearQuery(
       {
         selectedYear: selectedAcademicYear?.title,
+        criteria: "withEducation",
         endpointName: "studentsList",
       } || {},
       {
         //this param will be passed in req.params to select only students for taht year
         //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-        pollingInterval: 60000, //will refetch data every 60seconds
+        //pollingInterval: 60000, //will refetch data every 60seconds
         refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
         refetchOnMountOrArgChange: true, //refetch when we remount the component
       }
     );
   
-    //initialising the delete Mutation
-    const [
-      deleteStudent,
-      {
-        isLoading: isDelLoading,
-        isSuccess: isDelSuccess,
-        isError: isDelError,
-        error: delerror,
-      },
-    ] = useDeleteStudentMutation();
-  
-    // Function to handle the delete button click
-    const onDeleteStudentClicked = (id) => {
-      setIdStudentToDelete(id); // Set the document to delete
-      setIsDeleteModalOpen(true); // Open the modal
-    };
-  
-    // Function to confirm deletion in the modal
-    const handleConfirmDelete = async () => {
-      await deleteStudent({ id: idStudentToDelete });
-      setIsDeleteModalOpen(false); // Close the modal
-    };
-  
-    // Function to close the modal without deleting
-    const handleCloseDeleteModal = () => {
-      setIsDeleteModalOpen(false);
-      setIdStudentToDelete(null);
-    };
-  
-    //this ensures teh selected year is chosen before running hte useeffect it is working perfectly to dispaptch the selected year
-    // useEffect(() => {
-    //   if (selectedAcademicYear?.title) {
-    //     setSelectedYear(selectedAcademicYear.title);
-    //     //console.log('Selected year updated:', selectedAcademicYear.title)
-    //   }
-    // }, [selectedAcademicYear]);
-    //console.log('selectedAcademicYear',selectedAcademicYear)
-  
-    // const myStu = useSelector(state=> state.student)
-    // console.log(myStu, 'mystu')
   
     //const allStudents = useSelector(selectAllStudents)// not the same cache list we re looking for this is from getstudents query and not getstudentbyyear wuery
   
@@ -258,16 +218,16 @@ import {
       },
       //show this column only if user is a parent and not employee
   
-      isAdmin && {
-        name: "ID",
-        selector: (row) => (
-          <Link to={`/students/studentsParents/studentDetails/${row.id}`}>
-            {row.id}{" "}
-          </Link>
-        ),
-        sortable: true,
-        width: "200px",
-      },
+      // isAdmin && {
+      //   name: "ID",
+      //   selector: (row) => (
+      //     <Link to={`/students/studentsParents/studentDetails/${row.id}`}>
+      //       {row.id}{" "}
+      //     </Link>
+      //   ),
+      //   sortable: true,
+      //   width: "200px",
+      // },
   
       {
         name: "Student Name",
@@ -325,56 +285,7 @@ import {
         width: "80px",
       },
   
-      {
-        name: "DOB",
-        selector: (row) =>
-          new Date(row.studentDob).toLocaleDateString("en-GB", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-          }),
-  
-        sortable: true,
-        width: "100px",
-      },
-      // {name: "Father",
-      //   selector:row=>row.studentFather._id,
-      //   sortable:true
-      // },
-      // {name: "Mother",
-      //   selector:row=>row.studentMother._id,
-      //   sortable:true
-      // },
-  
-      {
-        name: "Admissions",
-  
-        selector: (row) => (
-          <div>
-            {row.studentYears.map((year) => (
-              <Link to={`/students/admissions/admissionDetails/${row.id}`}>
-                {" "}
-                <div key={year.academicYear}>{year.academicYear}</div>
-              </Link>
-            ))}
-          </div>
-        ),
-        sortable: true,
-        removableRows: true,
-        width: "110px",
-      },
-      {
-        name: "Documents",
-        selector: (row) => (
-          <Link to={`/students/studentsParents/studentDocumentsList/${row.id}`}>
-            {" "}
-            <IoDocumentAttachOutline className="text-slate-800 text-2xl" />
-          </Link>
-        ),
-        sortable: true,
-        removableRows: true,
-        width: "120px",
-      },
+     
   
       {
         name: "Actions",
@@ -399,14 +310,14 @@ import {
                 <FiEdit className="text-2xl" />
               </button>
             ) : null}
-            {canDelete && !isDelLoading && (
+            {/* {canDelete && (
               <button
                 className="text-red-500"
                 onClick={() => onDeleteStudentClicked(row.id)}
               >
                 <RiDeleteBin6Line className="text-2xl" />
               </button>
-            )}
+            )} */}
           </div>
         ),
         ignoreRowClick: true,
@@ -479,11 +390,7 @@ import {
             )}
           </div>
         </div>
-        <DeletionConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
-          onConfirm={handleConfirmDelete}
-        />
+       
         <RegisterModal
           isOpen={isRegisterModalOpen}
           onClose={() => setIsRegisterModalOpen(false)}

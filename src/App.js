@@ -105,6 +105,7 @@ import NewAttendedSchoolForm from './features/AppSettings/AcademicsSet/attendedS
 import EditAttendedSchool from './features/AppSettings/AcademicsSet/attendedSchools/EditAttendedSchool'
 import NewAcademicYearForm from './features/AppSettings/AcademicsSet/AcademicYears/NewAcademicYearForm'
 import EditAcademicYear from './features/AppSettings/AcademicsSet/AcademicYears/EditAcademicYear'
+import ClassroomsList from './features/AppSettings/AcademicsSet/Classrooms/ClassroomsList'
 
 // import Parents from './features/Students/Parents'
 // import NewStudent from './features/Students/NewStudent'
@@ -318,6 +319,7 @@ const App = () => {
 									<Route path="newSchool/" element={<NewAttendedSchoolForm />}/>
 									<Route path="editAttendedSchool/:id/" element={<EditAttendedSchool />}/>
 									
+									<Route path="classrooms/" element={<ClassroomsList />}/>
 
 
 								</Route> {/* end of academicsSet route */}

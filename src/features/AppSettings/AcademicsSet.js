@@ -1,8 +1,9 @@
 import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 //we will  find the object corresponding to the page and extract the section tabs
 const AcademicsSet = () => {
+  const location = useLocation();
   const academicsSetTabs = {
     title: "Academics",
     path: "/settings/academicsSet",
@@ -52,28 +53,40 @@ const AcademicsSet = () => {
     ],
   };
 
-  let content;
-  content = (
+  // Define the tabs with their titles and paths
+  const tabs = [
+    {
+      title: "Academic Years",
+      path: "/settings/academicsSet/academicYears/",
+    },
+    {
+      title: "attendedSchools",
+      path: "/settings/academicsSet/attendedSchools/",
+    },
+    { title: "Classrooms", path: "/settings/academicsSet/classrooms/" },
+    { title: "Otherkjhhj", path: "/settings/academicsSet/blaother" },
+  ];
+
+  // Function to determine if the tab is active based on the current path
+  const isActive = (path) => location.pathname === path;
+
+  return (
     <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6">
-      <Link to={"/settings/academicsSet/academicYears/"}>
-        <li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">
-          Academic Years
-        </li>
-      </Link>
-      <Link to={"/settings/academicsSet/attendedSchools/"}>
-        <li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">
-          attendedSchools{" "}
-        </li>
-      </Link>
-      <Link to={"/settings/academicsSet"}>
-        <li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">
-          option3
-        </li>
-      </Link>
+      {tabs.map((tab) => (
+        <Link key={tab.path} to={tab.path}>
+          <li
+            className={`list-none cursor-pointer ${
+              isActive(tab.path)
+                ? "text-blue-500"
+                : "text-gray-800 hover:text-blue-500"
+            }`}
+          >
+            {tab.title}
+          </li>
+        </Link>
+      ))}
       <AcademicYearsSelection />
     </div>
   );
-  return content;
 };
-
 export default AcademicsSet;

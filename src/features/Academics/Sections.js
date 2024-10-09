@@ -24,6 +24,7 @@ const Sections = () => {
 
    // Define the tab data with paths and labels
    const tabs = [
+    { label: 'Sections', path: "/academics/sections/sectionsList" },
     { label: 'School Sections', path: "/academics/schoolSections/" },
     { label: 'Nursery Sections', path: '/academics/nurserySections/' },
     { label: 'New blbls', path: '/hr/employees/employeedddddds/' },
