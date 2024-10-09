@@ -41,6 +41,7 @@ import EditEnrolment from "./features/Students/Enrolments/EditEnrolment"
 import NewEnrolmentForm from './features/Students/Enrolments/NewEnrolmentForm'
 
 import NurseryPlannings from './features/Academics/NurseryPlannings'
+import SectionsList from './features/Academics/Sections/SectionsList'
 import Sections from './features/Academics/Sections'
 import SchoolPlannings from './features/Academics/SchoolPlannings'
 import CollectionDrop from './features/Academics/CollectionDrop'
@@ -198,6 +199,7 @@ const App = () => {
 
 								<Route path="sections" > 					
 								<Route index element={<Sections />} /> 
+								<Route path="sectionsList/" element={<SectionsList/>}/>	
 								</Route> {/* end of sections route */}
 
 								<Route path="schoolPlannings" > 					
