@@ -255,7 +255,7 @@ const EnrolmentsList = () => {
           <div>
             from{" "}
             {new Date(
-              row.admission.agreedServices.feeStartDate
+              row.admission.agreedServices?.feeStartDate
             ).toLocaleDateString("en-GB", {
               year: "numeric",
               month: "2-digit",
@@ -263,7 +263,7 @@ const EnrolmentsList = () => {
             })}
           </div>
           <div>
-            {row.admission.agreedServices.feeEndDate
+            {row.admission.agreedServices?.feeEndDate
               ? new Date(
                   row.admission.agreedServices.feeEndDate
                 ).toLocaleDateString("en-GB", {
@@ -280,7 +280,7 @@ const EnrolmentsList = () => {
     },
 
     {
-      name: "Enrolment Duration",
+      name: "Enrolment Month",
       selector: (row) =>
         `${row.enrolmentDuration || ""} ${row.enrolmentMonth || ""}`,
       sortable: true,

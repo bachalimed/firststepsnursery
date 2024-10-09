@@ -15,7 +15,7 @@ import { useGetServicesByYearQuery } from "../../AppSettings/StudentsSet/Nursery
 import Admissions from "../Admissions";
 import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
-import { IoMdAddCircleOutline } from "react-icons/io";
+import { GrValidate } from "react-icons/gr";
 import AddServiceToAdmissionModal from "./AddServiceToAdmissionModal";
 import { useSelector } from "react-redux";
 import {
@@ -24,7 +24,7 @@ import {
 } from "./admissionsApiSlice"; //use the memoized selector
 import { useEffect, useState } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
-import RegisterModal from "./AdmissionModal";
+
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { ImProfile } from "react-icons/im";
@@ -48,7 +48,7 @@ const AdmissionsList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
+  const { userId,canEdit, isAdmin, isManager, canDelete, canCreate, status2 } = useAuth();
 
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
@@ -132,16 +132,18 @@ const AdmissionsList = () => {
         item?.student?.studentName?.middleName,
         item?.student?.studentName?.lastName,
       ].some((name) => name?.toLowerCase().includes(searchQuery.toLowerCase()));
-    
+
       // Add more criteria as needed, e.g., admissionDate, services, etc.
       const otherMatches = Object.values(item)
         .flat()
-        .some((val) => val?.toString().toLowerCase().includes(searchQuery.toLowerCase()));
-    
+        .some((val) =>
+          val?.toString().toLowerCase().includes(searchQuery.toLowerCase())
+        );
+
       return nameMatches || otherMatches;
     });
   }
- 
+
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
@@ -195,7 +197,6 @@ const AdmissionsList = () => {
   // const handleAddServiceToAdmission = () => {
   //   setAgreedServices([...agreedServices, newService]);
   // };
-  
 
   //   const [admissionYears, setAdmissionYears] = useState([])
   // //adds to the previous entries in arrays for gardien, schools...
@@ -208,6 +209,35 @@ const AdmissionsList = () => {
   //           setAdmissionYears(admissionYears.filter(year => year !== selectedYear))
   //         }
   //       }
+
+  
+  const handleUpdateAdmission = (admission) => {
+    console.log(admission, 'admissionnnnnnnnnnn')
+    // Create a new admission object to avoid mutating the original
+    const updatedAdmission = {
+      ...admission, 
+      admissionId:admission.id,
+      admissionOperator:userId,
+      student:admission.student._id,
+      agreedServices: admission.agreedServices.map((service) => ({
+        ...service, // Copy existing service properties
+        isAuthorised: true, // Set isAuthorised to true
+        authorisedBy: userId 
+      })),
+    };
+  
+    // Call the update mutation with the new admission object
+    updateAdmission(updatedAdmission)
+      .unwrap() // Handle the promise returned by the mutation
+      .then(() => {
+        // Optionally show a success message or perform other actions
+        console.log("Admission updated successfully");
+      })
+      .catch((error) => {
+        // Handle errors if the update fails
+        console.error("Failed to update admission:", error);
+      });
+  };
 
   const column = [
     {
@@ -315,11 +345,10 @@ const AdmissionsList = () => {
             const feeValue = feeObj?.feeValue;
 
             // Determine the text color based on the comparison
-            let textColorClass = "text-black"; // Default is black
-            if (feeValue < anchorValue) {
-              textColorClass = "text-red-500"; // Red if less than anchor
-            } else if (feeValue > anchorValue) {
-              textColorClass = "text-green-500"; // Green if greater than anchor
+            let textColorClass = "text-red-500"; // Default is black
+            if ( feeObj.isAuthorised || feeValue >= anchorValue) {
+            
+              textColorClass = "text-green-800"; // Green if greater than anchor
             }
 
             return (
@@ -352,26 +381,48 @@ const AdmissionsList = () => {
       selector: (row) => (
         <div>
           {row.agreedServices.map((feeObj, index) => (
-            <div key={index}>{feeObj?.authorisedBy ? "Yes" : "No"}</div>
+            <div key={index}>{feeObj?.isAuthorised ? "Yes" : "No"}</div>
           ))}
         </div>
       ),
 
       sortable: true,
-      width: "120px",
+      width: "110px",
     },
+    (isManager && {
+      name: "Authorise Fees",
+
+      cell: (row) => (
+        <div className="space-x-1">
+          <button
+            assName={`${row.agreedServices.every(service => service.isAuthorised) ? 'text-gray-400' : 'text-purple-500'}`}
+            fontSize={20}
+            onClick={() => handleUpdateAdmission(row)} // Open the modal with the selected admission
+            disabled={row.agreedServices.every(service => service.isAuthorised)} // Disable if all services are authorised
+          >
+            <GrValidate className="text-2xl" />
+          </button>
+        </div>
+      ),
+      ignoreRowClick: true,
+      button: true,
+      width: "120px",
+    
+    }),
+   
     {
       name: "Fee start",
-      
-      
+
       selector: (row) => (
         <div>
           {row.agreedServices.map((feeObj, index) => (
-            <div key={index}>{new Date(feeObj?.feeStartDate).toLocaleDateString("en-GB", {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-            }) }</div>
+            <div key={index}>
+              {new Date(feeObj?.feeStartDate).toLocaleDateString("en-GB", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+              })}
+            </div>
           ))}
         </div>
       ),
@@ -381,20 +432,19 @@ const AdmissionsList = () => {
     },
     {
       name: "Fee Months",
-      
-      
+
       selector: (row) => (
         <div>
-          {row.agreedServices.map((feeObj, index) => (
-           (feeObj?.feeMonths)? <div >{feeObj?.feeMonths} </div> : <div>---</div>
-          ))}
+          {row.agreedServices.map((feeObj, index) =>
+            feeObj?.feeMonths ? <div>{feeObj?.feeMonths} </div> : <div>---</div>
+          )}
         </div>
       ),
 
       sortable: true,
       width: "120px",
     },
-
+   
     {
       name: "Actions",
       cell: (row) => (
@@ -511,23 +561,8 @@ const AdmissionsList = () => {
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
       />
-      {/* <RegisterModal
-        isOpen={isRegisterModalOpen}
-        onClose={() => setIsRegisterModalOpen(false)}
-        admissionYears={admissionYears}
-        admissionObject={admissionObject}
-        setAdmissionObject={setAdmissionObject}
-        setAdmissionYears={setAdmissionYears}
-        academicYears={academicYears}
-        onSave={onUpdateAdmissionClicked}
-      /> */}
-      {/* <AddServiceToAdmissionModal
-        availableServices={servicesList}
-        agreedServices={agreedServices}
-        setAgreedServices={setAgreedServices}
-        onAddService={handleAddServiceToAdmission}
-        anchor={anchor}
-      /> */}
+     
+     
     </>
   );
   //}

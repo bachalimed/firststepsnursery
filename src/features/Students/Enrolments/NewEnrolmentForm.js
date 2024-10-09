@@ -119,10 +119,13 @@ const NewEnrolmentForm = () => {
       validEnrolmentCreator: OBJECTID_REGEX.test(formData?.enrolmentCreator),
     });
   }, [formData]);
-
-  // Reset form on success and redirect
+  console.log(isEnrolmentSuccess, "isEnrolmentSuccess Enrolment added successfully111");
   useEffect(() => {
     if (isEnrolmentSuccess) {
+      // Log or inspect the response here if needed
+      console.log(isEnrolmentSuccess, "isEnrolmentSuccess Enrolment added successfully222");
+  
+      // Reset the form data
       setFormData({
         student: "",
         admission: "",
@@ -132,7 +135,9 @@ const NewEnrolmentForm = () => {
         enrolmentOperator: "",
         enrolments: [],
       });
-      navigate("/students/enrolments/enrolments");
+  
+      // Navigate to the enrolments page
+      navigate("/students/enrolments/enrolments/");
     }
   }, [isEnrolmentSuccess, navigate]);
 
@@ -173,23 +178,32 @@ const NewEnrolmentForm = () => {
     const services = getServicesFromList();
     if (services.length) {
       setStudentServicesList(services);
-      console.log(studentServicesList, "studentServicesList");
-      setFormData((prevData) => ({
+
+      // Update formData with unique enrolments based on services
+      const uniqueEnrolments = services.reduce((acc, service) => {
+        const exists = acc.some(enrolment => enrolment.service === service.service);
+        if (!exists) {
+          acc.push({
+            service: service.service,
+            serviceType: service.serviceType,
+            servicePeriod: service.servicePeriod,
+            serviceAuthorisedFee: service.serviceAuthorisedFee,
+            serviceFinalFee: service.serviceFinalFee,
+          });
+        }
+        return acc;
+      }, []);
+      
+      setFormData(prevData => ({
         ...prevData,
-        enrolments: services.map((service) => ({
-          service: service.service,
-          serviceType: service.serviceType,
-          servicePeriod: service.servicePeriod,
-          serviceAuthorisedFee: service.serviceAuthorisedFee,
-          serviceFinalFee: service.serviceFinalFee,
-        })),
+        enrolments: uniqueEnrolments,
       }));
     }
   }, [formData.student, formData.enrolmentMonth]);
 
   // Function to handle service final fee changes
   const handleServiceChange = (serviceId, finalFee) => {
-    setFormData((prevData) => {
+    setFormData(prevData => {
       const updatedEnrolments = prevData.enrolments.map((enrolment) =>
         enrolment.service === serviceId
           ? { ...enrolment, serviceFinalFee: finalFee }
@@ -198,31 +212,41 @@ const NewEnrolmentForm = () => {
       return { ...prevData, enrolments: updatedEnrolments };
     });
   };
+
   // Function to toggle services
   const handleServiceToggle = (serviceId, checked) => {
-    if (!checked) {
-      setFormData((prevData) => ({
+    const selectedService = studentServicesList.find(
+      (service) => service.service === serviceId
+    );
+
+    if (checked) {
+      // Only add if it's not already in the formData
+      setFormData(prevData => {
+        const exists = prevData.enrolments.some(enrolment => enrolment.service === selectedService.service);
+        if (!exists) {
+          return {
+            ...prevData,
+            enrolments: [
+              ...prevData.enrolments,
+              {
+                service: selectedService.service,
+                serviceType: selectedService.serviceType,
+                servicePeriod: selectedService.servicePeriod,
+                serviceAuthorisedFee: selectedService.serviceAuthorisedFee,
+                serviceFinalFee: selectedService.serviceFinalFee,
+              },
+            ],
+          };
+        }
+        return prevData; // Do nothing if it already exists
+      });
+    } else {
+      // Remove the service from enrolments
+      setFormData(prevData => ({
         ...prevData,
         enrolments: prevData.enrolments.filter(
           (enrolment) => enrolment.service !== serviceId
         ),
-      }));
-    } else {
-      const selectedService = studentServicesList.find(
-        (service) => service.service === serviceId
-      );
-      setFormData((prevData) => ({
-        ...prevData,
-        enrolments: [
-          ...prevData.enrolments,
-          {
-            service: selectedService.service,
-            serviceType: selectedService.serviceType,
-            servicePeriod: selectedService.servicePeriod,
-            serviceAuthorisedFee: selectedService.serviceAuthorisedFee,
-            serviceFinalFee: selectedService.serviceFinalFee,
-          },
-        ],
       }));
     }
   };
@@ -232,11 +256,13 @@ const NewEnrolmentForm = () => {
     if (canSave) {
       try {
         await addNewEnrolment(formData);
+        navigate("/students/enrolments/enrolments/");
       } catch (err) {
         console.error("Failed to save the enrolment", err);
       }
     }
   };
+
 
   console.log(formData, "formData");
 
@@ -354,56 +380,60 @@ const NewEnrolmentForm = () => {
             ))}
           </select>
         </div>
-        {/* Enrolment Services */}
-        <div>
-          <h3 className="text-lg font-semibold">Services</h3>
-          <div className="space-y-4 mt-4">
-            {studentServicesList.map((service) => (
-              <div key={service.service}>
-                <label className="flex items-center">
+      
+        {/* Services Section */}
+        <fieldset>
+          <legend className="block text-sm font-medium text-gray-700">
+            Services
+          </legend>
+          <div className="mt-4 space-y-4">
+            {studentServicesList.map((service) => {
+              const isChecked = formData.enrolments.some(
+                (enrolment) => enrolment.service === service.service
+              );
+
+              return (
+                <div key={service.service} className="flex items-center">
                   <input
                     type="checkbox"
+                    id={service.service}
+                    checked={isChecked}
                     onChange={(e) =>
                       handleServiceToggle(service.service, e.target.checked)
                     }
+                    className="mr-2"
                   />
-                  <span className="ml-2">{service.serviceType}</span>
-                  <span className="ml-2 text-gray-500">
-                    ({service.servicePeriod})
+                  <label htmlFor={service.service}>
+                    {service.serviceType}
+                  </label>
+
+                  {/* Display Authorized Fee and Service Period */}
+                  <span className="ml-4">
+                    Authorized Fee: ${service.serviceAuthorisedFee}
                   </span>
-                </label>
-                <div className="mt-2">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Authorised Fee
-                  </label>
-                  <input
-                    type="text"
-                    value={service.serviceAuthorisedFee}
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                    disabled
-                  />
-                </div>
-                <div className="mt-2">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Final Fee
-                  </label>
-                  <input
-                    type="text"
-                    value={
-                      formData.enrolments.find(
+                  <span className="ml-4">
+                    Period: {service.servicePeriod}
+                  </span>
+
+                  {/* Service final fee input */}
+                  {isChecked && (
+                    <input
+                      type="number"
+                      value={formData.enrolments.find(
                         (enrolment) => enrolment.service === service.service
-                      )?.serviceFinalFee || ""
-                    }
-                    onChange={(e) =>
-                      handleServiceChange(service.service, e.target.value)
-                    }
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  />
+                      )?.serviceFinalFee || ""}
+                      onChange={(e) =>
+                        handleServiceChange(service.service, e.target.value)
+                      }
+                      className="ml-4 border rounded-md p-1"
+                      placeholder="Final Fee"
+                    />
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
-        </div>
+        </fieldset>
 
         <div className="flex justify-end mt-6">
           <button
