@@ -44,6 +44,7 @@ import NurseryPlannings from './features/Academics/NurseryPlannings'
 import SectionsList from './features/Academics/Sections/SectionsList'
 import Sections from './features/Academics/Sections'
 import SchoolPlannings from './features/Academics/SchoolPlannings'
+import SchoolSchedule from './features/Academics/SchoolPlannings/SchoolSchedule'
 import CollectionDrop from './features/Academics/CollectionDrop'
 import Invoices from './features/Finances/Invoices'
 import Payments from './features/Finances/Payments'
@@ -205,6 +206,9 @@ const App = () => {
 
 								<Route path="schoolPlannings" > 					
 								<Route index element={<SchoolPlannings />} /> 
+								<Route path="schoolSchedule/" element={<SchoolSchedule/>}/>	
+
+
 								</Route> {/* end of schoolPlannings route */}
 
 								<Route path="nurseryPlannings" > 					

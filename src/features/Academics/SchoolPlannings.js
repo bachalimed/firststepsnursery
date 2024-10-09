@@ -24,8 +24,8 @@ const SchoolPlannings = () => {
 
   // Define the tab data with paths and labels
   const tabs = [
-    { label: 'School Sections', path: "/academics/schoolPlanning/schoolSections" },
-    { label: 'School Planning', path: '/academics/schoolPlanning/' },
+    { label: 'School Sections', path: "/academics/schoolPlannings/schoolSections" },
+    { label: 'School Schedule', path: '/academics/schoolPlannings/schoolSchedule' },
     { label: 'New blbls', path: "/academics/schoolPlanning/" },
   ];
  // Function to determine if a tab is active based on the current path

@@ -8,6 +8,7 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@headlessui/react": "^2.1.0",
     "@reduxjs/toolkit": "^2.2.6",
+    "@syncfusion/ej2-react-schedule": "^27.1.52",
     "axios": "^1.7.5",
     "date-fns": "^3.6.0",
     "jwt-decode": "^4.0.0",

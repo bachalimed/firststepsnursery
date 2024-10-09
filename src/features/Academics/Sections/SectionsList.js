@@ -70,7 +70,7 @@ import {
     } = useGetStudentsByYearQuery(
       {
         selectedYear: selectedAcademicYear?.title,
-        criteria: "withEducation",
+        //criteria: "withEducation",
         endpointName: "studentsList",
       } || {},
       {
