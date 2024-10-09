@@ -28,6 +28,7 @@ import { PiDotsThreeVerticalLight } from "react-icons/pi";
 import { sidebarMenuUp } from "../../lib/Consts/SidebarMenu";
 import { LuChevronLeft } from "react-icons/lu";
 import { GrUserAdmin, GrTask } from "react-icons/gr";
+import { CiViewList } from "react-icons/ci";
 
 // import { CgPushChevronLeftR } from "react-icons/cg"
 
@@ -211,6 +212,25 @@ const DashboardSidebar = () => {
           </Link>
           {open && academicsOpen && (
             <ul>
+              <Link
+                to="/academics/Sections/"
+                className={
+                  location.pathname === "/academics/Sections/"
+                    ? "text-teal-200"
+                    : ""
+                }
+              >
+                <li
+                  className="  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md "
+                  onClick={() => setOpen(!open)}
+                >
+                  <span className="text-1xl block float-left">
+                    {" "}
+                    <CiViewList />{" "}
+                  </span>
+                  Sections
+                </li>
+              </Link>
               <Link
                 to="/academics/schoolPlannings/"
                 className={

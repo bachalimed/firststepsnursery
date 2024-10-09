@@ -41,6 +41,7 @@ import EditEnrolment from "./features/Students/Enrolments/EditEnrolment"
 import NewEnrolmentForm from './features/Students/Enrolments/NewEnrolmentForm'
 
 import NurseryPlannings from './features/Academics/NurseryPlannings'
+import Sections from './features/Academics/Sections'
 import SchoolPlannings from './features/Academics/SchoolPlannings'
 import CollectionDrop from './features/Academics/CollectionDrop'
 import Invoices from './features/Finances/Invoices'
@@ -194,6 +195,10 @@ const App = () => {
 
 							<Route path="academics" element={<DashboardLayout />} >	 				
 								<Route index element={<SchoolPlannings />} />   
+
+								<Route path="sections" > 					
+								<Route index element={<Sections />} /> 
+								</Route> {/* end of sections route */}
 
 								<Route path="schoolPlannings" > 					
 								<Route index element={<SchoolPlannings />} /> 

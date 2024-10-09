@@ -10,7 +10,7 @@ import {
   selectAcademicYearById,
   selectAllAcademicYears,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import LoadingStateIcon from '../../../../Components/LoadingStateIcon'
+import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 import RegisterModal from "./RegisterModal";
 import StudentsParents from "../../StudentsParents";
 import { useDispatch } from "react-redux";
@@ -77,7 +77,7 @@ const StudentsList = () => {
     {
       //this param will be passed in req.params to select only students for taht year
       //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-      pollingInterval: 60000,//will refetch data every 60seconds
+      pollingInterval: 60000, //will refetch data every 60seconds
       refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
       refetchOnMountOrArgChange: true, //refetch when we remount the component
     }
@@ -216,7 +216,7 @@ const StudentsList = () => {
 
     //setSelectedRows([]); // Clear selection after process
   };
-  
+
   // This is called when saving the updated student years from the modal
   const onUpdateStudentClicked = async (updatedYears) => {
     //console.log("Updated studentYears from modal:", updatedYears);
@@ -238,17 +238,17 @@ const StudentsList = () => {
     setIsRegisterModalOpen(false); // Close modal
   };
 
-    //const [studentYears, setStudentYears] = useState([])
+  //const [studentYears, setStudentYears] = useState([])
   //adds to the previous entries in arrays for gardien, schools...
-        const onStudentYearsChanged = (e, selectedYear) => {
-          if (e.target.checked) {
-            // Add the selectedYear to studentYears if it's checked
-            setStudentYears([...studentYears, selectedYear]);
-          } else {
-            // Remove the selectedYear from studentYears if it's unchecked
-            setStudentYears(studentYears.filter(year => year !== selectedYear))
-          }
-        }
+  const onStudentYearsChanged = (e, selectedYear) => {
+    if (e.target.checked) {
+      // Add the selectedYear to studentYears if it's checked
+      setStudentYears([...studentYears, selectedYear]);
+    } else {
+      // Remove the selectedYear from studentYears if it's unchecked
+      setStudentYears(studentYears.filter((year) => year !== selectedYear));
+    }
+  };
 
   const column = [
     {
@@ -306,14 +306,34 @@ const StudentsList = () => {
       removableRows: true,
       width: "70px",
     },
+    {
+      name: "Grade",
+      selector: (row) => {
+        // Find the student year where academicYear matches selectedAcademicYear
+        const studentYearForSelectedYear = row.studentYears.find(
+          (year) => year.academicYear === selectedAcademicYear.title
+        );
+        console.log(studentYearForSelectedYear,'studentYearForSelectedYear')
+        console.log(selectedAcademicYear,'selectedAcademicYear')
+    
+        // Get the grade from the found student year
+        const gradeForSelectedYear = studentYearForSelectedYear?.grade;
+    
+        // Return the grade or a fallback value if not found
+        return gradeForSelectedYear || 'N/A'; // Display 'N/A' if no grade is found
+      },
+      sortable: true,
+      width: "80px",
+    },
 
     {
       name: "DOB",
-      selector: (row) =>new Date(row.studentDob).toLocaleDateString("en-GB", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      }),
+      selector: (row) =>
+        new Date(row.studentDob).toLocaleDateString("en-GB", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }),
 
       sortable: true,
       width: "100px",
@@ -333,9 +353,7 @@ const StudentsList = () => {
       selector: (row) => (
         <div>
           {row.studentYears.map((year) => (
-            <Link
-              to={`/students/admissions/admissionDetails/${row.id}`}
-            >
+            <Link to={`/students/admissions/admissionDetails/${row.id}`}>
               {" "}
               <div key={year.academicYear}>{year.academicYear}</div>
             </Link>
@@ -398,7 +416,7 @@ const StudentsList = () => {
     },
   ];
   let content;
-  if (isLoading) content = <LoadingStateIcon/>;
+  if (isLoading) content = <LoadingStateIcon />;
   if (isError) {
     content = <p className="errmsg">{error?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
   }
