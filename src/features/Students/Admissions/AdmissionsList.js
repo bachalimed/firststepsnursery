@@ -395,7 +395,7 @@ const AdmissionsList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
-            assName={`${row.agreedServices.every(service => service.isAuthorised) ? 'text-gray-400' : 'text-purple-500'}`}
+            className={`${row.agreedServices.every(service => service.isAuthorised) ? 'text-gray-400' : 'text-purple-500'}`}
             fontSize={20}
             onClick={() => handleUpdateAdmission(row)} // Open the modal with the selected admission
             disabled={row.agreedServices.every(service => service.isAuthorised)} // Disable if all services are authorised
