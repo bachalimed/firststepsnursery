@@ -17,17 +17,12 @@ import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-//constrains on inputs when creating new user
-const USER_REGEX = /^[A-z]{6,20}$/;
-const PWD_REGEX = /^[A-z0-9!@#-_$%]{8,20}$/;
-const NAME_REGEX = /^[A-z 0-9]{3,20}$/;
-const PHONE_REGEX = /^[0-9]{6,15}$/;
-const DOB_REGEX = /^[0-9/-]{4,10}$/;
-const EMAIL_REGEX = /^[A-z0-9.@-_]{6,20}$/;
+import {NAME_REGEX, DATE_REGEX } from '../../../../Components/lib/Utils/REGEX'
+
 
 const EditStudentForm = ({ student }) => {
   //initialising state variables and hooks
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [id, setId] = useState(student.id);
   const { userId, canEdit, canDelete, canAdd, canCreate, isParent, status2 } =
@@ -132,7 +127,7 @@ const EditStudentForm = ({ student }) => {
   }, [lastName]);
 
   useEffect(() => {
-    setValidStudentDob(DOB_REGEX.test(studentDob));
+    setValidStudentDob(DATE_REGEX.test(studentDob));
   }, [studentDob]);
 
   useEffect(() => {
@@ -164,9 +159,9 @@ const EditStudentForm = ({ student }) => {
       setNote("");
       setStudentEducation([]);
       setOperator("");
-      Navigate("/students/studentsParents/students/"); //will navigate here after saving
+      navigate("/students/studentsParents/students/"); //will navigate here after saving
     }
-  }, [isUpdateSuccess, Navigate]); //even if no success it will navigate and not show any warning if failed or success
+  }, [isUpdateSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success
 
   //handlers to get the individual states from the input
 
@@ -262,6 +257,17 @@ const EditStudentForm = ({ student }) => {
     setStudentEducation(updatedEntries);
   };
 
+  const onStudentGradeChanged = (e) => {
+    const selectedGrade = e.target.value;
+  
+    setStudentYears((prevYears) =>
+      prevYears.map((year) =>
+        year.academicYear === selectedAcademicYear?.title
+          ? { ...year, grade: selectedGrade }  // Update the grade for the selected academic year
+          : year  // Keep other years unchanged
+      )
+    );
+  };
   //to check if we can save before onsave, if every one is true, and also if we are not loading status
   const canSave =
     [validFirstName, validLastName, validStudentDob, studentSex].every(
@@ -301,7 +307,7 @@ const EditStudentForm = ({ student }) => {
   };
 
   const handleCancel = () => {
-    Navigate("/students/studentsParents/students/");
+    navigate("/students/studentsParents/students/");
   };
 
   //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
@@ -457,6 +463,33 @@ const EditStudentForm = ({ student }) => {
               Student Is Active
             </label>
           </div>
+          <div className="flex items-center mb-2">
+  {studentYears.some(
+    (year) => year.academicYear === selectedAcademicYear?.title
+  ) && (
+    <div className="mb-6">
+      <label htmlFor="studentGrade" className="block text-sm font-medium text-gray-700">
+        Grade
+      </label>
+      <select
+        id="studentGrade"
+        value={studentYears.find(
+          (year) => year.academicYear === selectedAcademicYear?.title
+        )?.grade || ""}
+        onChange={onStudentGradeChanged}
+        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+      >
+        <option value="">Select Grade</option>
+        {[0, 1, 2, 3, 4, 5, 6, 7].map((grade) => (
+          <option key={grade} value={grade}>
+            Grade {grade}
+          </option>
+        ))}
+      </select>
+    </div>
+  )}
+</div>
+
           {/* <div className="flex items-center mb-2">
                 <input
                   type="checkbox"

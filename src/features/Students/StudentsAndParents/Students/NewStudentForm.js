@@ -18,16 +18,11 @@ import { useSelector } from "react-redux";
 
 import { useGetAcademicYearsQuery } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
 import { selectAllAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-//constrains on inputs when creating new user
-const USER_REGEX = /^[A-z]{6,20}$/;
-const PWD_REGEX = /^[A-z0-9!@#-_$%]{8,20}$/;
-const NAME_REGEX = /^[A-z 0-9]{3,20}$/;
-const PHONE_REGEX = /^[0-9]{6,15}$/;
-const DOB_REGEX = /^[0-9/-]{4,10}$/;
-const EMAIL_REGEX = /^[A-z0-9.@-_]{6,20}$/;
+import {NAME_REGEX, DATE_REGEX } from '../../../../Components/lib/Utils/REGEX'
+
 
 const NewStudentForm = () => {
-  const Navigate = useNavigate();
+  const naviagte = useNavigate();
 
   const [
     addNewStudent,
@@ -85,6 +80,7 @@ const NewStudentForm = () => {
   const [studentSex, setStudentSex] = useState("");
   const [studentIsActive, setStudentIsActive] = useState((prev) => !prev);
 
+  const [studentGrade, setStudentGrade] = useState(null);
   const [academicYear, setAcademicYear] = useState(null);
   const [studentYears, setStudentYears] = useState([]);
   //const [studentJointFamily, setStudentJointFamily] = useState(true)
@@ -115,13 +111,13 @@ const NewStudentForm = () => {
   }, [lastName]);
 
   useEffect(() => {
-    setValidStudentDob(DOB_REGEX.test(studentDob));
+    setValidStudentDob(DATE_REGEX.test(studentDob));
   }, [studentDob]);
   //ensure studentEducation has no empty array
 
   useEffect(() => {
     if (isSuccess) {
-      //if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
+      //if the add of new user using the mutation is success, empty all the individual states and naviagte back to the users list
       setFirstName("");
       setValidFirstName(false);
       setMiddleName("");
@@ -148,9 +144,9 @@ const NewStudentForm = () => {
       setStudentEducation([]);
       //setDate = useState()
       setOperator("");
-      Navigate("/students/studentsParents/students"); //will navigate here after saving
+      naviagte("/students/studentsParents/students"); //will naviagte here after saving
     }
-  }, [isSuccess, Navigate]); //even if no success it will navigate and not show any warning if failed or success
+  }, [isSuccess, naviagte]); //even if no success it will naviagte and not show any warning if failed or success
 
   //handlers to get the individual states from the input
 
@@ -184,6 +180,18 @@ const NewStudentForm = () => {
       checked
         ? [...prevYears, { academicYear: value }]
         : prevYears.filter((year) => year.academicYear !== value)
+    );
+  };
+  
+  // Update the grade of the selected academic year
+  const onStudentGradeChanged = (e) => {
+    const value = e.target.value;
+    setStudentYears((prevYears) =>
+      prevYears.map((year) =>
+        year.academicYear === selectedAcademicYear?.title
+          ? { ...year, grade: value }
+          : year
+      )
     );
   };
 
@@ -287,7 +295,7 @@ const NewStudentForm = () => {
     }
   };
   const handleCancel = () => {
-    Navigate("/students/studentsParents/students/");
+    naviagte("/students/studentsParents/students/");
   };
 
   //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
@@ -461,6 +469,30 @@ const NewStudentForm = () => {
               Student Year*: {selectedAcademicYear.title}
             </label>
           </div>
+          <div className="flex items-center mb-2">
+          {studentYears.some(
+          (year) => year.academicYear === selectedAcademicYear?.title
+        ) && (
+          <div className="mb-6">
+            <label htmlFor="studentGrade" className="block text-sm font-medium text-gray-700">
+              Grade
+            </label>
+            <select
+              id="studentGrade"
+              value={studentYears.find(
+                (year) => year.academicYear === selectedAcademicYear?.title
+              )?.grade || ""}
+              onChange={onStudentGradeChanged}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            >
+                 <option value="">Select Grade</option>
+                  {[0, 1, 2, 3, 4, 5, 6, 7].map((grade) => (
+                    <option key={grade} value={grade}>Grade {grade}</option>
+                  ))}
+               </select>
+          </div>
+        )}
+          </div>
         </div>
 
         <div className="mb-6">
@@ -469,153 +501,153 @@ const NewStudentForm = () => {
             studentGardien.length > 0 &&
             studentGardien.map((entry, index) => (
               <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
-              <div
-                key={index}
-                className="bg-gray-50 p-4 rounded-lg shadow-sm mb-4 "
-              >
-                <div className="mb-2">
-                  <label
-                    className="block text-sm font-medium text-gray-700"
-                    htmlFor={`gardienFirstName-${index}`}
-                  >
-                    First Name:
-                  </label>
-                  <input
-                    id={`gardienFirstName-${index}`}
-                    type="text"
-                    value={entry.gardienFirstName}
-                    onChange={(e) =>
-                      handleGardienFieldChange(
-                        index,
-                        "gardienFirstName",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
-                  />
-                </div>
-                <div className="mb-2">
-                  <label
-                    className="block text-sm font-medium text-gray-700"
-                    htmlFor={`gardienMiddleName-${index}`}
-                  >
-                    Middle Name:
-                  </label>
-                  <input
-                    id={`gardienMiddleName-${index}`}
-                    type="text"
-                    value={entry.gardienMiddleName}
-                    onChange={(e) =>
-                      handleGardienFieldChange(
-                        index,
-                        "gardienMiddleName",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
-                  />
-                </div>
-                <div className="mb-2">
-                  <label
-                    className="block text-sm font-medium text-gray-700"
-                    htmlFor={`gardienLastName-${index}`}
-                  >
-                    Last Name:
-                  </label>
-                  <input
-                    id={`gardienLastName-${index}`}
-                    type="text"
-                    value={entry.gardienLastName}
-                    onChange={(e) =>
-                      handleGardienFieldChange(
-                        index,
-                        "gardienLastName",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
-                  />
-                </div>
-                <div className="mb-2">
-                  <label
-                    className="block text-sm font-medium text-gray-700"
-                    htmlFor={`gardienYear-${index}`}
-                  >
-                    gardienYear:
-                  </label>
-
-                  <select
-                    id={`gardienYear-${index}`}
-                    value={entry.gardienYear}
-                    onChange={(e) =>
-                      handleGardienFieldChange(
-                        index,
-                        "gardienYear",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
-                  >
-                    <option value="">Select Year</option>
-                    {academicYears.map((year) => (
-                      <option key={year.id} value={year.title}>
-                        {year.title}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="mb-2">
-                  <label
-                    className="block text-sm font-medium text-gray-700"
-                    htmlFor={`gardienRelation-${index}`}
-                  >
-                    Relation To Student :
-                  </label>
-                  <input
-                    id={`gardienRelation-${index}`}
-                    type="text"
-                    value={entry.gardienRelation}
-                    onChange={(e) =>
-                      handleGardienFieldChange(
-                        index,
-                        "gardienRelation",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
-                  />
-                </div>
-                <div className="mb-2">
-                  <label
-                    className="block text-sm font-medium text-gray-700"
-                    htmlFor={`gardienPhone-${index}`}
-                  >
-                    Phone Number:
-                  </label>
-                  <input
-                    id={`gardienPhone-${index}`}
-                    type="text"
-                    value={entry.gardienPhone}
-                    onChange={(e) =>
-                      handleGardienFieldChange(
-                        index,
-                        "gardienPhone",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
-                  />
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => handleRemoveGardienEntry(index)}
-                  className="text-red-500 hover:text-red-700"
+                <div
+                  key={index}
+                  className="bg-gray-50 p-4 rounded-lg shadow-sm mb-4 "
                 >
-                  Remove Entry
-                </button>
-              </div>
+                  <div className="mb-2">
+                    <label
+                      className="block text-sm font-medium text-gray-700"
+                      htmlFor={`gardienFirstName-${index}`}
+                    >
+                      First Name:
+                    </label>
+                    <input
+                      id={`gardienFirstName-${index}`}
+                      type="text"
+                      value={entry.gardienFirstName}
+                      onChange={(e) =>
+                        handleGardienFieldChange(
+                          index,
+                          "gardienFirstName",
+                          e.target.value
+                        )
+                      }
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label
+                      className="block text-sm font-medium text-gray-700"
+                      htmlFor={`gardienMiddleName-${index}`}
+                    >
+                      Middle Name:
+                    </label>
+                    <input
+                      id={`gardienMiddleName-${index}`}
+                      type="text"
+                      value={entry.gardienMiddleName}
+                      onChange={(e) =>
+                        handleGardienFieldChange(
+                          index,
+                          "gardienMiddleName",
+                          e.target.value
+                        )
+                      }
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label
+                      className="block text-sm font-medium text-gray-700"
+                      htmlFor={`gardienLastName-${index}`}
+                    >
+                      Last Name:
+                    </label>
+                    <input
+                      id={`gardienLastName-${index}`}
+                      type="text"
+                      value={entry.gardienLastName}
+                      onChange={(e) =>
+                        handleGardienFieldChange(
+                          index,
+                          "gardienLastName",
+                          e.target.value
+                        )
+                      }
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label
+                      className="block text-sm font-medium text-gray-700"
+                      htmlFor={`gardienYear-${index}`}
+                    >
+                      gardienYear:
+                    </label>
+
+                    <select
+                      id={`gardienYear-${index}`}
+                      value={entry.gardienYear}
+                      onChange={(e) =>
+                        handleGardienFieldChange(
+                          index,
+                          "gardienYear",
+                          e.target.value
+                        )
+                      }
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                    >
+                      <option value="">Select Year</option>
+                      {academicYears.map((year) => (
+                        <option key={year.id} value={year.title}>
+                          {year.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="mb-2">
+                    <label
+                      className="block text-sm font-medium text-gray-700"
+                      htmlFor={`gardienRelation-${index}`}
+                    >
+                      Relation To Student :
+                    </label>
+                    <input
+                      id={`gardienRelation-${index}`}
+                      type="text"
+                      value={entry.gardienRelation}
+                      onChange={(e) =>
+                        handleGardienFieldChange(
+                          index,
+                          "gardienRelation",
+                          e.target.value
+                        )
+                      }
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label
+                      className="block text-sm font-medium text-gray-700"
+                      htmlFor={`gardienPhone-${index}`}
+                    >
+                      Phone Number:
+                    </label>
+                    <input
+                      id={`gardienPhone-${index}`}
+                      type="text"
+                      value={entry.gardienPhone}
+                      onChange={(e) =>
+                        handleGardienFieldChange(
+                          index,
+                          "gardienPhone",
+                          e.target.value
+                        )
+                      }
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveGardienEntry(index)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    Remove Entry
+                  </button>
+                </div>
               </div>
             ))}
           <button
@@ -632,86 +664,88 @@ const NewStudentForm = () => {
           {Array.isArray(studentEducation) &&
             studentEducation.length > 0 &&
             studentEducation.map((entry, index) => (
-              
-              
               <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
-              <div
-                key={index}
-                className="bg-gray-50 p-4 rounded-lg shadow-sm mb-4"
-              >
-                <div className="mb-2">
-                  <label
-                    className="block text-sm font-medium text-gray-700"
-                    htmlFor={`schoolYear-${index}`}
-                  >
-                    School Year:
-                  </label>
-                  <select
-                    id={`schoolYear-${index}`}
-                    value={entry.schoolYear}
-                    onChange={(e) =>
-                      handleFieldChange(index, "schoolYear", e.target.value)
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
-                  >
-                    <option value="">Select Year</option>
-                    {academicYears.map((year) => (
-                      <option key={year.id} value={year.title}>
-                        {year.title}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="mb-2">
-                  <label
-                    className="block text-sm font-medium text-gray-700"
-                    htmlFor={`attendedSchool-${index}`}
-                  >
-                    Attended School:
-                  </label>
-                  <select
-                    id={`attendedSchool-${index}`}
-                    value={entry.attendedSchool}
-                    onChange={(e) =>
-                      handleFieldChange(index, "attendedSchool", e.target.value)
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
-                  >
-                    <option value="">Select School</option>
-                    {schoolIsSuccess &&
-                      attendedSchools.map((school) => (
-                        <option key={school.id} value={school.id}>
-                          {school.schoolName}
+                <div
+                  key={index}
+                  className="bg-gray-50 p-4 rounded-lg shadow-sm mb-4"
+                >
+                  <div className="mb-2">
+                    <label
+                      className="block text-sm font-medium text-gray-700"
+                      htmlFor={`schoolYear-${index}`}
+                    >
+                      School Year:
+                    </label>
+                    <select
+                      id={`schoolYear-${index}`}
+                      value={entry.schoolYear}
+                      onChange={(e) =>
+                        handleFieldChange(index, "schoolYear", e.target.value)
+                      }
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                    >
+                      <option value="">Select Year</option>
+                      {academicYears.map((year) => (
+                        <option key={year.id} value={year.title}>
+                          {year.title}
                         </option>
                       ))}
-                  </select>
-                </div>
-                <div className="mb-2">
-                  <label
-                    className="block text-sm font-medium text-gray-700"
-                    htmlFor={`note-${index}`}
-                  >
-                    Note:
-                  </label>
-                  <input
-                    id={`note-${index}`}
-                    type="text"
-                    value={entry.note}
-                    onChange={(e) =>
-                      handleFieldChange(index, "note", e.target.value)
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
-                  />
-                </div>
+                    </select>
+                  </div>
+                  <div className="mb-2">
+                    <label
+                      className="block text-sm font-medium text-gray-700"
+                      htmlFor={`attendedSchool-${index}`}
+                    >
+                      Attended School:
+                    </label>
+                    <select
+                      id={`attendedSchool-${index}`}
+                      value={entry.attendedSchool}
+                      onChange={(e) =>
+                        handleFieldChange(
+                          index,
+                          "attendedSchool",
+                          e.target.value
+                        )
+                      }
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                    >
+                      <option value="">Select School</option>
+                      {schoolIsSuccess &&
+                        attendedSchools.map((school) => (
+                          <option key={school.id} value={school.id}>
+                            {school.schoolName}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                  <div className="mb-2">
+                    <label
+                      className="block text-sm font-medium text-gray-700"
+                      htmlFor={`note-${index}`}
+                    >
+                      Note:
+                    </label>
+                    <input
+                      id={`note-${index}`}
+                      type="text"
+                      value={entry.note}
+                      onChange={(e) =>
+                        handleFieldChange(index, "note", e.target.value)
+                      }
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                    />
+                  </div>
 
-                <button
-                  type="button"
-                  onClick={() => handleRemoveEntry(index)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  Remove Entry
-                </button>
-              </div>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveEntry(index)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    Remove Entry
+                  </button>
+                </div>
               </div>
             ))}
           <button

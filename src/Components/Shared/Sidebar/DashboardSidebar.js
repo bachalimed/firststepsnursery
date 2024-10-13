@@ -49,11 +49,11 @@ const DashboardSidebar = () => {
   let content;
   content = (
     <div
-      className={`bg-gray-900 ${
+      className={`bg-gray-900  ${
         open ? "w-56" : "w-20"
       } p-3 flex flex-1 flex-col min-h-screen text-white  duration-300 relative`}
     >
-      <div className="inline-flex items-center ">
+      <div  className="inline-flex items-center ">
         <img
           src={logo}
           className="h-14 w-14 rounded block float-left mr-2 mt-4 "
