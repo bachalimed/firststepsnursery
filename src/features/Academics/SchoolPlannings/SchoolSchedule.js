@@ -81,21 +81,34 @@ const SchoolSchedule = () => {
 
   }
 
-  //ensure to have capitals inthe fileds to work with scheduler
+  //ensure to avoid the capital issue of the fileds to work with scheduler
   const fields= {
     id: { name:'id'}, // Mapping your custom `id` field to `Id`
     subject: { name: 'subject' }, // Mapping your `title` field to `Subject`
     startTime: { name: 'startTime' }, // Mapping your `startTime` field to `StartTime`
     endTime: { name: 'endTime' }, // Mapping your `endTime` field to `EndTime`
+    title:{ name:'title'},
+    sessionYear:{ name:'sessionYear'},
+    animator:{ name:'animator'},
+    students:{ name:'students'},
+    description:{ name:'Description'},
+    school:{ name:'school'},
+    site:{ name:'site'},
+    location:{ name:'location'},
+    trip:{ name:'trip'} ,
+    classroom:{ name:'classroom'},
+    grades:{ name:'grades'},
+    recurrenceRule:{ name:'recurrenceRule'},
+    sessionStatus:{ name:'sessionStatus'},
+    createdAt:{ name:'createdAt'},
+    creator:{ name:'creator'},
+    recurrenceException:{ name:'recurrenceException'},
+    recurrenceId:{ name:'recurrenceId'},
+    isAllDay:{ name:'isAllDay'},
+    IsBlock:{ name:'isBlock'},
+    isReadOnly:{ name:'isReadOnly'},
 
-
-    
-    
   }
-
-
-
-
 
 
  
@@ -105,25 +118,31 @@ const SchoolSchedule = () => {
       subject: "Explosion of Betelgeuse Star",
       startTime: new Date(2024, 9, 13, 10, 0),
       endTime: new Date(2024, 9, 13, 11, 0),
+      isReadOnly:false,
+      isBlock:false,
     },
     {
         id: 2,
         subject: "Thule Air Crash Report",
         startTime: new Date(2024, 9, 13, 12, 0),
         endTime: new Date(2024, 9, 13, 14, 0),
+        isReadOnly:false,
+        isBlock:false,
     },
     {
       id: 3,
       subject: "Blue Moon Eclipse",
       startTime: new Date(2024, 9, 13, 9, 30),
       endTime: new Date(2024, 9, 13, 11, 0),
+      isReadOnly:false,
+      isBlock:false,
     },
   ];
   // console.log(datadata,'datadata')
 
   // Map over sessionsList to transform startTime and endTime to Date objects
   
-  
+ 
 
     datadata.map((dat)=>{
         sessionsList.push(dat)
