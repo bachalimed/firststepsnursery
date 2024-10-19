@@ -44,13 +44,12 @@ const SectionsPlannings = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
- // Function to convert Syncfusion array format [year, month, day, hour, minute] to Date object
- const convertToDate = (dateString) => {
-    
-    if (dateString!== "") {
-      return new Date(dateString ); // Month is 0-based
+  // Function to convert Syncfusion array format [year, month, day, hour, minute] to Date object
+  const convertToDate = (dateString) => {
+    if (dateString !== "") {
+      return new Date(dateString); // Month is 0-based
     }
-     return null;
+    return null;
   };
   const {
     data: sessions, //the data is renamed sessions
@@ -79,40 +78,43 @@ const SectionsPlannings = () => {
 
     //dispatch(setStudents(studentsList)); //timing issue to update the state and use it the same time
     console.log(sessionsList, "sessionsList");
-
   }
- 
+
+  // //to get the location depending on site
+  //   const getLocation = (session)=>{
+  //     if(session?.site==="School"){ return session.school.schoolName }
+
+  // return session
+
+  //   }
   //ensure to avoid the capital issue of the fileds to work with scheduler
-  const fields= {
-    id: { name:'id'}, // Mapping your custom `id` field to `Id`
-    subject: { name: 'subject' }, // Mapping your `title` field to `Subject`
-    startTime: { name: 'startTime' }, // Mapping your `startTime` field to `StartTime`
-    endTime: { name: 'endTime' }, // Mapping your `endTime` field to `EndTime`
-    title:{ name:'title'},
-    sessionYear:{ name:'sessionYear'},
-    animator:{ name:'animator'},
-    students:{ name:'students'},
-    description:{ name:'Description'},
-    school:{ name:'school'},
-    site:{ name:'site'},
-    location:{ name:'location'},
-    trip:{ name:'trip'} ,
-    classroom:{ name:'classroom'},
-    grades:{ name:'grades'},
-    recurrenceRule:{ name:'recurrenceRule'},
-    sessionStatus:{ name:'sessionStatus'},
-    createdAt:{ name:'createdAt'},
-    creator:{ name:'creator'},
-    recurrenceException:{ name:'recurrenceException'},
-    recurrenceId:{ name:'recurrenceId'},
-    isAllDay:{ name:'isAllDay'},
-    IsBlock:{ name:'isBlock'},
-    isReadOnly:{ name:'isReadOnly'},
+  const fields = {
+    id: { name: "id" }, // Mapping your custom `id` field to `Id`
+    subject: { name: "subject" }, // Mapping your `title` field to `Subject`
+    startTime: { name: "startTime" }, // Mapping your `startTime` field to `StartTime`
+    endTime: { name: "endTime" }, // Mapping your `endTime` field to `EndTime`
+    location: { name: "location" },
+    title: { name: "title" },
+    sessionYear: { name: "sessionYear" },
+    animator: { name: "animator" },
+    students: { name: "students" },
+    description: { name: "Description" },
+    school: { name: "school" },
+    site: { name: "site" },
+    trip: { name: "trip" },
+    classroom: { name: "classroom" },
+    grades: { name: "grades" },
+    recurrenceRule: { name: "recurrenceRule" },
+    sessionStatus: { name: "sessionStatus" },
+    createdAt: { name: "createdAt" },
+    creator: { name: "creator" },
+    recurrenceException: { name: "recurrenceException" },
+    recurrenceId: { name: "recurrenceId" },
+    isAllDay: { name: "isAllDay" },
+    IsBlock: { name: "isBlock" },
+    isReadOnly: { name: "isReadOnly" },
+  };
 
-  }
-
-
- 
   // let datadata = [
   //   {
   //     id: 1,
@@ -142,17 +144,19 @@ const SectionsPlannings = () => {
   // console.log(datadata,'datadata')
 
   // Map over sessionsList to transform startTime and endTime to Date objects
-  
- 
 
-    // datadata.map((dat)=>{
-    //     sessionsList.push(dat)
-    // })
+  // datadata.map((dat)=>{
+  //     sessionsList.push(dat)
+  // })
 
   console.log(sessionsList, "sessionsList");
 
   const data = extend([], sessionsList, null, true);
-  const eventSettings = { dataSource: data , fields:fields};
+  const eventSettings = {
+    dataSource: data,
+    fields: fields,
+  //   template: eventTemplate,
+  };
   const timeScale = { enable: true, interval: 120, slotCount: 4 };
   const workingDays = [1, 2, 3, 4, 5, 6];
   //   const workHours = {
@@ -167,7 +171,7 @@ const SectionsPlannings = () => {
         <ScheduleComponent
           width="100%"
           height="650px"
-          selectedDate={new Date(2024, 9, 13)}
+          selectedDate={new Date(2024, 9, 14)}
           //enableAdaptiveUI={true}
           eventSettings={eventSettings}
           timeScale={timeScale}
@@ -180,11 +184,11 @@ const SectionsPlannings = () => {
         >
           <ViewsDirective>
             <ViewDirective option="TimelineDay" />
-            <ViewDirective option="Day" />
+            {/* <ViewDirective option="Day" />
             <ViewDirective option="Week" />
 
             <ViewDirective option="WorkWeek" />
-            <ViewDirective option="Agenda" />
+            <ViewDirective option="Agenda" /> */}
           </ViewsDirective>
           <Inject
             services={[

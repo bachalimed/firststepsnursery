@@ -5,15 +5,17 @@ import { useUpdateAttendedSchoolMutation } from "./attendedSchoolsApiSlice";
 import { attendedSchoolAdded } from "./attendedSchoolsSlice";
 import AcademicsSet from "../../AcademicsSet";
 
-const NAME_REGEX = /^[A-z 0-9]{3,20}$/;
+const NAME_REGEX = /^[A-z 0-9]{3,25}$/;
 
 const EditAttendedSchoolForm = ({ attendedSchool }) => {
-  console.log(attendedSchool,'attendedSchool')
+  console.log(attendedSchool, 'attendedSchool');
+  
   const [formData, setFormData] = useState({
-    schoolName: attendedSchool.schoolName ,
-    schoolCity: attendedSchool.schoolCity ,
-    schoolType: attendedSchool.schoolType ,
-    id:attendedSchool._id
+    schoolName: attendedSchool.schoolName,
+    schoolCity: attendedSchool.schoolCity,
+    schoolType: attendedSchool.schoolType,
+    schoolColor: attendedSchool.schoolColor || "#FF5733",  // Default color if none exists
+    id: attendedSchool._id
   });
 
   const [validity, setValidity] = useState({
@@ -23,12 +25,11 @@ const EditAttendedSchoolForm = ({ attendedSchool }) => {
   });
 
   const [error, setError] = useState("");
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [updateAttendedSchool, { isLoading, isError, error: apiError, isSuccess }] =
-  useUpdateAttendedSchoolMutation();
+    useUpdateAttendedSchoolMutation();
 
   // Validate inputs using regex patterns
   useEffect(() => {
@@ -59,10 +60,9 @@ const EditAttendedSchoolForm = ({ attendedSchool }) => {
 
     try {
       const newAttendedSchool = await updateAttendedSchool(formData).unwrap();
-      
       setError("");
     } catch (err) {
-      setError("Failed to add the attended school.");
+      setError("Failed to update the attended school.");
     }
   };
 
@@ -133,10 +133,30 @@ const EditAttendedSchoolForm = ({ attendedSchool }) => {
             )}
           </div>
 
+          <div className="mb-4">
+  <label className="block text-gray-700 font-bold mb-2">School Color</label>
+  <div className="flex items-center">
+    {/* Square displaying the selected color */}
+    <div
+      className="w-8 h-8 mr-4 border"
+      style={{ backgroundColor: formData.schoolColor }}
+    ></div>
+    {/* Color input field */}
+    <input
+      type="color"
+      name="schoolColor"
+      value={formData.schoolColor}
+      onChange={handleChange}
+      className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+  </div>
+</div>
+
+
           {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
           {isError && (
             <p className="text-red-500 text-sm mt-2">
-              {apiError?.data?.message || "Error adding the school."}
+              {apiError?.data?.message || "Error updating the school."}
             </p>
           )}
 
@@ -145,7 +165,7 @@ const EditAttendedSchoolForm = ({ attendedSchool }) => {
             disabled={!canSubmit}
             className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200"
           >
-            {isLoading ? "Adding..." : "Add School"}
+            {isLoading ? "Updating..." : "Update School"}
           </button>
         </form>
       </div>

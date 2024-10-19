@@ -115,6 +115,22 @@ selector:row=>row.id,
 sortable:true,
 width:"210px"
  }, 
+ {
+  name: "Color",
+  selector: row => (
+    <div
+      style={{
+        width: '20px',
+        height: '20px',
+        backgroundColor: row.schoolColor,
+        borderRadius: '4px',
+        border: '1px solid #ccc'
+      }}
+    ></div>
+  ),
+  sortable: true,
+  width: "90px"
+}, 
   { 
 name: "School Name",
 selector:row=>row.schoolName,
