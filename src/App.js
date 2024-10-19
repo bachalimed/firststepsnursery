@@ -43,8 +43,9 @@ import NewEnrolmentForm from './features/Students/Enrolments/NewEnrolmentForm'
 import NurseryPlannings from './features/Academics/NurseryPlannings'
 import SectionsList from './features/Academics/Sections/SectionsList'
 import Sections from './features/Academics/Sections'
-import SchoolPlannings from './features/Academics/SchoolPlannings'
-import SchoolSchedule from './features/Academics/SchoolPlannings/SchoolSchedule'
+import SectionsPlannings from './features/Academics/Plannings/SectionsPlannings/SectionsPlannings'
+import Plannings from './features/Academics/Plannings'
+
 import CollectionDrop from './features/Academics/CollectionDrop'
 import Invoices from './features/Finances/Invoices'
 import Payments from './features/Finances/Payments'
@@ -196,17 +197,17 @@ const App = () => {
 							</Route> {/* end of Students route */}
 
 
-							<Route path="academics" element={<DashboardLayout />} >	 				
-								<Route index element={<SchoolPlannings />} />   
+							<Route path="academics" element={<DashboardLayout />} >
+								<Route index element={<Sections />} />   
 
 								<Route path="sections" > 					
 								<Route index element={<Sections />} /> 
 								<Route path="sectionsList/" element={<SectionsList/>}/>	
 								</Route> {/* end of sections route */}
 
-								<Route path="schoolPlannings" > 					
-								<Route index element={<SchoolPlannings />} /> 
-								<Route path="schoolSchedule/" element={<SchoolSchedule/>}/>	
+								<Route path="plannings" > 					
+								<Route index element={<Plannings />} /> 
+								<Route path="sectionsPlannings/" element={<SectionsPlannings/>}/>	
 
 
 								</Route> {/* end of schoolPlannings route */}
@@ -221,7 +222,7 @@ const App = () => {
 							</Route> {/* end of academics route */}
 
 							<Route path="finances" element={<DashboardLayout />} >	 				
-								<Route index element={<SchoolPlannings />} />   
+								<Route index element={<NurseryPlannings />} />   
 
 								<Route path="invoices" > 					
 								<Route index element={<Invoices />} /> 

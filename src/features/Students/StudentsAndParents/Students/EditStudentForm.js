@@ -268,9 +268,15 @@ const EditStudentForm = ({ student }) => {
       )
     );
   };
+
+  
+const validCurrentEducation = () => {
+  // Check if there is a valid entry for the given academic year
+  return studentEducation.some(entry => entry.schoolYear === selectedAcademicYear.title && entry.attendedSchool);
+};
   //to check if we can save before onsave, if every one is true, and also if we are not loading status
   const canSave =
-    [validFirstName, validLastName, validStudentDob, studentSex].every(
+    [validCurrentEducation(),validFirstName, validLastName, validStudentDob, studentSex].every(
       Boolean
     ) && !isUpdateLoading;
 
@@ -278,6 +284,7 @@ const EditStudentForm = ({ student }) => {
     e.preventDefault();
     //generate the objects before saving
     const toSave = {
+      
       id,
       studentName,
       studentDob,
@@ -340,7 +347,9 @@ const EditStudentForm = ({ student }) => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="firstName"
             >
-              First Name*{" "}
+              First Name{" "}{!validFirstName && (
+                <span className="text-red-500">*</span>
+              )}
               <span className="text-gray-500 text-xs">[3-20 letters]</span>
             </label>
             <input
@@ -378,7 +387,9 @@ const EditStudentForm = ({ student }) => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="lastName"
             >
-              Last Name*{" "}
+              Last Name{" "}{!validLastName && (
+                <span className="text-red-500">*</span>
+              )}
               <span className="text-gray-500 text-xs">[3-20 letters]</span>
             </label>
             <input
@@ -398,7 +409,9 @@ const EditStudentForm = ({ student }) => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="studentDob"
             >
-              Date Of Birth*{" "}
+              Date Of Birth{" "}{!validStudentDob && (
+                <span className="text-red-500">*</span>
+              )}
               <span className="text-gray-500 text-xs">[dd/mm/yyyy]</span>
             </label>
             <input

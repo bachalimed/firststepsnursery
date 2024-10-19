@@ -232,9 +232,9 @@ const DashboardSidebar = () => {
                 </li>
               </Link>
               <Link
-                to="/academics/schoolPlannings/"
+                to="/academics/plannings/"
                 className={
-                  location.pathname === "/academics/schoolPlannings/"
+                  location.pathname === "/academics/plannings/"
                     ? "text-teal-200"
                     : ""
                 }
@@ -247,7 +247,7 @@ const DashboardSidebar = () => {
                     {" "}
                     <MdOutlineBusinessCenter />{" "}
                   </span>
-                  School Plannings
+                  Plannings
                 </li>
               </Link>
               <Link

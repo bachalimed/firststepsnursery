@@ -1,12 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
 import { MdOutlineBusinessCenter } from "react-icons/md";
 import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
-const SchoolPlannings = () => {
+const Plannings = () => {
   const location = useLocation();
   const schoolPlanningsTabs = {
-    title: "School Plannings",
+    title: "Sections Plannings",
     icon: <MdOutlineBusinessCenter />,
-    path: "/academics/schoolPlannings",
+    path: "/academics/plannings",
     allowedRoles: [
       "Parent",
       "ContentManager",
@@ -24,9 +24,9 @@ const SchoolPlannings = () => {
 
   // Define the tab data with paths and labels
   const tabs = [
-    { label: 'School Sections', path: "/academics/schoolPlannings/schoolSections" },
-    { label: 'School Schedule', path: '/academics/schoolPlannings/schoolSchedule' },
-    { label: 'New blbls', path: "/academics/schoolPlanning/" },
+    { label: 'Plannings', path: '/academics/plannings/sectionsPlannings' },
+    { label: 'blu bla', path: "/academics/plannings/blabla" },
+    { label: 'New blbls', path: "/academics/plannings/blablsa/" },
   ];
  // Function to determine if a tab is active based on the current path
  const isActive = (path) => location.pathname === path;
@@ -51,4 +51,4 @@ const SchoolPlannings = () => {
 };
  
 
-export default SchoolPlannings;
+export default Plannings;

@@ -254,9 +254,23 @@ const NewStudentForm = () => {
     });
   }, [firstName, middleName, lastName]);
 
+
+
+  //check if an entry is set for educatin on the academic year, it is mandatory to avoid issued with plannings
+
+
+const validCurrentEducation = () => {
+  // Check if there is a valid entry for the given academic year
+  return studentEducation.some(entry => entry.schoolYear === selectedAcademicYear.title && entry.attendedSchool);
+};
+
+console.log(validCurrentEducation(), 'education')
+console.log(studentEducation, 'studentEducation')
+console.log(selectedAcademicYear.title, 'selectedAcademicYear.title')
+
   //to check if we can save before onsave, if every one is true, and also if we are not loading status
   const canSave =
-    [
+    [validCurrentEducation(),
       validFirstName,
       validLastName,
       studentYears,
@@ -325,8 +339,10 @@ const NewStudentForm = () => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="firstName"
             >
-              First Name*{" "}
-              <span className="text-gray-500 text-xs">[3-20 letters]</span>
+              First Name{" "}{!validFirstName && (
+                <span className="text-red-500">*</span>
+              )}
+              <span className="text-gray-500 text-xs"> [3-20 letters]</span>
             </label>
             <input
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
@@ -363,8 +379,10 @@ const NewStudentForm = () => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="lastName"
             >
-              Last Name*{" "}
-              <span className="text-gray-500 text-xs">[3-20 letters]</span>
+              Last Name{" "}{!validLastName && (
+                <span className="text-red-500">*</span>
+              )}
+              <span className="text-gray-500 text-xs"> [3-20 letters]</span>
             </label>
             <input
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
@@ -383,8 +401,10 @@ const NewStudentForm = () => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="studentDob"
             >
-              Date Of Birth*{" "}
-              <span className="text-gray-500 text-xs">[dd/mm/yyyy]</span>
+              Date Of Birth{" "}{!validStudentDob && (
+                <span className="text-red-500">*</span>
+              )}
+              <span className="text-gray-500 text-xs"> [dd/mm/yyyy]</span>
             </label>
             <input
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
@@ -466,7 +486,7 @@ const NewStudentForm = () => {
               htmlFor="studentYears"
               className="ml-2 text-sm font-medium text-gray-700"
             >
-              Student Year*: {selectedAcademicYear.title}
+              Student Year* : {selectedAcademicYear.title}
             </label>
           </div>
           <div className="flex items-center mb-2">

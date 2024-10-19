@@ -254,16 +254,38 @@ const SectionsList = () => {
       width: "180px",
     },
     {
+      name: "Count",
+      selector: (row) => row?.students.length,
+      sortable: true,
+      width: "80px",
+    },
+    {
       name: "Students",
       selector: (row) => (
         <div>
           {row.students.map((student) => (
-            <div key={student._id}>{student.studentName.firstName} {student.studentName.middleName} {student.studentName.lastName}</div>
+            <div key={student._id}>
+              {student?.studentName?.firstName}{" "}
+              {student?.studentName?.middleName}{" "}
+              {student?.studentName?.lastName}
+            </div>
           ))}
         </div>
       ),
       sortable: true,
       width: "220px",
+    },
+    {
+      name: "School",
+      selector: (row) => (
+        <div>
+          {row.students.map((student) => (
+            <div key={student._id}>{student?.studentEducation?.attendedSchool?.schoolName || ""}</div>
+          ))}
+        </div>
+      ),
+      sortable: true,
+      width: "150px",
     },
     {
       name: "Section Formed",
@@ -370,7 +392,7 @@ const SectionsList = () => {
             disabled={selectedRows.length !== 1} // Disable if no rows are selected
             hidden={!canCreate}
           >
-            Register
+            New Section
           </button>
 
           <button
