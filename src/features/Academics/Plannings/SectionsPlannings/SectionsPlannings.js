@@ -43,12 +43,12 @@ import {
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import Plannings from "../../Plannings";
 
-// The Pane to display resources with colored indicators for schools
+// The Pane to display resources with colored indicators for sites
 const PropertyPane = ({ title, children }) => {
   return (
-    <div className="property-pane">
-      <h3 className="property-pane-title">{title}</h3>
-      <div className="property-pane-content">{children}</div>
+    <div className="">
+      <h3 className="">{title}</h3>
+      <div className="">{children}</div>
     </div>
   );
 };
@@ -77,16 +77,6 @@ const SectionsPlannings = () => {
       refetchOnMountOrArgChange: true, //refetch when we remount the component
     }
   );
-
-  let sessionsList = [];
-
-  if (isSessionsSuccess) {
-    //set to the state to be used for other component s and edit student component
-    const { entities } = sessions;
-    sessionsList = Object.values(entities); //we are using entity adapter in this query
-
-    console.log(sessionsList, "sessionsList");
-  }
   const {
     data: schools, //the data is renamed sessions
     isLoading: isSchoolsLoading, //monitor several situations is loading...
@@ -103,27 +93,22 @@ const SectionsPlannings = () => {
       refetchOnMountOrArgChange: true, //refetch when we remount the component
     }
   );
+  // Prepare sessions list and resource data
+  let sessionsList = isSessionsSuccess ? Object.values(sessions.entities) : [];
+  let resourceData = isSchoolsSuccess ? Object.values(schools.entities) : [];
 
-  let resourceData = [];
+  if (isSessionsSuccess) {
+    //set to the state to be used for other component s and edit student component
+    const { entities } = sessions;
+    sessionsList = Object.values(entities); //we are using entity adapter in this query
+
+    console.log(sessionsList, "sessionsList");
+  }
 
   if (isSchoolsSuccess && !isSchoolsLoading) {
     const { entities } = schools;
     resourceData = Object.values(entities);
   }
-
-  // Initialize selectedSchools once when resourceData is populated
-  const [selectedSchools, setSelectedSchools] = useState([]);
-
-  useEffect(() => {
-    if (
-      isSchoolsSuccess &&
-      resourceData.length > 0 &&
-      selectedSchools.length === 0
-    ) {
-      // Set all checkboxes as checked only once
-      setSelectedSchools(resourceData.map((resource) => resource.id));
-    }
-  }, [resourceData, isSchoolsSuccess, selectedSchools.length]);
 
   //ensure to avoid the capital issue of the fileds to work with scheduler
   const fields = {
@@ -135,12 +120,12 @@ const SectionsPlannings = () => {
     title: { name: "title" },
     sessionYear: { name: "sessionYear" },
     animator: { name: "animator" },
-    students: { name: "students" },
+    students: { name: "students", idField: "_id" },
     description: { name: "Description" },
-    school: { name: "school" },
+    school: { name: "school", idField: "_id" },
     site: { name: "site" },
     trip: { name: "trip" },
-    classroom: { name: "classroom" },
+    classroom: { name: "classroom", idField: "_id" },
     grades: { name: "grades" },
     recurrenceRule: { name: "recurrenceRule" },
     sessionStatus: { name: "sessionStatus" },
@@ -151,11 +136,44 @@ const SectionsPlannings = () => {
     isAllDay: { name: "isAllDay" },
     IsBlock: { name: "isBlock" },
     isReadOnly: { name: "isReadOnly" },
-    school: { name: "school", idField: "_id" }, // assuming the school field has _id
+
     schoolColor: { name: "schoolColor" },
   };
 
   let scheduleObj = useRef(null);
+
+  // Initialize selectedSchools once when resourceData is populated
+  const [selectedSchools, setSelectedSchools] = useState(
+    resourceData.map((resource) => resource.id)
+  );
+
+  //filtering event sbased on the selected sites/schools
+  useEffect(() => {
+    if (
+      isSchoolsSuccess &&
+      resourceData.length > 0 &&
+      selectedSchools.length === 0
+    ) {
+      // Set all checkboxes as checked only once
+      setSelectedSchools(resourceData.map((resource) => resource.id));
+    }
+  }, [resourceData, isSchoolsSuccess, selectedSchools.length]);
+
+  // Inject dynamic styles based on school colors to control checkbox baackground color
+  useEffect(() => {
+    const styleSheet = document.styleSheets[0];
+    resourceData.forEach((resource) => {
+      const className = `checkbox-${resource.id}`;
+      const rule = `
+        .property-panel-content .e-checkbox-wrapper.${className} .e-frame {
+          background-color: ${resource.schoolColor};
+          border-color: transparent;
+          border-radius:2px;
+        }
+      `;
+      styleSheet.insertRule(rule, styleSheet.cssRules.length);
+    });
+  }, [resourceData]);
 
   const onChange = (args, resourceId) => {
     const isChecked = args.checked;
@@ -166,22 +184,19 @@ const SectionsPlannings = () => {
     );
   };
 
-  // Update the event template to ensure the background color covers the full area
-  const eventTemplate = (props) => (
-    <div
-      style={{
-        backgroundColor: props.school?.schoolColor || "#000", // Use correct school color
-        width: "100%", // Ensure full background coverage
-        height: "100%", // Ensure full height
-        padding: "5px",
-        color: "white",
-        boxSizing: "border-box", // Ensure padding doesn't shrink the size
-      }}
-    >
-      {props.subject}
-    </div>
-  );
-
+  const eventTemplate = (props) => {
+    return (
+      <div
+        style={{
+          backgroundColor: props?.site?.schoolColor, // Set background to the resource color
+          color: "white", // Ensure the text is white for visibility
+          padding: "5px",
+        }}
+      >
+        {props.subject}
+      </div>
+    );
+  };
   const eventSettings = {
     dataSource: extend([], sessionsList, null, true),
     template: eventTemplate,
@@ -206,16 +221,19 @@ const SectionsPlannings = () => {
     }
   }, [selectedSchools]);
 
+
+
+
   return isSessionsSuccess ? (
     <>
       <Plannings />
       <div className="schedule-container" style={{ display: "flex" }}>
-        <div className="schedule-section" style={{ flex: 3 }}>
+        <div className="schedule-section " style={{ flex: 3 }}>
           <ScheduleComponent
             width="100%"
             height="650px"
             selectedDate={new Date(2024, 9, 14)}
-            ref={scheduleObj}
+            ref={scheduleObj} //to access and update teh scheduler by applying the query filter based on selectedschools
             eventSettings={eventSettings}
             timeScale={{ enable: true, interval: 120, slotCount: 4 }}
             workDays={[1, 2, 3, 4, 5, 6]}
@@ -224,14 +242,14 @@ const SectionsPlannings = () => {
           >
             <ResourcesDirective>
               <ResourceDirective
-                field="site._id"
-                title="Schools"
-                name="schools"
-                allowMultiple={true}
-                dataSource={resourceData}
-                textField="schoolName"
-                idField="id"
-                colorField="schoolColor"
+                field="site._id" // this is the identification criteria in teh data
+                title="Schools" // the title of the resource gorupping in hte scheduler, it will desiplay schools obove th resource panel (edit and new event selection)
+                name="schools" //an internal identifier used to define this resource grouping, could be used in multiple places within your application to reference this group of resources.
+                allowMultiple={true} //whether multiple resources can be assigned to a single event.
+                dataSource={resourceData} //the data source that provides the list of resources (in this case, schools) to be displayed in the scheduler.
+                textField="schoolName" //specifies which field in the resource data should be used to display the name of the resource.
+                idField="id" //specifies which property in the resource data serves as the unique identifier for each resource
+                colorField="schoolColor" //specifies the property in the resource data that holds the color associated with the resource.
               />
             </ResourcesDirective>
             <ViewsDirective>
@@ -252,30 +270,19 @@ const SectionsPlannings = () => {
         </div>
 
         {/* Property Pane Section */}
-        <div
-          className="property-pane-section"
-          style={{ flex: 1, paddingLeft: "20px" }}
-        >
-          <PropertyPane title="Resources">
+        <div className="property-panel-content">
+          <PropertyPane title="Sites">
             <table className="property-panel-table">
               <tbody>
                 {resourceData.map((resource) => (
                   <tr key={resource.id}>
                     <td>
                       <div style={{ display: "flex", alignItems: "center" }}>
-                        <span
-                          style={{
-                            display: "inline-block",
-                            width: "20px",
-                            height: "20px",
-                            backgroundColor: resource.schoolColor,
-                            marginRight: "10px",
-                          }}
-                        ></span>
                         <CheckBoxComponent
                           id={`resource-checkbox-${resource.id}`}
                           checked={selectedSchools.includes(resource.id)}
                           label={resource.schoolName}
+                          cssClass={`checkbox-${resource.id}`} // Apply dynamic class
                           change={(args) => onChange(args, resource.id)}
                         />
                       </div>
