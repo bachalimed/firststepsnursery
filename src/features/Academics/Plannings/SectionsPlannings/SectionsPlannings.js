@@ -29,6 +29,11 @@ import { DataArray } from "../../../../config/SampleSchedule";
 
 import { ButtonComponent } from "@syncfusion/ej2-react-buttons";
 import {
+  useGetSectionsByYearQuery,
+  useUpdateSectionMutation,
+  useDeleteSectionMutation,
+} from "../../Sections/sectionsApiSlice"
+import {
   useGetSessionsByYearQuery,
   useUpdateSessionMutation,
   useDeleteSessionMutation,
@@ -61,15 +66,15 @@ const SectionsPlannings = () => {
   const academicYears = useSelector(selectAllAcademicYears);
 
   const {
-    data: sessions, //the data is renamed sessions
-    isLoading: isSessionsLoading, //monitor several situations is loading...
-    isSuccess: isSessionsSuccess,
-    isError: isSessionsError,
-    error: sessionsError,
-  } = useGetSessionsByYearQuery(
+    data: sections, //the data is renamed sessions
+    isLoading: isSectionsLoading, //monitor several situations is loading...
+    isSuccess: isSectionsSuccess,
+    isError: isSectionsError,
+    error: sectionsError,
+  } = useGetSectionsByYearQuery(
     {
-      selectedYear: selectedAcademicYear?.title,
-      endpointName: "sessionsList",
+      selectedYear: selectedAcademicYear?.title ,
+      endpointName: "SectionsListInPlanning",
     } || {},
     {
       //pollingInterval: 60000,//will refetch data every 60seconds
@@ -93,9 +98,29 @@ const SectionsPlannings = () => {
       refetchOnMountOrArgChange: true, //refetch when we remount the component
     }
   );
+  
+  const {
+    data: sessions, //the data is renamed sessions
+    isLoading: isSessionsLoading, //monitor several situations is loading...
+    isSuccess: isSessionsSuccess,
+    isError: isSessionsError,
+    error: sessionsError,
+  } = useGetSessionsByYearQuery(
+    {
+      selectedYear: selectedAcademicYear?.title ,
+      criteria: "schools",
+      endpointName: "sessionsList",
+    } || {},
+    {
+      //pollingInterval: 60000,//will refetch data every 60seconds
+      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
+      refetchOnMountOrArgChange: true, //refetch when we remount the component
+    }
+  );
   // Prepare sessions list and resource data
   let sessionsList = isSessionsSuccess ? Object.values(sessions.entities) : [];
   let resourceData = isSchoolsSuccess ? Object.values(schools.entities) : [];
+  let studentSections = isSectionsSuccess ? Object.values(sections.entities) : [];
 
   if (isSessionsSuccess) {
     //set to the state to be used for other component s and edit student component
@@ -109,7 +134,11 @@ const SectionsPlannings = () => {
     const { entities } = schools;
     resourceData = Object.values(entities);
   }
-
+  if (isSectionsSuccess && !isSectionsLoading) {
+    const { entities } = sections;
+    studentSections = Object.values(entities);
+  }
+console.log(studentSections,'studentSections')
   //ensure to avoid the capital issue of the fileds to work with scheduler
   const fields = {
     id: { name: "id" }, // Mapping your custom `id` field to `Id`
@@ -159,21 +188,34 @@ const SectionsPlannings = () => {
     }
   }, [resourceData, isSchoolsSuccess, selectedSchools.length]);
 
-  // Inject dynamic styles based on school colors to control checkbox baackground color
   useEffect(() => {
     const styleSheet = document.styleSheets[0];
+  
     resourceData.forEach((resource) => {
       const className = `checkbox-${resource.id}`;
-      const rule = `
-        .property-panel-content .e-checkbox-wrapper.${className} .e-frame {
-          background-color: ${resource.schoolColor};
-          border-color: transparent;
-          border-radius:2px;
+  
+      // Rule for checkbox background color when selected
+      const selectedRule = `
+        .e-checkbox-wrapper.${className} .e-frame.e-check {
+          background-color: ${resource.schoolColor} !important;
+          border-color: ${resource.schoolColor} !important;
         }
       `;
-      styleSheet.insertRule(rule, styleSheet.cssRules.length);
+  
+      // Rule for checkbox hover effect
+      const hoverRule = `
+        .e-checkbox-wrapper.${className}:hover .e-frame {
+          background-color: ${resource.schoolColor}33; /* 33 is for transparency */
+          border-color: ${resource.schoolColor};
+        }
+      `;
+  
+      // Add rules to the stylesheet
+      styleSheet.insertRule(selectedRule, styleSheet.cssRules.length);
+      styleSheet.insertRule(hoverRule, styleSheet.cssRules.length);
     });
   }, [resourceData]);
+  
 
   const onChange = (args, resourceId) => {
     const isChecked = args.checked;
@@ -185,18 +227,42 @@ const SectionsPlannings = () => {
   };
 
   const eventTemplate = (props) => {
+    const schoolColor = props.site?.schoolColor || "#ff5657"; // Fallback if schoolColor is missing
+    const startTime = new Date(props.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const endTime = new Date(props.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  
     return (
       <div
+        className="e-appointment custom-appointment"
         style={{
-          backgroundColor: props?.site?.schoolColor, // Set background to the resource color
-          color: "white", // Ensure the text is white for visibility
+          '--appointment-color': schoolColor, // Use CSS variable for dynamic color
+          backgroundColor: schoolColor,       // Ensure the background color applies directly as well
+          color: "white",
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
           padding: "5px",
+          borderRadius: "4px",
+          boxSizing: "border-box",
         }}
       >
-        {props.subject}
+        <div style={{ fontSize: "14px" }}>
+          {props?.title} 
+        </div>
+        <div style={{ fontSize: "12px" }}>
+          {startTime} - {endTime} {/* Display the start and end time */}
+        </div>
+         <div style={{  fontSize: "14px" }}>
+          {props.subject} {/* Display the subject */}
+        </div>
       </div>
     );
   };
+  
+
+  
+
   const eventSettings = {
     dataSource: extend([], sessionsList, null, true),
     template: eventTemplate,
@@ -230,6 +296,7 @@ const SectionsPlannings = () => {
       <div className="schedule-container" style={{ display: "flex" }}>
         <div className="schedule-section " style={{ flex: 3 }}>
           <ScheduleComponent
+           
             width="100%"
             height="650px"
             selectedDate={new Date(2024, 9, 14)}
@@ -254,6 +321,7 @@ const SectionsPlannings = () => {
             </ResourcesDirective>
             <ViewsDirective>
               <ViewDirective option="TimelineDay" />
+             
             </ViewsDirective>
             <Inject
               services={[

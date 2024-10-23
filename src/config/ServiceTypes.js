@@ -15,7 +15,8 @@ export const NURSERY_SUBJECTS = [
   "FunPlay",
   "Dance",
   "Songs",
-  "Lunch",
+  "Lunch1",
+  "Lunch2",
 ];
 
 export const SCHOOL_SUBJECTS = {

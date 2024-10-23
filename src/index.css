@@ -186,13 +186,25 @@
 
 /* Specific class targeting Syncfusion's .e-appointment */
 /* Override left resize handler color */
-.e-schedule .e-appointment .e-left-handler {
-  background-color: var(--appointment-color) !important; /* Use the dynamic color */
+.e-schedule .e-appointment  {
+  background-color:  var(--appointment-color) !important; /* Use the dynamic color */
   border-color: var(--appointment-color) !important;     /* Set the border color */
+}
+.e-schedule .e-appointment .e-lib {
+  background-color:  var(--appointment-color) !important; /* Use the dynamic color */
+  border-color: var(--appointment-color) !important;     /* Set the border color */
+}
+.e-schedule .e-appointment .e-draggable  {
+  background-color:  var(--appointment-color) !important; /* Use the dynamic color */
+  border-color: var(--appointment-color) !important;     /* Set the border color */
+}
+/* .e-schedule .e-appointment .e-left-handler {
+  background-color:  var(--appointment-color)  !important; 
+  border-color: var(--appointment-color) !important;     
 }
 
-/* Override right resize handler color */
+
 .e-schedule .e-appointment .e-right-handler {
-  background-color: var(--appointment-color) !important; /* Use the dynamic color */
-  border-color: var(--appointment-color) !important;     /* Set the border color */
-}
+  background-color:  var(--appointment-color) !important; 
+  border-color: var(--appointment-color) !important;     
+} */
