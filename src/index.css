@@ -1,4 +1,8 @@
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Import Syncfusion CSS */
 @import url('https://cdn.syncfusion.com/ej2/material.css');
 @import "../node_modules/@syncfusion/ej2-base/styles/material.css";
@@ -12,11 +16,8 @@
 @import "../node_modules/@syncfusion/ej2-splitbuttons/styles/material.css";
 @import "../node_modules/@syncfusion/ej2-react-schedule/styles/material.css";
 @import "../node_modules/@syncfusion/ej2-react-navigations/styles/material.css";
-/* @import "../node_modules/@syncfusion/ej2-react-grids/styles/material.css"; */
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+
 
 
 .form {
@@ -186,18 +187,18 @@
 
 /* Specific class targeting Syncfusion's .e-appointment */
 /* Override left resize handler color */
-.e-schedule .e-appointment  {
-  background-color:  var(--appointment-color) !important; /* Use the dynamic color */
-  border-color: var(--appointment-color) !important;     /* Set the border color */
+/* .e-schedule .e-appointment  {
+  background-color:  var(--appointment-color) !important; 
+  border-color: var(--appointment-color) !important;     
 }
 .e-schedule .e-appointment .e-lib {
-  background-color:  var(--appointment-color) !important; /* Use the dynamic color */
-  border-color: var(--appointment-color) !important;     /* Set the border color */
+  background-color:  var(--appointment-color) !important; 
+  border-color: var(--appointment-color) !important;     
 }
 .e-schedule .e-appointment .e-draggable  {
-  background-color:  var(--appointment-color) !important; /* Use the dynamic color */
-  border-color: var(--appointment-color) !important;     /* Set the border color */
-}
+  background-color:  var(--appointment-color) !important; 
+  border-color: var(--appointment-color) !important;     
+} */
 /* .e-schedule .e-appointment .e-left-handler {
   background-color:  var(--appointment-color)  !important; 
   border-color: var(--appointment-color) !important;     
@@ -208,3 +209,10 @@
   background-color:  var(--appointment-color) !important; 
   border-color: var(--appointment-color) !important;     
 } */
+.timeline-resource-grouping.e-schedule:not(.e-device) .e-agenda-view .e-content-wrap table td:first-child {
+  width: 90px;
+}
+
+.timeline-resource-grouping.e-schedule .e-agenda-view .e-resource-column {
+  width: 100px;
+}

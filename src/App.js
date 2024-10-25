@@ -44,6 +44,7 @@ import NurseryPlannings from './features/Academics/NurseryPlannings'
 import SectionsList from './features/Academics/Sections/SectionsList'
 import Sections from './features/Academics/Sections'
 import SectionsPlannings from './features/Academics/Plannings/SectionsPlannings/SectionsPlannings'
+import SitesPlannings from './features/Academics/Plannings/SitesPlannings/SitesPlannings'
 import Plannings from './features/Academics/Plannings'
 
 import CollectionDrop from './features/Academics/CollectionDrop'
@@ -208,6 +209,7 @@ const App = () => {
 								<Route path="plannings" > 					
 								<Route index element={<Plannings />} /> 
 								<Route path="sectionsPlannings/" element={<SectionsPlannings/>}/>	
+								<Route path="SitesPlannings/" element={<SitesPlannings/>}/>	
 
 
 								</Route> {/* end of schoolPlannings route */}
