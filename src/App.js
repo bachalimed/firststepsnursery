@@ -43,10 +43,11 @@ import NewEnrolmentForm from './features/Students/Enrolments/NewEnrolmentForm'
 import NurseryPlannings from './features/Academics/NurseryPlannings'
 import SectionsList from './features/Academics/Sections/SectionsList'
 import Sections from './features/Academics/Sections'
+import Plannings from './features/Academics/Plannings'
 import SectionsPlannings from './features/Academics/Plannings/SectionsPlannings/SectionsPlannings'
 import SitesPlannings from './features/Academics/Plannings/SitesPlannings/SitesPlannings'
 import AnimatorsPlannings from './features/Academics/Plannings/AnimatorsPlannings/AnimatorsPlannings'
-import Plannings from './features/Academics/Plannings'
+import ClassroomsPlannings from './features/Academics/Plannings/ClassroomsPlannings/ClassroomsPlannings'
 
 import CollectionDrop from './features/Academics/CollectionDrop'
 import Invoices from './features/Finances/Invoices'
@@ -110,6 +111,7 @@ import EditAttendedSchool from './features/AppSettings/AcademicsSet/attendedScho
 import NewAcademicYearForm from './features/AppSettings/AcademicsSet/AcademicYears/NewAcademicYearForm'
 import EditAcademicYear from './features/AppSettings/AcademicsSet/AcademicYears/EditAcademicYear'
 import ClassroomsList from './features/AppSettings/AcademicsSet/Classrooms/ClassroomsList'
+import MyPlanning from './features/Academics/Plannings/MyPlanning/MyPlanning'
 
 // import Parents from './features/Students/Parents'
 // import NewStudent from './features/Students/NewStudent'
@@ -212,6 +214,8 @@ const App = () => {
 								<Route path="sectionsPlannings/" element={<SectionsPlannings/>}/>	
 								<Route path="sitesPlannings/" element={<SitesPlannings/>}/>	
 								<Route path="animatorsPlannings/" element={<AnimatorsPlannings/>}/>	
+								<Route path="classroomsPlannings/" element={<ClassroomsPlannings/>}/>	
+								<Route path="myPlanning/" element={<MyPlanning/>}/>	
 
 
 								</Route> {/* end of schoolPlannings route */}

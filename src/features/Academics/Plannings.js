@@ -28,6 +28,7 @@ const Plannings = () => {
     { label: 'Sections', path: '/academics/plannings/sectionsPlannings' },
     { label: 'Animators', path: "/academics/plannings/animatorsPlannings/" },
     { label: 'Classrooms', path: "/academics/plannings/classroomsPlannings/" },
+    { label: 'MyPlanning', path: "/academics/plannings/myPlanning/" },
   ];
  // Function to determine if a tab is active based on the current path
  const isActive = (path) => location.pathname === path;

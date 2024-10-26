@@ -26,6 +26,29 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       },
       providesTags: ["user"],
     }),
+    getUserById: builder.query({
+      query: (params) => {
+        const queryString = new URLSearchParams(params).toString();
+        return `/admin/usersManagement/users/?${queryString}`;
+      },
+
+      validateStatus: (response, result) => {
+        return response.status === 200 && !result.isError;
+      },
+
+      ransformResponse: (responseData) => {
+        console.log(responseData, 'responsedataaaaaaa')
+        // Handle the single user object directly
+        const user = { ...responseData };
+        user.id = user._id;  // Change `_id` from MongoDB to `id`
+        delete user._id;      // Delete the original `_id` from MongoDB
+    
+        // Use `upsertOne` to add or update the single user object in the state
+        return usersAdapter.upsertOne(initialState, user);
+    },
+      providesTags: ["user"],
+     
+    }),
     addNewUser: builder.mutation({
       query: (initialUserData) => ({
         url: "/admin/usersManagement/newUser/", //modified to target the muler route before newUser controller route
@@ -70,6 +93,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
 export const {
   //hooks created automatically from endpoint
   useGetUsersQuery,
+  useGetUserByIdQuery,
   useAddNewUserMutation,
   useUpdateUserPhotoMutation,
   useUpdateUserMutation,

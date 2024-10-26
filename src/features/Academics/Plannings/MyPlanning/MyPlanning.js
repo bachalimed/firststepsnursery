@@ -8,7 +8,6 @@ import {
   ResourceDirective,
   TimelineViews,
   Day,
-  Week,
   WorkWeek,
   Month,
   TimelineDay,
@@ -31,6 +30,7 @@ import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 import { DataArray } from "../../../../config/SampleSchedule";
 
 import { ButtonComponent } from "@syncfusion/ej2-react-buttons";
+import { useGetUserByIdQuery } from "../../../Admin/UsersManagement/usersApiSlice";
 import {
   useGetSectionsByYearQuery,
   useUpdateSectionMutation,
@@ -50,6 +50,7 @@ import {
   selectAllAcademicYears,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import Plannings from "../../Plannings";
+import useAuth from "../../../../hooks/useAuth";
 import styled from "styled-components";
 // The Pane to display resources with colored indicators for animators
 const PropertyPane = ({ title, children }) => {
@@ -61,13 +62,38 @@ const PropertyPane = ({ title, children }) => {
   );
 };
 
-
-const AnimatorsPlannings = () => {
+const MyPlanning = () => {
+  const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
+  const {
+    data: user, //the data is renamed sessions
+    isLoading: isUserLoading, //monitor several situations is loading...
+    isSuccess: isUserSuccess,
+    isError: isUserError,
+    error: userError,
+  } = useGetUserByIdQuery(
+    {
+      selectedYear: selectedAcademicYear?.title,
+      id: userId,
+
+      endpointName: "user",
+    } || {},
+    {
+      //pollingInterval: 60000,//will refetch data every 60seconds
+      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
+      refetchOnMountOrArgChange: true, //refetch when we remount the component
+    }
+  );
+
+  // Initialize selectedanimators once when employeesList is populated
+  const [selectedAnimators, setSelectedAnimators] = useState([]);
+  useEffect(() => {
+    if (isUserSuccess) setSelectedAnimators(user.employeeId);
+  }, [isUserSuccess]);
 
   const {
     data: sections, //the data is renamed sessions
@@ -86,7 +112,7 @@ const AnimatorsPlannings = () => {
       refetchOnMountOrArgChange: true, //refetch when we remount the component
     }
   );
- 
+
   const {
     data: sessions, //the data is renamed sessions
     isLoading: isSessionsLoading, //monitor several situations is loading...
@@ -97,6 +123,7 @@ const AnimatorsPlannings = () => {
     {
       selectedYear: selectedAcademicYear?.title,
       criteria: "schools",
+      id: user?.employeeId,
       endpointName: "sessionsList",
     } || {},
     {
@@ -125,34 +152,15 @@ const AnimatorsPlannings = () => {
       refetchOnMountOrArgChange: true, //refetch when we remount the component
     }
   );
-  const {
-    data: employees, //the data is renamed sessions
-    isLoading: isEmployeesLoading, //monitor several situations is loading...
-    isSuccess: isEmployeesSuccess,
-    isError: isEmployeesError,
-    error: employeesError,
-  } = useGetEmployeesByYearQuery(
-    {
-      selectedYear: selectedAcademicYear?.title,
-      criteria:"Animator",
-
-      endpointName: "employeesList",
-    } || {},
-    {
-      //pollingInterval: 60000,//will refetch data every 60seconds
-      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
-      refetchOnMountOrArgChange: true, //refetch when we remount the component
-    }
-  );
 
   // Prepare sessions list and resource data
   let sessionsList = isSessionsSuccess ? Object.values(sessions.entities) : [];
- 
+
   let studentSections = isSectionsSuccess
     ? Object.values(sections.entities)
     : [];
   let studentsList = isStudentsSuccess ? Object.values(students.entities) : [];
-  let employeesList = isEmployeesSuccess ? Object.values(employees.entities) : [];
+
   if (isSessionsSuccess) {
     //set to the state to be used for other component s and edit student component
     const { entities } = sessions;
@@ -169,11 +177,7 @@ const AnimatorsPlannings = () => {
     const { entities } = students;
     studentsList = Object.values(entities);
   }
-  if (isEmployeesSuccess && !isEmployeesLoading) {
-    const { entities } = employees;
-    employeesList = Object.values(entities);
-  }
-  console.log(employeesList, "employeesList");
+
   console.log(studentSections, "studentSections");
   console.log(studentsList, "studentsList");
   //ensure to avoid the capital issue of the fileds to work with scheduler
@@ -214,100 +218,81 @@ const AnimatorsPlannings = () => {
 
   let scheduleObj = useRef(null);
 
-  // Initialize selectedanimators once when employeesList is populated
-  const [selectedAnimators, setSelectedAnimators] = useState(
-    employeesList.map((resource) => resource.employeeId)
-  );
+  // useEffect(() => {
+  //   if(isSessionsSuccess && isUserSuccess && isStudentsSuccess && isSectionsSuccess){
+  //   const styleSheet = document.styleSheets[0];
 
-  //filtering event sbased on the selected sites/animators
-  useEffect(() => {
-    if (
-      isEmployeesSuccess &&
-      employeesList.length > 0 &&
-      selectedAnimators.length === 0
-    ) {
-      // Set all checkboxes as checked only once
-      setSelectedAnimators(employeesList.map((employee) => employee.employeeId));
-    }
-  }, [employeesList, isEmployeesSuccess, selectedAnimators.length]);
+  //   employeesList.forEach((employee) => {
+  //     const className = `checkbox-${employee.employeeId}`;
 
-  useEffect(() => {
-    if(isSessionsSuccess && isEmployeesSuccess && isStudentsSuccess && isSectionsSuccess){
-    const styleSheet = document.styleSheets[0];
+  //     // Rule for checkbox background color when selected
+  //     const selectedRule = `
+  //       .e-checkbox-wrapper.${className} .e-frame.e-check {
+  //         background-color: ${employee.employeeColor} !important;
+  //         border-color: ${employee.employeeColor} !important;
+  //       }
+  //     `;
 
-    employeesList.forEach((employee) => {
-      const className = `checkbox-${employee.employeeId}`;
+  //     // Rule for checkbox hover effect
+  //     const hoverRule = `
+  //       .e-checkbox-wrapper.${className}:hover .e-frame {
+  //         background-color: ${employee.employeeColor}33; /* 33 is for transparency */
+  //         border-color: ${employee.employeeColor};
+  //       }
+  //     `;
 
-      // Rule for checkbox background color when selected
-      const selectedRule = `
-        .e-checkbox-wrapper.${className} .e-frame.e-check {
-          background-color: ${employee.employeeColor} !important;
-          border-color: ${employee.employeeColor} !important;
-        }
-      `;
-
-      // Rule for checkbox hover effect
-      const hoverRule = `
-        .e-checkbox-wrapper.${className}:hover .e-frame {
-          background-color: ${employee.employeeColor}33; /* 33 is for transparency */
-          border-color: ${employee.employeeColor};
-        }
-      `;
-
-      // Add rules to the stylesheet
-      styleSheet.insertRule(selectedRule, styleSheet.cssRules.length);
-      styleSheet.insertRule(hoverRule, styleSheet.cssRules.length);
-    });
-  }
-  }, [employeesList]);
-
-  const onChange = (args, resourceId) => {
-    const isChecked = args.checked;
-    setSelectedAnimators((prevSelected) =>
-      isChecked
-        ? [...prevSelected, resourceId]
-        : prevSelected.filter((employeeId) => employeeId !== resourceId)
-    );
-  };
+  //     // Add rules to the stylesheet
+  //     styleSheet.insertRule(selectedRule, styleSheet.cssRules.length);
+  //     styleSheet.insertRule(hoverRule, styleSheet.cssRules.length);
+  //   });
+  // }
+  // }, [employeesList]);
 
   const eventTemplate = (props) => {
-    if (isSessionsSuccess && isEmployeesSuccess && isStudentsSuccess && isSectionsSuccess){
-   
-    const startTime = new Date(props.startTime).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-    const endTime = new Date(props.endTime).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    if (
+      isSessionsSuccess &&
+      isUserSuccess &&
+      isStudentsSuccess &&
+      isSectionsSuccess
+    ) {
+      const startTime = new Date(props.startTime).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      const endTime = new Date(props.endTime).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
 
-    return (
-      <div
-        className="e-appointment custom-appointment"
-        style={{
-          "--appointment-color": props?.employeeColor, // Use CSS variable for dynamic color
-          backgroundColor: props?.employeeColor, // Ensure the background color applies directly as well
-          color: "white",
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          padding: "5px",
-          borderRadius: "4px",
-          boxSizing: "border-box",
-        }}
-      >
-        <div style={{ fontSize: "14px" }}>{props?.title} : {props?.subject}</div>
-        <div style={{ fontSize: "12px" }}>
-          {startTime} - {endTime} {/* Display the start and end time */}
+      return (
+        <div
+          className="e-appointment custom-appointment"
+          style={{
+            "--appointment-color": props?.employeeColor, // Use CSS variable for dynamic color
+            backgroundColor: props?.employeeColor, // Ensure the background color applies directly as well
+            color: "white",
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            padding: "5px",
+            borderRadius: "4px",
+            boxSizing: "border-box",
+          }}
+        >
+          <div style={{ fontSize: "14px" }}>
+            {props?.title} : {props?.subject}
+          </div>
+          <div style={{ fontSize: "12px" }}>
+            {startTime} - {endTime} {/* Display the start and end time */}
+          </div>
+          <div style={{ fontSize: "14px" }}>
+            {props.subject} {/* Display the subject */}
+          </div>
         </div>
-        <div style={{ fontSize: "14px" }}>
-          {props.subject} {/* Display the subject */}
-        </div>
-      </div>
-    );
-  }}
+      );
+    }
+  };
 
   const eventSettings = {
     dataSource: extend([], sessionsList, null, true),
@@ -320,7 +305,11 @@ const AnimatorsPlannings = () => {
       if (selectedAnimators.length === 0) {
         scheduleObj.current.eventSettings.query = new Query();
       } else {
-        let predicate = new Predicate("animator", "equal", selectedAnimators[0]);
+        let predicate = new Predicate(
+          "animator",
+          "equal",
+          selectedAnimators[0]
+        );
 
         for (let i = 1; i < selectedAnimators.length; i++) {
           predicate = predicate.or(
@@ -332,8 +321,11 @@ const AnimatorsPlannings = () => {
       }
     }
   }, [selectedAnimators]);
-console.log(selectedAnimators,'selectedAnimators')
-  return (isSessionsSuccess && isEmployeesSuccess && isStudentsSuccess && isSectionsSuccess) ? (
+  console.log(selectedAnimators, "selectedAnimators");
+  return isSessionsSuccess &&
+    isUserSuccess &&
+    isStudentsSuccess &&
+    isSectionsSuccess ? (
     <>
       <Plannings />
       <div className="e-schedule">
@@ -360,7 +352,7 @@ console.log(selectedAnimators,'selectedAnimators')
                   dataSource={studentSections}
                   textField="sectionLabel"
                   idField="id"
-                   //colorField="color"
+                  //colorField="color"
                 />
                 <ResourceDirective
                   field="sessionStudentId"
@@ -378,7 +370,7 @@ console.log(selectedAnimators,'selectedAnimators')
                   title="Animators" // the title of the resource gorupping in hte scheduler, it will desiplay Animators obove th resource panel (edit and new event selection)
                   name="Animators" //an internal identifier used to define this resource grouping, could be used in multiple places within your application to reference this group of resources.
                   allowMultiple={true} //whether multiple resources can be assigned to a single event.
-                  dataSource={employeesList} //the data source that provides the list of resources (in this case, animators) to be displayed in the scheduler.
+                  dataSource={user} //the data source that provides the list of resources (in this case, animators) to be displayed in the scheduler.
                   textField="userFullName" //specifies which field in the resource data should be used to display the name of the resource.
                   idField="employeeId" //specifies which property in the resource data serves as the unique identifier for each resource
                   colorField="employeeColor" //specifies the property in the resource data that holds the color associated with the resource.
@@ -391,45 +383,19 @@ console.log(selectedAnimators,'selectedAnimators')
               <Inject
                 services={[
                   Day,
-                  Week,
+                  Agenda,
                   TimelineViews,
                   WorkWeek,
-                  Month,
+
                   Resize,
                   DragAndDrop,
-                  Agenda,
                 ]}
               />
             </ScheduleComponent>
           </div>
-
-          {/* Property Pane Section */}
-          <div className="property-panel-content">
-            <PropertyPane title="Animators">
-              <table className="property-panel-table">
-                <tbody>
-                  {employeesList.map((employee) => (
-                    <tr key={employee.employeeId}>
-                      <td>
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          <CheckBoxComponent
-                            employeeId={`resource-checkbox-${employee.employeeId}`}
-                            checked={selectedAnimators.includes(employee.employeeId)}
-                            label={employee.userFullName}
-                            cssClass={`checkbox-${employee.employeeId}`} // Apply dynamic class
-                            change={(args) => onChange(args, employee.employeeId)}
-                          />
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </PropertyPane>
-          </div>
         </div>
         <style>
-        {`
+          {`
           .e-schedule .e-appointment {
             background-color: var(--appointment-color) !important;
             border-color: var(--appointment-color) !important;
@@ -443,11 +409,10 @@ console.log(selectedAnimators,'selectedAnimators')
             border-color: var(--appointment-color) !important;
           }
         `}
-      </style>
-    </div>
-   
+        </style>
+      </div>
     </>
   ) : null;
 };
 
-export default AnimatorsPlannings;
+export default MyPlanning;
