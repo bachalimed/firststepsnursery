@@ -40,7 +40,7 @@ import {
   useGetSessionsByYearQuery,
   useUpdateSessionMutation,
   useDeleteSessionMutation,
-} from "../../NurseryPlannings/Sessions/sessionsApiSlice";
+} from "../../Plannings/Sessions/sessionsApiSlice";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,

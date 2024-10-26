@@ -16,8 +16,10 @@ import {
   Inject,
   Resize,
   Agenda,
-  DragAndDrop,
+  
 } from "@syncfusion/ej2-react-schedule";
+import { DropDownList } from '@syncfusion/ej2-dropdowns';
+import { createElement } from '@syncfusion/ej2-base';
 import { Query, Predicate } from "@syncfusion/ej2-data"; //Predicate and Query: Used to filter data displayed in the scheduler by constructing queries.
 import { CheckBoxComponent } from "@syncfusion/ej2-react-buttons"; //CheckBoxComponent: Syncfusion's CheckBox UI component to filter the scheduler resources
 import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
@@ -39,7 +41,7 @@ import {
   useGetSessionsByYearQuery,
   useUpdateSessionMutation,
   useDeleteSessionMutation,
-} from "../../NurseryPlannings/Sessions/sessionsApiSlice";
+} from "../../Plannings/Sessions/sessionsApiSlice";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
@@ -327,6 +329,46 @@ const SitesPlannings = () => {
     }
   }, [selectedSchools]);
 
+
+
+ // Event handler for customizing the popup window
+ const onPopupOpen = (args) => {
+  if (args.type === "Editor") {
+    let formElement = args.element.querySelector('.e-schedule-form');
+
+    // Custom fields
+    let subjectElement = formElement.querySelector('#Subject');
+    if (!subjectElement) {
+      // Add custom fields
+      let subjectDiv = document.createElement('div');
+      subjectDiv.className = 'e-float-input';
+      subjectDiv.innerHTML = `<input id="Subject" name="Subject" type="text" class="e-field e-input" placeholder="Subject" /><span class="e-float-line"></span>`;
+      formElement.appendChild(subjectDiv);
+    }
+
+    // Repeat for other fields in `fields`, such as startTime, endTime, location, etc.
+    let locationElement = formElement.querySelector('#Location');
+    if (!locationElement) {
+      let locationDiv = document.createElement('div');
+      locationDiv.className = 'e-float-input';
+      locationDiv.innerHTML = `<input id="Location" name="Location" type="text" class="e-field e-input" placeholder="Location" /><span class="e-float-line"></span>`;
+      formElement.appendChild(locationDiv);
+    }
+
+    // Assign other custom field inputs here, if needed.
+  }
+};
+
+// Event handler for customizing the appearance of events
+const onEventRendered = (args) => {
+  const sessionStatus = args.data.sessionStatus;
+  if (sessionStatus === "Completed") {
+    args.element.style.backgroundColor = "#9AEBC5"; // For example, green for completed
+  } else if (sessionStatus === "Pending") {
+    args.element.style.backgroundColor = "#EBA9A3"; // Red for pending
+  }
+  // Customize further based on other fields or status, as needed
+};
   return (isSessionsSuccess && isSchoolsSuccess && isStudentsSuccess && isSectionsSuccess)? (
     <>
       <Plannings />
@@ -343,6 +385,7 @@ const SitesPlannings = () => {
               workDays={[1, 2, 3, 4, 5, 6]}
               startHour="07:00"
               endHour="18:00"
+              popupOpen={onPopupOpen} eventRendered={onEventRendered}
               group={{ resources: ["Sections", "Students"] }}
             >
               <ResourcesDirective>
@@ -390,7 +433,7 @@ const SitesPlannings = () => {
                   WorkWeek,
                   Month,
                   Resize,
-                  DragAndDrop,
+                 
                   Agenda,
                 ]}
               />

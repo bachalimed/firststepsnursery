@@ -7,7 +7,7 @@ import academicYearsReducer from "../features/AppSettings/AcademicsSet/AcademicY
 import tasksReducer from "../features/Desk/Tasks/tasksSlice";
 import studentsReducer from "../features/Students/StudentsAndParents/Students/studentsSlice";
 import familiesReducer from "../features/Students/StudentsAndParents/Families/familiesSlice";
-import sessionsReducer from "../features/Academics/NurseryPlannings/Sessions/sessionsSlice";
+import sessionsReducer from "../features/Academics/Plannings/Sessions/sessionsSlice";
 import studentDocumentsReducer from "../features/Students/StudentsAndParents/Students/studentDocumentsSlice";
 import studentDocumentsListReducer from "../features/AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsSlice";
 import employeeReducer from "../features/HR/Employees/employeesSlice";
