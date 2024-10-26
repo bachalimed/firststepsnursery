@@ -187,6 +187,7 @@
 
 /* Specific class targeting Syncfusion's .e-appointment */
 /* Override left resize handler color */
+/*this is used by siteplannings*/
 /* .e-schedule .e-appointment  {
   background-color:  var(--appointment-color) !important; 
   border-color: var(--appointment-color) !important;     
@@ -199,6 +200,9 @@
   background-color:  var(--appointment-color) !important; 
   border-color: var(--appointment-color) !important;     
 } */
+
+
+/*this was used and cancelled in siteplannings*?
 /* .e-schedule .e-appointment .e-left-handler {
   background-color:  var(--appointment-color)  !important; 
   border-color: var(--appointment-color) !important;     
@@ -209,10 +213,12 @@
   background-color:  var(--appointment-color) !important; 
   border-color: var(--appointment-color) !important;     
 } */
-.timeline-resource-grouping.e-schedule:not(.e-device) .e-agenda-view .e-content-wrap table td:first-child {
+
+/*this is used in sectionspppplannings*/
+/* .timeline-resource-grouping.e-schedule:not(.e-device) .e-agenda-view .e-content-wrap table td:first-child {
   width: 90px;
 }
 
 .timeline-resource-grouping.e-schedule .e-agenda-view .e-resource-column {
   width: 100px;
-}
+} */

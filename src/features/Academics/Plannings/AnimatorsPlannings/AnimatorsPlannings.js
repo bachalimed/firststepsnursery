@@ -23,6 +23,7 @@ import { CheckBoxComponent } from "@syncfusion/ej2-react-buttons"; //CheckBoxCom
 import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
 import { SidebarComponent } from "@syncfusion/ej2-react-navigations";
 import { useGetStudentsByYearQuery } from "../../../Students/StudentsAndParents/Students/studentsApiSlice";
+import { useGetEmployeesByYearQuery } from "../../../HR/Employees/employeesApiSlice";
 import { extend } from "@syncfusion/ej2-base"; //extend: A utility from Syncfusion that helps in extending an array or object.
 import { DateTimePickerComponent } from "@syncfusion/ej2-react-calendars";
 import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
@@ -50,7 +51,7 @@ import {
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import Plannings from "../../Plannings";
 import styled from "styled-components";
-// The Pane to display resources with colored indicators for sites
+// The Pane to display resources with colored indicators for animators
 const PropertyPane = ({ title, children }) => {
   return (
     <div className="">
@@ -61,7 +62,7 @@ const PropertyPane = ({ title, children }) => {
 };
 
 
-const SitesPlannings = () => {
+const AnimatorsPlannings = () => {
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
@@ -85,23 +86,7 @@ const SitesPlannings = () => {
       refetchOnMountOrArgChange: true, //refetch when we remount the component
     }
   );
-  const {
-    data: schools, //the data is renamed sessions
-    isLoading: isSchoolsLoading, //monitor several situations is loading...
-    isSuccess: isSchoolsSuccess,
-    isError: isSchoolsError,
-    error: schoolsError,
-  } = useGetAttendedSchoolsQuery(
-    {
-      endpointName: "AttendedSchoolsList",
-    } || {},
-    {
-      //pollingInterval: 60000,//will refetch data every 60seconds
-      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
-      refetchOnMountOrArgChange: true, //refetch when we remount the component
-    }
-  );
-
+ 
   const {
     data: sessions, //the data is renamed sessions
     isLoading: isSessionsLoading, //monitor several situations is loading...
@@ -140,14 +125,34 @@ const SitesPlannings = () => {
       refetchOnMountOrArgChange: true, //refetch when we remount the component
     }
   );
+  const {
+    data: employees, //the data is renamed sessions
+    isLoading: isEmployeesLoading, //monitor several situations is loading...
+    isSuccess: isEmployeesSuccess,
+    isError: isEmployeesError,
+    error: employeesError,
+  } = useGetEmployeesByYearQuery(
+    {
+      selectedYear: selectedAcademicYear?.title,
+      criteria:"Animator",
+
+      endpointName: "employeesList",
+    } || {},
+    {
+      //pollingInterval: 60000,//will refetch data every 60seconds
+      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
+      refetchOnMountOrArgChange: true, //refetch when we remount the component
+    }
+  );
 
   // Prepare sessions list and resource data
   let sessionsList = isSessionsSuccess ? Object.values(sessions.entities) : [];
-  let schoolsList = isSchoolsSuccess ? Object.values(schools.entities) : [];
+ 
   let studentSections = isSectionsSuccess
     ? Object.values(sections.entities)
     : [];
   let studentsList = isStudentsSuccess ? Object.values(students.entities) : [];
+  let employeesList = isEmployeesSuccess ? Object.values(employees.entities) : [];
   if (isSessionsSuccess) {
     //set to the state to be used for other component s and edit student component
     const { entities } = sessions;
@@ -156,10 +161,6 @@ const SitesPlannings = () => {
     console.log(sessionsList, "sessionsList");
   }
 
-  if (isSchoolsSuccess && !isSchoolsLoading) {
-    const { entities } = schools;
-    schoolsList = Object.values(entities);
-  }
   if (isSectionsSuccess && !isSectionsLoading) {
     const { entities } = sections;
     studentSections = Object.values(entities);
@@ -168,8 +169,13 @@ const SitesPlannings = () => {
     const { entities } = students;
     studentsList = Object.values(entities);
   }
-  console.log(schoolsList, "schoolsList");
+  if (isEmployeesSuccess && !isEmployeesLoading) {
+    const { entities } = employees;
+    employeesList = Object.values(entities);
+  }
+  console.log(employeesList, "employeesList");
   console.log(studentSections, "studentSections");
+  console.log(studentsList, "studentsList");
   //ensure to avoid the capital issue of the fileds to work with scheduler
 
   const fields = {
@@ -208,65 +214,65 @@ const SitesPlannings = () => {
 
   let scheduleObj = useRef(null);
 
-  // Initialize selectedSchools once when schoolsList is populated
-  const [selectedSchools, setSelectedSchools] = useState(
-    schoolsList.map((resource) => resource.id)
+  // Initialize selectedanimators once when employeesList is populated
+  const [selectedAnimators, setSelectedAnimators] = useState(
+    employeesList.map((resource) => resource.employeeId)
   );
 
-  //filtering event sbased on the selected sites/schools
+  //filtering event sbased on the selected sites/animators
   useEffect(() => {
     if (
-      isSchoolsSuccess &&
-      schoolsList.length > 0 &&
-      selectedSchools.length === 0
+      isEmployeesSuccess &&
+      employeesList.length > 0 &&
+      selectedAnimators.length === 0
     ) {
       // Set all checkboxes as checked only once
-      setSelectedSchools(schoolsList.map((resource) => resource.id));
+      setSelectedAnimators(employeesList.map((employee) => employee.employeeId));
     }
-  }, [schoolsList, isSchoolsSuccess, selectedSchools.length]);
+  }, [employeesList, isEmployeesSuccess, selectedAnimators.length]);
 
   useEffect(() => {
-    if(isSessionsSuccess && isSchoolsSuccess && isStudentsSuccess && isSectionsSuccess){
+    if(isSessionsSuccess && isEmployeesSuccess && isStudentsSuccess && isSectionsSuccess){
     const styleSheet = document.styleSheets[0];
 
-    schoolsList.forEach((resource) => {
-      const className = `checkbox-${resource.id}`;
+    employeesList.forEach((employee) => {
+      const className = `checkbox-${employee.employeeId}`;
 
       // Rule for checkbox background color when selected
       const selectedRule = `
         .e-checkbox-wrapper.${className} .e-frame.e-check {
-          background-color: ${resource.schoolColor} !important;
-          border-color: ${resource.schoolColor} !important;
+          background-color: ${employee.employeeColor} !important;
+          border-color: ${employee.employeeColor} !important;
         }
       `;
 
       // Rule for checkbox hover effect
       const hoverRule = `
         .e-checkbox-wrapper.${className}:hover .e-frame {
-          background-color: ${resource.schoolColor}33; /* 33 is for transparency */
-          border-color: ${resource.schoolColor};
+          background-color: ${employee.employeeColor}33; /* 33 is for transparency */
+          border-color: ${employee.employeeColor};
         }
       `;
 
       // Add rules to the stylesheet
       styleSheet.insertRule(selectedRule, styleSheet.cssRules.length);
       styleSheet.insertRule(hoverRule, styleSheet.cssRules.length);
-    })
+    });
   }
-  }, [schoolsList]);
+  }, [employeesList]);
 
   const onChange = (args, resourceId) => {
     const isChecked = args.checked;
-    setSelectedSchools((prevSelected) =>
+    setSelectedAnimators((prevSelected) =>
       isChecked
         ? [...prevSelected, resourceId]
-        : prevSelected.filter((id) => id !== resourceId)
+        : prevSelected.filter((employeeId) => employeeId !== resourceId)
     );
   };
 
   const eventTemplate = (props) => {
-    if (isSessionsSuccess && isSchoolsSuccess && isStudentsSuccess && isSectionsSuccess){
-    const schoolColor = props.site?.schoolColor || "#ff5657"; // Fallback if schoolColor is missing
+    if (isSessionsSuccess && isEmployeesSuccess && isStudentsSuccess && isSectionsSuccess){
+   
     const startTime = new Date(props.startTime).toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
@@ -280,8 +286,8 @@ const SitesPlannings = () => {
       <div
         className="e-appointment custom-appointment"
         style={{
-          "--appointment-color": schoolColor, // Use CSS variable for dynamic color
-          backgroundColor: schoolColor, // Ensure the background color applies directly as well
+          "--appointment-color": props?.employeeColor, // Use CSS variable for dynamic color
+          backgroundColor: props?.employeeColor, // Ensure the background color applies directly as well
           color: "white",
           width: "100%",
           height: "100%",
@@ -311,23 +317,23 @@ const SitesPlannings = () => {
 
   useEffect(() => {
     if (scheduleObj.current) {
-      if (selectedSchools.length === 0) {
+      if (selectedAnimators.length === 0) {
         scheduleObj.current.eventSettings.query = new Query();
       } else {
-        let predicate = new Predicate("site._id", "equal", selectedSchools[0]);
+        let predicate = new Predicate("employeeId", "equal", selectedAnimators[0]);
 
-        for (let i = 1; i < selectedSchools.length; i++) {
+        for (let i = 1; i < selectedAnimators.length; i++) {
           predicate = predicate.or(
-            new Predicate("site._id", "equal", selectedSchools[i])
+            new Predicate("employeeId", "equal", selectedAnimators[i])
           );
         }
 
         scheduleObj.current.eventSettings.query = new Query().where(predicate);
       }
     }
-  }, [selectedSchools]);
-
-  return (isSessionsSuccess && isSchoolsSuccess && isStudentsSuccess && isSectionsSuccess)? (
+  }, [selectedAnimators]);
+console.log(selectedAnimators,'selectedAnimators')
+  return (isSessionsSuccess && isEmployeesSuccess && isStudentsSuccess && isSectionsSuccess) ? (
     <>
       <Plannings />
       <div className="e-schedule">
@@ -337,7 +343,7 @@ const SitesPlannings = () => {
               width="100%"
               //height="650px"
               selectedDate={new Date(2024, 9, 14)}
-              ref={scheduleObj} //to access and update teh scheduler by applying the query filter based on selectedschools
+              ref={scheduleObj} //to access and update teh scheduler by applying the query filter based on selectedAnimators
               eventSettings={eventSettings}
               timeScale={{ enable: true, interval: 120, slotCount: 4 }}
               workDays={[1, 2, 3, 4, 5, 6]}
@@ -354,7 +360,7 @@ const SitesPlannings = () => {
                   dataSource={studentSections}
                   textField="sectionLabel"
                   idField="id"
-                  // colorField="color"
+                   //colorField="color"
                 />
                 <ResourceDirective
                   field="sessionStudentId"
@@ -368,14 +374,14 @@ const SitesPlannings = () => {
                   colorField="studentColor"
                 />
                 <ResourceDirective
-                  field="site._id" // this is the identification criteria in teh data
-                  title="Schools" // the title of the resource gorupping in hte scheduler, it will desiplay schools obove th resource panel (edit and new event selection)
-                  name="schools" //an internal identifier used to define this resource grouping, could be used in multiple places within your application to reference this group of resources.
+                  field="animator" // this is the identification criteria in teh data
+                  title="Animators" // the title of the resource gorupping in hte scheduler, it will desiplay Animators obove th resource panel (edit and new event selection)
+                  name="Animators" //an internal identifier used to define this resource grouping, could be used in multiple places within your application to reference this group of resources.
                   allowMultiple={true} //whether multiple resources can be assigned to a single event.
-                  dataSource={schoolsList} //the data source that provides the list of resources (in this case, schools) to be displayed in the scheduler.
-                  textField="schoolName" //specifies which field in the resource data should be used to display the name of the resource.
-                  idField="id" //specifies which property in the resource data serves as the unique identifier for each resource
-                  colorField="schoolColor" //specifies the property in the resource data that holds the color associated with the resource.
+                  dataSource={employeesList} //the data source that provides the list of resources (in this case, animators) to be displayed in the scheduler.
+                  textField="userFullName" //specifies which field in the resource data should be used to display the name of the resource.
+                  idField="employeeId" //specifies which property in the resource data serves as the unique identifier for each resource
+                  colorField="employeeColor" //specifies the property in the resource data that holds the color associated with the resource.
                 />
               </ResourcesDirective>
               <ViewsDirective>
@@ -399,19 +405,19 @@ const SitesPlannings = () => {
 
           {/* Property Pane Section */}
           <div className="property-panel-content">
-            <PropertyPane title="Sites">
+            <PropertyPane title="Animators">
               <table className="property-panel-table">
                 <tbody>
-                  {schoolsList.map((resource) => (
-                    <tr key={resource.id}>
+                  {employeesList.map((employee) => (
+                    <tr key={employee.employeeId}>
                       <td>
                         <div style={{ display: "flex", alignItems: "center" }}>
                           <CheckBoxComponent
-                            id={`resource-checkbox-${resource.id}`}
-                            checked={selectedSchools.includes(resource.id)}
-                            label={resource.schoolName}
-                            cssClass={`checkbox-${resource.id}`} // Apply dynamic class
-                            change={(args) => onChange(args, resource.id)}
+                            employeeId={`resource-checkbox-${employee.employeeId}`}
+                            checked={selectedAnimators.includes(employee.employeeId)}
+                            label={employee.userFullName}
+                            cssClass={`checkbox-${employee.employeeId}`} // Apply dynamic class
+                            change={(args) => onChange(args, employee.employeeId)}
                           />
                         </div>
                       </td>
@@ -444,4 +450,4 @@ const SitesPlannings = () => {
   ) : null;
 };
 
-export default SitesPlannings;
+export default AnimatorsPlannings;

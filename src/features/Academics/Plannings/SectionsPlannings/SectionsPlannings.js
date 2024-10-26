@@ -35,6 +35,17 @@ import {
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { extend } from "@syncfusion/ej2-base";
 import Plannings from "../../Plannings";
+import styled from 'styled-components';
+
+const TimelineResourceGrouping = styled.div`
+  &.e-schedule:not(.e-device) .e-agenda-view .e-content-wrap table td:first-child {
+    width: 90px;
+  }
+
+  &.e-schedule .e-agenda-view .e-resource-column {
+    width: 100px;
+  }
+`;
 /**
  * schedule timeline resource grouping sample
  */
@@ -160,158 +171,159 @@ const SectionsPlannings = () => {
     // studentId: "student._id",
     // siteId: "site._id",
   };
-  const resourceData = [
-    {
-      id: 1,
-      subject: "Quality Analysis",
-      startTime: "2023-01-04T01:30:00.000Z",
-      endTime: "2023-01-04T04:00:00.000Z",
-      IsAllDay: false,
-      sessionSectionId: "670f373a06010b02b404ffed",
-      sessionStudentId: 1,
-    },
-    {
-      id: 2,
-      subject: "Project Review",
-      startTime: "2023-01-04T05:45:00.000Z",
-      endTime: "2023-01-04T06:55:00.000Z",
-      isAllDay: false,
-      sessionSectionId: "670f373a06010b02b404ffed",
-      sessionStudentId: 1,
-    },
-    {
-      id: 3,
-      subject: "Requirement planning",
-      startTime: "2023-01-04T07:00:00.000Z",
-      endTime: "2023-01-04T09:15:00.000Z",
-      osAllDay: false,
-      sessionSectionId: "670f373a06010b02b404ffed",
-      sessionStudentId: 1,
-    },
+  // const resourceData = [
+  //   {
+  //     id: 1,
+  //     subject: "Quality Analysis",
+  //     startTime: "2023-01-04T01:30:00.000Z",
+  //     endTime: "2023-01-04T04:00:00.000Z",
+  //     IsAllDay: false,
+  //     sessionSectionId: "670f373a06010b02b404ffed",
+  //     sessionStudentId: "669391e2497696586d5317df",
+  //   },
+  //   {
+  //     id: 2,
+  //     subject: "Project Review",
+  //     startTime: "2023-01-04T05:45:00.000Z",
+  //     endTime: "2023-01-04T06:55:00.000Z",
+  //     isAllDay: false,
+  //     sessionSectionId: "670f373a06010b02b404ffed",
+  //     sessionStudentId: "669391e2497696586d5317df",
+  //   },
+  //   {
+  //     id: 3,
+  //     subject: "Requirement planning",
+  //     startTime: "2023-01-04T07:00:00.000Z",
+  //     endTime: "2023-01-04T09:15:00.000Z",
+  //     osAllDay: false,
+  //     sessionSectionId: "670f373a06010b02b404ffed",
+  //     sessionStudentId: "669391e2497696586d5317df",
+  //   },
 
-    {
-      id: 4,
-      subject: "Project Preview",
-      startTime: "2023-01-04T10:00:00.000Z",
-      endTime: "2023-01-04T11:15:00.000Z",
-      isAllDay: false,
-      sessionSectionId: "670f373a06010b02b404ffed",
-      sessionStudentId: 1,
-    },
-    {
-      id: 5,
-      subject: "Resource planning",
-      startTime: "2023-01-04T01:30:00.000Z",
-      endTime: "2023-01-04T02:50:00.000Z",
-      isAllDay: false,
-      sessionSectionId: "670f373a06010b02b404ffed",
-      sessionStudentId: 2,
-    },
-    {
-      id: 6,
-      subject: "Workflow Analysis",
-      startTime: "2023-01-04T03:00:00.000Z",
-      endTime: "2023-01-04T04:30:00.000Z",
-      isAllDay: false,
-      sessionSectionId: "670f373a06010b02b404ffed",
-      sessionStudentId: 2,
-    },
-    {
-      id: 7,
-      subject: "Timeline estimation",
-      startTime: "2023-01-04T04:30:00.000Z",
-      endTime: "2023-01-04T06:00:00.000Z",
-      isAllDay: false,
-      sessionSectionId: "670f373a06010b02b404ffed",
-      sessionStudentId: 2,
-    },
-    {
-      id: 8,
-      subject: "Developers Meeting",
-      startTime: "2023-01-04T06:30:00.000Z",
-      endTime: "2023-01-04T07:50:00.000Z",
-      isAllDay: false,
-      sessionSectionId: "670f373a06010b02b404ffed",
-      sessionStudentId: 2,
-    },
+  //   {
+  //     id: 4,
+  //     subject: "Project Preview",
+  //     startTime: "2023-01-04T10:00:00.000Z",
+  //     endTime: "2023-01-04T11:15:00.000Z",
+  //     isAllDay: false,
+  //     sessionSectionId: "670f373a06010b02b404ffed",
+  //     sessionStudentId: "669391e2497696586d5317df",
+  //   },
+  //   {
+  //     id: 5,
+  //     subject: "Resource planning",
+  //     startTime: "2023-01-04T01:30:00.000Z",
+  //     endTime: "2023-01-04T02:50:00.000Z",
+  //     isAllDay: false,
+  //     sessionSectionId: "670f373a06010b02b404ffed",
+  //     sessionStudentId:"66d34816e0fdd42a2d4f7d17",
+  //   },
+  //   {
+  //     id: 6,
+  //     subject: "Workflow Analysis",
+  //     startTime: "2023-01-04T03:00:00.000Z",
+  //     endTime: "2023-01-04T04:30:00.000Z",
+  //     isAllDay: false,
+  //     sessionSectionId: "670f373a06010b02b404ffed",
+  //     sessionStudentId: "66d34816e0fdd42a2d4f7d17",
+  //   },
+  //   {
+  //     id: 7,
+  //     subject: "Timeline estimation",
+  //     startTime: "2023-01-04T04:30:00.000Z",
+  //     endTime: "2023-01-04T06:00:00.000Z",
+  //     isAllDay: false,
+  //     sessionSectionId: "670f373a06010b02b404ffed",
+  //     sessionStudentId: "66d34816e0fdd42a2d4f7d17",
+  //   },
+  //   {
+  //     id: 8,
+  //     subject: "Developers Meeting",
+  //     startTime: "2023-01-04T06:30:00.000Z",
+  //     endTime: "2023-01-04T07:50:00.000Z",
+  //     isAllDay: false,
+  //     sessionSectionId: "670f373a06010b02b404ffed",
+  //     sessionStudentId: "66d34816e0fdd42a2d4f7d17",
+  //   },
 
-    {
-      id: 9,
-      subject: "Manual testing",
-      startTime: "2023-01-04T08:45:00.000Z",
-      endTime: "2023-01-04T10:15:00.000Z",
-      isAllDay: false,
-      sessionSectionId: "670f373a06010b02b404ffed",
-      sessionStudentId: 2,
-    },
+  //   {
+  //     id: 9,
+  //     subject: "Manual testing",
+  //     startTime: "2023-01-04T08:45:00.000Z",
+  //     endTime: "2023-01-04T10:15:00.000Z",
+  //     isAllDay: false,
+  //     sessionSectionId: "670f373a06010b02b404ffed",
+  //     sessionStudentId: "66d34816e0fdd42a2d4f7d17",
+  //   },
 
-    {
-      id: 10,
-      subject: "Test report validation",
-      startTime: "2023-01-04T03:30:00.000Z",
-      endTime: "2023-01-04T05:30:00.000Z",
-      isAllDay: false,
-      sessionSectionId: "670f616606010b02b404ffef",
-      sessionStudentId: 3,
-    },
-    {
-      id: 11,
-      subject: "Test case correction",
-      startTime: "2023-01-04T06:15:00.000Z",
-      endTime: "2023-01-04T08:00:00.000Z",
-      isAllDay: false,
-      sessionSectionId: "670f616606010b02b404ffef",
-      sessionStudentId: 3,
-    },
-    {
-      id: 12,
-      subject: "Run test cases",
-      startTime: "2023-01-04T09:00:00.000Z",
-      endTime: "2023-01-04T10:30:00.000Z",
-      isAllDay: false,
-      sessionSectionId: "670f616606010b02b404ffef",
-      sessionStudentId: 3,
-    },
-  ];
-  const sectionsss = [
-    { sectionLabel: "Grade 1", id: "670f373a06010b02b404ffed" },
-    { sectionLabel: "Grade 2", id: "670f616606010b02b404ffef" },
-  ];
+  //   {
+  //     id: 10,
+  //     subject: "Test report validation",
+  //     startTime: "2023-01-04T03:30:00.000Z",
+  //     endTime: "2023-01-04T05:30:00.000Z",
+  //     isAllDay: false,
+  //     sessionSectionId: "670f616606010b02b404ffef",
+  //     sessionStudentId: "66ef0ca1841eb64f7968a787",
+  //   },
+  //   {
+  //     id: 11,
+  //     subject: "Test case correction",
+  //     startTime: "2023-01-04T06:15:00.000Z",
+  //     endTime: "2023-01-04T08:00:00.000Z",
+  //     isAllDay: false,
+  //     sessionSectionId: "670f616606010b02b404ffef",
+  //     sessionStudentId: "66ef0ca1841eb64f7968a787",
+  //   },
+  //   {
+  //     id: 12,
+  //     subject: "Run test cases",
+  //     startTime: "2023-01-04T09:00:00.000Z",
+  //     endTime: "2023-01-04T10:30:00.000Z",
+  //     isAllDay: false,
+  //     sessionSectionId: "670f616606010b02b404ffef",
+  //     sessionStudentId: "66ef0ca1841eb64f7968a787",
+  //   },
+  // ];
+  // const sectionsss = [
+  //   { sectionLabel: "Grade 1", id: "670f373a06010b02b404ffed" },
+  //   { sectionLabel: "Grade 2", id: "670f616606010b02b404ffef" },
+  // ];
 
-  //the colors of studetn s are taken into account in scheduler here
-  const studentsss = [
-    {
-      studentName: "Nancy feirra",
-      id: 1,
-      studentSectionId: "670f373a06010b02b404ffed",
-      studentColor: "#df5236",
-    },
-    {
-      studentName: "Steven ben fierrona",
-      id: 2,
-      studentSectionId: "670f373a06010b02b404ffed",
-      studentColor: "#7fa900",
-    },
-    {
-      studentName: "Robert bollio",
-      id: 3,
-      studentSectionId: "670f616606010b02b404ffef",
-      studentColor: "#ea7a57",
-    },
-    {
-      studentName: "Smith sollero",
-      id: 4,
-      studentSectionId: "670f616606010b02b404ffef",
-      studentColor: "#5978ee",
-    },
-  ];
-  const data = extend([], resourceData, null, true);
+  // //the colors of studetn s are taken into account in scheduler here
+  // const studentsss = [
+  //   {
+  //     studentName: "Nancy feirra",
+  //     id: "669391e2497696586d5317df",
+  //     studentSectionId: "670f373a06010b02b404ffed",
+  //     studentColor: "#df5236",
+  //   },
+  //   {
+  //     studentName: "Steven ben fierrona",
+  //     id: "66d34816e0fdd42a2d4f7d17",
+  //     studentSectionId: "670f373a06010b02b404ffed",
+  //     studentColor: "#7fa900",
+  //   },
+  //   {
+  //     studentName: "Robert bollio",
+  //     id: "66ef0ca1841eb64f7968a787",
+  //     studentSectionId: "670f616606010b02b404ffef",
+  //     studentColor: "#ea7a57",
+  //   },
+  //   {
+  //     studentName: "Smith sollero",
+  //     id: 4,
+  //     studentSectionId: "670f616606010b02b404ffef",
+  //     studentColor: "#5978ee",
+  //   },
+  // ];
+  const data = extend([], sessionsList, null, true);
   const workDays = [0, 1, 2, 3, 4, 5];
  
 
   return (
     <>
       <Plannings />
+      <TimelineResourceGrouping className="timeline-resource-grouping e-schedule">
       <div className="schedule-control-section">
         <div className="col-lg-12 control-section">
           <div className="control-wrapper">
@@ -319,8 +331,8 @@ const SectionsPlannings = () => {
               cssClass="timeline-resource-grouping"
               width="100%"
               //height="650px"
-              selectedDate={new Date(2023, 0, 4)}
-              currentView="TimelineWeek"
+              selectedDate={new Date(2024, 9, 14)}
+              currentView="TimelineDay"
               workDays={workDays}
               eventSettings={{ dataSource: data ,fields:fields}}
               group={{ resources: ["Sections", "Students"] }}
@@ -341,7 +353,7 @@ const SectionsPlannings = () => {
                   title=" Choose Student"// //this is what will apppear in new or edit window
                   name="Students"
                   allowMultiple={true}
-                  dataSource={studentsss}
+                  dataSource={studentsList}
                   textField="studentName" // will be replaced by the StudentNameTemplate
                   idField="id"
                   groupIDField="studentSectionId"
@@ -350,9 +362,7 @@ const SectionsPlannings = () => {
               </ResourcesDirective>
               <ViewsDirective>
                 <ViewDirective option="TimelineDay" />
-                <ViewDirective option="TimelineWeek" />
-                <ViewDirective option="TimelineWorkWeek" />
-                <ViewDirective option="TimelineMonth" />
+               
                 <ViewDirective option="Agenda" />
               </ViewsDirective>
               <Inject
@@ -368,6 +378,7 @@ const SectionsPlannings = () => {
           </div>
         </div>
       </div>
+      </TimelineResourceGrouping>
     </>
   );
 };
