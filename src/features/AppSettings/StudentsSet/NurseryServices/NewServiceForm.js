@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../../../config/UserRoles";
 import { ACTIONS } from "../../../../config/UserActions";
-import { SERVICETYPES } from "../../../../config/ServiceTypes";
+import { SERVICETYPES } from "../../../../config/SchedulerConsts";
 import StudentsSet from '../../StudentsSet'
 import useAuth from "../../../../hooks/useAuth";
 

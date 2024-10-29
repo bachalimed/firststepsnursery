@@ -27,7 +27,7 @@ import {
   COMMENT_REGEX,
   OBJECTID_REGEX,
 } from "../../../Components/lib/Utils/REGEX";
-import { SERVICETYPES } from "../../../config/ServiceTypes";
+import { SERVICETYPES } from "../../../config/SchedulerConsts";
 import { MONTHS } from "../../../config/Months";
 const NewEnrolmentForm = () => {
   // State and hooks initialization

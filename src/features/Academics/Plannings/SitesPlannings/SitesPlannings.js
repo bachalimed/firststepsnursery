@@ -15,6 +15,7 @@ import {
   PopupOpenEventArgs,
   Inject,
   Resize,
+  DragAndDrop,
   Agenda,
   
 } from "@syncfusion/ej2-react-schedule";
@@ -188,9 +189,8 @@ const SitesPlannings = () => {
     student: { name: "student", idField: "_id" },
     sessionSectionId: { name: "sessionSectionId" },
     sessionStudentId: { name: "sessionStudentId" },
-    description: { name: "Description" },
+    description: { name: "description" },
     site: { name: "site" },
-    trip: { name: "trip" },
     classroom: { name: "classroom", idField: "_id" },
     grades: { name: "grades" },
     recurrenceRule: { name: "recurrenceRule" },
@@ -200,12 +200,11 @@ const SitesPlannings = () => {
     recurrenceException: { name: "recurrenceException" },
     recurrenceId: { name: "recurrenceId" },
     isAllDay: { name: "isAllDay" },
-    IsBlock: { name: "isBlock" },
+    isBlock: { name: "isBlock" },
     isReadOnly: { name: "isReadOnly" },
 
-    schoolColor: { name: "schoolColor" },
-    // studentId: "student._id",
-    // siteId: "site._id",
+    color: { name: "color" },//imported in backend from school
+   
   };
 
   let scheduleObj = useRef(null);
@@ -289,13 +288,15 @@ const SitesPlannings = () => {
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          padding: "5px",
+          justifyContent: "center", // Correct syntax for centering vertically
+          alignItems: "center", // Correct syntax for centering horizontally
+          padding: "1px",
           borderRadius: "4px",
           boxSizing: "border-box",
         }}
       >
-        <div style={{ fontSize: "14px" }}>{props?.title} : {props?.subject}</div>
-        <div style={{ fontSize: "12px" }}>
+        <div style={{ fontSize: "14px" }}>{props?.title} </div>
+        <div style={{ fontSize: "10px" }}>
           {startTime} - {endTime} {/* Display the start and end time */}
         </div>
         <div style={{ fontSize: "14px" }}>
@@ -333,6 +334,7 @@ const SitesPlannings = () => {
 
  // Event handler for customizing the popup window
  const onPopupOpen = (args) => {
+  console.log('args printed here', args.type, args)
   if (args.type === "Editor") {
     let formElement = args.element.querySelector('.e-schedule-form');
 
@@ -381,6 +383,8 @@ const onEventRendered = (args) => {
               selectedDate={new Date(2024, 9, 14)}
               ref={scheduleObj} //to access and update teh scheduler by applying the query filter based on selectedschools
               eventSettings={eventSettings}
+              //allowDragAndDrop={false}
+              //allowResizing={false}
               timeScale={{ enable: true, interval: 120, slotCount: 4 }}
               workDays={[1, 2, 3, 4, 5, 6]}
               startHour="07:00"
@@ -422,7 +426,7 @@ const onEventRendered = (args) => {
                 />
               </ResourcesDirective>
               <ViewsDirective>
-                <ViewDirective option="TimelineDay" />
+                <ViewDirective option="TimelineDay" isSelected={true}/>
                 <ViewDirective option="Agenda" />
               </ViewsDirective>
               <Inject
@@ -433,7 +437,7 @@ const onEventRendered = (args) => {
                   WorkWeek,
                   Month,
                   Resize,
-                 
+                 DragAndDrop,
                   Agenda,
                 ]}
               />

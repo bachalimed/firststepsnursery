@@ -14,8 +14,8 @@ import {
   PopupOpenEventArgs,
   Inject,
   Resize,
-  Agenda,
   DragAndDrop,
+  Agenda,
 } from "@syncfusion/ej2-react-schedule";
 import { Query, Predicate } from "@syncfusion/ej2-data"; //Predicate and Query: Used to filter data displayed in the scheduler by constructing queries.
 import { CheckBoxComponent } from "@syncfusion/ej2-react-buttons"; //CheckBoxComponent: Syncfusion's CheckBox UI component to filter the scheduler resources
@@ -196,7 +196,7 @@ const MyPlanning = () => {
     student: { name: "student", idField: "_id" },
     sessionSectionId: { name: "sessionSectionId" },
     sessionStudentId: { name: "sessionStudentId" },
-    description: { name: "Description" },
+    description: { name: "description" },
     site: { name: "site" },
     trip: { name: "trip" },
     classroom: { name: "classroom", idField: "_id" },
@@ -208,7 +208,7 @@ const MyPlanning = () => {
     recurrenceException: { name: "recurrenceException" },
     recurrenceId: { name: "recurrenceId" },
     isAllDay: { name: "isAllDay" },
-    IsBlock: { name: "isBlock" },
+    isBlock: { name: "isBlock" },
     isReadOnly: { name: "isReadOnly" },
 
     schoolColor: { name: "schoolColor" },
@@ -275,6 +275,8 @@ const MyPlanning = () => {
             height: "100%",
             display: "flex",
             flexDirection: "column",
+            justifyContent: "center", // Correct syntax for centering vertically
+            alignItems: "center", // Correct syntax for centering horizontally
             padding: "5px",
             borderRadius: "4px",
             boxSizing: "border-box",
@@ -337,6 +339,8 @@ const MyPlanning = () => {
               selectedDate={new Date(2024, 9, 14)}
               ref={scheduleObj} //to access and update teh scheduler by applying the query filter based on selectedAnimators
               eventSettings={eventSettings}
+              allowDragAndDrop={false}
+              allowResizing={false}
               timeScale={{ enable: true, interval: 120, slotCount: 4 }}
               workDays={[1, 2, 3, 4, 5, 6]}
               startHour="07:00"
@@ -377,7 +381,7 @@ const MyPlanning = () => {
                 />
               </ResourcesDirective>
               <ViewsDirective>
-                <ViewDirective option="TimelineDay" />
+                <ViewDirective option="TimelineDay" isSelected={true} />
                 <ViewDirective option="Agenda" />
               </ViewsDirective>
               <Inject

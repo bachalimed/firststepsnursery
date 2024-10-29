@@ -186,7 +186,7 @@ const ClassroomsPlannings = () => {
     student: { name: "student", idField: "_id" },
     sessionSectionId: { name: "sessionSectionId" },
     sessionStudentId: { name: "sessionStudentId" },
-    description: { name: "Description" },
+    description: { name: "description" },
     site: { name: "site" },
     trip: { name: "trip" },
     classroom: { name: "classroom", idField: "_id" },
@@ -198,7 +198,7 @@ const ClassroomsPlannings = () => {
     recurrenceException: { name: "recurrenceException" },
     recurrenceId: { name: "recurrenceId" },
     isAllDay: { name: "isAllDay" },
-    IsBlock: { name: "isBlock" },
+    isBlock: { name: "isBlock" },
     isReadOnly: { name: "isReadOnly" },
 
     classroomColor: { name: "classroomColor" },
@@ -287,6 +287,8 @@ const ClassroomsPlannings = () => {
           height: "100%",
           display: "flex",
           flexDirection: "column",
+          justifyContent: "center", // Correct syntax for centering vertically
+          alignItems: "center", // Correct syntax for centering horizontally
           padding: "5px",
           borderRadius: "4px",
           boxSizing: "border-box",
@@ -339,6 +341,8 @@ const ClassroomsPlannings = () => {
               selectedDate={new Date(2024, 9, 14)}
               ref={scheduleObj} //to access and update teh scheduler by applying the query filter based on selectedClassrooms
               eventSettings={eventSettings}
+              allowDragAndDrop={false}
+              allowResizing={false}
               timeScale={{ enable: true, interval: 120, slotCount: 4 }}
               workDays={[1, 2, 3, 4, 5, 6]}
               startHour="07:00"
