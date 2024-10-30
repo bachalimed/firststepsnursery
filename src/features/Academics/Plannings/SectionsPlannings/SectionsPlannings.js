@@ -14,10 +14,13 @@ import {
   Resize,
   DragAndDrop,
 } from "@syncfusion/ej2-react-schedule";
-import { RecurrenceEditorComponent } from '@syncfusion/ej2-react-schedule';
-import { DropDownListComponent, DateTimePickerComponent } from '@syncfusion/ej2-react-dropdowns';
+import { RecurrenceEditorComponent } from "@syncfusion/ej2-react-schedule";
+import {
+  DropDownListComponent,
+  DateTimePickerComponent,
+} from "@syncfusion/ej2-react-dropdowns";
 import { DropDownList } from "@syncfusion/ej2-dropdowns";
-import { createElement, extend } from '@syncfusion/ej2-base';
+import { createElement, extend } from "@syncfusion/ej2-base";
 import {
   useGetSessionsByYearQuery,
   useUpdateSessionMutation,
@@ -25,7 +28,7 @@ import {
   useDeleteSessionMutation,
 } from "../../Plannings/Sessions/sessionsApiSlice";
 import { useGetEmployeesByYearQuery } from "../../../HR/Employees/employeesApiSlice";
-import { useGetClassroomsQuery} from '../../../AppSettings/AcademicsSet/Classrooms/classroomsApiSlice'
+import { useGetClassroomsQuery } from "../../../AppSettings/AcademicsSet/Classrooms/classroomsApiSlice";
 import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
 import {
   useGetSectionsByYearQuery,
@@ -47,9 +50,13 @@ import styled from "styled-components";
 import { CiInboxOut, CiInboxIn } from "react-icons/ci";
 import { LuSchool } from "react-icons/lu";
 import { HiOutlineHomeModern } from "react-icons/hi2";
-import {TYPES, SCHOOL_SUBJECTS,NURSERY_SUBJECTS } from '../../../../config/SchedulerConsts'
+import {
+  TYPES,
+  SCHOOL_SUBJECTS,
+  NURSERY_SUBJECTS,
+} from "../../../../config/SchedulerConsts";
 import { classroomssList } from "./classroomssList";
-import RuleGenerate from'./RuleGenerate'
+import RuleGenerate from "./RuleGenerate";
 const TimelineResourceGrouping = styled.div`
   &.e-schedule:not(.e-device)
     .e-agenda-view
@@ -63,10 +70,6 @@ const TimelineResourceGrouping = styled.div`
     width: 100px;
   }
 `;
-
-
-
-
 
 /**
  * schedule timeline resource grouping sample
@@ -144,7 +147,7 @@ const SectionsPlannings = () => {
   } = useGetEmployeesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
-      criteria:"Animator",
+      criteria: "Animator",
 
       endpointName: "employeesList",
     } || {},
@@ -222,8 +225,12 @@ const SectionsPlannings = () => {
   // Prepare sessions list and resource data
   let sessionsList = isSessionsSuccess ? Object.values(sessions.entities) : [];
   //let schoolsListData = isSchoolsSuccess ? Object.values(schools.entities) : [];
-  let employeesList = isEmployeesSuccess ? Object.values(employees.entities) : [];
-  let classroomsList = isClassroomsSuccess ? Object.values(classrooms.entities) : [];
+  let employeesList = isEmployeesSuccess
+    ? Object.values(employees.entities)
+    : [];
+  let classroomsList = isClassroomsSuccess
+    ? Object.values(classrooms.entities)
+    : [];
   let schoolsList = isSchoolsSuccess ? Object.values(schools.entities) : [];
   let studentSections = isSectionsSuccess
     ? Object.values(sections.entities)
@@ -246,7 +253,7 @@ const SectionsPlannings = () => {
     console.log(sessionsList, "sessionsList");
   }
   //console.log(studentsList, "studentsList");
- // console.log(studentSections, "studentSections");
+  // console.log(studentSections, "studentSections");
   if (isEmployeesSuccess && !isEmployeesLoading) {
     const { entities } = employees;
     employeesList = Object.values(entities);
@@ -270,22 +277,23 @@ const SectionsPlannings = () => {
     description: { name: "description" },
     recurrenceRule: { name: "recurrenceRule" },
     recurrenceException: { name: "recurrenceException" },
-    RecurrenceID: { name: "recurrenceId" },
+    RecurrenceID: { name: "recurrenceID" },//capital works
+    FollowingID: { name: "followingID" },//capital works
     isAllDay: { name: "isAllDay" },
     isReadOnly: { name: "isReadOnly" },
     //isBlock: { name: "isBlock" },////// if Is and not is all is not blocked
-    //sessionYear: { name: "sessionYear" },
-    //animator: { name: "animator" },
-    //school: { name: "school", idField: "_id" },
-    //section: { name: "section", idField: "_id" },
-    //student: { name: "student", idField: "_id" },
-    //sessionSectionId: { name: "sessionSectionId" },
-    // sessionStudentId: { name: "sessionStudentId" },
-    //site: { name: "site" },
-    //classroom: { name: "classroom", idField: "_id" },
+    sessionYear: { name: "sessionYear" },
+    animator: { name: "animator" },
+    school: { name: "school", idField: "_id" },
+    section: { name: "section", idField: "_id" },
+    student: { name: "student", idField: "_id" },
+    sessionSectionId: { name: "sessionSectionId" },
+     sessionStudentId: { name: "sessionStudentId" },
+    site: { name: "site" },
+    classroom: { name: "classroom", idField: "_id" },
     //createdAt: { name: "createdAt" },
-    //creator: { name: "creator" },
-    //schoolColor: { name: "schoolColor" },
+    creator: { name: "creator" },
+    schoolColor: { name: "schoolColor" },
   };
 
   const data = extend([], sessionsList, null, true);
@@ -293,248 +301,402 @@ const SectionsPlannings = () => {
   const scheduleObj = useRef(null); // Create a ref for the ScheduleComponent,
   // scheduleObj.current will store the actual instance, allowing you to call Scheduler methods like openEditor
 
-     
-    //  const onPopupOpen = (args) => {
-    //   //to capture the id when updateing event
-    //   const existingSessionId= args.data.id
-    //   if (existingSessionId){ setCrudAction('Update')
-    //   }
-    //   console.log(args.data, 'args dataaaaaaaaa')
-    //   if (args.type === 'Editor') {
-    //     // Locate the default editor form element
-    //     const formElement = args.element.querySelector('.e-schedule-form');
-    
-    //     // Create a row container for custom fields to be placed above default fields
-    //     const customRow = createElement('div', { className: 'custom-field-row' });
-    //     formElement.insertBefore(customRow, formElement.lastElementChild); // Insert custom row before the last child (default fields)
-    
-    //     // Function to create and append dropdown fields with custom field mappings
-    //     const createDropdownField = (name, placeholder, dataSource, textField, valueField) => {
-    //       const container = createElement('div', { className: 'custom-field-container' });
-    //       const inputEle = createElement('input', { className: 'e-field', attrs: { name } });
-    //       container.appendChild(inputEle);
-    //       customRow.appendChild(container);
-    
-    //       // Initialize the dropdown list
-    //       const dropDownList = new DropDownList({
-    //         dataSource,
-    //         fields: { text: textField, value: valueField },
-    //         value: args.data[name], // Set default value if it exists
-    //         floatLabelType: 'Always',
-    //         placeholder,
-    //         change: (event) => {
-    //           if (name === 'sessionType') {
-    //             updateDropdownsBasedOnSessionType(event.value);
-    //           }
-    //         }
-    //       });
-    //       dropDownList.appendTo(inputEle);
-    //       inputEle.setAttribute('name', name);
-    //     };
-    
-    //     // Function to update dropdowns based on the selected session type
-    //     const updateDropdownsBasedOnSessionType = (sessionType) => {
-    //       // Clear previous dropdowns
-    //       clearDropdown('school');
-    //       clearDropdown('subject');
-    //       clearDropdown('classroom');
-    //       clearDropdown('animator'); // Clear animator dropdown if it exists
-    
-    //       switch (sessionType) {
-    //         case 'School':
-    //           createDropdownField('school', 'School', schoolsList.filter(school => school.id !== 'FirstSteps'), 'schoolName', 'id');
-    //           createDropdownField('subject', 'Subject', SCHOOL_SUBJECTS, 'label', 'value');
-    //           break;
-    //         case 'Nursery':
-    //           createDropdownField('school', 'School', [{ label: 'First Steps', value: 'FirstSteps' }], 'label', 'value');
-    //           createDropdownField('subject', 'Subject', NURSERY_SUBJECTS, 'label', 'value');
-    //           createDropdownField('classroom', 'Classroom', classroomsList, 'classroomLabel', 'id');
-    //           createDropdownField('animator', 'Animator', employeesList, 'userFullName', 'employeeId'); // Show animator for Nursery
-    //           break;
-    //         case 'Drop':
-    //         case 'Collect':
-    //           createDropdownField('school', 'School', schoolsList.filter(school => school.id !== '6714e7abe2df335eecd87750'), 'schoolName', 'id');
-    //           createDropdownField('animator', 'Animator', employeesList, 'userFullName', 'employeeId'); // Show animator for Drop and Collect
-    //           break;
-    //       }
-    //     };
-    
-    //     // Helper function to clear existing dropdowns
-    //     const clearDropdown = (name) => {
-    //       const existingField = customRow.querySelector(`input[name="${name}"]`);
-    //       if (existingField) {
-    //         existingField.parentNode.remove(); // Remove field's parent container
-    //       }
-    //     };
-    
-    //     // Create the Session Type dropdown first
-    //     createDropdownField('sessionType', 'Session Type', ['School', 'Nursery', 'Drop', 'Collect'], 'label', 'value');
-    
-    //     // Add default fields at the bottom (title and location fields)
-    //     const titleFieldLabel = formElement.querySelector('.e-title-container label');
-    //     if (titleFieldLabel) titleFieldLabel.innerHTML = 'Subject'; // Change the label to "Subject"
-    
-    //     const locationFieldContainer = formElement.querySelector('.e-location-container');
-    //     if (locationFieldContainer) {
-    //       const locationField = locationFieldContainer.querySelector('input[name="Location"]');
-    //       if (locationField) locationField.disabled = true; // Disable Location field
-    //     }
-    //   }
-    // };
-    
-    const [crudAction, setCrudAction]= useState('Create')
-   const [recurrenceException, setRecurrenceException]= useState('')
-   const [followingId, setFollowingId]= useState('')
-   const [recurrenceId, setRecurrenceId]= useState('')
+  //  const onPopupOpen = (args) => {
+  //   //to capture the id when updateing event
+  //   const existingSessionId= args.data.id
+  //   if (existingSessionId){ setCrudAction('Update')
+  //   }
+  //   console.log(args.data, 'args dataaaaaaaaa')
+  //   if (args.type === 'Editor') {
+  //     // Locate the default editor form element
+  //     const formElement = args.element.querySelector('.e-schedule-form');
 
-const onPopupOpen = (args) => {
-  const existingSessionId = args.data.id;
-  //console.log(args.data,' popupopen args dataaa')
-  console.log(args,' popupopen argsgggsss')
-  if (existingSessionId) {
-    setCrudAction('Update');
+  //     // Create a row container for custom fields to be placed above default fields
+  //     const customRow = createElement('div', { className: 'custom-field-row' });
+  //     formElement.insertBefore(customRow, formElement.lastElementChild); // Insert custom row before the last child (default fields)
 
-    //RecurrenceID is automatically assigned ( or from DB as RecurrenceID as well as Exceptiona nd following)so we useRecurecne but  recurrenceRule is retreived from DB
-    (args.data.RecurrenceID &&args.data.recurrenceRule!=="") ?  setRecurrenceId(args.data.RecurrenceID): setRecurrenceId("")// the recurrence ID already in the data for any recurrent event
-  }
+  //     // Function to create and append dropdown fields with custom field mappings
+  //     const createDropdownField = (name, placeholder, dataSource, textField, valueField) => {
+  //       const container = createElement('div', { className: 'custom-field-container' });
+  //       const inputEle = createElement('input', { className: 'e-field', attrs: { name } });
+  //       container.appendChild(inputEle);
+  //       customRow.appendChild(container);
 
-  if (args.type === 'Editor') {
-    const formElement = args.element.querySelector('.e-schedule-form');
+  //       // Initialize the dropdown list
+  //       const dropDownList = new DropDownList({
+  //         dataSource,
+  //         fields: { text: textField, value: valueField },
+  //         value: args.data[name], // Set default value if it exists
+  //         floatLabelType: 'Always',
+  //         placeholder,
+  //         change: (event) => {
+  //           if (name === 'sessionType') {
+  //             updateDropdownsBasedOnSessionType(event.value);
+  //           }
+  //         }
+  //       });
+  //       dropDownList.appendTo(inputEle);
+  //       inputEle.setAttribute('name', name);
+  //     };
 
-    // Create a row container for custom fields if it doesn't already exist
-    let customRow = formElement.querySelector('.custom-field-row');
-    if (!customRow) {
-      customRow = createElement('div', { className: 'custom-field-row' });
-      formElement.insertBefore(customRow, formElement.lastElementChild); // Insert custom row above default fields
+  //     // Function to update dropdowns based on the selected session type
+  //     const updateDropdownsBasedOnSessionType = (sessionType) => {
+  //       // Clear previous dropdowns
+  //       clearDropdown('school');
+  //       clearDropdown('subject');
+  //       clearDropdown('classroom');
+  //       clearDropdown('animator'); // Clear animator dropdown if it exists
+
+  //       switch (sessionType) {
+  //         case 'School':
+  //           createDropdownField('school', 'School', schoolsList.filter(school => school.id !== 'FirstSteps'), 'schoolName', 'id');
+  //           createDropdownField('subject', 'Subject', SCHOOL_SUBJECTS, 'label', 'value');
+  //           break;
+  //         case 'Nursery':
+  //           createDropdownField('school', 'School', [{ label: 'First Steps', value: 'FirstSteps' }], 'label', 'value');
+  //           createDropdownField('subject', 'Subject', NURSERY_SUBJECTS, 'label', 'value');
+  //           createDropdownField('classroom', 'Classroom', classroomsList, 'classroomLabel', 'id');
+  //           createDropdownField('animator', 'Animator', employeesList, 'userFullName', 'employeeId'); // Show animator for Nursery
+  //           break;
+  //         case 'Drop':
+  //         case 'Collect':
+  //           createDropdownField('school', 'School', schoolsList.filter(school => school.id !== '6714e7abe2df335eecd87750'), 'schoolName', 'id');
+  //           createDropdownField('animator', 'Animator', employeesList, 'userFullName', 'employeeId'); // Show animator for Drop and Collect
+  //           break;
+  //       }
+  //     };
+
+  //     // Helper function to clear existing dropdowns
+  //     const clearDropdown = (name) => {
+  //       const existingField = customRow.querySelector(`input[name="${name}"]`);
+  //       if (existingField) {
+  //         existingField.parentNode.remove(); // Remove field's parent container
+  //       }
+  //     };
+
+  //     // Create the Session Type dropdown first
+  //     createDropdownField('sessionType', 'Session Type', ['School', 'Nursery', 'Drop', 'Collect'], 'label', 'value');
+
+  //     // Add default fields at the bottom (title and location fields)
+  //     const titleFieldLabel = formElement.querySelector('.e-title-container label');
+  //     if (titleFieldLabel) titleFieldLabel.innerHTML = 'Subject'; // Change the label to "Subject"
+
+  //     const locationFieldContainer = formElement.querySelector('.e-location-container');
+  //     if (locationFieldContainer) {
+  //       const locationField = locationFieldContainer.querySelector('input[name="Location"]');
+  //       if (locationField) locationField.disabled = true; // Disable Location field
+  //     }
+  //   }
+  // };
+  const [sessionObjectParentId, setSessionObjectParentId] = useState(""); //this will be used to update the parent for any recurrence change, maybe we can find directly the session parent and update
+  const [parentRecurrenceException, setParentRecurrenceException] = useState("");
+  const [followingId, setFollowingId] = useState("");
+  const [recurrenceId, setRecurrenceId] = useState("");
+  const [sessionObject, setSessionObject] = useState({
+    
+    sessionYear: "",
+    animator: "",
+    description: "",
+    subject: "",
+    endTime: "",
+    startTime: "",
+    location: "",
+    isAllDay: false,
+    isBlock: false,
+    recurrenceRule: "",
+    recurrenceException: "",
+    color: "",
+    student: "",
+    recurrenceID:"",
+    followingID:"",
+    school: "",
+    isReadOnly: false,
+    sessionType: "",
+  }); //this will be the object to save,
+
+
+  const onPopupOpen = (args) => {
+    console.log(scheduleObj.current, 'scheduleobj cureent')
+    
+    if(args.data.id) {
+    //console.log(args.data,' popupopen args dataaa')
+    console.log(args, " popupopen argsgggsss");
+    
+    setSessionObjectParentId(args.data.id)// to be used for exception later
+      //RecurrenceID is automatically assigned ( or from DB as RecurrenceID as well as Exceptiona nd following)so we useRecurecne but  recurrenceRule is retreived from DB
+      args.data.RecurrenceID && args.data.recurrenceRule !== ""
+        ? setRecurrenceId(args.data.RecurrenceID)
+        : setRecurrenceId(""); // the recurrence ID already in the data for any recurrent event
     }
 
-    // Function to create and append dropdown fields
-    const createDropdownField = (name, placeholder, dataSource, textField, valueField) => {
-      const container = createElement('div', { className: 'custom-field-container' });
-      const inputEle = createElement('input', { className: 'e-field', attrs: { name } });
-      container.appendChild(inputEle);
-      customRow.appendChild(container);
-
-      // Initialize dropdown
-      const dropDownList = new DropDownList({
-        dataSource,
-        fields: { text: textField, value: valueField },
-        value: args.data[name],
-        floatLabelType: 'Always',
-        placeholder,
-        change: (event) => {
-          if (name === 'sessionType') {
-            updateDropdownsBasedOnSessionType(event.value);
-          }
-        },
-      });
-      dropDownList.appendTo(inputEle);
-      inputEle.setAttribute('name', name);
-    };
-
-    // Update dropdowns based on session type
-    const updateDropdownsBasedOnSessionType = (sessionType) => {
-      clearDropdown('school');
-      clearDropdown('subject');
-      clearDropdown('classroom');
-      clearDropdown('animator');
-
-      switch (sessionType) {
-        case 'School':
-          createDropdownField('school', 'School', schoolsList.filter(school => school.id !== 'FirstSteps'), 'schoolName', 'id');
-          createDropdownField('subject', 'Subject', SCHOOL_SUBJECTS, 'label', 'value');
-          break;
-        case 'Nursery':
-          createDropdownField('school', 'School', [{ label: 'First Steps', value: 'FirstSteps' }], 'label', 'value');
-          createDropdownField('subject', 'Subject', NURSERY_SUBJECTS, 'label', 'value');
-          createDropdownField('classroom', 'Classroom', classroomsList, 'classroomLabel', 'id');
-          createDropdownField('animator', 'Animator', employeesList, 'userFullName', 'employeeId');
-          break;
-        case 'Drop':
-        case 'Collect':
-          createDropdownField('school', 'School', schoolsList.filter(school => school.id !== '6714e7abe2df335eecd87750'), 'schoolName', 'id');
-          createDropdownField('animator', 'Animator', employeesList, 'userFullName', 'employeeId');
-          break;
-      }
-    };
-
-    // Clear previous dropdowns if they exist
-    const clearDropdown = (name) => {
-      const existingField = customRow.querySelector(`input[name="${name}"]`);
-      if (existingField) {
-        existingField.parentNode.remove();
-      }
-    };
-
-    // Create the Session Type dropdown
-    createDropdownField('sessionType', 'Session Type', ['School', 'Nursery', 'Drop', 'Collect'], 'label', 'value');
-
-    // Add title field label and location field handling
-    const titleFieldLabel = formElement.querySelector('.e-title-container label');
-    if (titleFieldLabel) titleFieldLabel.innerHTML = 'Subject';
-
-    const locationFieldContainer = formElement.querySelector('.e-location-container');
-    if (locationFieldContainer) {
-      const locationField = locationFieldContainer.querySelector('input[name="Location"]');
-      if (locationField) locationField.disabled = true;
-    }
-
-    // **Handle Recurrence-Specific Fields**// check the args.data and apply conditions...
-    if (args.data.recurrenceRule && recurrenceId) {
-      const isException = Boolean(args.data.RecurrenceException);
+    if (args.type === "Editor") {
       
-      if (isException) {
-        // Existing instance is part of a recurring event and an exception
-        const recurrenceField = createElement('div', { innerHTML: 'Editing an instance (exception) in the series', className: 'recurrence-notification' });
-        formElement.insertBefore(recurrenceField, formElement.firstChild);
-      } else {
-        // Show fields related to handling entire series or exceptions
-        const recurrenceField = createElement('div', { innerHTML: 'Editing a recurring event or series', className: 'recurrence-notification' });
-        formElement.insertBefore(recurrenceField, formElement.firstChild);
-      }
-    }
-  }
-};
+      console.log(scheduleObj.current, 'scheduleobj current')
 
-const onActionBegin =(args)=>{
+    //console.log(scheduleObj.eventWindow.recurrenceEditor.frequencies, 'scheduleobj frequencies') recurrentce editor not working
+      const formElement = args.element.querySelector(".e-schedule-form");
 
 
-  //console.log(args.data, 'action begin args dataaaa')
-  console.log(args, 'action begin argssssssssssss')
-   //capture save, update, delete//////////////////////
-   if (args.requestType === 'eventCreate') {
-    console.log('Event Save');
-  } else if (args.requestType === 'eventChange') {//args.data....
-    console.log('Event Update');
-  } else if (args.requestType === 'eventRemove') {
-    console.log('Event Delete');
-  }
-}
 
 
-    
-    
-
-      const onPopupClose = (args) => {
-        //capture the cancel action/////////////////
-        // if (args.type === 'Editor' && args.cancel) {
-        //   console.log('Event Edit Canceled');
-        // }
-        
-        if (args.type === 'Editor') {
-console.log('args popupclose',args)
+        // Remove the default title and location row
+        const titleLocationRow = formElement.querySelector(".e-title-location-row");
+        if (titleLocationRow) {
+            titleLocationRow.remove();
         }
-      }
-      const actionComplete = (args) => {
-        //capture save, update, delete//////////////////////
-        if (args.requestType === 'eventCreated') {
-          console.log('Event Saved');
-        } else if (args.requestType === 'eventChanged') {
-          console.log('Event Updated');
-        } else if (args.requestType === 'eventRemoved') {
-          console.log('Event Deleted');
+
+        // Create a new custom row for "Subject" and "Location"
+        let customRow = formElement.querySelector(".custom-field-row");
+        if (!customRow) {
+            customRow = createElement("div", { className: "custom-field-row" });
+            formElement.insertBefore(customRow, formElement.firstElementChild);
+        }
+//  // Try accessing and updating the "Subject" field
+//  const subjectField = formElement.querySelector('.e-subject');
+//  if (subjectField) {
+//      console.log('Initial Subject Field Value:', subjectField.value, subjectField);
+//      subjectField.value = args.data.subject || 'Default Subject';
+//      console.log('Updated Subject Field Value:', subjectField.value);
+//  } else {
+//      console.warn("Subject field not found.");
+//  }
+
+
+
+      // // Create a row container for custom fields if it doesn't already exist
+      // let customRow = formElement.querySelector(".custom-field-row");
+      // if (!customRow) {
+      //   customRow = createElement("div", { className: "custom-field-row" });
+      //   formElement.insertBefore(customRow, formElement.lastElementChild); // Insert custom row above default fields
+      // }
+
+
+/////the following two fields will cause overlap over modified inputs, keep commnented
+       // Custom field for "Subject"
+      //  const subjectContainer = createElement("div", { className: "custom-field-container" });
+      //  const subjectLabel = createElement("label", { innerHTML: "Subject", className: "e-float-text e-label-top" });
+      //  const subjectInput = createElement("input", {
+      //      className: "e-field",
+      //      attrs: { name: "Subject", type: "text", value: args.data.Subject || "" },
+      //  });
+      //  subjectContainer.appendChild(subjectLabel);
+      //  subjectContainer.appendChild(subjectInput);
+      //  customRow.appendChild(subjectContainer);
+
+      //  // Custom field for "Location" (if needed)
+      //  const locationContainer = createElement("div", { className: "custom-field-container" });
+      //  const locationLabel = createElement("label", { innerHTML: "Location", className: "e-float-text e-label-top" });
+      //  const locationInput = createElement("input", {
+      //      className: "e-field",
+      //      attrs: { name: "Location", type: "text", disabled: true, value: args.data.Location || "" },
+      //  });
+      //  locationContainer.appendChild(locationLabel);
+      //  locationContainer.appendChild(locationInput);
+      //  customRow.appendChild(locationContainer);
+      // Function to create and append dropdown fields
+      const createDropdownField = (
+        name,
+        placeholder,
+        dataSource,
+        textField,
+        valueField
+      ) => {
+        const container = createElement("div", {
+          className: "custom-field-container",
+        });
+        const inputEle = createElement("input", {
+          className: "e-field",
+          attrs: { name },
+        });
+        container.appendChild(inputEle);
+        customRow.appendChild(container);
+
+        // Initialize dropdown
+        const dropDownList = new DropDownList({
+          dataSource,
+          fields: { text: textField, value: valueField },
+          value: args.data[name],
+          floatLabelType: "Always",
+          placeholder,
+          change: (event) => {
+            if (name === "sessionType") {
+              updateDropdownsBasedOnSessionType(event.value);
+            }
+          },
+        });
+        dropDownList.appendTo(inputEle);
+        inputEle.setAttribute("name", name);
+      };
+
+      // Update dropdowns based on session type
+      const updateDropdownsBasedOnSessionType = (sessionType) => {
+        clearDropdown("school");
+        clearDropdown("subject");
+        clearDropdown("classroom");
+        clearDropdown("animator");
+
+        switch (sessionType) {
+          case "School":
+            createDropdownField(
+              "school",
+              "School Name",
+              schoolsList.filter((school) => school.schoolName !== "FirstSteps"),
+              "schoolName",
+              "id"
+            );
+            createDropdownField(
+              "subject",
+              "Subject",
+              SCHOOL_SUBJECTS,
+              "label",
+              "value"
+            );
+            break;
+          case "Nursery":
+            createDropdownField(
+              "school",
+              "School Name",
+              [{ schoolName: "First Steps", id: "6714e7abe2df335eecd87750" }],
+              "schoolName",
+              "id"
+            );
+            createDropdownField(
+              "subject",
+              "Subject",
+              NURSERY_SUBJECTS,
+              "label",
+              "value"
+            );
+            createDropdownField(
+              "classroom",
+              "Classroom",
+              classroomsList,
+              "classroomLabel",
+              "id"
+            );
+            createDropdownField(
+              "animator",
+              "Animator",
+              employeesList,
+              "userFullName",
+              "employeeId"
+            );
+            break;
+          case "Drop":
+          case "Collect":
+            createDropdownField(
+              "school",
+              "School",
+              schoolsList.filter(
+                (school) => school.id !== "6714e7abe2df335eecd87750"
+              ),
+              "schoolName",
+              "id"
+            );
+            createDropdownField(
+              "animator",
+              "Animator",
+              employeesList,
+              "userFullName",
+              "employeeId"
+            );
+            break;
         }
       };
+
+      // Clear previous dropdowns if they exist
+      const clearDropdown = (name) => {
+        const existingField = customRow.querySelector(`input[name="${name}"]`);
+        if (existingField) {
+          existingField.parentNode.remove();
+        }
+      };
+
+      // Create the Session Type dropdown
+      createDropdownField(
+        "sessionType",
+        "Session Type",
+        ["School", "Nursery", "Drop", "Collect"],
+        "label",
+        "value"
+      );
+
+      // // Add title field label and location field handling// we changed the name from title to subjet
+      // const subjectFieldLabel = formElement.querySelector(
+      //   ".e-subject-container label"
+      // );
+      // if (subjectFieldLabel) subjectFieldLabel.innerHTML = "Subject";
+
+      // const locationFieldContainer = formElement.querySelector(
+      //   ".e-location-container"
+      // );
+      // if (locationFieldContainer) {
+      //   const locationField = locationFieldContainer.querySelector(
+      //     'input[name="Location"]'
+      //   );
+      //   if (locationField) locationField.disabled = true;
+      // }
+
+
+
+
+      // **Handle Recurrence-Specific Fields**// check the args.data and apply conditions...
+      if (args.data.recurrenceRule && recurrenceId) {
+        const isException = Boolean(args.data.RecurrenceException);
+
+        if (isException) {
+          // Existing instance is part of a recurring event and an exception
+          const recurrenceField = createElement("div", {
+            innerHTML: "Editing an instance (exception) in the series",
+            className: "recurrence-notification",
+          });
+          formElement.insertBefore(recurrenceField, formElement.firstChild);
+        } else {
+          // Show fields related to handling entire series or exceptions
+          const recurrenceField = createElement("div", {
+            innerHTML: "Editing a recurring event or series",
+            className: "recurrence-notification",
+          });
+          formElement.insertBefore(recurrenceField, formElement.firstChild);
+        }
+      }
+    }
+  };
+
+  const onActionBegin = (args) => {
+    //console.log(args.data, 'action begin args dataaaa')
+    console.log(args, "action begin argssssssssssss");
+    //capture save, update, delete//////////////////////
+    if (args.requestType === "eventCreate") {
+      console.log("Event Save");
+    } else if (args.requestType === "eventChange") {
+      //args.data....
+      console.log("Event Update");
+    } else if (args.requestType === "eventRemove") {
+      console.log("Event Delete");
+    }
+  };
+
+  const onPopupClose = (args) => {
+    //capture the cancel action/////////////////
+    // if (args.type === 'Editor' && args.cancel) {
+    //   console.log('Event Edit Canceled');
+    // }
+
+    if (args.type === "Editor") {
+      console.log("args popupclose", args);
+    }
+  };
+  const actionComplete = (args) => {
+    //capture save, update, delete//////////////////////
+    if (args.requestType === "eventCreated") {
+      console.log("Event Saved");
+    } else if (args.requestType === "eventChanged") {
+      console.log("Event Updated");
+    } else if (args.requestType === "eventRemoved") {
+      console.log("Event Deleted");
+    }
+  };
 
   return (
     <>
@@ -564,8 +726,8 @@ console.log('args popupclose',args)
                 popupOpen={onPopupOpen}
                 actionBegin={onActionBegin}
                 actionComplete={actionComplete}
-              // eventRendered={onEventRendered}
-              popupClose={onPopupClose}
+                // eventRendered={onEventRendered}
+                popupClose={onPopupClose}
               >
                 <ResourcesDirective>
                   <ResourceDirective
