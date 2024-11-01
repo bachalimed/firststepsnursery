@@ -133,7 +133,7 @@ const SectionsPlannings = () => {
       endpointName: "sessionsList",
     } || {},
     {
-      //pollingInterval: 60000,//will refetch data every 60seconds
+      pollingInterval: 60000, //will refetch data every 60seconds
       refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
       refetchOnMountOrArgChange: true, //refetch when we remount the component
     }
@@ -154,8 +154,8 @@ const SectionsPlannings = () => {
     } || {},
     {
       //pollingInterval: 60000,//will refetch data every 60seconds
-      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
-      refetchOnMountOrArgChange: true, //refetch when we remount the component
+      //refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
+      // refetchOnMountOrArgChange: true, //refetch when we remount the component
     }
   );
 
@@ -171,8 +171,8 @@ const SectionsPlannings = () => {
     } || {},
     {
       //pollingInterval: 60000,//will refetch data every 60seconds
-      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
-      refetchOnMountOrArgChange: true, //refetch when we remount the component
+      //refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
+      // refetchOnMountOrArgChange: true, //refetch when we remount the component
     }
   );
   const {
@@ -187,8 +187,8 @@ const SectionsPlannings = () => {
     } || {},
     {
       //pollingInterval: 60000,//will refetch data every 60seconds
-      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
-      refetchOnMountOrArgChange: true, //refetch when we remount the component
+      //refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
+      //refetchOnMountOrArgChange: true, //refetch when we remount the component
     }
   );
 
@@ -309,6 +309,7 @@ const SectionsPlannings = () => {
   const [followingID, setFollowingID] = useState("");
   const [childRecurrenceID, setChildRecurrenceID] = useState("");
   const [sessionObject, setSessionObject] = useState({
+    operationType: "",
     sessionYear: selectedAcademicYear?.title,
     animator: "",
     Description: "",
@@ -328,16 +329,27 @@ const SectionsPlannings = () => {
     operator: userId,
   }); //this will be the object to save,
 
+  const [eventType, setEventType] = useState("");
+  let eventStartTime;
+
   const onPopupOpen = (args) => {
     //prevent opening the quickinfo on a new cell, we need double click to open the full editor
-    if (args.type === "QuickInfo" && !args.data.RecurrenceID) {
+    if (args.type === "QuickInfo" && !args.data.Subject) {
       args.cancel = true;
+    }
+    if (!args.data.RecurrenceID) {
+      setEventType("notRecurrent");
+    } else {
+      setEventType("recurrent");
     }
     console.log(scheduleObj, "scheduleobj  popup open");
     console.log(scheduleObj.current, "scheduleobj cureent popup open");
     console.log(args, "  argsgggsss popupopen");
+    console.log(eventType, "  eventType popupopen");
     //capture the parent id to be used later   for updates, deletions...
-    args.data.id ? setParentId(args.data.id) : setParentId(null); // we selected an event an d not an empty
+    args.data.id ? setParentId(args.data.id) : setParentId(""); // we selected an event an d not an empty
+    //capture the start date of the event to be used in teh exception
+    eventStartTime = args.data.StartTime;
 
     if (args.type === "Editor") {
       //console.log(scheduleObj.current, "scheduleobj current");
@@ -521,27 +533,27 @@ const SectionsPlannings = () => {
         "value"
       );
 
-      // **Handle Recurrence-Specific Fields**// check the args.data and apply conditions...
-      if (args.data.RecurrenceRule && childRecurrenceID) {
-        // chekc the recurence id of child is correct hehre
-        const isException = Boolean(args.data.RecurrenceException);
+      // // **Handle Recurrence-Specific Fields**// check the args.data and apply conditions...
+      // if (args.data.RecurrenceRule && childRecurrenceID) {
+      //   // chekc the recurence id of child is correct hehre
+      //   const isException = Boolean(args.data.RecurrenceException);
 
-        if (isException) {
-          // Existing instance is part of a recurring event and an exception
-          const recurrenceField = createElement("div", {
-            innerHTML: "Editing an instance (exception) in the series",
-            className: "recurrence-notification",
-          });
-          formElement.insertBefore(recurrenceField, formElement.firstChild);
-        } else {
-          // Show fields related to handling entire series or exceptions
-          const recurrenceField = createElement("div", {
-            innerHTML: "Editing a recurring event or series",
-            className: "recurrence-notification",
-          });
-          formElement.insertBefore(recurrenceField, formElement.firstChild);
-        }
-      }
+      //   if (isException) {
+      //     // Existing instance is part of a recurring event and an exception
+      //     const recurrenceField = createElement("div", {
+      //       innerHTML: "Editing an instance (exception) in the series",
+      //       className: "recurrence-notification",
+      //     });
+      //     formElement.insertBefore(recurrenceField, formElement.firstChild);
+      //   } else {
+      //     // Show fields related to handling entire series or exceptions
+      //     const recurrenceField = createElement("div", {
+      //       innerHTML: "Editing a recurring event or series",
+      //       className: "recurrence-notification",
+      //     });
+      //     formElement.insertBefore(recurrenceField, formElement.firstChild);
+      //   }
+      // }
     }
   };
 
@@ -552,10 +564,10 @@ const SectionsPlannings = () => {
     }
   };
 
-//Convert a Date object to RecurrenceException format (yyyymmddThhmmssZ).
+  //Convert a Date object to RecurrenceException format (yyyymmddThhmmssZ).
   function formatToRecurrenceException(date) {
-    const pad = (num) => String(num).padStart(2, '0');
-  
+    const pad = (num) => String(num).padStart(2, "0");
+
     // Extract date components in UTC
     const year = date.getUTCFullYear();
     const month = pad(date.getUTCMonth() + 1); // Months are 0-indexed
@@ -563,7 +575,7 @@ const SectionsPlannings = () => {
     const hours = pad(date.getUTCHours());
     const minutes = pad(date.getUTCMinutes());
     const seconds = pad(date.getUTCSeconds());
-  
+
     // Concatenate components to match the RecurrenceException format
     return `${year}${month}${day}T${hours}${minutes}${seconds}Z`;
   }
@@ -592,6 +604,25 @@ const SectionsPlannings = () => {
 
     if (args.type === "Editor") {
       console.log("args popupclose", args);
+      setSessionObject({
+        sessionYear: selectedAcademicYear?.title,
+        animator: args.data.animator,
+        Description: args.data.Description,
+        Subject: args.data.Subject,
+        EndTime: args.data.EndTime,
+        StartTime: args.data.StartTime,
+        IsAllDay: args.data.IsAllDay,
+        IsBlock: args.data.IsBlock,
+        RecurrenceRule: args.data.RecurrenceRule,
+        RecurrenceException: args.data.RecurrenceException,
+        student: args.data.sessionStudentId[0],
+        RecurrenceID: args.data.RecurrenceID, //might be used for sessins update...
+        FollowingID: args.data.FollowingID,
+        school: args.data.school,
+        IsReadOnly: args.data.IsReadOnly,
+        sessionType: args.data.sessionType,
+        operator: userId,
+      });
     }
   };
 
@@ -682,8 +713,8 @@ const SectionsPlannings = () => {
             RecurrenceRule: RecurrenceRule || "",
             student: sessionStudentId || "",
             // RecurrenceID: null, /////////for a recurrent event set recurrence id to teh id itself??
-            RecurrenceException: null,
-            FollowingID: null,
+            RecurrenceException: "",
+            FollowingID: "",
             IsAllDay: IsAllDay || false,
             IsBlock: IsBlock || false,
             IsReadOnly: IsReadOnly || false,
@@ -700,66 +731,146 @@ const SectionsPlannings = () => {
         // Capture and differentiate single or series deletion
         if (
           args.changedRecords.length === 1 &&
-          args.deletedRecords.length === 0
+          args.deletedRecords.length === 0 &&
+          eventType === "notRecurrent"
         ) {
-          console.log("Single instance deletion detected");
+          console.log("Single instance not a series deletion detected"); //working with error alert
+          args.cancel = true;
+          handleDeleteSession({
+            id: parentId,
+          });
+          // Simulate `actionComplete` by manually triggering callback logic
+          mockActionComplete("eventRemove", args.data[0]);
+          setParentId("");
+          setEventType("");
+        }
+        if (
+          args.changedRecords.length === 1 &&
+          args.deletedRecords.length === 0 &&
+          eventType === "recurrent"
+        ) {
+          console.log("Single instance in a series deletion detected"); //working without error
 
-
-
-          
           // Prevent Syncfusion's default deletion
           args.cancel = true;
           //this what we remarked when we delte one event only
 
-          setParentRecurrenceException(
-            args.data[0]?.parent?.RecurrenceException
-          );
+          const extraException = formatToRecurrenceException(eventStartTime);
+
+          console.log(extraException, "extraException");
           //setChildRecurrenceID(parentId) no need because we are not updating the child but deleting it
           // Access RecurrenceException data for parent record
 
-          const newNewRecurrenceException =
-            args.data[0]?.parent?.RecurrenceException || "";
-          console.log(newNewRecurrenceException, "newNewRecurrenceException");
-          console.log(
-            "args data before updatingggggggggggggg",
-            args.data[0].parent.RecurrenceException,
-            "new parent exception",
-            parentRecurrenceException
-          );
           handleUpdateSession({
             id: parentId,
-            RecurrenceException: args.data[0].parent.RecurrenceException,
-            operationType: "updateParentWithRecurrenceException",
+            extraException: extraException,
+            operationType: "addParentWithExtraRecurrenceException",
           });
           // Simulate `actionComplete` by manually triggering callback logic
           mockActionComplete("eventRemove", args.data[0]);
+          setParentId("");
+          setEventType("");
         }
         ///if entire serie deletion: simply delete the parent event and !!also all its exceptions we recognise by recurrencID!!
         if (args.deletedRecords.length > 0 && args.deletedRecords[0] !== "") {
-          const idToDelete = args.deletedRecords[0].id;
+          console.log("whole series deletion detected"); //working with error alert
 
-          handleDeleteSession({ id: idToDelete });
+          handleDeleteSession({
+            id: parentId,
+            operationType: "deleteWholeSeries",
+          });
+          setParentId("");
         }
         ///if single event deletion:// add and exception with the start date to the parent
-        if (
-          args.requestType === "eventRemove" &&
-          args.changedRecords.length === 1
-        ) {
-          console.log("deleting a single event in teh series");
-        }
-        ///if following events deletion: update the parent recurrence rule to end by the date, use a rule generator  here to formulate....
-        if (
-          args.requestType === "eventRemove" &&
-          args.changedRecords.length === 1
-        ) {
-          console.log("deleting a single event in teh series");
-        }
+
         break;
       case "eventChange":
         //args.data....
-        console.log("Event Update");
-        //use this fallback to avoid errors:
-        //args.data.RecurrenceRule = args.data.RecurrenceRule || "";
+        console.log("Event change");
+        // if (
+        //   args.changedRecords.length === 1 &&
+
+        //   eventType === "notRecurrent"
+        // ) {
+        //   console.log("Single instance not a series update detected");
+        //   console.log(args.changedRecords[0],"args.changedRecords[0] on begin action in th eupdate");
+        //   setSessionObject(args.changedRecords[0])//does not update on time to get data from
+        //   args.cancel = true;
+        //   //console.log(sessionObject,'sessionobject in update single not inseries')
+        //   handleUpdateSession(args.changedRecords[0]);
+        //   // Simulate `actionComplete` by manually triggering callback logic
+        //   mockActionComplete("eventUpdate", args.data[0]);
+        //   setParentId("");
+        //   setEventType("");
+        //   setSessionObject("")
+        // }
+        if (args.changedRecords.length === 1 && eventType === "notRecurrent") {
+          console.log("Single instance not a series update detected");
+          console.log(
+            args.changedRecords[0],
+            "args.changedRecords[0] on begin action in the update"
+          );
+
+          // Set sessionObject with a timeout delay to ensure it updates before proceeding
+          setSessionObject(args.changedRecords[0]);
+
+          args.cancel = true;
+
+          // Delay the next actions to allow state to update
+          //setTimeout(() => {
+            // Access the updated sessionObject if needed
+            handleUpdateSession({...(args.changedRecords[0]),operationType:"updateSingleEventNotInSeries"});
+           // handleUpdateSession(sessionObject);
+
+            // Manually trigger callback logic
+            mockActionComplete("eventUpdate", args.data[0]);
+
+            // Reset states
+            setParentId("");
+            setEventType("");
+            setSessionObject("");
+         // }, 50); // 50ms delay, adjust as needed
+         return//this prevented the error but still have update whole series starting after this one
+        }
+
+        if (
+          args.changedRecords.length === 1 &&
+          args.deletedRecords.length === 0 &&
+          eventType === "recurrent"
+        ) {
+          console.log("Single instance in a series update detected");
+
+          // Prevent Syncfusion's default deletion
+          args.cancel = true;
+          //this what we remarked when we delte one event only
+
+          const extraException = formatToRecurrenceException(eventStartTime);
+
+          console.log(extraException, "extraException");
+          //setChildRecurrenceID(parentId) no need because we are not updating the child but deleting it
+          // Access RecurrenceException data for parent record
+
+          handleUpdateSession({
+            id: parentId,
+            extraException: extraException,
+            operationType: "addParentWithExtraRecurrenceException",
+          });
+          // Simulate `actionComplete` by manually triggering callback logic
+          mockActionComplete("eventUpdate", args.data[0]);
+          setParentId("");
+          setEventType("");
+        }
+        ///if entire serie deletion: simply delete the parent event and !!also all its exceptions we recognise by recurrencID!!
+        if (args.changedRecords.length > 0 && args.changedRecords[0] !== "") {
+          console.log("whole series update detected");
+
+          handleUpdateSession({
+            id: parentId,
+            operationType: "updateWholeSeries",
+          });
+          setParentId("");
+        }
+
         break;
     }
   };
@@ -773,6 +884,12 @@ const SectionsPlannings = () => {
 
       // Any additional logic to confirm deletion can go here
       alert("Event deleted successfully");
+    }
+    if (requestType === "eventChange") {
+      console.log("Update operation completed:", data);
+
+      // Any additional logic to confirm deletion can go here
+      alert("Event updated successfully");
     }
   };
 
@@ -802,7 +919,7 @@ const SectionsPlannings = () => {
                 cssClass="timeline-resource-grouping"
                 width="100%"
                 //height="650px"
-                selectedDate={new Date(2024, 9, 14)}
+                selectedDate={new Date()}
                 timeScale={{ enable: true, interval: 60, slotCount: 4 }}
                 currentView="TimelineDay"
                 workDays={workDays}

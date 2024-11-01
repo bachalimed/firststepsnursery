@@ -347,7 +347,7 @@ const SectionsPlannings = () => {
     //capture the parent id to be used later   for updates, deletions...
     args.data.id ? setParentId(args.data.id) : setParentId(""); // we selected an event an d not an empty
     //capture the start date of the event to be used in teh exception
-    setEventStartTime(args.data.StartTime);
+    setEventStartTime(args.data.StartTime);//this causes quickinfo to not persist
     //console.log(eventStartTime,'eventStartTime')
     if (args.type === "Editor") {
       //console.log(scheduleObj.current, "scheduleobj current");

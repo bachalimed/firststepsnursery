@@ -60,10 +60,7 @@ export const sessionsApiSlice = apiSlice.injectEndpoints({
           ...initialSessionData,
         },
       }),
-      invalidatesTags: [
-        //forces the cache in RTK query to update
-        { type: "session", id: "LIST" }, //the session list will be unvalidated and updated
-      ],
+      invalidatesTags: ["session"],
     }),
     updateSession: builder.mutation({
       query: (initialSessionData) => ({
