@@ -184,10 +184,10 @@ const MyPlanning = () => {
 
   const fields = {
     id: { name: "id" }, // Mapping your custom `id` field to `Id`
-    subject: { name: "subject" }, // Mapping your `title` field to `Subject`
-    startTime: { name: "startTime" }, // Mapping your `startTime` field to `StartTime`
-    endTime: { name: "endTime" }, // Mapping your `endTime` field to `EndTime`
-    location: { name: "location" },
+   // subject: { name: "subject" }, // Mapping your `title` field to `Subject`
+    //startTime: { name: "startTime" }, // Mapping your `startTime` field to `StartTime`
+    //endTime: { name: "endTime" }, // Mapping your `endTime` field to `EndTime`
+   // location: { name: "location" },
     title: { name: "title" },
     sessionYear: { name: "sessionYear" },
     animator: { name: "animator" },
@@ -196,20 +196,20 @@ const MyPlanning = () => {
     student: { name: "student", idField: "_id" },
     sessionSectionId: { name: "sessionSectionId" },
     sessionStudentId: { name: "sessionStudentId" },
-    description: { name: "description" },
+    //description: { name: "description" },
     site: { name: "site" },
     trip: { name: "trip" },
     classroom: { name: "classroom", idField: "_id" },
     grades: { name: "grades" },
-    recurrenceRule: { name: "recurrenceRule" },
+   // recurrenceRule: { name: "recurrenceRule" },
     sessionStatus: { name: "sessionStatus" },
     createdAt: { name: "createdAt" },
     creator: { name: "creator" },
-    recurrenceException: { name: "recurrenceException" },
-    recurrenceId: { name: "recurrenceId" },
-    isAllDay: { name: "isAllDay" },
-    isBlock: { name: "isBlock" },
-    isReadOnly: { name: "isReadOnly" },
+   // recurrenceException: { name: "recurrenceException" },
+   // recurrenceId: { name: "recurrenceId" },
+   // isAllDay: { name: "isAllDay" },
+   // isBlock: { name: "isBlock" },
+   // isReadOnly: { name: "isReadOnly" },
 
     schoolColor: { name: "schoolColor" },
     // studentId: "student._id",
