@@ -451,7 +451,7 @@ console.log(selectedAnimators,'selectedAnimators')
     </div>
    
     </>
-  ) : null;
+  ) : <Plannings />;
 };
 
 export default AnimatorsPlannings;

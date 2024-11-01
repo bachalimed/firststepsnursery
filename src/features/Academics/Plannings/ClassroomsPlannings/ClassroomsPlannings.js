@@ -445,7 +445,7 @@ const ClassroomsPlannings = () => {
     </div>
    
     </>
-  ) : null;
+  ) : <Plannings />;
 };
 
 export default ClassroomsPlannings;

@@ -416,7 +416,7 @@ const MyPlanning = () => {
         </style>
       </div>
     </>
-  ) : null;
+  ) : <Plannings />;
 };
 
 export default MyPlanning;

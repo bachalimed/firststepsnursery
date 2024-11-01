@@ -488,7 +488,7 @@ const onEventRendered = (args) => {
     </div>
    
     </>
-  ) : null;
+  ) : <Plannings />;
 };
 
 export default SitesPlannings;

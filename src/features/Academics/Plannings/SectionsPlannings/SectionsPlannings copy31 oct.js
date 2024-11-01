@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import useAuth from "../../../../hooks/useAuth";
 import {
   TimelineViews,
   TimelineMonth,
@@ -81,7 +80,7 @@ const SectionsPlannings = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-  const { userId } = useAuth();
+
   const {
     data: sections, //the data is renamed sessions
     isLoading: isSectionsLoading, //monitor several situations is loading...
@@ -251,7 +250,7 @@ const SectionsPlannings = () => {
     const { entities } = sessions;
     sessionsList = Object.values(entities); //we are using entity adapter in this query
 
-    //console.log(sessionsList, "sessionsList");
+    console.log(sessionsList, "sessionsList");
   }
   //console.log(studentsList, "studentsList");
   // console.log(studentSections, "studentSections");
@@ -278,8 +277,8 @@ const SectionsPlannings = () => {
     description: { name: "description" },
     recurrenceRule: { name: "recurrenceRule" },
     recurrenceException: { name: "recurrenceException" },
-    RecurrenceID: { name: "RecurrenceID" }, //capital works
-    FollowingID: { name: "FollowingID" }, //capital works
+    RecurrenceID: { name: "recurrenceID" },//capital works
+    FollowingID: { name: "followingID" },//capital works
     isAllDay: { name: "isAllDay" },
     isReadOnly: { name: "isReadOnly" },
     //isBlock: { name: "isBlock" },////// if Is and not is all is not blocked
@@ -289,7 +288,7 @@ const SectionsPlannings = () => {
     section: { name: "section", idField: "_id" },
     student: { name: "student", idField: "_id" },
     sessionSectionId: { name: "sessionSectionId" },
-    sessionStudentId: { name: "sessionStudentId" },
+     sessionStudentId: { name: "sessionStudentId" },
     site: { name: "site" },
     classroom: { name: "classroom", idField: "_id" },
     //createdAt: { name: "createdAt" },
@@ -302,72 +301,199 @@ const SectionsPlannings = () => {
   const scheduleObj = useRef(null); // Create a ref for the ScheduleComponent,
   // scheduleObj.current will store the actual instance, allowing you to call Scheduler methods like openEditor
 
+  //  const onPopupOpen = (args) => {
+  //   //to capture the id when updateing event
+  //   const existingSessionId= args.data.id
+  //   if (existingSessionId){ setCrudAction('Update')
+  //   }
+  //   console.log(args.data, 'args dataaaaaaaaa')
+  //   if (args.type === 'Editor') {
+  //     // Locate the default editor form element
+  //     const formElement = args.element.querySelector('.e-schedule-form');
+
+  //     // Create a row container for custom fields to be placed above default fields
+  //     const customRow = createElement('div', { className: 'custom-field-row' });
+  //     formElement.insertBefore(customRow, formElement.lastElementChild); // Insert custom row before the last child (default fields)
+
+  //     // Function to create and append dropdown fields with custom field mappings
+  //     const createDropdownField = (name, placeholder, dataSource, textField, valueField) => {
+  //       const container = createElement('div', { className: 'custom-field-container' });
+  //       const inputEle = createElement('input', { className: 'e-field', attrs: { name } });
+  //       container.appendChild(inputEle);
+  //       customRow.appendChild(container);
+
+  //       // Initialize the dropdown list
+  //       const dropDownList = new DropDownList({
+  //         dataSource,
+  //         fields: { text: textField, value: valueField },
+  //         value: args.data[name], // Set default value if it exists
+  //         floatLabelType: 'Always',
+  //         placeholder,
+  //         change: (event) => {
+  //           if (name === 'sessionType') {
+  //             updateDropdownsBasedOnSessionType(event.value);
+  //           }
+  //         }
+  //       });
+  //       dropDownList.appendTo(inputEle);
+  //       inputEle.setAttribute('name', name);
+  //     };
+
+  //     // Function to update dropdowns based on the selected session type
+  //     const updateDropdownsBasedOnSessionType = (sessionType) => {
+  //       // Clear previous dropdowns
+  //       clearDropdown('school');
+  //       clearDropdown('subject');
+  //       clearDropdown('classroom');
+  //       clearDropdown('animator'); // Clear animator dropdown if it exists
+
+  //       switch (sessionType) {
+  //         case 'School':
+  //           createDropdownField('school', 'School', schoolsList.filter(school => school.id !== 'FirstSteps'), 'schoolName', 'id');
+  //           createDropdownField('subject', 'Subject', SCHOOL_SUBJECTS, 'label', 'value');
+  //           break;
+  //         case 'Nursery':
+  //           createDropdownField('school', 'School', [{ label: 'First Steps', value: 'FirstSteps' }], 'label', 'value');
+  //           createDropdownField('subject', 'Subject', NURSERY_SUBJECTS, 'label', 'value');
+  //           createDropdownField('classroom', 'Classroom', classroomsList, 'classroomLabel', 'id');
+  //           createDropdownField('animator', 'Animator', employeesList, 'userFullName', 'employeeId'); // Show animator for Nursery
+  //           break;
+  //         case 'Drop':
+  //         case 'Collect':
+  //           createDropdownField('school', 'School', schoolsList.filter(school => school.id !== '6714e7abe2df335eecd87750'), 'schoolName', 'id');
+  //           createDropdownField('animator', 'Animator', employeesList, 'userFullName', 'employeeId'); // Show animator for Drop and Collect
+  //           break;
+  //       }
+  //     };
+
+  //     // Helper function to clear existing dropdowns
+  //     const clearDropdown = (name) => {
+  //       const existingField = customRow.querySelector(`input[name="${name}"]`);
+  //       if (existingField) {
+  //         existingField.parentNode.remove(); // Remove field's parent container
+  //       }
+  //     };
+
+  //     // Create the Session Type dropdown first
+  //     createDropdownField('sessionType', 'Session Type', ['School', 'Nursery', 'Drop', 'Collect'], 'label', 'value');
+
+  //     // Add default fields at the bottom (title and location fields)
+  //     const titleFieldLabel = formElement.querySelector('.e-title-container label');
+  //     if (titleFieldLabel) titleFieldLabel.innerHTML = 'Subject'; // Change the label to "Subject"
+
+  //     const locationFieldContainer = formElement.querySelector('.e-location-container');
+  //     if (locationFieldContainer) {
+  //       const locationField = locationFieldContainer.querySelector('input[name="Location"]');
+  //       if (locationField) locationField.disabled = true; // Disable Location field
+  //     }
+  //   }
+  // };
   const [sessionObjectParentId, setSessionObjectParentId] = useState(""); //this will be used to update the parent for any recurrence change, maybe we can find directly the session parent and update
-  const [parentRecurrenceException, setParentRecurrenceException] =
-    useState("");
+  const [parentRecurrenceException, setParentRecurrenceException] = useState("");
   const [followingId, setFollowingId] = useState("");
-  const [RecurrenceID, setRecurrenceID] = useState("");
+  const [recurrenceId, setRecurrenceId] = useState("");
   const [sessionObject, setSessionObject] = useState({
-    sessionYear: selectedAcademicYear?.title,
+    
+    sessionYear: "",
     animator: "",
     description: "",
     subject: "",
     endTime: "",
     startTime: "",
+    location: "",
     isAllDay: false,
     isBlock: false,
     recurrenceRule: "",
     recurrenceException: "",
+    color: "",
     student: "",
-    RecurrenceID: "", //might be used for sessins update...
-    FollowingID: "",
+    recurrenceID:"",
+    followingID:"",
     school: "",
     isReadOnly: false,
     sessionType: "",
-    operator: userId,
   }); //this will be the object to save,
 
+
   const onPopupOpen = (args) => {
-    //prevent opening the quickinfo on a new cell, we need double click to open the full editor
-    if (args.type === "QuickInfo" && !args.data.RecurrenceID) {
-      args.cancel = true;
-    }
-
-    console.log(scheduleObj, "scheduleobj  popup open");
-    console.log(scheduleObj.current, "scheduleobj cureent popup open");
-    console.log(args, "  argsgggsss popupopen");
-
-    if (args.data.id) {
-      //might be used for updates, deletions...
-      //console.log(args.data,' popupopen args dataaa')
-      setSessionObjectParentId(args.data.id); // to be used for exception later
+    console.log(scheduleObj.current, 'scheduleobj cureent')
+    
+    if(args.data.id) {
+    //console.log(args.data,' popupopen args dataaa')
+    console.log(args, " popupopen argsgggsss");
+    
+    setSessionObjectParentId(args.data.id)// to be used for exception later
       //RecurrenceID is automatically assigned ( or from DB as RecurrenceID as well as Exceptiona nd following)so we useRecurecne but  recurrenceRule is retreived from DB
       args.data.RecurrenceID && args.data.recurrenceRule !== ""
-        ? setRecurrenceID(args.data.RecurrenceID)
-        : setRecurrenceID(""); // the recurrence ID already in the data for any recurrent event
+        ? setRecurrenceId(args.data.RecurrenceID)
+        : setRecurrenceId(""); // the recurrence ID already in the data for any recurrent event
     }
 
     if (args.type === "Editor") {
-      //console.log(scheduleObj.current, "scheduleobj current");
+      
+      console.log(scheduleObj.current, 'scheduleobj current')
 
-      //console.log(scheduleObj.eventWindow.recurrenceEditor.frequencies, 'scheduleobj frequencies') recurrentce editor not working
+    //console.log(scheduleObj.eventWindow.recurrenceEditor.frequencies, 'scheduleobj frequencies') recurrentce editor not working
       const formElement = args.element.querySelector(".e-schedule-form");
 
-      // Remove the default title and location row
-      const titleLocationRow = formElement.querySelector(
-        ".e-title-location-row"
-      );
-      if (titleLocationRow) {
-        titleLocationRow.remove();
-      }
 
-      // Create a new custom row for "Subject" and "Location"
-      let customRow = formElement.querySelector(".custom-field-row");
-      if (!customRow) {
-        customRow = createElement("div", { className: "custom-field-row" });
-        formElement.insertBefore(customRow, formElement.firstElementChild);
-      }
 
+
+        // Remove the default title and location row
+        const titleLocationRow = formElement.querySelector(".e-title-location-row");
+        if (titleLocationRow) {
+            titleLocationRow.remove();
+        }
+
+        // Create a new custom row for "Subject" and "Location"
+        let customRow = formElement.querySelector(".custom-field-row");
+        if (!customRow) {
+            customRow = createElement("div", { className: "custom-field-row" });
+            formElement.insertBefore(customRow, formElement.firstElementChild);
+        }
+//  // Try accessing and updating the "Subject" field
+//  const subjectField = formElement.querySelector('.e-subject');
+//  if (subjectField) {
+//      console.log('Initial Subject Field Value:', subjectField.value, subjectField);
+//      subjectField.value = args.data.subject || 'Default Subject';
+//      console.log('Updated Subject Field Value:', subjectField.value);
+//  } else {
+//      console.warn("Subject field not found.");
+//  }
+
+
+
+      // // Create a row container for custom fields if it doesn't already exist
+      // let customRow = formElement.querySelector(".custom-field-row");
+      // if (!customRow) {
+      //   customRow = createElement("div", { className: "custom-field-row" });
+      //   formElement.insertBefore(customRow, formElement.lastElementChild); // Insert custom row above default fields
+      // }
+
+
+/////the following two fields will cause overlap over modified inputs, keep commnented
+       // Custom field for "Subject"
+      //  const subjectContainer = createElement("div", { className: "custom-field-container" });
+      //  const subjectLabel = createElement("label", { innerHTML: "Subject", className: "e-float-text e-label-top" });
+      //  const subjectInput = createElement("input", {
+      //      className: "e-field",
+      //      attrs: { name: "Subject", type: "text", value: args.data.Subject || "" },
+      //  });
+      //  subjectContainer.appendChild(subjectLabel);
+      //  subjectContainer.appendChild(subjectInput);
+      //  customRow.appendChild(subjectContainer);
+
+      //  // Custom field for "Location" (if needed)
+      //  const locationContainer = createElement("div", { className: "custom-field-container" });
+      //  const locationLabel = createElement("label", { innerHTML: "Location", className: "e-float-text e-label-top" });
+      //  const locationInput = createElement("input", {
+      //      className: "e-field",
+      //      attrs: { name: "Location", type: "text", disabled: true, value: args.data.Location || "" },
+      //  });
+      //  locationContainer.appendChild(locationLabel);
+      //  locationContainer.appendChild(locationInput);
+      //  customRow.appendChild(locationContainer);
+      // Function to create and append dropdown fields
       const createDropdownField = (
         name,
         placeholder,
@@ -414,9 +540,7 @@ const SectionsPlannings = () => {
             createDropdownField(
               "school",
               "School Name",
-              schoolsList.filter(
-                (school) => school.schoolName !== "FirstSteps"
-              ),
+              schoolsList.filter((school) => school.schoolName !== "FirstSteps"),
               "schoolName",
               "id"
             );
@@ -459,31 +583,6 @@ const SectionsPlannings = () => {
             );
             break;
           case "Drop":
-            createDropdownField(
-              "school",
-              "School",
-              schoolsList.filter(
-                (school) => school.id !== "6714e7abe2df335eecd87750"
-              ),
-              "schoolName",
-              "id"
-            );
-            createDropdownField(
-              "animator",
-              "Animator",
-              employeesList,
-              "userFullName",
-              "employeeId"
-            );
-            createDropdownField(
-              "subject",
-              "Subject",
-              ["Drop"],
-              "label",
-              "value"
-            );
-            break;
-
           case "Collect":
             createDropdownField(
               "school",
@@ -500,13 +599,6 @@ const SectionsPlannings = () => {
               employeesList,
               "userFullName",
               "employeeId"
-            );
-            createDropdownField(
-              "subject",
-              "Subject",
-              ["Collect"],
-              "label",
-              "value"
             );
             break;
         }
@@ -529,8 +621,27 @@ const SectionsPlannings = () => {
         "value"
       );
 
+      // // Add title field label and location field handling// we changed the name from title to subjet
+      // const subjectFieldLabel = formElement.querySelector(
+      //   ".e-subject-container label"
+      // );
+      // if (subjectFieldLabel) subjectFieldLabel.innerHTML = "Subject";
+
+      // const locationFieldContainer = formElement.querySelector(
+      //   ".e-location-container"
+      // );
+      // if (locationFieldContainer) {
+      //   const locationField = locationFieldContainer.querySelector(
+      //     'input[name="Location"]'
+      //   );
+      //   if (locationField) locationField.disabled = true;
+      // }
+
+
+
+
       // **Handle Recurrence-Specific Fields**// check the args.data and apply conditions...
-      if (args.data.recurrenceRule && RecurrenceID) {
+      if (args.data.recurrenceRule && recurrenceId) {
         const isException = Boolean(args.data.RecurrenceException);
 
         if (isException) {
@@ -552,150 +663,21 @@ const SectionsPlannings = () => {
     }
   };
 
-  const handleCreateSession = async (sessObj) => {
-    await addNewSession(sessObj);
-    if (isAddSessionError) {
-      alert("error saving session");
-    }
-  };
-
-  const handleDeleteSession = async (id) => {
-    await deleteSession(id);
-    if (isDeleteSessionError) {
-      alert("error deleting session");
-    }
-  };
-
   const onActionBegin = (args) => {
-    console.log(scheduleObj, "scheduleobj  onActionBegin ");
-    console.log(scheduleObj.current, "scheduleobj cureent onActionBegin ");
-    console.log(args, "  argsgggsss onActionBegin ");
+    //console.log(args.data, 'action begin args dataaaa')
+    console.log(args, "action begin argssssssssssss");
     //capture save, update, delete//////////////////////
     if (args.requestType === "eventCreate") {
       console.log("Event Save");
-      if (args.addedRecords.length > 0 && args.addedRecords[0] !== "") {
-        console.log("creating teh object");
-        const {
-          animator,
-          description,
-          subject,
-          endTime,
-          startTime,
-          isAllDay,
-          isBlock,
-          recurrenceRule,
-          recurrenceException,
-          sessionStudentId,
-          student,
-          // RecurrenceID,
-          FollowingID,
-          school,
-          classroom,
-          isReadOnly,
-          sessionType,
-        } = args.addedRecords[0];
-        //////////////////////////////////////we should check required data here and validate the varivables
-        // console.log(
-        //   animator,
-        //   "animator",
-        //   description,
-        //   "description",
-        //   subject,
-        //   "subject",
-        //   endTime,
-        //   "endTime",
-        //   startTime,
-        //   "startTime",
-        //   isAllDay,
-        //   "isAllDay",
-        //   isBlock,
-        //   "isBlock",
-        //   recurrenceRule,
-        //   "recurrenceRule",
-        //   recurrenceException,
-        //   "recurrenceException",
-        //   sessionStudentId,
-        //   "student",
-        //   student,
-        //   "student",
-        //   RecurrenceID,
-        //   "RecurrenceID",
-        //   FollowingID,
-        //   "FollowingID",
-        //   school,
-        //   "school",
-        //   classroom,
-        //   "classroom",
-        //   isReadOnly,
-        //   "isReadOnly",
-        //   sessionType,
-        //   "sessionType"
-        // );
-        if (
-          (school === "6714e7abe2df335eecd87750" && !animator) ||
-          (school === "6714e7abe2df335eecd87750" && !classroom)
-        ) {
-          alert(" required fields are missing");
-        }
-
-        const jjj = handleCreateSession({
-          sessionType: sessionType || "",
-          sessionYear: selectedAcademicYear?.title,
-          school: school || "",
-          subject: subject || "",
-          classroom: classroom,
-          animator: animator,
-          description: description || "",
-          endTime: endTime || "",
-          startTime: startTime || "",
-          recurrenceRule: recurrenceRule || "",
-          student: sessionStudentId || "",
-          // RecurrenceID: null, /////////for a recurrent event set recurrence id to teh id itself??
-          recurrenceException: null,
-          FollowingID: null,
-          isAllDay: isAllDay || false,
-          isBlock: isBlock || false,
-          isReadOnly: isReadOnly || false,
-          operator: userId || "",
-        });
-      }
     } else if (args.requestType === "eventChange") {
       //args.data....
       console.log("Event Update");
-      //use this fallback to avoid errors:
-      //args.data.recurrenceRule = args.data.recurrenceRule || "";
     } else if (args.requestType === "eventRemove") {
-      console.warn("Event Delete");
-      ///check  what type of deletion is performed: event , follwoing, entire
-      console.log(args.data, "args in delete");
-
-      ///if entire serie deletion: simply delete the parent event and !!also all its exceptions we recognise by recurrencID!!
-      if (args.deletedRecords.length > 0 && args.deletedRecords[0] !== "") {
-        const idToDelete = args.deletedRecords[0].id;
-
-        handleDeleteSession({ id: idToDelete });
-      }
-      ///if single event deletion:// add and exception with the start date to the parent
-      if (
-        args.requestType === "eventRemove" &&
-        args.changedRecords.length === 1
-      ) {
-        console.log("deleting a single event in teh series");
-      }
-      ///if following events deletion: update the parent recurrence rule to end by the date, use a rule generator  here to formulate....
-      if (
-        args.requestType === "eventRemove" &&
-        args.changedRecords.length === 1
-      ) {
-        console.log("deleting a single event in teh series");
-      }
+      console.log("Event Delete");
     }
   };
 
   const onPopupClose = (args) => {
-    console.log(scheduleObj, "scheduleobj  onPopupClose ");
-    console.log(scheduleObj.current, "scheduleobj cureent onPopupClose ");
-    console.log(args, "  argsgggsss onPopupClose ");
     //capture the cancel action/////////////////
     // if (args.type === 'Editor' && args.cancel) {
     //   console.log('Event Edit Canceled');
@@ -706,9 +688,6 @@ const SectionsPlannings = () => {
     }
   };
   const actionComplete = (args) => {
-    console.log(scheduleObj, "scheduleobj  onPopupClose ");
-    console.log(scheduleObj.current, "scheduleobj cureent onPopupClose ");
-    console.log(args, "  argsgggsss onPopupClose ");
     //capture save, update, delete//////////////////////
     if (args.requestType === "eventCreated") {
       console.log("Event Saved");
