@@ -1,5 +1,5 @@
 import { createSelector, createEntityAdapter } from "@reduxjs/toolkit";
-import { apiSlice } from "../../../../app/api/apiSlice"
+import { apiSlice } from "../../../../app/api/apiSlice";
 
 const sessionsAdapter = createEntityAdapter({});
 
@@ -80,6 +80,14 @@ export const sessionsApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["session"],
     }),
+    deleteSessionWithBody: builder.mutation({
+      query: ({ id, extraException, operationType }) => ({
+        url: "/academics/sessions",
+        method: "DELETE",
+        body: { id, extraException, operationType },
+      }),
+      invalidatesTags: ["session"],
+    }),
   }),
 });
 
@@ -89,6 +97,7 @@ export const {
   useAddNewSessionMutation,
   useUpdateSessionMutation,
   useDeleteSessionMutation,
+  useDeleteSessionWithBodyMutation,
 } = sessionsApiSlice;
 
 // returns the query result object
