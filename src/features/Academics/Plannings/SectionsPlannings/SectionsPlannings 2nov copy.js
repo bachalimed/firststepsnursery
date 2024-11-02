@@ -338,28 +338,30 @@ const SectionsPlannings = () => {
   // scheduleObj.current will store the actual instance, allowing you to call Scheduler methods like openEditor
 
   const [parentId, setParentId] = useState(null); //this will be used to update the parent for any recurrence change, maybe we can find directly the session parent and update
- 
- 
-  // const [sessionObject, setSessionObject] = useState({
-  //   operationType: "",
-  //   sessionYear: selectedAcademicYear?.title,
-  //   animator: "",
-  //   Description: "",
-  //   Subject: "",
-  //   EndTime: "",
-  //   StartTime: "",
-  //   IsAllDay: false,
-  //   IsBlock: false,
-  //   RecurrenceRule: "",
-  //   RecurrenceException: "",
-  //   student: "",
-  //   RecurrenceID: "", //might be used for sessins update...
-  //   FollowingID: "",
-  //   school: "",
-  //   IsReadOnly: false,
-  //   sessionType: "",
-  //   operator: userId,
-  // }); //this will be the object to save,
+  const [parentRecurrenceException, setParentRecurrenceException] =
+    useState(null);
+  const [followingID, setFollowingID] = useState("");
+  const [childRecurrenceID, setChildRecurrenceID] = useState("");
+  const [sessionObject, setSessionObject] = useState({
+    operationType: "",
+    sessionYear: selectedAcademicYear?.title,
+    animator: "",
+    Description: "",
+    Subject: "",
+    EndTime: "",
+    StartTime: "",
+    IsAllDay: false,
+    IsBlock: false,
+    RecurrenceRule: "",
+    RecurrenceException: "",
+    student: "",
+    RecurrenceID: "", //might be used for sessins update...
+    FollowingID: "",
+    school: "",
+    IsReadOnly: false,
+    sessionType: "",
+    operator: userId,
+  }); //this will be the object to save,
 
   const [eventType, setEventType] = useState("");
   let eventStartTime;
@@ -388,7 +390,7 @@ const SectionsPlannings = () => {
     if (args.type === "Editor") {
       //console.log(scheduleObj.current, "scheduleobj current");
       //////args.data.sessionType = null;//will emppty session type to force user to fill again
-      
+
       //console.log(scheduleObj.eventWindow.recurrenceEditor.frequencies, 'scheduleobj frequencies') recurrentce editor not working
       const formElement = args.element.querySelector(".e-schedule-form");
 
@@ -407,7 +409,6 @@ const SectionsPlannings = () => {
         formElement.insertBefore(customRow, formElement.firstElementChild);
       }
 
-        // Initialize dropdown fields with their existing selected values if available
       const createDropdownField = (
         name,
         placeholder,
@@ -425,11 +426,11 @@ const SectionsPlannings = () => {
         container.appendChild(inputEle);
         customRow.appendChild(container);
 
-       // Initialize dropdown with existing value or leave blank if none
+        // Initialize dropdown
         const dropDownList = new DropDownList({
           dataSource,
           fields: { text: textField, value: valueField },
-          value: args.data[name] || null,  // Use the existing value if it exists,
+          value: args.data[name],
           floatLabelType: "Always",
           placeholder,
           change: (event) => {
@@ -501,7 +502,7 @@ const SectionsPlannings = () => {
           case "Drop":
             createDropdownField(
               "school",
-              "School Name",
+              "School",
               schoolsList.filter(
                 (school) => school.id !== "6714e7abe2df335eecd87750"
               ),
@@ -527,7 +528,7 @@ const SectionsPlannings = () => {
           case "Collect":
             createDropdownField(
               "school",
-              "School Name",
+              "School",
               schoolsList.filter(
                 (school) => school.id !== "6714e7abe2df335eecd87750"
               ),
@@ -568,241 +569,30 @@ const SectionsPlannings = () => {
         "label",
         "value"
       );
-       // Pre-populate other dropdowns based on the current session type, if any/////added this to test editing with viewing alreadys elcted
-    if (args.data.sessionType) {
-      updateDropdownsBasedOnSessionType(args.data.sessionType);
-    }
 
-     
+      // // **Handle Recurrence-Specific Fields**// check the args.data and apply conditions...
+      // if (args.data.RecurrenceRule && childRecurrenceID) {
+      //   // chekc the recurence id of child is correct hehre
+      //   const isException = Boolean(args.data.RecurrenceException);
+
+      //   if (isException) {
+      //     // Existing instance is part of a recurring event and an exception
+      //     const recurrenceField = createElement("div", {
+      //       innerHTML: "Editing an instance (exception) in the series",
+      //       className: "recurrence-notification",
+      //     });
+      //     formElement.insertBefore(recurrenceField, formElement.firstChild);
+      //   } else {
+      //     // Show fields related to handling entire series or exceptions
+      //     const recurrenceField = createElement("div", {
+      //       innerHTML: "Editing a recurring event or series",
+      //       className: "recurrence-notification",
+      //     });
+      //     formElement.insertBefore(recurrenceField, formElement.firstChild);
+      //   }
+      // }
     }
   };
-  // const onPopupOpen = (args) => {
-  //   //prevent opening the quickinfo on a new cell, we need double click to open the full editor
-  //   if (args.type === "QuickInfo" && !args.data.Subject) {
-  //     args.cancel = true;
-  //   }
-  //   if (!args.data.RecurrenceID) {
-  //     setEventType("notRecurrent");
-  //   } else {
-  //     setEventType("recurrent");
-  //   }
-  //   args.data.id ? setParentId(args.data.id) : setParentId(""); // we selected an event an d not an empty
-  //   //setParentId(scheduleObj.activeEventData.event.id)// not working
-  //   console.log("parentId captured:", parentId);
-  //   console.log(eventType, "  eventType popupopen");
-  //   console.log(scheduleObj, "scheduleobj  popup open");
-  //   console.log(scheduleObj.current, "scheduleobj cureent popup open");
-  //   console.log(args, "  argsgggsss popupopen");
-  //   //capture the parent id to be used later   for updates, deletions...
-  //   //capture the start date of the event to be used in teh exception
-  //   eventStartTime = args.data.StartTime;
-
-  //   if (args.type === "Editor") {
-  //     //console.log(scheduleObj.current, "scheduleobj current");
-  //     //////args.data.sessionType = null;//will emppty session type to force user to fill again
-
-  //     //console.log(scheduleObj.eventWindow.recurrenceEditor.frequencies, 'scheduleobj frequencies') recurrentce editor not working
-  //     const formElement = args.element.querySelector(".e-schedule-form");
-
-  //     // Remove the default title and location row
-  //     const titleLocationRow = formElement.querySelector(
-  //       ".e-title-location-row"
-  //     );
-  //     if (titleLocationRow) {
-  //       titleLocationRow.remove();
-  //     }
-
-  //     // Create a new custom row for "Subject" and "Location"
-  //     let customRow = formElement.querySelector(".custom-field-row");
-  //     if (!customRow) {
-  //       customRow = createElement("div", { className: "custom-field-row" });
-  //       formElement.insertBefore(customRow, formElement.firstElementChild);
-  //     }
-
-  //     const createDropdownField = (
-  //       name,
-  //       placeholder,
-  //       dataSource,
-  //       textField,
-  //       valueField
-  //     ) => {
-  //       const container = createElement("div", {
-  //         className: "custom-field-container",
-  //       });
-  //       const inputEle = createElement("input", {
-  //         className: "e-field",
-  //         attrs: { name },
-  //       });
-  //       container.appendChild(inputEle);
-  //       customRow.appendChild(container);
-
-  //       // Initialize dropdown
-  //       const dropDownList = new DropDownList({
-  //         dataSource,
-  //         fields: { text: textField, value: valueField },
-  //         value: args.data[name],
-  //         floatLabelType: "Always",
-  //         placeholder,
-  //         change: (event) => {
-  //           if (name === "sessionType") {
-  //             updateDropdownsBasedOnSessionType(event.value);
-  //           }
-  //         },
-  //       });
-  //       dropDownList.appendTo(inputEle);
-  //       inputEle.setAttribute("name", name);
-  //     };
-
-  //     // Update dropdowns based on session type
-  //     const updateDropdownsBasedOnSessionType = (sessionType) => {
-  //       clearDropdown("school");
-  //       clearDropdown("Subject");
-  //       clearDropdown("classroom");
-  //       clearDropdown("animator");
-
-  //       switch (sessionType) {
-  //         case "School":
-  //           createDropdownField(
-  //             "school",
-  //             "School Name",
-  //             schoolsList.filter(
-  //               (school) => school.schoolName !== "FirstSteps"
-  //             ),
-  //             "schoolName",
-  //             "id"
-  //           );
-  //           createDropdownField(
-  //             "Subject", //"subject",
-  //             "Subject",
-  //             SCHOOL_SUBJECTS,
-  //             "label",
-  //             "value"
-  //           );
-  //           break;
-  //         case "Nursery":
-  //           createDropdownField(
-  //             "school",
-  //             "School Name",
-  //             [{ schoolName: "First Steps", id: "6714e7abe2df335eecd87750" }],
-  //             "schoolName",
-  //             "id"
-  //           );
-  //           createDropdownField(
-  //             "Subject", //"subject",
-  //             "Subject",
-  //             NURSERY_SUBJECTS,
-  //             "label",
-  //             "value"
-  //           );
-  //           createDropdownField(
-  //             "classroom",
-  //             "Classroom",
-  //             classroomsList,
-  //             "classroomLabel",
-  //             "id"
-  //           );
-  //           createDropdownField(
-  //             "animator",
-  //             "Animator",
-  //             employeesList,
-  //             "userFullName",
-  //             "employeeId"
-  //           );
-  //           break;
-  //         case "Drop":
-  //           createDropdownField(
-  //             "school",
-  //             "School",
-  //             schoolsList.filter(
-  //               (school) => school.id !== "6714e7abe2df335eecd87750"
-  //             ),
-  //             "schoolName",
-  //             "id"
-  //           );
-  //           createDropdownField(
-  //             "animator",
-  //             "Animator",
-  //             employeesList,
-  //             "userFullName",
-  //             "employeeId"
-  //           );
-  //           createDropdownField(
-  //             "Subject", //"subject",
-  //             "Subject",
-  //             ["Drop"],
-  //             "label",
-  //             "value"
-  //           );
-  //           break;
-
-  //         case "Collect":
-  //           createDropdownField(
-  //             "school",
-  //             "School",
-  //             schoolsList.filter(
-  //               (school) => school.id !== "6714e7abe2df335eecd87750"
-  //             ),
-  //             "schoolName",
-  //             "id"
-  //           );
-  //           createDropdownField(
-  //             "animator",
-  //             "Animator",
-  //             employeesList,
-  //             "userFullName",
-  //             "employeeId"
-  //           );
-  //           createDropdownField(
-  //             "Subject", //"subject",
-  //             "Subject",
-  //             ["Collect"],
-  //             "label",
-  //             "value"
-  //           );
-  //           break;
-  //       }
-  //     };
-
-  //     // Clear previous dropdowns if they exist
-  //     const clearDropdown = (name) => {
-  //       const existingField = customRow.querySelector(`input[name="${name}"]`);
-  //       if (existingField) {
-  //         existingField.parentNode.remove();
-  //       }
-  //     };
-
-  //     // Create the Session Type dropdown
-  //     createDropdownField(
-  //       "sessionType",
-  //       "Session Type",
-  //       ["School", "Nursery", "Drop", "Collect"],
-  //       "label",
-  //       "value"
-  //     );
-
-  //     // // **Handle Recurrence-Specific Fields**// check the args.data and apply conditions...
-  //     // if (args.data.RecurrenceRule && childRecurrenceID) {
-  //     //   // chekc the recurence id of child is correct hehre
-  //     //   const isException = Boolean(args.data.RecurrenceException);
-
-  //     //   if (isException) {
-  //     //     // Existing instance is part of a recurring event and an exception
-  //     //     const recurrenceField = createElement("div", {
-  //     //       innerHTML: "Editing an instance (exception) in the series",
-  //     //       className: "recurrence-notification",
-  //     //     });
-  //     //     formElement.insertBefore(recurrenceField, formElement.firstChild);
-  //     //   } else {
-  //     //     // Show fields related to handling entire series or exceptions
-  //     //     const recurrenceField = createElement("div", {
-  //     //       innerHTML: "Editing a recurring event or series",
-  //     //       className: "recurrence-notification",
-  //     //     });
-  //     //     formElement.insertBefore(recurrenceField, formElement.firstChild);
-  //     //   }
-  //     // }
-  //   }
-  // };
 
   const handleCreateSession = async (sessObj) => {
     await addNewSession(sessObj);
@@ -852,26 +642,25 @@ const SectionsPlannings = () => {
 
     if (args.type === "Editor") {
       console.log("args popupclose", args);
-      // setSessionObject({
-      //   sessionYear: selectedAcademicYear?.title,
-      //   animator: args.data?.animator,//for school sessionType we have no animator
-      //   classroom: args.data?.classroom,//for school sessionType we have no classroom
-      //   Description: args.data?.Description,
-      //   Subject: args.data?.Subject,
-      //   EndTime: args.data?.EndTime,
-      //   StartTime: args.data?.StartTime,
-      //   IsAllDay: args.data?.IsAllDay,
-      //   IsBlock: args.data?.IsBlock,
-      //   RecurrenceRule: args.data?.RecurrenceRule,
-      //   RecurrenceException: args.data?.RecurrenceException,
-      //   student: args.data?.sessionStudentId[0],
-      //   RecurrenceID: args.data?.RecurrenceID, //might be used for sessins update...
-      //   FollowingID: args.data?.FollowingID,
-      //   school: args.data?.school,
-      //   IsReadOnly: args.data?.IsReadOnly,
-      //   sessionType: args.data?.sessionType,
-      //   operator: userId,
-      // });
+      setSessionObject({
+        sessionYear: selectedAcademicYear?.title,
+        animator: args.data.animator,
+        Description: args.data.Description,
+        Subject: args.data.Subject,
+        EndTime: args.data.EndTime,
+        StartTime: args.data.StartTime,
+        IsAllDay: args.data.IsAllDay,
+        IsBlock: args.data.IsBlock,
+        RecurrenceRule: args.data.RecurrenceRule,
+        RecurrenceException: args.data.RecurrenceException,
+        student: args.data.sessionStudentId[0],
+        RecurrenceID: args.data.RecurrenceID, //might be used for sessins update...
+        FollowingID: args.data.FollowingID,
+        school: args.data.school,
+        IsReadOnly: args.data.IsReadOnly,
+        sessionType: args.data.sessionType,
+        operator: userId,
+      });
     }
   };
 
@@ -1031,17 +820,33 @@ const SectionsPlannings = () => {
         break;
       case "eventChange":
         //args.data....
-        console.log("in Event change");
-       
+        console.log("Event change");
+        // if (
+        //   args.changedRecords.length === 1 &&
+
+        //   eventType === "notRecurrent"
+        // ) {
+        //   console.log("Single instance not a series update detected");
+        //   console.log(args.changedRecords[0],"args.changedRecords[0] on begin action in th eupdate");
+        //   setSessionObject(args.changedRecords[0])//does not update on time to get data from
+        //   args.cancel = true;
+        //   //console.log(sessionObject,'sessionobject in update single not inseries')
+        //   handleUpdateSession(args.changedRecords[0]);
+        //   // Simulate `actionComplete` by manually triggering callback logic
+        //   mockActionComplete("eventUpdate", args.data[0]);
+        //   setParentId("");
+        //   setEventType("");
+        //   setSessionObject("")
+        // }
         if (eventType === "notRecurrent") {
-          console.log("Single instance not a series update detected");///ok no errors
+          console.log("Single instance not a series update detected");
           console.log(
             args.changedRecords[0],
             "args.changedRecords[0] on begin action in the update"
           );
-// we need to check here if we changed anything or else we do not update ////////////////
 
-
+          // Set sessionObject with a timeout delay to ensure it updates before proceeding
+          setSessionObject(args.changedRecords[0]);
 
           args.cancel = true;
 
@@ -1060,18 +865,18 @@ const SectionsPlannings = () => {
           // Reset states
           setParentId("");
           setEventType("");
-          //setSessionObject("");
+          setSessionObject("");
           // }, 50); // 50ms delay, adjust as needed
           return; //this prevented the error but still have update whole series starting after this one
         }
 
         if (
-          Object.keys(args.data).length ===2 && eventType === "recurrent" ) {
+          Object.keys(args.data[0]).length ===2 && eventType === "recurrent" ) {
           console.log("Single instance in a series update detected"); ///no errors ok
 
           // Prevent Syncfusion's default deletion
           args.cancel = true;
-          
+          //this what we remarked when we delte one event only
 
           const extraException = formatToRecurrenceException(eventStartTime);
 
@@ -1091,21 +896,16 @@ const SectionsPlannings = () => {
           //mockActionComplete("eventUpdate", args.changedRecords[0]);
           setParentId("");
           setEventType("");
-          return
         }
-        console.log('hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii')
-        console.log('the length od Object.keys(args.data).length',Object.keys(args.data),'the length od Object.keys(args.data).length')
         ///if entire serie deletion: simply delete the parent event and !!also all its exceptions we recognise by recurrencID!!but how to differentiate between single and whole serie deletion or update
-        if (Object.keys(args.data).length !==2 && eventType === "recurrent") {
+        if (Object.keys(args.data[0]).length >2 && eventType === "recurrent") {
           console.log("whole series update detected");
-          args.cancel = true;
+
           handleUpdateSession({
             id: parentId,
             operationType: "editSeries",
           });
           setParentId("");
-          setEventType("");
-          return
         }
 
         break;

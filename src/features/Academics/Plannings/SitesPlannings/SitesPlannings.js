@@ -177,7 +177,7 @@ const SitesPlannings = () => {
 
   const fields = {
     id: { name: "id" }, // Mapping your custom `id` field to `Id`
-    //subject: { name: "subject" }, // Mapping your `title` field to `Subject`
+    //subject: { name: "Subject" }, // Mapping your `title` field to `Subject`
     //startTime: { name: "startTime" }, // Mapping your `startTime` field to `StartTime`
    // endTime: { name: "endTime" }, // Mapping your `endTime` field to `EndTime`
  //   location: { name: "location" },
@@ -300,7 +300,7 @@ const SitesPlannings = () => {
           {startTime} - {endTime} {/* Display the start and end time */}
         </div>
         <div style={{ fontSize: "14px" }}>
-          {props.subject} {/* Display the subject */}
+          {props.Subject} {/* Display the subject */}
         </div>
       </div>
     );
@@ -335,6 +335,9 @@ const SitesPlannings = () => {
  // Event handler for customizing the popup window
  const onPopupOpen = (args) => {
   console.log('args printed here', args.type, args)
+  if (args.type === "QuickInfo" && !args.data.Subject) {
+    args.cancel = true;
+  }
   if (args.type === "Editor") {
     let formElement = args.element.querySelector('.e-schedule-form');
 
@@ -380,7 +383,7 @@ const onEventRendered = (args) => {
             <ScheduleComponent
               width="100%"
               //height="650px"
-              selectedDate={new Date(2024, 9, 14)}
+              selectedDate={new Date(2024, 10, 1)}
               ref={scheduleObj} //to access and update teh scheduler by applying the query filter based on selectedschools
               eventSettings={eventSettings}
               //allowDragAndDrop={false}
