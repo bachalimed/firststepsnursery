@@ -339,19 +339,26 @@ const SectionsPlannings = () => {
 
   const [parentId, setParentId] = useState(null); //this will be used to update the parent for any recurrence change, maybe we can find directly the session parent and update
 
-  const [eventType, setEventType] = useState("");
+  
   let eventStartTime;
+  let eventType
 
+
+
+  
   const onPopupOpen = (args) => {
     //prevent opening the quickinfo on a new cell, we need double click to open the full editor
     if (args.type === "QuickInfo" && !args.data.Subject) {
       args.cancel = true;
     }
     if (!args.data.RecurrenceID) {
-      setEventType("notRecurrent");
+      eventType ="notRecurrent"
     } else {
-      setEventType("recurrent");
+      eventType="recurrent"
     }
+
+
+
     //setParentId(scheduleObj.activeEventData.event.id)// not working
     console.log(eventType, "  eventType popupopen");
     //console.log(scheduleObj, "scheduleobj  popup open");
@@ -382,8 +389,8 @@ const SectionsPlannings = () => {
         customRow = createElement("div", { className: "custom-field-row" });
         formElement.insertBefore(customRow, formElement.firstElementChild);
       }
-      // Log to verify if args.data.school is available
-      console.log("School Data:", args.data.school);
+      
+      
       // Initialize dropdown fields with their existing selected values if available
       const createDropdownField = (
         name,
@@ -736,7 +743,7 @@ const SectionsPlannings = () => {
           // Simulate `actionComplete` by manually triggering callback logic
           //mockActionComplete("eventRemove", args.data[0]);
           setParentId("");
-          setEventType("");
+          eventType=""
         }
         if (
           Object.keys(args.data[0]).length === 2 &&
@@ -762,7 +769,7 @@ const SectionsPlannings = () => {
           // Simulate `actionComplete` by manually triggering callback logic
           //mockActionComplete("eventRemove", args.data[0]);
           setParentId("");
-          setEventType("");
+          eventType=""
         }
         ///if entire serie deletion: simply delete the parent event and !!also all its exceptions we recognise by recurrencID!!
         if (Object.keys(args.data[0]).length > 2 && eventType === "recurrent") {
@@ -773,7 +780,7 @@ const SectionsPlannings = () => {
             operationType: "deleteSeries",
           });
           setParentId("");
-          setEventType("");
+          eventType=""
         }
         ///if single event deletion:// add and exception with the start date to the parent
 
@@ -808,7 +815,7 @@ const SectionsPlannings = () => {
 
           // Reset states
           setParentId("");
-          setEventType("");
+          eventType=""
           //setSessionObject("");
           // }, 50); // 50ms delay, adjust as needed
           return; //this prevented the error but still have update whole series starting after this one
@@ -841,7 +848,7 @@ const SectionsPlannings = () => {
           // Simulate `actionComplete` by manually triggering callback logic
           //mockActionComplete("eventUpdate", args.changedRecords[0]);
           setParentId("");
-          setEventType("");
+          eventType=""
           return;
         }
        
@@ -854,7 +861,7 @@ const SectionsPlannings = () => {
             operationType: "editSeries",
           });
           setParentId("");
-          setEventType("");
+          eventType=""
           return;
         }
 
