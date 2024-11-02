@@ -337,12 +337,12 @@ const SectionsPlannings = () => {
   const scheduleObj = useRef(null); // Create a ref for the ScheduleComponent,
   // scheduleObj.current will store the actual instance, allowing you to call Scheduler methods like openEditor
 
-  const [parentId, setParentId] = useState(null); //this will be used to update the parent for any recurrence change, maybe we can find directly the session parent and update
+  
 
   
   let eventStartTime;
   let eventType
-
+let parentId
 
 
   
@@ -365,7 +365,7 @@ const SectionsPlannings = () => {
     console.log(scheduleObj.current, "scheduleobj cureent popup open");
     console.log(args, "  argsgggsss popupopen");
     //capture the parent id to be used later   for updates, deletions...
-    args.data.id ? setParentId(args.data.id) : setParentId(""); // we selected an event an d not an empty
+     parentId=args.data?.id  // we selected an event an d not an empty
     console.log("parentId captured:", parentId);
     //capture the start date of the event to be used in teh exception
     eventStartTime = args.data.StartTime;
@@ -742,7 +742,7 @@ const SectionsPlannings = () => {
           });
           // Simulate `actionComplete` by manually triggering callback logic
           //mockActionComplete("eventRemove", args.data[0]);
-          setParentId("");
+          parentId=""
           eventType=""
         }
         if (
@@ -768,7 +768,7 @@ const SectionsPlannings = () => {
           });
           // Simulate `actionComplete` by manually triggering callback logic
           //mockActionComplete("eventRemove", args.data[0]);
-          setParentId("");
+          parentId=""
           eventType=""
         }
         ///if entire serie deletion: simply delete the parent event and !!also all its exceptions we recognise by recurrencID!!
@@ -779,7 +779,7 @@ const SectionsPlannings = () => {
             id: parentId,
             operationType: "deleteSeries",
           });
-          setParentId("");
+          parentId=""
           eventType=""
         }
         ///if single event deletion:// add and exception with the start date to the parent
@@ -814,7 +814,7 @@ const SectionsPlannings = () => {
           //mockActionComplete("eventUpdate", args.data[0]);
 
           // Reset states
-          setParentId("");
+          parentId=""
           eventType=""
           //setSessionObject("");
           // }, 50); // 50ms delay, adjust as needed
@@ -847,7 +847,7 @@ const SectionsPlannings = () => {
           });
           // Simulate `actionComplete` by manually triggering callback logic
           //mockActionComplete("eventUpdate", args.changedRecords[0]);
-          setParentId("");
+          parentId=""
           eventType=""
           return;
         }
@@ -856,11 +856,10 @@ const SectionsPlannings = () => {
         if (Object.keys(args.data).length !== 2 && eventType === "recurrent") {
           console.log("whole series update detected");
           args.cancel = true;
-          handleUpdateSession({
-            id: parentId,
-            operationType: "editSeries",
+          handleUpdateSession({...args.changedRecords[0],           
+            operationType: "editSeries",//this will not update the occurences that were already edited and have and exception rule
           });
-          setParentId("");
+          parentId=""
           eventType=""
           return;
         }
@@ -869,23 +868,23 @@ const SectionsPlannings = () => {
     }
   };
 
-  // Mock actionComplete callback to simulate action completion
-  const mockActionComplete = (requestType, data) => {
-    console.log("Mock actionComplete triggered for:", requestType);
+  // // Mock actionComplete callback to simulate action completion
+  // const mockActionComplete = (requestType, data) => {
+  //   console.log("Mock actionComplete triggered for:", requestType);
 
-    if (requestType === "eventRemove") {
-      console.log("Delete operation completed:", data);
+  //   if (requestType === "eventRemove") {
+  //     console.log("Delete operation completed:", data);
 
-      // Any additional logic to confirm deletion can go here
-      alert("Event deleted successfully");
-    }
-    if (requestType === "eventChange") {
-      console.log("Update operation completed:", data);
+  //     // Any additional logic to confirm deletion can go here
+  //     alert("Event deleted successfully");
+  //   }
+  //   if (requestType === "eventChange") {
+  //     console.log("Update operation completed:", data);
 
-      // Any additional logic to confirm deletion can go here
-      alert("Event updated successfully");
-    }
-  };
+  //     // Any additional logic to confirm deletion can go here
+  //     alert("Event updated successfully");
+  //   }
+  // };
 
   const actionComplete = (args) => {
     console.log(scheduleObj, "scheduleobj  onacion complete ");
