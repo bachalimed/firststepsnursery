@@ -178,7 +178,7 @@ const ClassroomsPlannings = () => {
     //startTime: { name: "startTime" }, // Mapping your `startTime` field to `StartTime`
     //endTime: { name: "endTime" }, // Mapping your `endTime` field to `EndTime`
     //location: { name: "location" },
-    title: { name: "title" },
+    //title: { name: "title" },
     sessionYear: { name: "sessionYear" },
     animator: { name: "animator" },
     school: { name: "school", idField: "_id" },
@@ -187,10 +187,10 @@ const ClassroomsPlannings = () => {
     sessionSectionId: { name: "sessionSectionId" },
     sessionStudentId: { name: "sessionStudentId" },
     //description: { name: "description" },
-    site: { name: "site" },
-    trip: { name: "trip" },
+    //site: { name: "site" },
+   
     classroom: { name: "classroom", idField: "_id" },
-    grades: { name: "grades" },
+
     //recurrenceRule: { name: "recurrenceRule" },
     sessionStatus: { name: "sessionStatus" },
     createdAt: { name: "createdAt" },
@@ -338,7 +338,7 @@ const ClassroomsPlannings = () => {
             <ScheduleComponent
               width="100%"
               //height="650px"
-              selectedDate={new Date(2024, 9, 14)}
+              selectedDate={new Date(2024, 10, 1)}
               ref={scheduleObj} //to access and update teh scheduler by applying the query filter based on selectedClassrooms
               eventSettings={eventSettings}
               allowDragAndDrop={false}

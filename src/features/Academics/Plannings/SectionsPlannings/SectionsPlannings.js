@@ -352,22 +352,20 @@ const SectionsPlannings = () => {
     } else {
       setEventType("recurrent");
     }
-    args.data.id ? setParentId(args.data.id) : setParentId(""); // we selected an event an d not an empty
     //setParentId(scheduleObj.activeEventData.event.id)// not working
-    console.log("parentId captured:", parentId);
     console.log(eventType, "  eventType popupopen");
-    console.log(scheduleObj, "scheduleobj  popup open");
+    //console.log(scheduleObj, "scheduleobj  popup open");
     console.log(scheduleObj.current, "scheduleobj cureent popup open");
     console.log(args, "  argsgggsss popupopen");
     //capture the parent id to be used later   for updates, deletions...
+    args.data.id ? setParentId(args.data.id) : setParentId(""); // we selected an event an d not an empty
+    console.log("parentId captured:", parentId);
     //capture the start date of the event to be used in teh exception
     eventStartTime = args.data.StartTime;
 
     if (args.type === "Editor") {
-      //console.log(scheduleObj.current, "scheduleobj current");
       //////args.data.sessionType = null;//will emppty session type to force user to fill again
-      
-      //console.log(scheduleObj.eventWindow.recurrenceEditor.frequencies, 'scheduleobj frequencies') recurrentce editor not working
+
       const formElement = args.element.querySelector(".e-schedule-form");
 
       // Remove the default title and location row
@@ -384,9 +382,9 @@ const SectionsPlannings = () => {
         customRow = createElement("div", { className: "custom-field-row" });
         formElement.insertBefore(customRow, formElement.firstElementChild);
       }
- // Log to verify if args.data.school is available
- console.log("School Data:", args.data.school);
-        // Initialize dropdown fields with their existing selected values if available
+      // Log to verify if args.data.school is available
+      console.log("School Data:", args.data.school);
+      // Initialize dropdown fields with their existing selected values if available
       const createDropdownField = (
         name,
         placeholder,
@@ -404,12 +402,13 @@ const SectionsPlannings = () => {
         container.appendChild(inputEle);
         customRow.appendChild(container);
 
-       // Initialize dropdown with existing value or leave blank if none
+        // Initialize dropdown with existing value or leave blank if none
         const dropDownList = new DropDownList({
           dataSource,
           fields: { text: textField, value: valueField },
-         // value: args.data[name] || null,  // Use the existing value if it exists,
-          value: name === "school" ? args.data.school?._id : args.data[name] || null,  // Adjust for the school because of the data structure
+          // value: args.data[name] || null,  // Use the existing value if it exists,
+          value:
+            name === "school" ? args.data.school?._id : args.data[name] || null, // Adjust for the school because of the data structure
           floatLabelType: "Always",
           placeholder,
           change: (event) => {
@@ -421,13 +420,13 @@ const SectionsPlannings = () => {
         dropDownList.appendTo(inputEle);
         inputEle.setAttribute("name", name);
       };
- // Clear previous dropdowns if they exist
- const clearDropdown = (name) => {
-  const existingField = customRow.querySelector(`input[name="${name}"]`);
-  if (existingField) {
-    existingField.parentNode.remove();
-  }
-};
+      // Clear previous dropdowns if they exist
+      const clearDropdown = (name) => {
+        const existingField = customRow.querySelector(`input[name="${name}"]`);
+        if (existingField) {
+          existingField.parentNode.remove();
+        }
+      };
       // Update dropdowns based on session type
       const updateDropdownsBasedOnSessionType = (sessionType) => {
         clearDropdown("school");
@@ -538,8 +537,6 @@ const SectionsPlannings = () => {
         }
       };
 
-      
-
       // Create the Session Type dropdown
       createDropdownField(
         "sessionType",
@@ -548,12 +545,10 @@ const SectionsPlannings = () => {
         "label",
         "value"
       );
-       // Pre-populate other dropdowns based on the current session type, if any/////added this to test editing with viewing alreadys elcted
-    if (args.data.sessionType) {
-      updateDropdownsBasedOnSessionType(args.data.sessionType);
-    }
-
-     
+      // Pre-populate other dropdowns based on the current session type, if any/////added this to test editing with viewing alreadys elcted
+      if (args.data.sessionType) {
+        updateDropdownsBasedOnSessionType(args.data.sessionType);
+      }
     }
   };
   const handleCreateSession = async (sessObj) => {
@@ -796,7 +791,9 @@ const SectionsPlannings = () => {
           // we need to check here if we changed anything or else we do not update ////////////////
 
           args.cancel = true;
+          //if we save but the data was not changed, abord teh save
 
+          if(args.changedRecords[0] ===args.data){ return}///to be checked later
           // Delay the next actions to allow state to update
           //setTimeout(() => {
           // Access the updated sessionObject if needed
@@ -828,6 +825,10 @@ const SectionsPlannings = () => {
           console.log(extraException, "extraException");
           //setChildRecurrenceID(parentId) no need because we are not updating the child but deleting it
           // Access RecurrenceException data for parent record
+ //if we save but the data was not changed, abord teh save
+
+ if(args.changedRecords[0] ===args.data.occurence){ return}//to be checked later
+
 
           handleUpdateSession({
             ...args.changedRecords[0],
@@ -843,12 +844,7 @@ const SectionsPlannings = () => {
           setEventType("");
           return;
         }
-        console.log("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
-        console.log(
-          "the length od Object.keys(args.data).length",
-          Object.keys(args.data),
-          "the length od Object.keys(args.data).length"
-        );
+       
         ///if entire serie deletion: simply delete the parent event and !!also all its exceptions we recognise by recurrencID!!but how to differentiate between single and whole serie deletion or update
         if (Object.keys(args.data).length !== 2 && eventType === "recurrent") {
           console.log("whole series update detected");
