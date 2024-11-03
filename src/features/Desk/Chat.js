@@ -18,10 +18,10 @@ content = (
   
   <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6">  
      
+        <AcademicYearsSelection/>
         <Link to={'/desk/chat/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">Students</li></Link>
         <Link to={'/desk/chat/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">Parents</li></Link>
         <Link to={'/desk/chat/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">New Student</li></Link>
-        <AcademicYearsSelection/>
   
     </div>
   )

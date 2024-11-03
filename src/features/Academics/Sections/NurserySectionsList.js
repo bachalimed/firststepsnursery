@@ -38,9 +38,9 @@ import {
 } from "./sectionsSlice";
 import { IoDocumentAttachOutline } from "react-icons/io5";
 
-const SectionsList = () => {
+const NurserySectionsList = () => {
   //this is for the academic year selection
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
@@ -103,26 +103,32 @@ const SectionsList = () => {
     //dispatch(setSections(sectionsList)); //timing issue to update the state and use it the same time
 
     //the serach result data
-    filteredSections = sectionsList?.filter((item) => {
-      //the nested objects need extra logic to separate them
-      // const firstNameMatch = item?.sectionName?.firstName
-      //   .toLowerCase()
-      //   .includes(searchQuery.toLowerCase());
-      // const middleNameMatch = item?.sectionName?.middleName
-      //   .toLowerCase()
-      //   .includes(searchQuery.toLowerCase());
-      // const lastNameMatch = item?.sectionName?.lastName
-      //   .toLowerCase()
-      //   .includes(searchQuery.toLowerCase());
-      //console.log('filteredSections in the success', item)
-      return Object.values(item).some((val) =>
-        String(val).toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      // ||
-      // firstNameMatch ||
-      // middleNameMatch ||
-      // lastNameMatch
-    });
+    // Filter sections based on search query, including student names
+filteredSections = sectionsList?.filter((section) => {
+  // Check section fields for search query
+  const sectionMatches = Object.values(section).some((val) =>
+    String(val).toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Check student names for search query
+  const studentMatches = section.students?.some((student) => {
+    const firstNameMatch = student?.studentName?.firstName
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    const middleNameMatch = student?.studentName?.middleName
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    const lastNameMatch = student?.studentName?.lastName
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+
+    return firstNameMatch || middleNameMatch || lastNameMatch;
+  });
+
+  // Return true if either the section fields or student names match the search query
+  return sectionMatches || studentMatches;
+});
+
   }
 
   const handleSearch = (e) => {
@@ -245,7 +251,7 @@ const SectionsList = () => {
       width: "100px",
     },
     {
-      name: "Location",
+      name: "Classroom",
       selector: (row) =>
         row?.sectionLocation?.classroomNumber +
         " " +
@@ -321,7 +327,7 @@ const SectionsList = () => {
             className="text-blue-500"
             fontSize={20}
             onClick={() =>
-              Navigate(`/sections/sectionsParents/sectionDetails/${row.id}`)
+              navigate(`/sections/sectionsParents/sectionDetails/${row.id}`)
             }
           >
             <ImProfile className="text-2xl" />
@@ -330,7 +336,7 @@ const SectionsList = () => {
             <button
               className="text-yellow-400"
               onClick={() =>
-                Navigate(`/sections/sectionsParents/editSection/${row.id}`)
+                navigate(`/sections/sectionsParents/editSection/${row.id}`)
               }
             >
               <FiEdit className="text-2xl" />
@@ -388,7 +394,7 @@ const SectionsList = () => {
         <div className="flex justify-end items-center space-x-4">
           <button
             className=" px-4 py-2 bg-green-500 text-white rounded"
-            onClick={handleRegisterSelected}
+            onClick={()=> navigate("/academics/sections/newSection/")}
             disabled={selectedRows.length !== 1} // Disable if no rows are selected
             hidden={!canCreate}
           >
@@ -397,7 +403,7 @@ const SectionsList = () => {
 
           <button
             className="px-3 py-2 bg-yellow-400 text-white rounded"
-            onClick={handleDuplicateSelected}
+            onClick={handleRegisterSelected}
             disabled={selectedRows.length !== 1} // Disable if no rows are selected
             hidden={!canCreate}
           >
@@ -432,4 +438,4 @@ const SectionsList = () => {
   //}
   return content;
 };
-export default SectionsList;
+export default NurserySectionsList;

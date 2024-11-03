@@ -40,16 +40,22 @@ import EnrolmentsList from "./features/Students/Enrolments/EnrolmentsList"
 import EditEnrolment from "./features/Students/Enrolments/EditEnrolment"
 import NewEnrolmentForm from './features/Students/Enrolments/NewEnrolmentForm'
 
-import NurseryPlannings from './features/Academics/NurseryPlannings'
-import SectionsList from './features/Academics/Sections/SectionsList'
+
+import NewSectionForm from './features/Academics/Sections/NewSectionForm'
+import EditSection from './features/Academics/Sections/EditSection'
+import SectionDetails from './features/Academics/Sections/SectionDetails'
+import NurserySectionsList from './features/Academics/Sections/NurserySectionsList'
+import SchoolSectionsList from './features/Academics/Sections/SchoolSectionsList'
 import Sections from './features/Academics/Sections'
+
+
 import Plannings from './features/Academics/Plannings'
 import SectionsPlannings from './features/Academics/Plannings/SectionsPlannings/SectionsPlannings'
 import SitesPlannings from './features/Academics/Plannings/SitesPlannings/SitesPlannings'
 import AnimatorsPlannings from './features/Academics/Plannings/AnimatorsPlannings/AnimatorsPlannings'
 import ClassroomsPlannings from './features/Academics/Plannings/ClassroomsPlannings/ClassroomsPlannings'
 
-import CollectionDrop from './features/Academics/CollectionDrop'
+
 import Invoices from './features/Finances/Invoices'
 import Payments from './features/Finances/Payments'
 import Expenses from './features/Finances/Expenses'
@@ -206,7 +212,12 @@ const App = () => {
 
 								<Route path="sections" > 					
 								<Route index element={<Sections />} /> 
-								<Route path="sectionsList/" element={<SectionsList/>}/>	
+								<Route path="nurserySectionsList/" element={<NurserySectionsList/>}/>	
+								<Route path="schoolSectionsList/" element={<SchoolSectionsList/>}/>	
+								<Route path="newSection/" element={<NewSectionForm/>}/>
+								<Route path="editSection/:id" element={<EditSection/>}/>
+								<Route path="sectionDetails/:id" element={<SectionDetails/>}/>
+
 								</Route> {/* end of sections route */}
 
 								<Route path="plannings" > 					
@@ -220,17 +231,21 @@ const App = () => {
 
 								</Route> {/* end of schoolPlannings route */}
 
-								<Route path="nurseryPlannings" > 					
-								<Route index element={<NurseryPlannings />} /> 
-								</Route> {/* end of nurseryPlannings route */}
 
-								<Route path="collectionDrop" > 					
-								<Route index element={<CollectionDrop />} /> 
-								</Route> {/* end of collectionDrop route */}
+
+								{/* <Route path="nurseryPlannings" > 					 */}
+								{/* <Route index element={<NurseryPlannings />} />  */}
+								{/* </Route>  */}
+								{/* end of nurseryPlannings route */}
+
+								{/* <Route path="collectionDrop" > 					 */}
+								{/* <Route index element={<CollectionDrop />} />  */}
+								{/* </Route>  */}
+								{/* end of collectionDrop route */}
 							</Route> {/* end of academics route */}
 
 							<Route path="finances" element={<DashboardLayout />} >	 				
-								<Route index element={<NurseryPlannings />} />   
+								{/* <Route index element={<Finances />} />    */}
 
 								<Route path="invoices" > 					
 								<Route index element={<Invoices />} /> 

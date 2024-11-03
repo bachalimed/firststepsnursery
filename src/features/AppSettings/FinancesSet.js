@@ -24,6 +24,7 @@ const FinancesSet = () => {
   let content;
   content = (
     <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6">
+      <AcademicYearsSelection />
       <Link to={"/settings/financesSet/"}>
         <li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">
           finances
@@ -39,7 +40,6 @@ const FinancesSet = () => {
           New Student
         </li>
       </Link>
-      <AcademicYearsSelection />
     </div>
   );
   return content;

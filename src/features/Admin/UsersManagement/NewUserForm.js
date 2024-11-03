@@ -6,14 +6,15 @@ import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../../config/UserRoles";
 import { ACTIONS } from "../../../config/UserActions";
 import UsersManagement from "../UsersManagement";
+import {
+  DATE_REGEX,
+  USER_REGEX,
+  PWD_REGEX,
+  NAME_REGEX,
+  PHONE_REGEX,
+  OBJECTID_REGEX,
+} from "../../../Components/lib/Utils/REGEX";
 
-//constrains on inputs when creating new user
-const USER_REGEX = /^[A-z0-9]{6,20}$/;
-const PWD_REGEX = /^[A-z0-9!@#-_$%]{8,20}$/;
-const NAME_REGEX = /^[A-z 0-9]{3,20}$/;
-const PHONE_REGEX = /^[0-9]{6,15}$/;
-const DOB_REGEX = /^[0-9/-]{4,10}$/;
-const IDOBJECT_REGEX = /^(?:[a-f0-9]{24}|undefined)$/;
 const NewUserForm = () => {
   //an add user function that can be called inside the component
   const [
@@ -81,14 +82,14 @@ const NewUserForm = () => {
       validPassword: PWD_REGEX.test(formData.password),
       validFirstName: NAME_REGEX.test(formData.userFullName.userFirstName),
       validLastName: NAME_REGEX.test(formData.userFullName.userLastName),
-      validDob: DOB_REGEX.test(formData.userDob),
+      validDob: DATE_REGEX.test(formData.userDob),
       validUserSex: NAME_REGEX.test(formData.userSex),
       validHouse: NAME_REGEX.test(formData.userAddress.house),
       validStreet: NAME_REGEX.test(formData.userAddress.street),
       validCity: NAME_REGEX.test(formData.userAddress.city),
       validPrimaryPhone: PHONE_REGEX.test(formData.userContact.primaryPhone),
-      validEmployeeId: IDOBJECT_REGEX.test(formData.employeeId),
-      validFamilyId: IDOBJECT_REGEX.test(formData.familyId),
+      validEmployeeId: OBJECTID_REGEX.test(formData.employeeId),
+      validFamilyId: OBJECTID_REGEX.test(formData.familyId),
       validUserRoles: formData.userRoles.length > 0, // At least one role should be selected
       // validUserAllowedActions: formData.userAllowedActions.length > 0, // At least one action should be selected
     }));
@@ -136,9 +137,9 @@ const NewUserForm = () => {
           primaryPhone: "",
           secondaryPhone: "",
           email: "",
-          familyId: undefined,
-          employeeId: undefined,
         },
+        familyId: undefined,
+        employeeId: undefined,
       });
       navigate("/admin/usersManagement/users/");
     }
@@ -205,60 +206,60 @@ const NewUserForm = () => {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">User Information</h3>
             <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
-			<div className="grid grid-cols-2 gap-4">
-			  <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  UserName
-                  {!validity.validUsername && (
-                    <span className="text-red-500">*</span>
-                  )}
-                </label>
-                <input
-                  type="text"
-                  name="username"
-                  value={formData.username}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      username: e.target.value,
-                    }))
-                  }
-                  className={`mt-1 block w-full border ${
-                    validity.validUsername
-                      ? "border-gray-300"
-                      : "border-red-500"
-                  } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                  placeholder="Enter username"
-                  required
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    UserName
+                    {!validity.validUsername && (
+                      <span className="text-red-500">*</span>
+                    )}
+                  </label>
+                  <input
+                    type="text"
+                    name="username"
+                    value={formData.username}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        username: e.target.value,
+                      }))
+                    }
+                    className={`mt-1 block w-full border ${
+                      validity.validUsername
+                        ? "border-gray-300"
+                        : "border-red-500"
+                    } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                    placeholder="Enter username"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Password
+                    {!validity.validPassword && (
+                      <span className="text-red-500">*</span>
+                    )}
+                  </label>
+                  <input
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        password: e.target.value,
+                      }))
+                    }
+                    className={`mt-1 block w-full border ${
+                      validity.validFirstName
+                        ? "border-gray-300"
+                        : "border-red-500"
+                    } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                    placeholder="Enter password"
+                    required
+                  />
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Password
-                  {!validity.validPassword && (
-                    <span className="text-red-500">*</span>
-                  )}
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      password: e.target.value,
-                    }))
-                  }
-                  className={`mt-1 block w-full border ${
-                    validity.validFirstName
-                      ? "border-gray-300"
-                      : "border-red-500"
-                  } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                  placeholder="Enter password"
-                  required
-                />
-              </div>
-			  </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   First Name

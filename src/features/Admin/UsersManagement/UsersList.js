@@ -381,14 +381,14 @@ const UsersList = () => {
               User Details
             </button>
 
-            <button
+            {/* <button
               className="px-3 py-2 bg-yellow-400 text-white rounded"
               onClick={handleDuplicateSelected}
               disabled={selectedRows.length !== 1} // Disable if no rows are selected
               hidden={!canCreate}
             >
               Duplicate Selected
-            </button>
+            </button> */}
           </div>
         </div>
       </>

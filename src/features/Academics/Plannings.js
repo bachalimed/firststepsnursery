@@ -24,11 +24,11 @@ const Plannings = () => {
 
   // Define the tab data with paths and labels
   const tabs = [
-    { label: 'Sections', path: '/academics/plannings/sectionsPlannings' },
-    { label: 'Sites', path: "/academics/plannings/sitesPlannings" },
-    { label: 'Animators', path: "/academics/plannings/animatorsPlannings/" },
-    { label: 'Classrooms', path: "/academics/plannings/classroomsPlannings/" },
-    { label: 'MyPlanning', path: "/academics/plannings/myPlanning/" },
+    { label: 'By Sections', path: '/academics/plannings/sectionsPlannings' },
+    { label: 'By Sites', path: "/academics/plannings/sitesPlannings" },
+    { label: 'By Animators', path: "/academics/plannings/animatorsPlannings/" },
+    { label: 'By Classrooms', path: "/academics/plannings/classroomsPlannings/" },
+    { label: 'My Planning', path: "/academics/plannings/myPlanning/" },
   ];
  // Function to determine if a tab is active based on the current path
  const isActive = (path) => location.pathname === path;
@@ -36,6 +36,7 @@ const Plannings = () => {
  // Render the component content
  return (
    <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6">
+     <AcademicYearsSelection />
        {tabs.map((tab) => (
        <Link key={tab.path} to={tab.path}>
            <li
@@ -47,7 +48,6 @@ const Plannings = () => {
            </li>
        </Link>
        ))}
-       <AcademicYearsSelection />
    </div>
    );
 };

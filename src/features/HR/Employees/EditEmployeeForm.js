@@ -8,6 +8,14 @@ import { ACTIONS } from "../../../config/UserActions";
 import useAuth from "../../../hooks/useAuth";
 import Employees from "../Employees";
 import {
+  USER_REGEX,
+  PWD_REGEX,
+  PHONE_REGEX,
+  DATE_REGEX,
+  EMAIL_REGEX,
+  NAME_REGEX,
+} from "../../../Components/lib/Utils/REGEX";
+import {
   selectAllAcademicYears,
   selectCurrentAcademicYearId,
   selectAcademicYearById,
@@ -16,11 +24,9 @@ import { useSelector } from "react-redux";
 
 import { useGetAcademicYearsQuery } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
 //constrains on inputs when creating new user
-const USER_REGEX = /^[A-z 0-9]{6,20}$/;
-const NAME_REGEX = /^[A-z 0-9]{3,18}$/;
+
 const NUMBER_REGEX = /^[0-9]{1,4}(\.[0-9]{0,3})?$/;
-const PHONE_REGEX = /^[0-9]{6,15}$/;
-const DOB_REGEX = /^[0-9/-]{4,10}$/;
+
 const YEAR_REGEX = /^[0-9]{4}\/[0-9]{4}$/;
 const EditEmployeeForm = ({ employee }) => {
   const navigate = useNavigate();
@@ -87,7 +93,7 @@ const EditEmployeeForm = ({ employee }) => {
 
       validFirstName: NAME_REGEX.test(formData.userFullName?.userFirstName),
       validLastName: NAME_REGEX.test(formData.userFullName?.userLastName),
-      validDob: DOB_REGEX.test(formData.userDob.split("T")[0]),
+      validDob: DATE_REGEX.test(formData.userDob.split("T")[0]),
       validUserSex: NAME_REGEX.test(formData.userSex),
       validHouse: NAME_REGEX.test(formData.userAddress?.house),
       validStreet: NAME_REGEX.test(formData.userAddress?.street),
@@ -96,7 +102,7 @@ const EditEmployeeForm = ({ employee }) => {
       validCurrentPosition: USER_REGEX.test(
         formData.employeeCurrentEmployment?.position
       ),
-      validJoinDate: DOB_REGEX.test(
+      validJoinDate: DATE_REGEX.test(
         formData.employeeCurrentEmployment.joinDate.split("T")[0]
       ),
       validContractType: USER_REGEX.test(
@@ -182,7 +188,7 @@ const EditEmployeeForm = ({ employee }) => {
       return { ...prev, employeeYears: updatedYears };
     });
   };
-  const onuserRolesChanged = (e, role) => {
+  const onUserRolesChanged = (e, role) => {
     const { checked } = e.target;
 
     setFormData((prev) => {
@@ -712,7 +718,7 @@ const EditEmployeeForm = ({ employee }) => {
                             type="checkbox"
                             id={`role-${role}`}
                             checked={formData.userRoles.includes(role)}
-                            onChange={(e) => onuserRolesChanged(e, role)}
+                            onChange={(e) => onUserRolesChanged(e, role)}
                             className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                           />
                           <label

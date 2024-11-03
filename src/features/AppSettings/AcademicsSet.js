@@ -72,6 +72,7 @@ const AcademicsSet = () => {
 
   return (
     <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6">
+      <AcademicYearsSelection />
       {tabs.map((tab) => (
         <Link key={tab.path} to={tab.path}>
           <li
@@ -85,7 +86,6 @@ const AcademicsSet = () => {
           </li>
         </Link>
       ))}
-      <AcademicYearsSelection />
     </div>
   );
 };

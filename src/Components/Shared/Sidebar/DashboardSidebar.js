@@ -53,7 +53,7 @@ const DashboardSidebar = () => {
         open ? "w-56" : "w-20"
       } p-3 flex flex-1 flex-col min-h-screen text-white  duration-300 relative`}
     >
-      <div  className="inline-flex items-center ">
+      <div className="inline-flex items-center ">
         <img
           src={logo}
           className="h-14 w-14 rounded block float-left mr-2 mt-4 "
@@ -183,7 +183,8 @@ const DashboardSidebar = () => {
               </Link>
             </ul>
           )}
-          <Link to="/academics/sections/">
+          {/* this link will start the first tab instead of the sections  */}
+          <Link to="/academics/sections/nurserySectionsList">
             <li
               className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}
             >
@@ -250,7 +251,7 @@ const DashboardSidebar = () => {
                   Plannings
                 </li>
               </Link>
-              <Link
+              {/* <Link
                 to="/academics/nurseryPlannings/"
                 className={
                   location.pathname === "/academics/nurseryPlannings/"
@@ -268,8 +269,8 @@ const DashboardSidebar = () => {
                   </span>
                   Nursery Plannings
                 </li>
-              </Link>
-              <Link
+              </Link> */}
+              {/* <Link
                 to="/academics/collectionDrop/"
                 className={
                   location.pathname === "/academics/collectionDrop/"
@@ -287,7 +288,7 @@ const DashboardSidebar = () => {
                   </span>
                   Collection&Drop
                 </li>
-              </Link>
+              </Link> */}
             </ul>
           )}
           <Link to="/finances/invoices/">

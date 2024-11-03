@@ -16,10 +16,10 @@ let content = (
   
   <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6">  
   
+        <AcademicYearsSelection/>
         <Link to={'/desk/inquiries/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer" >all Inquiries</li></Link>
         <Link to={'/desk/inquiries/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer" >New Inquiry </li></Link>
         <Link to={'/desk/inquiries/'}><li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer" >Inquiry 3</li></Link>
-        <AcademicYearsSelection/>
 
     </div>
   )

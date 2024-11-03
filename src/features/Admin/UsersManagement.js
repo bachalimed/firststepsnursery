@@ -29,6 +29,7 @@ const UsersManagement = () => {
   // Render the component content
   return (
     <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6">
+      <AcademicYearsSelection />
       {tabs.map((tab) => (
         <Link key={tab.path} to={tab.path}>
           <li
@@ -42,7 +43,6 @@ const UsersManagement = () => {
           </li>
         </Link>
       ))}
-      <AcademicYearsSelection />
     </div>
   );
 };
