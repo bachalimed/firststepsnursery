@@ -23,7 +23,11 @@ import {NAME_REGEX, DATE_REGEX } from '../../../../Components/lib/Utils/REGEX'
 
 const NewStudentForm = () => {
   const naviagte = useNavigate();
-
+  const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
+  const selectedAcademicYear = useSelector((state) =>
+    selectAcademicYearById(state, selectedAcademicYearId)
+  ); // Get the full academic year object
+  const academicYears = useSelector(selectAllAcademicYears);
   const [
     addNewStudent,
     {
@@ -62,11 +66,7 @@ const NewStudentForm = () => {
     //console.log(attendedSchools)
   }
 
-  const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
-  const selectedAcademicYear = useSelector((state) =>
-    selectAcademicYearById(state, selectedAcademicYearId)
-  ); // Get the full academic year object
-  const academicYears = useSelector(selectAllAcademicYears);
+  
 
   //initialisation of states for each input
   const [studentName, setStudentName] = useState({});
@@ -79,7 +79,9 @@ const NewStudentForm = () => {
   const [validStudentDob, setValidStudentDob] = useState("");
   const [studentSex, setStudentSex] = useState("");
   const [studentIsActive, setStudentIsActive] = useState((prev) => !prev);
+  
 
+  //const [validStudentGrade, setValidStudentGrade] = useState(false);
   const [studentGrade, setStudentGrade] = useState(null);
   const [academicYear, setAcademicYear] = useState(null);
   const [studentYears, setStudentYears] = useState([]);
@@ -102,6 +104,8 @@ const NewStudentForm = () => {
   //use effect is used to validate the inputs against the defined REGEX above
   //the previous constrains have to be verified on the form for teh user to know
 
+  
+ 
   useEffect(() => {
     setValidFirstName(NAME_REGEX.test(firstName));
   }, [firstName]);
@@ -130,7 +134,7 @@ const NewStudentForm = () => {
       setStudentSex("");
       setStudentIsActive(false);
       setStudentYears(""); //will be true when the username is validated
-
+setValidCurrentEducation(false)
       //setStudentJointFamily(true)
       setGardienFirstName("");
       setgardienMiddleName("");
@@ -161,8 +165,7 @@ const NewStudentForm = () => {
   //const onStudentJointFamilyChanged = e => setStudentJointFamily((prev)=>!prev)
 
   const onGardienFirstNameChanged = (e) => setGardienFirstName(e.target.value);
-  const onGardienMiddleNameChanged = (e) =>
-    setgardienMiddleName(e.target.value);
+  const onGardienMiddleNameChanged = (e) =>     setgardienMiddleName(e.target.value);
   const onGardienLastNameChanged = (e) => setGardienLastName(e.target.value);
   const onGardienPhoneChanged = (e) => setGardienPhone(e.target.value);
   const onGardienRelationChanged = (e) => setGardienRelation(e.target.value);
@@ -259,18 +262,22 @@ const NewStudentForm = () => {
   //check if an entry is set for educatin on the academic year, it is mandatory to avoid issued with plannings
 
 
-const validCurrentEducation = () => {
+const [validCurrentEducation, setValidCurrentEducation] = useState(false)//to check if we have an attended school for the selectedacademicyear, will be needed for scheduling
   // Check if there is a valid entry for the given academic year
-  return studentEducation.some(entry => entry.schoolYear === selectedAcademicYear.title && entry.attendedSchool);
-};
+  
+  useEffect(() => {
+    setValidCurrentEducation(studentEducation.some(
+      (year) => year.schoolYear === selectedAcademicYear.title && year.attendedSchool !=="" ))
+  }, [studentEducation, selectedAcademicYear.title]);
 
-console.log(validCurrentEducation(), 'education')
+
+console.log(validCurrentEducation, 'education')
 console.log(studentEducation, 'studentEducation')
 console.log(selectedAcademicYear.title, 'selectedAcademicYear.title')
 
   //to check if we can save before onsave, if every one is true, and also if we are not loading status
   const canSave =
-    [validCurrentEducation(),
+    [validCurrentEducation,
       validFirstName,
       validLastName,
       studentYears,
@@ -285,6 +292,7 @@ console.log(selectedAcademicYear.title, 'selectedAcademicYear.title')
       //if cansave is true
       //generate the objects before saving
       console.log(
+        studentYears[0].grade,
         studentName,
         studentDob,
         studentSex,
@@ -486,7 +494,9 @@ console.log(selectedAcademicYear.title, 'selectedAcademicYear.title')
               htmlFor="studentYears"
               className="ml-2 text-sm font-medium text-gray-700"
             >
-              Student Year* : {selectedAcademicYear.title}
+              Student Year {" "}{!studentYears[0] && (
+                <span className="text-red-500">*</span>
+              )} : {selectedAcademicYear.title}
             </label>
           </div>
           <div className="flex items-center mb-2">
@@ -495,7 +505,9 @@ console.log(selectedAcademicYear.title, 'selectedAcademicYear.title')
         ) && (
           <div className="mb-6">
             <label htmlFor="studentGrade" className="block text-sm font-medium text-gray-700">
-              Grade
+              Grade{" "}{!studentYears[0].grade && (
+                <span className="text-red-500">*</span>
+              )}
             </label>
             <select
               id="studentGrade"
@@ -680,7 +692,9 @@ console.log(selectedAcademicYear.title, 'selectedAcademicYear.title')
         </div>
 
         <div className="mb-6">
-          <h3 className="text-xl font-semibold mb-2">Student Education</h3>
+          <h3 className="text-xl font-semibold mb-2">Student Education {" "}{!validCurrentEducation && (
+                <span className="text-red-500">*</span>
+              )}</h3>
           {Array.isArray(studentEducation) &&
             studentEducation.length > 0 &&
             studentEducation.map((entry, index) => (
@@ -733,9 +747,11 @@ console.log(selectedAcademicYear.title, 'selectedAcademicYear.title')
                     >
                       <option value="">Select School</option>
                       {schoolIsSuccess &&
-                        attendedSchools.map((school) => (
+                        attendedSchools
+                        .filter((school) => school.schoolName !== "First Steps")
+                        .map((school) => (
                           <option key={school.id} value={school.id}>
-                            {school.schoolName}
+                           {school.schoolName}
                           </option>
                         ))}
                     </select>

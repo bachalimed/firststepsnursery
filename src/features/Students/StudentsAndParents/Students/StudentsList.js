@@ -313,8 +313,8 @@ const StudentsList = () => {
         const studentYearForSelectedYear = row.studentYears.find(
           (year) => year.academicYear === selectedAcademicYear.title
         );
-        console.log(studentYearForSelectedYear,'studentYearForSelectedYear')
-        console.log(selectedAcademicYear,'selectedAcademicYear')
+       // console.log(studentYearForSelectedYear,'studentYearForSelectedYear')
+        //console.log(selectedAcademicYear,'selectedAcademicYear')
     
         // Get the grade from the found student year
         const gradeForSelectedYear = studentYearForSelectedYear?.grade;
@@ -326,6 +326,23 @@ const StudentsList = () => {
       width: "80px",
     },
 
+    {
+      name: "School",
+      selector: (row) =>{
+        
+        const studentYearForSelectedYear = row.studentEducation.find(
+          (year) => year.schoolYear === selectedAcademicYear.title
+        );
+        const schoolForSelectedYear = studentYearForSelectedYear?.attendedSchool.schoolName;
+    
+        // Return the grade or a fallback value if not found
+        return schoolForSelectedYear || 'N/A';
+      
+      },
+
+      sortable: true,
+      width: "180px",
+    },
     {
       name: "DOB",
       selector: (row) =>
@@ -415,6 +432,8 @@ const StudentsList = () => {
       button: true,
     },
   ];
+
+  console.log(filteredStudents,'filteredStudents')
   let content;
   if (isLoading) content = <LoadingStateIcon />;
   if (isError) {

@@ -33,21 +33,21 @@ const StudentsParents = () => {
   // Render the component content
   return (
     <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6">
-      <AcademicYearsSelection />
-      {tabs.map((tab) => (
-        <Link key={tab.path} to={tab.path}>
-          <li
-            className={`list-none cursor-pointer ${
-              isActive(tab.path)
-                ? "text-blue-500"
-                : "text-gray-800 hover:text-blue-500"
-            }`}
-          >
-            {tab.label}
-          </li>
-        </Link>
-      ))}
-    </div>
+    <AcademicYearsSelection />
+    {tabs.map((tab) => (
+      <Link key={tab.path} to={tab.path}>
+        <li
+          className={`list-none cursor-pointer px-4 py-2 border border-gray-400 rounded-md ${
+            isActive(tab.path)
+              ? "text-blue-500 border-blue-500 bg-blue-100"
+              : "text-gray-800 hover:text-blue-500"
+          }`}
+        >
+          {tab.label}
+        </li>
+      </Link>
+    ))}
+  </div>
   );
 };
 

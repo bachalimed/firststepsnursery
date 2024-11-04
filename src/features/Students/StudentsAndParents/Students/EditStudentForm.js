@@ -86,7 +86,7 @@ const EditStudentForm = ({ student }) => {
   );
   const [studentYears, setStudentYears] = useState(student.studentYears);
   // const [studentJointFamily, setStudentJointFamily] = useState(student.studentJointFamily)
-
+  const [validStudentGrade, setValidStudentGrade] = useState(false);
   const [studentGardien, setStudentGardien] = useState(student.studentGardien); //an object
   const [gardienFirstName, setGardienFirstName] = useState(
     student.studentGardien.gardienFirstName
@@ -117,7 +117,16 @@ const EditStudentForm = ({ student }) => {
 
   //use effect is used to validate the inputs against the defined REGEX above
   //the previous constrains have to be verified on the form for teh user to know
-
+  useEffect(() => {
+    setValidStudentGrade(
+      studentYears.some(
+        (year) =>
+          year.academicYear === selectedAcademicYear.title &&
+          ["0", "1", "2", "3", "4", "5", "6"].includes(year.grade) // Convert to number for comparison
+      )
+    );
+  }, [studentYears, selectedAcademicYear.title]);
+  console.log(studentYears)
   useEffect(() => {
     setValidFirstName(NAME_REGEX.test(firstName));
   }, [firstName]);
@@ -146,7 +155,7 @@ const EditStudentForm = ({ student }) => {
       setStudentSex("");
       setStudentIsActive(false);
       setStudentYears([]); //will be true when the username is validated
-
+      setValidStudentGrade(false)
       // setStudentJointFamily('')
       setGardienFirstName("");
       setgardienMiddleName("");
@@ -482,7 +491,9 @@ const validCurrentEducation = () => {
   ) && (
     <div className="mb-6">
       <label htmlFor="studentGrade" className="block text-sm font-medium text-gray-700">
-        Grade
+        Grade{" "}{!validStudentGrade && (
+                <span className="text-red-500">*</span>
+              )}
       </label>
       <select
         id="studentGrade"

@@ -266,11 +266,11 @@ const AdmissionsList = () => {
     {
       name: "Student Name",
       selector: (row) =>
-        row.student.studentName.firstName +
+        row.student?.studentName.firstName +
         " " +
-        row.student.studentName?.middleName +
+        row.student?.studentName?.middleName +
         " " +
-        row.student.studentName?.lastName,
+        row.student?.studentName?.lastName,
       sortable: true,
       width: "180px",
     },
@@ -278,7 +278,7 @@ const AdmissionsList = () => {
     {
       name: "Admission Date",
       selector: (row) =>
-        new Date(row.admissionDate).toLocaleDateString("en-GB", {
+        new Date(row?.admissionDate).toLocaleDateString("en-GB", {
           year: "numeric",
           month: "2-digit",
           day: "2-digit",
@@ -293,7 +293,7 @@ const AdmissionsList = () => {
 
       selector: (row) => (
         <div>
-          {row.agreedServices.map((feeObj, index) => (
+          {row?.agreedServices.map((feeObj, index) => (
             <div key={index}>
               {" "}
               {feeObj?.feePeriod} {feeObj?.service?.serviceType}{" "}
@@ -310,7 +310,7 @@ const AdmissionsList = () => {
 
       selector: (row) => (
         <div>
-          {row.agreedServices.map((feeObj, index) => (
+          {row?.agreedServices.map((feeObj, index) => (
             <div key={index}>
               {feeObj?.service?.serviceAnchor[feeObj.feePeriod]}
             </div>
@@ -339,7 +339,7 @@ const AdmissionsList = () => {
       name: "Agreed Fees",
       selector: (row) => (
         <div>
-          {row.agreedServices.map((feeObj, index) => {
+          {row?.agreedServices.map((feeObj, index) => {
             const anchorValue =
               feeObj?.service?.serviceAnchor[feeObj.feePeriod];
             const feeValue = feeObj?.feeValue;
@@ -367,7 +367,7 @@ const AdmissionsList = () => {
       name: "Flagged",
       selector: (row) => (
         <div>
-          {row.agreedServices.map((feeObj, index) => (
+          {row?.agreedServices.map((feeObj, index) => (
             <div key={index}>{feeObj?.isFlagged ? "Yes" : "No"}</div>
           ))}
         </div>
@@ -380,7 +380,7 @@ const AdmissionsList = () => {
       name: "Authorised",
       selector: (row) => (
         <div>
-          {row.agreedServices.map((feeObj, index) => (
+          {row?.agreedServices.map((feeObj, index) => (
             <div key={index}>{feeObj?.isAuthorised ? "Yes" : "No"}</div>
           ))}
         </div>
@@ -395,10 +395,10 @@ const AdmissionsList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
-            className={`${row.agreedServices.every(service => service.isAuthorised) ? 'text-gray-400' : 'text-purple-500'}`}
+            className={`${row?.agreedServices.every(service => service?.isAuthorised) ? 'text-gray-400' : 'text-purple-500'}`}
             fontSize={20}
             onClick={() => handleUpdateAdmission(row)} // Open the modal with the selected admission
-            disabled={row.agreedServices.every(service => service.isAuthorised)} // Disable if all services are authorised
+            disabled={row?.agreedServices.every(service => service?.isAuthorised)} // Disable if all services are authorised
           >
             <GrValidate className="text-2xl" />
           </button>

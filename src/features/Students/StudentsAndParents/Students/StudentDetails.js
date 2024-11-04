@@ -101,7 +101,8 @@ const isYearFound = student?.studentYears?.some(
 
   
   let content;
-  
+  console.log(studentOrg,'studentOrg')
+  console.log(student,'student')
   
   if(!isYearFound) return <p>Student not registered for that Year</p> 
 
@@ -214,10 +215,10 @@ const isYearFound = student?.studentYears?.some(
                     </p>
                     <p>
                       <strong>Attended School:</strong>{" "}
-                      {education?.attendedSchool}
+                      {education?.attendedSchool.schoolName}
                     </p>
                     <p>
-                      <strong>Note:</strong> {education?.note}
+                      <strong>Note:</strong> {education?.attendedSchool?.note}
                     </p>
                   </div>
                 ))
