@@ -31,7 +31,7 @@ const Admissions = () => {
   const tabs = [
     { label: "Admissions", path: "/students/admissions/admissions/" },
     { label: "New Admission", path: "/students/admissions/newAdmission/" },
-    { label: "blabla", path: "/students/admissions/bla/" },
+    //{ label: "blabla", path: "/students/admissions/bla/" },
     
   ];
 
