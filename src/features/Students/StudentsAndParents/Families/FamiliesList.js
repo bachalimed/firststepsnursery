@@ -20,7 +20,7 @@ import {
 import useAuth from "../../../../hooks/useAuth";
 import { ImProfile } from "react-icons/im";
 import { useDispatch } from "react-redux";
-
+import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 const FamiliesList = () => {
   //this is for the academic year selection
 
@@ -370,8 +370,8 @@ const FamiliesList = () => {
     },
   ];
   let content;
-
-  if (isFamilyLoading) content = <p>Loading...</p>;
+  
+  if (isFamilyLoading) content = <LoadingStateIcon />;
 
   if (isFamilyError | isDelError) {
     content = <p className="errmsg">error msg {Error?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error

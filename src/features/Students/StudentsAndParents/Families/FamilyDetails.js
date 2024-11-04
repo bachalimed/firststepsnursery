@@ -155,6 +155,14 @@ const FamilyDetails = () => {
             <strong>Address:</strong>{" "}
             {`${father?.userAddress?.house} ${father?.userAddress?.street}, ${father?.userAddress?.area} ${father?.userAddress?.postCode}, ${father?.userAddress?.city}`}
           </p>
+          <p>
+            <strong>Primary Phone:</strong>{" "}
+            {`  ${father?.userContact?.primaryPhone} `}
+          </p>
+          {father?.userContact?.secondaryPhone&&<p>
+            <strong>Secondary Phone:</strong>{" "}
+            {`  ${father?.userContact?.secondaryPhone} `}
+          </p>}
         </div>
 
         <div className="mb-4">
@@ -178,6 +186,14 @@ const FamilyDetails = () => {
             <strong>Address:</strong>{" "}
             {`${mother?.userAddress?.house} ${mother?.userAddress?.street}, ${mother?.userAddress?.area} ${mother?.userAddress?.postCode}, ${mother?.userAddress?.city}`}
           </p>
+          <p>
+            <strong>Primary Phone:</strong>{" "}
+            {`  ${mother?.userContact?.primaryPhone} `}
+          </p>
+          {mother?.userContact?.secondaryPhone&&<p>
+            <strong>Secondary Phone:</strong>{" "}
+            {`  ${mother?.userContact?.secondaryPhone} `}
+          </p>}
         </div>
 
         {children && children.length > 0 ? (
@@ -202,6 +218,7 @@ const FamilyDetails = () => {
                   <strong>Joint Family:</strong>{" "}
                   {child?.child?.studentJointFamily ? "Yes" : "No"}
                 </p>
+                
               </div>
             ))}
           </div>

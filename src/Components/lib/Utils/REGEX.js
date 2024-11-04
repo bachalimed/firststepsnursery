@@ -7,4 +7,4 @@ export const PHONE_REGEX = /^[0-9-]{6,15}$/;
 export const DATE_REGEX = /^[0-9\/-]{7,10}$/
 export const EMAIL_REGEX = /^[A-z0-9.@-_]{6,20}$/;
 export const FEE_REGEX = /^(0|[1-9][0-9]{0,3})(\.[0-9]{1,3})?$/;
-export const NAME_REGEX = /^[A-z 0-9]{3,20}$/;
+export const NAME_REGEX = /^[A-z 0-9']{3,30}$/;

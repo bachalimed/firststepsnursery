@@ -145,7 +145,7 @@ const StudentsList = () => {
   if (schoolIsSuccess) {
     const { entities } = attendedSchoolsList;
     attendedSchools = Object.values(entities);
-    console.log(attendedSchools,'attendedSchools')
+    //console.log(attendedSchools,'attendedSchools')
   }
   if (isSuccess) {
     //set to the state to be used for other component s and edit student component
@@ -244,6 +244,7 @@ const StudentsList = () => {
     const updatedStudentObject = {
       ...studentObject,
       studentYears: updatedYears, // Merge updated studentYears
+      
     };
 
     //console.log("Saving updated student:", updatedStudentObject);
@@ -509,7 +510,7 @@ const StudentsList = () => {
          <select
           value={selectedSchoolName}
           onChange={handleSchoolChange}
-          className="school-dropdown"
+          className="text-sm h-8 border border-gray-300 rounded-md px-4"
         >
           <option value="">All Schools</option>
           {attendedSchools?.map((school) => (school.schoolName !== "First Steps" && (
@@ -570,7 +571,7 @@ const StudentsList = () => {
         isOpen={isRegisterModalOpen}
         onClose={() => setIsRegisterModalOpen(false)}
         studentYears={studentYears}
-        selectedAcademicYear={selectedAcademicYear}
+       
         studentObject={studentObject}
         setStudentObject={setStudentObject}
         setStudentYears={setStudentYears}

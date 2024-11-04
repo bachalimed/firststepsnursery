@@ -10,14 +10,8 @@ import { useGetFamiliesByYearQuery } from "./familiesApiSlice";
 import { useGetStudentsByYearQuery } from "../Students/studentsApiSlice";
 import { useContext } from "react";
 import { StepperContext } from "../../../../contexts/StepperContext";
-//constrains on inputs when creating new parent
-const USER_REGEX = /^[A-z0-9]{6,20}$/;
-const PWD_REGEX = /^[A-z0-9!@#-_$%]{8,20}$/;
-const NAME_REGEX = /^[A-z 0-9]{3,20}$/;
-const HOUSE_REGEX = /^[A-z 0-9]{1,20}$/;
-const PHONE_REGEX = /^[0-9]{6,15}$/;
-const DOB_REGEX = /^[0-9/-]{4,10}$/;
-const EMAIL_REGEX = /^[A-z0-9.@-_]{6,20}$/;
+import {USER_REGEX,PWD_REGEX,NAME_REGEX,PHONE_REGEX,DATE_REGEX} from '../../../../Components/lib/Utils/REGEX'
+
 
 export default function NewMotherForm() {
   //an add parent function that can be called inside the component
@@ -109,10 +103,10 @@ export default function NewMotherForm() {
   }, [userLastName]);
 
   useEffect(() => {
-    setValidUserDob(DOB_REGEX.test(userDob));
+    setValidUserDob(DATE_REGEX.test(userDob));
   }, [userDob]);
   useEffect(() => {
-    setValidHouse(HOUSE_REGEX.test(house));
+    setValidHouse(NAME_REGEX.test(house));
   }, [house]);
   useEffect(() => {
     setValidStreet(NAME_REGEX.test(street));
@@ -229,7 +223,9 @@ export default function NewMotherForm() {
               className="text-gray-700 font-semibold"
               htmlFor="userFirstName"
             >
-              Mother First Name*{" "}
+              Mother First Name{" "}{!validUserFirstName && (
+                <span className="text-red-500">*</span>
+              )}
               <span className="text-sm text-gray-500">[3-20 letters]</span>
             </label>
             <input
@@ -267,7 +263,9 @@ export default function NewMotherForm() {
               className="text-gray-700 font-semibold"
               htmlFor="userLastName"
             >
-              Mother Last Name*{" "}
+              Mother Last Name{" "}{!validUserLastName && (
+                <span className="text-red-500">*</span>
+              )}
               <span className="text-sm text-gray-500">[3-20 letters]</span>
             </label>
             <input
@@ -284,7 +282,9 @@ export default function NewMotherForm() {
 
           <div>
             <label className="text-gray-700 font-semibold" htmlFor="userDob">
-              Date of Birth*{" "}
+              Date of Birth{" "}{!validUserDob && (
+                <span className="text-red-500">*</span>
+              )}
               <span className="text-sm text-gray-500">[dd/mm/yyyy]</span>
             </label>
             <input
@@ -302,7 +302,9 @@ export default function NewMotherForm() {
           {/* Address Section */}
           <div>
             <label className="text-gray-700 font-semibold" htmlFor="house">
-              House*{" "}
+              House{" "}{!validHouse && (
+                <span className="text-red-500">*</span>
+              )}
               <span className="text-sm text-gray-500">[3-20 letters]</span>
             </label>
             <input
@@ -319,7 +321,9 @@ export default function NewMotherForm() {
 
           <div>
             <label className="text-gray-700 font-semibold" htmlFor="street">
-              Street*{" "}
+              Street{" "}{!validStreet && (
+                <span className="text-red-500">*</span>
+              )}
               <span className="text-sm text-gray-500">[3-20 letters]</span>
             </label>
             <input
@@ -351,7 +355,9 @@ export default function NewMotherForm() {
 
           <div>
             <label className="text-gray-700 font-semibold" htmlFor="city">
-              City*{" "}
+              City{" "}{!validCity && (
+                <span className="text-red-500">*</span>
+              )}
               <span className="text-sm text-gray-500">[3-20 letters]</span>
             </label>
             <input
@@ -386,7 +392,9 @@ export default function NewMotherForm() {
               className="text-gray-700 font-semibold"
               htmlFor="primaryPhone"
             >
-              Primary Phone*{" "}
+              Primary Phone{" "}{!validPrimaryPhone && (
+                <span className="text-red-500">*</span>
+              )}
               <span className="text-sm text-gray-500">[6 to 15 digits]</span>
             </label>
             <input

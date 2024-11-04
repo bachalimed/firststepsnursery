@@ -7,7 +7,7 @@ const RegisterModal = ({
   onClose,
   studentObject,
   setStudentObject,
-  selectedAcademicYear,
+  
   studentYears,
   academicYears,
   onSave,
@@ -15,7 +15,7 @@ const RegisterModal = ({
   const [modifiedYears, setModifiedYears] = useState([]);
   useEffect(() => {
     if (isOpen && Array.isArray(studentYears)) {
-      console.log(studentYears, "studtnyears", academicYears, "academicyears");
+      //console.log(studentYears, "studtnyears", academicYears, "academicyears");
       // Initialize the modifiedYears array with selected flag based on studentYears
       const updatedYears = academicYears.map((year) => {
         const isSelected = studentYears.some(
@@ -37,13 +37,13 @@ const RegisterModal = ({
     }
   }, [isOpen, studentYears, academicYears]);
   const [years, setYears] = useState([]);
-console.log(studentObject, 'studentObject')
+//console.log(studentObject, 'studentObject')
   const handleCheckboxChange = (index) => {
     const updatedYears = [...modifiedYears];
     updatedYears[index].selected = !updatedYears[index].selected;
 
     const updatedStudentYears = updatedYears
-      .filter((year) => year.selected) // Get only selected years
+      //.filter((year) => year.selected) // Get only selected years will not allow to register studetn from other years (reregistratin)
       .map((year) => ({ academicYear: year.title })); // Map to the desired format
     setYears(updatedStudentYears);
     setModifiedYears(updatedYears);
@@ -68,6 +68,7 @@ console.log(studentObject, 'studentObject')
     >
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
         <h2 className="text-xl font-semibold mb-4">{`Select New Register Year for${studentObject?.studentName?.middleName} ${studentObject?.studentName?.firstName} ${studentObject?.studentName?.lastName}`}</h2>
+        <p className="text-red-600">Choose only one new year, do not uncheck any box!</p>
         <div className="space-y-4">
           {modifiedYears
            .filter((year) => year.title !== "1000")
