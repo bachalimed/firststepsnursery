@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
+
+//this modal will add studetn years for the studetn selelcted
 const RegisterModal = ({
   isOpen,
   onClose,
   studentObject,
   setStudentObject,
-  
+  selectedAcademicYear,
   studentYears,
   academicYears,
   onSave,
@@ -35,7 +37,7 @@ const RegisterModal = ({
     }
   }, [isOpen, studentYears, academicYears]);
   const [years, setYears] = useState([]);
-
+console.log(studentObject, 'studentObject')
   const handleCheckboxChange = (index) => {
     const updatedYears = [...modifiedYears];
     updatedYears[index].selected = !updatedYears[index].selected;
@@ -65,9 +67,12 @@ const RegisterModal = ({
       overlayClassName="modal-overlay"
     >
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
-        <h2 className="text-xl font-semibold mb-4">Select New Register Year</h2>
+        <h2 className="text-xl font-semibold mb-4">{`Select New Register Year for${studentObject?.studentName?.middleName} ${studentObject?.studentName?.firstName} ${studentObject?.studentName?.lastName}`}</h2>
         <div className="space-y-4">
-          {modifiedYears.map((year, index) => (
+          {modifiedYears
+           .filter((year) => year.title !== "1000")
+          //.filter((year) => year.title === selectedAcademicYear.title)
+          .map((year, index) => (
             <div key={index} className="flex items-center">
               <input
                 type="checkbox"
@@ -80,7 +85,7 @@ const RegisterModal = ({
                 htmlFor={`year-${index}`}
                 className="text-sm text-gray-700"
               >
-                {year.title}
+                 {year.title}
               </label>
             </div>
           ))}

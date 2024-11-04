@@ -5,6 +5,7 @@ import {
   useDeleteStudentMutation,
 } from "./studentsApiSlice";
 import { HiOutlineSearch } from "react-icons/hi";
+import { IoShieldCheckmark ,IoShieldCheckmarkOutline } from "react-icons/io5";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
@@ -27,7 +28,7 @@ import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { setAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-
+import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
 import useAuth from "../../../../hooks/useAuth";
 
 import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
@@ -44,9 +45,8 @@ const StudentsList = () => {
   const dispatch = useDispatch();
 
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
-  const [requiredDocNumber, setRequiredDocNumber] = useState("");
-  const [studentDocNumber, setStudentDocNumber] = useState("");
-
+  const [selectedGrade, setSelectedGrade] = useState(""); // New state for grade filter
+ const [selectedSchoolName, setSelectedSchoolName] = useState(""); // School name filter
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
@@ -82,6 +82,21 @@ const StudentsList = () => {
       refetchOnMountOrArgChange: true, //refetch when we remount the component
     }
   );
+  const {
+    data: attendedSchoolsList, //the data is renamed parents
+    isLoading: schoolIsLoading, //monitor several situations
+    isSuccess: schoolIsSuccess,
+    isError: schoolIsError,
+    error: schoolError,
+  } = useGetAttendedSchoolsQuery(
+    { endpointName: "attendedSchoolsList" } || {},
+    {
+      //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+      //pollingInterval: 60000,//will refetch data every 60seconds
+      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
+      refetchOnMountOrArgChange: true, //refetch when we remount the component
+    }
+  );
 
   //initialising the delete Mutation
   const [
@@ -112,15 +127,6 @@ const StudentsList = () => {
     setIdStudentToDelete(null);
   };
 
-  //this ensures teh selected year is chosen before running hte useeffect it is working perfectly to dispaptch the selected year
-  // useEffect(() => {
-  //   if (selectedAcademicYear?.title) {
-  //     setSelectedYear(selectedAcademicYear.title);
-  //     //console.log('Selected year updated:', selectedAcademicYear.title)
-  //   }
-  // }, [selectedAcademicYear]);
-  //console.log('selectedAcademicYear',selectedAcademicYear)
-
   // const myStu = useSelector(state=> state.student)
   // console.log(myStu, 'mystu')
 
@@ -135,6 +141,12 @@ const StudentsList = () => {
   //we need to declare the variable outside of if statement to be able to use it outside later
   let studentsList = [];
   let filteredStudents = [];
+  let attendedSchools;
+  if (schoolIsSuccess) {
+    const { entities } = attendedSchoolsList;
+    attendedSchools = Object.values(entities);
+    console.log(attendedSchools,'attendedSchools')
+  }
   if (isSuccess) {
     //set to the state to be used for other component s and edit student component
 
@@ -145,32 +157,40 @@ const StudentsList = () => {
     dispatch(setStudents(studentsList)); //timing issue to update the state and use it the same time
 
     //the serach result data
-    filteredStudents = studentsList?.filter((item) => {
-      //the nested objects need extra logic to separate them
-      const firstNameMatch = item?.studentName?.firstName
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
-      const middleNameMatch = item?.studentName?.middleName
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
-      const lastNameMatch = item?.studentName?.lastName
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
-      //console.log('filteredStudents in the success', item)
-      return (
-        Object.values(item).some((val) =>
-          String(val).toLowerCase().includes(searchQuery.toLowerCase())
-        ) ||
-        firstNameMatch ||
-        middleNameMatch ||
-        lastNameMatch
-      );
-    });
-  }
+   // Apply filters to the students list
+   filteredStudents = studentsList.filter((student) => {
+    // Search filter
+    const matchesSearch =  student.studentName?.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    student.studentName?.middleName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    student.studentName?.lastName?.toLowerCase().includes(searchQuery.toLowerCase());
 
-  const handleSearch = (e) => {
-    setSearchQuery(e.target.value);
-  };
+
+    // Grade filter
+    const matchesGrade = selectedGrade
+      ? student.studentYears.some(
+          (year) =>
+            year.academicYear === selectedAcademicYear.title &&
+            year.grade === selectedGrade
+        )
+      : true;
+
+    // School filter
+    const matchesSchool = selectedSchoolName
+      ? student.studentEducation.some(
+          (education) =>
+            education.schoolYear === selectedAcademicYear.title &&
+          education.attendedSchool?.schoolName === selectedSchoolName
+        )
+      : true;
+
+    return matchesSearch && matchesGrade && matchesSchool;
+  });
+  }
+  const handleSearch = (e) => setSearchQuery(e.target.value);
+  const handleGradeChange = (e) => setSelectedGrade(e.target.value); // Update selected grade
+  const handleSchoolChange = (e) => setSelectedSchoolName(e.target.value);
+  // UI component for grade filter dropdown
+  const gradeOptions = ["0", "1", "2", "3", "4", "5", "6", "7"]; // Add appropriate grade options
   // Handler for selecting rows
   const handleRowSelected = (state) => {
     setSelectedRows(state.selectedRows);
@@ -258,7 +278,22 @@ const StudentsList = () => {
       width: "50px",
     },
     //show this column only if user is a parent and not employee
-
+    {
+      name: "Active",
+      selector: (row) => row.studentIsActive, //changed from userSex
+      cell: (row) => (
+        <span>
+          {row.studentIsActive ? (
+            <IoShieldCheckmark className="text-green-500 text-2xl" />
+          ) : (
+            <IoShieldCheckmarkOutline  className="text-red-500 text-2xl" />
+          )}
+        </span>
+      ),
+      sortable: true,
+      removableRows: true,
+      width: "80px",
+    },
     isAdmin && {
       name: "ID",
       selector: (row) => (
@@ -267,7 +302,7 @@ const StudentsList = () => {
         </Link>
       ),
       sortable: true,
-      width: "200px",
+      width: "210px",
     },
 
     {
@@ -313,14 +348,14 @@ const StudentsList = () => {
         const studentYearForSelectedYear = row.studentYears.find(
           (year) => year.academicYear === selectedAcademicYear.title
         );
-       // console.log(studentYearForSelectedYear,'studentYearForSelectedYear')
+        // console.log(studentYearForSelectedYear,'studentYearForSelectedYear')
         //console.log(selectedAcademicYear,'selectedAcademicYear')
-    
+
         // Get the grade from the found student year
         const gradeForSelectedYear = studentYearForSelectedYear?.grade;
-    
+
         // Return the grade or a fallback value if not found
-        return gradeForSelectedYear || 'N/A'; // Display 'N/A' if no grade is found
+        return gradeForSelectedYear || "N/A"; // Display 'N/A' if no grade is found
       },
       sortable: true,
       width: "80px",
@@ -328,16 +363,15 @@ const StudentsList = () => {
 
     {
       name: "School",
-      selector: (row) =>{
-        
+      selector: (row) => {
         const studentYearForSelectedYear = row.studentEducation.find(
           (year) => year.schoolYear === selectedAcademicYear.title
         );
-        const schoolForSelectedYear = studentYearForSelectedYear?.attendedSchool.schoolName;
-    
+        const schoolForSelectedYear =
+          studentYearForSelectedYear?.attendedSchool.schoolName;
+
         // Return the grade or a fallback value if not found
-        return schoolForSelectedYear || 'N/A';
-      
+        return schoolForSelectedYear || "N/A";
       },
 
       sortable: true,
@@ -433,7 +467,7 @@ const StudentsList = () => {
     },
   ];
 
-  console.log(filteredStudents,'filteredStudents')
+  console.log(filteredStudents, "filteredStudents");
   let content;
   if (isLoading) content = <LoadingStateIcon />;
   if (isError) {
@@ -444,18 +478,46 @@ const StudentsList = () => {
   content = (
     <>
       <StudentsParents />
-
-      <div className="relative h-10 mr-2 ">
-        <HiOutlineSearch
-          fontSize={20}
-          className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-        />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={handleSearch}
-          className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
-        />
+      <div className="flex space-x-2 items-center">
+        {/* Search Bar */}
+        <div className="relative h-10 mr-2 ">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+          />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
+          />
+        </div>
+        {/* Grade Filter Dropdown */}
+        <select
+          value={selectedGrade}
+          onChange={handleGradeChange}
+          className="text-sm h-8 border border-gray-300 rounded-md px-4"
+        >
+          <option value="">All Grades</option>
+          {gradeOptions.map((grade) => (
+            <option key={grade} value={grade}>
+              Grade {grade}
+            </option>
+          ))}
+        </select>
+         {/* Attended school selection dropdown */}
+         <select
+          value={selectedSchoolName}
+          onChange={handleSchoolChange}
+          className="school-dropdown"
+        >
+          <option value="">All Schools</option>
+          {attendedSchools?.map((school) => (school.schoolName !== "First Steps" && (
+            <option key={school.id} value={school.schoolName}>
+              {school.schoolName}
+            </option>)
+          ))}
+        </select>
       </div>
       <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
         <DataTable
@@ -504,10 +566,11 @@ const StudentsList = () => {
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
       />
-      <RegisterModal
+      <RegisterModal //will allow to add or remove studetnYEars
         isOpen={isRegisterModalOpen}
         onClose={() => setIsRegisterModalOpen(false)}
         studentYears={studentYears}
+        selectedAcademicYear={selectedAcademicYear}
         studentObject={studentObject}
         setStudentObject={setStudentObject}
         setStudentYears={setStudentYears}

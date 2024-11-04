@@ -518,7 +518,7 @@ console.log(selectedAcademicYear.title, 'selectedAcademicYear.title')
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
             >
                  <option value="">Select Grade</option>
-                  {[0, 1, 2, 3, 4, 5, 6, 7].map((grade) => (
+                  {["0", "1", "2", "3", "4", "5", "6", "7"].map((grade) => (
                     <option key={grade} value={grade}>Grade {grade}</option>
                   ))}
                </select>
@@ -622,9 +622,9 @@ console.log(selectedAcademicYear.title, 'selectedAcademicYear.title')
                     >
                       <option value="">Select Year</option>
                       {academicYears.map((year) => (
-                        <option key={year.id} value={year.title}>
+                       (year.title !== "1000") &&( <option key={year.id} value={year.title}>
                           {year.title}
-                        </option>
+                        </option>)
                       ))}
                     </select>
                   </div>
@@ -720,9 +720,9 @@ console.log(selectedAcademicYear.title, 'selectedAcademicYear.title')
                     >
                       <option value="">Select Year</option>
                       {academicYears.map((year) => (
-                        <option key={year.id} value={year.title}>
+                       (year.title !== "1000") &&(  <option key={year.id} value={year.title}>
                           {year.title}
-                        </option>
+                        </option>)
                       ))}
                     </select>
                   </div>

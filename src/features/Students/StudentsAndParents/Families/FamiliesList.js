@@ -91,9 +91,7 @@ const FamiliesList = () => {
       const fatherLastNameMatch = item?.father?.userFullName?.userLastName
         ?.toLowerCase()
         .includes(searchQuery.toLowerCase());
-      const dobMatch = item?.userProfile?.userDob
-        ?.toLowerCase()
-        .includes(searchQuery.toLowerCase());
+
       const motherFirstNameMatch = item?.mother?.userFullName?.userFirstName
         ?.toLowerCase()
         .includes(searchQuery.toLowerCase());
@@ -104,18 +102,36 @@ const FamiliesList = () => {
         ?.toLowerCase()
         .includes(searchQuery.toLowerCase());
 
-      //console.log('filteredStudents in the success', item)
+      const childNameMatch = item?.children?.some((child) => {
+        const childFirstNameMatch = child?.child?.studentName?.firstName
+          ?.toLowerCase()
+          .includes(searchQuery.toLowerCase());
+        const childMiddleNameMatch = child?.child?.studentName?.middleName
+          ?.toLowerCase()
+          .includes(searchQuery.toLowerCase());
+        const childLastNameMatch = child?.child?.studentName?.lastName
+          ?.toLowerCase()
+          .includes(searchQuery.toLowerCase());
+
+        return (
+          childFirstNameMatch || childMiddleNameMatch || childLastNameMatch
+        );
+      });
+
+      // Check if any top-level values match the search
+      const topLevelMatch = Object.values(item).some((val) =>
+        String(val).toLowerCase().includes(searchQuery.toLowerCase())
+      );
+
       return (
-        Object.values(item).some((val) =>
-          String(val).toLowerCase().includes(searchQuery.toLowerCase())
-        ) ||
+        topLevelMatch ||
         fatherFirstNameMatch ||
         fatherMiddleNameMatch ||
         fatherLastNameMatch ||
-        dobMatch ||
         motherFirstNameMatch ||
         motherMiddleNameMatch ||
-        motherLastNameMatch
+        motherLastNameMatch ||
+        childNameMatch
       );
     });
   }
@@ -186,18 +202,25 @@ const FamiliesList = () => {
       sortable: false,
       width: "50px",
     },
+    {
+      name: "Family ID",
+      selector: (row) => row.id,
+      sortable: true,
+      width: "210px",
+    },
 
     {
       name: "Name",
       selector: (row) => (
         <div>
           <Link to={`/students/studentsParents/familyDetails/${row._id}`}>
-            <div>
+            <div><strong>
               {row.father?.userFullName.userFirstName +
                 " " +
                 row.father?.userFullName.userMiddleName +
                 " " +
                 row.father?.userFullName.userLastName}
+                </strong>
             </div>
             <div>
               {row.mother?.userFullName.userFirstName +
@@ -210,7 +233,29 @@ const FamiliesList = () => {
         </div>
       ),
       sortable: true,
-      width: "210px",
+      width: "180px",
+    },
+    {
+      name: "Children",
+      selector: (row) => (
+        <div>
+          {row.children.map((child) => (
+            <Link
+              key={child?.child?._id}
+              to={`/students/studentsParents/studentDetails/${child?.child?._id}`}
+            >
+              <div>
+                {child?.child?.studentName?.firstName}{" "}
+                {child?.child?.studentName?.middleName}{" "}
+                {child?.child?.studentName?.lastName}
+              </div>
+            </Link>
+          ))}
+        </div>
+      ),
+
+      sortable: true,
+      width: "180px",
     },
 
     {
@@ -239,7 +284,7 @@ const FamiliesList = () => {
     },
     {
       name: "Situation",
-      selector: (row) => (row.familySituation ? "Joint" : "Separated"),
+      selector: (row) => row.familySituation,
       sortable: true,
       width: "100px",
     },
@@ -253,32 +298,27 @@ const FamiliesList = () => {
         </div>
       ),
       sortable: true,
-      width: "100px",
+      width: "120px",
     },
     {
       name: "Address",
       selector: (row) => (
         <div>
           <div>
+            <div>{row.father?.userAddress?.house}</div>
+            <div>{row.father?.userAddress?.street}</div>
             <div>
-              {" "}
-              {row.father?.userAddress?.house} {row.father?.userAddress?.street}
-            </div>
-            <div>
-              {row.father?.userAddress?.area}
+              {row.father?.userAddress?.area}{" "}
               {row.father?.userAddress?.postCode}
             </div>
             <div> {row.father?.userAddress?.city}</div>
           </div>
-          {row.familySituation !== "Joint" && (
+          {row.familySituation !== "Joint" && ( //will not show mother's address if family is joint
             <div>
+              <div> {row.mother?.userAddress?.house}</div>
+              <div>{row.mother?.userAddress?.street}</div>
               <div>
-                {" "}
-                {row.mother?.userAddress?.house}{" "}
-                {row.mother?.userAddress?.street}
-              </div>
-              <div>
-                {row.mother?.userAddress?.area}
+                {row.mother?.userAddress?.area}{" "}
                 {row.mother?.userAddress?.postCode}
               </div>
               <div> {row.mother?.userAddress?.city}</div>
@@ -287,30 +327,7 @@ const FamiliesList = () => {
         </div>
       ),
       sortable: true,
-      width: "100px",
-    },
-
-    {
-      name: "Children",
-      selector: (row) => (
-        <div>
-          {row.children.map((child) => (
-            <Link
-              key={child?.child?._id}
-              to={`/students/studentsParents/studentDetails/${child?.child?._id}`}
-            >
-              <div>
-                {child?.child?.studentName?.firstName}{" "}
-                {child?.child?.studentName?.middleName}{" "}
-                {child?.child?.studentName?.lastName}
-              </div>
-            </Link>
-          ))}
-        </div>
-      ),
-
-      sortable: true,
-      width: "180px",
+      width: "170px",
     },
 
     {
