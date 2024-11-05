@@ -213,19 +213,25 @@ const AdmissionsList = () => {
   //       }
 
   
-  const handleUpdateAdmission = (admission) => {
-    console.log(admission, 'admissionnnnnnnnnnn')
+  const handleUpdateAdmission = (admission, index, agreedService) => {
+    console.log(admission, 'admissionnnnnnnnnnn');
+  
     // Create a new admission object to avoid mutating the original
     const updatedAdmission = {
-      ...admission, 
-      admissionId:admission.id,
-      admissionOperator:userId,
-      student:admission.student._id,
-      agreedServices: admission.agreedServices.map((service) => ({
-        ...service, // Copy existing service properties
-        isAuthorised: true, // Set isAuthorised to true
-        authorisedBy: userId 
-      })),
+      ...admission,
+      admissionId: admission.id,
+      admissionOperator: userId,
+      student: admission.student._id,
+      agreedServices: admission.agreedServices.map((service, idx) =>
+        // Update only the agreedService at the specific index
+        idx === index
+          ? {
+              ...service, // Copy existing service properties
+              isAuthorised: true, // Set isAuthorised to true
+              authorisedBy: userId, // Set authorisedBy to userId
+            }
+          : service // Keep other services unchanged
+      ),
     };
   
     // Call the update mutation with the new admission object
@@ -393,24 +399,60 @@ const AdmissionsList = () => {
     },
     (isManager && {
       name: "Authorise Fees",
-
-      cell: (row) => (
-        <div className="space-x-1">
-          <button
-            className={`${row?.agreedServices.every(service => service?.isAuthorised) ? 'text-gray-400' : 'text-red-500'}`}
+      selector: (row) => (
+        <div>
+          {row?.agreedServices.map((feeObj, index) => (
+            <div  key={index}>   
+            <button key={index}
+            className={`${feeObj?.isAuthorised ? 'text-gray-200' : 'text-red-500'}`}
             fontSize={20}
-            onClick={() => handleUpdateAdmission(row)} // Open the modal with the selected admission
-            disabled={row?.agreedServices.every(service => service?.isAuthorised)} // Disable if all services are authorised
+            onClick={() => handleUpdateAdmission(row,index,feeObj)} // Open the modal with the selected admission
+            disabled={feeObj?.isAuthorised} // Disable if  authorised
           >
-            <IoFlagOutline  className="text-2xl" />
+            {feeObj?.isAuthorised ? <IoFlagOutline  className="text-2xl" /> : <IoFlagSharp  className="text-2xl" />}
           </button>
+          </div>
+          ))}
         </div>
       ),
+
+      // cell: (row) => (
+      //   <div className="space-x-1">
+      //     <button
+      //       className={`${row?.agreedServices.every(service => service?.isAuthorised) ? 'text-gray-400' : 'text-red-500'}`}
+      //       fontSize={20}
+      //       onClick={() => handleUpdateAdmission(row)} // Open the modal with the selected admission
+      //       disabled={row?.agreedServices.every(service => service?.isAuthorised)} // Disable if all services are authorised
+      //     >
+      //       <IoFlagOutline  className="text-2xl" />
+      //     </button>
+      //   </div>
+      // ),
       ignoreRowClick: true,
       button: true,
       width: "120px",
     
     }),
+    // (isManager && {
+    //   name: "Authorise Fees",
+
+    //   cell: (row) => (
+    //     <div className="space-x-1">
+    //       <button
+    //         className={`${row?.agreedServices.every(service => service?.isAuthorised) ? 'text-gray-400' : 'text-red-500'}`}
+    //         fontSize={20}
+    //         onClick={() => handleUpdateAdmission(row)} // Open the modal with the selected admission
+    //         disabled={row?.agreedServices.every(service => service?.isAuthorised)} // Disable if all services are authorised
+    //       >
+    //         <IoFlagOutline  className="text-2xl" />
+    //       </button>
+    //     </div>
+    //   ),
+    //   ignoreRowClick: true,
+    //   button: true,
+    //   width: "120px",
+    
+    // }),
    
     {
       name: "Fee start",
