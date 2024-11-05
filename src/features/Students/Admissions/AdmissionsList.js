@@ -65,10 +65,10 @@ const AdmissionsList = () => {
   //console.log("Fetch admissions for academic year:", selectedAcademicYear);
   const {
     data: admissions, //the data is renamed admissions
-    isLoading:isAdmissionLoading, //monitor several situations is loading...
-    isSuccess:isAdmissionSuccess,
-    isError:isAdmissionError,
-    error:admissionError,
+    isLoading: isAdmissionLoading, //monitor several situations is loading...
+    isSuccess: isAdmissionSuccess,
+    isError: isAdmissionError,
+    error: admissionError,
   } = useGetAdmissionsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -131,8 +131,8 @@ const AdmissionsList = () => {
     setIdAdmissionToDelete(null);
   };
   const servicesList = isServicesSuccess
-  ? Object.values(services.entities)
-  : [];
+    ? Object.values(services.entities)
+    : [];
   // State to hold selected rows
   const [selectedRows, setSelectedRows] = useState([]);
   //state to hold the search query
@@ -141,8 +141,10 @@ const AdmissionsList = () => {
   //we need to declare the variable outside of if statement to be able to use it outside later
   let admissionsList = [];
   let filteredAdmissions = [];
-  const [monthFilter, setMonthFilter] = useState("");  // Filter for fee month
+  const [monthFilter, setMonthFilter] = useState(""); // Filter for fee month
   const [serviceTypeFilter, setServiceTypeFilter] = useState(""); // Filter for service type
+  const [isFlaggedFilter, setIsFlaggedFilter] = useState(false); // State to manage the flagged filter
+  const [isAuthorisedFilter, setIsAuthorisedFilter] = useState(false); // Authorised filter state
   if (isAdmissionSuccess) {
     //set to the state to be used for other component s and edit admission component
 
@@ -170,38 +172,63 @@ const AdmissionsList = () => {
     //     return nameMatches || otherMatches;
     //   });
     // }
-   
-    // Apply filters for search, month, and service type
-   // Apply filters for search, month, and service type with both conditions required
-   filteredAdmissions = admissionsList.filter((item) => {
-    const nameMatches = [
-      item?.student?.studentName?.firstName,
-      item?.student?.studentName?.middleName,
-      item?.student?.studentName?.lastName,
-    ].some((name) => name?.toLowerCase().includes(searchQuery.toLowerCase()));
 
-    const otherMatches = Object.values(item)
-      .flat()
-      .some((val) =>
-        val?.toString().toLowerCase().includes(searchQuery.toLowerCase())
+    // Apply filters for search, month, and service type
+    // Apply filters for search, month, and service type with both conditions required
+    filteredAdmissions = admissionsList.filter((item) => {
+      const nameMatches = [
+        item?.student?.studentName?.firstName,
+        item?.student?.studentName?.middleName,
+        item?.student?.studentName?.lastName,
+      ].some((name) => name?.toLowerCase().includes(searchQuery.toLowerCase()));
+
+      const otherMatches = Object.values(item)
+        .flat()
+        .some((val) =>
+          val?.toString().toLowerCase().includes(searchQuery.toLowerCase())
+        );
+
+      const bothFiltersMatch = item.agreedServices.some(
+        (service) =>
+          (!monthFilter || service.feeMonths?.includes(monthFilter)) &&
+          (!serviceTypeFilter ||
+            service.service?.serviceType === serviceTypeFilter)
       );
 
-    // Check if agreed services contain both the selected month and service type
-    const bothFiltersMatch = item.agreedServices.some(service => 
-      (!monthFilter || service.feeMonths?.includes(monthFilter)) &&
-      (!serviceTypeFilter || service.service?.serviceType === serviceTypeFilter)
-    );
+      const isFlaggedMatch =
+        isFlaggedFilter ||
+        (isFlaggedFilter === "flagged"
+          ? item.agreedServices.some((service) => service.isFlagged === true)
+          : isFlaggedFilter === "notflagged"
+          ? item.agreedServices.every((service) => service.isFlagged !== true)
+          : true);
 
-    return (nameMatches || otherMatches) && bothFiltersMatch;
-  });
-}
+      const isAuthorisedMatch =
+        //!isAuthorisedFilter ||
+        (isAuthorisedFilter === "authorised"
+          ? item.agreedServices.some((service) => service.isAuthorised === true)
+          : isAuthorisedFilter === "notauthorised"
+          ? item.agreedServices.some(
+              (service) => service.isAuthorised !== true
+            )
+          : true);
 
+      // Both isFlaggedMatch and isAuthorisedMatch must be true for the admission to be included
+      return (
+        (nameMatches || otherMatches) &&
+        bothFiltersMatch &&
+        isFlaggedMatch &&
+        isAuthorisedMatch
+      );
+    });
+  }
 
   const handleSearch = (e) => setSearchQuery(e.target.value);
 
   const handleMonthFilterChange = (e) => setMonthFilter(e.target.value);
 
-  const handleServiceTypeFilterChange = (e) => setServiceTypeFilter(e.target.value);
+  const handleServiceTypeFilterChange = (e) =>
+    setServiceTypeFilter(e.target.value);
   // Handler for selecting rows
   const handleRowSelected = (state) => {
     setSelectedRows(state.selectedRows);
@@ -441,16 +468,16 @@ const AdmissionsList = () => {
               <button
                 key={index}
                 className={`${
-                  feeObj?.isAuthorised ? "text-gray-200" : "text-red-500"
+                  feeObj?.isAuthorised ? "text-green-200" : "text-red-500"
                 }`}
                 fontSize={20}
                 onClick={() => handleUpdateAdmission(row, index, feeObj)} // Open the modal with the selected admission
                 disabled={feeObj?.isAuthorised} // Disable if  authorised
               >
                 {feeObj?.isAuthorised ? (
-                  <IoFlagOutline className="text-2xl" />
+                  <IoFlagSharp className="text-1xl" />
                 ) : (
-                  <IoFlagSharp className="text-2xl" />
+                  <IoFlagSharp className="text-1xl" />
                 )}
               </button>
             </div>
@@ -577,80 +604,104 @@ const AdmissionsList = () => {
     },
   ];
   let content;
-  if (isAdmissionLoading) content = <LoadingStateIcon />;
+  if (isAdmissionLoading) content = <><Admissions /><LoadingStateIcon /></>;
   if (isAdmissionError) {
-    content = <p className="errmsg">{admissionError?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
+    content = <p className="errmsg"><Admissions /> {admissionError?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
   }
-  if (isAdmissionSuccess){
+  if (isAdmissionSuccess) {
+    content = (
+      <>
+        <Admissions />
+        <div className="flex space-x-2 items-center">
+          {/* Search Bar */}
+          <div className="relative h-10 mr-2 ">
+            <HiOutlineSearch
+              fontSize={20}
+              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+            />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearch}
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
+            />
+          </div>
+          {/* feeMonths Filter Dropdown */}
+          {/* Month Filter Dropdown */}
+          <select
+            onChange={handleMonthFilterChange}
+            value={monthFilter}
+            className="text-sm h-8 border border-gray-300 rounded-md px-4"
+          >
+            <option value="">All Months</option>
+            <option value="September">September</option>
+            <option value="October">October</option>
+            <option value="November">November</option>
+            <option value="December">December</option>
+            <option value="January">January</option>
+            <option value="February">February</option>
+            <option value="March">March</option>
+            <option value="April">April</option>
+            <option value="May">May</option>
+            <option value="June">June</option>
+            <option value="July">July</option>
+            <option value="August">August</option>
+          </select>
+          {/* Service Type filter dropdown */}
+          <select
+            onChange={handleServiceTypeFilterChange}
+            value={serviceTypeFilter}
+            className="text-sm h-8 border border-gray-300 rounded-md px-4"
+          >
+            <option value="">All Services</option>
+            {/* Assuming serviceList contains unique serviceType values */}
+            {servicesList.map((service) => (
+              <option key={service.id} value={service.serviceType}>
+                {service.serviceType}
+              </option>
+            ))}
+          </select>
 
-  content = (
-    <>
-      <Admissions />
-      <div className="flex space-x-2 items-center">
-        {/* Search Bar */}
-        <div className="relative h-10 mr-2 ">
-          <HiOutlineSearch
-            fontSize={20}
-            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-          />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={handleSearch}
-            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
-          />
+          <select
+            value={isFlaggedFilter}
+            onChange={(e) => setIsFlaggedFilter(e.target.value)}
+            className="text-sm h-8 border border-gray-300 rounded-md px-4"
+          >
+            <option value="">Flag Status</option>
+            <option value="flagged">Flagged</option>
+            <option value="notflagged">Not Flagged</option>
+          </select>
+
+          <select
+            value={isAuthorisedFilter}
+            onChange={(e) => setIsAuthorisedFilter(e.target.value)}
+            className="text-sm h-8 border border-gray-300 rounded-md px-4"
+          >
+            <option value="">Authorisation Status</option>
+            <option value="authorised">Authorised</option>
+            <option value="notauthorised">Not Authorised</option>
+          </select>
         </div>
-        {/* feeMonths Filter Dropdown */}
-        {/* Month Filter Dropdown */}
-        <select onChange={handleMonthFilterChange} value={monthFilter} className="text-sm h-8 border border-gray-300 rounded-md px-4">
-          <option value="">All Months</option>
-          <option value="September">September</option>
-          <option value="October">October</option>
-          <option value="November">November</option>
-          <option value="December">December</option>
-          <option value="January">January</option>
-          <option value="February">February</option>
-          <option value="March">March</option>
-          <option value="April">April</option>
-          <option value="May">May</option>
-          <option value="June">June</option>
-          <option value="July">July</option>
-          <option value="August">August</option>
-         
-        </select>
-         {/* Service Type filter dropdown */}
-      <select onChange={handleServiceTypeFilterChange} value={serviceTypeFilter} className="text-sm h-8 border border-gray-300 rounded-md px-4">
-        <option value="">All Services</option>
-        {/* Assuming serviceList contains unique serviceType values */}
-        {servicesList.map((service) => (
-          <option key={service.id} value={service.serviceType}>{service.serviceType}</option>
-        ))}
-      </select>
 
-
-
-      </div>
-
-      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-        <DataTable
-          columns={column}
-          data={filteredAdmissions}
-          pagination
-          selectableRows
-          removableRows
-          pageSizeControl
-          onSelectedRowsChange={handleRowSelected}
-          selectableRowsHighlight
-        ></DataTable>
-      
-      </div>
-      <DeletionConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
-      />
-    </>
-  );
+        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+          <DataTable
+            columns={column}
+            data={filteredAdmissions}
+            pagination
+            selectableRows
+            removableRows
+            pageSizeControl
+            onSelectedRowsChange={handleRowSelected}
+            selectableRowsHighlight
+          ></DataTable>
+        </div>
+        <DeletionConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+        />
+      </>
+    );
   }
   return content;
 };
