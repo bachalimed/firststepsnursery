@@ -21,18 +21,34 @@ import useAuth from "../../../hooks/useAuth";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import { useGetAcademicYearsQuery } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
 import { selectAllAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
+
 import {
   FEE_REGEX,
   DATE_REGEX,
   COMMENT_REGEX,
   OBJECTID_REGEX,
+  
 } from "../../../Components/lib/Utils/REGEX";
 import { SERVICETYPES } from "../../../config/SchedulerConsts";
-import { MONTHS } from "../../../config/Months";
+//import { MONTHS } from "../../../config/Months";
 const NewEnrolmentForm = () => {
   // State and hooks initialization
   const { isAdmin, userId } = useAuth();
   const navigate = useNavigate();
+  const MONTHS = [
+    "September",
+    "October",
+    "November",
+    "December",
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+  ];
   const [
     addNewEnrolment,
     {
@@ -71,6 +87,7 @@ const NewEnrolmentForm = () => {
     admission: "",
     enrolmentYear: "",
     enrolmentMonth: "",
+    enrolmentNote: "",
 
     enrolmentCreator: userId,
     enrolmentOperator: userId,
@@ -95,6 +112,7 @@ const NewEnrolmentForm = () => {
     validAdmission: false,
     validEnrolmentYear: false,
     validEnrolmentMonth: false,
+    validEnrolmentNote: false,
     validEnrolmentOperator: false,
     validEnrolmentCreator: false,
   });
@@ -112,6 +130,7 @@ const NewEnrolmentForm = () => {
       //validServiceFinalFee: formData?.serviceFinalFee !== "",
       validEnrolmentYear: formData?.enrolmentYear !== "",
       validEnrolmentMonth: formData?.enrolmentMonth !== "",
+      validEnrolmentNote: COMMENT_REGEX.test(formData?.enrolmentNote),
       //validEnrolmentDuration: formData?.enrolmentDuration !== "",
       //validEnrolmentStartDate: DATE_REGEX.test(formData?.enrolmentStartDate),
       //validEnrolmentEndDate: DATE_REGEX.test(formData?.enrolmentEndDate),
@@ -119,23 +138,30 @@ const NewEnrolmentForm = () => {
       validEnrolmentCreator: OBJECTID_REGEX.test(formData?.enrolmentCreator),
     });
   }, [formData]);
-  console.log(isEnrolmentSuccess, "isEnrolmentSuccess Enrolment added successfully111");
+  console.log(
+    isEnrolmentSuccess,
+    "isEnrolmentSuccess Enrolment added successfully111"
+  );
   useEffect(() => {
     if (isEnrolmentSuccess) {
       // Log or inspect the response here if needed
-      console.log(isEnrolmentSuccess, "isEnrolmentSuccess Enrolment added successfully222");
-  
+      console.log(
+        isEnrolmentSuccess,
+        "isEnrolmentSuccess Enrolment added successfully222"
+      );
+
       // Reset the form data
       setFormData({
         student: "",
         admission: "",
         enrolmentYear: "",
         enrolmentMonth: "",
+        enrolmentNote: "",
         enrolmentCreator: "",
         enrolmentOperator: "",
         enrolments: [],
       });
-  
+
       // Navigate to the enrolments page
       navigate("/students/enrolments/enrolments/");
     }
@@ -181,7 +207,9 @@ const NewEnrolmentForm = () => {
 
       // Update formData with unique enrolments based on services
       const uniqueEnrolments = services.reduce((acc, service) => {
-        const exists = acc.some(enrolment => enrolment.service === service.service);
+        const exists = acc.some(
+          (enrolment) => enrolment.service === service.service
+        );
         if (!exists) {
           acc.push({
             service: service.service,
@@ -193,8 +221,8 @@ const NewEnrolmentForm = () => {
         }
         return acc;
       }, []);
-      
-      setFormData(prevData => ({
+
+      setFormData((prevData) => ({
         ...prevData,
         enrolments: uniqueEnrolments,
       }));
@@ -203,7 +231,7 @@ const NewEnrolmentForm = () => {
 
   // Function to handle service final fee changes
   const handleServiceChange = (serviceId, finalFee) => {
-    setFormData(prevData => {
+    setFormData((prevData) => {
       const updatedEnrolments = prevData.enrolments.map((enrolment) =>
         enrolment.service === serviceId
           ? { ...enrolment, serviceFinalFee: finalFee }
@@ -221,8 +249,10 @@ const NewEnrolmentForm = () => {
 
     if (checked) {
       // Only add if it's not already in the formData
-      setFormData(prevData => {
-        const exists = prevData.enrolments.some(enrolment => enrolment.service === selectedService.service);
+      setFormData((prevData) => {
+        const exists = prevData.enrolments.some(
+          (enrolment) => enrolment.service === selectedService.service
+        );
         if (!exists) {
           return {
             ...prevData,
@@ -242,7 +272,7 @@ const NewEnrolmentForm = () => {
       });
     } else {
       // Remove the service from enrolments
-      setFormData(prevData => ({
+      setFormData((prevData) => ({
         ...prevData,
         enrolments: prevData.enrolments.filter(
           (enrolment) => enrolment.service !== serviceId
@@ -262,7 +292,6 @@ const NewEnrolmentForm = () => {
       }
     }
   };
-
 
   console.log(formData, "formData");
 
@@ -380,7 +409,27 @@ const NewEnrolmentForm = () => {
             ))}
           </select>
         </div>
-      
+        {/* enrolment note */}
+        <div>
+          <label
+            htmlFor="enrolmentNote"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Enrolment Note
+          </label>
+          <textarea
+            id="enrolmentNote"
+            name="enrolmentNote"
+            value={formData.enrolmentNote}
+            onChange={(e) =>
+              setFormData({ ...formData, enrolmentNote: e.target.value })
+            }
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+            rows="4" // Adjust the number of rows as needed
+            placeholder="Enter any additional notes here..."
+          />
+        </div>
+
         {/* Services Section */}
         <fieldset>
           <legend className="block text-sm font-medium text-gray-700">
@@ -403,25 +452,23 @@ const NewEnrolmentForm = () => {
                     }
                     className="mr-2"
                   />
-                  <label htmlFor={service.service}>
-                    {service.serviceType}
-                  </label>
+                  <label htmlFor={service.service}>{service.serviceType}</label>
 
                   {/* Display Authorized Fee and Service Period */}
                   <span className="ml-4">
                     Authorized Fee: ${service.serviceAuthorisedFee}
                   </span>
-                  <span className="ml-4">
-                    Period: {service.servicePeriod}
-                  </span>
+                  <span className="ml-4">Period: {service.servicePeriod}</span>
 
                   {/* Service final fee input */}
                   {isChecked && (
                     <input
                       type="number"
-                      value={formData.enrolments.find(
-                        (enrolment) => enrolment.service === service.service
-                      )?.serviceFinalFee || ""}
+                      value={
+                        formData.enrolments.find(
+                          (enrolment) => enrolment.service === service.service
+                        )?.serviceFinalFee || ""
+                      }
                       onChange={(e) =>
                         handleServiceChange(service.service, e.target.value)
                       }

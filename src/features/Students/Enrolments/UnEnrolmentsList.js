@@ -43,7 +43,7 @@ import {
 } from "./enrolmentsSlice";
 import { IoDocumentAttachOutline } from "react-icons/io5";
 
-const EnrolmentsList = () => {
+const UnenrolmentsList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -631,4 +631,5 @@ const EnrolmentsList = () => {
   //}
   return content;
 };
-export default EnrolmentsList;
+export default UnenrolmentsList
+  ;
