@@ -127,6 +127,7 @@ const EditAdmissionForm = ({ admission }) => {
               feeValue: "",
               feePeriod: "",
               feeStartDate: "",
+              feeMonths: [],
               feeEndDate: "",
               isFlagged: false,
               comment: "",
@@ -162,6 +163,7 @@ const EditAdmissionForm = ({ admission }) => {
 
   // Debounce feeValue updates
   const [feeValue, setFeeValue] = useState("");
+  const [feeMonths, setFeeMonths] = useState("");
   const debouncedFeeValue = useDebounce(feeValue, 500); //delay500
 
   const validateService = (services) => {
@@ -249,6 +251,7 @@ const EditAdmissionForm = ({ admission }) => {
           feeValue: "",
           feePeriod: "",
           feeStartDate: "",
+          feeMonths: [],
           feeEndDate: "",
           isFlagged: false,
           comment: "",
@@ -271,6 +274,7 @@ const EditAdmissionForm = ({ admission }) => {
             feeValue: "",
             feePeriod: "",
             feeStartDate: "",
+            feeMonths: [],
             feeEndDate: "",
             isFlagged: false,
             //authorisedBy:"", it will generate error in mongo if ""
@@ -612,8 +616,40 @@ const EditAdmissionForm = ({ admission }) => {
                   required
                 />
               </div>
+              <div
+                key={index}
+                className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2"
+              >
+                <label
+                  htmlFor={`feeMonths-${index}`}
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Fee Months (Select multiple if needed)
+                </label>
+                <select
+                  id={`feeMonths-${index}`}
+                  name="feeMonths"
+                  multiple
+                  value={service.feeMonths}
+                  onChange={(e) => handleAgreedServicesChange(index, e)}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                >
+                  <option value="September">September</option>
+                  <option value="October">October</option>
+                  <option value="November">November</option>
+                  <option value="December">December</option>
+                  <option value="January">January</option>
+                  <option value="February">February</option>
+                  <option value="March">March</option>
+                  <option value="April">April</option>
+                  <option value="May">May</option>
+                  <option value="June">June</option>
+                  <option value="July">July</option>
+                  <option value="August">August</option>
+                </select>
+              </div>
 
-              {index !== 0 && (
+              {/* {index !== 0 && (
                 <div>
                   <label
                     htmlFor={`feeEndDate-${index}`}
@@ -631,7 +667,7 @@ const EditAdmissionForm = ({ admission }) => {
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
                   />
                 </div>
-              )}
+              )} */}
 
               <div>
                 {service.isFlagged && (

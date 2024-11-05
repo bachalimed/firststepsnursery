@@ -18,6 +18,8 @@ import DataTable from "react-data-table-component";
 import { GrValidate } from "react-icons/gr";
 import AddServiceToAdmissionModal from "./AddServiceToAdmissionModal";
 import { useSelector } from "react-redux";
+import { IoFlagSharp,IoFlagOutline  } from "react-icons/io5";
+
 import {
   selectAllAdmissionsByYear,
   selectAllAdmissions,
@@ -395,12 +397,12 @@ const AdmissionsList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
-            className={`${row?.agreedServices.every(service => service?.isAuthorised) ? 'text-gray-400' : 'text-purple-500'}`}
+            className={`${row?.agreedServices.every(service => service?.isAuthorised) ? 'text-green-400' : 'text-red-500'}`}
             fontSize={20}
             onClick={() => handleUpdateAdmission(row)} // Open the modal with the selected admission
             disabled={row?.agreedServices.every(service => service?.isAuthorised)} // Disable if all services are authorised
           >
-            <GrValidate className="text-2xl" />
+            <IoFlagOutline  className="text-2xl" />
           </button>
         </div>
       ),

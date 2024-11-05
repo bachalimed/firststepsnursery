@@ -13,7 +13,7 @@ import { useGetAdmissionDocumentsByYearByIdQuery } from "../../../AppSettings/Ad
 import AdmissionsParents from "../../AdmissionsParents";
 import useFetchPhoto from "../../../../hooks/useFetchPhoto";
 
-const AdmissionDetails = () => {
+const AdmissionDetails = () => {//to be edited
   const { id } = useParams();
   const navigate = useNavigate();
   const [photoId, setPhotoId] = useState(null);

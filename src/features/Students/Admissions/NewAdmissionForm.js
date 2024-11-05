@@ -21,6 +21,7 @@ import useAuth from "../../../hooks/useAuth";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import { useGetAcademicYearsQuery } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
 import { selectAllAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
+
 import {
   FEE_REGEX,
   DATE_REGEX,
@@ -64,16 +65,15 @@ const NewAdmissionForm = () => {
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
 
-  
   const {
-    data: students, 
-    isLoading: isStudentsLoading, 
+    data: students,
+    isLoading: isStudentsLoading,
     isSuccess: isStudentsSuccess,
     isError: isStudentsError,
     error: studentsError,
   } = useGetStudentsByYearQuery(
     {
-     // we will only import students that that have been registered for that year 
+      // we will only import students that that have been registered for that year
       selectedYear: selectedAcademicYear.title,
       endpointName: "studentsList",
     } || {},
@@ -117,7 +117,7 @@ const NewAdmissionForm = () => {
         feePeriod: "",
         feeStartDate: "",
         feeEndDate: "",
-        feeMonths:[],//added recently
+        feeMonths: [], //added recently
         isFlagged: false,
         //authorisedBy:"", it will generate error in mongo if ""
         comment: "",
@@ -204,6 +204,7 @@ const NewAdmissionForm = () => {
       const validFeeValue = FEE_REGEX.test(service.feeValue);
       const validFeeStartDate = DATE_REGEX.test(service.feeStartDate);
       const validComment = COMMENT_REGEX.test(service.comment);
+
       // Other validations...
 
       return {
@@ -241,19 +242,27 @@ const NewAdmissionForm = () => {
   }, [formData.student, formData.admissionYear, formData.admissionDate]); // run whenever formData changes
 
   console.log(primaryValidity, "primaryValidity");
-  // Modify handleAgreedServicesChange
+  
+
+
   const handleAgreedServicesChange = (index, e) => {
-    if (e && e.target) {
-      const { name, value } = e.target;
-      const updatedServices = [...formData.agreedServices];
-      updatedServices[index][name] = value;
-      setFormData((prevData) => ({
-        ...prevData,
-        agreedServices: updatedServices,
-      }));
+    const { name, value, type, options } = e.target;
+    const updatedServices = [...formData.agreedServices];
+
+    if (type === "select-multiple" && name === "feeMonths") {
+      // For multi-select (feeMonths), gather selected options into an array
+      const selectedOptions = Array.from(options)
+        .filter((option) => option.selected)
+        .map((option) => option.value);
+      updatedServices[index][name] = selectedOptions;
     } else {
-      console.error("Event is not properly passed or malformed:", e);
+      updatedServices[index][name] = value;
     }
+
+    setFormData((prevData) => ({
+      ...prevData,
+      agreedServices: updatedServices,
+    }));
   };
   //Add another agreed service
   const addAgreedService = () => {
@@ -265,6 +274,7 @@ const NewAdmissionForm = () => {
           service: "",
           feeValue: "",
           feePeriod: "",
+          feeMonths: [],
           feeStartDate: "",
           feeEndDate: "",
           isFlagged: false,
@@ -295,6 +305,7 @@ const NewAdmissionForm = () => {
           {
             service: "",
             feeValue: "",
+            feeMonths: [],
             feePeriod: "",
             feeStartDate: "",
             feeEndDate: "",
@@ -397,7 +408,7 @@ const NewAdmissionForm = () => {
         onSubmit={handleSubmit}
         className="space-y-6 bg-white p-6 shadow rounded-md"
       >
-        <h2 className="text-xl font-bold">New Admission</h2>
+        <h2 className="text-xl font-bold">New Admission </h2>
         <div>
           <label
             htmlFor="student"
@@ -477,10 +488,10 @@ const NewAdmissionForm = () => {
             htmlFor="admissionDate"
             className="block text-sm font-medium text-gray-700"
           >
-            Admission Starting Date{" "}
+            Admission Starting Date{" "} 
             {!primaryValidity.validAdmissionDate && (
               <span className="text-red-500">*</span>
-            )}
+            )}(effective starting in the nursery)
           </label>
           <input
             type="date"
@@ -609,7 +620,7 @@ const NewAdmissionForm = () => {
                   Fee Start Date{" "}
                   {!admissionValidity[index]?.validFeeStartDate && (
                     <span className="text-red-500">*</span>
-                  )}
+                  )}(agreed billing start)
                 </label>
                 <input
                   type="date"
@@ -622,8 +633,40 @@ const NewAdmissionForm = () => {
                   required
                 />
               </div>
+              <div
+                key={index}
+                className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2"
+              >
+                <label
+                  htmlFor={`feeMonths-${index}`}
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Fee Months (Select multiple if needed)
+                </label>
+                <select
+                  id={`feeMonths-${index}`}
+                  name="feeMonths"
+                  multiple
+                  value={service.feeMonths}
+                  onChange={(e) => handleAgreedServicesChange(index, e)}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                >
+                  <option value="September">September</option>
+                  <option value="October">October</option>
+                  <option value="November">November</option>
+                  <option value="December">December</option>
+                  <option value="January">January</option>
+                  <option value="February">February</option>
+                  <option value="March">March</option>
+                  <option value="April">April</option>
+                  <option value="May">May</option>
+                  <option value="June">June</option>
+                  <option value="July">July</option>
+                  <option value="August">August</option>
+                </select>
+              </div>
 
-              {index !== 0 && (
+              {/* {index !== 0 && (
                 <div>
                   <label
                     htmlFor={`feeEndDate-${index}`}
@@ -641,7 +684,7 @@ const NewAdmissionForm = () => {
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
                   />
                 </div>
-              )}
+              )} */}
 
               <div>
                 {service.isFlagged && (
@@ -668,13 +711,15 @@ const NewAdmissionForm = () => {
                 />
               </div>
             </div>
-            {(index!==0)&&<button
-              type="button"
-              onClick={() => removeAgreedService(index)}
-              className="ml-2 inline-flex items-center px-2 py-1 border border-red-300 rounded-md shadow-sm text-sm font-medium text-red-700 hover:bg-red-100 focus:outline-none"
-            >
-              Remove Service
-            </button>}
+            {index !== 0 && (
+              <button
+                type="button"
+                onClick={() => removeAgreedService(index)}
+                className="ml-2 inline-flex items-center px-2 py-1 border border-red-300 rounded-md shadow-sm text-sm font-medium text-red-700 hover:bg-red-100 focus:outline-none"
+              >
+                Remove Service
+              </button>
+            )}
           </div>
         ))}
         {/* we should only add the number of services availble */}
