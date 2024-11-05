@@ -117,6 +117,7 @@ const NewAdmissionForm = () => {
         feePeriod: "",
         feeStartDate: "",
         feeEndDate: "",
+        feeMonths:[],//added recently
         isFlagged: false,
         //authorisedBy:"", it will generate error in mongo if ""
         comment: "",

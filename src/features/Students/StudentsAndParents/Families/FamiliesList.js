@@ -214,13 +214,14 @@ const FamiliesList = () => {
       selector: (row) => (
         <div>
           <Link to={`/students/studentsParents/familyDetails/${row._id}`}>
-            <div><strong>
-              {row.father?.userFullName.userFirstName +
-                " " +
-                row.father?.userFullName.userMiddleName +
-                " " +
-                row.father?.userFullName.userLastName}
-                </strong>
+            <div>
+              <strong>
+                {row.father?.userFullName.userFirstName +
+                  " " +
+                  row.father?.userFullName.userMiddleName +
+                  " " +
+                  row.father?.userFullName.userLastName}
+              </strong>
             </div>
             <div>
               {row.mother?.userFullName.userFirstName +
@@ -256,6 +257,19 @@ const FamiliesList = () => {
 
       sortable: true,
       width: "180px",
+    },
+    {
+      name: "grade",
+      selector: (row) => (
+        <div>
+          {row.children.map((child) => (
+            <div>{child?.child?.studentYears[0]?.grade}</div>
+          ))}
+        </div>
+      ),
+
+      sortable: true,
+      width: "80px",
     },
 
     {
@@ -370,7 +384,7 @@ const FamiliesList = () => {
     },
   ];
   let content;
-  
+
   if (isFamilyLoading) content = <LoadingStateIcon />;
 
   if (isFamilyError | isDelError) {
