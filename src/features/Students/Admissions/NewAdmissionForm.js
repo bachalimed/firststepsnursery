@@ -647,6 +647,7 @@ const NewAdmissionForm = () => {
                   id={`feeMonths-${index}`}
                   name="feeMonths"
                   multiple
+                  size="6" // Shows 5 options by default
                   value={service.feeMonths}
                   onChange={(e) => handleAgreedServicesChange(index, e)}
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md"

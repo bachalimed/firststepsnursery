@@ -1,4 +1,4 @@
-export const SERVICETYPES = { //already used 
+export const SERVICETYPES = { //already used , we need to get from ddb service types because iby year
   Admission: "Admission",
   Nursery: "Nursery",
   Catering: "Catering",

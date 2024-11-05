@@ -5,7 +5,7 @@ import {
   useDeleteStudentMutation,
 } from "./studentsApiSlice";
 import { HiOutlineSearch } from "react-icons/hi";
-import { IoShieldCheckmark ,IoShieldCheckmarkOutline } from "react-icons/io5";
+import { IoShieldCheckmark, IoShieldCheckmarkOutline } from "react-icons/io5";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
@@ -46,7 +46,7 @@ const StudentsList = () => {
 
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
   const [selectedGrade, setSelectedGrade] = useState(""); // New state for grade filter
- const [selectedSchoolName, setSelectedSchoolName] = useState(""); // School name filter
+  const [selectedSchoolName, setSelectedSchoolName] = useState(""); // School name filter
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
@@ -157,34 +157,40 @@ const StudentsList = () => {
     dispatch(setStudents(studentsList)); //timing issue to update the state and use it the same time
 
     //the serach result data
-   // Apply filters to the students list
-   filteredStudents = studentsList.filter((student) => {
-    // Search filter
-    const matchesSearch =  student.studentName?.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    student.studentName?.middleName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    student.studentName?.lastName?.toLowerCase().includes(searchQuery.toLowerCase());
+    // Apply filters to the students list
+    filteredStudents = studentsList.filter((student) => {
+      // Search filter
+      const matchesSearch =
+        student.studentName?.firstName
+          ?.toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        student.studentName?.middleName
+          ?.toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        student.studentName?.lastName
+          ?.toLowerCase()
+          .includes(searchQuery.toLowerCase());
 
+      // Grade filter
+      const matchesGrade = selectedGrade
+        ? student.studentYears.some(
+            (year) =>
+              year.academicYear === selectedAcademicYear.title &&
+              year.grade === selectedGrade
+          )
+        : true;
 
-    // Grade filter
-    const matchesGrade = selectedGrade
-      ? student.studentYears.some(
-          (year) =>
-            year.academicYear === selectedAcademicYear.title &&
-            year.grade === selectedGrade
-        )
-      : true;
+      // School filter
+      const matchesSchool = selectedSchoolName
+        ? student.studentEducation.some(
+            (education) =>
+              education.schoolYear === selectedAcademicYear.title &&
+              education.attendedSchool?.schoolName === selectedSchoolName
+          )
+        : true;
 
-    // School filter
-    const matchesSchool = selectedSchoolName
-      ? student.studentEducation.some(
-          (education) =>
-            education.schoolYear === selectedAcademicYear.title &&
-          education.attendedSchool?.schoolName === selectedSchoolName
-        )
-      : true;
-
-    return matchesSearch && matchesGrade && matchesSchool;
-  });
+      return matchesSearch && matchesGrade && matchesSchool;
+    });
   }
   const handleSearch = (e) => setSearchQuery(e.target.value);
   const handleGradeChange = (e) => setSelectedGrade(e.target.value); // Update selected grade
@@ -244,7 +250,6 @@ const StudentsList = () => {
     const updatedStudentObject = {
       ...studentObject,
       studentYears: updatedYears, // Merge updated studentYears
-      
     };
 
     //console.log("Saving updated student:", updatedStudentObject);
@@ -287,7 +292,7 @@ const StudentsList = () => {
           {row.studentIsActive ? (
             <IoShieldCheckmark className="text-green-500 text-2xl" />
           ) : (
-            <IoShieldCheckmarkOutline  className="text-red-500 text-2xl" />
+            <IoShieldCheckmarkOutline className="text-red-500 text-2xl" />
           )}
         </span>
       ),
@@ -506,18 +511,21 @@ const StudentsList = () => {
             </option>
           ))}
         </select>
-         {/* Attended school selection dropdown */}
-         <select
+        {/* Attended school selection dropdown */}
+        <select
           value={selectedSchoolName}
           onChange={handleSchoolChange}
           className="text-sm h-8 border border-gray-300 rounded-md px-4"
         >
           <option value="">All Schools</option>
-          {attendedSchools?.map((school) => (school.schoolName !== "First Steps" && (
-            <option key={school.id} value={school.schoolName}>
-              {school.schoolName}
-            </option>)
-          ))}
+          {attendedSchools?.map(
+            (school) =>
+              school.schoolName !== "First Steps" && (
+                <option key={school.id} value={school.schoolName}>
+                  {school.schoolName}
+                </option>
+              )
+          )}
         </select>
       </div>
       <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
@@ -571,7 +579,6 @@ const StudentsList = () => {
         isOpen={isRegisterModalOpen}
         onClose={() => setIsRegisterModalOpen(false)}
         studentYears={studentYears}
-       
         studentObject={studentObject}
         setStudentObject={setStudentObject}
         setStudentYears={setStudentYears}

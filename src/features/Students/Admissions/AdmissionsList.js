@@ -11,15 +11,15 @@ import {
   selectAllAcademicYears,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
-import { useGetServicesByYearQuery } from "../../AppSettings/StudentsSet/NurseryServices/servicesApiSlice";
+
 import Admissions from "../Admissions";
 import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
 import { GrValidate } from "react-icons/gr";
 import AddServiceToAdmissionModal from "./AddServiceToAdmissionModal";
 import { useSelector } from "react-redux";
-import { IoFlagSharp,IoFlagOutline  } from "react-icons/io5";
-
+import { IoFlagSharp, IoFlagOutline } from "react-icons/io5";
+import { useGetServicesByYearQuery } from "../../AppSettings/StudentsSet/NurseryServices/servicesApiSlice";
 import {
   selectAllAdmissionsByYear,
   selectAllAdmissions,
@@ -50,7 +50,8 @@ const AdmissionsList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { userId,canEdit, isAdmin, isManager, canDelete, canCreate, status2 } = useAuth();
+  const { userId, canEdit, isAdmin, isManager, canDelete, canCreate, status2 } =
+    useAuth();
 
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
@@ -77,6 +78,25 @@ const AdmissionsList = () => {
       //this param will be passed in req.params to select only admissions for taht year
       //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
       pollingInterval: 60000, //will refetch data every 60seconds
+      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
+      refetchOnMountOrArgChange: true, //refetch when we remount the component
+    }
+  );
+  const {
+    data: services,
+    isLoading: isServicesLoading,
+    isSuccess: isServicesSuccess,
+    isError: isServicesError,
+    error: servicesError,
+  } = useGetServicesByYearQuery(
+    {
+      selectedYear: selectedAcademicYear?.title,
+      endpointName: "servicesList",
+    } || {},
+    {
+      //this param will be passed in req.params to select only services for taht year
+      //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+      //pollingInterval: 60000,//will refetch data every 60seconds
       refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
       refetchOnMountOrArgChange: true, //refetch when we remount the component
     }
@@ -110,7 +130,9 @@ const AdmissionsList = () => {
     setIsDeleteModalOpen(false);
     setIdAdmissionToDelete(null);
   };
-
+  const servicesList = isServicesSuccess
+  ? Object.values(services.entities)
+  : [];
   // State to hold selected rows
   const [selectedRows, setSelectedRows] = useState([]);
   //state to hold the search query
@@ -119,6 +141,8 @@ const AdmissionsList = () => {
   //we need to declare the variable outside of if statement to be able to use it outside later
   let admissionsList = [];
   let filteredAdmissions = [];
+  const [monthFilter, setMonthFilter] = useState("");  // Filter for fee month
+  const [serviceTypeFilter, setServiceTypeFilter] = useState(""); // Filter for service type
   if (isSuccess) {
     //set to the state to be used for other component s and edit admission component
 
@@ -127,28 +151,58 @@ const AdmissionsList = () => {
     //we need to change into array to be read??
     admissionsList = Object.values(entities); //we are using entity adapter in this query
     dispatch(setAdmissions(admissionsList)); //timing issue to update the state and use it the same time
-    filteredAdmissions = admissionsList?.filter((item) => {
-      // Check if the student's name or any other field contains the search query
+
+    //   filteredAdmissions = admissionsList?.filter((item) => {
+    //     // Check if the student's name or any other field contains the search query
+    //     const nameMatches = [
+    //       item?.student?.studentName?.firstName,
+    //       item?.student?.studentName?.middleName,
+    //       item?.student?.studentName?.lastName,
+    //     ].some((name) => name?.toLowerCase().includes(searchQuery.toLowerCase()));
+
+    //     // Add more criteria as needed, e.g., admissionDate, services, etc.
+    //     const otherMatches = Object.values(item)
+    //       .flat()
+    //       .some((val) =>
+    //         val?.toString().toLowerCase().includes(searchQuery.toLowerCase())
+    //       );
+
+    //     return nameMatches || otherMatches;
+    //   });
+    // }
+   
+    // Apply filters for search, month, and service type
+    filteredAdmissions = admissionsList.filter((item) => {
       const nameMatches = [
         item?.student?.studentName?.firstName,
         item?.student?.studentName?.middleName,
         item?.student?.studentName?.lastName,
       ].some((name) => name?.toLowerCase().includes(searchQuery.toLowerCase()));
 
-      // Add more criteria as needed, e.g., admissionDate, services, etc.
       const otherMatches = Object.values(item)
         .flat()
         .some((val) =>
           val?.toString().toLowerCase().includes(searchQuery.toLowerCase())
         );
 
-      return nameMatches || otherMatches;
+      // Check if agreed services contain the selected month and service type
+      const monthMatches = !monthFilter || item.agreedServices.some(service =>
+        service.feeMonths?.includes(monthFilter)
+      );
+
+      const serviceTypeMatches = !serviceTypeFilter || item.agreedServices.some(service =>
+        service.service?.serviceType === serviceTypeFilter
+      );
+
+      return (nameMatches || otherMatches) && monthMatches && serviceTypeMatches;
     });
   }
 
-  const handleSearch = (e) => {
-    setSearchQuery(e.target.value);
-  };
+  const handleSearch = (e) => setSearchQuery(e.target.value);
+
+  const handleMonthFilterChange = (e) => setMonthFilter(e.target.value);
+
+  const handleServiceTypeFilterChange = (e) => setServiceTypeFilter(e.target.value);
   // Handler for selecting rows
   const handleRowSelected = (state) => {
     setSelectedRows(state.selectedRows);
@@ -195,45 +249,28 @@ const AdmissionsList = () => {
     //setSelectedRows([]); // Clear selection after process
   };
 
-  // const [agreedServices, setAgreedServices] = useState([]);
-  // const handleAddServiceToAdmission = () => {
-  //   setAgreedServices([...agreedServices, newService]);
-  // };
-
-  //   const [admissionYears, setAdmissionYears] = useState([])
-  // //adds to the previous entries in arrays for gardien, schools...
-  //       const onAdmissionYearsChanged = (e, selectedYear) => {
-  //         if (e.target.checked) {
-  //           // Add the selectedYear to admissionYears if it's checked
-  //           setAdmissionYears([...admissionYears, selectedYear]);
-  //         } else {
-  //           // Remove the selectedYear from admissionYears if it's unchecked
-  //           setAdmissionYears(admissionYears.filter(year => year !== selectedYear))
-  //         }
-  //       }
-
-  
   const handleUpdateAdmission = (admission, index, agreedService) => {
-    console.log(admission, 'admissionnnnnnnnnnn');
-  
+    console.log(admission, "admissionnnnnnnnnnn");
+
     // Create a new admission object to avoid mutating the original
     const updatedAdmission = {
       ...admission,
       admissionId: admission.id,
       admissionOperator: userId,
       student: admission.student._id,
-      agreedServices: admission.agreedServices.map((service, idx) =>
-        // Update only the agreedService at the specific index
-        idx === index
-          ? {
-              ...service, // Copy existing service properties
-              isAuthorised: true, // Set isAuthorised to true
-              authorisedBy: userId, // Set authorisedBy to userId
-            }
-          : service // Keep other services unchanged
+      agreedServices: admission.agreedServices.map(
+        (service, idx) =>
+          // Update only the agreedService at the specific index
+          idx === index
+            ? {
+                ...service, // Copy existing service properties
+                isAuthorised: true, // Set isAuthorised to true
+                authorisedBy: userId, // Set authorisedBy to userId
+              }
+            : service // Keep other services unchanged
       ),
     };
-  
+
     // Call the update mutation with the new admission object
     updateAdmission(updatedAdmission)
       .unwrap() // Handle the promise returned by the mutation
@@ -274,11 +311,11 @@ const AdmissionsList = () => {
     {
       name: "Student Name",
       selector: (row) =>
-        row.student?.studentName.firstName +
+        row?.student?.studentName.firstName +
         " " +
-        row.student?.studentName?.middleName +
+        row?.student?.studentName?.middleName +
         " " +
-        row.student?.studentName?.lastName,
+        row?.student?.studentName?.lastName,
       sortable: true,
       width: "180px",
     },
@@ -354,8 +391,7 @@ const AdmissionsList = () => {
 
             // Determine the text color based on the comparison
             let textColorClass = "text-red-500"; // Default is black
-            if ( feeObj.isAuthorised || feeValue >= anchorValue) {
-            
+            if (feeObj.isAuthorised || feeValue >= anchorValue) {
               textColorClass = "text-green-800"; // Green if greater than anchor
             }
 
@@ -397,21 +433,28 @@ const AdmissionsList = () => {
       sortable: true,
       width: "110px",
     },
-    (isManager && {
+    isManager && {
       name: "Authorise Fees",
       selector: (row) => (
         <div>
           {row?.agreedServices.map((feeObj, index) => (
-            <div  key={index}>   
-            <button key={index}
-            className={`${feeObj?.isAuthorised ? 'text-gray-200' : 'text-red-500'}`}
-            fontSize={20}
-            onClick={() => handleUpdateAdmission(row,index,feeObj)} // Open the modal with the selected admission
-            disabled={feeObj?.isAuthorised} // Disable if  authorised
-          >
-            {feeObj?.isAuthorised ? <IoFlagOutline  className="text-2xl" /> : <IoFlagSharp  className="text-2xl" />}
-          </button>
-          </div>
+            <div key={index}>
+              <button
+                key={index}
+                className={`${
+                  feeObj?.isAuthorised ? "text-gray-200" : "text-red-500"
+                }`}
+                fontSize={20}
+                onClick={() => handleUpdateAdmission(row, index, feeObj)} // Open the modal with the selected admission
+                disabled={feeObj?.isAuthorised} // Disable if  authorised
+              >
+                {feeObj?.isAuthorised ? (
+                  <IoFlagOutline className="text-2xl" />
+                ) : (
+                  <IoFlagSharp className="text-2xl" />
+                )}
+              </button>
+            </div>
           ))}
         </div>
       ),
@@ -431,8 +474,7 @@ const AdmissionsList = () => {
       ignoreRowClick: true,
       button: true,
       width: "120px",
-    
-    }),
+    },
     // (isManager && {
     //   name: "Authorise Fees",
 
@@ -451,15 +493,15 @@ const AdmissionsList = () => {
     //   ignoreRowClick: true,
     //   button: true,
     //   width: "120px",
-    
+
     // }),
-   
+
     {
       name: "Fee start",
 
       selector: (row) => (
         <div>
-          {row.agreedServices.map((feeObj, index) => (
+          {row?.agreedServices.map((feeObj, index) => (
             <div key={index}>
               {new Date(feeObj?.feeStartDate).toLocaleDateString("en-GB", {
                 year: "numeric",
@@ -479,7 +521,7 @@ const AdmissionsList = () => {
 
       selector: (row) => (
         <div>
-          {row.agreedServices.map((feeObj, index) =>
+          {row?.agreedServices.map((feeObj, index) =>
             feeObj?.feeMonths ? <div>{feeObj?.feeMonths} </div> : <div>---</div>
           )}
         </div>
@@ -488,7 +530,7 @@ const AdmissionsList = () => {
       sortable: true,
       width: "120px",
     },
-   
+
     {
       name: "Actions",
       cell: (row) => (
@@ -545,19 +587,51 @@ const AdmissionsList = () => {
   content = (
     <>
       <Admissions />
+      <div className="flex space-x-2 items-center">
+        {/* Search Bar */}
+        <div className="relative h-10 mr-2 ">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+          />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
+          />
+        </div>
+        {/* feeMonths Filter Dropdown */}
+        {/* Month Filter Dropdown */}
+        <select onChange={handleMonthFilterChange} value={monthFilter} className="text-sm h-8 border border-gray-300 rounded-md px-4">
+          <option value="">All Months</option>
+          <option value="September">September</option>
+          <option value="October">October</option>
+          <option value="November">November</option>
+          <option value="December">December</option>
+          <option value="January">January</option>
+          <option value="February">February</option>
+          <option value="March">March</option>
+          <option value="April">April</option>
+          <option value="May">May</option>
+          <option value="June">June</option>
+          <option value="July">July</option>
+          <option value="August">August</option>
+         
+        </select>
+         {/* Service Type filter dropdown */}
+      <select onChange={handleServiceTypeFilterChange} value={serviceTypeFilter} className="text-sm h-8 border border-gray-300 rounded-md px-4">
+        <option value="">All Services</option>
+        {/* Assuming serviceList contains unique serviceType values */}
+        {servicesList.map((service) => (
+          <option key={service.id} value={service.serviceType}>{service.serviceType}</option>
+        ))}
+      </select>
 
-      <div className="relative h-10 mr-2 ">
-        <HiOutlineSearch
-          fontSize={20}
-          className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-        />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={handleSearch}
-          className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
-        />
+
+
       </div>
+
       <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
         <DataTable
           columns={column}
@@ -605,8 +679,6 @@ const AdmissionsList = () => {
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
       />
-     
-     
     </>
   );
   //}
