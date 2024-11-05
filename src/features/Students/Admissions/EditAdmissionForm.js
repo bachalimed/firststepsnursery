@@ -140,30 +140,24 @@ const EditAdmissionForm = ({ admission }) => {
 
   const [admissionValidity, setAdmissionValidity] = useState([]);
 
-  const handleInputChange = (index, fieldName, value) => {
-    // Clone the agreedServices array deeply to avoid mutating read-only properties
-    const updatedServices = [...formData.agreedServices];
-    
-    // Clone the specific service object at the given index
-    const updatedService = { ...updatedServices[index] };
-  
-    // Update the field (e.g., feeValue, feeStartDate, etc.)
-    updatedService[fieldName] = value;
-  
-    // Place the updated service back into the updatedServices array
-    updatedServices[index] = updatedService;
-  
-    // Update the formData state
-    setFormData((prevData) => ({
-      ...prevData,
-      agreedServices: updatedServices,
-    }));
-  };
+  const handleInputChange = (index, field, value) => {
+    // Deep copy the agreedServices array
+    const updatedServices = JSON.parse(JSON.stringify(formData.agreedServices));
+
+    // Ensure that the service at the specified index exists
+    if (!updatedServices[index]) {
+        updatedServices[index] = {}; // Initialize if undefined
+    }
+
+    updatedServices[index][field] = value; // Set the value
+
+    setFormData({ ...formData, agreedServices: updatedServices });
+};
   
 
   // Debounce feeValue updates
   const [feeValue, setFeeValue] = useState("");
-  const [feeMonths, setFeeMonths] = useState("");
+
   const debouncedFeeValue = useDebounce(feeValue, 500); //delay500
 
   const validateService = (services) => {
@@ -217,27 +211,27 @@ const EditAdmissionForm = ({ admission }) => {
   console.log(primaryValidity, "primaryValidity");
   // Modify handleAgreedServicesChange
   const handleAgreedServicesChange = (index, e) => {
-    if (e && e.target) {
-      const { name, value } = e.target;
-  
-      // Clone the agreedServices array deeply to avoid mutating read-only properties
-      const updatedServices = [...formData.agreedServices];
-      const updatedService = { ...updatedServices[index] }; // Clone the service object at the given index
-  
-      // Update the specific field of the service
-      updatedService[name] = value;
-  
-      // Set the updated service back into the array
-      updatedServices[index] = updatedService;
-  
-      // Update the formData with the modified agreedServices array
-      setFormData((prevData) => ({
-        ...prevData,
-        agreedServices: updatedServices,
-      }));
-    } else {
-      console.error("Event is not properly passed or malformed:", e);
-    }
+    const { name, value, type, options } = e.target;
+    const updatedServices = formData.agreedServices.map((service, idx) => {
+      if (idx === index) {
+        const updatedService = { ...service }; // Create a shallow copy of the service object
+        if (type === "select-multiple" && name === "feeMonths") {
+          // For multi-select (feeMonths), gather selected options into an array
+          const selectedOptions = Array.from(options)
+            .filter((option) => option.selected)
+            .map((option) => option.value);
+          updatedService[name] = selectedOptions; // Update feeMonths
+        } else {
+          updatedService[name] = value; // Update other fields
+        }
+        return updatedService; // Return the updated service object
+      }
+      return service; // Return the original service object for other indices
+    });
+    setFormData((prevData) => ({
+      ...prevData,
+      agreedServices: updatedServices,
+    }));
   };
   
   //Add another agreed service
@@ -649,25 +643,7 @@ const EditAdmissionForm = ({ admission }) => {
                 </select>
               </div>
 
-              {/* {index !== 0 && (
-                <div>
-                  <label
-                    htmlFor={`feeEndDate-${index}`}
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Fee End Date
-                  </label>
-                  <input
-                    type="date"
-                    id={`feeEndDate-${index}`}
-                    name="feeEndDate"
-                    value={service?.feeEndDate?.split("T")[0]}
-                    onChange={(e) => handleAgreedServicesChange(index, e)}
-                    placeholder="YYYY-MM-DD"
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  />
-                </div>
-              )} */}
+           
 
               <div>
                 {service.isFlagged && (
