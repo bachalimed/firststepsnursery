@@ -319,20 +319,43 @@ const EditAdmissionForm = ({ admission }) => {
           parseFloat(formData?.agreedServices[index]?.feeValue) <
           parseFloat(serviceAnchorValue); // Determine if the new flag should be true or false
 
-        // Only update state if `isFlagged` changes
-        if (formData?.agreedServices[index]?.isFlagged !== isFlaggedNew) {
+        // Only update state if `isFlagged` or `isAuthorised` changes
+        // if (formData?.agreedServices[index]?.isFlagged === isFlaggedNew) {
+        //   setFormData((prevData) => ({
+        //     ...prevData,
+        //     agreedServices: prevData.agreedServices.map((serv, idx) => {
+        //       if (idx === index) {
+        //         return {
+        //           ...serv,
+        //           isFlagged: isFlaggedNew, // Set new flag value
+        //           isAuthorised: isFlaggedNew ? false : serv.isAuthorised, // Set isAuthorised to false if flagged
+        //         };
+        //       }
+        //       return serv;
+        //     }),
+        //   }));
+        // }
+        if (isFlaggedNew===true) {
           setFormData((prevData) => ({
             ...prevData,
-            agreedServices: prevData.agreedServices.map((serv, idx) =>
-              idx === index
-                ? { ...serv, isFlagged: isFlaggedNew } // Set new flag value
-                : serv
-            ),
+            agreedServices: prevData.agreedServices.map((serv, idx) => {
+              if (idx === index) {
+                return {
+                  ...serv,
+                  isFlagged: isFlaggedNew, // Set new flag value
+                  isAuthorised: isFlaggedNew ? false : true, // Set isAuthorised to false if flagged
+                };
+              }
+              return serv;
+            }),
           }));
         }
+
+
+
       }
     }
-  };
+};
 
   // Call handleAgreedServicesCheck whenever agreedServices or service selection changes
   useEffect(() => {
