@@ -65,10 +65,10 @@ const AdmissionsList = () => {
   //console.log("Fetch admissions for academic year:", selectedAcademicYear);
   const {
     data: admissions, //the data is renamed admissions
-    isLoading, //monitor several situations is loading...
-    isSuccess,
-    isError,
-    error,
+    isLoading:isAdmissionLoading, //monitor several situations is loading...
+    isSuccess:isAdmissionSuccess,
+    isError:isAdmissionError,
+    error:admissionError,
   } = useGetAdmissionsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -143,7 +143,7 @@ const AdmissionsList = () => {
   let filteredAdmissions = [];
   const [monthFilter, setMonthFilter] = useState("");  // Filter for fee month
   const [serviceTypeFilter, setServiceTypeFilter] = useState(""); // Filter for service type
-  if (isSuccess) {
+  if (isAdmissionSuccess) {
     //set to the state to be used for other component s and edit admission component
 
     const { entities } = admissions;
@@ -172,31 +172,30 @@ const AdmissionsList = () => {
     // }
    
     // Apply filters for search, month, and service type
-    filteredAdmissions = admissionsList.filter((item) => {
-      const nameMatches = [
-        item?.student?.studentName?.firstName,
-        item?.student?.studentName?.middleName,
-        item?.student?.studentName?.lastName,
-      ].some((name) => name?.toLowerCase().includes(searchQuery.toLowerCase()));
+   // Apply filters for search, month, and service type with both conditions required
+   filteredAdmissions = admissionsList.filter((item) => {
+    const nameMatches = [
+      item?.student?.studentName?.firstName,
+      item?.student?.studentName?.middleName,
+      item?.student?.studentName?.lastName,
+    ].some((name) => name?.toLowerCase().includes(searchQuery.toLowerCase()));
 
-      const otherMatches = Object.values(item)
-        .flat()
-        .some((val) =>
-          val?.toString().toLowerCase().includes(searchQuery.toLowerCase())
-        );
-
-      // Check if agreed services contain the selected month and service type
-      const monthMatches = !monthFilter || item.agreedServices.some(service =>
-        service.feeMonths?.includes(monthFilter)
+    const otherMatches = Object.values(item)
+      .flat()
+      .some((val) =>
+        val?.toString().toLowerCase().includes(searchQuery.toLowerCase())
       );
 
-      const serviceTypeMatches = !serviceTypeFilter || item.agreedServices.some(service =>
-        service.service?.serviceType === serviceTypeFilter
-      );
+    // Check if agreed services contain both the selected month and service type
+    const bothFiltersMatch = item.agreedServices.some(service => 
+      (!monthFilter || service.feeMonths?.includes(monthFilter)) &&
+      (!serviceTypeFilter || service.service?.serviceType === serviceTypeFilter)
+    );
 
-      return (nameMatches || otherMatches) && monthMatches && serviceTypeMatches;
-    });
-  }
+    return (nameMatches || otherMatches) && bothFiltersMatch;
+  });
+}
+
 
   const handleSearch = (e) => setSearchQuery(e.target.value);
 
@@ -578,11 +577,11 @@ const AdmissionsList = () => {
     },
   ];
   let content;
-  if (isLoading) content = <LoadingStateIcon />;
-  if (isError) {
-    content = <p className="errmsg">{error?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
+  if (isAdmissionLoading) content = <LoadingStateIcon />;
+  if (isAdmissionError) {
+    content = <p className="errmsg">{admissionError?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
   }
-  //if (isSuccess){
+  if (isAdmissionSuccess){
 
   content = (
     <>
@@ -643,36 +642,7 @@ const AdmissionsList = () => {
           onSelectedRowsChange={handleRowSelected}
           selectableRowsHighlight
         ></DataTable>
-        <div className="flex justify-end items-center space-x-4">
-          <button
-            className=" px-4 py-2 bg-green-500 text-white rounded"
-            onClick={handleRegisterSelected}
-            disabled={selectedRows.length !== 1} // Disable if no rows are selected
-            hidden={!canCreate}
-          >
-            Register
-          </button>
-
-          <button
-            className="px-3 py-2 bg-yellow-400 text-white rounded"
-            onClick={handleDuplicateSelected}
-            disabled={selectedRows.length !== 1} // Disable if no rows are selected
-            hidden={!canCreate}
-          >
-            Re-hhh
-          </button>
-
-          {isAdmin && (
-            <button
-              className="px-3 py-2 bg-gray-400 text-white rounded"
-              onClick={handleDuplicateSelected}
-              disabled={selectedRows.length !== 1} // Disable if no rows are selected
-              hidden={!canCreate}
-            >
-              All
-            </button>
-          )}
-        </div>
+      
       </div>
       <DeletionConfirmModal
         isOpen={isDeleteModalOpen}
@@ -681,7 +651,7 @@ const AdmissionsList = () => {
       />
     </>
   );
-  //}
+  }
   return content;
 };
 export default AdmissionsList;

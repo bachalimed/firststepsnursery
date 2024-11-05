@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
+import {
 
+  useGetAdmissionsByYearQuery,
+
+} from "./admissionsApiSlice";
 import { useSelector } from "react-redux"; // Assuming you're using Redux for state management
 import { useNavigate } from "react-router-dom";
 import Admissions from "../Admissions";
@@ -87,6 +91,29 @@ const NewAdmissionForm = () => {
   );
 
   const {
+    data: admissions, //the data is renamed admissions
+    isLoading:isAdmissionGetLoading, //monitor several situations is loading...
+    isSuccess:isAdmissionGetSuccess,
+    isError:isAdmissionGetError,
+    error:admissionGetError,
+  } = useGetAdmissionsByYearQuery(
+    {
+      selectedYear: selectedAcademicYear?.title,
+      endpointName: "admissionsList",
+    } || {},
+    {
+      //this param will be passed in req.params to select only admissions for taht year
+      //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+      pollingInterval: 60000, //will refetch data every 60seconds
+      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
+      refetchOnMountOrArgChange: true, //refetch when we remount the component
+    }
+  );
+
+  const admissionsList = isAdmissionGetSuccess
+  ? Object.values(admissions.entities)
+  : [];
+  const {
     data: services,
     isLoading: isServicesLoading,
     isSuccess: isServicesSuccess,
@@ -135,16 +162,20 @@ const NewAdmissionForm = () => {
   const [noAdmissionStudents, setNoAdmissionStudents] = useState([]);
   useEffect(() => {
     // retreive teh studetns that have no admissin in their studentYEars array under admission key
+    //console.log(admissionsList,'admissionsList')
     setNoAdmissionStudents(
       studentsList.filter((student) =>
         student.studentYears.some(
-          (year) => !("admission" in year) || year.admission === ""
+         // (year) => !("admission" in year) || year.admission === ""
+       (year)=>  !admissionsList.some(admission => admission.id === year.admission) || 
+       year.admission === "" || 
+       !year.admission
         )
       )
     );
-    //console.log(noAdmissionStudents,'noAdmissionStudents')
-  }, [isStudentsSuccess]);
-
+    
+  }, [isStudentsSuccess,isAdmissionGetSuccess]);
+  console.log(noAdmissionStudents,'noAdmissionStudents')
   const servicesList = isServicesSuccess
     ? Object.values(services.entities)
     : [];
@@ -218,14 +249,14 @@ const NewAdmissionForm = () => {
       };
     });
 
-    console.log(admissionValidity, "admissionvalidity");
+   // console.log(admissionValidity, "admissionvalidity");
     // Only set state if there is a change
     if (JSON.stringify(updatedValidity) !== JSON.stringify(admissionValidity)) {
       setAdmissionValidity(updatedValidity);
     }
   };
 
-  console.log(admissionValidity, "admissionValidity");
+  //console.log(admissionValidity, "admissionValidity");
   const [primaryValidity, setPrimaryValidity] = useState({
     validStudent: OBJECTID_REGEX.test(formData.student),
     validAdmissionYear: formData.admissionYear !== "",
@@ -241,7 +272,7 @@ const NewAdmissionForm = () => {
     }));
   }, [formData.student, formData.admissionYear, formData.admissionDate]); // run whenever formData changes
 
-  console.log(primaryValidity, "primaryValidity");
+  //console.log(primaryValidity, "primaryValidity");
   
 
 
@@ -400,7 +431,7 @@ const NewAdmissionForm = () => {
     Object.values(primaryValidity).every(Boolean) &&
     !isAdmissionLoading;
 
-  console.log(formData, "formData");
+  ////////////////////////console.log(formData, "formData");
   const content = (
     <>
       <Admissions />
@@ -753,9 +784,9 @@ const NewAdmissionForm = () => {
     </>
   );
 
-  if (noAdmissionStudents.length === 0) return <LoadingStateIcon />;
-  if (noAdmissionStudents.length) return content;
-  //return content;
+  //if (noAdmissionStudents.length === 0) return <LoadingStateIcon />;
+  //if (noAdmissionStudents.length) return content;
+  return content;
 };
 
 export default NewAdmissionForm;
