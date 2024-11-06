@@ -27,7 +27,7 @@ const Enrolments = () => {
   const tabs = [
     { label: "Enrolments", path: "/students/enrolments/enrolments/" },
     { label: "New Enrolment", path: "/students/enrolments/newEnrolment/" },
-    { label: "Unenrolled Students", path: "/students/enrolments/unenrolled/" },
+    { label: "Unenrolled Students", path: "/students/enrolments/unenrolments/" },
   ];
 
   // Function to determine if a tab is active based on the current path

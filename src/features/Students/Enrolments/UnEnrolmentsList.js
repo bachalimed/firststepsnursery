@@ -25,14 +25,20 @@ import {
 } from "./enrolmentsApiSlice"; //use the memoized selector
 import { useEffect, useState } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
+import { IoAddCircleOutline } from "react-icons/io5";
 
+import {
+  useGetAdmissionsQuery,
+  useUpdateAdmissionMutation,
+  useGetAdmissionsByYearQuery,
+  useDeleteAdmissionMutation,
+} from "../Admissions/admissionsApiSlice";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { setAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import { IoAddCircleOutline } from "react-icons/io5";
 
 import useAuth from "../../../hooks/useAuth";
 
@@ -74,18 +80,19 @@ const UnenrolmentsList = () => {
   ];
   //console.log("Fetch enrolments for academic year:", selectedAcademicYear);
   const {
-    data: enrolments, //the data is renamed enrolments
-    isLoading: isEnrolmentGetLoading, //monitor several situations is loading...
-    isSuccess: isEnrolmentGetSuccess,
-    isError: isEnrolmentGetError,
-    error: enrolmentGetError,
-  } = useGetEnrolmentsByYearQuery(
+    data: admissions, //the data is renamed admissions
+    isLoading: isAdmissionLoading, //monitor several situations is loading...
+    isSuccess: isAdmissionSuccess,
+    isError: isAdmissionError,
+    error: admissionError,
+  } = useGetAdmissionsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
-      endpointName: "enrolmentsList",
+      criteria: "noEnrolments",
+      endpointName: "admissionsList",
     } || {},
     {
-      //this param will be passed in req.params to select only enrolments for taht year
+      //this param will be passed in req.params to select only admissions for taht year
       //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
       pollingInterval: 60000, //will refetch data every 60seconds
       refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
@@ -112,60 +119,32 @@ const UnenrolmentsList = () => {
       refetchOnMountOrArgChange: true, //refetch when we remount the component
     }
   );
-  //initialising the delete Mutation
-  const [
-    deleteEnrolment,
-    {
-      isLoading: isDelLoading,
-      isSuccess: isDelSuccess,
-      isError: isDelError,
-      error: delerror,
-    },
-  ] = useDeleteEnrolmentMutation();
 
-  // Function to handle the delete button click
-  const onDeleteEnrolmentClicked = (id) => {
-    setIdEnrolmentToDelete(id); // Set the document to delete
-    setIsDeleteModalOpen(true); // Open the modal
-  };
-
-  // Function to confirm deletion in the modal
-  const handleConfirmDelete = async () => {
-    await deleteEnrolment({ id: idEnrolmentToDelete });
-    setIsDeleteModalOpen(false); // Close the modal
-  };
-
-  // Function to close the modal without deleting
-  const handleCloseDeleteModal = () => {
-    setIsDeleteModalOpen(false);
-    setIdEnrolmentToDelete(null);
-  };
-  const servicesList = isServicesSuccess
-    ? Object.values(services.entities)
-    : [];
   // State to hold selected rows
   const [selectedRows, setSelectedRows] = useState([]);
   //state to hold the search query
   const [searchQuery, setSearchQuery] = useState("");
   //const [filteredEnrolments, setFilteredEnrolments] = useState([])
   //we need to declare the variable outside of if statement to be able to use it outside later
-  let enrolmentsList = [];
-  let filteredEnrolments = [];
+  let admissionsList = [];
+  let filteredAdmissions = [];
 
   const [billedFilter, setBilledFilter] = useState(""); // "billed" or "unbilled"
   const [invoicedFilter, setInvoicedFilter] = useState(""); // "invoiced" or "notInvoiced"
   const [paidFilter, setPaidFilter] = useState(""); // "paid" or "unpaid"
   const [selectedServiceType, setSelectedServiceType] = useState(""); // service type from servicesList
-  const [selectedEnrolmentMonth, setSelectedEnrolmentMonth] = useState(""); // enrolment month
-
-  if (isEnrolmentGetSuccess) {
+  const [selectedFeeMonth, setSelectedFeeMonth] = useState(""); // enrolment month
+  const servicesList = isServicesSuccess
+    ? Object.values(services.entities)
+    : [];
+  if (isAdmissionSuccess) {
     //set to the state to be used for other component s and edit enrolment component
-    const { entities } = enrolments;
+    const { entities } = admissions;
     //we need to change into array to be read??
-    enrolmentsList = Object.values(entities); //we are using entity adapter in this query
-    dispatch(setEnrolments(enrolmentsList)); //timing issue to update the state and use it the same time
+    admissionsList = Object.values(entities); //we are using entity adapter in this query
+    //dispatch(setAdmissions(admissionsList)); //timing issue to update the state and use it the same time
 
-    filteredEnrolments = enrolmentsList.filter((enrol) => {
+    filteredAdmissions = admissionsList.filter((enrol) => {
       // Check if the student's name or any other field contains the search query
       const nameMatches = [
         enrol?.student?.studentName?.firstName,
@@ -179,29 +158,25 @@ const UnenrolmentsList = () => {
           val?.toString().toLowerCase().includes(searchQuery.toLowerCase())
         );
 
-      // Apply all filters with AND logic
-      const meetsBilledCriteria =
-        !billedFilter ||
-        (billedFilter === "billed" ? enrol.isBilled : !enrol.isBilled);
-      const meetsInvoicedCriteria =
-        !invoicedFilter ||
-        (invoicedFilter === "invoiced" ? enrol.isInvoiced : !enrol.isInvoiced);
-      const meetsPaidCriteria =
-        !paidFilter || (paidFilter === "paid" ? enrol.isPaid : !enrol.isPaid);
+      // Filter by agreedServices.service.serviceType against servicesList.serviceType
       const meetsServiceTypeCriteria =
         !selectedServiceType ||
-        enrol.service.serviceType === selectedServiceType;
-      const meetsEnrolmentMonthCriteria =
-        !selectedEnrolmentMonth ||
-        enrol.enrolmentMonth === selectedEnrolmentMonth;
+        enrol.agreedServices?.some(
+          (agreedService) =>
+            agreedService?.service?.serviceType === selectedServiceType
+        );
+
+      // Filter by agreedServices.feeMonths against ["January", "February", ...]
+      const meetsFeeMonthCriteria =
+        !selectedFeeMonth ||
+        enrol.agreedServices?.some((agreedService) =>
+          agreedService?.feeMonths?.includes(selectedFeeMonth)
+        );
 
       return (
         (nameMatches || otherMatches) &&
-        meetsBilledCriteria &&
-        meetsInvoicedCriteria &&
-        meetsPaidCriteria &&
         meetsServiceTypeCriteria &&
-        meetsEnrolmentMonthCriteria
+        meetsFeeMonthCriteria
       );
     });
   }
@@ -236,12 +211,9 @@ const UnenrolmentsList = () => {
 
     isAdmin
       ? {
-          name: "Enrolment ID",
-          selector: (row) => (
-            <Link to={`/enrolments/enrolments/enrolmentDetails/${row.id}`}>
-              {row.id}
-            </Link>
-          ),
+          name: "student ID",
+          selector: (row) => row?.student?._id,
+
           sortable: true,
           width: "200px",
         }
@@ -249,10 +221,10 @@ const UnenrolmentsList = () => {
 
     {
       name: " Active Student",
-      selector: (row) => row.student.studentIsActive,
+      selector: (row) => row?.student?.studentIsActive,
       cell: (row) => (
         <span>
-          {row.student.studentIsActive ? (
+          {row?.student?.studentIsActive ? (
             <IoShieldCheckmarkOutline className="text-green-500 text-2xl" />
           ) : (
             <IoShieldOutline className="text-yellow-400 text-2xl" />
@@ -260,73 +232,46 @@ const UnenrolmentsList = () => {
         </span>
       ),
       sortable: true,
-      width: "80px",
+      width: "100px",
     },
-    {
-      name: "Sex",
-      selector: (row) => row?.student?.studentSex, //changed from userSex
-      cell: (row) => (
-        <span>
-          {row?.student?.studentSex == "Female" ? (
-            <LiaFemaleSolid className="text-rose-500 text-2xl" />
-          ) : (
-            <LiaMaleSolid className="text-blue-500 text-2xl" />
-          )}
-        </span>
-      ),
-      sortable: true,
-      removableRows: true,
-      width: "70px",
-    },
+
     {
       name: "Student Name",
       selector: (row) =>
-        row.student.studentName.firstName +
+        row?.student?.studentName?.firstName +
         " " +
-        row.student.studentName?.middleName +
+        row?.student?.studentName?.middleName +
         " " +
-        row.student.studentName?.lastName,
+        row?.student?.studentName?.lastName,
       sortable: true,
       width: "160px",
     },
     {
       name: "Admission Service",
-      selector: (row) =>
-        `${row.admission.agreedServices?.feePeriod || ""} ${
-          row.service?.serviceType || ""
-        }`,
+      selector: (row) => (
+        <div>
+          {row?.agreedServices.map((feeObj, index) => (
+            <div key={index}>{feeObj?.service?.serviceType}</div>
+          ))}
+        </div>
+      ),
+
       sortable: true,
       width: "150px",
     },
     {
-      name: "Amount",
-      selector: (row) => `${row?.serviceFinalFee}`,
-
-      sortable: true,
-      width: "100px",
-    },
-    {
-      name: "Authorised Fee", //means authorised
-      selector: (row) =>
-        `${row?.serviceAuthorisedFee} / ${
-          row?.admission?.agreedServices?.isAuthorised ? "Yes" : "No"
-        }`,
-
-      sortable: true,
-      width: "140px",
-    },
-    {
-      name: "Comment", //means authorised
-      selector: (row) => row?.enrolmentNote,
-
-      sortable: true,
-      cell: (row) => (
-        <div style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
-          {row?.enrolmentNote}
+      name: "Admission Month",
+      selector: (row) => (
+        <div>
+          {row?.agreedServices.map((feeObj, index) => (
+            <div key={index}>{feeObj?.feeMonths}</div>
+          ))}
         </div>
       ),
-      width: "140px",
+      sortable: true,
+      width: "150px",
     },
+
     // {
     //   name: "Authorised", //means authorised
     //   selector: (row) =>
@@ -335,109 +280,6 @@ const UnenrolmentsList = () => {
     //   sortable: true,
     //   width: "140px",
     // },
-
-    {
-      name: "Admission Fee Dates",
-      selector: (row) => (
-        <>
-          <div>
-            from{" "}
-            {new Date(
-              row.admission.agreedServices?.feeStartDate
-            ).toLocaleDateString("en-GB", {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-            })}
-          </div>
-          <div>
-            {row.admission.agreedServices?.feeEndDate
-              ? new Date(
-                  row.admission.agreedServices.feeEndDate
-                ).toLocaleDateString("en-GB", {
-                  year: "numeric",
-                  month: "2-digit",
-                  day: "2-digit",
-                })
-              : "to Present"}
-          </div>
-        </>
-      ),
-      sortable: true,
-      width: "160px",
-    },
-
-    {
-      name: "Enrolment Month",
-      selector: (row) =>
-        `${row.enrolmentDuration || ""} ${row.enrolmentMonth || ""}`,
-      sortable: true,
-      width: "160px",
-    },
-
-    // {
-    //   name: "Enrolment Dates",
-    //   selector: (row) => (
-    //     <>
-    //       <div>
-    //         from{" "}
-    //         {new Date(row.enrolmentStartDate).toLocaleDateString("en-GB", {
-    //           year: "numeric",
-    //           month: "2-digit",
-    //           day: "2-digit",
-    //         })}
-    //       </div>
-    //       <div>
-    //         to{" "}
-    //         {new Date(row.enrolmentEndDate).toLocaleDateString("en-GB", {
-    //           year: "numeric",
-    //           month: "2-digit",
-    //           day: "2-digit",
-    //         })}
-    //       </div>
-    //     </>
-    //   ),
-    //   sortable: true,
-    //   width: "160px",
-    // },
-    {
-      name: "Invoiced",
-      selector: (row) => (
-        <>
-          <div>
-            on{" "}
-            {new Date(row.enrolmentStartDate).toLocaleDateString("en-GB", {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-            })}
-          </div>
-          <div>for 110 pending invoice implementation</div>
-        </>
-      ),
-
-      sortable: true,
-      width: "140px",
-    },
-    {
-      name: "Paid",
-      selector: (row) => (
-        <>
-          <div>
-            on{" "}
-            {new Date(row.enrolmentStartDate).toLocaleDateString("en-GB", {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-            })}
-          </div>
-          <div>110 pending invoice implementation</div>
-        </>
-      ),
-
-      sortable: true,
-      width: "140px",
-    },
 
     {
       name: "Actions",
@@ -450,33 +292,15 @@ const UnenrolmentsList = () => {
           >
             <IoMdAddCircleOutline className="text-2xl" />
           </button> */}
-          <button
-            className="text-blue-500"
-            fontSize={20}
-            onClick={() =>
-              navigate(`/students/enrolments/enrolmentDetails/${row.id}`)
-            }
-          >
-            <ImProfile className="text-2xl" />
-          </button>
-          {canEdit ? (
+
+          {canCreate ? (
             <button
               className="text-yellow-400"
-              onClick={() =>
-                navigate(`/students/enrolments/editEnrolment/${row.id}`)
-              }
+              onClick={() => navigate("/students/enrolments/newEnrolment/")}
             >
-              <FiEdit className="text-2xl" />
+              <IoAddCircleOutline className="text-2xl" />
             </button>
           ) : null}
-          {canDelete && !isDelLoading && (
-            <button
-              className="text-red-500"
-              onClick={() => onDeleteEnrolmentClicked(row.id)}
-            >
-              <RiDeleteBin6Line className="text-2xl" />
-            </button>
-          )}
         </div>
       ),
       ignoreRowClick: true,
@@ -486,18 +310,18 @@ const UnenrolmentsList = () => {
     },
   ];
   let content;
-  if (isEnrolmentGetLoading)
+  if (isAdmissionLoading)
     content = (
       <>
         <Enrolments />
         <LoadingStateIcon />
       </>
     );
-  if (isEnrolmentGetError) {
+  if (isAdmissionError) {
     content = (
       <>
         <Enrolments />
-        <p className="errmsg">{enrolmentGetError?.data?.message}</p>
+        <p className="errmsg">{admissionError?.data?.message}</p>
       </>
     ); //errormessage class defined in the css, the error has data and inside we have message of error
   }
@@ -522,9 +346,9 @@ const UnenrolmentsList = () => {
         </div>
         {/* Enrolment Month Filter */}
         <select
-          value={selectedEnrolmentMonth}
-          onChange={(e) => setSelectedEnrolmentMonth(e.target.value)}
-         className="text-sm h-8 border border-gray-300 rounded-md px-4"
+          value={selectedFeeMonth}
+          onChange={(e) => setSelectedFeeMonth(e.target.value)}
+          className="text-sm h-8 border border-gray-300 rounded-md px-4"
         >
           <option value="">All Months</option>
           {MONTHS.map((month, index) => (
@@ -546,44 +370,11 @@ const UnenrolmentsList = () => {
             </option>
           ))}
         </select>
-
-        {/* Billed Filter */}
-        <select
-          value={billedFilter}
-          onChange={(e) => setBilledFilter(e.target.value)}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
-        >
-          <option value="">Billing</option>
-          <option value="billed">Billed</option>
-          <option value="unbilled">Unbilled</option>
-        </select>
-
-        {/* Invoiced Filter */}
-        <select
-          value={invoicedFilter}
-          onChange={(e) => setInvoicedFilter(e.target.value)}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
-        >
-          <option value="">Invoice</option>
-          <option value="invoiced">Invoiced</option>
-          <option value="notInvoiced">Not Invoiced</option>
-        </select>
-
-        {/* Paid Filter */}
-        <select
-          value={paidFilter}
-          onChange={(e) => setPaidFilter(e.target.value)}
-         className="text-sm h-8 border border-gray-300 rounded-md px-4"
-        >
-          <option value="">payment</option>
-          <option value="paid">Paid</option>
-          <option value="unpaid">Unpaid</option>
-        </select>
       </div>
       <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
         <DataTable
           columns={column}
-          data={filteredEnrolments}
+          data={filteredAdmissions}
           pagination
           selectableRows
           removableRows
@@ -621,15 +412,9 @@ const UnenrolmentsList = () => {
           )}
         </div>
       </div>
-      <DeletionConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
-      />
     </>
   );
   //}
   return content;
 };
-export default UnenrolmentsList
-  ;
+export default UnenrolmentsList;

@@ -37,6 +37,7 @@ import NewAdmissionForm from './features/Students/Admissions/NewAdmissionForm'
 
 import Enrolments from "./features/Students/Enrolments"
 import EnrolmentsList from "./features/Students/Enrolments/EnrolmentsList"
+import UnenrolmentsList from "./features/Students/Enrolments/UnenrolmentsList"
 import EditEnrolment from "./features/Students/Enrolments/EditEnrolment"
 import NewEnrolmentForm from './features/Students/Enrolments/NewEnrolmentForm'
 
@@ -197,6 +198,7 @@ const App = () => {
 								<Route index element={<Enrolments />} /> 
 								
 									<Route path="enrolments/" element={<EnrolmentsList/>}/>												
+									<Route path="unenrolments/" element={<UnenrolmentsList/>}/>												
 									<Route path="newEnrolment/" element={<NewEnrolmentForm/>}/>
 									<Route path="editEnrolment/:id" element={<EditEnrolment/>}/>
 									
