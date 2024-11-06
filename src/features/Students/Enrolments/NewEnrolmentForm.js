@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-
+import {
+  useGetAdmissionsQuery,
+  useUpdateAdmissionMutation,
+  useGetAdmissionsByYearQuery,
+  useDeleteAdmissionMutation,
+} from "../Admissions/admissionsApiSlice";
 import { useSelector } from "react-redux"; // Assuming you're using Redux for state management
 import { useNavigate } from "react-router-dom";
 import Enrolments from "../Enrolments";
@@ -27,7 +32,6 @@ import {
   DATE_REGEX,
   COMMENT_REGEX,
   OBJECTID_REGEX,
-  
 } from "../../../Components/lib/Utils/REGEX";
 import { SERVICETYPES } from "../../../config/SchedulerConsts";
 //import { MONTHS } from "../../../config/Months";
@@ -64,22 +68,56 @@ const NewEnrolmentForm = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   );
   const academicYears = useSelector(selectAllAcademicYears);
-
+  //the list of studetns with their admissions was filtered inteh backend and removed the months that are already enrolled for
   const {
-    data: students,
-    isLoading: isStudentsLoading,
-    isSuccess: isStudentsSuccess,
-  } = useGetStudentsByYearQuery(
+    data: admissions, //the data is renamed admissions
+    isLoading: isAdmissionLoading, //monitor several situations is loading...
+    isSuccess: isAdmissionSuccess,
+    isError: isAdmissionError,
+    error: admissionError,
+  } = useGetAdmissionsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
-      criteria: "withAdmission",
-      endpointName: "studentsList",
-    },
+      criteria: "noEnrolments",
+      endpointName: "admissionsList",
+    } || {},
     {
-      refetchOnFocus: true,
-      refetchOnMountOrArgChange: true,
+      //this param will be passed in req.params to select only admissions for taht year
+      //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+      pollingInterval: 60000, //will refetch data every 60seconds
+      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
+      refetchOnMountOrArgChange: true, //refetch when we remount the component
     }
   );
+  // const {
+  //   data: students,
+  //   isLoading: isStudentsLoading,
+  //   isSuccess: isStudentsSuccess,
+  // } = useGetStudentsByYearQuery(
+  //   {
+  //     selectedYear: selectedAcademicYear?.title,
+  //     criteria: "withAdmission",
+  //     endpointName: "studentsList",
+  //   },
+  //   {
+  //     refetchOnFocus: true,
+  //     refetchOnMountOrArgChange: true,
+  //   }
+  // );
+  let noEnrolmentStudentsList = [];
+  // List for dropdowns
+  // const studentsList = isStudentsSuccess
+  // ? Object.values(students.entities)
+  // : [];
+
+  // console.log(studentsList, "studentsList");
+
+  if (isAdmissionSuccess) {
+    //set to the state to be used for other component s and edit enrolment component
+    const { entities } = admissions;
+    //we need to change into array to be read??
+    noEnrolmentStudentsList = Object.values(entities); //got the studtnlisty from admission, nounerolled criteria
+  }
 
   // State for form data and validity
   const [formData, setFormData] = useState({
@@ -105,7 +143,8 @@ const NewEnrolmentForm = () => {
       },
     ],
   });
-
+  const [noEnrolmentMonthStudentsList, setNoEnrolmentMonthStudentsList] = useState([]);
+  const [studentServicesList, setStudentServicesList] = useState([]); //will hold update of service for selected studetn
   const [validity, setValidity] = useState({
     validStudent: false,
     validService: false,
@@ -117,6 +156,47 @@ const NewEnrolmentForm = () => {
     validEnrolmentCreator: false,
   });
 
+  // Function to get services for the selected student and month
+  const getServicesFromList = (studentId, month) => {
+    //console.log(studentId,"studentId", month,'month')
+    const selectedStudent = noEnrolmentStudentsList.find(
+      (student) => student.student._id === studentId
+    );
+
+    if (selectedStudent?.agreedServices) {
+      return selectedStudent.agreedServices
+        .filter((service) => service.feeMonths.includes(month))
+        .map((service) => ({
+          serviceType: service.service.serviceType,
+          service: service.service._id,
+          servicePeriod: service.feePeriod,
+          serviceAuthorisedFee: service.feeValue,
+          serviceFinalFee: service.feeValue,
+        }));
+    }
+    return [];
+  };
+
+  useEffect(() => {
+    if (isEnrolmentSuccess) {
+      // Reset the form data
+      setFormData({
+        student: "",
+        admission: "",
+        enrolmentYear: "",
+        enrolmentMonth: "",
+        enrolmentNote: "",
+        enrolmentCreator: "",
+        enrolmentOperator: "",
+        enrolments: [],
+      });
+
+      // Navigate to the enrolments page
+      navigate("/students/enrolments/enrolments/");
+    }
+  }, [isEnrolmentSuccess, navigate]);
+
+  console.log(studentServicesList, "studentServicesList");
   // Form Validation using regex
   useEffect(() => {
     setValidity({
@@ -138,140 +218,59 @@ const NewEnrolmentForm = () => {
       validEnrolmentCreator: OBJECTID_REGEX.test(formData?.enrolmentCreator),
     });
   }, [formData]);
-  console.log(
-    isEnrolmentSuccess,
-    "isEnrolmentSuccess Enrolment added successfully111"
-  );
-  useEffect(() => {
-    if (isEnrolmentSuccess) {
-      // Log or inspect the response here if needed
-      console.log(
-        isEnrolmentSuccess,
-        "isEnrolmentSuccess Enrolment added successfully222"
-      );
-
-      // Reset the form data
-      setFormData({
-        student: "",
-        admission: "",
-        enrolmentYear: "",
-        enrolmentMonth: "",
-        enrolmentNote: "",
-        enrolmentCreator: "",
-        enrolmentOperator: "",
-        enrolments: [],
-      });
-
-      // Navigate to the enrolments page
-      navigate("/students/enrolments/enrolments/");
-    }
-  }, [isEnrolmentSuccess, navigate]);
-
-  // List for dropdowns
-  const studentsList = isStudentsSuccess
-    ? Object.values(students.entities)
-    : [];
-
-  console.log(studentsList, "studentsList");
   const canSave = Object.values(validity).every(Boolean) && !isEnrolmentLoading;
 
-  // Function to get services for the selected student, filtered by feeMonth
-  const getServicesFromList = () => {
-    const student = studentsList.find(
-      (student) => student.id === formData?.student
-    );
-
-    if (student?.admissionDetails?.agreedServices) {
-      return student.admissionDetails?.agreedServices
-        ?.filter((service) =>
-          service?.feeMonths?.includes(formData.enrolmentMonth)
-        )
-        .map((service) => ({
-          serviceType: service.serviceDetails.serviceType,
-          service: service.serviceDetails._id,
-          servicePeriod: service.feePeriod,
-          serviceAuthorisedFee: service.feeValue,
-          serviceFinalFee: service.feeValue,
-        }));
-    }
-    return [];
-  };
-
-  const [studentServicesList, setStudentServicesList] = useState([]);
-
-  // Populate services by default when enrolmentMonth or student changes
+  
+  // Populate services list when the enrolment month or student changes
   useEffect(() => {
-    const services = getServicesFromList();
-    if (services.length) {
-      setStudentServicesList(services);
-
-      // Update formData with unique enrolments based on services
-      const uniqueEnrolments = services.reduce((acc, service) => {
-        const exists = acc.some(
-          (enrolment) => enrolment.service === service.service
-        );
-        if (!exists) {
-          acc.push({
-            service: service.service,
-            serviceType: service.serviceType,
-            servicePeriod: service.servicePeriod,
-            serviceAuthorisedFee: service.serviceAuthorisedFee,
-            serviceFinalFee: service.serviceFinalFee,
-          });
-        }
-        return acc;
-      }, []);
+    if (formData.student && formData.enrolmentMonth) {
+      const services = getServicesFromList(
+        formData.student,
+        formData.enrolmentMonth
+      );
 
       setFormData((prevData) => ({
         ...prevData,
-        enrolments: uniqueEnrolments,
+        enrolments: services.map((service) => ({
+          ...service,
+          serviceFinalFee: service.serviceFinalFee,
+        })),
       }));
+
+      setStudentServicesList(services);
     }
-  }, [formData.student, formData.enrolmentMonth]);
 
-  // Function to handle service final fee changes
-  const handleServiceChange = (serviceId, finalFee) => {
-    setFormData((prevData) => {
-      const updatedEnrolments = prevData.enrolments.map((enrolment) =>
-        enrolment.service === serviceId
-          ? { ...enrolment, serviceFinalFee: finalFee }
-          : enrolment
-      );
-      return { ...prevData, enrolments: updatedEnrolments };
-    });
-  };
+    //update teh list so we only have studetn with no enrolment for that selected enrolment month
+    const filteredList = noEnrolmentStudentsList.filter((student) =>
+      student.agreedServices.some(
+        (
+          service /////put .some to make sure if any of the agredservice has the month, it will not be excluded
+        ) => service.feeMonths.includes(formData.enrolmentMonth)
+      )
+    );
+    setNoEnrolmentMonthStudentsList(filteredList)
+    console.log(noEnrolmentMonthStudentsList,'noEnrolmentMonthStudentsList')
+  }, [formData.student, formData.enrolmentMonth, isEnrolmentSuccess]);
 
-  // Function to toggle services
+  // Handle toggling services in the form
   const handleServiceToggle = (serviceId, checked) => {
     const selectedService = studentServicesList.find(
       (service) => service.service === serviceId
     );
 
     if (checked) {
-      // Only add if it's not already in the formData
       setFormData((prevData) => {
         const exists = prevData.enrolments.some(
-          (enrolment) => enrolment.service === selectedService.service
+          (enrolment) => enrolment.service === serviceId
         );
-        if (!exists) {
-          return {
-            ...prevData,
-            enrolments: [
-              ...prevData.enrolments,
-              {
-                service: selectedService.service,
-                serviceType: selectedService.serviceType,
-                servicePeriod: selectedService.servicePeriod,
-                serviceAuthorisedFee: selectedService.serviceAuthorisedFee,
-                serviceFinalFee: selectedService.serviceFinalFee,
-              },
-            ],
-          };
-        }
-        return prevData; // Do nothing if it already exists
+        return exists
+          ? prevData
+          : {
+              ...prevData,
+              enrolments: [...prevData.enrolments, { ...selectedService }],
+            };
       });
     } else {
-      // Remove the service from enrolments
       setFormData((prevData) => ({
         ...prevData,
         enrolments: prevData.enrolments.filter(
@@ -281,6 +280,30 @@ const NewEnrolmentForm = () => {
     }
   };
 
+  // useEffect(() => {
+  // Update the noEnrolmentMonthStudentsList based on selected enrolmentMonth
+
+  //     const filteredStudents = noEnrolmentStudentsList.filter(student =>
+  //       student.agreedServices.some(service =>
+  //         service.feeMonths.includes(formData?.enrolmentMonth)
+  //       )
+  //     );
+  //     setNoEnrolmentMonthStudentsList(filteredStudents);
+
+  // }, [formData.enrolmentMonth, noEnrolmentStudentsList]);
+
+  console.log(noEnrolmentMonthStudentsList, "noEnrolmentMonthStudentsList");
+  // Handle changes to final fee for a specific service
+  const handleServiceChange = (serviceId, finalFee) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      enrolments: prevData.enrolments.map((enrolment) =>
+        enrolment.service === serviceId
+          ? { ...enrolment, serviceFinalFee: finalFee }
+          : enrolment
+      ),
+    }));
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (canSave) {
@@ -294,6 +317,7 @@ const NewEnrolmentForm = () => {
   };
 
   console.log(formData, "formData");
+  console.log(noEnrolmentStudentsList[0], "noEnrolmentStudentsList[0]");
 
   const content = (
     <>
@@ -303,46 +327,8 @@ const NewEnrolmentForm = () => {
         className="space-y-6 bg-white p-6 shadow rounded-md"
       >
         <h2 className="text-xl font-bold">New Enrolment</h2>
-
-        {/* Student Selection */}
-        <div>
-          <label
-            htmlFor="student"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Student{" "}
-            {!validity.validStudent && <span className="text-red-500">*</span>}
-          </label>
-          <select
-            id="student"
-            name="student"
-            value={formData.student}
-            onChange={(e) => {
-              const selectedStudent = studentsList.find(
-                (student) => student.id === e.target.value
-              );
-              setFormData({
-                ...formData,
-                student: e.target.value,
-                admission: selectedStudent?.admission,
-              });
-            }}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            required
-          >
-            <option value="">Select Student</option>
-            {isStudentsSuccess &&
-              studentsList.map((student) => (
-                <option key={student.id} value={student.id}>
-                  {`${student.studentName?.firstName} ${
-                    student.studentName?.middleName || ""
-                  } ${student.studentName?.lastName}`}
-                </option>
-              ))}
-          </select>
-        </div>
-
-        {/* Enrolment Year */}
+        {/* Enrolment Year*/}
+        Enrolment Year
         <div>
           <label
             htmlFor="enrolmentYear"
@@ -362,23 +348,13 @@ const NewEnrolmentForm = () => {
             }
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
             required
-            disabled={!formData?.student}
           >
             <option value="">Select Enrolment Year</option>
-            <option
-              value={
-                studentsList.find((student) => student.id === formData.student)
-                  ?.admissionDetails?.admissionYear
-              }
-            >
-              {
-                studentsList.find((student) => student.id === formData.student)
-                  ?.admissionDetails?.admissionYear
-              }
+            <option value={selectedAcademicYear?.title}>
+              {selectedAcademicYear.title}
             </option>
           </select>
         </div>
-
         {/* Enrolment Month */}
         <div>
           <label
@@ -399,7 +375,7 @@ const NewEnrolmentForm = () => {
             }
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
             required
-            disabled={!formData?.student}
+            disabled={!formData?.enrolmentYear}
           >
             <option value="">Select Enrolment Month</option>
             {MONTHS.map((month, index) => (
@@ -407,6 +383,45 @@ const NewEnrolmentForm = () => {
                 {month}
               </option>
             ))}
+          </select>
+        </div>
+        {/* Student Selection */}
+        <div>
+          <label
+            htmlFor="student"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Student{" "}
+            {!validity.validStudent && <span className="text-red-500">*</span>}
+          </label>
+          <select
+            id="student"
+            name="student"
+            value={formData.student}
+            onChange={(e) => {
+              const selectedStudent = noEnrolmentMonthStudentsList.find(
+                (student) => student.student._id === e.target.value
+              );
+              //console.log('hello', selectedStudent)
+              setFormData({
+                ...formData,
+                student: e.target.value,
+                admission: selectedStudent?.id, //the list is originally admissions so id is for admission
+              });
+            }}
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+            required
+            disabled={!formData?.enrolmentMonth}
+          >
+            <option value="">Select Student</option>
+            {isAdmissionSuccess &&
+              noEnrolmentMonthStudentsList.map((student) => (
+                <option key={student.student._id} value={student.student._id}>
+                  {`${student.student.studentName?.firstName} ${
+                    student.student.studentName?.middleName || ""
+                  } ${student.student.studentName?.lastName}`}
+                </option>
+              ))}
           </select>
         </div>
         {/* enrolment note */}
@@ -429,7 +444,6 @@ const NewEnrolmentForm = () => {
             placeholder="Enter any additional notes here..."
           />
         </div>
-
         {/* Services Section */}
         <fieldset>
           <legend className="block text-sm font-medium text-gray-700">
@@ -453,14 +467,10 @@ const NewEnrolmentForm = () => {
                     className="mr-2"
                   />
                   <label htmlFor={service.service}>{service.serviceType}</label>
-
-                  {/* Display Authorized Fee and Service Period */}
                   <span className="ml-4">
                     Authorized Fee: ${service.serviceAuthorisedFee}
                   </span>
                   <span className="ml-4">Period: {service.servicePeriod}</span>
-
-                  {/* Service final fee input */}
                   {isChecked && (
                     <input
                       type="number"
@@ -481,7 +491,6 @@ const NewEnrolmentForm = () => {
             })}
           </div>
         </fieldset>
-
         <div className="flex justify-end mt-6">
           <button
             type="submit"
@@ -494,7 +503,6 @@ const NewEnrolmentForm = () => {
             Save
           </button>
         </div>
-
         {/* Error message display */}
         {isEnrolmentError && (
           <div className="mt-4 text-red-500">
