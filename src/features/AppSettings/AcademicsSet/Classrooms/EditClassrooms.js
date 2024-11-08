@@ -9,7 +9,7 @@ import EditClassroomForm from "./EditClassroomsForm";
 import useAuth from "../../../../hooks/useAuth";
 import LoadingStateIcons from "../../../../Components/LoadingStateIcon";
 import { currentClassroomsList } from "./classroomsSlice";
-
+import AcademicsSet from "../../AcademicsSet";
 const EditClassroom = () => {
   const { id } = useParams(); //pull the id from use params from the url
   //console.log(id,'id')
@@ -40,9 +40,15 @@ const EditClassroom = () => {
   let content;
 
   content = schoolToEdit ? (
-    <EditClassroomForm classroom={schoolToEdit} />
+    <>
+     
+      <EditClassroomForm classroom={schoolToEdit} />
+    </>
   ) : (
-    <LoadingStateIcons />
+    <>
+      <AcademicsSet />
+      <LoadingStateIcons />
+    </>
   );
 
   //}

@@ -7,6 +7,7 @@ import {
 import EditEmployeeForm from "./EditEmployeeForm";
 import useAuth from "../../../hooks/useAuth";
 import { currentEmployeesList } from "./employeesSlice";
+import Employees from "../Employees";
 import LoadingStateIcons from "react-loading-icons";
 const EditEmployee = () => {
   const { id } = useParams(); //pull the id from use params from the url
@@ -18,9 +19,15 @@ const EditEmployee = () => {
   let content;
 
   content = employeeToEdit ? (
-    <EditEmployeeForm employee={employeeToEdit} />
+    <>
+      
+      <EditEmployeeForm employee={employeeToEdit} />
+    </>
   ) : (
-    <LoadingStateIcons />
+    <>
+      <Employees />
+      <LoadingStateIcons />
+    </>
   );
 
   //}

@@ -4,7 +4,8 @@ import EditEmployeeDocumentsListForm from "./EditEmployeeDocumentsListForm";
 import { useGetEmployeeDocumentsListsQuery } from "./employeeDocumentsListsApiSlice";
 import useAuth from "../../../../hooks/useAuth";
 import { Puff } from "react-loading-icons";
-
+import LoadingStateIcons from "../../../../Components/LoadingStateIcon";
+import HRSet from "../../HRSet";
 const EditEmployeeDocumentsList = () => {
   //pull the id from use params from the url
   const { id } = useParams();
@@ -22,14 +23,13 @@ const EditEmployeeDocumentsList = () => {
   // will not get from the state because not set to state already
   // const employeeDocumentsListToEdit = useSelector(state=> state.employeeDocumentsList?.entities[id])
   //console.log('helllllow',employeeDocumentsList, 'list id')
-  if (!employeeDocumentsList)
-    return <Puff stroke="#98ff98" strokeOpacity={0.125} speed={0.75} />;
+  
   let content;
 
   content = employeeDocumentsList ? (
-    <EditEmployeeDocumentsListForm listToEdit={employeeDocumentsList} />
+    <><HRSet/><EditEmployeeDocumentsListForm listToEdit={employeeDocumentsList} /></>
   ) : (
-    <p>Loading...</p>
+    <><HRSet/><LoadingStateIcons /></>
   );
 
   return content;

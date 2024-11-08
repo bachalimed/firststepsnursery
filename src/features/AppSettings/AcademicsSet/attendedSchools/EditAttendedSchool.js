@@ -9,7 +9,7 @@ import EditAttendedSchoolForm from "./EditAttendedSchoolForm";
 import useAuth from "../../../../hooks/useAuth";
 import LoadingStateIcons from "../../../../Components/LoadingStateIcon";
 import { currentAttendedSchoolsList } from "./attendedSchoolsSlice";
-
+import AcademicsSet from "../../AcademicsSet";
 const EditAttendedSchool = () => {
   const { id } = useParams(); //pull the id from use params from the url
   //console.log(id,'id')
@@ -40,9 +40,15 @@ const EditAttendedSchool = () => {
   let content;
 
   content = schoolToEdit ? (
-    <EditAttendedSchoolForm attendedSchool={schoolToEdit} />
+    <>
+     
+      <EditAttendedSchoolForm attendedSchool={schoolToEdit} />
+    </>
   ) : (
-    <LoadingStateIcons />
+    <>
+      <AcademicsSet />
+      <LoadingStateIcons />
+    </>
   );
 
   //}

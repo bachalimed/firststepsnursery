@@ -3,8 +3,9 @@ import { useSelector } from "react-redux";
 import { selectStudentById, useGetStudentByIdQuery } from "./studentsApiSlice"; //we will pull the user  data from the state and not use query
 import EditStudentForm from "./EditStudentForm";
 import useAuth from "../../../../hooks/useAuth";
+import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 import { currentStudentsList } from "./studentsSlice";
-
+import StudentsParents from "../../StudentsParents";
 const EditStudent = () => {
   const { id } = useParams(); //pull the id from use params from the url
 
@@ -15,9 +16,15 @@ const EditStudent = () => {
   let content;
 
   content = studentToEdit ? (
-    <EditStudentForm student={studentToEdit} />
+    <>
+     
+      <EditStudentForm student={studentToEdit} />
+    </>
   ) : (
-    <p>Loading...</p>
+    <>
+      <StudentsParents />
+      <LoadingStateIcon />
+    </>
   );
 
   //}

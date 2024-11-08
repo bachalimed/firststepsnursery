@@ -16,7 +16,7 @@ const EditNotification = () => {
   //console.log('helllllow',notificationToEdit.userFullName.userFirstName, 'mystu', id)
 
   let content;
-
+///add another section before for loading to make links available
   content = notificationToEdit ? (
     <EditNotificationForm notification={notificationToEdit} />
   ) : (

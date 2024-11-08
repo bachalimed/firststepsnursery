@@ -4,7 +4,8 @@ import EditStudentDocumentsListForm from "./EditStudentDocumentsListForm";
 import { useGetStudentDocumentsListsQuery } from "./studentDocumentsListsApiSlice";
 import useAuth from "../../../../hooks/useAuth";
 import { Puff } from "react-loading-icons";
-
+import StudentsSet from "../../StudentsSet";
+import LoadingStateIcons from "react-loading-icons";
 const EditStudentDocumentsList = () => {
   //pull the id from use params from the url
   const { id } = useParams();
@@ -22,14 +23,17 @@ const EditStudentDocumentsList = () => {
   // will not get from the state because not set to state already
   // const studentDocumentsListToEdit = useSelector(state=> state.studentDocumentsList?.entities[id])
   //console.log('helllllow',studentDocumentsList, 'list id')
-  if (!studentDocumentsList)
-    return <Puff stroke="#98ff98" strokeOpacity={0.125} speed={0.75} />;
+  
   let content;
 
   content = studentDocumentsList ? (
-    <EditStudentDocumentsListForm listToEdit={studentDocumentsList} />
+    <>
+      <StudentsSet />
+      <EditStudentDocumentsListForm listToEdit={studentDocumentsList} />
+    </>
   ) : (
-    <p>Loading...</p>
+    <>
+      <StudentsSet /><LoadingStateIcons /></>
   );
 
   return content;

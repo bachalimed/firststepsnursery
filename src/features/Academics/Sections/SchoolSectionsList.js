@@ -207,7 +207,26 @@ console.log(filteredSchoolSections,'filteredSchoolSections')
       sortable: true,
       width: "220px",
     },
-
+    {
+      name: "Count",
+      selector: (row) => row?.students.length,
+      sortable: true,
+      width: "80px",
+    },
+    {
+      name: "Section Label",
+      selector: (row) => (
+        <div>
+          {row.students.map((student) => (
+            <div key={student._id}>
+              {student.sectionLabel} 
+            </div>
+          ))}
+        </div>
+      ),
+      sortable: true,
+      width: "120px",
+    },
     {
       name: "Classroom",
       selector: (row) => (
@@ -222,39 +241,36 @@ console.log(filteredSchoolSections,'filteredSchoolSections')
       sortable: true,
       width: "180px",
     },
-    {
-      name: "Count",
-      selector: (row) => row?.students.length,
-      sortable: true,
-      width: "80px",
-    },
+    
 
-    {
-      name: "Section Formed",
-      selector: (row) => (
-        <div>
-          {row.students.map((student) => (
-            <div key={student._id}>
-              Fr{" "}
-              {new Date(student.sectionFrom).toLocaleDateString("en-GB", {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-              })}{" "}
-              To{" "}
-              {new Date(student.sectionTo).toLocaleDateString("en-GB", {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-              })}
-            </div>
-          ))}
-        </div>
-      ),
+    // {
+    //   name: "Section Formed",
+    //   selector: (row) => (
+    //     <div>
+    //       {row.students.map((student) => (
+    //         <div key={student._id}>
+    //           Fr{" "}
+    //           {new Date(student.sectionFrom).toLocaleDateString("en-GB", {
+    //             year: "numeric",
+    //             month: "2-digit",
+    //             day: "2-digit",
+    //           })}{" "}
+    //           To{" "}
+    //           {student.sectionTo
+    //             ? new Date(student.sectionTo).toLocaleDateString("en-GB", {
+    //                 year: "numeric",
+    //                 month: "2-digit",
+    //                 day: "2-digit",
+    //               })
+    //             : "present"}
+    //         </div>
+    //       ))}
+    //     </div>
+    //   ),
 
-      sortable: true,
-      width: "220px",
-    },
+    //   sortable: true,
+    //   width: "220px",
+    // },
   ];
   let content;
   if (isLoading) content = <LoadingStateIcon />;

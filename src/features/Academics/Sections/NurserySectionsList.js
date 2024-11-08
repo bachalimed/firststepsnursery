@@ -325,11 +325,13 @@ const NurserySectionsList = () => {
           </div>
           <div>
             To{" "}
-            {new Date(row.sectionTo).toLocaleDateString("en-GB", {
+            {row.sectionTo
+          ? new Date(row.sectionTo).toLocaleDateString("en-GB", {
               year: "numeric",
               month: "2-digit",
               day: "2-digit",
-            })}
+            })
+          : "present"}
           </div>
         </div>
       ),
@@ -345,7 +347,7 @@ const NurserySectionsList = () => {
             className="text-blue-500"
             fontSize={20}
             onClick={() =>
-              navigate(`/sections/sectionsParents/sectionDetails/${row.id}`)
+              navigate(`/academics/sections/SectionDetails/${row.id}`)
             }
           >
             <ImProfile className="text-2xl" />
@@ -354,7 +356,7 @@ const NurserySectionsList = () => {
             <button
               className="text-yellow-400"
               onClick={() =>
-                navigate(`/sections/sectionsParents/editSection/${row.id}`)
+                navigate(`/academics/sections/editSection/${row.id}`)
               }
             >
               <FiEdit className="text-2xl" />
@@ -413,7 +415,7 @@ const NurserySectionsList = () => {
           onSelectedRowsChange={handleRowSelected}
           selectableRowsHighlight
         ></DataTable>
-        <div className="flex justify-end items-center space-x-4">
+        {/* <div className="flex justify-end items-center space-x-4">
           <button
             className=" px-4 py-2 bg-green-500 text-white rounded"
             onClick={() => navigate("/academics/sections/newSection/")}
@@ -442,7 +444,7 @@ const NurserySectionsList = () => {
               All
             </button>
           )}
-        </div>
+        </div> */}
       </div>
 
       <RegisterModal
