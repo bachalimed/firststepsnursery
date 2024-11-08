@@ -108,14 +108,13 @@ const NurserySectionsList = () => {
     filteredSections = sectionsList?.filter((section) => {
       // Apply filter for sectionTo if needed
       const sectionToIsValid =
-        !currentSectionsFilter ||
-        (section.sectionTo !== undefined && section.sectionTo !== null);
-
+        !currentSectionsFilter || (section.sectionTo === undefined || section.sectionTo === null);
+    
       // Check section fields for search query
       const sectionMatches = Object.values(section).some((val) =>
         String(val).toLowerCase().includes(searchQuery.toLowerCase())
       );
-
+    
       // Check student details for search query
       const studentMatches = section.students?.some((student) => {
         const firstNameMatch = student?.studentName?.firstName
@@ -127,21 +126,19 @@ const NurserySectionsList = () => {
         const lastNameMatch = student?.studentName?.lastName
           ?.toLowerCase()
           .includes(searchQuery.toLowerCase());
-
+    
         // Check studentEducation.attendedSchool.schoolName
-        const schoolNameMatch =
-          student?.studentEducation?.attendedSchool?.schoolName
-            ?.toLowerCase()
-            .includes(searchQuery.toLowerCase());
-
-        return (
-          firstNameMatch || middleNameMatch || lastNameMatch || schoolNameMatch
-        );
+        const schoolNameMatch = student?.studentEducation?.attendedSchool?.schoolName
+          ?.toLowerCase()
+          .includes(searchQuery.toLowerCase());
+    
+        return firstNameMatch || middleNameMatch || lastNameMatch || schoolNameMatch;
       });
-
+    
       // Return true if section matches search query, student matches search query, and sectionTo is valid
       return (sectionMatches || studentMatches) && sectionToIsValid;
     });
+    
   }
 
   const handleSearch = (e) => {
