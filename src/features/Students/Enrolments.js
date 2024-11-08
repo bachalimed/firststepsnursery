@@ -1,11 +1,12 @@
 import { FaListCheck } from "react-icons/fa6";
 import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
 import { IoFileTrayStackedOutline } from "react-icons/io5";
-
+import useAuth from "../../hooks/useAuth";
 import { useLocation, Link } from "react-router-dom";
 
 const Enrolments = () => {
   const location = useLocation();
+  const {isAdmin, isManager} = useAuth()
   const enrolmentTabs = {
     title: "Enrolments",
     icon: <FaListCheck />,
@@ -23,11 +24,12 @@ const Enrolments = () => {
     ],
   };
 
+  
   // Define the tab data with paths and labels
   const tabs = [
     { label: "Enrolments", path: "/students/enrolments/enrolments/" },
     { label: "New Enrolment", path: "/students/enrolments/newEnrolment/" },
-    { label: "Unenrolled Students", path: "/students/enrolments/unenrolments/" },
+   (isAdmin||isManager)&& { label: "Unenrolled Students", path: "/students/enrolments/unenrolments/" },
   ];
 
   // Function to determine if a tab is active based on the current path

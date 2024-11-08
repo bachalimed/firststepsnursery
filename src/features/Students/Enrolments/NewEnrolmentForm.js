@@ -118,13 +118,21 @@ const NewEnrolmentForm = () => {
     //we need to change into array to be read??
     noEnrolmentStudentsList = Object.values(entities); //got the studtnlisty from admission, nounerolled criteria
   }
+//return curretn month in english langauge
+const getCurrentMonthName = () => {
+  const date = new Date();
+  return date.toLocaleString('en-US', { month: 'long' }).replace(
+    /^./,
+    (str) => str.toUpperCase()
+  );
+};
 
   // State for form data and validity
   const [formData, setFormData] = useState({
     student: "",
     admission: "",
-    enrolmentYear: "",
-    enrolmentMonth: "",
+    enrolmentYear: selectedAcademicYear?.title||"",
+    enrolmentMonth: getCurrentMonthName()||"",
     enrolmentNote: "",
 
     enrolmentCreator: userId,
@@ -343,13 +351,14 @@ const NewEnrolmentForm = () => {
             id="enrolmentYear"
             name="enrolmentYear"
             value={formData.enrolmentYear}
+           
             onChange={(e) =>
               setFormData({ ...formData, enrolmentYear: e.target.value })
             }
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
             required
           >
-            <option value="">Select Enrolment Year</option>
+            {/* <option value="">Select Enrolment Year</option> */}
             <option value={selectedAcademicYear?.title}>
               {selectedAcademicYear.title}
             </option>
@@ -377,7 +386,7 @@ const NewEnrolmentForm = () => {
             required
             disabled={!formData?.enrolmentYear}
           >
-            <option value="">Select Enrolment Month</option>
+            {/* <option value="">Select Enrolment Month</option> */}
             {MONTHS.map((month, index) => (
               <option key={index} value={month}>
                 {month}

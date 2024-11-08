@@ -16,7 +16,7 @@ const employeesTabs=
     const tabs = [
       { label: 'Employees', path: '/hr/employees/employees/' },
       { label: 'New Employee', path: '/hr/employees/newEmployee/' },
-      { label: 'New blbls', path: '/hr/employees/employeedddddds/' },
+     // { label: 'New blbls', path: '/hr/employees/employeedddddds/' },
       
       ];
    // Function to determine if a tab is active based on the current path
@@ -29,9 +29,11 @@ const employeesTabs=
        {tabs.map((tab) => (
        <Link key={tab.path} to={tab.path}>
            <li
-           className={`list-none cursor-pointer ${
-               isActive(tab.path) ? 'text-blue-500' : 'text-gray-800 hover:text-blue-500'
-           }`}
+           className={`list-none cursor-pointer px-4 py-2 border border-gray-400 rounded-md ${
+            isActive(tab.path)
+              ? "text-blue-500 border-blue-500 bg-blue-100"
+              : "text-gray-800 hover:text-blue-500"
+          }`}
            >
            {tab.label}
            </li>

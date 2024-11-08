@@ -176,7 +176,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
           },
         },
       });
-      navigate("/hr/employees/");
+      navigate("/hr/employees/employees");
     }
   }, [isSuccess, navigate]);
 

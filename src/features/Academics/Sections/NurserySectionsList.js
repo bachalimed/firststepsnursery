@@ -70,7 +70,7 @@ const NurserySectionsList = () => {
   } = useGetSectionsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
-      //criteria: "withEducation",
+      criteria: "withAnimators",
       endpointName: "sectionsList",
     } || {},
     {
@@ -104,30 +104,37 @@ const NurserySectionsList = () => {
 
     //the serach result data
     // Filter sections based on search query, including student names
-filteredSections = sectionsList?.filter((section) => {
-  // Check section fields for search query
-  const sectionMatches = Object.values(section).some((val) =>
-    String(val).toLowerCase().includes(searchQuery.toLowerCase())
-  );
+    filteredSections = sectionsList?.filter((section) => {
+      // Check section fields for search query
+      const sectionMatches = Object.values(section).some((val) =>
+        String(val).toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    
+      // Check student details for search query
+      const studentMatches = section.students?.some((student) => {
+        const firstNameMatch = student?.studentName?.firstName
+          ?.toLowerCase()
+          .includes(searchQuery.toLowerCase());
+        const middleNameMatch = student?.studentName?.middleName
+          ?.toLowerCase()
+          .includes(searchQuery.toLowerCase());
+        const lastNameMatch = student?.studentName?.lastName
+          ?.toLowerCase()
+          .includes(searchQuery.toLowerCase());
+    
+        // Check studentEducation.attendedSchool.schoolName
+        const schoolNameMatch = student?.studentEducation?.attendedSchool?.schoolName
+          ?.toLowerCase()
+          .includes(searchQuery.toLowerCase());
+    
+        return firstNameMatch || middleNameMatch || lastNameMatch || schoolNameMatch;
+      });
+    
+      // Return true if either the section fields or student names/education match the search query
+      return sectionMatches || studentMatches;
+    });
+    
 
-  // Check student names for search query
-  const studentMatches = section.students?.some((student) => {
-    const firstNameMatch = student?.studentName?.firstName
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    const middleNameMatch = student?.studentName?.middleName
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    const lastNameMatch = student?.studentName?.lastName
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-
-    return firstNameMatch || middleNameMatch || lastNameMatch;
-  });
-
-  // Return true if either the section fields or student names match the search query
-  return sectionMatches || studentMatches;
-});
 
   }
 
@@ -237,27 +244,12 @@ filteredSections = sectionsList?.filter((section) => {
       name: "Label",
       selector: (row) => row?.sectionLabel,
       sortable: true,
-      width: "150px",
+      width: "120px",
       cell: (row) => (
         <Link to={`/sections/sectionDetails/${row.id}`}>
           {row?.sectionLabel}
         </Link>
       ),
-    },
-    {
-      name: "Type",
-      selector: (row) => row?.sectionType,
-      sortable: true,
-      width: "100px",
-    },
-    {
-      name: "Classroom",
-      selector: (row) =>
-        row?.sectionLocation?.classroomNumber +
-        " " +
-        row?.sectionLocation?.classroomLabel,
-      sortable: true,
-      width: "180px",
     },
     {
       name: "Count",
@@ -286,13 +278,39 @@ filteredSections = sectionsList?.filter((section) => {
       selector: (row) => (
         <div>
           {row.students.map((student) => (
-            <div key={student._id}>{student?.studentEducation?.attendedSchool?.schoolName || ""}</div>
+            <div key={student._id}>
+              {student?.studentEducation?.attendedSchool?.schoolName || ""}
+            </div>
           ))}
         </div>
       ),
       sortable: true,
       width: "150px",
     },
+    {
+      name: "Animator",
+      selector: (row) =>
+        `${row?.sectionAnimator?.userFullName?.userFirstName} ${row?.sectionAnimator?.userFullName?.userMiddleName} ${row?.sectionAnimator?.userFullName?.userLastName}`.trim(),
+      sortable: true,
+      width: "190px",
+    },
+    {
+      name: "Type",
+      selector: (row) => row?.sectionType,
+      sortable: true,
+      width: "100px",
+    },
+
+    {
+      name: "Classroom",
+      selector: (row) =>
+        row?.sectionLocation?.classroomNumber +
+        " " +
+        row?.sectionLocation?.classroomLabel,
+      sortable: true,
+      width: "180px",
+    },
+
     {
       name: "Section Formed",
       selector: (row) => (
@@ -380,6 +398,10 @@ filteredSections = sectionsList?.filter((section) => {
           className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
         />
       </div>
+
+
+
+      
       <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
         <DataTable
           columns={column}
@@ -394,7 +416,7 @@ filteredSections = sectionsList?.filter((section) => {
         <div className="flex justify-end items-center space-x-4">
           <button
             className=" px-4 py-2 bg-green-500 text-white rounded"
-            onClick={()=> navigate("/academics/sections/newSection/")}
+            onClick={() => navigate("/academics/sections/newSection/")}
             disabled={selectedRows.length !== 1} // Disable if no rows are selected
             hidden={!canCreate}
           >

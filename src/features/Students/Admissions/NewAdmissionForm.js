@@ -430,11 +430,15 @@ const NewAdmissionForm = () => {
     ) &&
     Object.values(primaryValidity).every(Boolean) &&
     !isAdmissionLoading;
-
-  ////////////////////////console.log(formData, "formData");
+    const handleCancel = () => {
+      navigate("/students/admissions/admissions/");
+    };
+console.log(formData, "formData");
   const content = (
     <>
       <Admissions />
+
+     { noAdmissionStudents?.length!==0 ?
       <form
         onSubmit={handleSubmit}
         className="space-y-6 bg-white p-6 shadow rounded-md"
@@ -677,7 +681,7 @@ const NewAdmissionForm = () => {
                 <select
                   id={`feeMonths-${index}`}
                   name="feeMonths"
-                  multiple
+                  multiple={index!==0 }//can only select one month for admission(supposed to be first,  )
                   size="6" // Shows 5 options by default
                   value={service.feeMonths}
                   onChange={(e) => handleAgreedServicesChange(index, e)}
@@ -779,8 +783,15 @@ const NewAdmissionForm = () => {
             <FontAwesomeIcon icon={faSave} className="mr-2" />
             {isAdmissionLoading ? "Saving..." : "Save Admission"}
           </button>
+          <button
+            type="button"
+            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium bg-red-500 text-white  hover:bg-red-600"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
         </div>
-      </form>
+      </form> : "No new Students for admission available"}
     </>
   );
 

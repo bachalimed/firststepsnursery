@@ -140,7 +140,7 @@ const EditEmployeeForm = ({ employee }) => {
     if (isSuccess) {
       setFormData({});
 
-      navigate("/hr/employees/");
+      navigate("/hr/employees/employees/");
     }
   }, [isSuccess, navigate]);
   const handleInputChange = (e) => {

@@ -319,22 +319,7 @@ const EditAdmissionForm = ({ admission }) => {
           parseFloat(formData?.agreedServices[index]?.feeValue) <
           parseFloat(serviceAnchorValue); // Determine if the new flag should be true or false
 
-        // Only update state if `isFlagged` or `isAuthorised` changes
-        // if (formData?.agreedServices[index]?.isFlagged === isFlaggedNew) {
-        //   setFormData((prevData) => ({
-        //     ...prevData,
-        //     agreedServices: prevData.agreedServices.map((serv, idx) => {
-        //       if (idx === index) {
-        //         return {
-        //           ...serv,
-        //           isFlagged: isFlaggedNew, // Set new flag value
-        //           isAuthorised: isFlaggedNew ? false : serv.isAuthorised, // Set isAuthorised to false if flagged
-        //         };
-        //       }
-        //       return serv;
-        //     }),
-        //   }));
-        // }
+       
         if (isFlaggedNew===true) {
           setFormData((prevData) => ({
             ...prevData,
@@ -403,6 +388,9 @@ const EditAdmissionForm = ({ admission }) => {
     }
   };
 
+  const handleCancel = () => {
+    navigate("/students/admissions/admissions/");
+  };
   console.log(formData, "formData");
   const content = (
     <>
@@ -729,6 +717,13 @@ const EditAdmissionForm = ({ admission }) => {
           >
             <FontAwesomeIcon icon={faSave} className="mr-2" />
             {isAdmissionLoading ? "Saving..." : "Save Admission"}
+          </button>
+          <button
+            type="button"
+            className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium bg-red-500 text-white rounded-md hover:bg-red-600"
+            onClick={handleCancel}
+          >
+            Cancel
           </button>
         </div>
       </form>
