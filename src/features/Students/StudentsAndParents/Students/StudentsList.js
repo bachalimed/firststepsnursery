@@ -473,7 +473,7 @@ const StudentsList = () => {
     },
   ];
 
-  console.log(filteredStudents, "filteredStudents");
+  //console.log(filteredStudents, "filteredStudents");
   let content;
   if (isLoading) content = <LoadingStateIcon />;
   if (isError) {

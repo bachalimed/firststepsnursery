@@ -92,7 +92,7 @@ const SectionsPlannings = () => {
   } = useGetSectionsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
-      endpointName: "SectionsListInPlanning",
+      endpointName: "SectionsPlannings",
     } || {},
     {
       //pollingInterval: 60000,//will refetch data every 60seconds
@@ -112,7 +112,7 @@ const SectionsPlannings = () => {
       selectedYear: selectedAcademicYear?.title,
       criteria: "withSections",
 
-      endpointName: "studentsList",
+      endpointName: "SectionsPlannings",
     } || {},
     {
       //pollingInterval: 60000,//will refetch data every 60seconds
@@ -131,7 +131,7 @@ const SectionsPlannings = () => {
     {
       selectedYear: selectedAcademicYear?.title,
       criteria: "schools",
-      endpointName: "sessionsList",
+      endpointName: "SectionsPlannings",
     } || {},
     {
       //pollingInterval: 60000, //will refetch data every 60seconds
@@ -151,7 +151,7 @@ const SectionsPlannings = () => {
       selectedYear: selectedAcademicYear?.title,
       criteria: "Animator",
 
-      endpointName: "employeesList",
+      endpointName: "SectionsPlannings",
     } || {},
     {
       //pollingInterval: 60000,//will refetch data every 60seconds
@@ -168,7 +168,7 @@ const SectionsPlannings = () => {
     error: classroomsError,
   } = useGetClassroomsQuery(
     {
-      endpointName: "ClassroomsList",
+      endpointName: "SectionsPlannings",
     } || {},
     {
       //pollingInterval: 60000,//will refetch data every 60seconds
@@ -184,7 +184,7 @@ const SectionsPlannings = () => {
     error: schoolsError,
   } = useGetAttendedSchoolsQuery(
     {
-      endpointName: "AttendedSchoolsList",
+      endpointName: "SectionsPlannings",
     } || {},
     {
       //pollingInterval: 60000,//will refetch data every 60seconds
@@ -252,10 +252,7 @@ const SectionsPlannings = () => {
     const { entities } = sessions;
     sessionsList = Object.values(entities); //we are using entity adapter in this query
 
-    //console.log(sessionsList, "sessionsList");
   }
-  //console.log(studentsList, "studentsList");
-  // console.log(studentSections, "studentSections");
   if (isEmployeesSuccess && !isEmployeesLoading) {
     const { entities } = employees;
     employeesList = Object.values(entities);
@@ -268,6 +265,10 @@ const SectionsPlannings = () => {
     const { entities } = schools;
     schoolsList = Object.values(entities);
   }
+  console.log(sessionsList, "sessionsList");
+  console.log(studentsList, "studentsList");
+  console.log(studentsList[0], "studentsList[0]");
+  console.log(studentSections, "studentSections");
   //console.log(schoolsList, "schoolsList");
   const fields = {
     //the current case is working with old db
@@ -339,25 +340,26 @@ const SectionsPlannings = () => {
 
   
 
-  
+  // const openNewSessionEditor = () => {
+  //   if (scheduleObj.current) {
+  //     scheduleObj.current.openEditor({}, "Add"); // Opens the editor in "Add" mode
+  //   }
+  // };
+
   let eventStartTime;
-  let eventType
-let parentId
+  let eventType;
+  let parentId;
 
-
-  
   const onPopupOpen = (args) => {
     //prevent opening the quickinfo on a new cell, we need double click to open the full editor
     if (args.type === "QuickInfo" && !args.data.Subject) {
       args.cancel = true;
     }
     if (!args.data.RecurrenceID) {
-      eventType ="notRecurrent"
+      eventType = "notRecurrent";
     } else {
-      eventType="recurrent"
+      eventType = "recurrent";
     }
-
-
 
     //setParentId(scheduleObj.activeEventData.event.id)// not working
     console.log(eventType, "  eventType popupopen");
@@ -365,7 +367,7 @@ let parentId
     console.log(scheduleObj.current, "scheduleobj cureent popup open");
     console.log(args, "  argsgggsss popupopen");
     //capture the parent id to be used later   for updates, deletions...
-     parentId=args.data?.id  // we selected an event an d not an empty
+    parentId = args.data?.id; // we selected an event an d not an empty
     console.log("parentId captured:", parentId);
     //capture the start date of the event to be used in teh exception
     eventStartTime = args.data.StartTime;
@@ -389,8 +391,7 @@ let parentId
         customRow = createElement("div", { className: "custom-field-row" });
         formElement.insertBefore(customRow, formElement.firstElementChild);
       }
-      
-      
+
       // Initialize dropdown fields with their existing selected values if available
       const createDropdownField = (
         name,
@@ -742,8 +743,8 @@ let parentId
           });
           // Simulate `actionComplete` by manually triggering callback logic
           //mockActionComplete("eventRemove", args.data[0]);
-          parentId=""
-          eventType=""
+          parentId = "";
+          eventType = "";
         }
         if (
           Object.keys(args.data[0]).length === 2 &&
@@ -768,8 +769,8 @@ let parentId
           });
           // Simulate `actionComplete` by manually triggering callback logic
           //mockActionComplete("eventRemove", args.data[0]);
-          parentId=""
-          eventType=""
+          parentId = "";
+          eventType = "";
         }
         ///if entire serie deletion: simply delete the parent event and !!also all its exceptions we recognise by recurrencID!!
         if (Object.keys(args.data[0]).length > 2 && eventType === "recurrent") {
@@ -779,8 +780,8 @@ let parentId
             id: parentId,
             operationType: "deleteSeries",
           });
-          parentId=""
-          eventType=""
+          parentId = "";
+          eventType = "";
         }
         ///if single event deletion:// add and exception with the start date to the parent
 
@@ -800,7 +801,9 @@ let parentId
           args.cancel = true;
           //if we save but the data was not changed, abord teh save
 
-          if(args.changedRecords[0] ===args.data){ return}///to be checked later
+          if (args.changedRecords[0] === args.data) {
+            return;
+          } ///to be checked later
           // Delay the next actions to allow state to update
           //setTimeout(() => {
           // Access the updated sessionObject if needed
@@ -814,8 +817,8 @@ let parentId
           //mockActionComplete("eventUpdate", args.data[0]);
 
           // Reset states
-          parentId=""
-          eventType=""
+          parentId = "";
+          eventType = "";
           //setSessionObject("");
           // }, 50); // 50ms delay, adjust as needed
           return; //this prevented the error but still have update whole series starting after this one
@@ -832,10 +835,11 @@ let parentId
           console.log(extraException, "extraException");
           //setChildRecurrenceID(parentId) no need because we are not updating the child but deleting it
           // Access RecurrenceException data for parent record
- //if we save but the data was not changed, abord teh save
+          //if we save but the data was not changed, abord teh save
 
- if(args.changedRecords[0] ===args.data.occurence){ return}//to be checked later
-
+          if (args.changedRecords[0] === args.data.occurence) {
+            return;
+          } //to be checked later
 
           handleUpdateSession({
             ...args.changedRecords[0],
@@ -847,20 +851,21 @@ let parentId
           });
           // Simulate `actionComplete` by manually triggering callback logic
           //mockActionComplete("eventUpdate", args.changedRecords[0]);
-          parentId=""
-          eventType=""
+          parentId = "";
+          eventType = "";
           return;
         }
-       
+
         ///if entire serie deletion: simply delete the parent event and !!also all its exceptions we recognise by recurrencID!!but how to differentiate between single and whole serie deletion or update
         if (Object.keys(args.data).length !== 2 && eventType === "recurrent") {
           console.log("whole series update detected");
           args.cancel = true;
-          handleUpdateSession({...args.changedRecords[0],           
-            operationType: "editSeries",//this will not update the occurences that were already edited and have and exception rule
+          handleUpdateSession({
+            ...args.changedRecords[0],
+            operationType: "editSeries", //this will not update the occurences that were already edited and have and exception rule
           });
-          parentId=""
-          eventType=""
+          parentId = "";
+          eventType = "";
           return;
         }
 
@@ -903,17 +908,26 @@ let parentId
   return (
     <>
       <Plannings />
+
       <TimelineResourceGrouping className="timeline-resource-grouping e-schedule">
         <div className="schedule-control-section">
           <div className="col-lg-12 control-section">
             <div className="control-wrapper">
+              {/* <div>
+                <button
+                  onClick={openNewSessionEditor}
+                  className="btn btn-primary"
+                >
+                  Add New Session
+                </button>
+              </div> */}
               <ScheduleComponent
                 ref={scheduleObj} //to access and update teh scheduler by applying the query filter based on selectedschools
                 cssClass="timeline-resource-grouping"
                 width="100%"
                 //height="650px"
-               // selectedDate={new Date(2024, 10, 1)}
-               selectedDate={new Date()}
+                // selectedDate={new Date(2024, 10, 1)}
+                selectedDate={new Date()}
                 timeScale={{ enable: true, interval: 60, slotCount: 4 }}
                 currentView="TimelineDay"
                 workDays={workDays}

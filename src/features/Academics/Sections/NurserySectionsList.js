@@ -222,6 +222,38 @@ const NurserySectionsList = () => {
       setSectionYears(sectionYears.filter((year) => year !== selectedYear));
     }
   };
+ 
+ 
+
+ 
+  //initialising the delete Mutation
+ const [
+  deleteSection,
+  {
+    isLoading: isDelSectionLoading,
+    isSuccess: isDelSectionSuccess,
+    isError: isDelSectionError,
+    error: delSectionError,
+  },
+] = useDeleteSectionMutation();
+
+// Function to handle the delete button click
+const onDeleteStudentClicked = (id) => {
+  setIdSectionToDelete(id); // Set the document to delete
+  setIsDeleteModalOpen(true); // Open the modal
+};
+
+// Function to confirm deletion in the modal
+const handleConfirmDelete = async () => {
+  await deleteSection({ id: idSectionToDelete });
+  setIsDeleteModalOpen(false); // Close the modal
+};
+
+// Function to close the modal without deleting
+const handleCloseDeleteModal = () => {
+  setIsDeleteModalOpen(false);
+  setIdSectionToDelete(null);
+};
 
   const column = [
     {
@@ -365,14 +397,15 @@ const NurserySectionsList = () => {
               <FiEdit className="text-2xl" />
             </button>
           ) : null}
-          {/* {canDelete && (
+          
+          {canDelete && (
               <button
                 className="text-red-500"
-                onClick={() => onDeleteSectionClicked(row.id)}
+                onClick={() => onDeleteStudentClicked(row.id)}
               >
                 <RiDeleteBin6Line className="text-2xl" />
               </button>
-            )} */}
+            )}
         </div>
       ),
       ignoreRowClick: true,
@@ -455,7 +488,11 @@ const NurserySectionsList = () => {
           )}
         </div> */}
       </div>
-
+      <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
       <RegisterModal
         isOpen={isRegisterModalOpen}
         onClose={() => setIsRegisterModalOpen(false)}
