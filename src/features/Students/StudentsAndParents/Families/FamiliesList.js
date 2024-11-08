@@ -47,7 +47,7 @@ const FamiliesList = () => {
     isError: isFamilyError,
     error: familyError,
   } = useGetFamiliesByYearQuery(
-    { selectedYear: selectedAcademicYear?.title, endpointName: "families" } ||
+    { selectedYear: selectedAcademicYear?.title, endpointName: "FamiliesList" } ||
       {},
     {
       //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices

@@ -89,7 +89,7 @@ const UnenrolmentsList = () => {
     {
       selectedYear: selectedAcademicYear?.title,
       criteria: "noEnrolments",
-      endpointName: "admissionsList",
+      endpointName: "UnenrolmentsList",
     } || {},
     {
       //this param will be passed in req.params to select only admissions for taht year
@@ -109,7 +109,7 @@ const UnenrolmentsList = () => {
   } = useGetServicesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
-      endpointName: "servicesList",
+      endpointName: "UnenrolmentsList",
     } || {},
     {
       //this param will be passed in req.params to select only services for taht year

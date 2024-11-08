@@ -17,10 +17,10 @@ const EditNotification = () => {
 
   let content;
 ///add another section before for loading to make links available
-  content = notificationToEdit ? (
-    <EditNotificationForm notification={notificationToEdit} />
+  content = notificationToEdit ? (<>notification header here
+    <EditNotificationForm notification={notificationToEdit} /></>
   ) : (
-    <LoadingStateIcons />
+    <>notification header here<LoadingStateIcons /></>
   );
 
   //}

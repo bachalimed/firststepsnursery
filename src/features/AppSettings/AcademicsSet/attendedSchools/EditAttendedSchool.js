@@ -20,7 +20,7 @@ const EditAttendedSchool = () => {
     isSuccess: isSchoolSuccess,
     isError: isSchoolError,
     error: schoolError,
-  } = useGetAttendedSchoolByIdQuery({ id: id, endpointName: "school" } || {}, {
+  } = useGetAttendedSchoolByIdQuery({ id: id, endpointName: "EditAttendedSchool" } || {}, {
     // "dry" will not ppoulate children fully
     //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
     //pollingInterval: 60000,//will refetch data every 60seconds

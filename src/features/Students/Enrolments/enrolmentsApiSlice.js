@@ -73,6 +73,7 @@ export const enrolmentsApiSlice = apiSlice.injectEndpoints({
         return response.status === 200 && !result.isError;
       },
 
+      
       transformResponse: (responseData) => {
         //const {loadedEnrolments} =
         //console.log('academicYears length  in the APIslice',responseData.total)
@@ -80,6 +81,8 @@ export const enrolmentsApiSlice = apiSlice.injectEndpoints({
         const newLoadedEnrolments = responseData.map((enrolment) => {
           enrolment.id = enrolment._id; //changed the _id from mongoDB to id
           delete enrolment._id; //added to delete the extra original _id from mongo but careful when planning to save to db again
+
+          //console.log(' newLoadedEnrolments in the APIslice',newLoadedEnrolments)
           return enrolment;
         });
         return enrolmentsAdapter.upsertOne(initialState, newLoadedEnrolments);

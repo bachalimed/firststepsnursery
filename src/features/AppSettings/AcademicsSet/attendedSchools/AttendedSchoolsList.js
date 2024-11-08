@@ -31,7 +31,7 @@ const {
         isSuccess,
         isError,
         error
-} = useGetAttendedSchoolsQuery('attendedSchoolsList')||{}//this should match the endpoint defined in your API slice.!! what does it mean?
+} = useGetAttendedSchoolsQuery({endpointName:'attendedSchoolsList'})||{}//this should match the endpoint defined in your API slice.!! what does it mean?
 //we do not want to import from state but from DB
 const [selectedRows, setSelectedRows] = useState([])
 

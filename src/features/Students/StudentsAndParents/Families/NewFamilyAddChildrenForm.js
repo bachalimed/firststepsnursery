@@ -22,7 +22,7 @@ const NewFamilyAddChildrenForm = () => {
     {
       selectedYear: "1000",
       criteria: "No Family",
-      endpointName: "studentsList",
+      endpointName: "NewFamilyAddChildrenForm",
     } || {},
     {
       //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices

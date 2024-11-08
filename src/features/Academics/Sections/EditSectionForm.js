@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useAddNewSectionMutation } from "./sectionsApiSlice";
+import { useUpdateSectionMutation } from "./sectionsApiSlice";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
@@ -9,11 +9,7 @@ import Sections from "../Sections";
 import useAuth from "../../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import { useGetClassroomsQuery } from "../../AppSettings/AcademicsSet/Classrooms/classroomsApiSlice";
-import {
-  useGetEmployeesByYearQuery,
-  useUpdateEmployeeMutation,
-  useDeleteEmployeeMutation,
-} from "../../HR/Employees/employeesApiSlice";
+import { useGetEmployeesByYearQuery } from "../../HR/Employees/employeesApiSlice";
 import {
   useGetStudentsQuery,
   useUpdateStudentMutation,
@@ -32,7 +28,7 @@ import {
 } from "../../../Components/lib/Utils/REGEX";
 //constrains on inputs when creating new user
 
-const NewSectionForm = () => {
+const EditSectionForm = ({ section }) => {
   const navigate = useNavigate();
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -42,14 +38,14 @@ const NewSectionForm = () => {
   const academicYears = useSelector(selectAllAcademicYears);
   //console.log(selectedAcademicYear.title, "selectedAcademicYear");
   const [
-    addNewSection,
+    updateSection,
     {
-      isLoading: isAddSectionLoading,
-      isSuccess: isAddSectionSuccess,
-      isError: isAddSectionError,
-      error: addSectionError,
+      isLoading: isUpdateSectionLoading,
+      isSuccess: isUpdateSectionSuccess,
+      isError: isUpdateSectionError,
+      error: updateSectionError,
     },
-  ] = useAddNewSectionMutation();
+  ] = useUpdateSectionMutation();
   const {
     data: employees, //the data is renamed employees
     isLoading: isEmployeesLoading, //monitor several situations is loading...
@@ -60,7 +56,7 @@ const NewSectionForm = () => {
     {
       selectedYear: selectedAcademicYear?.title,
       criteria: "Animators",
-      endpointName: "employeesList",
+      endpointName: "EditSectionForm",
     } || {},
     {
       //this param will be passed in req.params to select only employees for taht year
@@ -78,7 +74,7 @@ const NewSectionForm = () => {
     error: classroomsError,
   } = useGetClassroomsQuery(
     {
-      endpointName: "ClassroomssList",
+      endpointName: "EditSectionForm",
     } || {},
     {
       //pollingInterval: 60000,//will refetch data every 60seconds
@@ -95,7 +91,7 @@ const NewSectionForm = () => {
   } = useGetStudentsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
-      endpointName: "studentsList",
+      endpointName: "EditSectionForm",
     } || {},
     {
       //this param will be passed in req.params to select only students for taht year
@@ -105,19 +101,22 @@ const NewSectionForm = () => {
       refetchOnMountOrArgChange: true, //refetch when we remount the component
     }
   );
+
+  console.log(section, "section"); //section to be edited
   // Consolidated form state
   const [formData, setFormData] = useState({
-    sectionLabel: "",
-    sectionYear: selectedAcademicYear?.title || "",
-    students: [],
-    sectionColor: "#5978ee",
-    sectionType: "Nursery",
-    sectionFrom: "",
-    //sectionTo: "",
-    sectionAnimator: "",
-    sectionLocation: "",
+    id:section?.id,
+    sectionLabel: section?.sectionLabel,
+    sectionYear: section?.sectionYear,
+    students: section?.students?.map((student) => student._id) || [], // Keep only _id
+    sectionColor: section?.sectionColor,
+    sectionType: section?.sectionType,
+    sectionFrom: section?.sectionFrom,
+    sectionTo: section?.sectionTo,
+    sectionAnimator: section?.sectionAnimator,
+    sectionLocation: section?.sectionLocation,
     operator: userId,
-    creator: userId,
+    isChangeFlag: false, //this will be used ot flag if we modified students or animator so we can decide the actin inthe backend
   });
   let classroomsList = isClassroomsSuccess
     ? Object.values(classrooms.entities)
@@ -155,8 +154,9 @@ const NewSectionForm = () => {
   }, [formData]);
 
   useEffect(() => {
-    if (isAddSectionSuccess) {
+    if (isUpdateSectionSuccess) {
       setFormData({
+        id:"",
         sectionLabel: "",
         sectionYear: "",
         students: [],
@@ -167,15 +167,19 @@ const NewSectionForm = () => {
         //sectionTo: "",
         sectionLocation: "",
         operator: "",
-        creator: "",
+        isChangeFlag: false,
       });
       navigate("/academics/sections/nurserySectionsList");
     }
-  }, [isAddSectionSuccess, navigate]);
+  }, [isUpdateSectionSuccess, navigate]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+      isChangeFlag: name === "sectionAnimator" ? true : prev.isChangeFlag,
+    }));
   };
 
   const handleStudentSelection = (e) => {
@@ -183,18 +187,18 @@ const NewSectionForm = () => {
       e.target.selectedOptions,
       (option) => option.value
     );
-    // Add selected students to formData.students array without duplicates
     setFormData((prev) => ({
       ...prev,
       students: [...new Set([...prev.students, ...selectedStudentIds])],
+      isChangeFlag: true,
     }));
   };
 
   const handleRemoveStudent = (studentId) => {
-    // Remove student by id
     setFormData((prev) => ({
       ...prev,
       students: prev.students.filter((id) => id !== studentId),
+      isChangeFlag: true,
     }));
   };
 
@@ -202,18 +206,18 @@ const NewSectionForm = () => {
     (student) => !formData.students.includes(student.id)
   );
   const canSave =
-    Object.values(validity).every(Boolean) && !isAddSectionLoading;
+    Object.values(validity).every(Boolean) && !isUpdateSectionLoading;
 
-  const onSaveSectionClicked = async (e) => {
-    e.preventDefault();
-    if (canSave) {
-      try {
-        await addNewSection(formData);
-      } catch (err) {
-        console.error("Failed to save the section:", err);
+    const onSaveSectionClicked = async (e) => {
+      e.preventDefault();
+      if (canSave) {
+        try {
+          await updateSection(formData);
+        } catch (err) {
+          console.error("Failed to save the section:", err);
+        }
       }
-    }
-  };
+    };
   const handleCancel = () => {
     navigate("/academics/sections/sections/");
   };
@@ -224,11 +228,11 @@ const NewSectionForm = () => {
 
       <section className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold mb-4">
-          Add New Section: {`${formData.sectionLabel}`}
+         Edit Section: {`${formData.sectionLabel}`}
         </h2>
-        {isAddSectionError && (
+        {isUpdateSectionError && (
           <p className="text-red-500">
-            Error: {addSectionError?.data?.message}
+            Error: {updateSectionError?.data?.message}
           </p>
         )}
         <form onSubmit={onSaveSectionClicked} className="space-y-6">
@@ -402,9 +406,9 @@ const NewSectionForm = () => {
                   )?.grade || "N/A";
                 return (
                   <option key={student.id} value={student.id}>
-                    Grade: {grade} - {student.studentName.firstName}{" "}
-                    {student.studentName.middleName}{" "}
-                    {student.studentName.lastName} 
+                    Grade: {grade} - {student?.studentName?.firstName}{" "}
+                    {student?.studentName?.middleName}{" "}
+                    {student?.studentName?.lastName}
                   </option>
                 );
               })}
@@ -414,10 +418,11 @@ const NewSectionForm = () => {
           {/* Selected Students */}
           <div className="selected-students mt-4">
             <label className="block text-lg font-medium  text-gray-700">
-               {formData.sectionLabel} section Students: {formData?.students.length} 
+              {formData.sectionLabel} section Students:{" "}
+              {formData?.students.length}
             </label>
             <ul className="selected-students-list">
-              {formData.students.map((studentId) => {
+              {formData.students.map((studentId, index) => {
                 const student = studentsList.find((s) => s.id === studentId);
                 const grade =
                   student?.studentYears.find(
@@ -428,8 +433,9 @@ const NewSectionForm = () => {
                   <li
                     key={studentId}
                     onClick={() => handleRemoveStudent(studentId)}
-                    className="cursor-pointer text-blue-600 hover:underline"
+                    className="cursor-pointer hover:text-red-500 hover:line-through"
                   >
+                   {index + 1}.{"  "}
                     {student?.studentName.firstName}{" "}
                     {student?.studentName.middleName}{" "}
                     {student?.studentName.lastName} - Grade: {grade}
@@ -459,7 +465,7 @@ const NewSectionForm = () => {
                   : "bg-gray-400 cursor-not-allowed"
               } focus:outline-none focus:ring-2 focus:ring-offset-2`}
             >
-              Save
+              {isUpdateSectionLoading ? "Saving..." : "Save"}
             </button>
           </div>
         </form>
@@ -469,4 +475,4 @@ const NewSectionForm = () => {
   return content;
 };
 
-export default NewSectionForm;
+export default EditSectionForm;

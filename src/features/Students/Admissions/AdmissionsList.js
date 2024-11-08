@@ -91,7 +91,7 @@ const AdmissionsList = () => {
   } = useGetServicesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
-      endpointName: "servicesList",
+      endpointName: "admissionsList",
     } || {},
     {
       //this param will be passed in req.params to select only services for taht year

@@ -60,7 +60,7 @@ const NewSectionForm = () => {
     {
       selectedYear: selectedAcademicYear?.title,
       criteria: "Animators",
-      endpointName: "employeesList",
+      endpointName: "NewSectionForm",
     } || {},
     {
       //this param will be passed in req.params to select only employees for taht year
@@ -78,7 +78,7 @@ const NewSectionForm = () => {
     error: classroomsError,
   } = useGetClassroomsQuery(
     {
-      endpointName: "ClassroomssList",
+      endpointName: "NewSectionForm",
     } || {},
     {
       //pollingInterval: 60000,//will refetch data every 60seconds
@@ -95,7 +95,7 @@ const NewSectionForm = () => {
   } = useGetStudentsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
-      endpointName: "studentsList",
+      endpointName: "NewSectionForm",
     } || {},
     {
       //this param will be passed in req.params to select only students for taht year

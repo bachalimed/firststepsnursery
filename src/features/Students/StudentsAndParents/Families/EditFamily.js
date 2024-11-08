@@ -41,7 +41,7 @@ const EditFamily = () => {
     isError: isFamilyError,
     error: familyError,
   } = useGetFamilyByIdQuery(
-    { id: id, criteria: "Dry", endpointName: "family" } || {},
+    { id: id, criteria: "Dry", endpointName: "EditFamily" } || {},
     {
       // "dry" will not ppoulate children fully
       //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices

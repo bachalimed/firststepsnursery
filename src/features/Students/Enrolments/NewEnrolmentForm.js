@@ -79,7 +79,7 @@ const NewEnrolmentForm = () => {
     {
       selectedYear: selectedAcademicYear?.title,
       criteria: "noEnrolments",
-      endpointName: "admissionsList",
+      endpointName: "NewEnrolmentForm",
     } || {},
     {
       //this param will be passed in req.params to select only admissions for taht year

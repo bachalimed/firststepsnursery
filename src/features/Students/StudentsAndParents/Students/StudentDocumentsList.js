@@ -142,7 +142,7 @@ const StudentDocumentsList = ({ student }) => {
     {
       studentId: id,
       year: studentDocumentYear,
-      endpointName: "studentsDocumentsList",
+      endpointName: "StudentDocumentsList",
     } || {},
     {
       pollingInterval: 60000, //will refetch data every 60seconds

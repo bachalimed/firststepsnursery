@@ -20,7 +20,7 @@ const EditAdmission = () => {
     isError: isAdmissionError,
     error: admissionError,
   } = useGetAdmissionByIdQuery(
-    { id: id, endpointName: "editAdmission" }, ////in the backend we populate studetn to get his name
+    { id: id, endpointName: "EditAdmission" }, ////in the backend we populate studetn to get his name
     {
       // "dry" will not ppoulate children fully
       //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices

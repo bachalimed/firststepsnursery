@@ -28,7 +28,7 @@ const StudentDetails = () => {
     isSuccess: studentOrgIsSuccess,
     isError: studentOrgIsError,
   } = useGetStudentByIdQuery(
-    { id: id, endpointName: "studentById" },
+    { id: id, endpointName: "StudentDetails" },
     {
       pollingInterval: 60000,
       refetchOnFocus: true,
@@ -53,7 +53,7 @@ const StudentDetails = () => {
     {
       studentId: id,
       year: selectedAcademicYear.title,
-      endpointName: "studentsDocumentsList",
+      endpointName: "StudentDetails",
     },
     {
       pollingInterval: 60000,

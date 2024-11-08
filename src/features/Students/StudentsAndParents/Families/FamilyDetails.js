@@ -42,7 +42,7 @@ const FamilyDetails = () => {
       {
         studentId: id,
         year: studentDocumentYear,
-        endpointName: "studentsDocumentsList",
+        endpointName: "FamilyDetails",
       },
       {
         pollingInterval: 60000,

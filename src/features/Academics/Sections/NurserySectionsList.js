@@ -71,7 +71,7 @@ const NurserySectionsList = () => {
     {
       selectedYear: selectedAcademicYear?.title,
       criteria: "withAnimators",
-      endpointName: "sectionsList",
+      endpointName: "NurserySectionsList",
     } || {},
     {
       //this param will be passed in req.params to select only sections for taht year
@@ -91,6 +91,7 @@ const NurserySectionsList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   //const [filteredSections, setFilteredSections] = useState([])
   //we need to declare the variable outside of if statement to be able to use it outside later
+  const [currentSectionsFilter, setCurrentSectionsFilter] = useState(false);
   let sectionsList = [];
   let filteredSections = [];
   if (isSuccess) {
@@ -105,11 +106,16 @@ const NurserySectionsList = () => {
     //the serach result data
     // Filter sections based on search query, including student names
     filteredSections = sectionsList?.filter((section) => {
+      // Apply filter for sectionTo if needed
+      const sectionToIsValid =
+        !currentSectionsFilter ||
+        (section.sectionTo !== undefined && section.sectionTo !== null);
+
       // Check section fields for search query
       const sectionMatches = Object.values(section).some((val) =>
         String(val).toLowerCase().includes(searchQuery.toLowerCase())
       );
-    
+
       // Check student details for search query
       const studentMatches = section.students?.some((student) => {
         const firstNameMatch = student?.studentName?.firstName
@@ -121,21 +127,21 @@ const NurserySectionsList = () => {
         const lastNameMatch = student?.studentName?.lastName
           ?.toLowerCase()
           .includes(searchQuery.toLowerCase());
-    
+
         // Check studentEducation.attendedSchool.schoolName
-        const schoolNameMatch = student?.studentEducation?.attendedSchool?.schoolName
-          ?.toLowerCase()
-          .includes(searchQuery.toLowerCase());
-    
-        return firstNameMatch || middleNameMatch || lastNameMatch || schoolNameMatch;
+        const schoolNameMatch =
+          student?.studentEducation?.attendedSchool?.schoolName
+            ?.toLowerCase()
+            .includes(searchQuery.toLowerCase());
+
+        return (
+          firstNameMatch || middleNameMatch || lastNameMatch || schoolNameMatch
+        );
       });
-    
-      // Return true if either the section fields or student names/education match the search query
-      return sectionMatches || studentMatches;
+
+      // Return true if section matches search query, student matches search query, and sectionTo is valid
+      return (sectionMatches || studentMatches) && sectionToIsValid;
     });
-    
-
-
   }
 
   const handleSearch = (e) => {
@@ -326,12 +332,12 @@ const NurserySectionsList = () => {
           <div>
             To{" "}
             {row.sectionTo
-          ? new Date(row.sectionTo).toLocaleDateString("en-GB", {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-            })
-          : "present"}
+              ? new Date(row.sectionTo).toLocaleDateString("en-GB", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                })
+              : "present"}
           </div>
         </div>
       ),
@@ -352,7 +358,7 @@ const NurserySectionsList = () => {
           >
             <ImProfile className="text-2xl" />
           </button>
-          {canEdit ? (
+          {!row.sectionTo && canEdit ? (
             <button
               className="text-yellow-400"
               onClick={() =>
@@ -387,23 +393,29 @@ const NurserySectionsList = () => {
   content = (
     <>
       <Sections />
-
-      <div className="relative h-10 mr-2 ">
-        <HiOutlineSearch
-          fontSize={20}
-          className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-        />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={handleSearch}
-          className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
-        />
+      <div className="flex space-x-2 items-center">
+        <div className="relative h-10 mr-2 ">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+          />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
+          />
+        </div>
+        <button
+          onClick={() => setCurrentSectionsFilter((prev) => !prev)}
+          className="ml-2 p-2 bg-gray-200 rounded hover:text-blue-600"
+        >
+          {currentSectionsFilter
+            ? "Current Sections Shown"
+            : "All Sections Shown"}
+        </button>
       </div>
 
-
-
-      
       <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
         <DataTable
           columns={column}

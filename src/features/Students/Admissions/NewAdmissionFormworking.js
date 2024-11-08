@@ -71,7 +71,7 @@ const NewAdmissionForm = () => {
   } = useGetStudentsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
-      endpointName: "studentsList",
+      endpointName: "NewAdmissionForm",
     } || {},
     {
       //this param will be passed in req.params to select only students for taht year
@@ -91,7 +91,7 @@ const NewAdmissionForm = () => {
   } = useGetServicesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
-      endpointName: "servicesList",
+      endpointName: "NewAdmissionForm",
     } || {},
     {
       //this param will be passed in req.params to select only services for taht year

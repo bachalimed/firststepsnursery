@@ -20,13 +20,16 @@ const EditClassroom = () => {
     isSuccess: isSchoolSuccess,
     isError: isSchoolError,
     error: schoolError,
-  } = useGetClassroomByIdQuery({ id: id, endpointName: "school" } || {}, {
-    // "dry" will not ppoulate children fully
-    //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-    //pollingInterval: 60000,//will refetch data every 60seconds
-    refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
-    refetchOnMountOrArgChange: true, //refetch when we remount the component
-  });
+  } = useGetClassroomByIdQuery(
+    { id: id, endpointName: "EditClassroom" } || {},
+    {
+      // "dry" will not ppoulate children fully
+      //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+      //pollingInterval: 60000,//will refetch data every 60seconds
+      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
+      refetchOnMountOrArgChange: true, //refetch when we remount the component
+    }
+  );
   //console.log('hiiiiiiiiiiii')
   useEffect(() => {
     if (isSchoolSuccess) {
@@ -41,7 +44,6 @@ const EditClassroom = () => {
 
   content = schoolToEdit ? (
     <>
-     
       <EditClassroomForm classroom={schoolToEdit} />
     </>
   ) : (

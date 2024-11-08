@@ -20,7 +20,7 @@ const EditEnrolment = () => {
     isError: isEnrolmentError,
     error: enrolmentError,
   } = useGetEnrolmentByIdQuery(
-    { id: id, endpointName: "editEnrolment" }, ////in the backend we populate studetn to get his name
+    { id: id, endpointName: "EditEnrolment" }, ////in the backend we populate studetn to get his name
     {
       // "dry" will not ppoulate children fully
       //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
@@ -30,6 +30,7 @@ const EditEnrolment = () => {
     }
   );
 
+  
   let content;
   const enrolmentToEdit = isEnrolmentSuccess
     ? Object.values(admToEdit.entities)

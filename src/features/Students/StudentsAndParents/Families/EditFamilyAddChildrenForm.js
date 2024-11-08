@@ -30,7 +30,7 @@ export default function EditFamilyAddChildrenForm() {
     {
       selectedYear: "1000",
       criteria: "No Family",
-      endpointName: "studentsList",
+      endpointName: "EditFamilyAddChildrenForm",
     } || {},
     {
       //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices

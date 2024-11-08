@@ -91,6 +91,7 @@ const SchoolSectionsList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   //const [filteredSchoolSections, setFilteredSchoolSections] = useState([])
   //we need to declare the variable outside of if statement to be able to use it outside later
+  const [currentSectionsFilter, setCurrentSectionsFilter] = useState(false);
   let schoolSectionsList = [];
   let filteredSchoolSections = [];
   if (isSuccess) {
@@ -105,23 +106,27 @@ const SchoolSectionsList = () => {
     //the serach result data
     // Filter sections based on search query, including student names
     filteredSchoolSections = schoolSectionsList?.filter((school) => {
+      // Check sectionTo validity for the current school if filtering is active
+      const sectionToIsValid = !currentSectionsFilter || 
+        school.students?.some(student => student.sectionTo !== undefined && student.sectionTo !== null);
+    
       // Check if the school's name matches the search query
       const schoolNameMatches = school.schoolName
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
-
+    
       // Check if any student in the school matches the search query
       const studentMatches = school.students?.some((student) => {
         const firstNameMatch = student?.studentName?.firstName
           .toLowerCase()
           .includes(searchQuery.toLowerCase());
         const middleNameMatch = student?.studentName?.middleName
-          .toLowerCase()
+          ?.toLowerCase()
           .includes(searchQuery.toLowerCase());
         const lastNameMatch = student?.studentName?.lastName
-          .toLowerCase()
+          ?.toLowerCase()
           .includes(searchQuery.toLowerCase());
-
+    
         // Check additional fields like section label, classroom label, etc.
         const sectionLabelMatch = student?.sectionLabel
           ?.toLowerCase()
@@ -129,7 +134,7 @@ const SchoolSectionsList = () => {
         const classroomLabelMatch = student?.classroomLabel
           ?.toLowerCase()
           .includes(searchQuery.toLowerCase());
-
+    
         // Return true if any student fields match the search query
         return (
           firstNameMatch ||
@@ -139,10 +144,11 @@ const SchoolSectionsList = () => {
           classroomLabelMatch
         );
       });
-
-      // Return true if either the school name or any student fields match the search query
-      return schoolNameMatches || studentMatches;
+    
+      // Return true if either the school name or any student fields match the search query, and sectionTo is valid for the current school
+      return (schoolNameMatches || studentMatches) && sectionToIsValid;
     });
+
   }
 console.log(filteredSchoolSections,'filteredSchoolSections')
   const handleSearch = (e) => {
@@ -282,7 +288,7 @@ console.log(filteredSchoolSections,'filteredSchoolSections')
   content = (
     <>
       <Sections />
-
+      <div className="flex space-x-2 items-center">
       <div className="relative h-10 mr-2 ">
         <HiOutlineSearch
           fontSize={20}
@@ -294,6 +300,15 @@ console.log(filteredSchoolSections,'filteredSchoolSections')
           onChange={handleSearch}
           className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
         />
+      </div>
+      <button
+          onClick={() => setCurrentSectionsFilter((prev) => !prev)}
+          className="ml-2 p-2 bg-gray-200 rounded hover:text-blue-600"
+        >
+          {currentSectionsFilter
+            ? "Current Sections Shown"
+            : "All Sections Shown"}
+        </button>
       </div>
       <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
         <DataTable

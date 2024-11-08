@@ -52,6 +52,36 @@ export const sectionsApiSlice = apiSlice.injectEndpoints({
       },
       providesTags: ["section"],
     }),
+    getSectionById: builder.query({
+      query: (params) => {
+        const queryString = new URLSearchParams(params).toString();
+        
+        return `/academics/sections?${queryString}`;
+      },
+
+      validateStatus: (response, result) => {
+       
+        return response.status === 200 && !result.isError;
+      },
+
+      transformResponse: (responseData) => {
+        // console.log('  responseData in the APIslice',responseData)
+        // const newLoadedSection = { ...responseData }; // Make a copy of the response object
+        // newLoadedSection.id = newLoadedSection._id; // Change `_id` to `id`
+        // delete newLoadedSection._id; // Remove the original `_id` field
+        // console.log(' newLoadedSection in the APIslice',newLoadedSection)
+        
+        // // Use `sectionsAdapter.upsertOne` to add or update the section in the state
+        // return sectionsAdapter.upsertOne(initialState, newLoadedSection);
+        const newLoadedSections = responseData.map((section) => {
+          section.id = section._id; //changed the _id from mongoDB to id
+          delete section._id; //added to delete the extra original _id from mongo but careful when planning to save to db again
+          return section;
+        });
+        return sectionsAdapter.upsertOne(initialState, newLoadedSections);
+      },
+      providesTags: ["section"],
+    }),
     addNewSection: builder.mutation({
       query: (initialSectionData) => ({
         url: "/academics/sections",
@@ -89,6 +119,7 @@ export const sectionsApiSlice = apiSlice.injectEndpoints({
 export const {
   useGetSectionsQuery,
   useGetSectionsByYearQuery,
+  useGetSectionByIdQuery,
   useAddNewSectionMutation,
   useUpdateSectionMutation,
   useDeleteSectionMutation,

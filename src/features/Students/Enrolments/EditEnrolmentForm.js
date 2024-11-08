@@ -76,7 +76,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
   } = useGetServicesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
-      endpointName: "servicesList",
+      endpointName: "EditEnrolmentForm",
     } || {},
     {
       //this param will be passed in req.params to select only services for taht year

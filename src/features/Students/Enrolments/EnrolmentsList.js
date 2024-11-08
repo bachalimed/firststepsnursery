@@ -82,7 +82,7 @@ const EnrolmentsList = () => {
   } = useGetEnrolmentsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
-      endpointName: "enrolmentsList",
+      endpointName: "EnrolmentsList",
     } || {},
     {
       //this param will be passed in req.params to select only enrolments for taht year
@@ -102,7 +102,7 @@ const EnrolmentsList = () => {
   } = useGetServicesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
-      endpointName: "servicesList",
+      endpointName: "EnrolmentsList",
     } || {},
     {
       //this param will be passed in req.params to select only services for taht year
