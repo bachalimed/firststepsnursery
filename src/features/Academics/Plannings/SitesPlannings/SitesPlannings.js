@@ -80,7 +80,7 @@ const SitesPlannings = () => {
   } = useGetSectionsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
-      endpointName: "SectionsListInPlanning",
+      endpointName: "SitesPlannings",
     } || {},
     {
       //pollingInterval: 60000,//will refetch data every 60seconds
@@ -96,7 +96,7 @@ const SitesPlannings = () => {
     error: schoolsError,
   } = useGetAttendedSchoolsQuery(
     {
-      endpointName: "AttendedSchoolsList",
+      endpointName: "SitesPlannings",
     } || {},
     {
       //pollingInterval: 60000,//will refetch data every 60seconds
@@ -115,7 +115,7 @@ const SitesPlannings = () => {
     {
       selectedYear: selectedAcademicYear?.title,
       criteria: "schools",
-      endpointName: "sessionsList",
+      endpointName: "SitesPlannings",
     } || {},
     {
       //pollingInterval: 60000,//will refetch data every 60seconds
@@ -135,7 +135,7 @@ const SitesPlannings = () => {
       selectedYear: selectedAcademicYear?.title,
       criteria: "withSections",
 
-      endpointName: "studentsList",
+      endpointName: "SitesPlannings",
     } || {},
     {
       //pollingInterval: 60000,//will refetch data every 60seconds
@@ -181,7 +181,7 @@ const SitesPlannings = () => {
     //startTime: { name: "startTime" }, // Mapping your `startTime` field to `StartTime`
    // endTime: { name: "endTime" }, // Mapping your `endTime` field to `EndTime`
  //   location: { name: "location" },
-    title: { name: "title" },
+   // title: { name: "title" },
     sessionYear: { name: "sessionYear" },
     animator: { name: "animator" },
     school: { name: "school", idField: "_id" },
@@ -383,7 +383,8 @@ const onEventRendered = (args) => {
             <ScheduleComponent
               width="100%"
               //height="650px"
-              selectedDate={new Date(2024, 10, 1)}
+              selectedDate={new Date()}
+              // selectedDate={new Date(2024, 10, 1)}
               ref={scheduleObj} //to access and update teh scheduler by applying the query filter based on selectedschools
               eventSettings={eventSettings}
               //allowDragAndDrop={false}

@@ -78,7 +78,7 @@ const AnimatorsPlannings = () => {
   } = useGetSectionsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
-      endpointName: "SectionsListInPlanning",
+      endpointName: "AnimatorsPlannings",
     } || {},
     {
       //pollingInterval: 60000,//will refetch data every 60seconds
@@ -97,7 +97,7 @@ const AnimatorsPlannings = () => {
     {
       selectedYear: selectedAcademicYear?.title,
       criteria: "schools",
-      endpointName: "sessionsList",
+      endpointName: "AnimatorsPlannings",
     } || {},
     {
       //pollingInterval: 60000,//will refetch data every 60seconds
@@ -117,7 +117,7 @@ const AnimatorsPlannings = () => {
       selectedYear: selectedAcademicYear?.title,
       criteria: "withSections",
 
-      endpointName: "studentsList",
+      endpointName: "AnimatorsPlannings",
     } || {},
     {
       //pollingInterval: 60000,//will refetch data every 60seconds
@@ -136,7 +136,7 @@ const AnimatorsPlannings = () => {
       selectedYear: selectedAcademicYear?.title,
       criteria:"Animator",
 
-      endpointName: "employeesList",
+      endpointName: "AnimatorsPlannings",
     } || {},
     {
       //pollingInterval: 60000,//will refetch data every 60seconds

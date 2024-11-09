@@ -6,6 +6,7 @@ import {
   TimelineViews,
   TimelineMonth,
   Agenda,
+  Week,
   ScheduleComponent,
   ViewsDirective,
   ViewDirective,
@@ -273,7 +274,8 @@ const SectionsPlannings = () => {
   const fields = {
     //the current case is working with old db
     id: { name: "id" }, // Mapping your custom `id` field to `Id`
-    subject: { name: "Subject", validation: { required: true } }, // Mapping your `title` field to `Subject`
+    //subject: { name: "Subject", validation: { required: true } }, // Mapping your `title` field to `Subject`
+    subject: { name: "Subject" }, // Mapping your `title` field to `Subject`
     //startTime: { name: "startTime" }, // Mapping your `startTime` field to `StartTime`
     //endTime: { name: "endTime" }, // Mapping your `endTime` field to `EndTime`
     //location: { name: "location" },
@@ -928,7 +930,7 @@ const SectionsPlannings = () => {
                 //height="650px"
                 // selectedDate={new Date(2024, 10, 1)}
                 selectedDate={new Date()}
-                timeScale={{ enable: true, interval: 60, slotCount: 4 }}
+                timeScale={{ enable: true, interval: 60, slotCount: 2 }}
                 currentView="TimelineDay"
                 workDays={workDays}
                 startHour="07:00"
@@ -973,11 +975,13 @@ const SectionsPlannings = () => {
                   <ViewDirective option="TimelineDay" />
 
                   <ViewDirective option="Agenda" />
+                  
                 </ViewsDirective>
                 <Inject
                   services={[
                     TimelineViews,
                     TimelineMonth,
+                    //Week,
                     Agenda,
                     Resize,
                     DragAndDrop,

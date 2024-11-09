@@ -77,7 +77,7 @@ const ClassroomsPlannings = () => {
   } = useGetSectionsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
-      endpointName: "SectionsListInPlanning",
+      endpointName: "ClassroomsPlannings",
     } || {},
     {
       //pollingInterval: 60000,//will refetch data every 60seconds
@@ -93,7 +93,7 @@ const ClassroomsPlannings = () => {
     error: classroomsError,
   } = useGetClassroomsQuery(
     {
-      endpointName: "ClassroomssList",
+      endpointName: "ClassroomsPlannings",
     } || {},
     {
       //pollingInterval: 60000,//will refetch data every 60seconds
@@ -112,7 +112,7 @@ const ClassroomsPlannings = () => {
     {
       selectedYear: selectedAcademicYear?.title,
       criteria: "schools",//to exract the needed formatted data
-      endpointName: "sessionsList",
+      endpointName: "ClassroomsPlannings",
     } || {},
     {
       //pollingInterval: 60000,//will refetch data every 60seconds
@@ -132,7 +132,7 @@ const ClassroomsPlannings = () => {
       selectedYear: selectedAcademicYear?.title,
       criteria: "withSections",
 
-      endpointName: "studentsList",
+      endpointName: "ClassroomsPlannings",
     } || {},
     {
       //pollingInterval: 60000,//will refetch data every 60seconds
