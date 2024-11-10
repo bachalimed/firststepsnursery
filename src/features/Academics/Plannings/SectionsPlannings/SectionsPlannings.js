@@ -289,12 +289,14 @@ const SectionsPlannings = () => {
     //isBlock: { name: "isBlock" },////// if Is and not is all is not blocked
     sessionYear: { name: "sessionYear" },
     animator: { name: "animator" },
-    school: { name: "school", idField: "_id", validation: { required: true } },
+    school: { name: "school", idField: "_id", 
+      //validation: { required: true } 
+    },
 
     student: {
       name: "student",
       idField: "_id",
-      validation: { required: true },
+      //validation: { required: true },
     },
     sessionSectionId: { name: "sessionSectionId" },
     sessionStudentId: { name: "sessionStudentId" },
@@ -348,7 +350,9 @@ const SectionsPlannings = () => {
   let eventStartTime;
   let parentId;
   let eventType; // to help identify part of serie or not
-  let occurenceAction; // to helpp identify action and if occurence or not (standalone or whole series)
+  //let occurenceAction; // to helpp identify action and if occurence or not (standalone or whole series)
+
+
   const onPopupOpen = (args) => {
     //prevent opening the quickinfo on a new cell, we need double click to open the full editor
     if (args.type === "QuickInfo" && !args.data.Subject) {
@@ -449,8 +453,8 @@ const SectionsPlannings = () => {
       const updateDropdownsBasedOnSessionType = (sessionType) => {
         clearDropdown("school");
         clearDropdown("Subject");
-        clearDropdown("classroom");
-        clearDropdown("animator");
+       // clearDropdown("classroom");
+       // clearDropdown("animator");
 
         switch (sessionType) {
           case "School":
@@ -486,20 +490,8 @@ const SectionsPlannings = () => {
               "label",
               "value"
             );
-            createDropdownField(
-              "classroom",
-              "Classroom",
-              classroomsList,
-              "classroomLabel",
-              "id"
-            );
-            createDropdownField(
-              "animator",
-              "Animator",
-              employeesList,
-              "userFullName",
-              "employeeId"
-            );
+           
+            
             break;
           case "Drop":
             createDropdownField(
@@ -511,13 +503,7 @@ const SectionsPlannings = () => {
               "schoolName",
               "id"
             );
-            createDropdownField(
-              "animator",
-              "Animator",
-              employeesList,
-              "userFullName",
-              "employeeId"
-            );
+            
             createDropdownField(
               "Subject", //"subject",
               "Subject",
@@ -537,13 +523,7 @@ const SectionsPlannings = () => {
               "schoolName",
               "id"
             );
-            createDropdownField(
-              "animator",
-              "Animator",
-              employeesList,
-              "userFullName",
-              "employeeId"
-            );
+           
             createDropdownField(
               "Subject", //"subject",
               "Subject",
@@ -649,7 +629,7 @@ const SectionsPlannings = () => {
     //console.log(scheduleObj, "scheduleobj  onActionBegin ");
 
     console.log(args, "  argsgggsss onActionBegin ");
-    occurenceAction = scheduleObj.current.currentAction; // for show a difference between single (occurence) or series (whole series or standealone seession)
+   // occurenceAction = scheduleObj.current.currentAction; // for show a difference between single (occurence) or series (whole series or standealone seession)
     //capture save, update, delete//////////////////////
     switch (args.requestType) {
       case "eventCreate":
@@ -661,7 +641,7 @@ const SectionsPlannings = () => {
         ) {
           console.log("creating teh object");
           const {
-            animator,
+            //animator,
             Description,
             Subject,
             EndTime,
