@@ -51,6 +51,7 @@ import Sections from './features/Academics/Sections'
 
 
 import Plannings from './features/Academics/Plannings'
+import AnimatorsAssignment from './features/Academics/Plannings/AnimatorsAssignment/AnimatorsAssigment'
 import SectionsPlannings from './features/Academics/Plannings/SectionsPlannings/SectionsPlannings'
 import SitesPlannings from './features/Academics/Plannings/SitesPlannings/SitesPlannings'
 import AnimatorsPlannings from './features/Academics/Plannings/AnimatorsPlannings/AnimatorsPlannings'
@@ -224,6 +225,7 @@ const App = () => {
 
 								<Route path="plannings" > 					
 								<Route index element={<Plannings />} /> 
+								<Route path="animatorsAssignment/" element={<AnimatorsAssignment/>}/>	
 								<Route path="sectionsPlannings/" element={<SectionsPlannings/>}/>	
 								<Route path="sitesPlannings/" element={<SitesPlannings/>}/>	
 								<Route path="animatorsPlannings/" element={<AnimatorsPlannings/>}/>	

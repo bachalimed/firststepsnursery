@@ -25,7 +25,7 @@ const Sections = () => {
    const tabs = [
     { label: 'Nursery Sections', path: "/academics/sections/nurserySectionsList" },
     { label: 'New Nursery Section ', path: '/academics/sections/newSection/' },
-    { label: 'Sections By School', path: "/academics/sections/schoolSectionsList" },
+    { label: 'Nuresery Sections By School', path: "/academics/sections/schoolSectionsList" },
     
   ];
   // Function to determine if a tab is active based on the current path
