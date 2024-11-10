@@ -60,6 +60,7 @@ import {
 } from "../../../../config/SchedulerConsts";
 import { classroomssList } from "./classroomssList";
 import RuleGenerate from "./RuleGenerate";
+import { dailyAssignment } from "./employeessList";
 const TimelineResourceGrouping = styled.div`
   &.e-schedule:not(.e-device)
     .e-agenda-view
@@ -289,8 +290,10 @@ const SectionsPlannings = () => {
     //isBlock: { name: "isBlock" },////// if Is and not is all is not blocked
     sessionYear: { name: "sessionYear" },
     animator: { name: "animator" },
-    school: { name: "school", idField: "_id", 
-      //validation: { required: true } 
+    school: {
+      name: "school",
+      idField: "_id",
+      //validation: { required: true }
     },
 
     student: {
@@ -359,7 +362,6 @@ const SectionsPlannings = () => {
     setSelectedDate(args.data.startTime || new Date());
   };
 
-
   const onPopupOpen = (args) => {
     //prevent opening the quickinfo on a new cell, we need double click to open the full editor
     if (args.type === "QuickInfo" && !args.data.Subject) {
@@ -385,125 +387,175 @@ const SectionsPlannings = () => {
     eventStartTime = args.data.StartTime;
 
     if (args.type === "Editor") {
-    const formElement = args.element.querySelector(".e-schedule-form");
+      const formElement = args.element.querySelector(".e-schedule-form");
 
-    // Remove existing custom field rows to avoid duplication
-    const existingCustomRow = formElement.querySelector(".custom-field-row");
-    if (existingCustomRow) {
+      // Remove existing custom field rows to avoid duplication
+      const existingCustomRow = formElement.querySelector(".custom-field-row");
+      if (existingCustomRow) {
         existingCustomRow.remove();
-    }
+      }
 
-    // Remove the default title and location row
-    const titleLocationRow = formElement.querySelector(".e-title-location-row");
-    if (titleLocationRow) {
+      // Remove the default title and location row
+      const titleLocationRow = formElement.querySelector(
+        ".e-title-location-row"
+      );
+      if (titleLocationRow) {
         titleLocationRow.remove();
-    }
+      }
 
-    // Create a new custom row for "Subject" and "Location"
-    let customRow = formElement.querySelector(".custom-field-row");
-    if (!customRow) {
+      // Create a new custom row for "Subject" and "Location"
+      let customRow = formElement.querySelector(".custom-field-row");
+      if (!customRow) {
         customRow = createElement("div", { className: "custom-field-row" });
         formElement.insertBefore(customRow, formElement.firstElementChild);
-    }
+      }
 
-    const createDropdownField = (
+      const createDropdownField = (
         name,
         placeholder,
         dataSource,
         textField,
         valueField
-    ) => {
+      ) => {
         const container = createElement("div", {
-            className: "custom-field-container",
+          className: "custom-field-container",
         });
         const inputEle = createElement("input", {
-            className: "e-field",
-            attrs: { name },
+          className: "e-field",
+          attrs: { name },
         });
         container.appendChild(inputEle);
         customRow.appendChild(container);
 
         const dropDownList = new DropDownList({
-            dataSource,
-            fields: { text: textField, value: valueField },
-            value: name === "school" ? args.data.school?._id : args.data[name] || null,
-            floatLabelType: "Always",
-            placeholder,
-            change: (event) => {
-                if (name === "sessionType") {
-                    updateDropdownsBasedOnSessionType(event.value);
-                }
-            },
+          dataSource,
+          fields: { text: textField, value: valueField },
+          value:
+            name === "school" ? args.data.school?._id : args.data[name] || null,
+          floatLabelType: "Always",
+          placeholder,
+          change: (event) => {
+            if (name === "sessionType") {
+              updateDropdownsBasedOnSessionType(event.value);
+            }
+          },
         });
         dropDownList.appendTo(inputEle);
         inputEle.setAttribute("name", name);
-    };
+      };
 
-    const clearDropdown = (name) => {
+      const clearDropdown = (name) => {
         const existingField = customRow.querySelector(`input[name="${name}"]`);
         if (existingField) {
-            existingField.parentNode.remove();
+          existingField.parentNode.remove();
         }
-    };
+      };
 
-    const updateDropdownsBasedOnSessionType = (sessionType) => {
+      const updateDropdownsBasedOnSessionType = (sessionType) => {
         clearDropdown("school");
         clearDropdown("Subject");
 
         if (sessionType === "Nursery") {
-            // For Nursery, show only "FirstSteps" as the school option
-            createDropdownField(
-                "school",
-                "School Name",
-                [{ schoolName: "First Steps", id: "6714e7abe2df335eecd87750" }],
-                "schoolName",
-                "id"
-            );
-            createDropdownField("Subject", "Subject", NURSERY_SUBJECTS, "label", "value");
+          // For Nursery, show only "FirstSteps" as the school option
+          createDropdownField(
+            "school",
+            "School Name",
+            [{ schoolName: "First Steps", id: "6714e7abe2df335eecd87750" }],
+            "schoolName",
+            "id"
+          );
+          createDropdownField(
+            "Subject",
+            "Subject",
+            NURSERY_SUBJECTS,
+            "label",
+            "value"
+          );
         } else {
-            // For other session types, fetch the attended school from student's data
-            const student = studentsList.find(
-                (stud) => stud.id === args.data.sessionStudentId
+          // For other session types, fetch the attended school from student's data
+          const student = studentsList.find(
+            (stud) => stud.id === args.data.sessionStudentId
+          );
+          let schoolOptions = [];
+
+          if (student && selectedAcademicYear.title) {
+            const educationRecord = student.studentEducation.find(
+              (edu) => edu.schoolYear === selectedAcademicYear.title
             );
-            let schoolOptions = [];
 
-            if (student && selectedAcademicYear.title) {
-                const educationRecord = student.studentEducation.find(
-                    (edu) => edu.schoolYear === selectedAcademicYear.title
-                );
-                
-                if (educationRecord) {
-                    const attendedSchoolId = educationRecord.attendedSchool;
-                    const attendedSchool = schoolsList.find(
-                        (school) => school.id === attendedSchoolId
-                    );
-                    
-                    if (attendedSchool) {
-                        schoolOptions = [
-                            { schoolName: attendedSchool.schoolName, id: attendedSchool.id },
-                        ];
-                        args.data.school = attendedSchool.id;
-                    }
-                }
+            if (educationRecord) {
+              const attendedSchoolId = educationRecord.attendedSchool;
+              const attendedSchool = schoolsList.find(
+                (school) => school.id === attendedSchoolId
+              );
+
+              if (attendedSchool) {
+                schoolOptions = [
+                  {
+                    schoolName: attendedSchool.schoolName,
+                    id: attendedSchool.id,
+                  },
+                ];
+                args.data.school = attendedSchool.id;
+              }
             }
+          }
 
-            createDropdownField("school", "School Name", schoolOptions, "schoolName", "id");
-            createDropdownField("Subject", "Subject", SCHOOL_SUBJECTS, "label", "value");
+          createDropdownField(
+            "school",
+            "School Name",
+            schoolOptions,
+            "schoolName",
+            "id"
+          );
+          // heere we set condition for DRop and Collect
+
+          if (sessionType === "School") {
+            createDropdownField(
+              "Subject",
+              "Subject",
+              SCHOOL_SUBJECTS,
+              "label",
+              "value"
+            );
+          }
+          if (sessionType === "Drop") {
+            createDropdownField(
+              "Subject",
+              "Subject",
+              ["Drop"],
+              "label",
+              "value"
+            );
+          }
+          if (sessionType === "Collect") {
+            createDropdownField(
+              "Subject",
+              "Subject",
+              ["Collect"],
+              "label",
+              "value"
+            );
+          }
         }
-    };
+      };
 
-    // Create the Session Type dropdown
-    createDropdownField("sessionType", "Session Type", ["School", "Nursery", "Drop", "Collect"], "label", "value");
+      // Create the Session Type dropdown
+      createDropdownField(
+        "sessionType",
+        "Session Type",
+        ["School", "Nursery", "Drop", "Collect"],
+        "label",
+        "value"
+      );
 
-    // Initialize other dropdowns based on the current session type
-    if (args.data.sessionType) {
+      // Initialize other dropdowns based on the current session type
+      if (args.data.sessionType) {
         updateDropdownsBasedOnSessionType(args.data.sessionType);
+      }
     }
-}
-
   };
 
-  
   const handleCreateSession = async (sessObj) => {
     await addNewSession(sessObj);
     if (isAddSessionError) {
@@ -584,7 +636,7 @@ const SectionsPlannings = () => {
     //console.log(scheduleObj, "scheduleobj  onActionBegin ");
 
     console.log(args, "  argsgggsss onActionBegin ");
-   // occurenceAction = scheduleObj.current.currentAction; // for show a difference between single (occurence) or series (whole series or standealone seession)
+    // occurenceAction = scheduleObj.current.currentAction; // for show a difference between single (occurence) or series (whole series or standealone seession)
     //capture save, update, delete//////////////////////
     switch (args.requestType) {
       case "eventCreate":
@@ -651,7 +703,7 @@ const SectionsPlannings = () => {
           //   sessionType,
           //   "sessionType"
           // );
-         
+
           // if (
           //   (school === "6714e7abe2df335eecd87750" && !animator) ||
           //   (school === "6714e7abe2df335eecd87750" && !classroom)
@@ -659,7 +711,8 @@ const SectionsPlannings = () => {
           //   alert(" required fields are missing");
           // }
 
-          const jjj = handleCreateSession({// we create without animator and eithout classroom, those will be retreived form sections on query
+          const jjj = handleCreateSession({
+            // we create without animator and eithout classroom, those will be retreived form sections on query
             sessionType: sessionType || "",
             sessionYear: selectedAcademicYear?.title,
             school: school || "",
@@ -826,24 +879,6 @@ const SectionsPlannings = () => {
     }
   };
 
-  // // Mock actionComplete callback to simulate action completion
-  // const mockActionComplete = (requestType, data) => {
-  //   console.log("Mock actionComplete triggered for:", requestType);
-
-  //   if (requestType === "eventRemove") {
-  //     console.log("Delete operation completed:", data);
-
-  //     // Any additional logic to confirm deletion can go here
-  //     alert("Event deleted successfully");
-  //   }
-  //   if (requestType === "eventChange") {
-  //     console.log("Update operation completed:", data);
-
-  //     // Any additional logic to confirm deletion can go here
-  //     alert("Event updated successfully");
-  //   }
-  // };
-
   const actionComplete = (args) => {
     console.log(scheduleObj, "scheduleobj  onacion complete ");
     console.log(scheduleObj.current, "scheduleobj cureent onacion complete ");
@@ -858,13 +893,45 @@ const SectionsPlannings = () => {
     }
   };
 
+  // useEffect(() => {
+  //   if (scheduleObj.current?.eventsProcessed) {
+  //     const updatedEvents = scheduleObj.current.eventsProcessed.map((event) => {
+  //       // Check if sessionType is "Drop" or "Collect"
+  //       if (event.sessionType === "Drop" || event.sessionType === "Collect") {
+  //         const attendedSchoolId = event.attendedSchool?._id;
+
+  //         // Find the matching school in the dailyAssignment array
+  //         const assignment = dailyAssignment.find((assign) =>
+  //           assign.assignedSchools.some((school) => school === attendedSchoolId)
+  //         );
+
+  //         // If we find an assignment, update the animator
+  //         if (assignment) {
+  //           return {
+  //             ...event,
+  //             animator: assignment.assignedAnimator,
+  //           };
+  //         }
+  //       }
+  //       // Return the original event if no updates are needed
+  //       return event;
+  //     });
+
+  //     // Update scheduleObj with the new eventsProcessed array
+  //     scheduleObj.current = {
+  //       ...scheduleObj.current,
+  //       eventsProcessed: updatedEvents,
+  //     };
+  //   }
+  // }, [scheduleObj.current?.eventsProcessed, dailyAssignment]);
+
   return (
     <>
       <Plannings />
       <div className="flex space-x-2 items-center">
         filters here
         <select
-         // value={selectedSchoolName}
+          // value={selectedSchoolName}
           //onChange={handleSchoolChange}
           className="text-sm h-8 border border-gray-300 rounded-md px-4"
         >
