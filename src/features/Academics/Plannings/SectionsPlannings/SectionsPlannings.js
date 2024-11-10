@@ -351,6 +351,13 @@ const SectionsPlannings = () => {
   let parentId;
   let eventType; // to help identify part of serie or not
   //let occurenceAction; // to helpp identify action and if occurence or not (standalone or whole series)
+  //to always render on the active date
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  // Function to update selected date
+  const handleAction = (args) => {
+    setSelectedDate(args.data.startTime || new Date());
+  };
 
 
   const onPopupOpen = (args) => {
@@ -378,177 +385,125 @@ const SectionsPlannings = () => {
     eventStartTime = args.data.StartTime;
 
     if (args.type === "Editor") {
-      //////args.data.sessionType = null;//will emppty session type to force user to fill again
-      console.log(
-        scheduleObj.current.currentAction,
-        "on popup open scheduleObj.current.currentAction "
-      );
-      const formElement = args.element.querySelector(".e-schedule-form");
+    const formElement = args.element.querySelector(".e-schedule-form");
 
-      // Remove any existing custom field rows to avoid duplication// this was added to remove duplcation of session type
-      const existingCustomRow = formElement.querySelector(".custom-field-row");
-      if (existingCustomRow) {
+    // Remove existing custom field rows to avoid duplication
+    const existingCustomRow = formElement.querySelector(".custom-field-row");
+    if (existingCustomRow) {
         existingCustomRow.remove();
-      }
+    }
 
-      // Remove the default title and location row
-      const titleLocationRow = formElement.querySelector(
-        ".e-title-location-row"
-      );
-      if (titleLocationRow) {
+    // Remove the default title and location row
+    const titleLocationRow = formElement.querySelector(".e-title-location-row");
+    if (titleLocationRow) {
         titleLocationRow.remove();
-      }
+    }
 
-      // Create a new custom row for "Subject" and "Location"
-      let customRow = formElement.querySelector(".custom-field-row");
-      if (!customRow) {
+    // Create a new custom row for "Subject" and "Location"
+    let customRow = formElement.querySelector(".custom-field-row");
+    if (!customRow) {
         customRow = createElement("div", { className: "custom-field-row" });
         formElement.insertBefore(customRow, formElement.firstElementChild);
-      }
+    }
 
-      // Initialize dropdown fields with their existing selected values if available
-      const createDropdownField = (
+    const createDropdownField = (
         name,
         placeholder,
         dataSource,
         textField,
         valueField
-      ) => {
+    ) => {
         const container = createElement("div", {
-          className: "custom-field-container",
+            className: "custom-field-container",
         });
         const inputEle = createElement("input", {
-          className: "e-field",
-          attrs: { name },
+            className: "e-field",
+            attrs: { name },
         });
         container.appendChild(inputEle);
         customRow.appendChild(container);
 
-        // Initialize dropdown with existing value or leave blank if none
         const dropDownList = new DropDownList({
-          dataSource,
-          fields: { text: textField, value: valueField },
-          // value: args.data[name] || null,  // Use the existing value if it exists,
-          value:
-            name === "school" ? args.data.school?._id : args.data[name] || null, // Adjust for the school because of the data structure
-          floatLabelType: "Always",
-          placeholder,
-          change: (event) => {
-            if (name === "sessionType") {
-              updateDropdownsBasedOnSessionType(event.value);
-            }
-          },
+            dataSource,
+            fields: { text: textField, value: valueField },
+            value: name === "school" ? args.data.school?._id : args.data[name] || null,
+            floatLabelType: "Always",
+            placeholder,
+            change: (event) => {
+                if (name === "sessionType") {
+                    updateDropdownsBasedOnSessionType(event.value);
+                }
+            },
         });
         dropDownList.appendTo(inputEle);
         inputEle.setAttribute("name", name);
-      };
-      // Clear previous dropdowns if they exist
-      const clearDropdown = (name) => {
+    };
+
+    const clearDropdown = (name) => {
         const existingField = customRow.querySelector(`input[name="${name}"]`);
         if (existingField) {
-          existingField.parentNode.remove();
+            existingField.parentNode.remove();
         }
-      };
-      // Update dropdowns based on session type
-      const updateDropdownsBasedOnSessionType = (sessionType) => {
+    };
+
+    const updateDropdownsBasedOnSessionType = (sessionType) => {
         clearDropdown("school");
         clearDropdown("Subject");
-       // clearDropdown("classroom");
-       // clearDropdown("animator");
 
-        switch (sessionType) {
-          case "School":
+        if (sessionType === "Nursery") {
+            // For Nursery, show only "FirstSteps" as the school option
             createDropdownField(
-              "school",
-              "School Name",
-              schoolsList.filter(
-                (school) => school.schoolName !== "FirstSteps"
-              ),
-              "schoolName",
-              "id"
+                "school",
+                "School Name",
+                [{ schoolName: "First Steps", id: "6714e7abe2df335eecd87750" }],
+                "schoolName",
+                "id"
             );
-            createDropdownField(
-              "Subject", //"subject",
-              "Subject",
-              SCHOOL_SUBJECTS,
-              "label",
-              "value"
+            createDropdownField("Subject", "Subject", NURSERY_SUBJECTS, "label", "value");
+        } else {
+            // For other session types, fetch the attended school from student's data
+            const student = studentsList.find(
+                (stud) => stud.id === args.data.sessionStudentId
             );
-            break;
-          case "Nursery":
-            createDropdownField(
-              "school",
-              "School Name",
-              [{ schoolName: "First Steps", id: "6714e7abe2df335eecd87750" }],
-              "schoolName",
-              "id"
-            );
-            createDropdownField(
-              "Subject", //"subject",
-              "Subject",
-              NURSERY_SUBJECTS,
-              "label",
-              "value"
-            );
-           
-            
-            break;
-          case "Drop":
-            createDropdownField(
-              "school",
-              "School Name",
-              schoolsList.filter(
-                (school) => school.id !== "6714e7abe2df335eecd87750"
-              ),
-              "schoolName",
-              "id"
-            );
-            
-            createDropdownField(
-              "Subject", //"subject",
-              "Subject",
-              ["Drop"],
-              "label",
-              "value"
-            );
-            break;
+            let schoolOptions = [];
 
-          case "Collect":
-            createDropdownField(
-              "school",
-              "School Name",
-              schoolsList.filter(
-                (school) => school.id !== "6714e7abe2df335eecd87750"
-              ),
-              "schoolName",
-              "id"
-            );
-           
-            createDropdownField(
-              "Subject", //"subject",
-              "Subject",
-              ["Collect"],
-              "label",
-              "value"
-            );
-            break;
+            if (student && selectedAcademicYear.title) {
+                const educationRecord = student.studentEducation.find(
+                    (edu) => edu.schoolYear === selectedAcademicYear.title
+                );
+                
+                if (educationRecord) {
+                    const attendedSchoolId = educationRecord.attendedSchool;
+                    const attendedSchool = schoolsList.find(
+                        (school) => school.id === attendedSchoolId
+                    );
+                    
+                    if (attendedSchool) {
+                        schoolOptions = [
+                            { schoolName: attendedSchool.schoolName, id: attendedSchool.id },
+                        ];
+                        args.data.school = attendedSchool.id;
+                    }
+                }
+            }
+
+            createDropdownField("school", "School Name", schoolOptions, "schoolName", "id");
+            createDropdownField("Subject", "Subject", SCHOOL_SUBJECTS, "label", "value");
         }
-      };
+    };
 
-      // Create the Session Type dropdown
-      createDropdownField(
-        "sessionType",
-        "Session Type",
-        ["School", "Nursery", "Drop", "Collect"],
-        "label",
-        "value"
-      );
-      // Pre-populate other dropdowns based on the current session type, if any/////added this to test editing with viewing alreadys elcted
-      if (args.data.sessionType) {
+    // Create the Session Type dropdown
+    createDropdownField("sessionType", "Session Type", ["School", "Nursery", "Drop", "Collect"], "label", "value");
+
+    // Initialize other dropdowns based on the current session type
+    if (args.data.sessionType) {
         updateDropdownsBasedOnSessionType(args.data.sessionType);
-      }
     }
+}
+
   };
+
+  
   const handleCreateSession = async (sessObj) => {
     await addNewSession(sessObj);
     if (isAddSessionError) {
@@ -704,13 +659,13 @@ const SectionsPlannings = () => {
           //   alert(" required fields are missing");
           // }
 
-          const jjj = handleCreateSession({
+          const jjj = handleCreateSession({// we create without animator and eithout classroom, those will be retreived form sections on query
             sessionType: sessionType || "",
             sessionYear: selectedAcademicYear?.title,
             school: school || "",
             Subject: Subject || "",
-            classroom: classroom,
-            animator: animator,
+            //classroom: classroom,
+            //animator: animator,
             Description: Description || "",
             EndTime: EndTime || "",
             StartTime: StartTime || "",
@@ -942,7 +897,9 @@ const SectionsPlannings = () => {
                 width="100%"
                 //height="650px"
                 // selectedDate={new Date(2024, 10, 1)}
-                selectedDate={new Date()}
+                selectedDate={selectedDate}
+                actionComplete={handleAction} // Capture modification events to be used in selected date to always render on the last date we used
+                // selectedDate={new Date()}
                 timeScale={{ enable: true, interval: 60, slotCount: 2 }}
                 currentView="TimelineDay"
                 workDays={workDays}
