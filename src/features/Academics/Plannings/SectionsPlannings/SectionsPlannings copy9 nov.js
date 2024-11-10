@@ -252,6 +252,7 @@ const SectionsPlannings = () => {
     //set to the state to be used for other component s and edit student component
     const { entities } = sessions;
     sessionsList = Object.values(entities); //we are using entity adapter in this query
+
   }
   if (isEmployeesSuccess && !isEmployeesLoading) {
     const { entities } = employees;
@@ -265,10 +266,10 @@ const SectionsPlannings = () => {
     const { entities } = schools;
     schoolsList = Object.values(entities);
   }
-  //console.log(sessionsList, "sessionsList");
-  //console.log(studentsList, "studentsList");
-  //console.log(studentsList[0], "studentsList[0]");
-  //console.log(studentSections, "studentSections");
+  console.log(sessionsList, "sessionsList");
+  console.log(studentsList, "studentsList");
+  console.log(studentsList[0], "studentsList[0]");
+  console.log(studentSections, "studentSections");
   //console.log(schoolsList, "schoolsList");
   const fields = {
     //the current case is working with old db
@@ -339,6 +340,8 @@ const SectionsPlannings = () => {
   const scheduleObj = useRef(null); // Create a ref for the ScheduleComponent,
   // scheduleObj.current will store the actual instance, allowing you to call Scheduler methods like openEditor
 
+  
+
   // const openNewSessionEditor = () => {
   //   if (scheduleObj.current) {
   //     scheduleObj.current.openEditor({}, "Add"); // Opens the editor in "Add" mode
@@ -346,16 +349,14 @@ const SectionsPlannings = () => {
   // };
 
   let eventStartTime;
+  let eventType;
   let parentId;
-  let eventType; // to help identify part of serie or not
-  let occurenceAction; // to helpp identify action and if occurence or not (standalone or whole series)
+
   const onPopupOpen = (args) => {
     //prevent opening the quickinfo on a new cell, we need double click to open the full editor
     if (args.type === "QuickInfo" && !args.data.Subject) {
       args.cancel = true;
     }
-    //to help identify recurrent eventr s later
-
     if (!args.data.RecurrenceID) {
       eventType = "notRecurrent";
     } else {
@@ -368,24 +369,15 @@ const SectionsPlannings = () => {
     console.log(scheduleObj.current, "scheduleobj cureent popup open");
     console.log(args, "  argsgggsss popupopen");
     //capture the parent id to be used later   for updates, deletions...
+    parentId = args.data?.id; // we selected an event an d not an empty
     console.log("parentId captured:", parentId);
     //capture the start date of the event to be used in teh exception
-    parentId = args.data?.id; // we selected an event an d not an empty
     eventStartTime = args.data.StartTime;
 
     if (args.type === "Editor") {
       //////args.data.sessionType = null;//will emppty session type to force user to fill again
-      console.log(
-        scheduleObj.current.currentAction,
-        "on popup open scheduleObj.current.currentAction "
-      );
-      const formElement = args.element.querySelector(".e-schedule-form");
 
-      // Remove any existing custom field rows to avoid duplication// this was added to remove duplcation of session type
-      const existingCustomRow = formElement.querySelector(".custom-field-row");
-      if (existingCustomRow) {
-        existingCustomRow.remove();
-      }
+      const formElement = args.element.querySelector(".e-schedule-form");
 
       // Remove the default title and location row
       const titleLocationRow = formElement.querySelector(
@@ -606,14 +598,9 @@ const SectionsPlannings = () => {
   };
 
   const onPopupClose = (args) => {
-    //we can check here the choice we made on the popup and decide of the action
-    console.log(
-      "Current Action is':",
-      scheduleObj.current.currentAction,
-      "'on close"
-    );
+    console.log(scheduleObj, "scheduleobj  onPopupClose ");
     // console.log(scheduleObj.current, "scheduleobj cureent onPopupClose ");
-    // console.log(args, "  argsgggsss onPopupClose ");
+    console.log(args, "  argsgggsss onPopupClose ");
 
     //capture the cancel action/////////////////
     // if (args.type === 'Editor' && args.cancel) {
@@ -646,19 +633,15 @@ const SectionsPlannings = () => {
   };
 
   const onActionBegin = (args) => {
-    //console.log(scheduleObj, "scheduleobj  onActionBegin ");
-
+    console.log(scheduleObj, "scheduleobj  onActionBegin ");
+    console.log(scheduleObj.current, "scheduleobj cureent onActionBegin ");
     console.log(args, "  argsgggsss onActionBegin ");
-    occurenceAction = scheduleObj.current.currentAction; // for show a difference between single (occurence) or series (whole series or standealone seession)
+
     //capture save, update, delete//////////////////////
     switch (args.requestType) {
       case "eventCreate":
         console.log("Event Save");
-        //if (args.addedRecords.length > 0 && args.addedRecords[0] !== "") {
-        if (
-          scheduleObj.current.currentAction === "Add" &&
-          args.addedRecords[0] !== ""
-        ) {
+        if (args.addedRecords.length > 0 && args.addedRecords[0] !== "") {
           console.log("creating teh object");
           const {
             animator,
@@ -716,13 +699,12 @@ const SectionsPlannings = () => {
           //   sessionType,
           //   "sessionType"
           // );
-         
-          // if (
-          //   (school === "6714e7abe2df335eecd87750" && !animator) ||
-          //   (school === "6714e7abe2df335eecd87750" && !classroom)
-          // ) {
-          //   alert(" required fields are missing");
-          // }
+          if (
+            (school === "6714e7abe2df335eecd87750" && !animator) ||
+            (school === "6714e7abe2df335eecd87750" && !classroom)
+          ) {
+            alert(" required fields are missing");
+          }
 
           const jjj = handleCreateSession({
             sessionType: sessionType || "",
@@ -750,8 +732,8 @@ const SectionsPlannings = () => {
       case "eventRemove":
         console.warn("Event Delete");
         ///check  what type of deletion is performed: event , follwoing, entire
-        // console.log(args.data, "args in action begin delete");
-        //console.log(Object.keys(args.data[0]).length, "length of [0]");
+        console.log(args.data, "args in action begin delete");
+        console.log(Object.keys(args.data[0]).length, "length of [0]");
         // if sigle event deletion: only add an exception to the parent
         // Capture and differentiate single or series deletion
         if (eventType === "notRecurrent") {
@@ -811,19 +793,21 @@ const SectionsPlannings = () => {
         console.log("in Event change");
 
         if (eventType === "notRecurrent") {
-          //single standealone session edit
           console.log("Single instance not a series update detected"); ///ok no errors
-          //console.log(
-          //args.changedRecords[0],
-          //"args.changedRecords[0] on begin action in the update"
-          //);
+          console.log(
+            args.changedRecords[0],
+            "args.changedRecords[0] on begin action in the update"
+          );
           // we need to check here if we changed anything or else we do not update ////////////////
 
           args.cancel = true;
           //if we save but the data was not changed, abord teh save
 
-          // //add this : check if no changes were performed and abord
-
+          if (args.changedRecords[0] === args.data) {
+            return;
+          } ///to be checked later
+          // Delay the next actions to allow state to update
+          //setTimeout(() => {
           // Access the updated sessionObject if needed
           handleUpdateSession({
             ...args.changedRecords[0],
@@ -838,7 +822,7 @@ const SectionsPlannings = () => {
           parentId = "";
           eventType = "";
           //setSessionObject("");
-
+          // }, 50); // 50ms delay, adjust as needed
           return; //this prevented the error but still have update whole series starting after this one
         }
 
@@ -926,24 +910,7 @@ const SectionsPlannings = () => {
   return (
     <>
       <Plannings />
-      <div className="flex space-x-2 items-center">
-        filters here
-        <select
-         // value={selectedSchoolName}
-          //onChange={handleSchoolChange}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
-        >
-          <option value="">All Schools</option>
-          {schoolsList?.map(
-            (school) =>
-              school.schoolName !== "First Steps" && (
-                <option key={school.id} value={school.schoolName}>
-                  {school.schoolName}
-                </option>
-              )
-          )}
-        </select>
-      </div>
+
       <TimelineResourceGrouping className="timeline-resource-grouping e-schedule">
         <div className="schedule-control-section">
           <div className="col-lg-12 control-section">
@@ -1008,6 +975,7 @@ const SectionsPlannings = () => {
                   <ViewDirective option="TimelineDay" />
 
                   <ViewDirective option="Agenda" />
+                  
                 </ViewsDirective>
                 <Inject
                   services={[

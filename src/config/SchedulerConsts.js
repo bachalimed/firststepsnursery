@@ -35,4 +35,5 @@ export const NURSERY_SUBJECTS = [
   { id: "5", titleId:"2 ", label: "Dance", value: "Dance" },
   { id: "6", titleId:"2 ", label: "Lunch1", value: "Lunch1" },
   { id: "7", titleId:"2 ", label: "Lunch2", value: "Lunch2" },
+  { id: "8", titleId:"2 ", label: "Lunch3", value: "Lunch3" },
 ];
