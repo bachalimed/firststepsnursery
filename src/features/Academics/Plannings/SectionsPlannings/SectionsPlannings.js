@@ -258,7 +258,7 @@ const SectionsPlannings = () => {
   //   const { entities } = schools;
   //   schoolsList = Object.values(entities);
   // }
-let filteredStudentsList =[]
+  let filteredStudentsList = [];
   let filteredSessionsList = [];
   let filteredSectionsList = [];
   const [selectedSchoolId, setSelectedSchoolId] = useState("");
@@ -268,48 +268,53 @@ let filteredStudentsList =[]
     setSelectedSchoolId(e.target.value);
   };
 
-  if (isSessionsSuccess && isSectionsSuccess&&isStudentsSuccess) {
+  if (isSessionsSuccess && isSectionsSuccess && isStudentsSuccess) {
     //set to the state to be used for other component s and edit student component
     //we are using entity adapter in this query
+    filteredSessionsList = sessionsList;
+    filteredSectionsList = studentSections;
+    filteredStudentsList = studentsList;
 
-    // Example filter function
-    console.log(sessionsList, "sessionsList");
-    console.log(selectedSchoolId, "selectedSchoolId");
-    filteredSessionsList =
-      selectedSchoolId !== ""
-        ? sessionsList.filter(
-            (session) => session.school?._id === selectedSchoolId
-          )
-        : sessionsList;
-    // filter the sections to only keep those who have the studetns names that correspond to the filtered sessions
-    filteredSectionsList = studentSections.map((section) => {
-      // Filter students within the current section
-      const filteredStudents = section.students.filter((student) => {
-        // Check if this student's name matches any student's name in filteredSessionsList
-        return filteredSessionsList.some((session) => {
-          return session.student?._id === student._id;
+    if (selectedSchoolId !== "") {
+      // Example filter function
+      console.log(sessionsList, "sessionsList");
+      console.log(selectedSchoolId, "selectedSchoolId");
+      filteredSessionsList =
+        selectedSchoolId !== ""
+          ? sessionsList.filter(
+              (session) => session.school?._id === selectedSchoolId
+            )
+          : sessionsList;
+      // filter the sections to only keep those who have the studetns names that correspond to the filtered sessions
+      filteredSectionsList = studentSections.map((section) => {
+        // Filter students within the current section
+        const filteredStudents = section.students.filter((student) => {
+          // Check if this student's name matches any student's name in filteredSessionsList
+          return filteredSessionsList.some((session) => {
+            return session.student?._id === student._id;
+          });
         });
+
+        // Return a new section object with the filtered students
+        return {
+          ...section,
+          students: filteredStudents,
+        };
       });
 
-      // Return a new section object with the filtered students
-      return {
-        ...section,
-        students: filteredStudents,
-      };
-    });
+      console.log(filteredSectionsList, "filteredSectionsList");
 
-    console.log(filteredSectionsList, "filteredSectionsList");
+      // filter studtns to only keepp those who have theri  nbaems in the sections
+      filteredStudentsList = studentsList.filter((student) => {
+        return filteredSectionsList.some((section) =>
+          section.students.some(
+            (sectionStudent) => sectionStudent._id === student.id
+          )
+        );
+      });
 
-    // filter studtns to only keepp those who have theri  nbaems in the sections
-     filteredStudentsList = studentsList.filter((student) => {
-      return filteredSectionsList.some((section) =>
-        section.students.some((sectionStudent) => sectionStudent._id === student.id)
-      );
-    });
-
-    console.log(filteredStudentsList, "filteredStudentsList");
-
-
+      console.log(filteredStudentsList, "filteredStudentsList");
+    }
   }
 
   // Initial filter setup for filteredSessionsList
@@ -949,11 +954,11 @@ let filteredStudentsList =[]
   //     console.log("Event Deleted");
   //   }
   // };
-
+  let processedEvents = []; // removed usestate because it causes rendering snowball
   //maybe we need to filter and set a state on events settings andon data///////////////////////////////////////////
   // State to manage processed events separately from scheduleObj
-  const [processedEvents, setProcessedEvents] = useState([]);
-
+  //const [processedEvents, setProcessedEvents] = useState([]);
+  //this module will replace the animator attribute with the animator fromt eh assignemtn for dropp and collect
   useEffect(() => {
     const updatedEvents = scheduleObj.current?.eventsProcessed.map((event) => {
       // Check if sessionType is "Drop" or "Collect"
@@ -983,7 +988,8 @@ let filteredStudentsList =[]
     });
     //console.log(updatedEvents,'updatedEvents')
     // Update the state to trigger a re-render
-    setProcessedEvents(updatedEvents);
+    //setProcessedEvents(updatedEvents);
+    processedEvents = updatedEvents;
 
     // Update `scheduleObj.current.eventsProcessed` after state update
   }, [animatorsAssigments, scheduleObj.current?.eventsProcessed]);
@@ -998,33 +1004,30 @@ let filteredStudentsList =[]
     }
   }, [processedEvents]);
 
- 
-    return (
-      <>
-        <Plannings />
-        <div className="flex space-x-2 items-center">
-          filters here
-          <select
-            value={selectedSchoolId}
-            onChange={handleSchoolChange}
-            className="text-sm h-8 border border-gray-300 rounded-md px-4"
-          >
-            <option value="">All Schools</option>
-            {schoolsList?.map(
-              (school) =>
-                school.schoolName !== "First Steps" && (
-                  <option key={school.id} value={school.id}>
-                    {school.schoolName}
-                  </option>
-                )
-            )}
-          </select>
-        </div>
-        <TimelineResourceGrouping className="timeline-resource-grouping e-schedule">
-          <div className="schedule-control-section">
-            <div className="col-lg-12 control-section">
-              <div className="control-wrapper">
-                {/* <div>
+  return (
+    <>
+      <Plannings />
+      <div className="flex space-x-2 items-center">
+        Displayed Students: {filteredStudentsList?.length}
+        <select
+          value={selectedSchoolId}
+          onChange={handleSchoolChange}
+          className="text-sm h-8 border border-gray-300 rounded-md px-4"
+        >
+          <option value="">All Schools</option>
+          {schoolsList?.map((school) => (
+            // school.schoolName !== "First Steps" &&
+            <option key={school.id} value={school.id}>
+              {school.schoolName}
+            </option>
+          ))}
+        </select>
+      </div>
+      <TimelineResourceGrouping className="timeline-resource-grouping e-schedule">
+        <div className="schedule-control-section">
+          <div className="col-lg-12 control-section">
+            <div className="control-wrapper">
+              {/* <div>
                 <button
                   onClick={openNewSessionEditor}
                   className="btn btn-primary"
@@ -1032,80 +1035,80 @@ let filteredStudentsList =[]
                   Add New Session
                 </button>
               </div> */}
-                <ScheduleComponent
-                  //ref={scheduleObj} //to access and update teh scheduler by applying the query filter based on selectedschools
-                  ref={(scheduler) => (scheduleObj.current = scheduler)}
-                  cssClass="timeline-resource-grouping"
-                  width="100%"
-                  //height="650px"
-                  // selectedDate={new Date(2024, 10, 1)}
-                  selectedDate={selectedDate}
-                  actionComplete={handleAction} // Capture modification events to be used in selected date to always render on the last date we used
-                  // selectedDate={new Date()}
-                  timeScale={{ enable: true, interval: 60, slotCount: 2 }}
-                  currentView="TimelineDay"
-                  workDays={workDays}
-                  startHour="07:00"
-                  endHour="18:00"
-                  // eventSettings={{
-                  //   dataSource: data,
-                  //   //editFollowingEvents: true,
-                  //   fields: fields,
-                  // }}
-                  eventSettings={eventSettings}
-                  rowAutoHeight={true}
-                  group={{ resources: ["Sections", "Students"] }}
-                  popupOpen={onPopupOpen}
-                  actionBegin={onActionBegin}
-                  // eventRendered={onEventRendered}
-                  popupClose={onPopupClose}
-                >
-                  <ResourcesDirective>
-                    <ResourceDirective
-                      field="sessionSectionId" //the id of the section in the session data
-                      title="Choose Section" //this is what will apppear in new or edit window
-                      name="Sections" //name of the group
-                      allowMultiple={false}
-                      dataSource={filteredSectionsList}
-                      //dataSource={studentSections}
-                      textField="sectionLabel"
-                      idField="id"
-                      // colorField="color"
-                    />
-                    <ResourceDirective
-                      field="sessionStudentId"
-                      title=" Choose Student" // //this is what will apppear in new or edit window
-                      name="Students"
-                      allowMultiple={true}
-                      dataSource={filteredStudentsList}
-                      // dataSource={studentsList}
-                      textField="studentName" // will be replaced by the StudentNameTemplate
-                      idField="id"
-                      groupIDField="studentSectionId"
-                      colorField="studentColor"
-                    />
-                  </ResourcesDirective>
-                  <ViewsDirective>
-                    <ViewDirective option="TimelineDay" />
-
-                    <ViewDirective option="Agenda" />
-                  </ViewsDirective>
-                  <Inject
-                    services={[
-                      TimelineViews,
-                      TimelineMonth,
-                      //Week,
-                      Agenda,
-                      Resize,
-                      DragAndDrop,
-                    ]}
+              <ScheduleComponent
+                //ref={scheduleObj} //to access and update teh scheduler by applying the query filter based on selectedschools
+                ref={(scheduler) => (scheduleObj.current = scheduler)}
+                cssClass="timeline-resource-grouping"
+                width="100%"
+                //height="650px"
+                // selectedDate={new Date(2024, 10, 1)}
+                selectedDate={selectedDate}
+                actionComplete={handleAction} // Capture modification events to be used in selected date to always render on the last date we used
+                // selectedDate={new Date()}
+                timeScale={{ enable: true, interval: 60, slotCount: 2 }}
+                currentView="TimelineDay"
+                workDays={workDays}
+                startHour="07:00"
+                endHour="18:00"
+                // eventSettings={{
+                //   dataSource: data,
+                //   //editFollowingEvents: true,
+                //   fields: fields,
+                // }}
+                eventSettings={eventSettings}
+                rowAutoHeight={true}
+                group={{ resources: ["Sections", "Students"] }}
+                popupOpen={onPopupOpen}
+                actionBegin={onActionBegin}
+                // eventRendered={onEventRendered}
+                popupClose={onPopupClose}
+              >
+                <ResourcesDirective>
+                  <ResourceDirective
+                    field="sessionSectionId" //the id of the section in the session data
+                    title="Choose Section" //this is what will apppear in new or edit window
+                    name="Sections" //name of the group
+                    allowMultiple={false}
+                    dataSource={filteredSectionsList}
+                    //dataSource={studentSections}
+                    textField="sectionLabel"
+                    idField="id"
+                    // colorField="color"
                   />
-                </ScheduleComponent>
-              </div>
+                  <ResourceDirective
+                    field="sessionStudentId"
+                    title=" Choose Student" // //this is what will apppear in new or edit window
+                    name="Students"
+                    allowMultiple={true}
+                    dataSource={filteredStudentsList}
+                    // dataSource={studentsList}
+                    textField="studentName" // will be replaced by the StudentNameTemplate
+                    idField="id"
+                    groupIDField="studentSectionId"
+                    colorField="studentColor"
+                  />
+                </ResourcesDirective>
+                <ViewsDirective>
+                  <ViewDirective option="TimelineDay" />
+
+                  <ViewDirective option="Agenda" />
+                </ViewsDirective>
+                <Inject
+                  services={[
+                    TimelineViews,
+                    TimelineMonth,
+                    //Week,
+                    Agenda,
+                    Resize,
+                    DragAndDrop,
+                  ]}
+                />
+              </ScheduleComponent>
             </div>
           </div>
-        </TimelineResourceGrouping>
-      </>
-    );
+        </div>
+      </TimelineResourceGrouping>
+    </>
+  );
 };
 export default SectionsPlannings;
