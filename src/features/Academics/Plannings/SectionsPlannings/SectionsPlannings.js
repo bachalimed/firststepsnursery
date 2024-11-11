@@ -258,7 +258,7 @@ const SectionsPlannings = () => {
   //   const { entities } = schools;
   //   schoolsList = Object.values(entities);
   // }
-
+let filteredStudentsList =[]
   let filteredSessionsList = [];
   let filteredSectionsList = [];
   const [selectedSchoolId, setSelectedSchoolId] = useState("");
@@ -268,7 +268,7 @@ const SectionsPlannings = () => {
     setSelectedSchoolId(e.target.value);
   };
 
-  if (isSessionsSuccess && isSectionsSuccess) {
+  if (isSessionsSuccess && isSectionsSuccess&&isStudentsSuccess) {
     //set to the state to be used for other component s and edit student component
     //we are using entity adapter in this query
 
@@ -301,6 +301,15 @@ const SectionsPlannings = () => {
     console.log(filteredSectionsList, "filteredSectionsList");
 
     // filter studtns to only keepp those who have theri  nbaems in the sections
+     filteredStudentsList = studentsList.filter((student) => {
+      return filteredSectionsList.some((section) =>
+        section.students.some((sectionStudent) => sectionStudent._id === student.id)
+      );
+    });
+
+    console.log(filteredStudentsList, "filteredStudentsList");
+
+
   }
 
   // Initial filter setup for filteredSessionsList
@@ -989,7 +998,7 @@ const SectionsPlannings = () => {
     }
   }, [processedEvents]);
 
-  if (isSectionsSuccess && isSessionsSuccess && isStudentsSuccess)
+ 
     return (
       <>
         <Plannings />
@@ -1068,7 +1077,8 @@ const SectionsPlannings = () => {
                       title=" Choose Student" // //this is what will apppear in new or edit window
                       name="Students"
                       allowMultiple={true}
-                      dataSource={studentsList}
+                      dataSource={filteredStudentsList}
+                      // dataSource={studentsList}
                       textField="studentName" // will be replaced by the StudentNameTemplate
                       idField="id"
                       groupIDField="studentSectionId"
