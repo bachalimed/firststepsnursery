@@ -25,6 +25,7 @@ const Plannings = () => {
 
   // Define the tab data with paths and labels
   const tabs = [
+    { label: 'New Assignment', path: '/academics/plannings/NewAnimatorsAssignmentForm' },
     { label: 'Assignment', path: '/academics/plannings/animatorsAssignment' },
     { label: 'Sections', path: '/academics/plannings/sectionsPlannings' },
     { label: 'Sites', path: "/academics/plannings/sitesPlannings" },

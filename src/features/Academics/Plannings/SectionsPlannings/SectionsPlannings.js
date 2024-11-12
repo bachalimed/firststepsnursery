@@ -60,7 +60,7 @@ import {
 } from "../../../../config/SchedulerConsts";
 import { classroomssList } from "./classroomssList";
 import RuleGenerate from "./RuleGenerate";
-import { animatorsAssigments } from "./employeessList";
+import { animatorsAssignments } from "./employeessList";
 const TimelineResourceGrouping = styled.div`
   &.e-schedule:not(.e-device)
     .e-agenda-view
@@ -77,6 +77,8 @@ const TimelineResourceGrouping = styled.div`
 
 /**
  * schedule timeline resource grouping sample
+ * we are using two types of filtering, the filter on the quried data itself to filter schools and subjects and sessiontypes and another filter oschedulonbj becasue it 
+ * elaborates teh events and we can assign the animators according to their assignemtn
  */
 const SectionsPlannings = () => {
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -261,61 +263,113 @@ const SectionsPlannings = () => {
   let filteredStudentsList = [];
   let filteredSessionsList = [];
   let filteredSectionsList = [];
-  const [selectedSchoolId, setSelectedSchoolId] = useState("");
+  const [selectedSchoolId, setSelectedSchoolId] = useState("");//filter
+  const [selectedSessionType, setSelectedSessionType] = useState("");//filter
   // Handle change event for school selection
   const handleSchoolChange = (e) => {
     // console.log(selectedSchoolId,'selectedSchoolId')
     setSelectedSchoolId(e.target.value);
   };
+  // Handle change event for sessiontype selection
+  const handleSessionTypeChange = (e) => {
+    // console.log(selectedSessionType,'selectedSessionType')
+    setSelectedSessionType(e.target.value);
+  };
 
   if (isSessionsSuccess && isSectionsSuccess && isStudentsSuccess) {
-    //set to the state to be used for other component s and edit student component
-    //we are using entity adapter in this query
+    // Set initial lists to state to be used for other components and the edit student component
+    // We are using entity adapter in this query
     filteredSessionsList = sessionsList;
     filteredSectionsList = studentSections;
     filteredStudentsList = studentsList;
-
-    if (selectedSchoolId !== "") {
-      // Example filter function
-      console.log(sessionsList, "sessionsList");
-      console.log(selectedSchoolId, "selectedSchoolId");
-      filteredSessionsList =
-        selectedSchoolId !== ""
-          ? sessionsList.filter(
-              (session) => session.school?._id === selectedSchoolId
-            )
-          : sessionsList;
-      // filter the sections to only keep those who have the studetns names that correspond to the filtered sessions
+  
+    if (selectedSchoolId !== "" || selectedSessionType) {
+      // Filter sessions by selectedSchoolId and selectedSessionType if provided
+      filteredSessionsList = sessionsList.filter((session) => {
+        const schoolMatch = selectedSchoolId ? session.school?._id === selectedSchoolId : true;
+        const typeMatch = selectedSessionType
+          ? ["Drop", "Collect", "Nursery", "School"].includes(session.sessionType) &&
+            session.sessionType === selectedSessionType
+          : true;
+        return schoolMatch && typeMatch;
+      });
+  
+      // Filter sections to only include students corresponding to the filtered sessions
       filteredSectionsList = studentSections.map((section) => {
         // Filter students within the current section
-        const filteredStudents = section.students.filter((student) => {
-          // Check if this student's name matches any student's name in filteredSessionsList
-          return filteredSessionsList.some((session) => {
-            return session.student?._id === student._id;
-          });
-        });
-
+        const filteredStudents = section.students.filter((student) =>
+          filteredSessionsList.some((session) => session.student?._id === student._id)
+        );
+  
         // Return a new section object with the filtered students
         return {
           ...section,
           students: filteredStudents,
         };
       });
-
-      console.log(filteredSectionsList, "filteredSectionsList");
-
-      // filter studtns to only keepp those who have theri  nbaems in the sections
-      filteredStudentsList = studentsList.filter((student) => {
-        return filteredSectionsList.some((section) =>
-          section.students.some(
-            (sectionStudent) => sectionStudent._id === student.id
-          )
-        );
-      });
-
-      console.log(filteredStudentsList, "filteredStudentsList");
+  
+      // Filter students to only keep those that appear in the filtered sections
+      filteredStudentsList = studentsList.filter((student) =>
+        filteredSectionsList.some((section) =>
+          section.students.some((sectionStudent) => sectionStudent._id === student.id)
+        )
+      );
     }
+  
+    // Debugging logs
+    console.log(filteredSessionsList, "filteredSessionsList");
+    console.log(filteredSectionsList, "filteredSectionsList");
+    console.log(filteredStudentsList, "filteredStudentsList");
   }
+  
+  // if (isSessionsSuccess && isSectionsSuccess && isStudentsSuccess) {
+  //   //set to the state to be used for other component s and edit student component
+  //   //we are using entity adapter in this query
+  //   filteredSessionsList = sessionsList;
+  //   filteredSectionsList = studentSections;
+  //   filteredStudentsList = studentsList;
+
+  //   if (selectedSchoolId !== "") {
+  //     // Example filter function
+  //     console.log(sessionsList, "sessionsList");
+  //     console.log(selectedSchoolId, "selectedSchoolId");
+  //     filteredSessionsList =
+  //       selectedSchoolId !== ""
+  //         ? sessionsList.filter(
+  //             (session) => session.school?._id === selectedSchoolId
+  //           )
+  //         : sessionsList;
+  //     // filter the sections to only keep those who have the studetns names that correspond to the filtered sessions
+  //     filteredSectionsList = studentSections.map((section) => {
+  //       // Filter students within the current section
+  //       const filteredStudents = section.students.filter((student) => {
+  //         // Check if this student's name matches any student's name in filteredSessionsList
+  //         return filteredSessionsList.some((session) => {
+  //           return session.student?._id === student._id;
+  //         });
+  //       });
+
+  //       // Return a new section object with the filtered students
+  //       return {
+  //         ...section,
+  //         students: filteredStudents,
+  //       };
+  //     });
+
+  //     console.log(filteredSectionsList, "filteredSectionsList");
+
+  //     // filter studtns to only keepp those who have theri  nbaems in the sections
+  //     filteredStudentsList = studentsList.filter((student) => {
+  //       return filteredSectionsList.some((section) =>
+  //         section.students.some(
+  //           (sectionStudent) => sectionStudent._id === student.id
+  //         )
+  //       );
+  //     });
+
+  //     console.log(filteredStudentsList, "filteredStudentsList");
+  //   }
+  // }
 
   // Initial filter setup for filteredSessionsList
   // Ref to store the previous sessions list for comparison
@@ -964,17 +1018,25 @@ const SectionsPlannings = () => {
       // Check if sessionType is "Drop" or "Collect"
       if (event.sessionType === "Drop" || event.sessionType === "Collect") {
         const attendedSchoolId = event.attendedSchool?._id;
-
-        // Ensure attendedSchoolId exists before proceeding
-        if (attendedSchoolId) {
-          // Find the matching assignment for the school
-          const assignment = animatorsAssigments
+  
+        // Ensure attendedSchoolId exists and startTime is defined
+        if (attendedSchoolId && event.startTime) {
+          // Filter animatorsAssignments based on the assigned date range
+          const relevantAssignments = animatorsAssignments.filter((assignmentObj) => {
+            const assignedFrom = new Date(assignmentObj.assignedFrom);
+            const assignedTo = new Date(assignmentObj.assignedTo);
+            const eventStartTime = new Date(event.startTime);
+  
+            return eventStartTime >= assignedFrom && eventStartTime <= assignedTo;
+          });
+  
+          // Now find the matching assignment for the attendedSchoolId within the filtered assignments
+          const assignment = relevantAssignments
             .flatMap((assignObj) => assignObj.assignments)
             .find((assign) => assign.schools.includes(attendedSchoolId));
-
+  
           // If an assignment is found, update the animator
           if (assignment) {
-            //console.log(assignment, "assignment");
             return {
               ...event,
               animator: assignment.animator,
@@ -982,27 +1044,69 @@ const SectionsPlannings = () => {
           }
         }
       }
-
+  
       // Return the original event if no updates are needed
       return event;
     });
-    //console.log(updatedEvents,'updatedEvents')
-    // Update the state to trigger a re-render
-    //setProcessedEvents(updatedEvents);
+  
+    // Update processedEvents
     processedEvents = updatedEvents;
+  }, [animatorsAssignments, scheduleObj.current?.eventsProcessed]);
+  
+ // Synchronize state with scheduleObj.current
+useEffect(() => {
+  if (processedEvents?.length > 0) {
+    scheduleObj.current = {
+      ...scheduleObj.current,
+      eventsProcessed: processedEvents,
+    };
+  }
+}, [processedEvents]);
+  //before including the startingdate
+  // useEffect(() => {
+  //   const updatedEvents = scheduleObj.current?.eventsProcessed.map((event) => {
+  //     // Check if sessionType is "Drop" or "Collect"
+  //     if (event.sessionType === "Drop" || event.sessionType === "Collect") {
+  //       const attendedSchoolId = event.attendedSchool?._id;
 
-    // Update `scheduleObj.current.eventsProcessed` after state update
-  }, [animatorsAssigments, scheduleObj.current?.eventsProcessed]);
+  //       // Ensure attendedSchoolId exists before proceeding
+  //       if (attendedSchoolId) {
+  //         // Find the matching assignment for the school
+  //         const assignment = animatorsAssigments
+  //           .flatMap((assignObj) => assignObj.assignments)
+  //           .find((assign) => assign.schools.includes(attendedSchoolId));
 
-  // Use another effect to synchronize state with scheduleObj.current
-  useEffect(() => {
-    if (processedEvents?.length > 0) {
-      scheduleObj.current = {
-        ...scheduleObj.current,
-        eventsProcessed: processedEvents,
-      };
-    }
-  }, [processedEvents]);
+  //         // If an assignment is found, update the animator
+  //         if (assignment) {
+  //           //console.log(assignment, "assignment");
+  //           return {
+  //             ...event,
+  //             animator: assignment.animator,
+  //           };
+  //         }
+  //       }
+  //     }
+
+  //     // Return the original event if no updates are needed
+  //     return event;
+  //   });
+  //   //console.log(updatedEvents,'updatedEvents')
+  //   // Update the state to trigger a re-render
+  //   //setProcessedEvents(updatedEvents);
+  //   processedEvents = updatedEvents;
+
+  //   // Update `scheduleObj.current.eventsProcessed` after state update
+  // }, [animatorsAssigments, scheduleObj.current?.eventsProcessed]);
+
+  // // Use another effect to synchronize state with scheduleObj.current
+  // useEffect(() => {
+  //   if (processedEvents?.length > 0) {
+  //     scheduleObj.current = {
+  //       ...scheduleObj.current,
+  //       eventsProcessed: processedEvents,
+  //     };
+  //   }
+  // }, [processedEvents]);
 
   return (
     <>
@@ -1021,6 +1125,17 @@ const SectionsPlannings = () => {
               {school.schoolName}
             </option>
           ))}
+        </select>
+        <select
+          value={selectedSessionType}
+          onChange={handleSessionTypeChange}
+          className="text-sm h-8 border border-gray-300 rounded-md px-4"
+        >
+         <option value="">All Types</option>
+        <option value="Drop">Drop</option>
+        <option value="Collect">Collect</option>
+        <option value="Nursery">Nursery</option>
+        <option value="School">School</option>
         </select>
       </div>
       <TimelineResourceGrouping className="timeline-resource-grouping e-schedule">

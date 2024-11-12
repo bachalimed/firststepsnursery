@@ -13,9 +13,9 @@ export const employeessList = [
   },
 ];
 
-export const animatorsAssigments = [
+export const animatorsAssignments = [
   {
-    assignementYear: "2024/2025",
+    assignmentYear: "2024/2025",
     assignments: [
       {
         animator: "672c526ba0f4c5eff31435af",
