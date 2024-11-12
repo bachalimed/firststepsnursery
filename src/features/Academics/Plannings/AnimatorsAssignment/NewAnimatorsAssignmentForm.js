@@ -14,6 +14,7 @@ import {useGetEmployeesByYearQuery} from'../../../HR/Employees/employeesApiSlice
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { NAME_REGEX, DATE_REGEX } from "../../../../Components/lib/Utils/REGEX";
 
+
 const NewAnimatorsAssignmentForm = () => {
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -106,15 +107,18 @@ const NewAnimatorsAssignmentForm = () => {
   useEffect(() => {
     setValidity((prev) => ({
       ...prev,
-      validAssignmentYear: NAME_REGEX.test(formData.assignmentYear),
+      validAssignmentYear: DATE_REGEX.test(formData.assignmentYear),
       validAssignments:
         formData.assignments.length > 0 &&
         formData.assignments.every((animator) => animator !== ""),
       validAssignedFrom: DATE_REGEX.test(formData.assignedFrom), // Ensure schoolType is selected
-      validAssignedTo: DATE_REGEX.test(formData.assignedTo), // Ensure schoolType is selected
+      validAssignedTo: !!formData.assignedTo && new Date(formData?.assignedFrom) < new Date(formData.assignedTo),
     }));
   }, [formData]);
-
+ console.log( validity.validAssignmentYear,
+  validity.validAssignments,
+  validity.validAssignedFrom,
+  validity.validAssignedTo)
   // Clear form and errors on success
   useEffect(() => {
     if (isAddSuccess) {
@@ -182,7 +186,7 @@ const NewAnimatorsAssignmentForm = () => {
     .flatMap((assignment) => assignment.schools);
 
   // Filter out schools already selected in previous assignments
-  return schoolsList.filter((school) => !selectedSchools.includes(school.id));
+  return schoolsList.filter((school) => !selectedSchools.includes(school.id) &&school.schoolName !== "First Steps") ;
 };
 
  // Handle animator or school selection changes in each assignment
@@ -317,7 +321,7 @@ const addAssignment = () => {
                 {assignment.schools
                   .map(
                     (schoolId) =>
-                      schoolsList.find((school) => school.id === schoolId)?.schoolName
+                      schoolsList.find((school) => school.id === schoolId)?.schoolName 
                   )
                   .join(", ")}
               </div>
