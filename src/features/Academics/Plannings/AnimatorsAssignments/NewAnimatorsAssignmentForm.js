@@ -1,19 +1,22 @@
 import { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
-import { useDispatch,useSelector } from "react-redux";
-import { useAddNewAnimatorsAssignmentMutation, useGetAnimatorsAssignmentsQuery} from "./animatorsAssignmentsApiSlice"; // Redux API action
+import { useDispatch, useSelector } from "react-redux";
+import {
+  useAddNewAnimatorsAssignmentMutation,
+  useGetAnimatorsAssignmentsQuery,
+} from "./animatorsAssignmentsApiSlice"; // Redux API action
 
 import Plannings from "../../Plannings";
 import useAuth from "../../../../hooks/useAuth";
-import {useGetAttendedSchoolsQuery} from'../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice'
-import {useGetEmployeesByYearQuery} from'../../../HR/Employees/employeesApiSlice'
-  import{selectCurrentAcademicYearId,
+import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
+import { useGetEmployeesByYearQuery } from "../../../HR/Employees/employeesApiSlice";
+import {
+  selectCurrentAcademicYearId,
   selectAcademicYearById,
   selectAllAcademicYears,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { NAME_REGEX, DATE_REGEX } from "../../../../Components/lib/Utils/REGEX";
-
 
 const NewAnimatorsAssignmentForm = () => {
   const { userId } = useAuth();
@@ -87,6 +90,7 @@ const NewAnimatorsAssignmentForm = () => {
     validAssignments: false,
     validAssignedFrom: false,
     validAssignedTo: false,
+    noOverlap: true, // New validity check for date overlap
   });
 
   const navigate = useNavigate();
@@ -102,7 +106,20 @@ const NewAnimatorsAssignmentForm = () => {
       isSuccess: isAddSuccess,
     },
   ] = useAddNewAnimatorsAssignmentMutation();
-  
+  // Check if any dates overlap with existing assignments
+  const checkNoOverlap = (from, to) => {
+    if(assignmentsList!=[]){
+    return assignmentsList.every((assignment) => {
+     
+      const existingFrom = new Date(assignment.assignedFrom);
+      const existingTo = new Date(assignment.assignedTo);
+      const newFrom = new Date(from);
+      const newTo = new Date(to);
+
+      return newTo < existingFrom || newFrom > existingTo; // Ensure no date overlap
+    });
+  }
+  };
   // Validate inputs using regex patterns
   useEffect(() => {
     setValidity((prev) => ({
@@ -112,13 +129,18 @@ const NewAnimatorsAssignmentForm = () => {
         formData.assignments.length > 0 &&
         formData.assignments.every((animator) => animator !== ""),
       validAssignedFrom: DATE_REGEX.test(formData.assignedFrom), // Ensure schoolType is selected
-      validAssignedTo: !!formData.assignedTo && new Date(formData?.assignedFrom) < new Date(formData.assignedTo),
+      validAssignedTo:
+        !!formData.assignedTo &&
+        new Date(formData?.assignedFrom) < new Date(formData.assignedTo),
+      noOverlap: checkNoOverlap(formData.assignedFrom, formData.assignedTo),
     }));
   }, [formData]);
- console.log( validity.validAssignmentYear,
-  validity.validAssignments,
-  validity.validAssignedFrom,
-  validity.validAssignedTo)
+  // console.log(
+  //   validity.validAssignmentYear,
+  //   validity.validAssignments,
+  //   validity.validAssignedFrom,
+  //   validity.validAssignedTo
+  // );
   // Clear form and errors on success
   useEffect(() => {
     if (isAddSuccess) {
@@ -161,8 +183,8 @@ const NewAnimatorsAssignmentForm = () => {
     }
   };
 
-   // Handle input change
-   const handleChange = (e) => {
+  // Handle input change
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -170,55 +192,62 @@ const NewAnimatorsAssignmentForm = () => {
     }));
   };
 
-   // Filter available animators by excluding already selected ones
+  // Filter available animators by excluding already selected ones
   const getAvailableAnimators = (index) => {
-    const selectedAnimators = formData.assignments.map((assignment) => assignment.animator);
+    const selectedAnimators = formData.assignments.map(
+      (assignment) => assignment.animator
+    );
     return employeesList.filter(
-      (employee) => !selectedAnimators.includes(employee.id) || selectedAnimators[index] === employee.id
+      (employee) =>
+        !selectedAnimators.includes(employee.id) ||
+        selectedAnimators[index] === employee.id
     );
   };
 
- // Get available schools for the current assignment index
- const getAvailableSchools = (index) => {
-  // Gather all selected schools from previous assignments
-  const selectedSchools = formData.assignments
-    .slice(0, index) // Only consider previous assignments to allow unique school selection per animator
-    .flatMap((assignment) => assignment.schools);
+  // Get available schools for the current assignment index
+  const getAvailableSchools = (index) => {
+    // Gather all selected schools from previous assignments
+    const selectedSchools = formData.assignments
+      .slice(0, index) // Only consider previous assignments to allow unique school selection per animator
+      .flatMap((assignment) => assignment.schools);
 
-  // Filter out schools already selected in previous assignments
-  return schoolsList.filter((school) => !selectedSchools.includes(school.id) &&school.schoolName !== "First Steps") ;
-};
+    // Filter out schools already selected in previous assignments
+    return schoolsList.filter(
+      (school) =>
+        !selectedSchools.includes(school.id) &&
+        school.schoolName !== "First Steps"
+    );
+  };
 
- // Handle animator or school selection changes in each assignment
- const handleAssignmentChange = (index, field, value) => {
-  const updatedAssignments = formData.assignments.map((assignment, i) =>
-    i === index ? { ...assignment, [field]: value } : assignment
-  );
-  setFormData((prev) => ({ ...prev, assignments: updatedAssignments }));
-};
+  // Handle animator or school selection changes in each assignment
+  const handleAssignmentChange = (index, field, value) => {
+    const updatedAssignments = formData.assignments.map((assignment, i) =>
+      i === index ? { ...assignment, [field]: value } : assignment
+    );
+    setFormData((prev) => ({ ...prev, assignments: updatedAssignments }));
+  };
 
-// Toggle school selection for multiple schools in each assignment
-const toggleSchoolSelection = (index, schoolId) => {
-  const updatedAssignments = formData.assignments.map((assignment, i) => {
-    if (i === index) {
-      const schools = assignment.schools.includes(schoolId)
-        ? assignment.schools.filter((id) => id !== schoolId) // Remove if already selected
-        : [...assignment.schools, schoolId]; // Add if not selected
-      return { ...assignment, schools };
-    }
-    return assignment;
-  });
-  setFormData((prev) => ({ ...prev, assignments: updatedAssignments }));
-};
+  // Toggle school selection for multiple schools in each assignment
+  const toggleSchoolSelection = (index, schoolId) => {
+    const updatedAssignments = formData.assignments.map((assignment, i) => {
+      if (i === index) {
+        const schools = assignment.schools.includes(schoolId)
+          ? assignment.schools.filter((id) => id !== schoolId) // Remove if already selected
+          : [...assignment.schools, schoolId]; // Add if not selected
+        return { ...assignment, schools };
+      }
+      return assignment;
+    });
+    setFormData((prev) => ({ ...prev, assignments: updatedAssignments }));
+  };
 
-// Add a new assignment row for another animator
-const addAssignment = () => {
-  setFormData((prev) => ({
-    ...prev,
-    assignments: [...prev.assignments, { animator: "", schools: [] }],
-  }));
-};
-
+  // Add a new assignment row for another animator
+  const addAssignment = () => {
+    setFormData((prev) => ({
+      ...prev,
+      assignments: [...prev.assignments, { animator: "", schools: [] }],
+    }));
+  };
 
   console.log(formData, "formdata");
 
@@ -251,7 +280,7 @@ const addAssignment = () => {
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               From{" "}
-              {!validity.validAssignedFrom && (
+              {(!validity.validAssignedFrom || !validity.noOverlap) && (
                 <span className="text-red-500">*</span>
               )}
             </label>
@@ -267,7 +296,7 @@ const addAssignment = () => {
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               To{" "}
-              {!validity.validAssignedTo && (
+              {(!validity.validAssignedTo ||! validity.noOverlap) && (
                 <span className="text-red-500">*</span>
               )}
             </label>
@@ -284,21 +313,29 @@ const addAssignment = () => {
           <h3 className="text-xl font-bold mb-4">Assignments</h3>
           {formData.assignments.map((assignment, index) => (
             <div key={index} className="mb-4 p-4 border rounded-md">
-              <label className="block text-gray-700 font-bold mb-2">Animator</label>
+              <label className="block text-gray-700 font-bold mb-2">
+                Animator
+              </label>
               <select
                 value={assignment.animator}
-                onChange={(e) => handleAssignmentChange(index, "animator", e.target.value)}
+                onChange={(e) =>
+                  handleAssignmentChange(index, "animator", e.target.value)
+                }
                 className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Animator</option>
                 {getAvailableAnimators(index).map((employee) => (
                   <option key={employee.id} value={employee.id}>
-                    {employee.userFullName.userFirstName} {employee.userFullName.userMiddleName} {employee.userFullName.userLastName}
+                    {employee.userFullName.userFirstName}{" "}
+                    {employee.userFullName.userMiddleName}{" "}
+                    {employee.userFullName.userLastName}
                   </option>
                 ))}
               </select>
 
-              <label className="block text-gray-700 font-bold mt-4 mb-2">Schools</label>
+              <label className="block text-gray-700 font-bold mt-4 mb-2">
+                Schools
+              </label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {getAvailableSchools(index).map((school) => (
                   <button
@@ -321,7 +358,8 @@ const addAssignment = () => {
                 {assignment.schools
                   .map(
                     (schoolId) =>
-                      schoolsList.find((school) => school.id === schoolId)?.schoolName 
+                      schoolsList.find((school) => school.id === schoolId)
+                        ?.schoolName
                   )
                   .join(", ")}
               </div>
@@ -336,8 +374,6 @@ const addAssignment = () => {
             Add Another Assignment
           </button>
 
-         
-
           <button
             type="submit"
             disabled={!canSubmit}
@@ -349,7 +385,9 @@ const addAssignment = () => {
             type="submit"
             //disabled={!canSubmit}
             className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-200 mt-4"
-            onClick={()=>navigate("/academics/plannings/animatorsAssignments/")}
+            onClick={() =>
+              navigate("/academics/plannings/animatorsAssignments/")
+            }
           >
             Cancel
           </button>

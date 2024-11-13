@@ -62,6 +62,18 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
   } = useGetAnimatorsAssignmentsQuery({
     endpointName: "EditAnimatorsAssignmentForm",
   }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
+
+  
+  // Redux mutation for adding the attended school
+  const [
+    updateAnimatorsAssignment,
+    {
+      isLoading: isUpdateLoading,
+      isError: isUpdateError,
+      error: updateError,
+      isSuccess: isUpdateSuccess,
+    },
+  ] = useUpdateAnimatorsAssignmentMutation();
   const [formData, setFormData] = useState({
     id:animatorsAssignment._id,
     assignmentYear: animatorsAssignment.assignmentYear || "",
@@ -84,22 +96,24 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
     validAssignments: false,
     validAssignedFrom: false,
     validAssignedTo: false,
+    noOverlap: true, // New validity check for date overlap
   });
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // Redux mutation for adding the attended school
-  const [
-    updateAnimatorsAssignment,
-    {
-      isLoading: isUpdateLoading,
-      isError: isUpdateError,
-      error: updateError,
-      isSuccess: isUpdateSuccess,
-    },
-  ] = useUpdateAnimatorsAssignmentMutation();
-  
+ // Check if any dates overlap with existing assignments, excluding the current one
+ const checkNoOverlap = (from, to, excludeId = null) => {
+  if (assignmentsList.length === 0) return true;
+  return assignmentsList.every((assignment) => {
+    if (assignment.id === excludeId) return true; // Skip the current assignment
+    const existingFrom = new Date(assignment.assignedFrom);
+    const existingTo = new Date(assignment.assignedTo);
+    const newFrom = new Date(from);
+    const newTo = new Date(to);
+    return newTo < existingFrom || newFrom > existingTo; // Ensure no date overlap
+  });
+};
   // Validate inputs using regex patterns
   useEffect(() => {
     setValidity((prev) => ({
@@ -109,7 +123,10 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
         formData.assignments.length > 0 &&
         formData.assignments.every((animator) => animator !== ""),
       validAssignedFrom: DATE_REGEX.test(formData.assignedFrom), // Ensure schoolType is selected
-      validAssignedTo: !!formData.assignedTo && new Date(formData?.assignedFrom) < new Date(formData.assignedTo),
+      validAssignedTo:
+      !!formData.assignedTo &&
+      new Date(formData.assignedFrom) < new Date(formData.assignedTo),
+    noOverlap: checkNoOverlap(formData.assignedFrom, formData.assignedTo, formData.id),
     }));
   }, [formData]);
  console.log( validity.validAssignmentYear,
@@ -249,7 +266,7 @@ const addAssignment = () => {
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               From{" "}
-              {!validity.validAssignedFrom && (
+              {(!validity.validAssignedTo ||! validity.noOverlap) && (
                 <span className="text-red-500">*</span>
               )}
             </label>
@@ -265,7 +282,7 @@ const addAssignment = () => {
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               To{" "}
-              {!validity.validAssignedTo && (
+              {(!validity.validAssignedTo ||! validity.noOverlap) && (
                 <span className="text-red-500">*</span>
               )}
             </label>
