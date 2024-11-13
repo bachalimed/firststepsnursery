@@ -51,8 +51,10 @@ import Sections from './features/Academics/Sections'
 
 
 import Plannings from './features/Academics/Plannings'
-import AnimatorsAssignment from './features/Academics/Plannings/AnimatorsAssignment/AnimatorsAssigment'
-import NewAnimatorsAssignmentForm from './features/Academics/Plannings/AnimatorsAssignment/NewAnimatorsAssignmentForm'
+import AnimatorsAssignmentsList from './features/Academics/Plannings/AnimatorsAssignments/AnimatorsAssigmentsList'
+import NewAnimatorsAssignmentForm from './features/Academics/Plannings/AnimatorsAssignments/NewAnimatorsAssignmentForm'
+import EditAnimatorsAssignment from './features/Academics/Plannings/AnimatorsAssignments/EditAnimatorsAssignment'
+
 import SectionsPlannings from './features/Academics/Plannings/SectionsPlannings/SectionsPlannings'
 import SitesPlannings from './features/Academics/Plannings/SitesPlannings/SitesPlannings'
 import AnimatorsPlannings from './features/Academics/Plannings/AnimatorsPlannings/AnimatorsPlannings'
@@ -226,8 +228,10 @@ const App = () => {
 
 								<Route path="plannings" > 					
 								<Route index element={<Plannings />} /> 
-								<Route path="animatorsAssignment/" element={<AnimatorsAssignment/>}/>	
-								<Route path="NewAnimatorsAssignmentForm/" element={<NewAnimatorsAssignmentForm/>}/>	
+								<Route path="animatorsAssignments/" element={<AnimatorsAssignmentsList/>}/>	
+								<Route path="NewAnimatorsAssignmentForm/" element={<NewAnimatorsAssignmentForm/>}/>									
+								<Route path="editAnimatorsAssignment/:id" element={<EditAnimatorsAssignment/>}/>
+
 								<Route path="sectionsPlannings/" element={<SectionsPlannings/>}/>	
 								<Route path="sitesPlannings/" element={<SitesPlannings/>}/>	
 								<Route path="animatorsPlannings/" element={<AnimatorsPlannings/>}/>	

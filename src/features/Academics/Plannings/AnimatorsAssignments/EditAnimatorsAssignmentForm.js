@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 import { useDispatch,useSelector } from "react-redux";
-import { useAddNewAnimatorsAssignmentMutation, useGetAnimatorsAssignmentsQuery} from "./animatorsAssignmentsApiSlice"; // Redux API action
+import { useUpdateAnimatorsAssignmentMutation, useGetAnimatorsAssignmentsQuery} from "./animatorsAssignmentsApiSlice"; // Redux API action
 
 import Plannings from "../../Plannings";
 import useAuth from "../../../../hooks/useAuth";
@@ -15,7 +15,8 @@ import {useGetEmployeesByYearQuery} from'../../../HR/Employees/employeesApiSlice
 import { NAME_REGEX, DATE_REGEX } from "../../../../Components/lib/Utils/REGEX";
 
 
-const NewAnimatorsAssignmentForm = () => {
+
+const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
@@ -32,7 +33,7 @@ const NewAnimatorsAssignmentForm = () => {
   } = useGetEmployeesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
-      endpointName: "NewAnimatorsAssignmentForm",
+      endpointName: "EditAnimatorsAssignmentForm",
     } || {},
     {
       //this param will be passed in req.params to select only employees for taht year
@@ -49,7 +50,7 @@ const NewAnimatorsAssignmentForm = () => {
     isError: isSchoolError,
     error: schoolError,
   } = useGetAttendedSchoolsQuery({
-    endpointName: "NewAnimatorsAssignmentForm",
+    endpointName: "EditAnimatorsAssignmentForm",
   }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
 
   const {
@@ -59,19 +60,15 @@ const NewAnimatorsAssignmentForm = () => {
     isError: isAssignmentsError,
     error: assignmentsError,
   } = useGetAnimatorsAssignmentsQuery({
-    endpointName: "NewAnimatorsAssignmentForm",
+    endpointName: "EditAnimatorsAssignmentForm",
   }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
   const [formData, setFormData] = useState({
-    assignmentYear: selectedAcademicYear?.title || "",
-    assignments: [
-      {
-        animator: "",
-        schools: [],
-      },
-    ],
-    assignedFrom: "",
-    assignedTo: "",
-    creator: userId,
+    id:animatorsAssignment._id,
+    assignmentYear: animatorsAssignment.assignmentYear || "",
+    assignments: animatorsAssignment.assignments,
+    assignedFrom: animatorsAssignment.assignedFrom.split("T")[0],
+    assignedTo: animatorsAssignment.assignedTo.split("T")[0],
+    
     operator: userId,
   });
   let schoolsList = isSchoolSuccess ? Object.values(schools.entities) : [];
@@ -94,14 +91,14 @@ const NewAnimatorsAssignmentForm = () => {
 
   // Redux mutation for adding the attended school
   const [
-    addNewAnimatorsAssignment,
+    updateAnimatorsAssignment,
     {
-      isLoading: isAddLoading,
-      isError: isAddError,
-      error: addError,
-      isSuccess: isAddSuccess,
+      isLoading: isUpdateLoading,
+      isError: isUpdateError,
+      error: updateError,
+      isSuccess: isUpdateSuccess,
     },
-  ] = useAddNewAnimatorsAssignmentMutation();
+  ] = useUpdateAnimatorsAssignmentMutation();
   
   // Validate inputs using regex patterns
   useEffect(() => {
@@ -121,8 +118,9 @@ const NewAnimatorsAssignmentForm = () => {
   validity.validAssignedTo)
   // Clear form and errors on success
   useEffect(() => {
-    if (isAddSuccess) {
+    if (isUpdateSuccess) {
       setFormData({
+        id:"",
         assignments: [
           {
             animator: "",
@@ -131,16 +129,16 @@ const NewAnimatorsAssignmentForm = () => {
         ],
         assignedFrom: "",
         assignedTo: "",
-        creator: "",
+        
         operator: "",
       });
 
-      navigate("/academics/plannings/animatorsAssignment");
+      navigate("/academics/plannings/animatorsAssignments");
     }
-  }, [isAddSuccess, navigate]);
+  }, [isUpdateSuccess, navigate]);
 
   // Check if all fields are valid and enable the submit button
-  const canSubmit = Object.values(validity).every(Boolean) && !isAddLoading;
+  const canSubmit = Object.values(validity).every(Boolean) && !isUpdateLoading;
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -153,7 +151,7 @@ const NewAnimatorsAssignmentForm = () => {
     }
 
     try {
-      const newAnimatorsAssignment = await addNewAnimatorsAssignment(
+      const updatedAnimatorsAssignment = await updateAnimatorsAssignment(
         formData
       ).unwrap();
     } catch (err) {
@@ -227,7 +225,7 @@ const addAssignment = () => {
       <Plannings />
       <div className="p-6 bg-white rounded-lg shadow-md max-w-md mx-auto">
         <h2 className="text-2xl font-bold mb-6 text-center">
-          Add New Assignment
+          Edit Assignment
         </h2>
 
         <form onSubmit={handleSubmit}>
@@ -333,7 +331,7 @@ const addAssignment = () => {
             onClick={addAssignment}
             className="w-full bg-blue-200 text-gray-700 py-2 px-4 rounded-md mt-2 hover:bg-blue-300 transition duration-200"
           >
-            Add Another Assignment
+            Add Animator 
           </button>
 
          
@@ -343,7 +341,15 @@ const addAssignment = () => {
             disabled={!canSubmit}
             className="w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-200 mt-4"
           >
-            {isAddLoading ? "Adding..." : "Add Assignment"}
+            {isUpdateLoading ? "Updating..." : "Update Assignment"}
+          </button>
+          <button
+            type="submit"
+            //disabled={!canSubmit}
+            className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-200 mt-4"
+            onClick={()=>navigate("/academics/plannings/animatorsAssignments/")}
+          >
+            Cancel
           </button>
         </form>
       </div>
@@ -351,4 +357,4 @@ const addAssignment = () => {
   );
 };
 
-export default NewAnimatorsAssignmentForm;
+export default EditAnimatorsAssignmentForm;
