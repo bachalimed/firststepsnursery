@@ -88,8 +88,13 @@ const NewUserForm = () => {
       validStreet: NAME_REGEX.test(formData.userAddress.street),
       validCity: NAME_REGEX.test(formData.userAddress.city),
       validPrimaryPhone: PHONE_REGEX.test(formData.userContact.primaryPhone),
-      validEmployeeId: OBJECTID_REGEX.test(formData.employeeId),
-      validFamilyId: OBJECTID_REGEX.test(formData.familyId),
+      validEmployeeId:formData.employeeId !== undefined && formData.employeeId !== ""
+      ? OBJECTID_REGEX.test(formData.employeeId)
+      : true,
+      validFamilyId:
+        formData.familyId !== undefined && formData.familyId !== ""
+          ?OBJECTID_REGEX.test(formData.familyId)
+          :true ,
       validUserRoles: formData.userRoles.length > 0, // At least one role should be selected
       // validUserAllowedActions: formData.userAllowedActions.length > 0, // At least one action should be selected
     }));

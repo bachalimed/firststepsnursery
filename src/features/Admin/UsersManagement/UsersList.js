@@ -18,6 +18,9 @@ import { setUsers } from "./usersSlice";
 import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
 import { IoShieldCheckmarkOutline, IoShieldOutline } from "react-icons/io5";
 import { useDispatch } from "react-redux";
+import LoadingStateIcon from "../../../Components/LoadingStateIcon";
+import { ROLES } from "../../../config/UserRoles";
+import { ACTIONS } from "../../../config/UserActions";
 const UsersList = () => {
   //initialise state variables and hooks
   const Navigate = useNavigate();
@@ -25,7 +28,7 @@ const UsersList = () => {
   const { canEdit, canDelete, canAdd, canCreate, isParent, status2 } =
     useAuth();
   const [selectedRows, setSelectedRows] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
+
   //import users using RTK query
   const {
     data: users, //deconstructing data into users
@@ -45,6 +48,11 @@ const UsersList = () => {
     { isSuccess: isDelSuccess, isError: isDelError, error: delerror },
   ] = useDeleteUserMutation();
 
+  // State for search query and selected filters
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedUserRoles, setSelectedUserRoles] = useState([]);
+  const [selectedUserActions, setSelectedUserActions] = useState([]);
+
   //normally we will remove the prefetch since we wont need all users for any login and we import rtk here
   //get the users fromthe state
   //const allUsers = useSelector(state => selectAllUsers(state))
@@ -57,26 +65,48 @@ const UsersList = () => {
     usersList = Object.values(entities);
 
     dispatch(setUsers(usersList)); //timing issue to update the state and use it the same time
+
+    // Filtering Logic
     filteredUsers = usersList?.filter((item) => {
+      // Basic name search
       const firstNameMatch = item.userFullName.userFirstName
         .toLowerCase()
-        .includes(searchQuery);
+        .includes(searchQuery.toLowerCase());
       const middleNameMatch = item.userFullName.userMiddleName
         .toLowerCase()
-        .includes(searchQuery);
+        .includes(searchQuery.toLowerCase());
       const lastNameMatch = item.userFullName.userLastName
         .toLowerCase()
-        .includes(searchQuery);
+        .includes(searchQuery.toLowerCase());
+
+      // Checking if any value in the item matches the search query
+      const generalMatch = Object.values(item).some((val) =>
+        String(val).toLowerCase().includes(searchQuery.toLowerCase())
+      );
+
+      // Implement filters by userRoles and userActions
+      const userRolesFilter =
+        selectedUserRoles.length === 0 ||
+        item.userRoles.some((role) => selectedUserRoles.includes(role));
+
+      const userActionsFilter =
+        selectedUserActions.length === 0 ||
+        item.userAllowedActions.some((action) =>
+          selectedUserActions.includes(action)
+        );
+
       return (
-        Object.values(item).some((val) =>
-          String(val).toLowerCase().includes(searchQuery.toLowerCase())
-        ) ||
-        firstNameMatch ||
-        middleNameMatch ||
-        lastNameMatch
+        (generalMatch || firstNameMatch || middleNameMatch || lastNameMatch) &&
+        userRolesFilter &&
+        userActionsFilter
       );
     });
   }
+  const handleSearchChange = (e) => setSearchQuery(e.target.value);
+
+  const handleRoleChange = (e) => setSelectedUserRoles(e.target.value);
+  const handleActionChange = (e) => setSelectedUserActions(e.target.value);
+
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
@@ -339,27 +369,70 @@ const UsersList = () => {
   ];
   let content;
 
-  if (isUsersLoading) content = <p>Loading...</p>;
+  if (isUsersLoading)
+    content = (
+      <>
+        <LoadingStateIcon />
+      </>
+    );
 
   if (isUsersError) {
-    content = <p className="errmsg">{usersError?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
+    content = (
+      <>
+        {" "}
+        <UsersManagement />
+        <p className="errmsg">{usersError?.data?.message}</p>
+      </>
+    ); //errormessage class defined in the css, the error has data and inside we have message of error
   }
 
   if (isUsersSuccess || isDelSuccess) {
     content = (
       <>
         <UsersManagement />
-        <div className="relative h-10 mr-2 ">
-          <HiOutlineSearch
-            fontSize={20}
-            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-          />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={handleSearch}
-            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
-          />
+        <div className="flex space-x-2 items-center">
+          {/* Search Bar */}
+          <div className="relative h-10 mr-2 ">
+            <HiOutlineSearch
+              fontSize={20}
+              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+            />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
+            />
+          </div>
+          {/* User Roles Filter */}
+
+          <select
+            value={selectedUserRoles}
+            onChange={handleRoleChange}
+            className="text-sm h-8 border border-gray-300 rounded-md px-4"
+          >
+            <option value="">All Roles</option>
+            {Object.values(ROLES).map((role) => (
+              <option key={role} value={role}>
+                {role}
+              </option>
+            ))}
+          </select>
+
+          {/* User Actions Filter */}
+
+          <select
+            value={selectedUserActions}
+            onChange={handleActionChange}
+             className="text-sm h-8 border border-gray-300 rounded-md px-4"
+          >
+            <option value="">All Actions</option>
+            {Object.values(ACTIONS).map((action) => (
+              <option key={action} value={action}>
+                {action}
+              </option>
+            ))}
+          </select>
         </div>
         <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
           <DataTable

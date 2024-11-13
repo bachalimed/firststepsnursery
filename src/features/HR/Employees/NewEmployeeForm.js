@@ -3,7 +3,7 @@ import { useAddNewEmployeeMutation } from "./employeesApiSlice";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { ROLES } from "../../../config/UserRoles";
+import { POSITIONS, CONTRACT_TYPES, PAYMENT_PERIODS } from "../../../config/UserRoles";
 import { ACTIONS } from "../../../config/UserActions";
 import Employees from "../Employees";
 
@@ -13,14 +13,15 @@ import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
+import {
+  NAME_REGEX,
+  NUMBER_REGEX,
+  USER_REGEX,
+  PHONE_REGEX,
+  DATE_REGEX,
+  YEAR_REGEX,
+} from "../../../Components/lib/Utils/REGEX";
 
-//constrains on inputs when creating new user
-const USER_REGEX = /^[A-z 0-9]{6,20}$/;
-const NAME_REGEX = /^[A-z 0-9]{3,18}$/;
-const NUMBER_REGEX = /^[0-9]{1,4}(\.[0-9]{0,3})?$/;
-const PHONE_REGEX = /^[0-9]{6,15}$/;
-const DOB_REGEX = /^[0-9/-]{4,10}$/;
-const YEAR_REGEX = /^[0-9]{4}\/[0-9]{4}$/;
 const NewEmployeeForm = () => {
   const navigate = useNavigate();
 
@@ -29,7 +30,7 @@ const NewEmployeeForm = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-console.log(selectedAcademicYear.title,'selectedAcademicYear')
+  console.log(selectedAcademicYear.title, "selectedAcademicYear");
   const [addNewEmployee, { isLoading, isSuccess, isError, error }] =
     useAddNewEmployeeMutation();
 
@@ -106,7 +107,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
       validUsername: USER_REGEX.test(formData.username),
       validFirstName: NAME_REGEX.test(formData.userFullName.userFirstName),
       validLastName: NAME_REGEX.test(formData.userFullName.userLastName),
-      validDob: DOB_REGEX.test(formData.userDob),
+      validDob: DATE_REGEX.test(formData.userDob),
       validUserSex: NAME_REGEX.test(formData.userSex),
       validHouse: NAME_REGEX.test(formData.userAddress.house),
       validStreet: NAME_REGEX.test(formData.userAddress.street),
@@ -115,7 +116,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
       validCurrentPosition: USER_REGEX.test(
         formData.employeeCurrentEmployment.position
       ),
-      validJoinDate: DOB_REGEX.test(
+      validJoinDate: DATE_REGEX.test(
         formData.employeeCurrentEmployment.joinDate
       ),
       validContractType: USER_REGEX.test(
@@ -190,7 +191,9 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
     setFormData((prev) => {
       const updatedYears = [...prev.employeeYears];
       // Update based on checked state
-      updatedYears[index].academicYear = checked ? selectedAcademicYear?.title : "";
+      updatedYears[index].academicYear = checked
+        ? selectedAcademicYear?.title
+        : "";
       return { ...prev, employeeYears: updatedYears };
     });
   };
@@ -730,8 +733,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
                   <span className="text-red-500">*</span>
                 )}
               </label>
-              <input
-                type="text"
+              <select
                 name="position"
                 value={formData.employeeCurrentEmployment.position}
                 onChange={(e) =>
@@ -748,9 +750,15 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
                     ? "border-gray-300"
                     : "border-red-500"
                 } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                placeholder="Enter Position"
                 required
-              />
+              >
+                <option value="">Select Position</option>
+                {Object.values(POSITIONS).map((position) => (
+                  <option key={position} value={position}>
+                    {position}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div>
@@ -781,34 +789,37 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Contract Type{" "}
-                {!validity.validContractType && (
-                  <span className="text-red-500">*</span>
-                )}
-              </label>
-              <input
-                type="text"
-                name="contractType"
-                value={formData.employeeCurrentEmployment.contractType}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    employeeCurrentEmployment: {
-                      ...prev.employeeCurrentEmployment,
-                      contractType: e.target.value,
-                    },
-                  }))
-                }
-                className={`mt-1 block w-full border ${
-                  validity.validContractType
-                    ? "border-gray-300"
-                    : "border-red-500"
-                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                placeholder="Enter Contract Type"
-                required
-              />
-            </div>
+    <label className="block text-sm font-medium text-gray-700">
+      Contract Type{" "}
+      {!validity.validContractType && (
+        <span className="text-red-500">*</span>
+      )}
+    </label>
+    <select
+      name="contractType"
+      value={formData.employeeCurrentEmployment.contractType}
+      onChange={(e) =>
+        setFormData((prev) => ({
+          ...prev,
+          employeeCurrentEmployment: {
+            ...prev.employeeCurrentEmployment,
+            contractType: e.target.value,
+          },
+        }))
+      }
+      className={`mt-1 block w-full border ${
+        validity.validContractType ? "border-gray-300" : "border-red-500"
+      } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+      required
+    >
+      <option value="">Select Contract Type</option>
+      {CONTRACT_TYPES.map((type) => (
+        <option key={type} value={type}>
+          {type}
+        </option>
+      ))}
+    </select>
+  </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -847,38 +858,40 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Payment{" "}
-                    {!validity.validPayment && (
-                      <span className="text-red-500">*</span>
-                    )}
-                  </label>
-                  <input
-                    type="text"
-                    name="payment"
-                    value={
-                      formData.employeeCurrentEmployment.salaryPackage.payment
-                    }
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        employeeCurrentEmployment: {
-                          ...prev.employeeCurrentEmployment,
-                          salaryPackage: {
-                            ...prev.employeeCurrentEmployment.salaryPackage,
-                            payment: e.target.value,
-                          },
-                        },
-                      }))
-                    }
-                    className={`mt-1 block w-full border ${
-                      validity.validPayment
-                        ? "border-gray-300"
-                        : "border-red-500"
-                    } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                    placeholder="Enter Salary payment period"
-                  />
-                </div>
+    <label className="block text-sm font-medium text-gray-700">
+      Payment{" "}
+      {!validity.validPayment && (
+        <span className="text-red-500">*</span>
+      )}
+    </label>
+    <select
+      name="payment"
+      value={formData.employeeCurrentEmployment.salaryPackage.payment}
+      onChange={(e) =>
+        setFormData((prev) => ({
+          ...prev,
+          employeeCurrentEmployment: {
+            ...prev.employeeCurrentEmployment,
+            salaryPackage: {
+              ...prev.employeeCurrentEmployment.salaryPackage,
+              payment: e.target.value,
+            },
+          },
+        }))
+      }
+      className={`mt-1 block w-full border ${
+        validity.validPayment ? "border-gray-300" : "border-red-500"
+      } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+      required
+    >
+      <option value="">Select Payment Period</option>
+      {PAYMENT_PERIODS.map((period) => (
+        <option key={period} value={period}>
+          {period}
+        </option>
+      ))}
+    </select>
+  </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700">

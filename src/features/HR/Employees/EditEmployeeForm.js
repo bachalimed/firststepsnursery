@@ -7,12 +7,13 @@ import { ROLES } from "../../../config/UserRoles";
 import { ACTIONS } from "../../../config/UserActions";
 import useAuth from "../../../hooks/useAuth";
 import Employees from "../Employees";
+import { POSITIONS, CONTRACT_TYPES, PAYMENT_PERIODS } from "../../../config/UserRoles";
 import {
   USER_REGEX,
-  PWD_REGEX,
+  YEAR_REGEX,
   PHONE_REGEX,
   DATE_REGEX,
-  EMAIL_REGEX,
+  NUMBER_REGEX,
   NAME_REGEX,
 } from "../../../Components/lib/Utils/REGEX";
 import {
@@ -23,11 +24,7 @@ import {
 import { useSelector } from "react-redux";
 
 import { useGetAcademicYearsQuery } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
-//constrains on inputs when creating new user
 
-const NUMBER_REGEX = /^[0-9]{1,4}(\.[0-9]{0,3})?$/;
-
-const YEAR_REGEX = /^[0-9]{4}\/[0-9]{4}$/;
 const EditEmployeeForm = ({ employee }) => {
   const navigate = useNavigate();
 
@@ -487,34 +484,39 @@ const EditEmployeeForm = ({ employee }) => {
                 </label>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Current Position{" "}
-                  {!validity.validCurrentPosition && (
-                    <span className="text-red-500">*</span>
-                  )}
-                </label>
-                <input
-                  type="text"
-                  name="position"
-                  value={formData.employeeCurrentEmployment.position}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      employeeCurrentEmployment: {
-                        ...prev.employeeCurrentEmployment,
-                        position: e.target.value,
-                      },
-                    }))
-                  }
-                  className={`mt-1 block w-full border ${
-                    validity.validCurrentPosition
-                      ? "border-gray-300"
-                      : "border-red-500"
-                  } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                  placeholder="Enter Position"
-                  required
-                />
-              </div>
+              <label className="block text-sm font-medium text-gray-700">
+                Current Position{" "}
+                {!validity.validCurrentPosition && (
+                  <span className="text-red-500">*</span>
+                )}
+              </label>
+              <select
+                name="position"
+                value={formData.employeeCurrentEmployment.position}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    employeeCurrentEmployment: {
+                      ...prev.employeeCurrentEmployment,
+                      position: e.target.value,
+                    },
+                  }))
+                }
+                className={`mt-1 block w-full border ${
+                  validity.validCurrentPosition
+                    ? "border-gray-300"
+                    : "border-red-500"
+                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                required
+              >
+                {/* <option value="">Select Position</option> */}
+                {Object.values(POSITIONS).map((position) => (
+                  <option key={position} value={position}>
+                    {position}
+                  </option>
+                ))}
+              </select>
+            </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700">
@@ -548,34 +550,37 @@ const EditEmployeeForm = ({ employee }) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Contract Type{" "}
-                  {!validity.validContractType && (
-                    <span className="text-red-500">*</span>
-                  )}
-                </label>
-                <input
-                  type="text"
-                  name="contractType"
-                  value={formData.employeeCurrentEmployment.contractType}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      employeeCurrentEmployment: {
-                        ...prev.employeeCurrentEmployment,
-                        contractType: e.target.value,
-                      },
-                    }))
-                  }
-                  className={`mt-1 block w-full border ${
-                    validity.validContractType
-                      ? "border-gray-300"
-                      : "border-red-500"
-                  } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                  placeholder="Enter Contract Type"
-                  required
-                />
-              </div>
+    <label className="block text-sm font-medium text-gray-700">
+      Contract Type{" "}
+      {!validity.validContractType && (
+        <span className="text-red-500">*</span>
+      )}
+    </label>
+    <select
+      name="contractType"
+      value={formData.employeeCurrentEmployment.contractType}
+      onChange={(e) =>
+        setFormData((prev) => ({
+          ...prev,
+          employeeCurrentEmployment: {
+            ...prev.employeeCurrentEmployment,
+            contractType: e.target.value,
+          },
+        }))
+      }
+      className={`mt-1 block w-full border ${
+        validity.validContractType ? "border-gray-300" : "border-red-500"
+      } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+      required
+    >
+      {/* <option value="">Select Contract Type</option> */}
+      {CONTRACT_TYPES.map((type) => (
+        <option key={type} value={type}>
+          {type}
+        </option>
+      ))}
+    </select>
+  </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700">
@@ -616,37 +621,39 @@ const EditEmployeeForm = ({ employee }) => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Payment{" "}
-                      {!validity.validPayment && (
-                        <span className="text-red-500">*</span>
-                      )}
-                    </label>
-                    <input
-                      type="text"
-                      name="payment"
-                      value={
-                        formData.employeeCurrentEmployment.salaryPackage.payment
-                      }
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          employeeCurrentEmployment: {
-                            ...prev.employeeCurrentEmployment,
-                            salaryPackage: {
-                              ...prev.employeeCurrentEmployment.salaryPackage,
-                              payment: e.target.value,
-                            },
-                          },
-                        }))
-                      }
-                      className={`mt-1 block w-full border ${
-                        validity.validPayment
-                          ? "border-gray-300"
-                          : "border-red-500"
-                      } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                      placeholder="Enter Salary payment period"
-                    />
+                  <label className="block text-sm font-medium text-gray-700">
+      Payment{" "}
+      {!validity.validPayment && (
+        <span className="text-red-500">*</span>
+      )}
+    </label>
+    <select
+      name="payment"
+      value={formData.employeeCurrentEmployment.salaryPackage.payment}
+      onChange={(e) =>
+        setFormData((prev) => ({
+          ...prev,
+          employeeCurrentEmployment: {
+            ...prev.employeeCurrentEmployment,
+            salaryPackage: {
+              ...prev.employeeCurrentEmployment.salaryPackage,
+              payment: e.target.value,
+            },
+          },
+        }))
+      }
+      className={`mt-1 block w-full border ${
+        validity.validPayment ? "border-gray-300" : "border-red-500"
+      } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+      required
+    >
+      {/* <option value="">Select Payment Period</option> */}
+      {PAYMENT_PERIODS.map((period) => (
+        <option key={period} value={period}>
+          {period}
+        </option>
+      ))}
+    </select>
                   </div>
 
                   <div>

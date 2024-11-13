@@ -6,7 +6,7 @@ const EmployeeDetails = () => {
   const { id } = useParams();
   const employee = useSelector((state) => state.employee?.entities[id]);
   const navigate = useNavigate();
-
+console.log(employee,'employee')
   const handleBack = () => {
     navigate("/hr/employees/");
   };
@@ -84,10 +84,10 @@ const EmployeeDetails = () => {
           <p className="text-sm font-medium text-gray-700">Active Status</p>
           <p
             className={`text-lg font-semibold ${
-              employee?.employeeIsActive ? "text-green-600" : "text-red-600"
+              employee?.employeeData?.employeeIsActive ? "text-green-600" : "text-red-600"
             }`}
           >
-            {employee?.employeeIsActive ? "Active" : "Inactive"}
+            {employee?.employeeData?.employeeIsActive ? "Active" : "Inactive"}
           </p>
         </div>
 
