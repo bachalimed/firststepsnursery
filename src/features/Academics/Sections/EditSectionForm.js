@@ -122,9 +122,20 @@ const EditSectionForm = ({ section }) => {
     ? Object.values(classrooms.entities)
     : [];
   let studentsList = isStudentSuccess ? Object.values(students.entities) : [];
-  let employeesList = isEmployeesSuccess
-    ? Object.values(employees.entities)
-    : [];
+  // let employeesList = isEmployeesSuccess
+  //   ? Object.values(employees.entities)
+  //   : [];
+
+  let employeesList = [];
+  let activeEmployeesList = [];
+
+  if (isEmployeesSuccess) {
+    const { entities } = employees;
+    employeesList = Object.values(entities);
+    activeEmployeesList = employeesList.filter(
+      (employee) => employee.employeeData.employeeIsActive === true
+    );
+  }
 
   const [validity, setValidity] = useState({
     validSectionLabel: false,
@@ -326,7 +337,7 @@ const EditSectionForm = ({ section }) => {
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
             >
               <option>Select Animator</option>
-              {employeesList.map((animator) => (
+              {activeEmployeesList.map((animator) => (
                 <option key={animator.employeeId} value={animator.employeeId}>
                   {animator?.userFullName.userFirstName}{" "}
                   {animator?.userFullName.userMiddleName}{" "}

@@ -36,7 +36,7 @@ const FamiliesList = () => {
   //     }
   // }, [selectedAcademicYearId]);
 
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const Dispatch = useDispatch();
 
   //get several things from the query
@@ -352,7 +352,7 @@ const FamiliesList = () => {
             className="text-blue-500"
             fontSize={20}
             onClick={() =>
-              Navigate(`/students/studentsParents/familyDetails/${row.id}`)
+              navigate(`/students/studentsParents/familyDetails/${row.id}`)
             }
           >
             <ImProfile className="text-2xl" />
@@ -362,7 +362,7 @@ const FamiliesList = () => {
             <button
               className="text-yellow-400"
               onClick={() =>
-                Navigate(`/students/studentsParents/editFamily/${row.id}`)
+                navigate(`/students/studentsParents/editFamily/${row.id}`)
               }
             >
               <FiEdit className="text-2xl" />
@@ -419,35 +419,21 @@ const FamiliesList = () => {
           columns={column}
           data={filteredFamilies}
           pagination
-          selectableRows
+         // selectableRows
           removableRows
           pageSizeControl
         ></DataTable>
         <div className="flex justify-end items-center space-x-4">
           <button
             className=" px-4 py-2 bg-green-500 text-white rounded"
-            onClick={handleDetailsSelected}
-            disabled={selectedRows.length !== 1} // Disable if no rows are selected
+            onClick={()=> navigate=("/students/studentsParents/newFamily/")}
+            hidden={!canCreate}
           >
-            User bla bla
+           New Family
           </button>
 
-          <button
-            className="px-3 py-2 bg-yellow-400 text-white rounded"
-            onClick={handleDuplicateSelected}
-            disabled={selectedRows.length !== 1} // Disable if no rows are selected
-            // hidden={!canCreate}
-          >
-            Duplicate bla bla
-          </button>
-          {/* <button 
-              className="px-3 py-2 bg-yellow-400 text-white rounded"
-              onClick={handleAddChildren}
-              disabled={selectedRows.length !== 1} // Disable if no rows are selected
-        // hidden={!canCreate}
-              >
-              Add Child
-          </button> */}
+          
+        
         </div>
       </div>
       <DeletionConfirmModal

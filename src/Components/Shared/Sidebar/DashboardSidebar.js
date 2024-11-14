@@ -1,5 +1,3 @@
-
-
 // the actual side bar operating with no need of the menu json items from the files
 
 import { useState } from "react";
@@ -97,7 +95,8 @@ const DashboardSidebar = () => {
               </span>
             </li>
           </Link>
-          <Link to="/students/studentsParents/">
+          {/* this link will start the first tab instead of the studentsParents  */}
+          <Link to="/students/studentsParents/students/">
             <li
               className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md  `}
             >
@@ -293,7 +292,7 @@ const DashboardSidebar = () => {
               </Link> */}
             </ul>
           )}
-          <Link to="/finances/invoices/">
+          <Link to="/finances/expenses/expensesList">
             <li
               className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}
             >
@@ -322,6 +321,26 @@ const DashboardSidebar = () => {
           </Link>
           {open && financesOpen && (
             <ul>
+              <Link
+                to="/finances/expenses/"
+                className={
+                  location.pathname === "/finances/expenses/"
+                    ? "text-teal-200"
+                    : ""
+                }
+              >
+                <li
+                  className="  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md "
+                  onClick={() => setOpen(!open)}
+                >
+                  <span className="text-1xl block float-left">
+                    {" "}
+                    <GiPayMoney />{" "}
+                  </span>
+                  Expenses
+                </li>
+              </Link>
+
               <Link
                 to="/finances/invoices/"
                 className={
@@ -358,25 +377,6 @@ const DashboardSidebar = () => {
                     <GiReceiveMoney />{" "}
                   </span>
                   Payments
-                </li>
-              </Link>
-              <Link
-                to="/finances/expenses/"
-                className={
-                  location.pathname === "/finances/expenses/"
-                    ? "text-teal-200"
-                    : ""
-                }
-              >
-                <li
-                  className="  text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5  hover:bg-sky-700 rounded-md "
-                  onClick={() => setOpen(!open)}
-                >
-                  <span className="text-1xl block float-left">
-                    {" "}
-                    <GiPayMoney />{" "}
-                  </span>
-                  Expenses
                 </li>
               </Link>
             </ul>

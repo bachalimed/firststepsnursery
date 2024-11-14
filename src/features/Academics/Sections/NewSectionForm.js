@@ -123,9 +123,21 @@ const NewSectionForm = () => {
     ? Object.values(classrooms.entities)
     : [];
   let studentsList = isStudentSuccess ? Object.values(students.entities) : [];
-  let employeesList = isEmployeesSuccess
-    ? Object.values(employees.entities)
-    : [];
+  // let employeesList = isEmployeesSuccess
+  //   ? Object.values(employees.entities)
+  //   : [];
+
+  let employeesList = [];
+  let activeEmployeesList = [];
+
+  if (isEmployeesSuccess) {
+    const { entities } = employees;
+    employeesList = Object.values(entities);
+    activeEmployeesList = employeesList.filter(
+      (employee) => employee.employeeData.employeeIsActive === true
+    );
+  }
+
 
   const [validity, setValidity] = useState({
     validSectionLabel: false,
@@ -322,7 +334,7 @@ const NewSectionForm = () => {
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
             >
               <option>Select Animator</option>
-              {employeesList.map((animator) => (
+              {activeEmployeesList.map((animator) => (
                 <option key={animator.employeeId} value={animator.employeeId}>
                   {animator?.userFullName.userFirstName}{" "}
                   {animator?.userFullName.userMiddleName}{" "}
@@ -404,7 +416,7 @@ const NewSectionForm = () => {
                   <option key={student.id} value={student.id}>
                     Grade: {grade} - {student.studentName.firstName}{" "}
                     {student.studentName.middleName}{" "}
-                    {student.studentName.lastName} 
+                    {student.studentName.lastName}
                   </option>
                 );
               })}
@@ -414,7 +426,8 @@ const NewSectionForm = () => {
           {/* Selected Students */}
           <div className="selected-students mt-4">
             <label className="block text-lg font-medium  text-gray-700">
-               {formData.sectionLabel} section Students: {formData?.students.length} 
+              {formData.sectionLabel} section Students:{" "}
+              {formData?.students.length}
             </label>
             <ul className="selected-students-list">
               {formData.students.map((studentId) => {

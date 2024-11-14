@@ -8,8 +8,8 @@ const StudentsParents = () => {
   const tabs = [
     { label: "Students", path: "/students/studentsParents/students/" },
     { label: "Families", path: "/students/studentsParents/families/" },
-    { label: "New Student", path: "/students/studentsParents/newStudent/" },
-    { label: "New Family", path: "/students/studentsParents/newFamily/" },
+    //{ label: "New Student", path: "/students/studentsParents/newStudent/" },
+    //{ label: "New Family", path: "/students/studentsParents/newFamily/" },
   ];
 
   const studentsParentTabs = {

@@ -2,21 +2,21 @@ import { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 import { useDispatch,useSelector } from "react-redux";
-import { useUpdateAnimatorsAssignmentMutation, useGetAnimatorsAssignmentsQuery} from "./animatorsAssignmentsApiSlice"; // Redux API action
+import { useUpdateExpenseMutation, useGetExpensesQuery} from "./expensesApiSlice"; // Redux API action
 
-import Plannings from "../../Plannings";
-import useAuth from "../../../../hooks/useAuth";
-import {useGetAttendedSchoolsQuery} from'../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice'
-import {useGetEmployeesByYearQuery} from'../../../HR/Employees/employeesApiSlice'
+import Expenses from "../Expenses";
+import useAuth from "../../../hooks/useAuth";
+import {useGetAttendedSchoolsQuery} from'../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice'
+import {useGetEmployeesByYearQuery} from'../../HR/Employees/employeesApiSlice'
   import{selectCurrentAcademicYearId,
   selectAcademicYearById,
   selectAllAcademicYears,
-} from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import { NAME_REGEX, DATE_REGEX } from "../../../../Components/lib/Utils/REGEX";
+} from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
+import { NAME_REGEX, DATE_REGEX } from "../../../Components/lib/Utils/REGEX";
 
 
 
-const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
+const EditExpenseForm = ({ expense }) => {
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
@@ -33,7 +33,7 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
   } = useGetEmployeesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
-      endpointName: "EditAnimatorsAssignmentForm",
+      endpointName: "EditExpenseForm",
     } || {},
     {
       //this param will be passed in req.params to select only employees for taht year
@@ -50,7 +50,7 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
     isError: isSchoolError,
     error: schoolError,
   } = useGetAttendedSchoolsQuery({
-    endpointName: "EditAnimatorsAssignmentForm",
+    endpointName: "EditExpenseForm",
   }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
 
   const {
@@ -59,27 +59,27 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
     isSuccess: isAssignmentsSuccess,
     isError: isAssignmentsError,
     error: assignmentsError,
-  } = useGetAnimatorsAssignmentsQuery({
-    endpointName: "EditAnimatorsAssignmentForm",
+  } = useGetExpensesQuery({
+    endpointName: "EditExpenseForm",
   }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
 
   
   // Redux mutation for adding the attended school
   const [
-    updateAnimatorsAssignment,
+    updateExpense,
     {
       isLoading: isUpdateLoading,
       isError: isUpdateError,
       error: updateError,
       isSuccess: isUpdateSuccess,
     },
-  ] = useUpdateAnimatorsAssignmentMutation();
+  ] = useUpdateExpenseMutation();
   const [formData, setFormData] = useState({
-    id:animatorsAssignment._id,
-    assignmentYear: animatorsAssignment.assignmentYear || "",
-    assignments: animatorsAssignment.assignments,
-    assignedFrom: animatorsAssignment.assignedFrom.split("T")[0],
-    assignedTo: animatorsAssignment.assignedTo.split("T")[0],
+    id:expense._id,
+    assignmentYear: expense.assignmentYear || "",
+    assignments: expense.assignments,
+    assignedFrom: expense.assignedFrom.split("T")[0],
+    assignedTo: expense.assignedTo.split("T")[0],
     
     operator: userId,
   });
@@ -162,7 +162,7 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
         operator: "",
       });
 
-      navigate("/academics/plannings/animatorsAssignments");
+      navigate("/academics/plannings/expenses");
     }
   }, [isUpdateSuccess, navigate]);
 
@@ -180,7 +180,7 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
     }
 
     try {
-      const updatedAnimatorsAssignment = await updateAnimatorsAssignment(
+      const updatedExpense = await updateExpense(
         formData
       ).unwrap();
     } catch (err) {
@@ -251,7 +251,7 @@ const addAssignment = () => {
 
   return (
     <>
-      <Plannings />
+      <Expenses />
       <div className="p-6 bg-white rounded-lg shadow-md max-w-md mx-auto">
         <h2 className="text-2xl font-bold mb-6 text-center">
           Edit Assignment
@@ -376,7 +376,7 @@ const addAssignment = () => {
             type="submit"
             //disabled={!canSubmit}
             className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-200 mt-4"
-            onClick={()=>navigate("/academics/plannings/animatorsAssignments/")}
+            onClick={()=>navigate("/academics/plannings/expenses/")}
           >
             Cancel
           </button>
@@ -386,4 +386,4 @@ const addAssignment = () => {
   );
 };
 
-export default EditAnimatorsAssignmentForm;
+export default EditExpenseForm;

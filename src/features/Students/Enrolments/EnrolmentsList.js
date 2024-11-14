@@ -524,7 +524,7 @@ const EnrolmentsList = () => {
         <select
           value={selectedEnrolmentMonth}
           onChange={(e) => setSelectedEnrolmentMonth(e.target.value)}
-         className="text-sm h-8 border border-gray-300 rounded-md px-4"
+          className="text-sm h-8 border border-gray-300 rounded-md px-4"
         >
           <option value="">All Months</option>
           {MONTHS.map((month, index) => (
@@ -573,7 +573,7 @@ const EnrolmentsList = () => {
         <select
           value={paidFilter}
           onChange={(e) => setPaidFilter(e.target.value)}
-         className="text-sm h-8 border border-gray-300 rounded-md px-4"
+          className="text-sm h-8 border border-gray-300 rounded-md px-4"
         >
           <option value="">payment</option>
           <option value="paid">Paid</option>
@@ -585,40 +585,25 @@ const EnrolmentsList = () => {
           columns={column}
           data={filteredEnrolments}
           pagination
-          selectableRows
+          //selectableRows
           removableRows
           pageSizeControl
           onSelectedRowsChange={handleRowSelected}
           selectableRowsHighlight
         ></DataTable>
         <div className="flex justify-end items-center space-x-4">
-          <button
-            className=" px-4 py-2 bg-green-500 text-white rounded"
-            disabled={selectedRows.length !== 1} // Disable if no rows are selected
-            hidden={!canCreate}
-          >
-            tobechanged
-          </button>
-
-          <button
-            className="px-3 py-2 bg-yellow-400 text-white rounded"
-            onClick={handleDuplicateSelected}
-            disabled={selectedRows.length !== 1} // Disable if no rows are selected
-            hidden={!canCreate}
-          >
-            Re-hhh
-          </button>
-
-          {isAdmin && (
+          <div className="flex justify-end items-center space-x-4">
             <button
-              className="px-3 py-2 bg-gray-400 text-white rounded"
-              onClick={handleDuplicateSelected}
-              disabled={selectedRows.length !== 1} // Disable if no rows are selected
+              className="px-3 py-2 bg-green-500 text-white rounded"
+              onClick={() => navigate("/students/enrolments/newEnrolment/")}
               hidden={!canCreate}
             >
-              All
+              New Enrolment
             </button>
-          )}
+          </div>
+
+         
+  
         </div>
       </div>
       <DeletionConfirmModal

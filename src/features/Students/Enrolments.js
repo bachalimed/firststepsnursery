@@ -28,7 +28,7 @@ const Enrolments = () => {
   // Define the tab data with paths and labels
   const tabs = [
     { label: "Enrolments", path: "/students/enrolments/enrolments/" },
-    { label: "New Enrolment", path: "/students/enrolments/newEnrolment/" },
+    //{ label: "New Enrolment", path: "/students/enrolments/newEnrolment/" },
    (isAdmin||isManager)&& { label: "Unenrolled Students", path: "/students/enrolments/unenrolments/" },
   ];
 

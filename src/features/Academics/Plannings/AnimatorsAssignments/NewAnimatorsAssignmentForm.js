@@ -78,9 +78,20 @@ const NewAnimatorsAssignmentForm = () => {
     operator: userId,
   });
   let schoolsList = isSchoolSuccess ? Object.values(schools.entities) : [];
-  let employeesList = isEmployeesSuccess
-    ? Object.values(employees.entities)
-    : [];
+  // let employeesList = isEmployeesSuccess
+  //   ? Object.values(employees.entities)
+  //   : [];
+
+  let employeesList = [];
+  let activeEmployeesList = [];
+
+  if (isEmployeesSuccess) {
+    const { entities } = employees;
+    employeesList = Object.values(entities);
+    activeEmployeesList = employeesList.filter(
+      (employee) => employee.employeeData.employeeIsActive === true
+    );
+  }
   let assignmentsList = isAssignmentsSuccess
     ? Object.values(assignments.entities)
     : [];
@@ -197,7 +208,7 @@ const NewAnimatorsAssignmentForm = () => {
     const selectedAnimators = formData.assignments.map(
       (assignment) => assignment.animator
     );
-    return employeesList.filter(
+    return activeEmployeesList.filter(
       (employee) =>
         !selectedAnimators.includes(employee.id) ||
         selectedAnimators[index] === employee.id

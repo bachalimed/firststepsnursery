@@ -64,6 +64,10 @@ import ClassroomsPlannings from './features/Academics/Plannings/ClassroomsPlanni
 import Invoices from './features/Finances/Invoices'
 import Payments from './features/Finances/Payments'
 import Expenses from './features/Finances/Expenses'
+import ExpensesList from './features/Finances/Expenses/ExpensesList'
+import NewExpenseForm from './features/Finances/Expenses/NewExpenseForm'
+import EditExpense from './features/Finances/Expenses/EditExpense'
+import ExpenseDetails from './features/Finances/Expenses/ExpenseDetails'
 
 import EmployeesList from './features/HR/Employees/EmployeesList'
 import NewEmployeeForm from './features/HR/Employees/NewEmployeeForm'
@@ -255,7 +259,21 @@ const App = () => {
 							</Route> {/* end of academics route */}
 
 							<Route path="finances" element={<DashboardLayout />} >	 				
-								{/* <Route index element={<Finances />} />    */}
+								<Route index element={<Expenses />} />   
+
+
+								<Route path="expenses" > 					
+								<Route index element={<Expenses />} /> 
+								<Route path="expensesList/" element={<ExpensesList/>}/>	
+								<Route path="newExpense/" element={<NewExpenseForm/>}/>	
+								<Route path="editExpense/:id" element={<EditExpense/>}/>
+								<Route path="expenseDetails/:id" element={<ExpenseDetails/>}/>
+
+
+
+
+								</Route> {/* end of expenses route */}
+								
 
 								<Route path="invoices" > 					
 								<Route index element={<Invoices />} /> 
@@ -264,10 +282,6 @@ const App = () => {
 								<Route path="payments" > 					
 								<Route index element={<Payments />} /> 
 								</Route> {/* end of payments route */}
-
-								<Route path="expenses" > 					
-								<Route index element={<Expenses />} /> 
-								</Route> {/* end of expenses route */}
 							</Route> {/* end of finances route */}
 
 

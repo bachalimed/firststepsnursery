@@ -41,7 +41,7 @@ import { IoDocumentAttachOutline } from "react-icons/io5";
 
 const StudentsList = () => {
   //this is for the academic year selection
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
@@ -442,7 +442,7 @@ const StudentsList = () => {
             className="text-blue-500"
             fontSize={20}
             onClick={() =>
-              Navigate(`/students/studentsParents/studentDetails/${row.id}`)
+              navigate(`/students/studentsParents/studentDetails/${row.id}`)
             }
           >
             <ImProfile className="text-2xl" />
@@ -451,7 +451,7 @@ const StudentsList = () => {
             <button
               className="text-yellow-400"
               onClick={() =>
-                Navigate(`/students/studentsParents/editStudent/${row.id}`)
+                navigate(`/students/studentsParents/editStudent/${row.id}`)
               }
             >
               <FiEdit className="text-2xl" />
@@ -541,33 +541,24 @@ const StudentsList = () => {
         ></DataTable>
         <div className="flex justify-end items-center space-x-4">
           <button
-            className=" px-4 py-2 bg-green-500 text-white rounded"
-            onClick={handleRegisterSelected}
+            className="px-3 py-2 bg-green-500 text-white rounded"
+            onClick={()=>navigate("/students/studentsParents/newStudent/")}
             disabled={selectedRows.length !== 1} // Disable if no rows are selected
+            hidden={!canCreate}
+          >
+          New Student
+          </button>
+          <button
+          className={`px-4 py-2 ${selectedRows?.length ===1 ? 'bg-teal-500' : 'bg-gray-500'} text-white rounded`}
+
+            onClick={handleRegisterSelected}
+            disabled={selectedRows?.length !== 1} // Disable if no rows are selected
             hidden={!canCreate}
           >
             Register
           </button>
 
-          <button
-            className="px-3 py-2 bg-yellow-400 text-white rounded"
-            onClick={handleDuplicateSelected}
-            disabled={selectedRows.length !== 1} // Disable if no rows are selected
-            hidden={!canCreate}
-          >
-            Re-hhh
-          </button>
-
-          {isAdmin && (
-            <button
-              className="px-3 py-2 bg-gray-400 text-white rounded"
-              onClick={handleDuplicateSelected}
-              disabled={selectedRows.length !== 1} // Disable if no rows are selected
-              hidden={!canCreate}
-            >
-              All
-            </button>
-          )}
+        
         </div>
       </div>
       <DeletionConfirmModal

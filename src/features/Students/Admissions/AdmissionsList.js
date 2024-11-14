@@ -205,13 +205,11 @@ const AdmissionsList = () => {
 
       const isAuthorisedMatch =
         //!isAuthorisedFilter ||
-        (isAuthorisedFilter === "authorised"
+        isAuthorisedFilter === "authorised"
           ? item.agreedServices.some((service) => service.isAuthorised === true)
           : isAuthorisedFilter === "notauthorised"
-          ? item.agreedServices.some(
-              (service) => service.isAuthorised !== true
-            )
-          : true);
+          ? item.agreedServices.some((service) => service.isAuthorised !== true)
+          : true;
 
       // Both isFlaggedMatch and isAuthorisedMatch must be true for the admission to be included
       return (
@@ -604,9 +602,19 @@ const AdmissionsList = () => {
     },
   ];
   let content;
-  if (isAdmissionLoading) content = <><Admissions /><LoadingStateIcon /></>;
+  if (isAdmissionLoading)
+    content = (
+      <>
+        <Admissions />
+        <LoadingStateIcon />
+      </>
+    );
   if (isAdmissionError) {
-    content = <p className="errmsg"><Admissions /> {admissionError?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
+    content = (
+      <p className="errmsg">
+        <Admissions /> {admissionError?.data?.message}
+      </p>
+    ); //errormessage class defined in the css, the error has data and inside we have message of error
   }
   if (isAdmissionSuccess) {
     content = (
@@ -688,12 +696,24 @@ const AdmissionsList = () => {
             columns={column}
             data={filteredAdmissions}
             pagination
-            selectableRows
+            // selectableRows
             removableRows
             pageSizeControl
             onSelectedRowsChange={handleRowSelected}
             selectableRowsHighlight
           ></DataTable>
+
+          <div className="flex justify-end items-center space-x-4">
+            <button
+              className="px-3 py-2 bg-green-500 text-white rounded"
+              onClick={() => navigate("/students/admissions/newAdmission/")}
+              
+              hidden={!canCreate}
+            >
+              New Admission
+            </button>
+           
+          </div>
         </div>
         <DeletionConfirmModal
           isOpen={isDeleteModalOpen}
