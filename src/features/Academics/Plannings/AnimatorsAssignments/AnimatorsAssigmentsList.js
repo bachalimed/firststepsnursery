@@ -60,7 +60,8 @@ const AnimatorsAssignmentsList = () => {
     isSuccess: isSchoolSuccess,
     isError: isSchoolError,
     error: schoolError,
-  } = useGetAttendedSchoolsQuery({ endpointName: "AnimatorsAssignmentList" }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
+  } = useGetAttendedSchoolsQuery({ endpointName: "AnimatorsAssignmentList" }) ||
+  {}; //this should match the endpoint defined in your API slice.!! what does it mean?
 
   const {
     data: assignments, //the data is renamed schools
@@ -68,8 +69,9 @@ const AnimatorsAssignmentsList = () => {
     isSuccess: isAssignmentsSuccess,
     isError: isAssignmentsError,
     error: assignmentsError,
-  } = useGetAnimatorsAssignmentsQuery({ endpointName: "AnimatorsAssignmentList" }) ||
-  {}; //this should match the endpoint defined in your API slice.!! what does it mean?
+  } = useGetAnimatorsAssignmentsQuery({
+    endpointName: "AnimatorsAssignmentList",
+  }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
   const [
     deleteAssignment,
     {
@@ -122,43 +124,46 @@ const AnimatorsAssignmentsList = () => {
     //console.log('selectedRows', selectedRows)
   };
   const [monthFilter, setMonthFilter] = useState(""); // Initialize with empty string (for "All Months")
-let filteredAssignments=[]
-let assignmentsList =[]
-if (isAssignmentsSuccess){
+  let filteredAssignments = [];
+  let assignmentsList = [];
+  if (isAssignmentsSuccess) {
+    const { entities } = assignments;
+    assignmentsList = Object.values(entities); //we are using entity adapter in this query
 
-  const { entities } = assignments;
-  assignmentsList = Object.values(entities); //we are using entity adapter in this query
+    // Handle month filter change
 
- // Handle month filter change
- 
-  // Handle month filter change
-  filteredAssignments = assignmentsList.filter((assignment) => {
-    const startMonth = new Date(assignment.startTime).getMonth() + 1; // getMonth() returns 0-based month (0-11), so add 1
-  const endMonth = new Date(assignment.endTime).getMonth() + 1;
+    // Handle month filter change
+    filteredAssignments = assignmentsList.filter((assignment) => {
+      const startMonth = new Date(assignment.startTime).getMonth() + 1; // getMonth() returns 0-based month (0-11), so add 1
+      const endMonth = new Date(assignment.endTime).getMonth() + 1;
 
-  // Assuming assignedFrom and assignedTo are either Date objects or strings representing dates
-  const assignedFromMonth = new Date(assignment.assignedFrom).getMonth() + 1;
-  const assignedToMonth = new Date(assignment.assignedTo).getMonth() + 1;
+      // Assuming assignedFrom and assignedTo are either Date objects or strings representing dates
+      const assignedFromMonth =
+        new Date(assignment.assignedFrom).getMonth() + 1;
+      const assignedToMonth = new Date(assignment.assignedTo).getMonth() + 1;
 
-  // Format the numeric month values to match the format "01", "02", ..., "12"
-  const formattedStartMonth = startMonth.toString().padStart(2, '0');
-  const formattedEndMonth = endMonth.toString().padStart(2, '0');
-  const formattedAssignedFromMonth = assignedFromMonth.toString().padStart(2, '0');
-  const formattedAssignedToMonth = assignedToMonth.toString().padStart(2, '0');
+      // Format the numeric month values to match the format "01", "02", ..., "12"
+      const formattedStartMonth = startMonth.toString().padStart(2, "0");
+      const formattedEndMonth = endMonth.toString().padStart(2, "0");
+      const formattedAssignedFromMonth = assignedFromMonth
+        .toString()
+        .padStart(2, "0");
+      const formattedAssignedToMonth = assignedToMonth
+        .toString()
+        .padStart(2, "0");
 
-  // If a month is selected, filter by start, end, assignedFrom, or assignedTo month
-  return (
-    monthFilter === "" || // Show all if no month is selected
-    formattedStartMonth === monthFilter || 
-    formattedEndMonth === monthFilter ||
-    formattedAssignedFromMonth === monthFilter || 
-    formattedAssignedToMonth === monthFilter
-  );
-});
-  
-}
+      // If a month is selected, filter by start, end, assignedFrom, or assignedTo month
+      return (
+        monthFilter === "" || // Show all if no month is selected
+        formattedStartMonth === monthFilter ||
+        formattedEndMonth === monthFilter ||
+        formattedAssignedFromMonth === monthFilter ||
+        formattedAssignedToMonth === monthFilter
+      );
+    });
+  }
 
-const handleMonthChange = (e) => setMonthFilter(e.target.value); // Update selected grade
+  const handleMonthChange = (e) => setMonthFilter(e.target.value); // Update selected grade
 
   //handle delete
 
@@ -207,11 +212,11 @@ const handleMonthChange = (e) => setMonthFilter(e.target.value); // Update selec
     //         const animator = employeesList.find(
     //           (employee) => employee.id === assignment.animator
     //         );
-      
+
     //         const animatorName = animator
     //           ? `${animator.userFullName.userFirstName} ${animator.userFullName.userMiddleName || ""} ${animator.userFullName.userLastName || ""}`.trim()
     //           : "Unknown";
-      
+
     //         return (
     //           <div key={index} style={{ marginBottom: "4px" }}>
     //       {animatorName}
@@ -223,7 +228,7 @@ const handleMonthChange = (e) => setMonthFilter(e.target.value); // Update selec
     //       })}
     //     </div>
     //   ),
-      
+
     //   sortable: true,
     //   width: "160px",
     // },
@@ -235,30 +240,36 @@ const handleMonthChange = (e) => setMonthFilter(e.target.value); // Update selec
             const animator = employeesList.find(
               (employee) => employee.id === assignment.animator
             );
-      
+
             const animatorName = animator
-              ? `${animator.userFullName.userFirstName} ${animator.userFullName.userMiddleName || ""} ${animator.userFullName.userLastName || ""}`.trim()
+              ? `${animator.userFullName.userFirstName} ${
+                  animator.userFullName.userMiddleName || ""
+                } ${animator.userFullName.userLastName || ""}`.trim()
               : "Unknown";
-      
+
             return (
               <div key={assignmentIndex} style={{ marginBottom: "8px" }}>
-                <div style={{ fontWeight: "bold" }}>{animatorName}<hr style={{ border: "0.5px solid #ddd", margin: "4px 1" }} /></div>
-      
+                <div style={{ fontWeight: "bold" }}>
+                  {animatorName}
+                  <hr style={{ border: "0.5px solid #ddd", margin: "4px 1" }} />
+                </div>
+
                 {assignment.schools.map((schoolId, schoolIndex) => {
-                  const schoolName = schoolsList.find(
-                    (school) => school.id === schoolId
-                  )?.schoolName || "Unknown";
-      
+                  const schoolName =
+                    schoolsList.find((school) => school.id === schoolId)
+                      ?.schoolName || "Unknown";
+
                   return (
                     <div key={schoolId} style={{ marginBottom: "4px" }}>
                       {schoolName}
-                      {schoolIndex < assignment.schools.length - 1 
-                      // && ( <hr style={{ border: "0.5px solid #ddd", margin: "4px 0" }} />  )
+                      {
+                        schoolIndex < assignment.schools.length - 1
+                        // && ( <hr style={{ border: "0.5px solid #ddd", margin: "4px 0" }} />  )
                       }
                     </div>
                   );
                 })}
-      
+
                 {assignmentIndex < row.assignments.length - 1 && (
                   <hr style={{ border: "0.5px solid #aaa", margin: "8px 0" }} />
                 )}
@@ -267,8 +278,7 @@ const handleMonthChange = (e) => setMonthFilter(e.target.value); // Update selec
           })}
         </div>
       ),
-      
-      
+
       sortable: true,
       width: "180px",
     },
@@ -281,7 +291,9 @@ const handleMonthChange = (e) => setMonthFilter(e.target.value); // Update selec
             <button
               className="text-yellow-400"
               onClick={() =>
-                navigate(`/academics/plannings/editAnimatorsAssignment/${row.id}`)
+                navigate(
+                  `/academics/plannings/editAnimatorsAssignment/${row.id}`
+                )
               }
             >
               <FiEdit fontSize={20} />
@@ -316,32 +328,30 @@ const handleMonthChange = (e) => setMonthFilter(e.target.value); // Update selec
         <Plannings />
 
         <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-        <div className="flex space-x-2 items-center">
-         
-          {/* Months Filter Dropdown */}
-          
-          <select
-            onChange={handleMonthChange}
-           
-            className="text-sm h-8 border border-gray-300 rounded-md px-4"
-          >
-            <option value="">All Months</option>
-            <option value="09">September</option>
-            <option value="10">October</option>
-            <option value="11">November</option>
-            <option value="12">December</option>
-            <option value="01">January</option>
-            <option value="02">February</option>
-            <option value="03">March</option>
-            <option value="04">April</option>
-            <option value="05">May</option>
-            <option value="06">June</option>
-            <option value="07">July</option>
-            <option value="08">August</option>
-          </select>
-       
-        
-        </div>
+          <div className="flex space-x-2 items-center">
+            {/* Months Filter Dropdown */}
+
+            {filteredAssignments?.length > 0 && (
+              <select
+                onChange={handleMonthChange}
+                className="text-sm h-8 border border-gray-300 rounded-md px-4"
+              >
+                <option value="">All Months</option>
+                <option value="09">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+                <option value="01">January</option>
+                <option value="02">February</option>
+                <option value="03">March</option>
+                <option value="04">April</option>
+                <option value="05">May</option>
+                <option value="06">June</option>
+                <option value="07">July</option>
+                <option value="08">August</option>
+              </select>
+            )}
+          </div>
 
           <DataTable
             columns={column}
@@ -354,7 +364,9 @@ const handleMonthChange = (e) => setMonthFilter(e.target.value); // Update selec
           <div className="flex justify-end items-center space-x-4">
             <button
               className="px-3 py-2 bg-green-400 text-white rounded"
-              onClick={() => navigate("/academics/plannings/NewAnimatorsAssignmentForm/")}
+              onClick={() =>
+                navigate("/academics/plannings/NewAnimatorsAssignmentForm/")
+              }
               disabled={selectedRows.length !== 0} // Disable if no rows are selected
               hidden={!canCreate}
             >

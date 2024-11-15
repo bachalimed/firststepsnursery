@@ -65,10 +65,6 @@ const UnenrolmentsList = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idEnrolmentToDelete, setIdEnrolmentToDelete] = useState(null); // State to track which document to delete
   const MONTHS = [
-    "September",
-    "October",
-    "November",
-    "December",
     "January",
     "February",
     "March",
@@ -77,7 +73,20 @@ const UnenrolmentsList = () => {
     "June",
     "July",
     "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
+
+
+   //function to return curent month for month selection
+   const getCurrentMonth = () => {
+    const currentMonthIndex = new Date().getMonth(); // Get current month (0-11)
+    return MONTHS[currentMonthIndex]; // Return the month name with the first letter capitalized
+  };
+  
+
   //console.log("Fetch enrolments for academic year:", selectedAcademicYear);
   const {
     data: admissions, //the data is renamed admissions
@@ -133,7 +142,7 @@ const UnenrolmentsList = () => {
   const [invoicedFilter, setInvoicedFilter] = useState(""); // "invoiced" or "notInvoiced"
   const [paidFilter, setPaidFilter] = useState(""); // "paid" or "unpaid"
   const [selectedServiceType, setSelectedServiceType] = useState(""); // service type from servicesList
-  const [selectedFeeMonth, setSelectedFeeMonth] = useState(""); // enrolment month
+  const [selectedFeeMonth, setSelectedFeeMonth] = useState(getCurrentMonth()); // enrolment month
   const servicesList = isServicesSuccess
     ? Object.values(services.entities)
     : [];
@@ -350,12 +359,15 @@ const UnenrolmentsList = () => {
           onChange={(e) => setSelectedFeeMonth(e.target.value)}
           className="text-sm h-8 border border-gray-300 rounded-md px-4"
         >
-          <option value="">All Months</option>
-          {MONTHS.map((month, index) => (
-            <option key={index} value={month}>
-              {month}
-            </option>
-          ))}
+        <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
+           {MONTHS.map(
+            (month, index) =>
+              month !== getCurrentMonth() && (
+                <option key={index} value={month}>
+                  {month}
+                </option>
+              )
+          )}
         </select>
         {/* Service Type Filter */}
         <select

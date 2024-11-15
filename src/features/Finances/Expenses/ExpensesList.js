@@ -63,15 +63,14 @@ const ExpensesList = () => {
   } = useGetAttendedSchoolsQuery({ endpointName: "ExpenseList" }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
 
   const {
-    data: assignments, //the data is renamed schools
-    isLoading: isAssignmentsLoading, //monitor several situations is loading...
-    isSuccess: isAssignmentsSuccess,
-    isError: isAssignmentsError,
-    error: assignmentsError,
-  } = useGetExpensesQuery({ endpointName: "ExpenseList" }) ||
-  {}; //this should match the endpoint defined in your API slice.!! what does it mean?
+    data: expenses, //the data is renamed schools
+    isLoading: isExpensesLoading, //monitor several situations is loading...
+    isSuccess: isExpensesSuccess,
+    isError: isExpensesError,
+    error: expensesError,
+  } = useGetExpensesQuery({ endpointName: "ExpenseList" }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
   const [
-    deleteAssignment,
+    deleteExpense,
     {
       isLoading: isDelLoading,
       isSuccess: isDelSuccess,
@@ -95,8 +94,8 @@ const ExpensesList = () => {
   let employeesList = isEmployeesSuccess
     ? Object.values(employees.entities)
     : [];
-  // let assignmentsList = isAssignmentsSuccess
-  //   ? Object.values(assignments.entities)
+  // let expensesList = isExpensesSuccess
+  //   ? Object.values(expenses.entities)
   //   : [];
   // Function to handle the delete button click
   const onDeleteAttendedSchoolClicked = (id) => {
@@ -106,7 +105,7 @@ const ExpensesList = () => {
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    await deleteAssignment({ id: idAttendedSchoolToDelete });
+    await deleteExpense({ id: idAttendedSchoolToDelete });
     setIsDeleteModalOpen(false); // Close the modal
   };
 
@@ -122,43 +121,45 @@ const ExpensesList = () => {
     //console.log('selectedRows', selectedRows)
   };
   const [monthFilter, setMonthFilter] = useState(""); // Initialize with empty string (for "All Months")
-let filteredAssignments=[]
-let assignmentsList =[]
-if (isAssignmentsSuccess){
+  let filteredExpenses = [];
+  let expensesList = [];
+  if (isExpensesSuccess) {
+    const { entities } = expenses;
+    expensesList = Object.values(entities); //we are using entity adapter in this query
 
-  const { entities } = assignments;
-  assignmentsList = Object.values(entities); //we are using entity adapter in this query
+    // Handle month filter change
 
- // Handle month filter change
- 
-  // Handle month filter change
-  filteredAssignments = assignmentsList.filter((assignment) => {
-    const startMonth = new Date(assignment.startTime).getMonth() + 1; // getMonth() returns 0-based month (0-11), so add 1
-  const endMonth = new Date(assignment.endTime).getMonth() + 1;
+    // Handle month filter change
+    filteredExpenses = expensesList.filter((expense) => {
+      const startMonth = new Date(expense.startTime).getMonth() + 1; // getMonth() returns 0-based month (0-11), so add 1
+      const endMonth = new Date(expense.endTime).getMonth() + 1;
 
-  // Assuming assignedFrom and assignedTo are either Date objects or strings representing dates
-  const assignedFromMonth = new Date(assignment.assignedFrom).getMonth() + 1;
-  const assignedToMonth = new Date(assignment.assignedTo).getMonth() + 1;
+      // Assuming assignedFrom and assignedTo are either Date objects or strings representing dates
+      const assignedFromMonth = new Date(expense.assignedFrom).getMonth() + 1;
+      const assignedToMonth = new Date(expense.assignedTo).getMonth() + 1;
 
-  // Format the numeric month values to match the format "01", "02", ..., "12"
-  const formattedStartMonth = startMonth.toString().padStart(2, '0');
-  const formattedEndMonth = endMonth.toString().padStart(2, '0');
-  const formattedAssignedFromMonth = assignedFromMonth.toString().padStart(2, '0');
-  const formattedAssignedToMonth = assignedToMonth.toString().padStart(2, '0');
+      // Format the numeric month values to match the format "01", "02", ..., "12"
+      const formattedStartMonth = startMonth.toString().padStart(2, "0");
+      const formattedEndMonth = endMonth.toString().padStart(2, "0");
+      const formattedAssignedFromMonth = assignedFromMonth
+        .toString()
+        .padStart(2, "0");
+      const formattedAssignedToMonth = assignedToMonth
+        .toString()
+        .padStart(2, "0");
 
-  // If a month is selected, filter by start, end, assignedFrom, or assignedTo month
-  return (
-    monthFilter === "" || // Show all if no month is selected
-    formattedStartMonth === monthFilter || 
-    formattedEndMonth === monthFilter ||
-    formattedAssignedFromMonth === monthFilter || 
-    formattedAssignedToMonth === monthFilter
-  );
-});
-  
-}
+      // If a month is selected, filter by start, end, assignedFrom, or assignedTo month
+      return (
+        monthFilter === "" || // Show all if no month is selected
+        formattedStartMonth === monthFilter ||
+        formattedEndMonth === monthFilter ||
+        formattedAssignedFromMonth === monthFilter ||
+        formattedAssignedToMonth === monthFilter
+      );
+    });
+  }
 
-const handleMonthChange = (e) => setMonthFilter(e.target.value); // Update selected grade
+  const handleMonthChange = (e) => setMonthFilter(e.target.value); // Update selected grade
 
   //handle delete
 
@@ -203,19 +204,19 @@ const handleMonthChange = (e) => setMonthFilter(e.target.value); // Update selec
     //   name: "Animator",
     //   selector: (row) => (
     //     <div>
-    //       {row?.assignments.map((assignment, index) => {
+    //       {row?.expenses.map((expense, index) => {
     //         const animator = employeesList.find(
-    //           (employee) => employee.id === assignment.animator
+    //           (employee) => employee.id === expense.animator
     //         );
-      
+
     //         const animatorName = animator
     //           ? `${animator.userFullName.userFirstName} ${animator.userFullName.userMiddleName || ""} ${animator.userFullName.userLastName || ""}`.trim()
     //           : "Unknown";
-      
+
     //         return (
     //           <div key={index} style={{ marginBottom: "4px" }}>
     //       {animatorName}
-    //       {index < row.assignments.length - 1 && (
+    //       {index < row.expenses.length - 1 && (
     //         <hr style={{ border: "0.5px solid #ccc", margin: "4px 0" }} />
     //       )}
     //     </div>
@@ -223,43 +224,49 @@ const handleMonthChange = (e) => setMonthFilter(e.target.value); // Update selec
     //       })}
     //     </div>
     //   ),
-      
+
     //   sortable: true,
     //   width: "160px",
     // },
     {
-      name: "Assignments",
+      name: "Expenses",
       selector: (row) => (
         <div>
-          {row?.assignments.map((assignment, assignmentIndex) => {
+          {row?.expenses.map((expense, expenseIndex) => {
             const animator = employeesList.find(
-              (employee) => employee.id === assignment.animator
+              (employee) => employee.id === expense.animator
             );
-      
+
             const animatorName = animator
-              ? `${animator.userFullName.userFirstName} ${animator.userFullName.userMiddleName || ""} ${animator.userFullName.userLastName || ""}`.trim()
+              ? `${animator.userFullName.userFirstName} ${
+                  animator.userFullName.userMiddleName || ""
+                } ${animator.userFullName.userLastName || ""}`.trim()
               : "Unknown";
-      
+
             return (
-              <div key={assignmentIndex} style={{ marginBottom: "8px" }}>
-                <div style={{ fontWeight: "bold" }}>{animatorName}<hr style={{ border: "0.5px solid #ddd", margin: "4px 1" }} /></div>
-      
-                {assignment.schools.map((schoolId, schoolIndex) => {
-                  const schoolName = schoolsList.find(
-                    (school) => school.id === schoolId
-                  )?.schoolName || "Unknown";
-      
+              <div key={expenseIndex} style={{ marginBottom: "8px" }}>
+                <div style={{ fontWeight: "bold" }}>
+                  {animatorName}
+                  <hr style={{ border: "0.5px solid #ddd", margin: "4px 1" }} />
+                </div>
+
+                {expense.schools.map((schoolId, schoolIndex) => {
+                  const schoolName =
+                    schoolsList.find((school) => school.id === schoolId)
+                      ?.schoolName || "Unknown";
+
                   return (
                     <div key={schoolId} style={{ marginBottom: "4px" }}>
                       {schoolName}
-                      {schoolIndex < assignment.schools.length - 1 
-                      // && ( <hr style={{ border: "0.5px solid #ddd", margin: "4px 0" }} />  )
+                      {
+                        schoolIndex < expense.schools.length - 1
+                        // && ( <hr style={{ border: "0.5px solid #ddd", margin: "4px 0" }} />  )
                       }
                     </div>
                   );
                 })}
-      
-                {assignmentIndex < row.assignments.length - 1 && (
+
+                {expenseIndex < row.expenses.length - 1 && (
                   <hr style={{ border: "0.5px solid #aaa", margin: "8px 0" }} />
                 )}
               </div>
@@ -267,8 +274,7 @@ const handleMonthChange = (e) => setMonthFilter(e.target.value); // Update selec
           })}
         </div>
       ),
-      
-      
+
       sortable: true,
       width: "180px",
     },
@@ -316,36 +322,34 @@ const handleMonthChange = (e) => setMonthFilter(e.target.value); // Update selec
         <Expenses />
 
         <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-        <div className="flex space-x-2 items-center">
-         
-          {/* Months Filter Dropdown */}
-          
-          <select
-            onChange={handleMonthChange}
-           
-            className="text-sm h-8 border border-gray-300 rounded-md px-4"
-          >
-            <option value="">All Months</option>
-            <option value="09">September</option>
-            <option value="10">October</option>
-            <option value="11">November</option>
-            <option value="12">December</option>
-            <option value="01">January</option>
-            <option value="02">February</option>
-            <option value="03">March</option>
-            <option value="04">April</option>
-            <option value="05">May</option>
-            <option value="06">June</option>
-            <option value="07">July</option>
-            <option value="08">August</option>
-          </select>
-       
-        
-        </div>
+          <div className="flex space-x-2 items-center">
+            {/* Months Filter Dropdown */}
+
+            {filteredExpenses?.length > 0 && (
+              <select
+                onChange={handleMonthChange}
+                className="text-sm h-8 border border-gray-300 rounded-md px-4"
+              >
+                <option value="">All Months</option>
+                <option value="09">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+                <option value="01">January</option>
+                <option value="02">February</option>
+                <option value="03">March</option>
+                <option value="04">April</option>
+                <option value="05">May</option>
+                <option value="06">June</option>
+                <option value="07">July</option>
+                <option value="08">August</option>
+              </select>
+            )}
+          </div>
 
           <DataTable
             columns={column}
-            data={filteredAssignments}
+            data={filteredExpenses}
             pagination
             selectableRows
             removableRows
@@ -358,7 +362,7 @@ const handleMonthChange = (e) => setMonthFilter(e.target.value); // Update selec
               disabled={selectedRows.length !== 0} // Disable if no rows are selected
               hidden={!canCreate}
             >
-              New Assignment
+              New Expense
             </button>
           </div>
         </div>

@@ -26,12 +26,10 @@ const Expenses = () => {
   // Define the tab data with paths and labels
   const tabs = [
     //{ label: 'New Assignment', path: '/academics/expenses/NewAnimatorsAssignmentForm' },
-    { label: 'Assignment', path: '/academics/expenses/animatorsAssignments' },
-    { label: 'Sections', path: '/academics/expenses/sectionsExpenses' },
-    { label: 'Sites', path: "/academics/expenses/sitesExpenses" },
-    { label: 'Animators', path: "/academics/expenses/animatorsExpenses/" },
-    { label: 'Classrooms', path: "/academics/expenses/classroomsExpenses/" },
-    { label: 'My Expense', path: "/academics/expenses/myExpense/" },
+    { label: 'Expenses', path: '/finances/expenses/expensesList' },
+    { label: 'blaaa', path: '/finances/expenses/bbb' },
+    { label: 'blssss', path: "/finances/expenses/bbbbbb" },
+   
   ];
  // Function to determine if a tab is active based on the current path
  const isActive = (path) => location.pathname === path;

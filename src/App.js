@@ -68,6 +68,10 @@ import ExpensesList from './features/Finances/Expenses/ExpensesList'
 import NewExpenseForm from './features/Finances/Expenses/NewExpenseForm'
 import EditExpense from './features/Finances/Expenses/EditExpense'
 import ExpenseDetails from './features/Finances/Expenses/ExpenseDetails'
+import InvoicesList from './features/Finances/Invoices/InvoicesList'
+import NewInvoiceForm from './features/Finances/Invoices/NewInvoiceForm'
+import EditInvoice from './features/Finances/Invoices/EditInvoice'
+import InvoiceDetails from './features/Finances/Invoices/InvoiceDetails'
 
 import EmployeesList from './features/HR/Employees/EmployeesList'
 import NewEmployeeForm from './features/HR/Employees/NewEmployeeForm'
@@ -268,16 +272,18 @@ const App = () => {
 								<Route path="newExpense/" element={<NewExpenseForm/>}/>	
 								<Route path="editExpense/:id" element={<EditExpense/>}/>
 								<Route path="expenseDetails/:id" element={<ExpenseDetails/>}/>
-
-
-
-
 								</Route> {/* end of expenses route */}
 								
 
 								<Route path="invoices" > 					
 								<Route index element={<Invoices />} /> 
+								<Route path="invoicesList/" element={<InvoicesList/>}/>	
+								<Route path="newInvoice/" element={<NewInvoiceForm/>}/>	
+								<Route path="editInvoice/:id" element={<EditInvoice/>}/>
+								<Route path="invoiceDetails/:id" element={<InvoiceDetails/>}/>
 								</Route> {/* end of invoices route */}
+
+
 
 								<Route path="payments" > 					
 								<Route index element={<Payments />} /> 
