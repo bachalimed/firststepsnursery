@@ -12,14 +12,14 @@ import LoadingStateIcons from "../../../Components/LoadingStateIcon";
 import Invoices from "../Invoices";
 const EditInvoice = () => {
   const { id } = useParams(); //pull the id from use params from the url
-  //console.log(id,'id')
-  const [assignment, setAssignment] = useState("");
+  console.log(id,'id')
+  const [invoice, setInvoice] = useState("");
   const {
-    data: assignmentToEdit, //the data is renamed families
-    isLoading: isAssignmentLoading, //monitor several situations
-    isSuccess: isAssignmentSuccess,
-    isError: isAssignmentError,
-    error: assignmentError,
+    data: invoiceToEdit, //the data is renamed families
+    isLoading: isInvoiceLoading, //monitor several situations
+    isSuccess: isInvoiceSuccess,
+    isError: isInvoiceError,
+    error: invoiceError,
   } = useGetInvoiceByIdQuery({ id: id, endpointName: "EditInvoice" } || {}, {
     // "dry" will not ppoulate children fully
     //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
@@ -27,24 +27,24 @@ const EditInvoice = () => {
     refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
     refetchOnMountOrArgChange: true, //refetch when we remount the component
   });
-  console.log('hiiiiiiiiiiii')
+  //console.log('hiiiiiiiiiiii')
   // useEffect(() => {
-  //   if (isAssignmentSuccess) {
-       console.log('helllllow',assignmentToEdit, 'mystu')
-  //     //const assignmentInit = Object.values(assignmentToEdit.entities)
-  //     // setAssignment(assignmentToEdit); // Set assignment state to the first object
-  //     //console.log('helllllow',assignment, 'mystu')
+  //   if (isInvoiceSuccess) {
+       //console.log('helllllow',invoiceToEdit, 'mystu')
+  //     //const invoiceInit = Object.values(invoiceToEdit.entities)
+  //     // setInvoice(invoiceToEdit); // Set invoice state to the first object
+  //     //console.log('helllllow',invoice, 'mystu')
   //   }
-  // // }, [isAssignmentSuccess, assignmentToEdit]);
-  // let assignmentTE = isAssignmentSuccess
-  // ? Object.values(assignmentToEdit.entities)
+  // // }, [isInvoiceSuccess, invoiceToEdit]);
+  // let invoiceTE = isInvoiceSuccess
+  // ? Object.values(invoiceToEdit.entities)
   // : null;
   let content;
 
-  content = assignmentToEdit ? (
+  content = invoiceToEdit ? (
     <>
      
-      <EditInvoiceForm invoice={assignmentToEdit} />
+      <EditInvoiceForm invoice={invoiceToEdit} />
     </>
   ) : (
     <>

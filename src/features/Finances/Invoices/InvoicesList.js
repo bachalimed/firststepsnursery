@@ -168,15 +168,15 @@ const InvoicesList = () => {
     invoicesList = Object.values(entities); //we are using entity adapter in this query
     //dispatch(setInvoices(invoicesList)); //timing issue to update the state and use it the same time
 
-    filteredInvoices = invoicesList.filter((enrol) => {
+    filteredInvoices = invoicesList.filter((invoi) => {
       // Check if the student's name or any other field contains the search query
       const nameMatches = [
-        enrol?.student?.studentName?.firstName,
-        enrol?.student?.studentName?.middleName,
-        enrol?.student?.studentName?.lastName,
+        invoi?.enrolments[0]?.student?.studentName?.firstName,
+        invoi?.enrolments[0]?.student?.studentName?.middleName,
+        invoi?.enrolments[0]?.student?.studentName?.lastName,
       ].some((name) => name?.toLowerCase().includes(searchQuery.toLowerCase()));
 
-      const otherMatches = Object.values(enrol)
+      const otherMatches = Object.values(invoi)
         .flat()
         .some((val) =>
           val?.toString().toLowerCase().includes(searchQuery.toLowerCase())
@@ -184,16 +184,19 @@ const InvoicesList = () => {
 
       // Apply all filters with AND logic
       const meetsDiscountedCriteria =
-  !discountedFilter ||
-  (discountedFilter === "Discounted" ? parseFloat(enrol.invoiceDiscountAmount) !== 0 : parseFloat(enrol.invoiceDiscountAmount) === 0);
+        !discountedFilter ||
+        (discountedFilter === "Discounted"
+          ? parseFloat(invoi.invoiceDiscountAmount) !== 0
+          : parseFloat(invoi.invoiceDiscountAmount) === 0);
 
       const meetsPaidCriteria =
-        !paidFilter || (paidFilter === "paid" ? enrol.isFullyPaid : !enrol.isFullyPaid);
+        !paidFilter ||
+        (paidFilter === "paid" ? invoi.isFullyPaid : !invoi.isFullyPaid);
       const meetsServiceTypeCriteria =
         !selectedServiceType ||
-        enrol.enrolments[0]?.serviceType === selectedServiceType;
+        invoi.enrolments[0]?.serviceType === selectedServiceType;
       const meetsInvoiceMonthCriteria =
-        !selectedInvoiceMonth || enrol.invoiceMonth === selectedInvoiceMonth;
+        !selectedInvoiceMonth || invoi.invoiceMonth === selectedInvoiceMonth;
 
       return (
         (nameMatches || otherMatches) &&
@@ -213,8 +216,6 @@ const InvoicesList = () => {
     setSelectedRows(state.selectedRows);
     //console.log('selectedRows', selectedRows)
   };
-
-
 
   const column = [
     {
@@ -272,11 +273,12 @@ const InvoicesList = () => {
     {
       name: "Invoiced", //means authorised
       selector: (row) => (
-        <>
+        
           <div>{row?.invoiceAmount} </div>
-        </>
+        
       ),
       sortable: true,
+      
       width: "110px",
     },
     {
@@ -306,13 +308,17 @@ const InvoicesList = () => {
 
     {
       name: "Discount",
-      selector: (row) => (<div>- {row.invoiceDiscountAmount}</div>),
+
+      selector: (row) => (
+        <div>
+          <div>{row?.invoiceDiscountType ? `-${row?.invoiceDiscountType}` : "--"}</div>
+          <div>{row?.invoiceDiscountAmount !=="0"? `-${row?.invoiceDiscountAmount}` : "--"}</div>
+        </div>
+      ),
 
       sortable: true,
       width: "120px",
     },
-
-   
 
     {
       name: "Due Date",
@@ -332,8 +338,6 @@ const InvoicesList = () => {
       sortable: true,
       width: "140px",
     },
-
-   
 
     // {
     //   name: "Authorised", //means authorised
@@ -370,7 +374,7 @@ const InvoicesList = () => {
       name: "Actions",
       cell: (row) => (
         <div className="space-x-1">
-          <button
+          {/* <button
             className="text-blue-500"
             fontSize={20}
             onClick={() =>
@@ -378,7 +382,7 @@ const InvoicesList = () => {
             }
           >
             <ImProfile className="text-2xl" />
-          </button>
+          </button> */}
           {canEdit ? (
             <button
               className="text-yellow-400"
@@ -405,6 +409,15 @@ const InvoicesList = () => {
       width: "120px",
     },
   ];
+
+  // Custom header to include the row count
+  const tableHeader = (
+    <div>
+      <h2>Invoices List</h2>
+      <span> {filteredInvoices.length} invoices</span>
+    </div>
+  );
+
   let content;
   if (isInvoiceGetLoading)
     content = (
@@ -421,6 +434,7 @@ const InvoicesList = () => {
       </>
     ); //errormessage class defined in the css, the error has data and inside we have message of error
   }
+
   //if (isinvoiceGetSuccess){
 
   content = (
@@ -497,6 +511,7 @@ const InvoicesList = () => {
       </div>
       <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
         <DataTable
+          title={tableHeader}
           columns={column}
           data={filteredInvoices}
           pagination
@@ -510,10 +525,10 @@ const InvoicesList = () => {
           <div className="flex justify-end items-center space-x-4">
             <button
               className="px-3 py-2 bg-teal-500 text-white rounded"
-              onClick={() => navigate("/finances/invoices/newInvoice/")}
+              onClick={() => navigate("/students/enrolments/enrolments/")}
               hidden={!canCreate}
             >
-              Batch Invoice
+              Invoice from Enrolment
             </button>
           </div>
         </div>

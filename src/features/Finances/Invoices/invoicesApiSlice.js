@@ -73,19 +73,20 @@ export const invoicesApiSlice = apiSlice.injectEndpoints({
         return response.status === 200 && !result.isError;
       },
       
-      transformResponse: (responseData) => {
+       //transformResponse: (responseData) => {
+        // console.log(responseData,'responseData')
         //const {loadedInvoices} =
-        //console.log('academicYears length  in the APIslice',responseData.total)
-        //console.log('academicYears in the APIslice', academicYears)
-        const newLoadedInvoices = responseData.map((invoice) => {
-          invoice.id = invoice._id; //changed the _id from mongoDB to id
-          delete invoice._id; //added to delete the extra original _id from mongo but careful when planning to save to db again
+      //   //console.log('academicYears length  in the APIslice',responseData.total)
+      //   //console.log('academicYears in the APIslice', academicYears)
+      //   const newLoadedInvoices = responseData.map((invoice) => {
+      //     invoice.id = invoice._id; //changed the _id from mongoDB to id
+      //     delete invoice._id; //added to delete the extra original _id from mongo but careful when planning to save to db again
 
-          //console.log(' newLoadedInvoices in the APIslice',newLoadedInvoices)
-          return invoice;
-        });
-        return invoicesAdapter.upsertOne(initialState, newLoadedInvoices);
-      },
+      //     //console.log(' newLoadedInvoices in the APIslice',newLoadedInvoices)
+      //     return invoice;
+      //   });
+      //   return invoicesAdapter.upsertOne(initialState, newLoadedInvoices);
+       //},
       providesTags: ["invoice"],
       // providesTags: (result, error, arg) => {
       //     if (result?.ids) {
