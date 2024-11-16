@@ -390,8 +390,7 @@ const PaymentsList = () => {
   // Custom header to include the row count
   const tableHeader = (
     <div>
-      <h2>Payments List</h2>
-      <span> {filteredPayments.length} payments</span>
+      <h2>Payments List:      <span> {filteredPayments.length} payments</span></h2>
     </div>
   );
 

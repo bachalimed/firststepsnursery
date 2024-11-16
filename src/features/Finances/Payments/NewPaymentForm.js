@@ -4,13 +4,11 @@ import { MdAddBox } from "react-icons/md";
 import { MdOutlineAddBox } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  useAddNewPaymentMutation
-} from "./paymentsApiSlice"; // Redux API action
+import { useAddNewPaymentMutation } from "./paymentsApiSlice"; // Redux API action
 import { CurrencySymbol } from "../../../config/Currency";
 import Finances from "../Finances";
 import useAuth from "../../../hooks/useAuth";
-import {useGetEnrolmentsByYearQuery} from '../../Students/Enrolments/enrolmentsApiSlice'
+import { useGetEnrolmentsByYearQuery } from "../../Students/Enrolments/enrolmentsApiSlice";
 
 import {
   selectCurrentAcademicYearId,
@@ -27,19 +25,15 @@ import {
 } from "../../../config/REGEX";
 import { MONTHS } from "../../../config/Months";
 
-const NewPaymentForm = ({invoice}) => {
+const NewPaymentForm = ({ invoice }) => {
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-  
- const PaymentTypes= ["Cash", "Cheque", "Bank Transfer", "Online Payment"]
- 
-  
 
-
+  const PaymentTypes = ["Cash", "Cheque", "Bank Transfer", "Online Payment"];
 
   const {
     data: studentsEnrolments, //the enrolments are retirved and transformed as students with arrays of enrolments
@@ -49,7 +43,7 @@ const NewPaymentForm = ({invoice}) => {
     error: enrolmentsError,
   } = useGetEnrolmentsByYearQuery(
     {
-      criteria:"UnpaidInvoices",
+      criteria: "UnpaidInvoices",
       selectedYear: selectedAcademicYear?.title,
       endpointName: "NewPaymentForm",
     } || {},
@@ -65,6 +59,7 @@ const NewPaymentForm = ({invoice}) => {
   const [formData, setFormData] = useState({
     paymentYear: selectedAcademicYear?.title || "",
     paymentAmount: "",
+    paymentStudent: "",
     paymentInvoices: [], // can pay once for many invoices
     paymentNote: "",
     paymentType: "",
@@ -76,24 +71,22 @@ const NewPaymentForm = ({invoice}) => {
   });
 
   //let schoolsList = isSchoolSuccess ? Object.values(schools.entities) : [];
-  
-    const [selectedStudent, setSelectedStudent] = useState(null);
-    const [selectedInvoices, setSelectedInvoices] = useState([]);
-    const [totalInvoiceAmount, setTotalInvoiceAmount] = useState(0);
 
- 
-
-
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [selectedInvoices, setSelectedInvoices] = useState([]);
+  const [totalInvoiceAmount, setTotalInvoiceAmount] = useState(0);
+  // State to track the selected invoice
+  const [selectedInvoiceId, setSelectedInvoiceId] = useState(null);
   const [validity, setValidity] = useState({
-   
     validPaymentAmount: false,
+    validPaymentStudent: false,
     validPaymentInvoices: false, // can pay once for many invoices
     validPaymentNote: false,
     validPaymentType: false,
     validPaymentTypeReference: false,
     validPaymentDate: false,
   });
-
+  console.log(validity);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -108,26 +101,28 @@ const NewPaymentForm = ({invoice}) => {
     },
   ] = useAddNewPaymentMutation();
 
-
-
   let studentsEnrolmentsList = [];
 
   if (isEnrolmentsSuccess) {
     const { entities } = studentsEnrolments;
     studentsEnrolmentsList = Object.values(entities);
-    console.log(studentsEnrolmentsList,'studentsEnrolmentsList')
+    console.log(studentsEnrolmentsList, "studentsEnrolmentsList");
   }
 
   useEffect(() => {
     const isAmountValid = NUMBER_REGEX.test(formData.paymentAmount);
-    const isAmountWithinLimit = parseFloat(formData.paymentAmount) <= totalInvoiceAmount;
+    const isAmountWithinLimit =
+      parseFloat(formData.paymentAmount) <= totalInvoiceAmount;
     setValidity((prev) => ({
       ...prev,
       validPaymentAmount: isAmountValid && isAmountWithinLimit,
-      validPaymentInvoices: formData?.paymentInvoices?.length > 0 && formData?.paymentInvoices.every(OBJECTID_REGEX.test),
+      validPaymentStudent:OBJECTID_REGEX.test(formData.paymentStudent),
+      validPaymentInvoices: formData?.paymentInvoices?.length > 0,
       validPaymentNote: COMMENT_REGEX.test(formData?.paymentNote),
       validPaymentType: NAME_REGEX.test(formData?.paymentType),
-      validPaymentTypeReference: NAME_REGEX.test(formData?.paymentTypeReference),
+      validPaymentTypeReference: NAME_REGEX.test(
+        formData?.paymentTypeReference
+      ),
       validPaymentDate: DATE_REGEX.test(formData?.paymentDate),
     }));
   }, [formData, totalInvoiceAmount]);
@@ -138,12 +133,13 @@ const NewPaymentForm = ({invoice}) => {
       setFormData({
         paymentYear: selectedAcademicYear?.title || "",
         paymentAmount: "",
+        paymentStudent: "",
         paymentInvoices: [],
         paymentNote: "",
         paymentType: "",
         paymentTypeReference: "",
         paymentDate: "",
-        paymentRecordDate: new Date().toISOString().split('T')[0],
+        paymentRecordDate: new Date().toISOString().split("T")[0],
         paymentCreator: userId,
         paymentOperator: userId,
       });
@@ -159,7 +155,7 @@ const NewPaymentForm = ({invoice}) => {
   const canSubmit = Object.values(validity).every(Boolean) && !isAddLoading;
 
   // Handle form submission
- 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!canSubmit) return;
@@ -171,33 +167,76 @@ const NewPaymentForm = ({invoice}) => {
     }
   };
 
-  
   const handleStudentChange = (e) => {
     const selectedStudentId = e.target.value;
-    const student = studentsEnrolmentsList.find((s) => s.id === selectedStudentId);
+    const student = studentsEnrolmentsList.find(
+      (s) => s.id === selectedStudentId
+    );
     setSelectedStudent(student);
     setFormData({ ...formData, paymentInvoices: [] });
     setSelectedInvoices([]);
     setTotalInvoiceAmount(0);
   };
 
- 
   const handleInvoiceClick = (invoice) => {
-    if (!formData.paymentInvoices.includes(invoice._id)) {
-      const newTotal = totalInvoiceAmount + invoice.invoiceAmount;
+    // Check if the invoice is already selected
+    if (
+      selectedInvoices.some(
+        (selectedInvoice) => selectedInvoice._id === invoice._id
+      )
+    ) {
+      // Remove the invoice from the selected list and update total
+      const newSelectedInvoices = selectedInvoices.filter(
+        (selectedInvoice) => selectedInvoice._id !== invoice._id
+      );
+      const newTotal = selectedInvoices.reduce((total, selectedInvoice) => {
+        if (selectedInvoice._id !== invoice._id) {
+          return total + parseFloat(selectedInvoice.invoiceAmount);
+        }
+        return total;
+      }, 0);
+
+      setSelectedInvoices(newSelectedInvoices);
+      setFormData({
+        ...formData,
+        paymentInvoices: formData.paymentInvoices.filter(
+          (id) => id !== invoice._id
+        ),
+      });
+      setTotalInvoiceAmount(newTotal);
+    } else {
+      // Add the invoice to the selected list and update total
+      const newSelectedInvoices = [...selectedInvoices, invoice];
+      const newTotal =
+        selectedInvoices.reduce(
+          (total, selectedInvoice) =>
+            total + parseFloat(selectedInvoice.invoiceAmount),
+          0
+        ) + parseFloat(invoice.invoiceAmount);
+
+      setSelectedInvoices(newSelectedInvoices);
       setFormData({
         ...formData,
         paymentInvoices: [...formData.paymentInvoices, invoice._id],
       });
-      setSelectedInvoices([...selectedInvoices, invoice]);
       setTotalInvoiceAmount(newTotal);
     }
   };
 
   const handleRemoveInvoice = (invoice) => {
-    const updatedInvoices = formData.paymentInvoices.filter((id) => id !== invoice._id);
-    const updatedSelectedInvoices = selectedInvoices.filter((i) => i._id !== invoice._id);
-    const newTotal = totalInvoiceAmount - invoice.invoiceAmount;
+    const updatedInvoices = formData.paymentInvoices.filter(
+      (id) => id !== invoice._id
+    );
+    const updatedSelectedInvoices = selectedInvoices.filter(
+      (i) => i._id !== invoice._id
+    );
+
+    const newTotal = updatedSelectedInvoices.reduce(
+      (total, selectedInvoice) =>
+        total + parseFloat(selectedInvoice.invoiceAmount),
+      0
+    );
+
     setFormData({ ...formData, paymentInvoices: updatedInvoices });
     setSelectedInvoices(updatedSelectedInvoices);
     setTotalInvoiceAmount(newTotal);
@@ -207,7 +246,6 @@ const NewPaymentForm = ({invoice}) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
-
 
   console.log(formData, "formdata");
 
@@ -220,13 +258,18 @@ const NewPaymentForm = ({invoice}) => {
         <form onSubmit={handleSubmit}>
           {/* Student Selection */}
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">Select Student</label>
+            <label className="block text-gray-700 font-bold mb-2">
+              Select Student{" "}
+                {!validity.validPrimaryPhone && (
+                  <span className="text-red-500">*</span>
+                )}
+            </label>
             <select
-              value={selectedStudent?._id || ""}
+              value={selectedStudent?.id || ""}
               onChange={handleStudentChange}
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="" disabled>Select a Student</option>
+              <option value="">Select a Student</option>
               {studentsEnrolmentsList.map((student) => (
                 <option key={student?.id} value={student?.id}>
                   {`${student?.studentName?.firstName} ${student?.studentName?.middleName} ${student?.studentName?.lastName}`}
@@ -239,15 +282,32 @@ const NewPaymentForm = ({invoice}) => {
           {selectedStudent && (
             <div className="mb-4">
               <h3 className="text-gray-700 font-bold mb-2">Select Invoices</h3>
-              <ul className="border rounded-md p-2 max-h-40 overflow-y-auto">
+              <ul className="border rounded-md p-2 max-h-80 overflow-y-auto">
                 {selectedStudent.enrolments.map((enrolment) => (
                   <li
                     key={enrolment.invoice._id}
-                    className="cursor-pointer hover:bg-gray-100 p-2 border-b"
+                    className={`cursor-pointer hover:bg-gray-100 p-2 border-b ${
+                      selectedInvoices.some(
+                        (selectedInvoice) =>
+                          selectedInvoice._id === enrolment.invoice._id
+                      )
+                        ? "bg-blue-200" // Apply blue background if selected
+                        : ""
+                    }`}
                     onClick={() => handleInvoiceClick(enrolment.invoice)}
                   >
-                    {`${enrolment?.servicePeriod}${" "}${enrolment?.serviceType}${" "}
-                      for ${enrolment.invoice.invoiceMonth}, Amount: ${enrolment.invoice.invoiceAmount} ${" "}${CurrencySymbol}`}
+                    {`${
+                      enrolment?.servicePeriod.charAt(0).toUpperCase() +
+                      enrolment?.servicePeriod.slice(1)
+                    } ${enrolment?.serviceType} for ${
+                      enrolment?.invoice?.invoiceMonth
+                    }`}
+                    <br />
+                    {`Amount: ${enrolment?.invoice?.invoiceAmount} ${CurrencySymbol} / ${enrolment?.invoice?.invoiceAuthorisedAmount} ${CurrencySymbol}`}
+                    <br />
+                    {enrolment?.invoice?.invoiceDiscountAmount !== "0"
+                      ? `with ${enrolment?.invoice?.invoiceDiscountAmount} ${CurrencySymbol} discount`
+                      : ""}
                   </li>
                 ))}
               </ul>
@@ -257,26 +317,33 @@ const NewPaymentForm = ({invoice}) => {
           {/* Selected Invoices Summary */}
           {selectedInvoices.length > 0 && (
             <div className="mb-4">
-              <h3 className="text-gray-700 font-bold mb-2">Selected Invoices</h3>
-              <ul className="border rounded-md p-2 max-h-40 overflow-y-auto">
+              <h3 className="text-gray-700 font-bold mb-2">
+                Selected Invoices
+              </h3>
+              <ul className="border rounded-md p-2 max-h-80 overflow-y-auto">
                 {selectedInvoices.map((invoice) => (
                   <li
                     key={invoice._id}
                     className="cursor-pointer hover:bg-red-100 p-2 border-b"
                     onClick={() => handleRemoveInvoice(invoice)}
                   >
-                    {`Service Period: ${invoice.servicePeriod}, Type: ${invoice.serviceType}, 
-                      Month: ${invoice.invoiceMonth}, Amount: ${invoice.invoiceAmount}€`}
+                    {`${invoice.invoiceMonth}: ${
+                      invoice.invoiceAmount
+                    }${" "}${CurrencySymbol}`}
                   </li>
                 ))}
               </ul>
-              <div className="mt-2 font-bold">Total Selected Invoice Amount: {totalInvoiceAmount}€</div>
+              <div className="mt-2 font-bold">
+                Selected Invoices Total: {totalInvoiceAmount} {CurrencySymbol}
+              </div>
             </div>
           )}
 
           {/* Payment Date */}
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">Payment Date</label>
+            <label className="block text-gray-700 font-bold mb-2">
+              Payment Date
+            </label>
             <input
               type="date"
               name="paymentDate"
@@ -289,25 +356,34 @@ const NewPaymentForm = ({invoice}) => {
 
           {/* Payment Amount */}
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">Payment Amount (€)</label>
+            <label className="block text-gray-700 font-bold mb-2">
+              Payment Amount (€)
+            </label>
             <input
               type="number"
               name="paymentAmount"
               value={formData.paymentAmount}
               onChange={handleInputChange}
               className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
-                validity.validPaymentAmount ? "focus:ring-blue-500" : "focus:ring-red-500"
+                validity.validPaymentAmount
+                  ? "focus:ring-blue-500"
+                  : "focus:ring-red-500"
               }`}
               required
             />
             {!validity.validPaymentAmount && (
-              <p className="text-red-500 text-sm">Amount must be a valid number and not exceed the total invoice amount.</p>
+              <p className="text-red-500 text-sm">
+                Amount must be a valid number and not exceed the total invoice
+                amount.
+              </p>
             )}
           </div>
 
           {/* Payment Type */}
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">Payment Type</label>
+            <label className="block text-gray-700 font-bold mb-2">
+              Payment Type
+            </label>
             <select
               name="paymentType"
               value={formData.paymentType}
@@ -315,7 +391,9 @@ const NewPaymentForm = ({invoice}) => {
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             >
-              <option value="" disabled>Select Payment Type</option>
+              <option value="" disabled>
+                Select Payment Type
+              </option>
               {PaymentTypes.map((type) => (
                 <option key={type} value={type}>
                   {type}
@@ -326,14 +404,18 @@ const NewPaymentForm = ({invoice}) => {
 
           {/* Payment Type Reference */}
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">Payment Reference</label>
+            <label className="block text-gray-700 font-bold mb-2">
+              Payment Reference
+            </label>
             <input
               type="text"
               name="paymentTypeReference"
               value={formData.paymentTypeReference}
               onChange={handleInputChange}
               className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
-                validity.validPaymentTypeReference ? "focus:ring-blue-500" : "focus:ring-red-500"
+                validity.validPaymentTypeReference
+                  ? "focus:ring-blue-500"
+                  : "focus:ring-red-500"
               }`}
               required
             />
@@ -341,13 +423,17 @@ const NewPaymentForm = ({invoice}) => {
 
           {/* Payment Note */}
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">Payment Note</label>
+            <label className="block text-gray-700 font-bold mb-2">
+              Payment Note
+            </label>
             <textarea
               name="paymentNote"
               value={formData.paymentNote}
               onChange={handleInputChange}
               className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
-                validity.validPaymentNote ? "focus:ring-blue-500" : "focus:ring-red-500"
+                validity.validPaymentNote
+                  ? "focus:ring-blue-500"
+                  : "focus:ring-red-500"
               }`}
               rows="3"
             ></textarea>
