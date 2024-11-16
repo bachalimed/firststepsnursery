@@ -19,7 +19,7 @@ const{isAdmin}=useAuth()
   // Define the tabs for Users Management
   const tabs = [
    isAdmin&& { label: "All Users", path: "/admin/usersManagement/users/" },
-    { label: "New User", path: "/admin/usersManagement/newUser/" },
+   // { label: "New User", path: "/admin/usersManagement/newUser/" },
    // { label: "Option 3", path: "/admin/usersManagement/blabla" }, // Option 3 placeholder
   ];
 

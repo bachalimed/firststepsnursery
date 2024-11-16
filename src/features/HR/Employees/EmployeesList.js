@@ -475,20 +475,13 @@ const EmployeesList = () => {
           <button
             className=" px-4 py-2 bg-green-500 text-white rounded"
             onClick={handleRegisterSelected}
-            disabled={selectedRows.length !== 1} // Disable if no rows are selected
+            // disabled={selectedRows.length !== 1} // Disable if no rows are selected
             hidden={!canCreate}
           >
-            Register
+            New Employee
           </button>
 
-          <button
-            className="px-3 py-2 bg-yellow-400 text-white rounded"
-            onClick={handleDuplicateSelected}
-            disabled={selectedRows.length !== 1} // Disable if no rows are selected
-            hidden={!canCreate}
-          >
-            Re-hhh
-          </button>
+        
 
           {isAdmin && (
             <button
@@ -497,7 +490,7 @@ const EmployeesList = () => {
               disabled={selectedRows.length !== 1} // Disable if no rows are selected
               hidden={!canCreate}
             >
-              All
+              optional button
             </button>
           )}
         </div>

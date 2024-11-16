@@ -513,6 +513,15 @@ useEffect(() => {
       width: "120px",
     },
   ];
+
+    // Custom header to include the row count
+    const tableHeader = (
+      <div>
+        <h2>enrolments List: 
+        <span> {filteredEnrolments.length} enrolments</span></h2>
+      </div>
+    );
+  
   let content;
   if (isEnrolmentGetLoading)
     content = (
@@ -603,6 +612,7 @@ useEffect(() => {
       </div>
       <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
         <DataTable
+        title={tableHeader}
           columns={column}
           data={filteredEnrolments}
           pagination

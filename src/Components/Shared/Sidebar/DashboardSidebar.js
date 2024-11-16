@@ -602,7 +602,7 @@ const DashboardSidebar = () => {
           </Link>
 
           <div className="border-t border-neutral-600">
-            <Link to="/admin/usersManagement/">
+            <Link to="/admin/usersManagement/users/">
               <li
                 className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}
               >
@@ -632,9 +632,9 @@ const DashboardSidebar = () => {
             {open && adminOpen && (
               <ul>
                 <Link
-                  to="/admin/usersManagement/"
+                  to="/admin/usersManagement/users/"
                   className={
-                    location.pathname === "/admin/usersManagement/"
+                    location.pathname === "/admin/usersManagement/users/"
                       ? "text-teal-200"
                       : ""
                   }

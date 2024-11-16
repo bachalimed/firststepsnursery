@@ -565,6 +565,17 @@ const AdmissionsList = () => {
       width: "120px",
     },
   ];
+
+
+   // Custom header to include the row count
+   const tableHeader = (
+    <div>
+      <h2>Admissions List: 
+      <span> {filteredAdmissions.length} admissions</span></h2>
+    </div>
+  );
+  
+  
   let content;
   if (isAdmissionLoading)
     content = (
@@ -657,6 +668,7 @@ const AdmissionsList = () => {
 
         <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
           <DataTable
+          title={tableHeader}
             columns={column}
             data={filteredAdmissions}
             pagination

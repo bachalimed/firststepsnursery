@@ -473,6 +473,14 @@ const StudentsList = () => {
     },
   ];
 
+  // Custom header to include the row count
+  const tableHeader = (
+    <div>
+      <h2>Students List: 
+      <span> {filteredStudents.length} students</span></h2>
+    </div>
+  );
+
   //console.log(filteredStudents, "filteredStudents");
   let content;
   if (isLoading) content = <LoadingStateIcon />;
@@ -530,6 +538,7 @@ const StudentsList = () => {
       </div>
       <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
         <DataTable
+        title={tableHeader}
           columns={column}
           data={filteredStudents}
           pagination
@@ -543,7 +552,7 @@ const StudentsList = () => {
           <button
             className="px-3 py-2 bg-green-500 text-white rounded"
             onClick={()=>navigate("/students/studentsParents/newStudent/")}
-            disabled={selectedRows.length !== 1} // Disable if no rows are selected
+            // disabled={selectedRows.length !== 1} // Disable if no rows are selected
             hidden={!canCreate}
           >
           New Student

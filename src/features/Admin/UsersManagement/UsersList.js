@@ -23,7 +23,7 @@ import { ROLES } from "../../../config/UserRoles";
 import { ACTIONS } from "../../../config/UserActions";
 const UsersList = () => {
   //initialise state variables and hooks
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { canEdit, canDelete, canAdd, canCreate, isParent, status2 } =
     useAuth();
@@ -119,7 +119,7 @@ const UsersList = () => {
 
   //handle edit
   const handleEdit = (id) => {
-    Navigate(`/admin/usersManagement/${id}/`); //the path to be set in app.js and to be checked with server.js in backend, this is editing page of user
+    navigate(`/admin/usersManagement/${id}/`); //the path to be set in app.js and to be checked with server.js in backend, this is editing page of user
   };
 
   const onDeleteUserClicked = async (id) => {
@@ -338,7 +338,7 @@ const UsersList = () => {
             className="text-blue-500"
             fontSize={20}
             onClick={() =>
-              Navigate(`/admin/usersManagement/userDetails/${row._id}`)
+              navigate(`/admin/usersManagement/userDetails/${row._id}`)
             }
           >
             <ImProfile fontSize={20} />
@@ -347,7 +347,7 @@ const UsersList = () => {
           {canEdit ? (
             <button
               className="text-yellow-400"
-              onClick={() => Navigate(`/admin/usersManagement/${row._id}/`)}
+              onClick={() => navigate(`/admin/usersManagement/${row._id}/`)}
             >
               <FiEdit fontSize={20} />
             </button>
@@ -367,6 +367,15 @@ const UsersList = () => {
       button: true,
     },
   ];
+
+    // Custom header to include the row count
+    const tableHeader = (
+      <div>
+        <h2>Users List: 
+        <span> {filteredUsers.length} users</span></h2>
+      </div>
+    );
+   
   let content;
 
   if (isUsersLoading)
@@ -436,6 +445,7 @@ const UsersList = () => {
         </div>
         <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
           <DataTable
+           title={tableHeader}
             columns={column}
             data={filteredUsers}
             pagination
@@ -448,10 +458,10 @@ const UsersList = () => {
           <div className="flex justify-end items-center space-x-4">
             <button
               className=" px-4 py-2 bg-green-500 text-white rounded"
-              onClick={handleDetailsSelected}
-              disabled={selectedRows.length !== 1} // Disable if no rows are selected
+              onClick={()=>navigate("/admin/usersManagement/newUser/")}
+              // disabled={selectedRows.length !== 1} // Disable if no rows are selected
             >
-              User Details
+              New User
             </button>
 
             {/* <button

@@ -383,6 +383,15 @@ const FamiliesList = () => {
       button: true,
     },
   ];
+
+    // Custom header to include the row count
+    const tableHeader = (
+      <div>
+        <h2>Families List: 
+        <span> {filteredFamilies.length} families</span></h2>
+      </div>
+    );
+   
   let content;
 
   if (isFamilyLoading) content = <LoadingStateIcon />;
@@ -416,6 +425,7 @@ const FamiliesList = () => {
    </div> */}
 
         <DataTable
+        title={tableHeader}
           columns={column}
           data={filteredFamilies}
           pagination
