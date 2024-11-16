@@ -3,7 +3,7 @@ import { ROLES } from "../../../../config/UserRoles";
 import { ACTIONS } from "../../../../config/UserActions";
 import { useContext } from "react";
 import { StepperContext } from "../../../../contexts/StepperContext";
-import {USER_REGEX,PWD_REGEX,NAME_REGEX,PHONE_REGEX,DATE_REGEX} from '../../../../Components/lib/Utils/REGEX'
+import {USER_REGEX,PWD_REGEX,NAME_REGEX,PHONE_REGEX,DATE_REGEX} from '../../../../config/REGEX'
 
 
 export default function EditFatherForm() {

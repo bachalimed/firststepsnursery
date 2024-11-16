@@ -18,7 +18,7 @@ import { useSelector } from "react-redux";
 
 import { useGetAcademicYearsQuery } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
 import { selectAllAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import {NAME_REGEX, DATE_REGEX } from '../../../../Components/lib/Utils/REGEX'
+import {NAME_REGEX, DATE_REGEX } from '../../../../config/REGEX'
 
 
 const NewStudentForm = () => {

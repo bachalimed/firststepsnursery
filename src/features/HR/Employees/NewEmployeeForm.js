@@ -20,7 +20,7 @@ import {
   PHONE_REGEX,
   DATE_REGEX,
   YEAR_REGEX,
-} from "../../../Components/lib/Utils/REGEX";
+} from "../../../config/REGEX"
 
 const NewEmployeeForm = () => {
   const navigate = useNavigate();

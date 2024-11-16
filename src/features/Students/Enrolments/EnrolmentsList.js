@@ -27,7 +27,7 @@ import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import useAuth from "../../../hooks/useAuth";
-
+import { MONTHS } from "../../../config/Months";
 
 const EnrolmentsList = () => {
   //this is for the academic year selection
@@ -44,21 +44,7 @@ const EnrolmentsList = () => {
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idEnrolmentToDelete, setIdEnrolmentToDelete] = useState(null); // State to track which document to delete
-  const MONTHS = [
-    
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
+ 
 
 
   //function to return curent month for month selection

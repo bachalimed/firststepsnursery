@@ -56,14 +56,20 @@ import ClassroomsPlannings from "./features/Academics/Plannings/ClassroomsPlanni
 
 import Finances from "./features/Finances/Finances"; //main tab
 
-import ExpensesList from "./features/Finances/Expenses/ExpensesList";
-import NewExpenseForm from "./features/Finances/Expenses/NewExpenseForm";
-import EditExpense from "./features/Finances/Expenses/EditExpense";
-import ExpenseDetails from "./features/Finances/Expenses/ExpenseDetails";
 import InvoicesList from "./features/Finances/Invoices/InvoicesList";
 import NewInvoiceForm from "./features/Finances/Invoices/NewInvoiceForm";
 import EditInvoice from "./features/Finances/Invoices/EditInvoice";
 import InvoiceDetails from "./features/Finances/Invoices/InvoiceDetails";
+
+import PaymentsList from "./features/Finances/Payments/PaymentsList";
+import NewPaymentForm from "./features/Finances/Payments/NewPaymentForm";
+import EditPayment from "./features/Finances/Payments/EditPayment";
+import PaymentDetails from "./features/Finances/Payments/PaymentDetails";
+
+import ExpensesList from "./features/Finances/Expenses/ExpensesList";
+import NewExpenseForm from "./features/Finances/Expenses/NewExpenseForm";
+import EditExpense from "./features/Finances/Expenses/EditExpense";
+import ExpenseDetails from "./features/Finances/Expenses/ExpenseDetails";
 
 import HR from "./features/HR/HR";//main tab
 import EmployeesList from "./features/HR/Employees/EmployeesList";
@@ -303,6 +309,11 @@ const App = () => {
                 {/* end of invoices route */}
                 <Route path="payments">
                   <Route index element={<Finances />} />
+                  <Route path="paymentsList/" element={<PaymentsList />} />
+                  <Route path="newPayment/" element={<NewPaymentForm />} />
+                  <Route path="editPayment/:id" element={<EditPayment />} />
+
+
                 </Route>{" "}
                 {/* end of payments route */}
               </Route>{" "}

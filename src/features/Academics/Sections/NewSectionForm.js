@@ -29,7 +29,7 @@ import {
   OBJECTID_REGEX,
   DATE_REGEX,
   NAME_REGEX,
-} from "../../../Components/lib/Utils/REGEX";
+} from "../../../config/REGEX"
 //constrains on inputs when creating new user
 
 const NewSectionForm = () => {

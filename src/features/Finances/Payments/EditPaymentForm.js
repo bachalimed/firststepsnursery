@@ -3,9 +3,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  useUpdateInvoiceMutation,
-  useGetInvoicesQuery,
-} from "./invoicesApiSlice"; // Redux API action
+  useUpdatePaymentMutation,
+  useGetPaymentsQuery,
+} from "./paymentsApiSlice"; // Redux API action
 
 import Finances from "../Finances";
 import useAuth from "../../../hooks/useAuth";
@@ -24,7 +24,7 @@ import {
   COMMENT_REGEX,
 } from "../../../config/REGEX"
 
-const EditInvoiceForm = ({ invoice }) => {
+const EditPaymentForm = ({ payment }) => {
   const { userId, isManager } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
@@ -34,43 +34,43 @@ const EditInvoiceForm = ({ invoice }) => {
 
   // Redux mutation for adding the attended school
   const [
-    updateInvoice,
+    updatePayment,
     {
       isLoading: isUpdateLoading,
       isError: isUpdateError,
       error: updateError,
       isSuccess: isUpdateSuccess,
     },
-  ] = useUpdateInvoiceMutation();
+  ] = useUpdatePaymentMutation();
 
   const DiscountTypes = ["second Sibling", "Third Sibling", "Other"];
-  console.log(invoice, "invoice");
+  console.log(payment, "payment");
   const [formData, setFormData] = useState({
-    id: invoice?._id,
-    invoiceYear: invoice?.invoiceYear,
-    invoiceMonth: invoice?.invoiceMonth,
-    invoiceEnrolment: invoice?.invoiceEnrolment,
-    invoiceDueDate: invoice?.invoiceDueDate?.split("T")[0],
-    invoiceIssueDate: invoice?.invoiceIssueDate?.split("T")[0], //not to be edited
-    invoiceIsFullyPaid: invoice?.invoiceIsFullyPaid,
-    invoiceAmount: invoice?.invoiceAmount,
-    invoiceAuthorisedAmount: invoice?.invoiceAuthorisedAmount,
-    invoiceDiscountAmount: invoice?.invoiceDiscountAmount || "",
-    invoiceDiscountType: invoice?.invoiceDiscountType || "",
-    invoiceDiscountNote: invoice?.invoiceDiscountNote || "",
-    invoiceOperator: userId,
+    id: payment?._id,
+    paymentYear: payment?.paymentYear,
+    paymentMonth: payment?.paymentMonth,
+    paymentEnrolment: payment?.paymentEnrolment,
+    paymentDueDate: payment?.paymentDueDate?.split("T")[0],
+    paymentIssueDate: payment?.paymentIssueDate?.split("T")[0], //not to be edited
+    paymentIsFullyPaid: payment?.paymentIsFullyPaid,
+    paymentAmount: payment?.paymentAmount,
+    paymentAuthorisedAmount: payment?.paymentAuthorisedAmount,
+    paymentDiscountAmount: payment?.paymentDiscountAmount || "",
+    paymentDiscountType: payment?.paymentDiscountType || "",
+    paymentDiscountNote: payment?.paymentDiscountNote || "",
+    paymentOperator: userId,
   });
 
   const [validity, setValidity] = useState({
     
     
-    validInvoiceDueDate: false,
+    validPaymentDueDate: false,
     
-    validInvoiceAmount: false,
-    validInvoiceAuthorisedAmount: false,
-    validInvoiceDiscountAmount: false,
-    validInvoiceDiscountType: false,
-    validInvoiceDiscountNote: false,
+    validPaymentAmount: false,
+    validPaymentAuthorisedAmount: false,
+    validPaymentDiscountAmount: false,
+    validPaymentDiscountType: false,
+    validPaymentDiscountNote: false,
     
   });
 
@@ -83,22 +83,22 @@ const EditInvoiceForm = ({ invoice }) => {
       ...prev,
      
      
-      validInvoiceDueDate: DATE_REGEX.test(formData.invoiceDueDate),
+      validPaymentDueDate: DATE_REGEX.test(formData.paymentDueDate),
    
-      validInvoiceAmount: NUMBER_REGEX.test(formData.invoiceAmount),
-      validInvoiceAuthorisedAmount: NUMBER_REGEX.test(
-        formData.invoiceAuthorisedAmount
+      validPaymentAmount: NUMBER_REGEX.test(formData.paymentAmount),
+      validPaymentAuthorisedAmount: NUMBER_REGEX.test(
+        formData.paymentAuthorisedAmount
       ),
-      validInvoiceDiscountAmount: NUMBER_REGEX.test(
-        formData.invoiceDiscountAmount
+      validPaymentDiscountAmount: NUMBER_REGEX.test(
+        formData.paymentDiscountAmount
       ),
-      validInvoiceDiscountType:
-        NAME_REGEX.test(formData.invoiceDiscountType) ||(
-        formData.invoiceDiscountAmount &&
-        (formData.invoiceDiscountAmount !== "" ||
-          formData.invoiceDiscountAmount !== "0")), // no type saved without an actual amount
-      validInvoiceDiscountNote: COMMENT_REGEX.test(
-        formData.invoiceDiscountNote
+      validPaymentDiscountType:
+        NAME_REGEX.test(formData.paymentDiscountType) ||(
+        formData.paymentDiscountAmount &&
+        (formData.paymentDiscountAmount !== "" ||
+          formData.paymentDiscountAmount !== "0")), // no type saved without an actual amount
+      validPaymentDiscountNote: COMMENT_REGEX.test(
+        formData.paymentDiscountNote
       ),
       
     }));
@@ -106,34 +106,34 @@ const EditInvoiceForm = ({ invoice }) => {
 console.log(validity)
 
 
-  // Update invoiceAmount dynamically based on authorised and discount amounts
+  // Update paymentAmount dynamically based on authorised and discount amounts
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
-      invoiceAmount: prev.invoiceAuthorisedAmount - prev.invoiceDiscountAmount,
+      paymentAmount: prev.paymentAuthorisedAmount - prev.paymentDiscountAmount,
     }));
-  }, [formData.invoiceAuthorisedAmount, formData.invoiceDiscountAmount]);
+  }, [formData.paymentAuthorisedAmount, formData.paymentDiscountAmount]);
   // Clear form and errors on success
   // Clear form and navigate on success
   useEffect(() => {
     if (isUpdateSuccess) {
       setFormData({
         id: "",
-        invoiceYear: "",
-        invoiceMonth: "",
-        invoiceEnrolment: "",
-        invoiceDueDate: "",
-        invoiceIssueDate: "",
-        invoiceIsFullyPaid: "",
-        invoiceAmount: 0,
-        invoiceAuthorisedAmount: 0,
-        invoiceDiscountAmount: 0,
-        invoiceDiscountType: "",
-        invoiceDiscountNote: "",
-        invoiceOperator: "",
+        paymentYear: "",
+        paymentMonth: "",
+        paymentEnrolment: "",
+        paymentDueDate: "",
+        paymentIssueDate: "",
+        paymentIsFullyPaid: "",
+        paymentAmount: 0,
+        paymentAuthorisedAmount: 0,
+        paymentDiscountAmount: 0,
+        paymentDiscountType: "",
+        paymentDiscountNote: "",
+        paymentOperator: "",
       });
 
-      navigate("/finances/invoices/invoicesList");
+      navigate("/finances/payments/paymentsList");
     }
   }, [isUpdateSuccess, navigate]);
 
@@ -151,7 +151,7 @@ console.log(validity)
     }
 
     try {
-      const updatedInvoice = await updateInvoice(formData).unwrap();
+      const updatedPayment = await updatePayment(formData).unwrap();
     } catch (err) {
       //setError("Failed to add the attended school.");
     }
@@ -182,30 +182,30 @@ console.log(validity)
       <Finances />
       <div className="p-6 bg-white rounded-lg shadow-md max-w-md mx-auto">
         <h2 className="text-2xl font-bold mb-6 text-center">
-          Edit Invoice:{" "}
+          Edit Payment:{" "}
           <div>
-            {invoice?.enrolments[0]?.student?.studentName?.firstName}{" "}
-            {invoice?.enrolments[0]?.student?.studentName?.middleName}{" "}
-            {invoice?.enrolments[0]?.student?.studentName?.lastName}{" "}
+            {payment?.enrolments[0]?.student?.studentName?.firstName}{" "}
+            {payment?.enrolments[0]?.student?.studentName?.middleName}{" "}
+            {payment?.enrolments[0]?.student?.studentName?.lastName}{" "}
           </div>
           <div>
-            {invoice?.enrolments[0]?.servicePeriod}{" "}
-            {invoice?.enrolments[0]?.serviceType}{" "}
+            {payment?.enrolments[0]?.servicePeriod}{" "}
+            {payment?.enrolments[0]?.serviceType}{" "}
           </div>
           <div>
-            {formData.invoiceMonth}-{formData.invoiceYear}{" "}
+            {formData.paymentMonth}-{formData.paymentYear}{" "}
           </div>
         </h2>
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
-              Authorised Amount: {formData.invoiceAuthorisedAmount}
+              Authorised Amount: {formData.paymentAuthorisedAmount}
             </label>
             {/* <input
               type="number"
-              name="invoiceAuthorisedAmount"
-              value={formData.invoiceAuthorisedAmount}
+              name="paymentAuthorisedAmount"
+              value={formData.paymentAuthorisedAmount}
               onChange={handleChange}
               disabled
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -213,12 +213,12 @@ console.log(validity)
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
-              Invoice Amount : {formData.invoiceAmount}
+              Payment Amount : {formData.paymentAmount}
             </label>
             {/* <input
               type="number"
-              name="invoiceAmount"
-              value={formData.invoiceAmount}
+              name="paymentAmount"
+              value={formData.paymentAmount}
               disabled
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             /> */}
@@ -229,8 +229,8 @@ console.log(validity)
               Discount Type
             </label>
             <select
-              name="invoiceDiscountType"
-              value={formData.invoiceDiscountType}
+              name="paymentDiscountType"
+              value={formData.paymentDiscountType}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
@@ -243,15 +243,15 @@ console.log(validity)
             </select>
           </div>
 
-          {formData?.invoiceDiscountType && (
+          {formData?.paymentDiscountType && (
             <div className="mb-4">
               <label className="block text-gray-700 font-bold mb-2">
                 Discount Amount
               </label>
               <input
                 type="number"
-                name="invoiceDiscountAmount"
-                value={formData.invoiceDiscountAmount}
+                name="paymentDiscountAmount"
+                value={formData.paymentDiscountAmount}
                 onChange={handleChange}
                 placeholder="Enter discount amount"
                 className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -259,19 +259,19 @@ console.log(validity)
             </div>
           )}
 
-          {formData.invoiceDiscountAmount !== "0" && (
+          {formData.paymentDiscountAmount !== "0" && (
             <div className="mb-4">
               <label className="block text-gray-700 font-bold mb-2">
                 Discount Note
               </label>
               <input
                 type="text"
-                name="invoiceDiscountNote"
-                value={formData.invoiceDiscountNote}
+                name="paymentDiscountNote"
+                value={formData.paymentDiscountNote}
                 onChange={handleChange}
                 placeholder="Optional note"
                 className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required={formData.invoiceDiscountAmount}
+                required={formData.paymentDiscountAmount}
               />
             </div>
           )}
@@ -279,12 +279,12 @@ console.log(validity)
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               Due Date{" "}
-              {!validity.validInvoiceDueDate && <span className="text-red-500">*</span>}
+              {!validity.validPaymentDueDate && <span className="text-red-500">*</span>}
             </label>
             <input
               type="date"
-              name="invoiceDueDate"
-              value={formData.invoiceDueDate}
+              name="paymentDueDate"
+              value={formData.paymentDueDate}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -296,8 +296,8 @@ console.log(validity)
             </label>
             <input
               type="checkbox"
-              name="invoiceIsFullyPaid"
-              checked={formData.invoiceIsFullyPaid}
+              name="paymentIsFullyPaid"
+              checked={formData.paymentIsFullyPaid}
               onChange={handleCheckboxChange}
               className="form-checkbox"
               disabled={!isManager}
@@ -314,13 +314,13 @@ console.log(validity)
                   : "bg-gray-400 cursor-not-allowed"
               }`}
             >
-              {isUpdateLoading ? "Saving..." : "Update Invoice"}
+              {isUpdateLoading ? "Saving..." : "Update Payment"}
             </button>
           </div>
 
           {isUpdateError && (
             <p className="text-red-500 text-center mt-4">
-              {updateError?.data?.message || "Error updating the invoice"}
+              {updateError?.data?.message || "Error updating the payment"}
             </p>
           )}
         </form>
@@ -329,4 +329,4 @@ console.log(validity)
   );
 };
 
-export default EditInvoiceForm;
+export default EditPaymentForm;

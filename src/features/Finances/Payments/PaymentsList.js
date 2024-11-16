@@ -1,8 +1,8 @@
 import {
 
-  useGetInvoicesByYearQuery,
-  useDeleteInvoiceMutation,
-} from "./invoicesApiSlice";
+  useGetPaymentsByYearQuery,
+  useDeletePaymentMutation,
+} from "./paymentsApiSlice";
 import { HiOutlineSearch } from "react-icons/hi";
 import {
   selectCurrentAcademicYearId,
@@ -23,11 +23,11 @@ import { useNavigate } from "react-router-dom";
 import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { MONTHS } from "../../../config/Months";
-import useAuth from "../../../hooks/useAuth";
 
+import useAuth from "../../../hooks/useAuth";
+import { MONTHS } from "../../../config/Months";
 import { MdPaid, MdOutlinePaid } from "react-icons/md";
-const InvoicesList = () => {
+const PaymentsList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -41,29 +41,29 @@ const InvoicesList = () => {
   const academicYears = useSelector(selectAllAcademicYears);
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
-  const [idInvoiceToDelete, setIdInvoiceToDelete] = useState(null); // State to track which document to delete
-  
+  const [idPaymentToDelete, setIdPaymentToDelete] = useState(null); // State to track which document to delete
+
 
   //function to return curent month for month selection
   const getCurrentMonth = () => {
     const currentMonthIndex = new Date().getMonth(); // Get current month (0-11)
     return MONTHS[currentMonthIndex]; // Return the month name with the first letter capitalized
   };
-  //console.log("Fetch invoices for academic year:", selectedAcademicYear);
+  //console.log("Fetch payments for academic year:", selectedAcademicYear);
   const {
-    data: invoices, //the data is renamed invoices
-    isLoading: isInvoiceGetLoading, //monitor several situations is loading...
-    isSuccess: isInvoiceGetSuccess,
-    isError: isInvoiceGetError,
-    error: invoiceGetError,
-  } = useGetInvoicesByYearQuery(
+    data: payments, //the data is renamed payments
+    isLoading: isPaymentGetLoading, //monitor several situations is loading...
+    isSuccess: isPaymentGetSuccess,
+    isError: isPaymentGetError,
+    error: paymentGetError,
+  } = useGetPaymentsByYearQuery(
     {
       selectedMonth: getCurrentMonth(),
       selectedYear: selectedAcademicYear?.title,
-      endpointName: "InvoicesList",
+      endpointName: "PaymentsList",
     } || {},
     {
-      //this param will be passed in req.params to select only invoices for taht year
+      //this param will be passed in req.params to select only payments for taht year
       //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
       pollingInterval: 60000, //will refetch data every 60seconds
       refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
@@ -80,7 +80,7 @@ const InvoicesList = () => {
   } = useGetServicesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
-      endpointName: "InvoicesList",
+      endpointName: "PaymentsList",
     } || {},
     {
       //this param will be passed in req.params to select only services for taht year
@@ -92,31 +92,31 @@ const InvoicesList = () => {
   );
   //initialising the delete Mutation
   const [
-    deleteInvoice,
+    deletePayment,
     {
       isLoading: isDelLoading,
       isSuccess: isDelSuccess,
       isError: isDelError,
       error: delerror,
     },
-  ] = useDeleteInvoiceMutation();
+  ] = useDeletePaymentMutation();
 
   // Function to handle the delete button click
-  const onDeleteInvoiceClicked = (id) => {
-    setIdInvoiceToDelete(id); // Set the document to delete
+  const onDeletePaymentClicked = (id) => {
+    setIdPaymentToDelete(id); // Set the document to delete
     setIsDeleteModalOpen(true); // Open the modal
   };
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    await deleteInvoice({ id: idInvoiceToDelete });
+    await deletePayment({ id: idPaymentToDelete });
     setIsDeleteModalOpen(false); // Close the modal
   };
 
   // Function to close the modal without deleting
   const handleCloseDeleteModal = () => {
     setIsDeleteModalOpen(false);
-    setIdInvoiceToDelete(null);
+    setIdPaymentToDelete(null);
   };
   const servicesList = isServicesSuccess
     ? Object.values(services.entities)
@@ -125,27 +125,27 @@ const InvoicesList = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   //state to hold the search query
   const [searchQuery, setSearchQuery] = useState("");
-  //const [filteredInvoices, setFilteredInvoices] = useState([])
+  //const [filteredPayments, setFilteredPayments] = useState([])
   //we need to declare the variable outside of if statement to be able to use it outside later
-  let invoicesList = [];
-  let filteredInvoices = [];
+  let paymentsList = [];
+  let filteredPayments = [];
 
-  const [discountedFilter, setDiscountedFilter] = useState(""); // "invoiced" or "uninvoiced"
+  const [discountedFilter, setDiscountedFilter] = useState(""); // "paymentd" or "unpaymentd"
 
   const [paidFilter, setPaidFilter] = useState(""); // "paid" or "unpaid"
   const [selectedServiceType, setSelectedServiceType] = useState(""); // service type from servicesList
-  const [selectedInvoiceMonth, setSelectedInvoiceMonth] = useState(
+  const [selectedPaymentMonth, setSelectedPaymentMonth] = useState(
     getCurrentMonth()
-  ); // invoice month
+  ); // payment month
 
-  if (isInvoiceGetSuccess) {
-    //set to the state to be used for other component s and edit invoice component
-    const { entities } = invoices;
+  if (isPaymentGetSuccess) {
+    //set to the state to be used for other component s and edit payment component
+    const { entities } = payments;
     //we need to change into array to be read??
-    invoicesList = Object.values(entities); //we are using entity adapter in this query
-    //dispatch(setInvoices(invoicesList)); //timing issue to update the state and use it the same time
+    paymentsList = Object.values(entities); //we are using entity adapter in this query
+    //dispatch(setPayments(paymentsList)); //timing issue to update the state and use it the same time
 
-    filteredInvoices = invoicesList.filter((invoi) => {
+    filteredPayments = paymentsList.filter((invoi) => {
       // Check if the student's name or any other field contains the search query
       const nameMatches = [
         invoi?.enrolments[0]?.student?.studentName?.firstName,
@@ -163,8 +163,8 @@ const InvoicesList = () => {
       const meetsDiscountedCriteria =
         !discountedFilter ||
         (discountedFilter === "Discounted"
-          ? parseFloat(invoi.invoiceDiscountAmount) !== 0
-          : parseFloat(invoi.invoiceDiscountAmount) === 0);
+          ? parseFloat(invoi.paymentDiscountAmount) !== 0
+          : parseFloat(invoi.paymentDiscountAmount) === 0);
 
       const meetsPaidCriteria =
         !paidFilter ||
@@ -172,15 +172,15 @@ const InvoicesList = () => {
       const meetsServiceTypeCriteria =
         !selectedServiceType ||
         invoi.enrolments[0]?.serviceType === selectedServiceType;
-      const meetsInvoiceMonthCriteria =
-        !selectedInvoiceMonth || invoi.invoiceMonth === selectedInvoiceMonth;
+      const meetsPaymentMonthCriteria =
+        !selectedPaymentMonth || invoi.paymentMonth === selectedPaymentMonth;
 
       return (
         (nameMatches || otherMatches) &&
         meetsDiscountedCriteria &&
         meetsPaidCriteria &&
         meetsServiceTypeCriteria &&
-        meetsInvoiceMonthCriteria
+        meetsPaymentMonthCriteria
       );
     });
   }
@@ -205,9 +205,9 @@ const InvoicesList = () => {
 
     isAdmin
       ? {
-          name: "Invoice ID",
+          name: "Payment ID",
           selector: (row) => (
-            <Link to={`/invoices/invoices/invoiceDetails/${row.id}`}>
+            <Link to={`/payments/payments/paymentDetails/${row.id}`}>
               {row.id}
             </Link>
           ),
@@ -217,16 +217,16 @@ const InvoicesList = () => {
       : null,
     {
       name: "Month",
-      selector: (row) => row.invoiceMonth,
+      selector: (row) => row.paymentMonth,
       sortable: true,
       width: "100px",
     },
     {
       name: " Paid",
-      selector: (row) => row?.invoiceIsFullyPaid,
+      selector: (row) => row?.paymentIsFullyPaid,
       cell: (row) => (
         <span>
-          {row?.invoiceIsFullyPaid ? (
+          {row?.paymentIsFullyPaid ? (
             <MdOutlinePaid className="text-green-500 text-2xl" />
           ) : (
             <MdPaid className="text-red-400 text-2xl" />
@@ -248,10 +248,10 @@ const InvoicesList = () => {
       width: "160px",
     },
     {
-      name: "Invoiced", //means authorised
+      name: "Paymentd", //means authorised
       selector: (row) => (
         
-          <div>{row?.invoiceAmount} </div>
+          <div>{row?.paymentAmount} </div>
         
       ),
       sortable: true,
@@ -288,8 +288,8 @@ const InvoicesList = () => {
 
       selector: (row) => (
         <div>
-          <div>{row?.invoiceDiscountType ? `-${row?.invoiceDiscountType}` : "--"}</div>
-          <div>{row?.invoiceDiscountAmount !=="0"? `-${row?.invoiceDiscountAmount}` : "--"}</div>
+          <div>{row?.paymentDiscountType ? `-${row?.paymentDiscountType}` : "--"}</div>
+          <div>{row?.paymentDiscountAmount !=="0"? `-${row?.paymentDiscountAmount}` : "--"}</div>
         </div>
       ),
 
@@ -303,7 +303,7 @@ const InvoicesList = () => {
         <>
           <div>
             on{" "}
-            {new Date(row.invoiceDueDate).toLocaleDateString("en-GB", {
+            {new Date(row.paymentDueDate).toLocaleDateString("en-GB", {
               year: "numeric",
               month: "2-digit",
               day: "2-digit",
@@ -331,7 +331,7 @@ const InvoicesList = () => {
         <>
           <div>
             on{" "}
-            {new Date(row.invoiceEnrolment?.PAidOn).toLocaleDateString(
+            {new Date(row.paymentEnrolment?.PAidOn).toLocaleDateString(
               "en-GB",
               {
                 year: "numeric",
@@ -355,7 +355,7 @@ const InvoicesList = () => {
             className="text-blue-500"
             fontSize={20}
             onClick={() =>
-              navigate(`/finances/invoices/invoiceDetails/${row.id}`)
+              navigate(`/finances/payments/paymentDetails/${row.id}`)
             }
           >
             <ImProfile className="text-2xl" />
@@ -364,7 +364,7 @@ const InvoicesList = () => {
             <button
               className="text-yellow-400"
               onClick={() =>
-                navigate(`/finances/invoices/editInvoice/${row.id}`)
+                navigate(`/finances/payments/editPayment/${row.id}`)
               }
             >
               <FiEdit className="text-2xl" />
@@ -373,7 +373,7 @@ const InvoicesList = () => {
           {canDelete && !isDelLoading && (
             <button
               className="text-red-500"
-              onClick={() => onDeleteInvoiceClicked(row.id)}
+              onClick={() => onDeletePaymentClicked(row.id)}
             >
               <RiDeleteBin6Line className="text-2xl" />
             </button>
@@ -390,29 +390,29 @@ const InvoicesList = () => {
   // Custom header to include the row count
   const tableHeader = (
     <div>
-      <h2>Invoices List: 
-      <span> {filteredInvoices.length} invoices</span></h2>
+      <h2>Payments List</h2>
+      <span> {filteredPayments.length} payments</span>
     </div>
   );
 
   let content;
-  if (isInvoiceGetLoading)
+  if (isPaymentGetLoading)
     content = (
       <>
         <Finances />
         <LoadingStateIcon />
       </>
     );
-  if (isInvoiceGetError) {
+  if (isPaymentGetError) {
     content = (
       <>
         <Finances />
-        <p className="errmsg">{invoiceGetError?.data?.message}</p>
+        <p className="errmsg">{paymentGetError?.data?.message}</p>
       </>
     ); //errormessage class defined in the css, the error has data and inside we have message of error
   }
 
-  //if (isinvoiceGetSuccess){
+  //if (ispaymentGetSuccess){
 
   content = (
     <>
@@ -431,10 +431,10 @@ const InvoicesList = () => {
             className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
           />
         </div>
-        {/* Invoice Month Filter */}
+        {/* Payment Month Filter */}
         <select
-          value={selectedInvoiceMonth}
-          onChange={(e) => setSelectedInvoiceMonth(e.target.value)}
+          value={selectedPaymentMonth}
+          onChange={(e) => setSelectedPaymentMonth(e.target.value)}
           className="text-sm h-8 border border-gray-300 rounded-md px-4"
         >
           {/* Default option is the current month */}
@@ -464,7 +464,7 @@ const InvoicesList = () => {
           ))}
         </select>
 
-        {/* Invoiced Filter */}
+        {/* Paymentd Filter */}
         <select
           value={discountedFilter}
           onChange={(e) => setDiscountedFilter(e.target.value)}
@@ -490,7 +490,7 @@ const InvoicesList = () => {
         <DataTable
           title={tableHeader}
           columns={column}
-          data={filteredInvoices}
+          data={filteredPayments}
           pagination
           //selectableRows
           removableRows
@@ -505,7 +505,7 @@ const InvoicesList = () => {
               onClick={() => navigate("/students/enrolments/enrolments/")}
               hidden={!canCreate}
             >
-              Invoice from Enrolment
+              Payment from Enrolment
             </button>
           </div>
         </div>
@@ -520,4 +520,4 @@ const InvoicesList = () => {
   //}
   return content;
 };
-export default InvoicesList;
+export default PaymentsList;

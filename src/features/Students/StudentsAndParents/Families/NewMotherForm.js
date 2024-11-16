@@ -10,7 +10,7 @@ import { useGetFamiliesByYearQuery } from "./familiesApiSlice";
 import { useGetStudentsByYearQuery } from "../Students/studentsApiSlice";
 import { useContext } from "react";
 import { StepperContext } from "../../../../contexts/StepperContext";
-import {USER_REGEX,PWD_REGEX,NAME_REGEX,PHONE_REGEX,DATE_REGEX} from '../../../../Components/lib/Utils/REGEX'
+import {USER_REGEX,PWD_REGEX,NAME_REGEX,PHONE_REGEX,DATE_REGEX} from '../../../../config/REGEX'
 
 
 export default function NewMotherForm() {

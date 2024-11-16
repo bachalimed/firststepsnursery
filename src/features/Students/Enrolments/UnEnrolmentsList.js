@@ -28,7 +28,7 @@ import { useNavigate } from "react-router-dom";
 
 
 import useAuth from "../../../hooks/useAuth";
-
+import { MONTHS } from "../../../config/Months";
 
 const UnenrolmentsList = () => {
   //this is for the academic year selection
@@ -45,20 +45,7 @@ const UnenrolmentsList = () => {
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idEnrolmentToDelete, setIdEnrolmentToDelete] = useState(null); // State to track which document to delete
-  const MONTHS = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
+
 
 
    //function to return curent month for month selection

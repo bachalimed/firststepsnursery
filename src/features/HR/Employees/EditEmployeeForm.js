@@ -15,7 +15,7 @@ import {
   DATE_REGEX,
   NUMBER_REGEX,
   NAME_REGEX,
-} from "../../../Components/lib/Utils/REGEX";
+} from "../../../config/REGEX"
 import {
   selectAllAcademicYears,
   selectCurrentAcademicYearId,

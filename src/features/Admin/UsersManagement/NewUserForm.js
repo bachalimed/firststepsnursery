@@ -13,7 +13,7 @@ import {
   NAME_REGEX,
   PHONE_REGEX,
   OBJECTID_REGEX,
-} from "../../../Components/lib/Utils/REGEX";
+} from "../../../config/REGEX"
 
 const NewUserForm = () => {
   //an add user function that can be called inside the component

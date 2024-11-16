@@ -21,33 +21,20 @@ import useAuth from "../../../hooks/useAuth";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 
 import { selectAllAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-
+import { MONTHS } from "../../../config/Months";
 import {
   FEE_REGEX,
   DATE_REGEX,
   COMMENT_REGEX,
   OBJECTID_REGEX,
-} from "../../../Components/lib/Utils/REGEX";
+} from "../../../config/REGEX"
 import { SERVICETYPES } from "../../../config/SchedulerConsts";
 //import { MONTHS } from "../../../config/Months";
 const NewEnrolmentForm = () => {
   // State and hooks initialization
   const { isAdmin, userId } = useAuth();
   const navigate = useNavigate();
-  const MONTHS = [
-    "September",
-    "October",
-    "November",
-    "December",
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-  ];
+
   const [
     addNewEnrolment,
     {

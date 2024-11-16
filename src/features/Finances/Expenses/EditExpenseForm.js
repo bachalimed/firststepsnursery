@@ -12,7 +12,7 @@ import {useGetEmployeesByYearQuery} from'../../HR/Employees/employeesApiSlice'
   selectAcademicYearById,
   selectAllAcademicYears,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import { NAME_REGEX, DATE_REGEX } from "../../../Components/lib/Utils/REGEX";
+import { NAME_REGEX, DATE_REGEX } from "../../../config/REGEX"
 
 
 

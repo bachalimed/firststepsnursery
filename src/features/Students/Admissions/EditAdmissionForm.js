@@ -26,7 +26,7 @@ import {
   DATE_REGEX,
   COMMENT_REGEX,
   OBJECTID_REGEX,
-} from "../../../Components/lib/Utils/REGEX";
+} from "../../../config/REGEX"
 
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);

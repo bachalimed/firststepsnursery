@@ -3,9 +3,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  useAddNewInvoiceMutation,
-  useGetInvoicesQuery,
-} from "./invoicesApiSlice"; // Redux API action
+  useAddNewPaymentMutation,
+  useGetPaymentsQuery,
+} from "./paymentsApiSlice"; // Redux API action
 
 import Finances from "../Finances";
 import useAuth from "../../../hooks/useAuth";
@@ -21,16 +21,17 @@ import {
   DATE_REGEX,
   OBJECTID_REGEX,
   NUMBER_REGEX,
-} from "../../../config/REGEX"
+} from "../../../config/REGEX";
 import { MONTHS } from "../../../config/Months";
-const NewInvoiceForm = () => {
+
+const NewPaymentForm = () => {
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-
+  
   //function to return curent month for month selection
   const getCurrentMonth = () => {
     const currentMonthIndex = new Date().getMonth(); // Get current month (0-11)
@@ -48,7 +49,7 @@ const NewInvoiceForm = () => {
     {
       selectedMonth: selectedMonth,
       selectedYear: selectedAcademicYear?.title,
-      endpointName: "NewInvoiceForm",
+      endpointName: "NewPaymentForm",
     } || {},
     {
       //this param will be passed in req.params to select only enrolment for taht year
@@ -60,19 +61,19 @@ const NewInvoiceForm = () => {
   );
 
   const [formData, setFormData] = useState({
-    invoiceYear: selectedAcademicYear?.title || "",
-    invoiceMonth: getCurrentMonth(),
-    invoiceEnrolments: [
+    paymentYear: selectedAcademicYear?.title || "",
+    paymentMonth: getCurrentMonth(),
+    paymentEnrolments: [
       {
-        invoiceDueDate: "",
-        invoiceAmount: "",
-        invoiceDiscountAmount: "",
-        invoiceStudent: "",
+        paymentDueDate: "",
+        paymentAmount: "",
+        paymentDiscountAmount: "",
+        paymentStudent: "",
       },
     ],
-    invoiceIssueDate: "",
-    invoiceCreator: userId,
-    invoiceOperator: userId,
+    paymentIssueDate: "",
+    paymentCreator: userId,
+    paymentOperator: userId,
   });
 
   //let schoolsList = isSchoolSuccess ? Object.values(schools.entities) : [];
@@ -85,17 +86,17 @@ const NewInvoiceForm = () => {
   }
 
   const [validity, setValidity] = useState({
-    validInvoiceYear: false,
-    validInvoiceMonth: false,
-    //validInvoiceEnrolments: false,
+    validPaymentYear: false,
+    validPaymentMonth: false,
+    //validPaymentEnrolments: false,
     validAssignedFrom: false,
     validAssignedTo: false,
-    validInvoiceDueDate: "",
-    validInvoiceIssueDate: "",
-    validInvoiceAmount: "",
-    validInvoiceDiscountAmount: "",
-    validInvoiceCreator: userId,
-    validInvoiceOperator: userId,
+    validPaymentDueDate: "",
+    validPaymentIssueDate: "",
+    validPaymentAmount: "",
+    validPaymentDiscountAmount: "",
+    validPaymentCreator: userId,
+    validPaymentOperator: userId,
   });
 
   const navigate = useNavigate();
@@ -103,28 +104,28 @@ const NewInvoiceForm = () => {
 
   // Redux mutation for adding the attended school
   const [
-    addNewInvoice,
+    addNewPayment,
     {
       isLoading: isAddLoading,
       isError: isAddError,
       error: addError,
       isSuccess: isAddSuccess,
     },
-  ] = useAddNewInvoiceMutation();
+  ] = useAddNewPaymentMutation();
 
   // Validate inputs using regex patterns
   useEffect(() => {
     setValidity((prev) => ({
       ...prev,
-      validInvoiceYear: DATE_REGEX.test(formData?.invoiceYear),
-      validInvoiceMonth: NAME_REGEX.test(formData?.invoiceMonth),
-      // validInvoiceEnrolments: formData?.invoiceEnrolments?.length > 0,
-      //validInvoiceDueDate: DATE_REGEX.test(formData?.invoiceDueDate),
-      validInvoiceIssueDate: DATE_REGEX.test(formData?.invoiceIssueDate),
-      // validInvoiceAmount: NUMBER_REGEX.test(formData?.invoiceAmount),
-      // validInvoiceDiscountAmount: NUMBER_REGEX.test(formData?.invoiceDiscountAmount ),
-      validInvoiceCreator: OBJECTID_REGEX.test(formData?.invoiceCreator),
-      validInvoiceOperator: OBJECTID_REGEX.test(formData?.invoiceOperator),
+      validPaymentYear: DATE_REGEX.test(formData?.paymentYear),
+      validPaymentMonth: NAME_REGEX.test(formData?.paymentMonth),
+      // validPaymentEnrolments: formData?.paymentEnrolments?.length > 0,
+      //validPaymentDueDate: DATE_REGEX.test(formData?.paymentDueDate),
+      validPaymentIssueDate: DATE_REGEX.test(formData?.paymentIssueDate),
+      // validPaymentAmount: NUMBER_REGEX.test(formData?.paymentAmount),
+      // validPaymentDiscountAmount: NUMBER_REGEX.test(formData?.paymentDiscountAmount ),
+      validPaymentCreator: OBJECTID_REGEX.test(formData?.paymentCreator),
+      validPaymentOperator: OBJECTID_REGEX.test(formData?.paymentOperator),
     }));
   }, [formData]);
 
@@ -132,16 +133,16 @@ const NewInvoiceForm = () => {
   useEffect(() => {
     if (isAddSuccess) {
       setFormData({
-        invoiceYear: "",
-        invoiceMonth: "",
-        invoiceEnrolments: [],
-        invoiceIssueDate: "",
-        invoiceIsFullyPaid: false,
-        invoiceCreator: "",
-        invoiceOperator: "",
+        paymentYear: "",
+        paymentMonth: "",
+        paymentEnrolments: [],
+        paymentIssueDate: "",
+        paymentIsFullyPaid: false,
+        paymentCreator: "",
+        paymentOperator: "",
       });
 
-      navigate("/finances/invoices/invoicesList");
+      navigate("/finances/payments/paymentsList");
     }
   }, [isAddSuccess, navigate]);
 
@@ -159,7 +160,7 @@ const NewInvoiceForm = () => {
     }
 
     try {
-      const newInvoices = await addNewInvoice(formData).unwrap();
+      const newPayments = await addNewPayment(formData).unwrap();
     } catch (err) {
       //setError("Failed to add the attended school.");
     }
@@ -174,23 +175,23 @@ const NewInvoiceForm = () => {
   // Handler for changing enrolment fields
   const handleEnrolmentChange = (index, event) => {
     const { name, value } = event.target;
-    const updatedEnrolments = formData.invoiceEnrolments.map((enrolment, idx) =>
+    const updatedEnrolments = formData.paymentEnrolments.map((enrolment, idx) =>
       idx === index ? { ...enrolment, [name]: value } : enrolment
     );
-    setFormData({ ...formData, invoiceEnrolments: updatedEnrolments });
+    setFormData({ ...formData, paymentEnrolments: updatedEnrolments });
   };
 
   // Add new enrolment field set
   const handleAddEnrolment = () => {
     setFormData({
       ...formData,
-      invoiceEnrolments: [
-        ...formData.invoiceEnrolments,
+      paymentEnrolments: [
+        ...formData.paymentEnrolments,
         {
-          invoiceDueDate: "",
-          invoiceAmount: "",
-          invoiceDiscountAmount: "",
-          invoiceStudent: "",
+          paymentDueDate: "",
+          paymentAmount: "",
+          paymentDiscountAmount: "",
+          paymentStudent: "",
         },
       ],
     });
@@ -198,10 +199,10 @@ const NewInvoiceForm = () => {
 
   // Remove enrolment field set
   const handleRemoveEnrolment = (index) => {
-    const updatedEnrolments = formData.invoiceEnrolments.filter(
+    const updatedEnrolments = formData.paymentEnrolments.filter(
       (_, idx) => idx !== index
     );
-    setFormData({ ...formData, invoiceEnrolments: updatedEnrolments });
+    setFormData({ ...formData, paymentEnrolments: updatedEnrolments });
   };
 
   console.log(formData, "formdata");
@@ -210,27 +211,27 @@ const NewInvoiceForm = () => {
     <>
       <Finances />
       <div className="p-6 bg-white rounded-lg shadow-md max-w-md mx-auto">
-        <h2 className="text-2xl font-bold mb-6 text-center">Add Invoices</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">Add Payments</h2>
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
-              Invoice Year{" "}
-              {!validity.validInvoiceYear && (
+              Payment Year{" "}
+              {!validity.validPaymentYear && (
                 <span className="text-red-500">*</span>
               )}
             </label>
             <input
               type="text"
-              name="invoiceYear"
-              value={formData.invoiceYear}
+              name="paymentYear"
+              value={formData.paymentYear}
               readOnly
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div className="mb-4">
           <select
-            value={formData.invoiceMonth}
+            value={formData.paymentMonth}
             onChange={handleInputChange}
             className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
@@ -250,55 +251,55 @@ const NewInvoiceForm = () => {
           </div>
 
           <div className="mb-4">
-            <label>Invoice Issue Date:</label>
+            <label>Payment Issue Date:</label>
             <input
               type="date"
-              name="invoiceIssueDate"
-              value={formData.invoiceIssueDate}
+              name="paymentIssueDate"
+              value={formData.paymentIssueDate}
               onChange={handleInputChange}
             />
           </div>
 
-          {formData.invoiceEnrolments.map((enrolment, index) => (
+          {formData.paymentEnrolments.map((enrolment, index) => (
             <div key={index} className="enrolment-section">
-              <h3>Invoice Enrolment {index + 1}</h3>
+              <h3>Payment Enrolment {index + 1}</h3>
 
               <div>
-                <label>Invoice Due Date:</label>
+                <label>Payment Due Date:</label>
                 <input
                   type="date"
-                  name="invoiceDueDate"
-                  value={enrolment.invoiceDueDate}
+                  name="paymentDueDate"
+                  value={enrolment.paymentDueDate}
                   onChange={(event) => handleEnrolmentChange(index, event)}
                 />
               </div>
 
               <div>
-                <label>Invoice Amount:</label>
+                <label>Payment Amount:</label>
                 <input
                   type="number"
-                  name="invoiceAmount"
-                  value={enrolment.invoiceAmount}
+                  name="paymentAmount"
+                  value={enrolment.paymentAmount}
                   onChange={(event) => handleEnrolmentChange(index, event)}
                 />
               </div>
 
               <div>
-                <label>Invoice Discount Amount:</label>
+                <label>Payment Discount Amount:</label>
                 <input
                   type="number"
-                  name="invoiceDiscountAmount"
-                  value={enrolment.invoiceDiscountAmount}
+                  name="paymentDiscountAmount"
+                  value={enrolment.paymentDiscountAmount}
                   onChange={(event) => handleEnrolmentChange(index, event)}
                 />
               </div>
 
               <div>
-                <label>Invoice Student:</label>
+                <label>Payment Student:</label>
                 <input
                   type="text"
-                  name="invoiceStudent"
-                  value={enrolment.invoiceStudent}
+                  name="paymentStudent"
+                  value={enrolment.paymentStudent}
                   onChange={(event) => handleEnrolmentChange(index, event)}
                 />
               </div>
@@ -325,4 +326,4 @@ const NewInvoiceForm = () => {
   );
 };
 
-export default NewInvoiceForm;
+export default NewPaymentForm;

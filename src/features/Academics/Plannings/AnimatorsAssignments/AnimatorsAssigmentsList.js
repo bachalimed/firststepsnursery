@@ -24,7 +24,7 @@ import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/at
 import { useSelector, useDispatch } from "react-redux";
 
 import Academics from "../../Academics";
-
+import { MONTHS } from "../../../../config/Months";
 const AnimatorsAssignmentsList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -34,20 +34,7 @@ const AnimatorsAssignmentsList = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-  const MONTHS = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
+  
   //function to return curent month for month selection
   const getCurrentMonth = () => {
     const currentMonthIndex = new Date().getMonth(); // Get current month (0-11)

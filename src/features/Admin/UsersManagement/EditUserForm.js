@@ -13,7 +13,7 @@ import {
   NAME_REGEX,
   PHONE_REGEX,
   OBJECTID_REGEX,
-} from "../../../Components/lib/Utils/REGEX";
+} from "../../../config/REGEX"
 
 const EditUserForm = ({ user }) => {
   //user was passed as prop in editUser
