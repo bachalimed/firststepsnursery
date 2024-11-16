@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { POSITIONS, CONTRACT_TYPES, PAYMENT_PERIODS } from "../../../config/UserRoles";
 import { ACTIONS } from "../../../config/UserActions";
-import Employees from "../Employees";
+import HR from "../HR";
 
 import { useSelector } from "react-redux";
 import {
@@ -272,7 +272,7 @@ const NewEmployeeForm = () => {
 
   const content = (
     <>
-      <Employees />
+      <HR />
 
       <section className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold mb-4">

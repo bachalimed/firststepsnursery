@@ -1,22 +1,17 @@
 import React, { useState, useEffect } from "react";
 import {
-  useGetAdmissionsQuery,
-  useUpdateAdmissionMutation,
+
   useGetAdmissionsByYearQuery,
-  useDeleteAdmissionMutation,
+ 
 } from "../Admissions/admissionsApiSlice";
 import { useSelector } from "react-redux"; // Assuming you're using Redux for state management
 import { useNavigate } from "react-router-dom";
-import Enrolments from "../Enrolments";
+import Students from "../Students";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import {
-  useGetStudentsQuery,
-  useGetStudentsByYearQuery,
-} from "../StudentsAndParents/Students/studentsApiSlice";
-import { useGetServicesByYearQuery } from "../../AppSettings/StudentsSet/NurseryServices/servicesApiSlice";
+
 import { useAddNewEnrolmentMutation } from "./enrolmentsApiSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
@@ -24,7 +19,7 @@ import { ROLES } from "../../../config/UserRoles";
 import { ACTIONS } from "../../../config/UserActions";
 import useAuth from "../../../hooks/useAuth";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
-import { useGetAcademicYearsQuery } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
+
 import { selectAllAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 
 import {
@@ -329,7 +324,7 @@ const getCurrentMonthName = () => {
 
   const content = (
     <>
-      <Enrolments />
+      <Students />
       <form
         onSubmit={handleSubmit}
         className="space-y-6 bg-white p-6 shadow rounded-md"

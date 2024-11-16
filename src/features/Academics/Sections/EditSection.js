@@ -12,7 +12,7 @@ import useAuth from "../../../hooks/useAuth";
 import { currentSectionsList } from "./sectionsSlice";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import { GiConsoleController } from "react-icons/gi";
-import Sections from "../Sections";
+import Academics from "../Academics";
 const EditSection = () => {
   const { id } = useParams(); //pull the id from use params from the url
   //console.log(id, "idddddddd");
@@ -49,7 +49,7 @@ const section=sectionToEdit[0][0]
   } else {
     content = (
       <>
-        <Sections />
+        <Academics />
         <LoadingStateIcon />
       </>
     );

@@ -9,7 +9,7 @@ import useAuth from "../../../hooks/useAuth";
 import { currentAdmissionsList } from "./admissionsSlice";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import { GiConsoleController } from "react-icons/gi";
-import Admissions from'../Admissions'
+import Students from'../Students'
 const EditAdmission = () => {
   const { id } = useParams(); //pull the id from use params from the url
   console.log(id, "idddddddd");
@@ -48,7 +48,7 @@ const EditAdmission = () => {
   } else {
     content = (
       <>
-        <Admissions />
+        <Students />
         <LoadingStateIcon />
       </>
     );

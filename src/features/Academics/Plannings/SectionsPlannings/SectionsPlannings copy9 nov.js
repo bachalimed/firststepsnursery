@@ -48,7 +48,7 @@ import {
   selectAllAcademicYears,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 
-import Plannings from "../../Plannings";
+import Academics from "../../Academics";
 import styled from "styled-components";
 import { CiInboxOut, CiInboxIn } from "react-icons/ci";
 import { LuSchool } from "react-icons/lu";
@@ -909,7 +909,7 @@ const SectionsPlannings = () => {
 
   return (
     <>
-      <Plannings />
+      <Academics />
 
       <TimelineResourceGrouping className="timeline-resource-grouping e-schedule">
         <div className="schedule-control-section">

@@ -5,7 +5,7 @@ import EditStudentForm from "./EditStudentForm";
 import useAuth from "../../../../hooks/useAuth";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 import { currentStudentsList } from "./studentsSlice";
-import StudentsParents from "../../StudentsParents";
+import Students from "../../Students";
 const EditStudent = () => {
   const { id } = useParams(); //pull the id from use params from the url
 
@@ -18,11 +18,12 @@ const EditStudent = () => {
   content = studentToEdit ? (
     <>
      
+      
       <EditStudentForm student={studentToEdit} />
     </>
   ) : (
     <>
-      <StudentsParents />
+      <Students />
       <LoadingStateIcon />
     </>
   );

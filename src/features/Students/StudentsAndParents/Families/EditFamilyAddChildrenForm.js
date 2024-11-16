@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../../../config/UserRoles";
 import { ACTIONS } from "../../../../config/UserActions";
-import StudentsParents from "../../StudentsParents";
+import Students from "../../Students";
 import { useGetFamiliesByYearQuery } from "./familiesApiSlice";
 import { useGetStudentsByYearQuery } from "../Students/studentsApiSlice";
 import { useContext } from "react";

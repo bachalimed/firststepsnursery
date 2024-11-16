@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch,useSelector } from "react-redux";
 import { useUpdateExpenseMutation, useGetExpensesQuery} from "./expensesApiSlice"; // Redux API action
 
-import Expenses from "../Expenses";
+import Finances from "../Finances";
 import useAuth from "../../../hooks/useAuth";
 import {useGetAttendedSchoolsQuery} from'../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice'
 import {useGetEmployeesByYearQuery} from'../../HR/Employees/employeesApiSlice'
@@ -251,7 +251,7 @@ const addAssignment = () => {
 
   return (
     <>
-      <Expenses />
+      <Finances />
       <div className="p-6 bg-white rounded-lg shadow-md max-w-md mx-auto">
         <h2 className="text-2xl font-bold mb-6 text-center">
           Edit Assignment

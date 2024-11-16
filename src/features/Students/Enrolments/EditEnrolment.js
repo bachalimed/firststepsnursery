@@ -9,7 +9,7 @@ import useAuth from "../../../hooks/useAuth";
 import { currentEnrolmentsList } from "./enrolmentsSlice";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import { GiConsoleController } from "react-icons/gi";
-import Enrolments from '../Enrolments'
+import Students from '../Students'
 const EditEnrolment = () => {
   const { id } = useParams(); //pull the id from use params from the url
   console.log(id, "idddddddd");
@@ -49,7 +49,7 @@ const EditEnrolment = () => {
   } else {
     content = (
       <>
-        <Enrolments />
+        <Students />
         <LoadingStateIcon />
       </>
     );

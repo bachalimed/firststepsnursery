@@ -13,7 +13,7 @@ import {
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 import RegisterModal from "./RegisterModal";
-import StudentsParents from "../../StudentsParents";
+import Students from "../../Students";
 import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
 import { useGetStudentDocumentsByYearByIdQuery } from "../../../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice";
@@ -483,7 +483,7 @@ const StudentsList = () => {
 
   content = (
     <>
-      <StudentsParents />
+      <Students />
       <div className="flex space-x-2 items-center">
         {/* Search Bar */}
         <div className="relative h-10 mr-2 ">

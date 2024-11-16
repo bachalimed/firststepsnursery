@@ -6,7 +6,7 @@ import axios from "axios";
 import { selectStudentById } from "./studentsSlice";
 
 import { useGetStudentDocumentsByYearByIdQuery } from "../../../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice";
-import StudentsParents from "../../StudentsParents";
+import Students from "../../Students";
 import useFetchPhoto from "../../../../hooks/useFetchPhoto";
 const StudentDetails = () => {
   const { id } = useParams();
@@ -59,7 +59,7 @@ const StudentDetails = () => {
 
   return (
     <>
-      <StudentsParents />
+      <Students />
       <div className="container mx-auto p-6 bg-white rounded-sm border border-gray-200">
         <h2 className="text-2xl font-bold mb-6 text-center">Student Profile</h2>
         {photoUrl && (

@@ -4,7 +4,7 @@ import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 import StudentDocumentsList from "./StudentDocumentsList";
 import useAuth from "../../../../hooks/useAuth";
 import { currentStudentsList } from "./studentsSlice";
-import StudentsParents from "../../StudentsParents";
+import Students from "../../Students";
 
 const StudentDocuments = () => {
   const { id } = useParams(); //pull the id from use params from the url
@@ -18,7 +18,7 @@ const StudentDocuments = () => {
   content = studentToEdit ? (<>
     <StudentDocumentsList student={studentToEdit} /></>
   ) : (
-    <><StudentsParents/><LoadingStateIcon/></>
+    <><Students/><LoadingStateIcon/></>
   );
 
   //}

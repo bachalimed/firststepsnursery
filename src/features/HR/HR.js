@@ -2,20 +2,22 @@ import {useLocation, Link } from 'react-router-dom'
 import AcademicYearsSelection from '../../Components/AcademicYearsSelection'
 
 //we will  find the object corresponding to the page and extract the section tabs
-const Employees = () => {
+const HR = () => {
   const location = useLocation();
 
 const employeesTabs= 
 {title:"Employees",
-  path:"/hr/employees/employees/",
+  path:"/hr/employees/employeesList/",
   allowedRoles:["Employee","Animator", "Academic", "Director", "HR", "Desk", "Manager", "Admin"]
   }
 
   
     // Define the tab data with paths and labels
     const tabs = [
-      { label: 'Employees', path: '/hr/employees/employees/' },
-      { label: 'New Employee', path: '/hr/employees/newEmployee/' },
+      { label: 'Employees', path: '/hr/employees/employeesList/' },
+      { label: 'PaySlips', path: '/hr/payslips/payslipsList/' },
+      //{ label: 'Leaves', path: '/hr/leaves/leavesList/' },
+      //{ label: 'New Employee', path: '/hr/employees/newEmployee/' },
      // { label: 'New blbls', path: '/hr/employees/employeedddddds/' },
       
       ];
@@ -44,4 +46,4 @@ const employeesTabs=
 };
 
 
-export default Employees
+export default HR

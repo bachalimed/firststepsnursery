@@ -1,6 +1,5 @@
 import {
-  useGetInvoicesQuery,
-  useUpdateInvoiceMutation,
+
   useGetInvoicesByYearQuery,
   useDeleteInvoiceMutation,
 } from "./invoicesApiSlice";
@@ -12,14 +11,11 @@ import {
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import { useGetServicesByYearQuery } from "../../AppSettings/StudentsSet/NurseryServices/servicesApiSlice";
-import Invoices from "../Invoices";
+import Finances from "../Finances";
 import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
-import { IoMdAddCircleOutline } from "react-icons/io";
-import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
-import { IoShieldCheckmarkOutline, IoShieldOutline } from "react-icons/io5";
 import { useSelector } from "react-redux";
-import { selectAllInvoicesByYear, selectAllInvoices } from "./invoicesApiSlice"; //use the memoized selector
+
 import { useEffect, useState } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
 import { Link } from "react-router-dom";
@@ -27,15 +23,9 @@ import { useNavigate } from "react-router-dom";
 import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { setAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import { IoAddCircleOutline } from "react-icons/io5";
+
 import useAuth from "../../../hooks/useAuth";
-import {
-  setSomeInvoices,
-  setInvoices,
-  currentInvoicesList,
-} from "./invoicesSlice";
-import { IoDocumentAttachOutline } from "react-icons/io5";
+
 import { MdPaid, MdOutlinePaid } from "react-icons/md";
 const InvoicesList = () => {
   //this is for the academic year selection
@@ -422,14 +412,14 @@ const InvoicesList = () => {
   if (isInvoiceGetLoading)
     content = (
       <>
-        <Invoices />
+        <Finances />
         <LoadingStateIcon />
       </>
     );
   if (isInvoiceGetError) {
     content = (
       <>
-        <Invoices />
+        <Finances />
         <p className="errmsg">{invoiceGetError?.data?.message}</p>
       </>
     ); //errormessage class defined in the css, the error has data and inside we have message of error
@@ -439,7 +429,7 @@ const InvoicesList = () => {
 
   content = (
     <>
-      <Invoices />
+      <Finances />
       <div className="flex space-x-2 items-center">
         {/* Search Bar */}
         <div className="relative h-10 mr-2 ">

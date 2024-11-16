@@ -9,7 +9,7 @@ import EditExpenseForm from "./EditExpenseForm";
 import useAuth from "../../../hooks/useAuth";
 import LoadingStateIcons from "../../../Components/LoadingStateIcon";
 //import { currentExpensesList } from "./expensesSlice";
-import Expenses from "../Expenses";
+import Finances from "../Finances";
 const EditExpense = () => {
   const { id } = useParams(); //pull the id from use params from the url
   //console.log(id,'id')
@@ -48,7 +48,7 @@ const EditExpense = () => {
     </>
   ) : (
     <>
-      <Expenses />
+      <Finances />
       <LoadingStateIcons />
     </>
   );

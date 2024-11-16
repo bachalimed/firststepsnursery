@@ -4,7 +4,7 @@ import { selectFamilyById } from "./familiesSlice";
 import { useParams } from "react-router";
 import axios from "axios";
 import { useGetStudentDocumentsByYearByIdQuery } from "../../../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice";
-import StudentsParents from "../../StudentsParents";
+import Students from "../../Students";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
@@ -102,7 +102,7 @@ const FamilyDetails = () => {
 
   return (
     <>
-      <StudentsParents />
+      <Students />
       <div className="flex-1 bg-white px-6 py-4 rounded-sm border border-gray-200">
         <h2 className="text-xl font-bold mb-4">Family Details</h2>
         <div className="grid grid-cols-3 gap-6 mb-6">

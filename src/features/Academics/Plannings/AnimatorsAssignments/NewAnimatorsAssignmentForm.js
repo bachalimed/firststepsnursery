@@ -7,7 +7,7 @@ import {
   useGetAnimatorsAssignmentsQuery,
 } from "./animatorsAssignmentsApiSlice"; // Redux API action
 
-import Plannings from "../../Plannings";
+import Academics from "../../Academics";
 import useAuth from "../../../../hooks/useAuth";
 import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
 import { useGetEmployeesByYearQuery } from "../../../HR/Employees/employeesApiSlice";
@@ -264,7 +264,7 @@ const NewAnimatorsAssignmentForm = () => {
 
   return (
     <>
-      <Plannings />
+      <Academics />
       <div className="p-6 bg-white rounded-lg shadow-md max-w-md mx-auto">
         <h2 className="text-2xl font-bold mb-6 text-center">
           Add New Assignment

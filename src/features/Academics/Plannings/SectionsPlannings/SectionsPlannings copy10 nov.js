@@ -48,7 +48,7 @@ import {
   selectAllAcademicYears,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 
-import Plannings from "../../Plannings";
+import Academics from "../../Academics";
 import styled from "styled-components";
 import { CiInboxOut, CiInboxIn } from "react-icons/ci";
 import { LuSchool } from "react-icons/lu";
@@ -996,7 +996,7 @@ useEffect(() => {
 
   return (
     <>
-      <Plannings />
+      <Academics />
       <div className="flex space-x-2 items-center">
         filters here
         <select

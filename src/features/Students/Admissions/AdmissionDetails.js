@@ -10,7 +10,7 @@ import {
   selectAllAcademicYears,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { useGetAdmissionDocumentsByYearByIdQuery } from "../../../AppSettings/AdmissionsSet/AdmissionDocumentsLists/admissionDocumentsListsApiSlice";
-import AdmissionsParents from "../../AdmissionsParents";
+import Students from "../../Students";
 import useFetchPhoto from "../../../../hooks/useFetchPhoto";
 
 const AdmissionDetails = () => {//to be edited

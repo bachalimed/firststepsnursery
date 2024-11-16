@@ -49,7 +49,7 @@ import {
   setAcademicYears,
   selectAllAcademicYears,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import Plannings from "../../Plannings";
+import Academics from "../../Academics";
 import styled from "styled-components";
 // The Pane to display resources with colored indicators for animators
 const PropertyPane = ({ title, children }) => {
@@ -337,7 +337,7 @@ const AnimatorsPlannings = () => {
 console.log(selectedAnimators,'selectedAnimators')
   return (isSessionsSuccess && isEmployeesSuccess && isStudentsSuccess && isSectionsSuccess) ? (
     <>
-      <Plannings />
+      <Academics />
       <div className="e-schedule">
         <div className="schedule-container" style={{ display: "flex" }}>
           <div className="schedule-section " style={{ flex: 3 }}>
@@ -451,7 +451,7 @@ console.log(selectedAnimators,'selectedAnimators')
     </div>
    
     </>
-  ) : <Plannings />;
+  ) : <Academics />;
 };
 
 export default AnimatorsPlannings;

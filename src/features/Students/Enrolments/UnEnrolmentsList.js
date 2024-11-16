@@ -1,9 +1,4 @@
-import {
-  useGetEnrolmentsQuery,
-  useUpdateEnrolmentMutation,
-  useGetEnrolmentsByYearQuery,
-  useDeleteEnrolmentMutation,
-} from "./enrolmentsApiSlice";
+
 import { HiOutlineSearch } from "react-icons/hi";
 import {
   selectCurrentAcademicYearId,
@@ -12,42 +7,28 @@ import {
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import { useGetServicesByYearQuery } from "../../AppSettings/StudentsSet/NurseryServices/servicesApiSlice";
-import Enrolments from "../Enrolments";
+import Students from "../Students";
 import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
-import { IoMdAddCircleOutline } from "react-icons/io";
-import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
+
 import { IoShieldCheckmarkOutline, IoShieldOutline } from "react-icons/io5";
 import { useSelector } from "react-redux";
-import {
-  selectAllEnrolmentsByYear,
-  selectAllEnrolments,
-} from "./enrolmentsApiSlice"; //use the memoized selector
+
 import { useEffect, useState } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
 import { IoAddCircleOutline } from "react-icons/io5";
 
 import {
-  useGetAdmissionsQuery,
-  useUpdateAdmissionMutation,
+
   useGetAdmissionsByYearQuery,
   useDeleteAdmissionMutation,
 } from "../Admissions/admissionsApiSlice";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { ImProfile } from "react-icons/im";
-import { FiEdit } from "react-icons/fi";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { setAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
+
 
 import useAuth from "../../../hooks/useAuth";
 
-import {
-  setSomeEnrolments,
-  setEnrolments,
-  currentEnrolmentsList,
-} from "./enrolmentsSlice";
-import { IoDocumentAttachOutline } from "react-icons/io5";
 
 const UnenrolmentsList = () => {
   //this is for the academic year selection
@@ -322,14 +303,14 @@ const UnenrolmentsList = () => {
   if (isAdmissionLoading)
     content = (
       <>
-        <Enrolments />
+        <Students />
         <LoadingStateIcon />
       </>
     );
   if (isAdmissionError) {
     content = (
       <>
-        <Enrolments />
+        <Students />
         <p className="errmsg">{admissionError?.data?.message}</p>
       </>
     ); //errormessage class defined in the css, the error has data and inside we have message of error
@@ -338,7 +319,7 @@ const UnenrolmentsList = () => {
 
   content = (
     <>
-      <Enrolments />
+      <Students />
       <div className="flex space-x-2 items-center">
         {/* Search Bar */}
         <div className="relative h-10 mr-2 ">

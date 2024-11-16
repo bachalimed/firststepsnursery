@@ -106,7 +106,7 @@ const isYearFound = enrolment?.enrolmentYears?.some(
   if(!isYearFound) return <p>Enrolment not registered for that Year</p> 
 
   if (enrolmentOrgIsLoading || !listIsSuccess || !enrolmentDocumentsListing) {
-    content = <LoadingStateIcon/>
+    content = <><Students/><Students/><LoadingStateIcon/></>
   } else if (
     enrolmentOrgIsSuccess &&
     enrolment &&
@@ -115,7 +115,7 @@ const isYearFound = enrolment?.enrolmentYears?.some(
   ) {
     content = (
       <>
-        <EnrolmentsParents />
+        <Students />
         <div className="container mx-auto p-6 bg-white rounded-sm border border-gray-200">
           <h2 className="text-2xl font-bold mb-6 text-center">
             {/* First Line: Enrolment Name */}

@@ -4,7 +4,7 @@ import {
   useDeleteEmployeeMutation,
 } from "./employeesApiSlice";
 import { HiOutlineSearch } from "react-icons/hi";
-import Employees from "../Employees";
+import HR from "../HR";
 import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
 //import { useGetEmployeeDocumentsByYearByIdQuery } from "../../../AppSettings/EmployeesSet/EmployeeDocumentsLists/employeeDocumentsListsApiSlice"
@@ -446,7 +446,7 @@ const EmployeesList = () => {
 
   content = (
     <>
-      <Employees />
+      <HR />
 
       <div className="relative h-10 mr-2 ">
         <HiOutlineSearch

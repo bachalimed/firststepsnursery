@@ -2,12 +2,12 @@ import { Link, useLocation } from "react-router-dom";
 import { MdOutlineBusinessCenter } from "react-icons/md";
 import useAuth from "../../hooks/useAuth";
 import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
-const Plannings = () => {
+const Finances = () => {
   const location = useLocation();
-  const schoolPlanningsTabs = {
-    title: "Sections Plannings",
+  const schoolExpensesTabs = {
+    title: "Sections Expenses",
     icon: <MdOutlineBusinessCenter />,
-    path: "/academics/plannings",
+    path: "/academics/expenses",
     allowedRoles: [
       "Parent",
       "ContentManager",
@@ -25,13 +25,12 @@ const Plannings = () => {
 
   // Define the tab data with paths and labels
   const tabs = [
-    //{ label: 'New Assignment', path: '/academics/plannings/NewAnimatorsAssignmentForm' },
-    { label: 'Assignment', path: '/academics/plannings/animatorsAssignments' },
-    { label: 'Sections', path: '/academics/plannings/sectionsPlannings' },
-    { label: 'Sites', path: "/academics/plannings/sitesPlannings" },
-    { label: 'Animators', path: "/academics/plannings/animatorsPlannings/" },
-    { label: 'Classrooms', path: "/academics/plannings/classroomsPlannings/" },
-    { label: 'My Planning', path: "/academics/plannings/myPlanning/" },
+    //{ label: 'New Assignment', path: '/academics/expenses/NewAnimatorsAssignmentForm' },
+    { label: 'Invoices', path: '/finances/invoices/invoicesList/' },
+    { label: 'Expenses', path: '/finances/expenses/expensesList/' },
+    { label: 'Payments', path: '/finances/payments/paymentsList/' },
+    
+   
   ];
  // Function to determine if a tab is active based on the current path
  const isActive = (path) => location.pathname === path;
@@ -58,4 +57,4 @@ const Plannings = () => {
 };
  
 
-export default Plannings;
+export default Finances;

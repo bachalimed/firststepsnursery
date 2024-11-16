@@ -12,38 +12,20 @@ import {
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import { useGetServicesByYearQuery } from "../../AppSettings/StudentsSet/NurseryServices/servicesApiSlice";
-import Admissions from "../Admissions";
+import Students from "../Students";
 import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
-import { GrValidate } from "react-icons/gr";
-import AddServiceToAdmissionModal from "./AddServiceToAdmissionModal";
 import { useSelector } from "react-redux";
 import { IoFlagSharp, IoFlagOutline } from "react-icons/io5";
-
-import {
-  selectAllAdmissionsByYear,
-  selectAllAdmissions,
-} from "./admissionsApiSlice"; //use the memoized selector
 import { useEffect, useState } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
-
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { setAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import { IoAddCircleOutline } from "react-icons/io5";
-
 import useAuth from "../../../hooks/useAuth";
-
-import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
-import {
-  setSomeAdmissions,
-  setAdmissions,
-  currentAdmissionsList,
-} from "./admissionsSlice";
-import { IoDocumentAttachOutline } from "react-icons/io5";
+import { setAdmissions } from "./admissionsSlice";
 
 const AdmissionsList = () => {
   //this is for the academic year selection
@@ -94,8 +76,7 @@ const AdmissionsList = () => {
       endpointName: "admissionsList",
     } || {},
     {
-      //this param will be passed in req.params to select only services for taht year
-      //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+      
       //pollingInterval: 60000,//will refetch data every 60seconds
       refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
       refetchOnMountOrArgChange: true, //refetch when we remount the component
@@ -154,26 +135,9 @@ const AdmissionsList = () => {
     admissionsList = Object.values(entities); //we are using entity adapter in this query
     dispatch(setAdmissions(admissionsList)); //timing issue to update the state and use it the same time
 
-    //   filteredAdmissions = admissionsList?.filter((item) => {
-    //     // Check if the student's name or any other field contains the search query
-    //     const nameMatches = [
-    //       item?.student?.studentName?.firstName,
-    //       item?.student?.studentName?.middleName,
-    //       item?.student?.studentName?.lastName,
-    //     ].some((name) => name?.toLowerCase().includes(searchQuery.toLowerCase()));
+   
 
-    //     // Add more criteria as needed, e.g., admissionDate, services, etc.
-    //     const otherMatches = Object.values(item)
-    //       .flat()
-    //       .some((val) =>
-    //         val?.toString().toLowerCase().includes(searchQuery.toLowerCase())
-    //       );
-
-    //     return nameMatches || otherMatches;
-    //   });
-    // }
-
-    // Apply filters for search, month, and service type
+  
     // Apply filters for search, month, and service type with both conditions required
     filteredAdmissions = admissionsList.filter((item) => {
       const nameMatches = [
@@ -605,21 +569,21 @@ const AdmissionsList = () => {
   if (isAdmissionLoading)
     content = (
       <>
-        <Admissions />
+        <Students />
         <LoadingStateIcon />
       </>
     );
   if (isAdmissionError) {
     content = (
       <p className="errmsg">
-        <Admissions /> {admissionError?.data?.message}
+        <Students /> {admissionError?.data?.message}
       </p>
     ); //errormessage class defined in the css, the error has data and inside we have message of error
   }
   if (isAdmissionSuccess) {
     content = (
       <>
-        <Admissions />
+        <Students />
         <div className="flex space-x-2 items-center">
           {/* Search Bar */}
           <div className="relative h-10 mr-2 ">
@@ -707,12 +671,10 @@ const AdmissionsList = () => {
             <button
               className="px-3 py-2 bg-green-500 text-white rounded"
               onClick={() => navigate("/students/admissions/newAdmission/")}
-              
               hidden={!canCreate}
             >
               New Admission
             </button>
-           
           </div>
         </div>
         <DeletionConfirmModal

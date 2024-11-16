@@ -9,7 +9,7 @@ import EditInvoiceForm from "./EditInvoiceForm";
 import useAuth from "../../../hooks/useAuth";
 import LoadingStateIcons from "../../../Components/LoadingStateIcon";
 //import { currentInvoicesList } from "./invoicesSlice";
-import Invoices from "../Invoices";
+import Finances from "../Finances";
 const EditInvoice = () => {
   const { id } = useParams(); //pull the id from use params from the url
   console.log(id,'id')
@@ -48,7 +48,7 @@ const EditInvoice = () => {
     </>
   ) : (
     <>
-      <Invoices />
+      <Finances />
       <LoadingStateIcons />
     </>
   );

@@ -24,7 +24,7 @@ import { useGetAttendedSchoolsQuery } from "../../AppSettings/AcademicsSet/atten
 
 import { useSelector, useDispatch } from "react-redux";
 
-import Expenses from "../Expenses";
+import Finances from "../Finances";
 
 const ExpensesList = () => {
   const navigate = useNavigate();
@@ -319,7 +319,7 @@ const ExpensesList = () => {
   if (isSchoolSuccess) {
     return (
       <>
-        <Expenses />
+        <Finances />
 
         <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
           <div className="flex space-x-2 items-center">

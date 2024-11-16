@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../../config/UserRoles";
 import { ACTIONS } from "../../../config/UserActions";
-import Employees from "../Employees";
+import HR from "../HR";
 
 //constrains on inputs when creating new user
 const USER_REGEX = /^[A-z]{6,20}$/;
@@ -380,7 +380,7 @@ const NewEmployeeForm = () => {
 
   const content = (
     <>
-      <Employees />
+      <HR />
 
       <form className="form" onSubmit={onSaveEmployeeClicked}>
         <div className="form__title-row">

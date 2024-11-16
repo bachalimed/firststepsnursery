@@ -2,7 +2,7 @@ import React from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { useGetFamiliesByYearQuery } from "./familiesApiSlice";
 import { setSomeFamilies, setFamilies } from "./familiesSlice";
-import StudentsParents from "../../StudentsParents";
+import Students from "../../Students";
 import DataTable from "react-data-table-component";
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
 import { useState, useEffect } from "react";
@@ -397,7 +397,7 @@ const FamiliesList = () => {
 
   content = (
     <>
-      <StudentsParents />
+      <Students />
       <div className="relative h-10 mr-2 ">
         <HiOutlineSearch
           fontSize={20}

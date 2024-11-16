@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { useSelector } from "react-redux"; // Assuming you're using Redux for state management
 import { useNavigate } from "react-router-dom";
-import Enrolments from "../Enrolments";
+import Students from "../Students";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
@@ -385,7 +385,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
   console.log(formData, "formData");
   const content = (
     <>
-      <Enrolments />
+      <Students />
       <form
         onSubmit={handleSubmit}
         className="space-y-6 bg-white p-6 shadow rounded-md"

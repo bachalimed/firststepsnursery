@@ -126,9 +126,9 @@ const DashboardSidebar = () => {
           {open && studentsOpen && (
             <ul>
               <Link
-                to="/students/studentsParents/"
+                to="/students/studentsParents/students/"
                 className={
-                  location.pathname === "/students/studentsParents/"
+                  location.pathname === "/students/studentsParents/students/"
                     ? "text-teal-200"
                     : ""
                 }
@@ -141,13 +141,13 @@ const DashboardSidebar = () => {
                     {" "}
                     <RiParentLine />{" "}
                   </span>
-                  Student & Parents
+                  Students & Parents
                 </li>
               </Link>
               <Link
-                to="/students/admissions/"
+                to="/students/admissions/admissions/"
                 className={
-                  location.pathname === "/students/admissions/"
+                  location.pathname === "/students/admissions/admissions/"
                     ? "text-teal-200"
                     : ""
                 }
@@ -164,9 +164,9 @@ const DashboardSidebar = () => {
                 </li>
               </Link>
               <Link
-                to="/students/enrolments/"
+                to="/students/enrolments/enrolments/"
                 className={
-                  location.pathname === "/students/enrolments/"
+                  location.pathname === "/students/enrolments/enrolments/"
                     ? "text-teal-200"
                     : ""
                 }
@@ -185,7 +185,7 @@ const DashboardSidebar = () => {
             </ul>
           )}
           {/* this link will start the first tab instead of the sections  */}
-          <Link to="/academics/sections/nurserySectionsList">
+          <Link to="/academics/sections/nurserySectionsList/">
             <li
               className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}
             >
@@ -215,9 +215,9 @@ const DashboardSidebar = () => {
           {open && academicsOpen && (
             <ul>
               <Link
-                to="/academics/Sections/"
+                to="/academics/sections/nurserySectionsList/"
                 className={
-                  location.pathname === "/academics/Sections/"
+                  location.pathname === "/academics/sections/nurserySectionsList/"
                     ? "text-teal-200"
                     : ""
                 }
@@ -234,9 +234,9 @@ const DashboardSidebar = () => {
                 </li>
               </Link>
               <Link
-                to="/academics/plannings/"
+                to="/academics/plannings/sectionsPlannings/"
                 className={
-                  location.pathname === "/academics/plannings/"
+                  location.pathname === "/academics/plannings/sectionsPlannings/"
                     ? "text-teal-200"
                     : ""
                 }
@@ -381,7 +381,7 @@ const DashboardSidebar = () => {
               </Link>
             </ul>
           )}
-          <Link to="/hr/employees/">
+          <Link to="/hr/employees/employeesList/">
             <li
               className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}
             >
@@ -411,9 +411,9 @@ const DashboardSidebar = () => {
           {open && hrOpen && (
             <ul>
               <Link
-                to="/hr/employees/"
+                to="/hr/employees/employeesList/"
                 className={
-                  location.pathname === "/hr/employees/" ? "text-teal-200" : ""
+                  location.pathname === "/hr/employees/employeesList/" ? "text-teal-200" : ""
                 }
               >
                 <li

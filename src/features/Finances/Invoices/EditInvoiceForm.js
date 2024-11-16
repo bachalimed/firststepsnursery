@@ -7,7 +7,7 @@ import {
   useGetInvoicesQuery,
 } from "./invoicesApiSlice"; // Redux API action
 
-import Invoices from "../Invoices";
+import Finances from "../Finances";
 import useAuth from "../../../hooks/useAuth";
 
 import {
@@ -179,7 +179,7 @@ console.log(validity)
 
   return (
     <>
-      <Invoices />
+      <Finances />
       <div className="p-6 bg-white rounded-lg shadow-md max-w-md mx-auto">
         <h2 className="text-2xl font-bold mb-6 text-center">
           Edit Invoice:{" "}

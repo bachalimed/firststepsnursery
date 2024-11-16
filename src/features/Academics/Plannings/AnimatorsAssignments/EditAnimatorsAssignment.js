@@ -9,7 +9,7 @@ import EditAnimatorsAssignmentForm from "./EditAnimatorsAssignmentForm";
 import useAuth from "../../../../hooks/useAuth";
 import LoadingStateIcons from "../../../../Components/LoadingStateIcon";
 //import { currentAnimatorsAssignmentsList } from "./animatorsAssignmentsSlice";
-import Plannings from "../../Plannings";
+import Academics from "../../Academics";
 const EditAnimatorsAssignment = () => {
   const { id } = useParams(); //pull the id from use params from the url
   //console.log(id,'id')
@@ -48,7 +48,7 @@ const EditAnimatorsAssignment = () => {
     </>
   ) : (
     <>
-      <Plannings />
+      <Academics />
       <LoadingStateIcons />
     </>
   );

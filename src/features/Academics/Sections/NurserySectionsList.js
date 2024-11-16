@@ -12,7 +12,7 @@ import {
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import RegisterModal from "./RegisterModal";
-import Sections from "../Sections";
+import Academics from "../Academics";
 import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
 
@@ -422,7 +422,7 @@ const handleCloseDeleteModal = () => {
 
   content = (
     <>
-      <Sections />
+      <Academics />
       <div className="flex space-x-2 items-center">
         <div className="relative h-10 mr-2 ">
           <HiOutlineSearch
@@ -457,36 +457,18 @@ const handleCloseDeleteModal = () => {
           onSelectedRowsChange={handleRowSelected}
           selectableRowsHighlight
         ></DataTable>
-        {/* <div className="flex justify-end items-center space-x-4">
-          <button
+        <div className="flex justify-end items-center space-x-4">
+        {isAdmin && (  <button
             className=" px-4 py-2 bg-green-500 text-white rounded"
             onClick={() => navigate("/academics/sections/newSection/")}
             disabled={selectedRows.length !== 1} // Disable if no rows are selected
             hidden={!canCreate}
           >
-            New Section
-          </button>
+            New Nursery Section
+          </button> )}
 
-          <button
-            className="px-3 py-2 bg-yellow-400 text-white rounded"
-            onClick={handleRegisterSelected}
-            disabled={selectedRows.length !== 1} // Disable if no rows are selected
-            hidden={!canCreate}
-          >
-            Re-hhh
-          </button>
-
-          {isAdmin && (
-            <button
-              className="px-3 py-2 bg-gray-400 text-white rounded"
-              onClick={handleDuplicateSelected}
-              disabled={selectedRows.length !== 1} // Disable if no rows are selected
-              hidden={!canCreate}
-            >
-              All
-            </button>
-          )}
-        </div> */}
+        </div> 
+       
       </div>
       <DeletionConfirmModal
         isOpen={isDeleteModalOpen}

@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../../config/UserRoles";
 import { ACTIONS } from "../../../config/UserActions";
-import Sections from "../Sections";
+import Academics from "../Academics";
 import useAuth from "../../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import { useGetClassroomsQuery } from "../../AppSettings/AcademicsSet/Classrooms/classroomsApiSlice";
@@ -235,7 +235,7 @@ const EditSectionForm = ({ section }) => {
   console.log(formData, "formData");
   const content = (
     <>
-      <Sections />
+      <Academics />
 
       <section className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold mb-4">

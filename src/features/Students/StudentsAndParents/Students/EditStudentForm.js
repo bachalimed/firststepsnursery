@@ -1,5 +1,5 @@
 import React from "react";
-import StudentsParents from "../../StudentsParents";
+import Students from "../../Students";
 import { useState, useEffect } from "react";
 import { useUpdateStudentMutation } from "./studentsApiSlice";
 import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
@@ -336,7 +336,7 @@ const validCurrentEducation = () => {
 
   content = schoolIsSuccess && (
     <>
-      <StudentsParents />
+      <Students />
       <p className={`text-red-500 ${errClass}`}>
         {updateError?.data?.message}
       </p>{" "}

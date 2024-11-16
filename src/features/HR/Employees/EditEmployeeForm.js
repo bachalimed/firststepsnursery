@@ -6,7 +6,7 @@ import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../../config/UserRoles";
 import { ACTIONS } from "../../../config/UserActions";
 import useAuth from "../../../hooks/useAuth";
-import Employees from "../Employees";
+import HR from "../HR";
 import { POSITIONS, CONTRACT_TYPES, PAYMENT_PERIODS } from "../../../config/UserRoles";
 import {
   USER_REGEX,
@@ -285,7 +285,7 @@ const EditEmployeeForm = ({ employee }) => {
 
   const content = (
     <>
-      <Employees />
+      <HR />
       <section className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold mb-4">
           Edit Employee :{" "}

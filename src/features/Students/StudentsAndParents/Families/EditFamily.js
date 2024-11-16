@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../../../config/UserRoles";
 import { ACTIONS } from "../../../../config/UserActions";
-import StudentsParents from "../../StudentsParents";
+import Students from "../../Students";
 import { useGetFamilyByIdQuery } from "./familiesApiSlice";
 import { useGetStudentsByYearQuery } from "../Students/studentsApiSlice";
 import Stepper from "./Stepper";
@@ -198,7 +198,7 @@ const EditFamily = () => {
   if (isFamilyLoading) {
     content = (
       <>
-        <StudentsParents />
+        <Students />
         <LoadingStateIcon />
       </>
     );
@@ -206,7 +206,7 @@ const EditFamily = () => {
   if (isFamilySuccess) {
     content = (
       <>
-        <StudentsParents />
+        <Students />
 
         <div className="md:w-3/4 mx-auto shadow-xl rounded-2xl pb-2 bg-white">
           <div className="container horizontal mt-5">

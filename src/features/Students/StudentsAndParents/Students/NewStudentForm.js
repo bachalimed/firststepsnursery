@@ -1,5 +1,5 @@
 import React from "react";
-import StudentsParents from "../../StudentsParents";
+import Students from "../../Students";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
@@ -328,7 +328,7 @@ console.log(selectedAcademicYear.title, 'selectedAcademicYear.title')
 
   const content = (
     <>
-      <StudentsParents />
+      <Students />
       <p className={`text-red-500 ${errClass}`}>{error?.data?.message}</p>{" "}
       {/* Display error messages */}
       <form

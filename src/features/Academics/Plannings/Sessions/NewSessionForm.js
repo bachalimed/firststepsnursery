@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../../config/UserRoles";
 import { ACTIONS } from "../../../config/UserActions";
-import Sessions from "../Sessions";
+import Academics from "../Academics";
 import { useSelector } from "react-redux";
 import {
   selectAllAcademicYears,
@@ -268,7 +268,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
 
   const content = (
     <>
-      <Sessions />
+      <Academics />
 
       <section className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold mb-4">

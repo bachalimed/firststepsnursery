@@ -3,7 +3,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setStudentDocuments } from "./studentDocumentsSlice";
-import StudentsParents from "../../StudentsParents";
+import Students from "../../Students";
 import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
 import { useState, useEffect } from "react";
 import {
@@ -392,7 +392,7 @@ const StudentDocumentsList = ({ student }) => {
       <>
         {" "}
         {isDelSuccess && <p>Document deleted successfully!</p>}
-        <StudentsParents />
+        <Students />
         <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
           <DataTable
             columns={column}

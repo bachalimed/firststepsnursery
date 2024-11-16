@@ -48,7 +48,7 @@ import {
   setAcademicYears,
   selectAllAcademicYears,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import Plannings from "../../Plannings";
+import Academics from "../../Academics";
 import styled from "styled-components";
 // The Pane to display resources with colored indicators for sites
 const PropertyPane = ({ title, children }) => {
@@ -331,7 +331,7 @@ const ClassroomsPlannings = () => {
 
   return (isSessionsSuccess && isClassroomsSuccess && isStudentsSuccess && isSectionsSuccess)? (
     <>
-      <Plannings />
+      <Academics />
       <div className="e-schedule">
         <div className="schedule-container" style={{ display: "flex" }}>
           <div className="schedule-section " style={{ flex: 3 }}>
@@ -445,7 +445,7 @@ const ClassroomsPlannings = () => {
     </div>
    
     </>
-  ) : <Plannings />;
+  ) : <Academics />;
 };
 
 export default ClassroomsPlannings;
