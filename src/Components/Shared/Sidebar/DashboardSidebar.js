@@ -292,7 +292,7 @@ const DashboardSidebar = () => {
               </Link> */}
             </ul>
           )}
-          <Link to="/finances/expenses/expensesList">
+          <Link to="/finances/Invoices/invoicesList">
             <li
               className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}
             >

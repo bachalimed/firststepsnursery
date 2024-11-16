@@ -15,7 +15,7 @@ import Finances from "../Finances";
 import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
 import { useSelector } from "react-redux";
-
+import { MdOutlineAddBox } from "react-icons/md";
 import { useEffect, useState } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
 import { Link } from "react-router-dom";
@@ -351,15 +351,15 @@ const InvoicesList = () => {
       name: "Actions",
       cell: (row) => (
         <div className="space-x-1">
-          {/* <button
-            className="text-blue-500"
+         {/* {! row?.invoiceIsFullyPaid&& <button
+            className="text-teal-500"
             fontSize={20}
             onClick={() =>
-              navigate(`/finances/invoices/invoiceDetails/${row.id}`)
+              navigate(`/finances/payments/newPayment/${row.id}`)
             }
-          >
-            <ImProfile className="text-2xl" />
-          </button> */}
+              >
+             <MdOutlineAddBox className="text-2xl" />
+          </button>} */}
           {canEdit ? (
             <button
               className="text-yellow-400"

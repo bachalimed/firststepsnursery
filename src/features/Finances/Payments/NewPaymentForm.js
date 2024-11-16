@@ -1,16 +1,17 @@
 import { useState, useEffect } from "react";
-
+import { IoMdAddCircleOutline } from "react-icons/io";
+import { MdAddBox } from "react-icons/md";
+import { MdOutlineAddBox } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  useAddNewPaymentMutation,
-  useGetPaymentsQuery,
+  useAddNewPaymentMutation
 } from "./paymentsApiSlice"; // Redux API action
-
+import { CurrencySymbol } from "../../../config/Currency";
 import Finances from "../Finances";
 import useAuth from "../../../hooks/useAuth";
-import { useGetAttendedSchoolsQuery } from "../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
-import { useGetEnrolmentsByYearQuery } from "../../Students/Enrolments/enrolmentsApiSlice";
+import {useGetEnrolmentsByYearQuery} from '../../Students/Enrolments/enrolmentsApiSlice'
+
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
@@ -19,12 +20,14 @@ import {
 import {
   NAME_REGEX,
   DATE_REGEX,
+  YEAR_REGEX,
   OBJECTID_REGEX,
   NUMBER_REGEX,
+  COMMENT_REGEX,
 } from "../../../config/REGEX";
 import { MONTHS } from "../../../config/Months";
 
-const NewPaymentForm = () => {
+const NewPaymentForm = ({invoice}) => {
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
@@ -32,27 +35,26 @@ const NewPaymentForm = () => {
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
   
-  //function to return curent month for month selection
-  const getCurrentMonth = () => {
-    const currentMonthIndex = new Date().getMonth(); // Get current month (0-11)
-    return MONTHS[currentMonthIndex]; // Return the month name with the first letter capitalized
-  };
+ const PaymentTypes= ["Cash", "Cheque", "Bank Transfer", "Online Payment"]
+ 
+  
 
-  const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
+
+
   const {
-    data: enrolment, //the data is renamed enrolment
-    isLoading: isEnrolmentLoading, //monitor several situations is loading...
-    isSuccess: isEnrolmentSuccess,
-    isError: isEnrolmentError,
-    error: enrolmentError,
+    data: studentsEnrolments, //the enrolments are retirved and transformed as students with arrays of enrolments
+    isLoading: isEnrolmentsLoading, //monitor several situations is loading...
+    isSuccess: isEnrolmentsSuccess,
+    isError: isEnrolmentsError,
+    error: enrolmentsError,
   } = useGetEnrolmentsByYearQuery(
     {
-      selectedMonth: selectedMonth,
+      criteria:"UnpaidInvoices",
       selectedYear: selectedAcademicYear?.title,
       endpointName: "NewPaymentForm",
     } || {},
     {
-      //this param will be passed in req.params to select only enrolment for taht year
+      //this param will be passed in req.params to select only payment for taht year
       //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
       //pollingInterval: 60000,//will refetch data every 60seconds
       refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
@@ -62,41 +64,34 @@ const NewPaymentForm = () => {
 
   const [formData, setFormData] = useState({
     paymentYear: selectedAcademicYear?.title || "",
-    paymentMonth: getCurrentMonth(),
-    paymentEnrolments: [
-      {
-        paymentDueDate: "",
-        paymentAmount: "",
-        paymentDiscountAmount: "",
-        paymentStudent: "",
-      },
-    ],
-    paymentIssueDate: "",
+    paymentAmount: "",
+    paymentInvoices: [], // can pay once for many invoices
+    paymentNote: "",
+    paymentType: "",
+    paymentTypeReference: "",
+    paymentDate: "",
+    paymentRecordDate: "",
     paymentCreator: userId,
     paymentOperator: userId,
   });
 
   //let schoolsList = isSchoolSuccess ? Object.values(schools.entities) : [];
+  
+    const [selectedStudent, setSelectedStudent] = useState(null);
+    const [selectedInvoices, setSelectedInvoices] = useState([]);
+    const [totalInvoiceAmount, setTotalInvoiceAmount] = useState(0);
 
-  let enrolmentList = [];
+ 
 
-  if (isEnrolmentSuccess) {
-    const { entities } = enrolment;
-    enrolmentList = Object.values(entities);
-  }
 
   const [validity, setValidity] = useState({
-    validPaymentYear: false,
-    validPaymentMonth: false,
-    //validPaymentEnrolments: false,
-    validAssignedFrom: false,
-    validAssignedTo: false,
-    validPaymentDueDate: "",
-    validPaymentIssueDate: "",
-    validPaymentAmount: "",
-    validPaymentDiscountAmount: "",
-    validPaymentCreator: userId,
-    validPaymentOperator: userId,
+   
+    validPaymentAmount: false,
+    validPaymentInvoices: false, // can pay once for many invoices
+    validPaymentNote: false,
+    validPaymentType: false,
+    validPaymentTypeReference: false,
+    validPaymentDate: false,
   });
 
   const navigate = useNavigate();
@@ -113,34 +108,48 @@ const NewPaymentForm = () => {
     },
   ] = useAddNewPaymentMutation();
 
-  // Validate inputs using regex patterns
+
+
+  let studentsEnrolmentsList = [];
+
+  if (isEnrolmentsSuccess) {
+    const { entities } = studentsEnrolments;
+    studentsEnrolmentsList = Object.values(entities);
+    console.log(studentsEnrolmentsList,'studentsEnrolmentsList')
+  }
+
   useEffect(() => {
+    const isAmountValid = NUMBER_REGEX.test(formData.paymentAmount);
+    const isAmountWithinLimit = parseFloat(formData.paymentAmount) <= totalInvoiceAmount;
     setValidity((prev) => ({
       ...prev,
-      validPaymentYear: DATE_REGEX.test(formData?.paymentYear),
-      validPaymentMonth: NAME_REGEX.test(formData?.paymentMonth),
-      // validPaymentEnrolments: formData?.paymentEnrolments?.length > 0,
-      //validPaymentDueDate: DATE_REGEX.test(formData?.paymentDueDate),
-      validPaymentIssueDate: DATE_REGEX.test(formData?.paymentIssueDate),
-      // validPaymentAmount: NUMBER_REGEX.test(formData?.paymentAmount),
-      // validPaymentDiscountAmount: NUMBER_REGEX.test(formData?.paymentDiscountAmount ),
-      validPaymentCreator: OBJECTID_REGEX.test(formData?.paymentCreator),
-      validPaymentOperator: OBJECTID_REGEX.test(formData?.paymentOperator),
+      validPaymentAmount: isAmountValid && isAmountWithinLimit,
+      validPaymentInvoices: formData?.paymentInvoices?.length > 0 && formData?.paymentInvoices.every(OBJECTID_REGEX.test),
+      validPaymentNote: COMMENT_REGEX.test(formData?.paymentNote),
+      validPaymentType: NAME_REGEX.test(formData?.paymentType),
+      validPaymentTypeReference: NAME_REGEX.test(formData?.paymentTypeReference),
+      validPaymentDate: DATE_REGEX.test(formData?.paymentDate),
     }));
-  }, [formData]);
+  }, [formData, totalInvoiceAmount]);
 
   // Clear form and errors on success
   useEffect(() => {
     if (isAddSuccess) {
       setFormData({
-        paymentYear: "",
-        paymentMonth: "",
-        paymentEnrolments: [],
-        paymentIssueDate: "",
-        paymentIsFullyPaid: false,
-        paymentCreator: "",
-        paymentOperator: "",
+        paymentYear: selectedAcademicYear?.title || "",
+        paymentAmount: "",
+        paymentInvoices: [],
+        paymentNote: "",
+        paymentType: "",
+        paymentTypeReference: "",
+        paymentDate: "",
+        paymentRecordDate: new Date().toISOString().split('T')[0],
+        paymentCreator: userId,
+        paymentOperator: userId,
       });
+      setSelectedStudent(null);
+      setSelectedInvoices([]);
+      setTotalInvoiceAmount(0);
 
       navigate("/finances/payments/paymentsList");
     }
@@ -150,60 +159,55 @@ const NewPaymentForm = () => {
   const canSubmit = Object.values(validity).every(Boolean) && !isAddLoading;
 
   // Handle form submission
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Ensure all fields are valid
-    if (!canSubmit) {
-      //setError("Please fill in all fields correctly.");
-      return;
-    }
+    if (!canSubmit) return;
 
     try {
-      const newPayments = await addNewPayment(formData).unwrap();
+      await addNewPayment(formData).unwrap();
     } catch (err) {
-      //setError("Failed to add the attended school.");
+      console.error("Failed to add the payment.", err);
     }
   };
 
-  // Handler for changing input values
+  
+  const handleStudentChange = (e) => {
+    const selectedStudentId = e.target.value;
+    const student = studentsEnrolmentsList.find((s) => s.id === selectedStudentId);
+    setSelectedStudent(student);
+    setFormData({ ...formData, paymentInvoices: [] });
+    setSelectedInvoices([]);
+    setTotalInvoiceAmount(0);
+  };
+
+ 
+  const handleInvoiceClick = (invoice) => {
+    if (!formData.paymentInvoices.includes(invoice._id)) {
+      const newTotal = totalInvoiceAmount + invoice.invoiceAmount;
+      setFormData({
+        ...formData,
+        paymentInvoices: [...formData.paymentInvoices, invoice._id],
+      });
+      setSelectedInvoices([...selectedInvoices, invoice]);
+      setTotalInvoiceAmount(newTotal);
+    }
+  };
+
+  const handleRemoveInvoice = (invoice) => {
+    const updatedInvoices = formData.paymentInvoices.filter((id) => id !== invoice._id);
+    const updatedSelectedInvoices = selectedInvoices.filter((i) => i._id !== invoice._id);
+    const newTotal = totalInvoiceAmount - invoice.invoiceAmount;
+    setFormData({ ...formData, paymentInvoices: updatedInvoices });
+    setSelectedInvoices(updatedSelectedInvoices);
+    setTotalInvoiceAmount(newTotal);
+  };
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Handler for changing enrolment fields
-  const handleEnrolmentChange = (index, event) => {
-    const { name, value } = event.target;
-    const updatedEnrolments = formData.paymentEnrolments.map((enrolment, idx) =>
-      idx === index ? { ...enrolment, [name]: value } : enrolment
-    );
-    setFormData({ ...formData, paymentEnrolments: updatedEnrolments });
-  };
-
-  // Add new enrolment field set
-  const handleAddEnrolment = () => {
-    setFormData({
-      ...formData,
-      paymentEnrolments: [
-        ...formData.paymentEnrolments,
-        {
-          paymentDueDate: "",
-          paymentAmount: "",
-          paymentDiscountAmount: "",
-          paymentStudent: "",
-        },
-      ],
-    });
-  };
-
-  // Remove enrolment field set
-  const handleRemoveEnrolment = (index) => {
-    const updatedEnrolments = formData.paymentEnrolments.filter(
-      (_, idx) => idx !== index
-    );
-    setFormData({ ...formData, paymentEnrolments: updatedEnrolments });
-  };
 
   console.log(formData, "formdata");
 
@@ -214,112 +218,151 @@ const NewPaymentForm = () => {
         <h2 className="text-2xl font-bold mb-6 text-center">Add Payments</h2>
 
         <form onSubmit={handleSubmit}>
+          {/* Student Selection */}
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
-              Payment Year{" "}
-              {!validity.validPaymentYear && (
-                <span className="text-red-500">*</span>
-              )}
-            </label>
-            <input
-              type="text"
-              name="paymentYear"
-              value={formData.paymentYear}
-              readOnly
+            <label className="block text-gray-700 font-bold mb-2">Select Student</label>
+            <select
+              value={selectedStudent?._id || ""}
+              onChange={handleStudentChange}
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div className="mb-4">
-          <select
-            value={formData.paymentMonth}
-            onChange={handleInputChange}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            {/* Default option is the current month */}
-            <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
-
-            {/* Render the rest of the months, excluding the current month */}
-            {MONTHS.map(
-              (month, index) =>
-                month !== getCurrentMonth() && (
-                  <option key={index} value={month}>
-                    {month}
-                  </option>
-                )
-            )}
-          </select>
+            >
+              <option value="" disabled>Select a Student</option>
+              {studentsEnrolmentsList.map((student) => (
+                <option key={student?.id} value={student?.id}>
+                  {`${student?.studentName?.firstName} ${student?.studentName?.middleName} ${student?.studentName?.lastName}`}
+                </option>
+              ))}
+            </select>
           </div>
 
+          {/* Invoices List */}
+          {selectedStudent && (
+            <div className="mb-4">
+              <h3 className="text-gray-700 font-bold mb-2">Select Invoices</h3>
+              <ul className="border rounded-md p-2 max-h-40 overflow-y-auto">
+                {selectedStudent.enrolments.map((enrolment) => (
+                  <li
+                    key={enrolment.invoice._id}
+                    className="cursor-pointer hover:bg-gray-100 p-2 border-b"
+                    onClick={() => handleInvoiceClick(enrolment.invoice)}
+                  >
+                    {`${enrolment?.servicePeriod}${" "}${enrolment?.serviceType}${" "}
+                      for ${enrolment.invoice.invoiceMonth}, Amount: ${enrolment.invoice.invoiceAmount} ${" "}${CurrencySymbol}`}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Selected Invoices Summary */}
+          {selectedInvoices.length > 0 && (
+            <div className="mb-4">
+              <h3 className="text-gray-700 font-bold mb-2">Selected Invoices</h3>
+              <ul className="border rounded-md p-2 max-h-40 overflow-y-auto">
+                {selectedInvoices.map((invoice) => (
+                  <li
+                    key={invoice._id}
+                    className="cursor-pointer hover:bg-red-100 p-2 border-b"
+                    onClick={() => handleRemoveInvoice(invoice)}
+                  >
+                    {`Service Period: ${invoice.servicePeriod}, Type: ${invoice.serviceType}, 
+                      Month: ${invoice.invoiceMonth}, Amount: ${invoice.invoiceAmount}€`}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-2 font-bold">Total Selected Invoice Amount: {totalInvoiceAmount}€</div>
+            </div>
+          )}
+
+          {/* Payment Date */}
           <div className="mb-4">
-            <label>Payment Issue Date:</label>
+            <label className="block text-gray-700 font-bold mb-2">Payment Date</label>
             <input
               type="date"
-              name="paymentIssueDate"
-              value={formData.paymentIssueDate}
+              name="paymentDate"
+              value={formData.paymentDate}
               onChange={handleInputChange}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
           </div>
 
-          {formData.paymentEnrolments.map((enrolment, index) => (
-            <div key={index} className="enrolment-section">
-              <h3>Payment Enrolment {index + 1}</h3>
-
-              <div>
-                <label>Payment Due Date:</label>
-                <input
-                  type="date"
-                  name="paymentDueDate"
-                  value={enrolment.paymentDueDate}
-                  onChange={(event) => handleEnrolmentChange(index, event)}
-                />
-              </div>
-
-              <div>
-                <label>Payment Amount:</label>
-                <input
-                  type="number"
-                  name="paymentAmount"
-                  value={enrolment.paymentAmount}
-                  onChange={(event) => handleEnrolmentChange(index, event)}
-                />
-              </div>
-
-              <div>
-                <label>Payment Discount Amount:</label>
-                <input
-                  type="number"
-                  name="paymentDiscountAmount"
-                  value={enrolment.paymentDiscountAmount}
-                  onChange={(event) => handleEnrolmentChange(index, event)}
-                />
-              </div>
-
-              <div>
-                <label>Payment Student:</label>
-                <input
-                  type="text"
-                  name="paymentStudent"
-                  value={enrolment.paymentStudent}
-                  onChange={(event) => handleEnrolmentChange(index, event)}
-                />
-              </div>
-
-              <button
-                type="button"
-                onClick={() => handleRemoveEnrolment(index)}
-              >
-                Remove Enrolment
-              </button>
-            </div>
-          ))}
-
-          <button type="button" onClick={handleAddEnrolment}>
-            Add Enrolment
-          </button>
-
-          <div>
-            <button type="submit">Submit</button>
+          {/* Payment Amount */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-bold mb-2">Payment Amount (€)</label>
+            <input
+              type="number"
+              name="paymentAmount"
+              value={formData.paymentAmount}
+              onChange={handleInputChange}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                validity.validPaymentAmount ? "focus:ring-blue-500" : "focus:ring-red-500"
+              }`}
+              required
+            />
+            {!validity.validPaymentAmount && (
+              <p className="text-red-500 text-sm">Amount must be a valid number and not exceed the total invoice amount.</p>
+            )}
           </div>
+
+          {/* Payment Type */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-bold mb-2">Payment Type</label>
+            <select
+              name="paymentType"
+              value={formData.paymentType}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              <option value="" disabled>Select Payment Type</option>
+              {PaymentTypes.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Payment Type Reference */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-bold mb-2">Payment Reference</label>
+            <input
+              type="text"
+              name="paymentTypeReference"
+              value={formData.paymentTypeReference}
+              onChange={handleInputChange}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                validity.validPaymentTypeReference ? "focus:ring-blue-500" : "focus:ring-red-500"
+              }`}
+              required
+            />
+          </div>
+
+          {/* Payment Note */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-bold mb-2">Payment Note</label>
+            <textarea
+              name="paymentNote"
+              value={formData.paymentNote}
+              onChange={handleInputChange}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                validity.validPaymentNote ? "focus:ring-blue-500" : "focus:ring-red-500"
+              }`}
+              rows="3"
+            ></textarea>
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className={`w-full bg-blue-500 text-white font-bold py-2 px-4 rounded ${
+              canSubmit ? "hover:bg-blue-600" : "opacity-50 cursor-not-allowed"
+            }`}
+            disabled={!canSubmit}
+          >
+            {isAddLoading ? "Submitting..." : "Submit Payment"}
+          </button>
         </form>
       </div>
     </>

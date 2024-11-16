@@ -501,11 +501,11 @@ const PaymentsList = () => {
         <div className="flex justify-end items-center space-x-4">
           <div className="flex justify-end items-center space-x-4">
             <button
-              className="px-3 py-2 bg-teal-500 text-white rounded"
-              onClick={() => navigate("/students/enrolments/enrolments/")}
+              className="px-3 py-2 bg-green-500 text-white rounded"
+              onClick={() => navigate("/finances/payments/newPayment/")}
               hidden={!canCreate}
             >
-              Payment from Enrolment
+              Add Payment
             </button>
           </div>
         </div>
