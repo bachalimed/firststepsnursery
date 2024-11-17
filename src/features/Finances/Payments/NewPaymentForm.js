@@ -24,7 +24,7 @@ import {
   COMMENT_REGEX,
 } from "../../../config/REGEX";
 import { MONTHS } from "../../../config/Months";
-
+import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 const NewPaymentForm = ({ invoice }) => {
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -53,7 +53,8 @@ const NewPaymentForm = ({ invoice }) => {
       refetchOnMountOrArgChange: true, 
     }
   );
-
+//confirmation Modal states
+const [showConfirmation, setShowConfirmation] = useState(false);
   const [formData, setFormData] = useState({
     paymentYear: selectedAcademicYear?.title ,
     paymentAmount: "",
@@ -157,15 +158,25 @@ const NewPaymentForm = ({ invoice }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!canSubmit) return;
+    if (canSubmit) {
+      setShowConfirmation(true);
+    }
+  };
 
+// This function handles the confirmed save action
+const handleConfirmSave = async () => {
+  // Close the confirmation modal
+  setShowConfirmation(false);
     try {
       await addNewPayment(formData).unwrap();
     } catch (err) {
       console.error("Failed to add the payment.", err);
     }
   };
-
+// Close the modal without saving
+const handleCloseModal = () => {
+  setShowConfirmation(false);
+};
   const handleStudentChange = (e) => {
     const selectedStudentId = e.target.value;
     const student = studentsEnrolmentsList.find(
@@ -468,6 +479,14 @@ const NewPaymentForm = ({ invoice }) => {
           </button>
         </form>
       </div>
+       {/* Confirmation Modal */}
+       <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save this student?"
+      />
     </>
   );
 };

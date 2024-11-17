@@ -13,8 +13,8 @@ import {
   NAME_REGEX,
   PHONE_REGEX,
   OBJECTID_REGEX,
-} from "../../../config/REGEX"
-
+} from "../../../config/REGEX";
+import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 const NewUserForm = () => {
   //an add user function that can be called inside the component
   const [
@@ -60,6 +60,8 @@ const NewUserForm = () => {
     employeeId: undefined,
   });
 
+  //confirmation Modal states
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const [validity, setValidity] = useState({
     validUsername: false,
     validPassword: false,
@@ -88,13 +90,14 @@ const NewUserForm = () => {
       validStreet: NAME_REGEX.test(formData.userAddress.street),
       validCity: NAME_REGEX.test(formData.userAddress.city),
       validPrimaryPhone: PHONE_REGEX.test(formData.userContact.primaryPhone),
-      validEmployeeId:formData.employeeId !== undefined && formData.employeeId !== ""
-      ? OBJECTID_REGEX.test(formData.employeeId)
-      : true,
+      validEmployeeId:
+        formData.employeeId !== undefined && formData.employeeId !== ""
+          ? OBJECTID_REGEX.test(formData.employeeId)
+          : true,
       validFamilyId:
         formData.familyId !== undefined && formData.familyId !== ""
-          ?OBJECTID_REGEX.test(formData.familyId)
-          :true ,
+          ? OBJECTID_REGEX.test(formData.familyId)
+          : true,
       validUserRoles: formData.userRoles.length > 0, // At least one role should be selected
       // validUserAllowedActions: formData.userAllowedActions.length > 0, // At least one action should be selected
     }));
@@ -186,12 +189,27 @@ const NewUserForm = () => {
     e.preventDefault();
 
     if (canSave) {
+      setShowConfirmation(true);
+    }
+  };
+  // This function handles the confirmed save action
+  const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
+
+    try {
       await addNewUser({ formData }); //we call the add new user mutation and set the arguments to be saved
       //added this to confirm save
       if (isError) {
-        console.log("error savingg", error); //handle the error msg to be shown  in the logs??
+        console.log("Error saving:", error);
       }
+    } catch (error) {
+      console.error("Error saving student:", error);
     }
+  };
+  // Close the modal without saving
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
   };
   const handleCancel = () => {
     navigate("/admin/usersManagement/users/");
@@ -749,6 +767,14 @@ const NewUserForm = () => {
           </div>
         </form>
       </section>
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save this student?"
+      />
     </>
   );
 

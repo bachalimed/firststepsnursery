@@ -15,10 +15,9 @@ import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
+import { FEE_REGEX } from "../../../../config/REGEX";
 
-
-
-const FEE_REGEX = /^(0|[1-9][0-9]{0,3})(\.[0-9]{1,3})?$/;
+import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 
 const NewServiceForm = () => {
   const navigate = useNavigate();
@@ -55,17 +54,9 @@ console.log(selectedAcademicYear?.title,'selectedAcademicYear')
     validOneTimeOffAnchor: false,
     
   });
-console.log(
-  validity.validServiceType,
-  validity.validServiceYear,
-  validity.validMonthlyAnchor,
-  validity.validWeeklyAnchor,
-  validity.validOneTimeOffAnchor
 
-
-
-
-)
+  //confirmation Modal states
+  const [showConfirmation, setShowConfirmation] = useState(false);
   // Validate form inputs on every state change
   useEffect(() => {
     setValidity({
@@ -125,14 +116,26 @@ console.log(formData,'formData')
   const onSaveServiceClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
+// Show the confirmation modal before saving
+setShowConfirmation(true);
+}
+};
+// This function handles the confirmed save action
+const handleConfirmSave = async () => {
+  // Close the confirmation modal
+  setShowConfirmation(false);
+
       try {
         await addNewService(formData);
       } catch (err) {
         console.error("Failed to save the service:", err);
       }
     }
+ 
+  // Close the modal without saving
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
   };
-  
 
   return (
     <>
@@ -268,6 +271,14 @@ console.log(formData,'formData')
           </div>
         </form>
       </section>
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save this student?"
+      />
     </>
   );
 };

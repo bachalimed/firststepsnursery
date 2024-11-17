@@ -17,7 +17,7 @@ import {
   selectAllAcademicYears,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { NAME_REGEX, DATE_REGEX } from "../../../config/REGEX"
-
+import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 const NewExpenseForm = () => {
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -79,7 +79,8 @@ const NewExpenseForm = () => {
   // let employeesList = isEmployeesSuccess
   //   ? Object.values(employees.entities)
   //   : [];
-
+ //confirmation Modal states
+ const [showConfirmation, setShowConfirmation] = useState(false);
   let employeesList = [];
   let activeEmployeesList = [];
 
@@ -178,20 +179,29 @@ const NewExpenseForm = () => {
     e.preventDefault();
 
     // Ensure all fields are valid
-    if (!canSubmit) {
-      //setError("Please fill in all fields correctly.");
-      return;
+    if (canSubmit) {
+      // Show the confirmation modal before saving
+      setShowConfirmation(true);
     }
+  };
+
+// This function handles the confirmed save action
+const handleConfirmSave = async () => {
+  // Close the confirmation modal
+  setShowConfirmation(false);
 
     try {
       const newExpense = await addNewExpense(
         formData
       ).unwrap();
     } catch (err) {
-      //setError("Failed to add the attended school.");
+      console.error("Error saving student:", err);
     }
   };
-
+ // Close the modal without saving
+ const handleCloseModal = () => {
+  setShowConfirmation(false);
+};
   // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -402,6 +412,14 @@ const NewExpenseForm = () => {
           </button>
         </form>
       </div>
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save this student?"
+      />
     </>
   );
 };

@@ -11,7 +11,7 @@ import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-
+import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 import { useAddNewEnrolmentMutation } from "./enrolmentsApiSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
@@ -50,6 +50,8 @@ const NewEnrolmentForm = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   );
   const academicYears = useSelector(selectAllAcademicYears);
+   //confirmation Modal states
+   const [showConfirmation, setShowConfirmation] = useState(false);
   //the list of studetns with their admissions was filtered inteh backend and removed the months that are already enrolled for
   const {
     data: admissions, //the data is renamed admissions
@@ -267,7 +269,7 @@ const getCurrentMonthName = () => {
 
   // }, [formData.enrolmentMonth, noEnrolmentStudentsList]);
 
-  console.log(noEnrolmentMonthStudentsList, "noEnrolmentMonthStudentsList");
+  //console.log(noEnrolmentMonthStudentsList, "noEnrolmentMonthStudentsList");
   // Handle changes to final fee for a specific service
   const handleServiceChange = (serviceId, finalFee) => {
     setFormData((prevData) => ({
@@ -282,6 +284,14 @@ const getCurrentMonthName = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (canSave) {
+      setShowConfirmation(true);
+    }
+  };
+  // This function handles the confirmed save action
+  const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
+
       try {
         await addNewEnrolment(formData);
         navigate("/students/enrolments/enrolments/");
@@ -289,8 +299,12 @@ const getCurrentMonthName = () => {
         console.error("Failed to save the enrolment", err);
       }
     }
-  };
+  
 
+  // Close the modal without saving
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
+  };
   console.log(formData, "formData");
   console.log(noEnrolmentStudentsList[0], "noEnrolmentStudentsList[0]");
 
@@ -489,6 +503,14 @@ const getCurrentMonthName = () => {
           </div>
         )}
       </form>
+       {/* Confirmation Modal */}
+       <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save this student?"
+      />
     </>
   );
 

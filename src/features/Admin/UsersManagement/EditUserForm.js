@@ -14,7 +14,7 @@ import {
   PHONE_REGEX,
   OBJECTID_REGEX,
 } from "../../../config/REGEX"
-
+import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 const EditUserForm = ({ user }) => {
   //user was passed as prop in editUser
   const navigate = useNavigate();
@@ -22,6 +22,10 @@ const EditUserForm = ({ user }) => {
   //initialise the mutation to be used later
   const [updateUser, { isLoading, isSuccess, isError, error }] =
     useUpdateUserMutation();
+
+
+    //confirmation Modal states
+const [showConfirmation, setShowConfirmation] = useState(false);
 
   //initialise the parameters with the user details
   // Consolidated form state
@@ -168,34 +172,30 @@ const EditUserForm = ({ user }) => {
     e.preventDefault();
 
     if (canSave) {
+      setShowConfirmation(true);
+    }
+  };
+
+  const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
+
+
       await updateUser({ formData });
       if (isError) {
         console.log("error savingg", error); //handle the error msg to be shown  in the logs??
       }
     }
-  };
-
+ 
+ // Close the modal without saving
+ const handleCloseModal = () => {
+  setShowConfirmation(false);
+};
   const handleCancel = () => {
     navigate("/admin/usersManagement/users/");
   };
   console.log(formData, "formData");
 
-  console.log(canSave);
-  console.log(
-    validity.validUsername,
-    validity.validPassword,
-    validity.validFirstName,
-    validity.validLastName,
-    validity.validUserDob,
-    validity.validUserSex,
-    validity.validHouse,
-    validity.validStreet,
-    validity.validCity,
-    validity.validPrimaryPhone,
-    validity.validEmployeeId,
-    validity.validFamilyId,
-    validity.validUserRoles
-  );
 
   const content = (
     <>

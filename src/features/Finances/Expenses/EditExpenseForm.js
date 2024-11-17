@@ -1,20 +1,23 @@
 import { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
-import { useDispatch,useSelector } from "react-redux";
-import { useUpdateExpenseMutation, useGetExpensesQuery} from "./expensesApiSlice"; // Redux API action
+import { useDispatch, useSelector } from "react-redux";
+import {
+  useUpdateExpenseMutation,
+  useGetExpensesQuery,
+} from "./expensesApiSlice"; // Redux API action
 
 import Finances from "../Finances";
 import useAuth from "../../../hooks/useAuth";
-import {useGetAttendedSchoolsQuery} from'../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice'
-import {useGetEmployeesByYearQuery} from'../../HR/Employees/employeesApiSlice'
-  import{selectCurrentAcademicYearId,
+import { useGetAttendedSchoolsQuery } from "../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
+import { useGetEmployeesByYearQuery } from "../../HR/Employees/employeesApiSlice";
+import {
+  selectCurrentAcademicYearId,
   selectAcademicYearById,
   selectAllAcademicYears,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import { NAME_REGEX, DATE_REGEX } from "../../../config/REGEX"
-
-
+import { NAME_REGEX, DATE_REGEX } from "../../../config/REGEX";
+import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 
 const EditExpenseForm = ({ expense }) => {
   const { userId } = useAuth();
@@ -24,6 +27,8 @@ const EditExpenseForm = ({ expense }) => {
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
 
+  //confirmation Modal states
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const {
     data: employees, //the data is renamed employees
     isLoading: isEmployeesLoading, //monitor several situations is loading...
@@ -36,9 +41,8 @@ const EditExpenseForm = ({ expense }) => {
       endpointName: "EditExpenseForm",
     } || {},
     {
-      
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
   const {
@@ -61,7 +65,6 @@ const EditExpenseForm = ({ expense }) => {
     endpointName: "EditExpenseForm",
   }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
 
-  
   // Redux mutation for adding the attended school
   const [
     updateExpense,
@@ -73,12 +76,12 @@ const EditExpenseForm = ({ expense }) => {
     },
   ] = useUpdateExpenseMutation();
   const [formData, setFormData] = useState({
-    id:expense._id,
+    id: expense._id,
     assignmentYear: expense.assignmentYear || "",
     assignments: expense.assignments,
     assignedFrom: expense.assignedFrom.split("T")[0],
     assignedTo: expense.assignedTo.split("T")[0],
-    
+
     operator: userId,
   });
   let schoolsList = isSchoolSuccess ? Object.values(schools.entities) : [];
@@ -96,7 +99,6 @@ const EditExpenseForm = ({ expense }) => {
     );
   }
 
-
   let assignmentsList = isAssignmentsSuccess
     ? Object.values(assignments.entities)
     : [];
@@ -112,18 +114,18 @@ const EditExpenseForm = ({ expense }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
- // Check if any dates overlap with existing assignments, excluding the current one
- const checkNoOverlap = (from, to, excludeId = null) => {
-  if (assignmentsList.length === 0) return true;
-  return assignmentsList.every((assignment) => {
-    if (assignment.id === excludeId) return true; // Skip the current assignment
-    const existingFrom = new Date(assignment.assignedFrom);
-    const existingTo = new Date(assignment.assignedTo);
-    const newFrom = new Date(from);
-    const newTo = new Date(to);
-    return newTo < existingFrom || newFrom > existingTo; // Ensure no date overlap
-  });
-};
+  // Check if any dates overlap with existing assignments, excluding the current one
+  const checkNoOverlap = (from, to, excludeId = null) => {
+    if (assignmentsList.length === 0) return true;
+    return assignmentsList.every((assignment) => {
+      if (assignment.id === excludeId) return true; // Skip the current assignment
+      const existingFrom = new Date(assignment.assignedFrom);
+      const existingTo = new Date(assignment.assignedTo);
+      const newFrom = new Date(from);
+      const newTo = new Date(to);
+      return newTo < existingFrom || newFrom > existingTo; // Ensure no date overlap
+    });
+  };
   // Validate inputs using regex patterns
   useEffect(() => {
     setValidity((prev) => ({
@@ -134,20 +136,26 @@ const EditExpenseForm = ({ expense }) => {
         formData.assignments.every((animator) => animator !== ""),
       validAssignedFrom: DATE_REGEX.test(formData.assignedFrom), // Ensure schoolType is selected
       validAssignedTo:
-      !!formData.assignedTo &&
-      new Date(formData.assignedFrom) < new Date(formData.assignedTo),
-    noOverlap: checkNoOverlap(formData.assignedFrom, formData.assignedTo, formData.id),
+        !!formData.assignedTo &&
+        new Date(formData.assignedFrom) < new Date(formData.assignedTo),
+      noOverlap: checkNoOverlap(
+        formData.assignedFrom,
+        formData.assignedTo,
+        formData.id
+      ),
     }));
   }, [formData]);
- console.log( validity.validAssignmentYear,
-  validity.validAssignments,
-  validity.validAssignedFrom,
-  validity.validAssignedTo)
+  console.log(
+    validity.validAssignmentYear,
+    validity.validAssignments,
+    validity.validAssignedFrom,
+    validity.validAssignedTo
+  );
   // Clear form and errors on success
   useEffect(() => {
     if (isUpdateSuccess) {
       setFormData({
-        id:"",
+        id: "",
         assignments: [
           {
             animator: "",
@@ -156,7 +164,7 @@ const EditExpenseForm = ({ expense }) => {
         ],
         assignedFrom: "",
         assignedTo: "",
-        
+
         operator: "",
       });
 
@@ -172,22 +180,27 @@ const EditExpenseForm = ({ expense }) => {
     e.preventDefault();
 
     // Ensure all fields are valid
-    if (!canSubmit) {
-      //setError("Please fill in all fields correctly.");
-      return;
+    if (canSubmit) {
+      setShowConfirmation(true);
     }
+  };
+
+  const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
 
     try {
-      const updatedExpense = await updateExpense(
-        formData
-      ).unwrap();
+      const updatedExpense = await updateExpense(formData).unwrap();
     } catch (err) {
       //setError("Failed to add the attended school.");
     }
   };
-
-   // Handle input change
-   const handleChange = (e) => {
+  // Close the modal without saving
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
+  };
+  // Handle input change
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -195,55 +208,62 @@ const EditExpenseForm = ({ expense }) => {
     }));
   };
 
-   // Filter available animators by excluding already selected ones
+  // Filter available animators by excluding already selected ones
   const getAvailableAnimators = (index) => {
-    const selectedAnimators = formData.assignments.map((assignment) => assignment.animator);
+    const selectedAnimators = formData.assignments.map(
+      (assignment) => assignment.animator
+    );
     return activeEmployeesList.filter(
-      (employee) => !selectedAnimators.includes(employee.id) || selectedAnimators[index] === employee.id
+      (employee) =>
+        !selectedAnimators.includes(employee.id) ||
+        selectedAnimators[index] === employee.id
     );
   };
 
- // Get available schools for the current assignment index
- const getAvailableSchools = (index) => {
-  // Gather all selected schools from previous assignments
-  const selectedSchools = formData.assignments
-    .slice(0, index) // Only consider previous assignments to allow unique school selection per animator
-    .flatMap((assignment) => assignment.schools);
+  // Get available schools for the current assignment index
+  const getAvailableSchools = (index) => {
+    // Gather all selected schools from previous assignments
+    const selectedSchools = formData.assignments
+      .slice(0, index) // Only consider previous assignments to allow unique school selection per animator
+      .flatMap((assignment) => assignment.schools);
 
-  // Filter out schools already selected in previous assignments
-  return schoolsList.filter((school) => !selectedSchools.includes(school.id) &&school.schoolName !== "First Steps") ;
-};
+    // Filter out schools already selected in previous assignments
+    return schoolsList.filter(
+      (school) =>
+        !selectedSchools.includes(school.id) &&
+        school.schoolName !== "First Steps"
+    );
+  };
 
- // Handle animator or school selection changes in each assignment
- const handleAssignmentChange = (index, field, value) => {
-  const updatedAssignments = formData.assignments.map((assignment, i) =>
-    i === index ? { ...assignment, [field]: value } : assignment
-  );
-  setFormData((prev) => ({ ...prev, assignments: updatedAssignments }));
-};
+  // Handle animator or school selection changes in each assignment
+  const handleAssignmentChange = (index, field, value) => {
+    const updatedAssignments = formData.assignments.map((assignment, i) =>
+      i === index ? { ...assignment, [field]: value } : assignment
+    );
+    setFormData((prev) => ({ ...prev, assignments: updatedAssignments }));
+  };
 
-// Toggle school selection for multiple schools in each assignment
-const toggleSchoolSelection = (index, schoolId) => {
-  const updatedAssignments = formData.assignments.map((assignment, i) => {
-    if (i === index) {
-      const schools = assignment.schools.includes(schoolId)
-        ? assignment.schools.filter((id) => id !== schoolId) // Remove if already selected
-        : [...assignment.schools, schoolId]; // Add if not selected
-      return { ...assignment, schools };
-    }
-    return assignment;
-  });
-  setFormData((prev) => ({ ...prev, assignments: updatedAssignments }));
-};
+  // Toggle school selection for multiple schools in each assignment
+  const toggleSchoolSelection = (index, schoolId) => {
+    const updatedAssignments = formData.assignments.map((assignment, i) => {
+      if (i === index) {
+        const schools = assignment.schools.includes(schoolId)
+          ? assignment.schools.filter((id) => id !== schoolId) // Remove if already selected
+          : [...assignment.schools, schoolId]; // Add if not selected
+        return { ...assignment, schools };
+      }
+      return assignment;
+    });
+    setFormData((prev) => ({ ...prev, assignments: updatedAssignments }));
+  };
 
-// Add a new assignment row for another animator
-const addAssignment = () => {
-  setFormData((prev) => ({
-    ...prev,
-    assignments: [...prev.assignments, { animator: "", schools: [] }],
-  }));
-};
-
+  // Add a new assignment row for another animator
+  const addAssignment = () => {
+    setFormData((prev) => ({
+      ...prev,
+      assignments: [...prev.assignments, { animator: "", schools: [] }],
+    }));
+  };
 
   console.log(formData, "formdata");
 
@@ -251,9 +271,7 @@ const addAssignment = () => {
     <>
       <Finances />
       <div className="p-6 bg-white rounded-lg shadow-md max-w-md mx-auto">
-        <h2 className="text-2xl font-bold mb-6 text-center">
-          Edit Assignment
-        </h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">Edit Assignment</h2>
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -276,7 +294,7 @@ const addAssignment = () => {
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               From{" "}
-              {(!validity.validAssignedTo ||! validity.noOverlap) && (
+              {(!validity.validAssignedTo || !validity.noOverlap) && (
                 <span className="text-red-500">*</span>
               )}
             </label>
@@ -292,7 +310,7 @@ const addAssignment = () => {
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               To{" "}
-              {(!validity.validAssignedTo ||! validity.noOverlap) && (
+              {(!validity.validAssignedTo || !validity.noOverlap) && (
                 <span className="text-red-500">*</span>
               )}
             </label>
@@ -309,21 +327,29 @@ const addAssignment = () => {
           <h3 className="text-xl font-bold mb-4">Assignments</h3>
           {formData.assignments.map((assignment, index) => (
             <div key={index} className="mb-4 p-4 border rounded-md">
-              <label className="block text-gray-700 font-bold mb-2">Animator</label>
+              <label className="block text-gray-700 font-bold mb-2">
+                Animator
+              </label>
               <select
                 value={assignment.animator}
-                onChange={(e) => handleAssignmentChange(index, "animator", e.target.value)}
+                onChange={(e) =>
+                  handleAssignmentChange(index, "animator", e.target.value)
+                }
                 className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Animator</option>
                 {getAvailableAnimators(index).map((employee) => (
                   <option key={employee.id} value={employee.id}>
-                    {employee.userFullName.userFirstName} {employee.userFullName.userMiddleName} {employee.userFullName.userLastName}
+                    {employee.userFullName.userFirstName}{" "}
+                    {employee.userFullName.userMiddleName}{" "}
+                    {employee.userFullName.userLastName}
                   </option>
                 ))}
               </select>
 
-              <label className="block text-gray-700 font-bold mt-4 mb-2">Schools</label>
+              <label className="block text-gray-700 font-bold mt-4 mb-2">
+                Schools
+              </label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {getAvailableSchools(index).map((school) => (
                   <button
@@ -346,7 +372,8 @@ const addAssignment = () => {
                 {assignment.schools
                   .map(
                     (schoolId) =>
-                      schoolsList.find((school) => school.id === schoolId)?.schoolName 
+                      schoolsList.find((school) => school.id === schoolId)
+                        ?.schoolName
                   )
                   .join(", ")}
               </div>
@@ -358,10 +385,8 @@ const addAssignment = () => {
             onClick={addAssignment}
             className="w-full bg-blue-200 text-gray-700 py-2 px-4 rounded-md mt-2 hover:bg-blue-300 transition duration-200"
           >
-            Add Animator 
+            Add Animator
           </button>
-
-         
 
           <button
             type="submit"
@@ -374,12 +399,20 @@ const addAssignment = () => {
             type="submit"
             //disabled={!canSubmit}
             className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-200 mt-4"
-            onClick={()=>navigate("/academics/plannings/expenses/")}
+            onClick={() => navigate("/academics/plannings/expenses/")}
           >
             Cancel
           </button>
         </form>
       </div>
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save this student?"
+      />
     </>
   );
 };

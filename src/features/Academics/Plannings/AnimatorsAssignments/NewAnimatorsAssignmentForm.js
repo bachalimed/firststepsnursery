@@ -6,7 +6,7 @@ import {
   useAddNewAnimatorsAssignmentMutation,
   useGetAnimatorsAssignmentsQuery,
 } from "./animatorsAssignmentsApiSlice"; // Redux API action
-
+import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 import Academics from "../../Academics";
 import useAuth from "../../../../hooks/useAuth";
 import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
@@ -16,7 +16,7 @@ import {
   selectAcademicYearById,
   selectAllAcademicYears,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import { NAME_REGEX, DATE_REGEX } from "../../../../config/REGEX"
+import { NAME_REGEX, DATE_REGEX } from "../../../../config/REGEX";
 
 const NewAnimatorsAssignmentForm = () => {
   const { userId } = useAuth();
@@ -38,10 +38,9 @@ const NewAnimatorsAssignmentForm = () => {
       endpointName: "NewAnimatorsAssignmentForm",
     } || {},
     {
-   
       //pollingInterval: 60000,
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
   const {
@@ -80,7 +79,8 @@ const NewAnimatorsAssignmentForm = () => {
   // let employeesList = isEmployeesSuccess
   //   ? Object.values(employees.entities)
   //   : [];
-
+  //confirmation Modal states
+  const [showConfirmation, setShowConfirmation] = useState(false);
   let employeesList = [];
   let activeEmployeesList = [];
 
@@ -118,17 +118,16 @@ const NewAnimatorsAssignmentForm = () => {
   ] = useAddNewAnimatorsAssignmentMutation();
   // Check if any dates overlap with existing assignments
   const checkNoOverlap = (from, to) => {
-    if(assignmentsList!=[]){
-    return assignmentsList.every((assignment) => {
-     
-      const existingFrom = new Date(assignment.assignedFrom);
-      const existingTo = new Date(assignment.assignedTo);
-      const newFrom = new Date(from);
-      const newTo = new Date(to);
+    if (assignmentsList != []) {
+      return assignmentsList.every((assignment) => {
+        const existingFrom = new Date(assignment.assignedFrom);
+        const existingTo = new Date(assignment.assignedTo);
+        const newFrom = new Date(from);
+        const newTo = new Date(to);
 
-      return newTo < existingFrom || newFrom > existingTo; // Ensure no date overlap
-    });
-  }
+        return newTo < existingFrom || newFrom > existingTo; // Ensure no date overlap
+      });
+    }
   };
   // Validate inputs using regex patterns
   useEffect(() => {
@@ -179,10 +178,15 @@ const NewAnimatorsAssignmentForm = () => {
     e.preventDefault();
 
     // Ensure all fields are valid
-    if (!canSubmit) {
-      //setError("Please fill in all fields correctly.");
-      return;
+    if (canSubmit) {
+      setShowConfirmation(true);
     }
+  };
+  //setError("Please fill in all fields correctly.");
+  // This function handles the confirmed save action
+  const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
 
     try {
       const newAnimatorsAssignment = await addNewAnimatorsAssignment(
@@ -192,7 +196,10 @@ const NewAnimatorsAssignmentForm = () => {
       //setError("Failed to add the attended school.");
     }
   };
-
+  // Close the modal without saving
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
+  };
   // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -306,7 +313,7 @@ const NewAnimatorsAssignmentForm = () => {
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               To{" "}
-              {(!validity.validAssignedTo ||! validity.noOverlap) && (
+              {(!validity.validAssignedTo || !validity.noOverlap) && (
                 <span className="text-red-500">*</span>
               )}
             </label>
@@ -402,6 +409,14 @@ const NewAnimatorsAssignmentForm = () => {
             Cancel
           </button>
         </form>
+        {/* Confirmation Modal */}
+        <ConfirmationModal
+          show={showConfirmation}
+          onClose={handleCloseModal}
+          onConfirm={handleConfirmSave}
+          title="Confirm Save"
+          message="Are you sure you want to save this student?"
+        />
       </div>
     </>
   );

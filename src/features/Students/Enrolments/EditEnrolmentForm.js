@@ -26,7 +26,8 @@ import {
   DATE_REGEX,
   COMMENT_REGEX,
   OBJECTID_REGEX,
-} from "../../../config/REGEX"
+} from "../../../config/REGEX";
+import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -65,8 +66,6 @@ const EditEnrolmentForm = ({ enrolment }) => {
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
 
-  
-
   const {
     data: services,
     isLoading: isServicesLoading,
@@ -79,17 +78,18 @@ const EditEnrolmentForm = ({ enrolment }) => {
       endpointName: "EditEnrolmentForm",
     } || {},
     {
-     
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
   // Local state for form data
   const [formData, setFormData] = useState({
-    enrolmentId:enrolment?.id,
+    enrolmentId: enrolment?.id,
     student: enrolment?.student._id,
     enrolmentYear: enrolment?.enrolmentYear,
-    enrolmentDate: enrolment?.enrolmentDate? new Date(enrolment?.enrolmentDate).toISOString().split('T')[0]:"",
+    enrolmentDate: enrolment?.enrolmentDate
+      ? new Date(enrolment?.enrolmentDate).toISOString().split("T")[0]
+      : "",
     agreedServices: enrolment?.agreedServices || [
       {
         service: "",
@@ -104,7 +104,8 @@ const EditEnrolmentForm = ({ enrolment }) => {
     enrolmentOperator: userId, // Set to the operator id
   });
 
- 
+  //confirmation Modal states
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const servicesList = isServicesSuccess
     ? Object.values(services.entities)
@@ -140,23 +141,22 @@ const EditEnrolmentForm = ({ enrolment }) => {
   const handleInputChange = (index, fieldName, value) => {
     // Clone the agreedServices array deeply to avoid mutating read-only properties
     const updatedServices = [...formData.agreedServices];
-    
+
     // Clone the specific service object at the given index
     const updatedService = { ...updatedServices[index] };
-  
+
     // Update the field (e.g., feeValue, feeStartDate, etc.)
     updatedService[fieldName] = value;
-  
+
     // Place the updated service back into the updatedServices array
     updatedServices[index] = updatedService;
-  
+
     // Update the formData state
     setFormData((prevData) => ({
       ...prevData,
       agreedServices: updatedServices,
     }));
   };
-  
 
   // Debounce feeValue updates
   const [feeValue, setFeeValue] = useState("");
@@ -169,7 +169,9 @@ const EditEnrolmentForm = ({ enrolment }) => {
       const validService = OBJECTID_REGEX.test(service.service);
       const validFeePeriod = service.feePeriod !== "";
       const validFeeValue = FEE_REGEX.test(service.feeValue);
-      const validFeeStartDate = DATE_REGEX.test(service.feeStartDate.split("T")[0]);
+      const validFeeStartDate = DATE_REGEX.test(
+        service.feeStartDate.split("T")[0]
+      );
       const validComment = COMMENT_REGEX.test(service.comment);
 
       return {
@@ -215,17 +217,17 @@ const EditEnrolmentForm = ({ enrolment }) => {
   const handleAgreedServicesChange = (index, e) => {
     if (e && e.target) {
       const { name, value } = e.target;
-  
+
       // Clone the agreedServices array deeply to avoid mutating read-only properties
       const updatedServices = [...formData.agreedServices];
       const updatedService = { ...updatedServices[index] }; // Clone the service object at the given index
-  
+
       // Update the specific field of the service
       updatedService[name] = value;
-  
+
       // Set the updated service back into the array
       updatedServices[index] = updatedService;
-  
+
       // Update the formData with the modified agreedServices array
       setFormData((prevData) => ({
         ...prevData,
@@ -235,7 +237,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
       console.error("Event is not properly passed or malformed:", e);
     }
   };
-  
+
   //Add another agreed service
   const addAgreedService = () => {
     setFormData((prevData) => ({
@@ -259,7 +261,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
     if (isEnrolmentSuccess) {
       //if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
       setFormData({
-        enrolmentId:"",
+        enrolmentId: "",
         student: "",
         enrolmentYear: "",
         enrolmentDate: "",
@@ -344,8 +346,6 @@ const EditEnrolmentForm = ({ enrolment }) => {
     }
   }, [formData.agreedServices]);
 
-
-
   const removeAgreedService = (index) => {
     if (index > 0) {
       setFormData((prevData) => ({
@@ -358,20 +358,25 @@ const EditEnrolmentForm = ({ enrolment }) => {
   };
   // For checking whether the form is valid
   const canSave =
-    enrolmentValidity.length > 0 
-    &&enrolmentValidity.every(
+    enrolmentValidity.length > 0 &&
+    enrolmentValidity.every(
       (validity) => validity && Object.values(validity).every(Boolean)
-    )
-    && Object.values(primaryValidity).every(Boolean) 
-    && !isEnrolmentLoading;
+    ) &&
+    Object.values(primaryValidity).every(Boolean) &&
+    !isEnrolmentLoading;
 
   // Submit the form
 
-  if (canSave) {
-    console.log("Form is ready to be saved");
-   }
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (canSave) {
+      setShowConfirmation(true);
+    }
+  };
+
+  const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
     try {
       await updateEnrolment(formData).unwrap();
       // navigate("/students/enrolments/enrolments");
@@ -379,7 +384,10 @@ const EditEnrolmentForm = ({ enrolment }) => {
       console.error("Error submitting form", error);
     }
   };
-
+  // Close the modal without saving
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
+  };
   console.log(formData, "formData");
   const content = (
     <>
@@ -413,14 +421,11 @@ const EditEnrolmentForm = ({ enrolment }) => {
             required
             disabled
           >
-            
-            
-                <option key={enrolment.student._id} value={enrolment.student._id}>
-                  {enrolment.student?.studentName?.firstName}{" "}
-                  {enrolment.student.studentName?.middleName}{" "}
-                  {enrolment.student.studentName?.lastName}
-                </option>
-              
+            <option key={enrolment.student._id} value={enrolment.student._id}>
+              {enrolment.student?.studentName?.firstName}{" "}
+              {enrolment.student.studentName?.middleName}{" "}
+              {enrolment.student.studentName?.lastName}
+            </option>
           </select>
         </div>
 
@@ -448,14 +453,9 @@ const EditEnrolmentForm = ({ enrolment }) => {
             required
             disabled
           >
-           
-            <option
-              key={formData.enrolmentYear}
-              value={formData.enrolmentYear}
-            >
+            <option key={formData.enrolmentYear} value={formData.enrolmentYear}>
               {formData.enrolmentYear}
             </option>
-           
           </select>
         </div>
 
@@ -515,7 +515,6 @@ const EditEnrolmentForm = ({ enrolment }) => {
                   <option value="Enrolment">Enrolment</option>
                 ) : (
                   <>
-                    
                     {getAvailableServices(index).map((serviceOption) => (
                       <option key={serviceOption.id} value={serviceOption.id}>
                         {serviceOption.serviceType}

@@ -9,7 +9,7 @@ import {
 } from "./academicYearsSlice";
 import AcademicsSet from "../../AcademicsSet";
 import useAuth from "../../../../hooks/useAuth";
-
+import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 const EditAcademicYearForm = ({ academicYear }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -27,6 +27,9 @@ const EditAcademicYearForm = ({ academicYear }) => {
   // State to determine if the form can be submitted
   const [canSubmit, setCanSubmit] = useState(false);
 
+
+  //confirmation Modal states
+const [showConfirmation, setShowConfirmation] = useState(false);
   const handleYearStartChange = (e) => {
     const startYear = e.target.value;
 
@@ -79,7 +82,13 @@ const EditAcademicYearForm = ({ academicYear }) => {
       setError("All fields are required.");
       return;
     }
+    setShowConfirmation(true);
+  }
 
+
+  const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
     try {
       const updatedAcademicYear = await updateAcademicYear({
         id: academicYear.id,
@@ -94,7 +103,10 @@ const EditAcademicYearForm = ({ academicYear }) => {
       setError("Failed to update the academic year.");
     }
   };
-
+ // Close the modal without saving
+ const handleCloseModal = () => {
+  setShowConfirmation(false);
+};
   // Update canSubmit state
   useEffect(() => {
     setCanSubmit(
@@ -180,6 +192,14 @@ const EditAcademicYearForm = ({ academicYear }) => {
           )}
         </form>
       </div>
+       {/* Confirmation Modal */}
+       <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save this student?"
+      />
     </>
   );
 };

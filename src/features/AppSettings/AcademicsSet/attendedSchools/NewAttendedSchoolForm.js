@@ -4,8 +4,8 @@ import { useDispatch } from "react-redux";
 import { useAddNewAttendedSchoolMutation } from "./attendedSchoolsApiSlice"; // Redux API action
 import { attendedSchoolAdded } from "./attendedSchoolsSlice"; // Redux action for state update
 import AcademicsSet from "../../AcademicsSet";
-
-const NAME_REGEX = /^[A-z 0-9]{3,20}$/;
+import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
+import { NAME_REGEX } from "../../../../config/REGEX";
 
 const NewAttendedSchoolForm = () => {
   const [formData, setFormData] = useState({
@@ -26,9 +26,12 @@ const NewAttendedSchoolForm = () => {
   const dispatch = useDispatch();
 
   // Redux mutation for adding the attended school
-  const [addNewAttendedSchool, { isLoading, isError, error: apiError, isSuccess }] =
-    useAddNewAttendedSchoolMutation();
-
+  const [
+    addNewAttendedSchool,
+    { isLoading, isError, error: apiError, isSuccess },
+  ] = useAddNewAttendedSchoolMutation();
+  //confirmation Modal states
+  const [showConfirmation, setShowConfirmation] = useState(false);
   // Validate inputs using regex patterns
   useEffect(() => {
     setValidity((prev) => ({
@@ -65,6 +68,13 @@ const NewAttendedSchoolForm = () => {
       setError("Please fill in all fields correctly.");
       return;
     }
+    // Show the confirmation modal before saving
+    setShowConfirmation(true);
+  };
+  // This function handles the confirmed save action
+  const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
 
     try {
       const newAttendedSchool = await addNewAttendedSchool(formData).unwrap();
@@ -73,7 +83,10 @@ const NewAttendedSchoolForm = () => {
       setError("Failed to add the attended school.");
     }
   };
-
+  // Close the modal without saving
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
+  };
   // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -83,17 +96,21 @@ const NewAttendedSchoolForm = () => {
     }));
   };
 
-  console.log(formData, 'formdata');
+  console.log(formData, "formdata");
 
   return (
     <>
       <AcademicsSet />
       <div className="p-6 bg-white rounded-lg shadow-md max-w-md mx-auto">
-        <h2 className="text-2xl font-bold mb-6 text-center">Add New Attended School</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">
+          Add New Attended School
+        </h2>
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">School Name</label>
+            <label className="block text-gray-700 font-bold mb-2">
+              School Name
+            </label>
             <input
               type="text"
               name="schoolName"
@@ -108,7 +125,9 @@ const NewAttendedSchoolForm = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">School City</label>
+            <label className="block text-gray-700 font-bold mb-2">
+              School City
+            </label>
             <input
               type="text"
               name="schoolCity"
@@ -123,7 +142,9 @@ const NewAttendedSchoolForm = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">School Type</label>
+            <label className="block text-gray-700 font-bold mb-2">
+              School Type
+            </label>
             <select
               name="schoolType"
               value={formData.schoolType}
@@ -137,12 +158,16 @@ const NewAttendedSchoolForm = () => {
               <option value="Other">Other</option>
             </select>
             {!validity.validSchoolType && formData.schoolType && (
-              <p className="text-red-500 text-sm">Please select a school type.</p>
+              <p className="text-red-500 text-sm">
+                Please select a school type.
+              </p>
             )}
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">School Color</label>
+            <label className="block text-gray-700 font-bold mb-2">
+              School Color
+            </label>
             <input
               type="color"
               name="schoolColor"
@@ -168,6 +193,14 @@ const NewAttendedSchoolForm = () => {
           </button>
         </form>
       </div>
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save this student?"
+      />
     </>
   );
 };

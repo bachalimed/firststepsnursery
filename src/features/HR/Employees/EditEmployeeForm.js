@@ -22,7 +22,7 @@ import {
   selectAcademicYearById,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { useSelector } from "react-redux";
-
+import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 import { useGetAcademicYearsQuery } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
 
 const EditEmployeeForm = ({ employee }) => {
@@ -39,6 +39,8 @@ const EditEmployeeForm = ({ employee }) => {
   const [updateEmployee, { isLoading, isSuccess, isError, error }] =
     useUpdateEmployeeMutation();
 
+//confirmation Modal states
+const [showConfirmation, setShowConfirmation] = useState(false);
   // Consolidated form state
   const [formData, setFormData] = useState({
     employeeId: employee?.employeeId,
@@ -268,20 +270,30 @@ const EditEmployeeForm = ({ employee }) => {
 
   console.log(formData, "formData");
   console.log(canSave, "canSave");
+
+
   const onSaveEmployeeClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
+        setShowConfirmation(true);
+      }
+    };
+
+    const handleConfirmSave = async () => {
+      // Close the confirmation modal
+      setShowConfirmation(false);
+
       try {
         await updateEmployee(formData);
       } catch (err) {
         console.error("Failed to save the employee:", err);
       }
     }
-  };
-
-  const handleCancel = () => {
-    navigate("/hr/employees/");
-  };
+  
+ // Close the modal without saving
+ const handleCloseModal = () => {
+  setShowConfirmation(false);
+};
 
   const content = (
     <>
@@ -915,6 +927,14 @@ const EditEmployeeForm = ({ employee }) => {
           </div>
         </form>
       </section>
+       {/* Confirmation Modal */}
+       <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save this student?"
+      />
     </>
   );
   return content;

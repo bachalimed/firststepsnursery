@@ -26,8 +26,8 @@ import {
   DATE_REGEX,
   COMMENT_REGEX,
   OBJECTID_REGEX,
-} from "../../../config/REGEX"
-
+} from "../../../config/REGEX";
+import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
@@ -65,8 +65,8 @@ const EditAdmissionForm = ({ admission }) => {
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
 
-  
-
+  //confirmation Modal states
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const {
     data: services,
     isLoading: isServicesLoading,
@@ -79,17 +79,18 @@ const EditAdmissionForm = ({ admission }) => {
       endpointName: "servicesList",
     } || {},
     {
-    
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
   // Local state for form data
   const [formData, setFormData] = useState({
-    admissionId:admission?.id,
+    admissionId: admission?.id,
     student: admission?.student._id,
     admissionYear: admission?.admissionYear,
-    admissionDate: admission?.admissionDate? new Date(admission?.admissionDate).toISOString().split('T')[0]:"",
+    admissionDate: admission?.admissionDate
+      ? new Date(admission?.admissionDate).toISOString().split("T")[0]
+      : "",
     agreedServices: admission?.agreedServices || [
       {
         service: "",
@@ -103,8 +104,6 @@ const EditAdmissionForm = ({ admission }) => {
     ],
     admissionOperator: userId, // Set to the operator id
   });
-
- 
 
   const servicesList = isServicesSuccess
     ? Object.values(services.entities)
@@ -144,14 +143,13 @@ const EditAdmissionForm = ({ admission }) => {
 
     // Ensure that the service at the specified index exists
     if (!updatedServices[index]) {
-        updatedServices[index] = {}; // Initialize if undefined
+      updatedServices[index] = {}; // Initialize if undefined
     }
 
     updatedServices[index][field] = value; // Set the value
 
     setFormData({ ...formData, agreedServices: updatedServices });
-};
-  
+  };
 
   // Debounce feeValue updates
   const [feeValue, setFeeValue] = useState("");
@@ -165,7 +163,9 @@ const EditAdmissionForm = ({ admission }) => {
       const validService = OBJECTID_REGEX.test(service.service);
       const validFeePeriod = service.feePeriod !== "";
       const validFeeValue = FEE_REGEX.test(service.feeValue);
-      const validFeeStartDate = DATE_REGEX.test(service.feeStartDate.split("T")[0]);
+      const validFeeStartDate = DATE_REGEX.test(
+        service.feeStartDate.split("T")[0]
+      );
       const validComment = COMMENT_REGEX.test(service.comment);
 
       return {
@@ -231,7 +231,7 @@ const EditAdmissionForm = ({ admission }) => {
       agreedServices: updatedServices,
     }));
   };
-  
+
   //Add another agreed service
   const addAgreedService = () => {
     setFormData((prevData) => ({
@@ -256,7 +256,7 @@ const EditAdmissionForm = ({ admission }) => {
     if (isAdmissionSuccess) {
       //if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
       setFormData({
-        admissionId:"",
+        admissionId: "",
         student: "",
         admissionYear: "",
         admissionDate: "",
@@ -317,8 +317,7 @@ const EditAdmissionForm = ({ admission }) => {
           parseFloat(formData?.agreedServices[index]?.feeValue) <
           parseFloat(serviceAnchorValue); // Determine if the new flag should be true or false
 
-       
-        if (isFlaggedNew===true) {
+        if (isFlaggedNew === true) {
           setFormData((prevData) => ({
             ...prevData,
             agreedServices: prevData.agreedServices.map((serv, idx) => {
@@ -333,12 +332,9 @@ const EditAdmissionForm = ({ admission }) => {
             }),
           }));
         }
-
-
-
       }
     }
-};
+  };
 
   // Call handleAgreedServicesCheck whenever agreedServices or service selection changes
   useEffect(() => {
@@ -349,8 +345,6 @@ const EditAdmissionForm = ({ admission }) => {
       });
     }
   }, [formData.agreedServices]);
-
-
 
   const removeAgreedService = (index) => {
     if (index > 0) {
@@ -364,20 +358,25 @@ const EditAdmissionForm = ({ admission }) => {
   };
   // For checking whether the form is valid
   const canSave =
-    admissionValidity.length > 0 
-    &&admissionValidity.every(
+    admissionValidity.length > 0 &&
+    admissionValidity.every(
       (validity) => validity && Object.values(validity).every(Boolean)
-    )
-    && Object.values(primaryValidity).every(Boolean) 
-    && !isAdmissionLoading;
+    ) &&
+    Object.values(primaryValidity).every(Boolean) &&
+    !isAdmissionLoading;
 
   // Submit the form
 
-  if (canSave) {
-    console.log("Form is ready to be saved");
-   }
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (canSave) {
+      setShowConfirmation(true);
+    }
+  };
+
+  const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
     try {
       await updateAdmission(formData).unwrap();
       // navigate("/students/admissions/admissions");
@@ -385,7 +384,10 @@ const EditAdmissionForm = ({ admission }) => {
       console.error("Error submitting form", error);
     }
   };
-
+  // Close the modal without saving
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
+  };
   const handleCancel = () => {
     navigate("/students/admissions/admissions/");
   };
@@ -422,14 +424,11 @@ const EditAdmissionForm = ({ admission }) => {
             required
             disabled
           >
-            
-            
-                <option key={admission.student._id} value={admission.student._id}>
-                  {admission.student?.studentName?.firstName}{" "}
-                  {admission.student.studentName?.middleName}{" "}
-                  {admission.student.studentName?.lastName}
-                </option>
-              
+            <option key={admission.student._id} value={admission.student._id}>
+              {admission.student?.studentName?.firstName}{" "}
+              {admission.student.studentName?.middleName}{" "}
+              {admission.student.studentName?.lastName}
+            </option>
           </select>
         </div>
 
@@ -457,14 +456,9 @@ const EditAdmissionForm = ({ admission }) => {
             required
             disabled
           >
-           
-            <option
-              key={formData.admissionYear}
-              value={formData.admissionYear}
-            >
+            <option key={formData.admissionYear} value={formData.admissionYear}>
               {formData.admissionYear}
             </option>
-           
           </select>
         </div>
 
@@ -524,7 +518,6 @@ const EditAdmissionForm = ({ admission }) => {
                   <option value="Admission">Admission</option>
                 ) : (
                   <>
-                    
                     {getAvailableServices(index).map((serviceOption) => (
                       <option key={serviceOption.id} value={serviceOption.id}>
                         {serviceOption.serviceType}
@@ -653,8 +646,6 @@ const EditAdmissionForm = ({ admission }) => {
                 </select>
               </div>
 
-           
-
               <div>
                 {service.isFlagged && (
                   <div className="text-red-500">
@@ -725,6 +716,22 @@ const EditAdmissionForm = ({ admission }) => {
           </button>
         </div>
       </form>
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save this student?"
+      />
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save this student?"
+      />
     </>
   );
 

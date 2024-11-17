@@ -30,6 +30,7 @@ import {
   DATE_REGEX,
   NAME_REGEX,
 } from "../../../config/REGEX"
+import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 //constrains on inputs when creating new user
 
 const NewSectionForm = () => {
@@ -103,6 +104,10 @@ const NewSectionForm = () => {
       refetchOnMountOrArgChange: true, 
     }
   );
+//confirmation Modal states
+const [showConfirmation, setShowConfirmation] = useState(false);
+
+
   // Consolidated form state
   const [formData, setFormData] = useState({
     sectionLabel: "",
@@ -217,16 +222,26 @@ const NewSectionForm = () => {
   const onSaveSectionClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
+      setShowConfirmation(true);
+    }
+  };
+   // This function handles the confirmed save action
+   const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
       try {
         await addNewSection(formData);
       } catch (err) {
         console.error("Failed to save the section:", err);
       }
     }
+  
+  // Close the modal without saving
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
   };
-  const handleCancel = () => {
-    navigate("/academics/sections/sections/");
-  };
+
+  
   console.log(formData, "formData");
   const content = (
     <>
@@ -474,6 +489,14 @@ const NewSectionForm = () => {
             </button>
           </div>
         </form>
+         {/* Confirmation Modal */}
+       <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save this student?"
+      />
       </section>
     </>
   );

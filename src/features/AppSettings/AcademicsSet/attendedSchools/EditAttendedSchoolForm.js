@@ -4,12 +4,13 @@ import { useDispatch } from "react-redux";
 import { useUpdateAttendedSchoolMutation } from "./attendedSchoolsApiSlice";
 import { attendedSchoolAdded } from "./attendedSchoolsSlice";
 import AcademicsSet from "../../AcademicsSet";
-
-const NAME_REGEX = /^[A-z 0-9]{3,25}$/;
+import { NAME_REGEX } from "../../../../config/REGEX";
+import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 
 const EditAttendedSchoolForm = ({ attendedSchool }) => {
-  console.log(attendedSchool, 'attendedSchool');
   
+  //confirmation Modal states
+const [showConfirmation, setShowConfirmation] = useState(false);
   const [formData, setFormData] = useState({
     schoolName: attendedSchool.schoolName,
     schoolCity: attendedSchool.schoolCity,
@@ -53,11 +54,15 @@ const EditAttendedSchoolForm = ({ attendedSchool }) => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!canSubmit) {
-      setError("Please fill in all fields correctly.");
-      return;
-    }
+    if (canSubmit) {
 
+      setShowConfirmation(true);
+    }
+  };
+
+  const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
     try {
       const newAttendedSchool = await updateAttendedSchool(formData).unwrap();
       setError("");
@@ -66,6 +71,10 @@ const EditAttendedSchoolForm = ({ attendedSchool }) => {
     }
   };
 
+    // Close the modal without saving
+    const handleCloseModal = () => {
+      setShowConfirmation(false);
+    };
   // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -169,6 +178,14 @@ const EditAttendedSchoolForm = ({ attendedSchool }) => {
           </button>
         </form>
       </div>
+        {/* Confirmation Modal */}
+        <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save this student?"
+      />
     </>
   );
 };

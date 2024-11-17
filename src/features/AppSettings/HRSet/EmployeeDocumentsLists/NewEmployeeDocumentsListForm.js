@@ -17,9 +17,8 @@ import {
   selectAcademicYearById,
 } from "../../AcademicsSet/AcademicYears/academicYearsSlice";
 import { useGetAcademicYearsQuery } from "../../AcademicsSet/AcademicYears/academicYearsApiSlice";
-//constrains on inputs when creating new user
-
-const TITLE_REGEX = /^[A-z/ 0-9]{8,20}$/;
+import { TITLE_REGEX } from "../../../../config/REGEX";
+import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 
 const NewEmployeeDocumentsListForm = () => {
   const Navigate = useNavigate();
@@ -56,7 +55,8 @@ const NewEmployeeDocumentsListForm = () => {
   const [documentsAcademicYear, setDocumentsAcademicYear] = useState("");
   const [validDocumentsAcademicYear, setValidDocumentsAcademicYear] =
     useState("");
-
+  //confirmation Modal states
+  const [showConfirmation, setShowConfirmation] = useState(false);
   //use effect is used to validate the inputs against the defined REGEX above
   //the previous constrains have to be verified on the form for teh user to know
 
@@ -117,13 +117,29 @@ const NewEmployeeDocumentsListForm = () => {
   const onSaveEmployeeDocumentsListClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
+      setShowConfirmation(true);
+    }
+  };
+  // This function handles the confirmed save action
+  const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
+    try {
       await addNewEmployeeDocumentsList({
         documentsList: employeeDocumentsList,
         documentsAcademicYear,
       });
+      if (isAddError) {
+        console.log("Error saving:", addError);
+      }
+    } catch (addError) {
+      console.error("Error saving student:", addError);
     }
   };
-
+  // Close the modal without saving
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
+  };
   const handleCancel = () => {
     Navigate("/settings/employeesSet/employeeDocumentsListsList");
   };
@@ -235,6 +251,14 @@ const NewEmployeeDocumentsListForm = () => {
           </button>
         </div>
       </form>
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save this student?"
+      />
     </>
   );
 

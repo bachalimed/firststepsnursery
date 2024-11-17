@@ -4,7 +4,8 @@ import { useDispatch } from "react-redux";
 import { useAddNewClassroomMutation } from "./classroomsApiSlice"; // Redux API action
 import { classroomAdded } from "./classroomsSlice"; // Redux action for state update
 import AcademicsSet from "../../AcademicsSet"
-const NAME_REGEX = /^[A-z 0-9]{3,20}$/;
+import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
+import { NAME_REGEX } from "../../../../config/REGEX";
 
 const NewClassroomForm = () => {
   const [formData, setFormData] = useState({
@@ -22,6 +23,8 @@ const NewClassroomForm = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+//confirmation Modal states
+const [showConfirmation, setShowConfirmation] = useState(false);
 
   // Redux mutation for adding the attended school
   const [addNewClassroom, { isLoading, isError, error: apiError, isSuccess }] =
@@ -62,7 +65,14 @@ const NewClassroomForm = () => {
       setError("Please fill in all fields correctly.");
       return;
     }
+ // Show the confirmation modal before saving
+ setShowConfirmation(true);
+}
 
+// This function handles the confirmed save action
+const handleConfirmSave = async () => {
+  // Close the confirmation modal
+  setShowConfirmation(false);
     try {
       const newClassroom = await addNewClassroom(formData).unwrap();
       dispatch(classroomAdded(newClassroom)); // Optionally update Redux state
@@ -71,6 +81,11 @@ const NewClassroomForm = () => {
     }
   };
 
+
+  // Close the modal without saving
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
+  };
   // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -160,6 +175,14 @@ console.log(formData,'formdata')
         </button>
       </form>
     </div>
+    {/* Confirmation Modal */}
+    <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save this student?"
+      />
 	</>
   );
 };

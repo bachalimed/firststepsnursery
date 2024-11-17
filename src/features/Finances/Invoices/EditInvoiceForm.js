@@ -23,7 +23,7 @@ import {
   NUMBER_REGEX,
   COMMENT_REGEX,
 } from "../../../config/REGEX"
-
+import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 const EditInvoiceForm = ({ invoice }) => {
   const { userId, isManager } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -44,7 +44,9 @@ const EditInvoiceForm = ({ invoice }) => {
   ] = useUpdateInvoiceMutation();
 
   const DiscountTypes = ["second Sibling", "Third Sibling", "Other"];
-  console.log(invoice, "invoice");
+  
+  //confirmation Modal states
+const [showConfirmation, setShowConfirmation] = useState(false);
   const [formData, setFormData] = useState({
     id: invoice?._id,
     invoiceYear: invoice?.invoiceYear,
@@ -145,18 +147,24 @@ console.log(validity)
     e.preventDefault();
 
     // Ensure all fields are valid
-    if (!canSubmit) {
-      //setError("Please fill in all fields correctly.");
-      return;
+    if (canSubmit) {
+      setShowConfirmation(true);
     }
+  };
 
+  const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
     try {
       const updatedInvoice = await updateInvoice(formData).unwrap();
     } catch (err) {
       //setError("Failed to add the attended school.");
     }
   };
-
+ // Close the modal without saving
+ const handleCloseModal = () => {
+  setShowConfirmation(false);
+};
   // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -325,6 +333,14 @@ console.log(validity)
           )}
         </form>
       </div>
+        {/* Confirmation Modal */}
+        <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save this student?"
+      />
     </>
   );
 };

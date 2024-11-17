@@ -15,11 +15,10 @@ import { ACTIONS } from "../../../../config/UserActions";
 import useAuth from "../../../../hooks/useAuth";
 
 import { useSelector } from "react-redux";
-
+import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 import { useGetAcademicYearsQuery } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
 import { selectAllAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import {NAME_REGEX, DATE_REGEX } from '../../../../config/REGEX'
-
+import { NAME_REGEX, DATE_REGEX } from "../../../../config/REGEX";
 
 const NewStudentForm = () => {
   const naviagte = useNavigate();
@@ -49,14 +48,10 @@ const NewStudentForm = () => {
     isSuccess: schoolIsSuccess,
     isError: schoolIsError,
     error: schoolError,
-  } = useGetAttendedSchoolsQuery(
-    { endpointName: "NewStudentForm" } || {},
-    {
-     
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true,
-    }
-  );
+  } = useGetAttendedSchoolsQuery({ endpointName: "NewStudentForm" } || {}, {
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
+  });
 
   let attendedSchools;
   if (schoolIsSuccess) {
@@ -64,8 +59,8 @@ const NewStudentForm = () => {
     attendedSchools = Object.values(entities);
     //console.log(attendedSchools)
   }
-
-  
+  //confirmation Modal states
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   //initialisation of states for each input
   const [studentName, setStudentName] = useState({});
@@ -78,7 +73,6 @@ const NewStudentForm = () => {
   const [validStudentDob, setValidStudentDob] = useState("");
   const [studentSex, setStudentSex] = useState("");
   const [studentIsActive, setStudentIsActive] = useState((prev) => !prev);
-  
 
   //const [validStudentGrade, setValidStudentGrade] = useState(false);
   const [studentGrade, setStudentGrade] = useState(null);
@@ -103,8 +97,6 @@ const NewStudentForm = () => {
   //use effect is used to validate the inputs against the defined REGEX above
   //the previous constrains have to be verified on the form for teh user to know
 
-  
- 
   useEffect(() => {
     setValidFirstName(NAME_REGEX.test(firstName));
   }, [firstName]);
@@ -133,7 +125,7 @@ const NewStudentForm = () => {
       setStudentSex("");
       setStudentIsActive(false);
       setStudentYears(""); //will be true when the username is validated
-setValidCurrentEducation(false)
+      setValidCurrentEducation(false);
       //setStudentJointFamily(true)
       setGardienFirstName("");
       setgardienMiddleName("");
@@ -164,7 +156,8 @@ setValidCurrentEducation(false)
   //const onStudentJointFamilyChanged = e => setStudentJointFamily((prev)=>!prev)
 
   const onGardienFirstNameChanged = (e) => setGardienFirstName(e.target.value);
-  const onGardienMiddleNameChanged = (e) =>     setgardienMiddleName(e.target.value);
+  const onGardienMiddleNameChanged = (e) =>
+    setgardienMiddleName(e.target.value);
   const onGardienLastNameChanged = (e) => setGardienLastName(e.target.value);
   const onGardienPhoneChanged = (e) => setGardienPhone(e.target.value);
   const onGardienRelationChanged = (e) => setGardienRelation(e.target.value);
@@ -184,7 +177,7 @@ setValidCurrentEducation(false)
         : prevYears.filter((year) => year.academicYear !== value)
     );
   };
-  
+
   // Update the grade of the selected academic year
   const onStudentGradeChanged = (e) => {
     const value = e.target.value;
@@ -256,27 +249,29 @@ setValidCurrentEducation(false)
     });
   }, [firstName, middleName, lastName]);
 
-
-
   //check if an entry is set for educatin on the academic year, it is mandatory to avoid issued with plannings
 
-
-const [validCurrentEducation, setValidCurrentEducation] = useState(false)//to check if we have an attended school for the selectedacademicyear, will be needed for scheduling
+  const [validCurrentEducation, setValidCurrentEducation] = useState(false); //to check if we have an attended school for the selectedacademicyear, will be needed for scheduling
   // Check if there is a valid entry for the given academic year
-  
+
   useEffect(() => {
-    setValidCurrentEducation(studentEducation.some(
-      (year) => year.schoolYear === selectedAcademicYear.title && year.attendedSchool !=="" ))
+    setValidCurrentEducation(
+      studentEducation.some(
+        (year) =>
+          year.schoolYear === selectedAcademicYear.title &&
+          year.attendedSchool !== ""
+      )
+    );
   }, [studentEducation, selectedAcademicYear.title]);
 
-
-console.log(validCurrentEducation, 'education')
-console.log(studentEducation, 'studentEducation')
-console.log(selectedAcademicYear.title, 'selectedAcademicYear.title')
+  console.log(validCurrentEducation, "education");
+  console.log(studentEducation, "studentEducation");
+  console.log(selectedAcademicYear.title, "selectedAcademicYear.title");
 
   //to check if we can save before onsave, if every one is true, and also if we are not loading status
   const canSave =
-    [validCurrentEducation,
+    [
+      validCurrentEducation,
       validFirstName,
       validLastName,
       studentYears,
@@ -288,17 +283,18 @@ console.log(selectedAcademicYear.title, 'selectedAcademicYear.title')
     e.preventDefault();
 
     if (canSave) {
-      //if cansave is true
-      //generate the objects before saving
-      console.log(
-        studentYears[0].grade,
-        studentName,
-        studentDob,
-        studentSex,
-        studentIsActive,
-        studentYears,
-        studentEducation
-      );
+      // Show the confirmation modal before saving
+      setShowConfirmation(true);
+    }
+  };
+
+  // This function handles the confirmed save action
+  const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
+
+    // Proceed with saving the student data
+    try {
       await addNewStudent({
         studentName,
         studentDob,
@@ -308,13 +304,21 @@ console.log(selectedAcademicYear.title, 'selectedAcademicYear.title')
         studentEducation,
         studentGardien,
         operator,
-      }); //we call the add new user mutation and set the arguments to be saved
-      //added this to confirm save
+      });
+
       if (isError) {
-        console.log("error savingg", error); //handle the error msg to be shown  in the logs??
+        console.log("Error saving:", error);
       }
+    } catch (error) {
+      console.error("Error saving student:", error);
     }
   };
+
+  // Close the modal without saving
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
+  };
+
   const handleCancel = () => {
     naviagte("/students/studentsParents/students/");
   };
@@ -346,9 +350,8 @@ console.log(selectedAcademicYear.title, 'selectedAcademicYear.title')
               className="block text-sm font-medium text-gray-700"
               htmlFor="firstName"
             >
-              First Name{" "}{!validFirstName && (
-                <span className="text-red-500">*</span>
-              )}
+              First Name{" "}
+              {!validFirstName && <span className="text-red-500">*</span>}
               <span className="text-gray-500 text-xs"> [3-20 letters]</span>
             </label>
             <input
@@ -386,9 +389,8 @@ console.log(selectedAcademicYear.title, 'selectedAcademicYear.title')
               className="block text-sm font-medium text-gray-700"
               htmlFor="lastName"
             >
-              Last Name{" "}{!validLastName && (
-                <span className="text-red-500">*</span>
-              )}
+              Last Name{" "}
+              {!validLastName && <span className="text-red-500">*</span>}
               <span className="text-gray-500 text-xs"> [3-20 letters]</span>
             </label>
             <input
@@ -408,9 +410,8 @@ console.log(selectedAcademicYear.title, 'selectedAcademicYear.title')
               className="block text-sm font-medium text-gray-700"
               htmlFor="studentDob"
             >
-              Date Of Birth{" "}{!validStudentDob && (
-                <span className="text-red-500">*</span>
-              )}
+              Date Of Birth{" "}
+              {!validStudentDob && <span className="text-red-500">*</span>}
               <span className="text-gray-500 text-xs"> [dd/mm/yyyy]</span>
             </label>
             <input
@@ -493,36 +494,45 @@ console.log(selectedAcademicYear.title, 'selectedAcademicYear.title')
               htmlFor="studentYears"
               className="ml-2 text-sm font-medium text-gray-700"
             >
-              Student Year {" "}{!studentYears[0] && (
-                <span className="text-red-500">*</span>
-              )} : {selectedAcademicYear.title}
+              Student Year{" "}
+              {!studentYears[0] && <span className="text-red-500">*</span>} :{" "}
+              {selectedAcademicYear.title}
             </label>
           </div>
           <div className="flex items-center mb-2">
-          {studentYears.some(
-          (year) => year.academicYear === selectedAcademicYear?.title
-        ) && (
-          <div className="mb-6">
-            <label htmlFor="studentGrade" className="block text-sm font-medium text-gray-700">
-              Grade{" "}{!studentYears[0].grade && (
-                <span className="text-red-500">*</span>
-              )}
-            </label>
-            <select
-              id="studentGrade"
-              value={studentYears.find(
-                (year) => year.academicYear === selectedAcademicYear?.title
-              )?.grade || ""}
-              onChange={onStudentGradeChanged}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-            >
-                 <option value="">Select Grade</option>
+            {studentYears.some(
+              (year) => year.academicYear === selectedAcademicYear?.title
+            ) && (
+              <div className="mb-6">
+                <label
+                  htmlFor="studentGrade"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Grade{" "}
+                  {!studentYears[0].grade && (
+                    <span className="text-red-500">*</span>
+                  )}
+                </label>
+                <select
+                  id="studentGrade"
+                  value={
+                    studentYears.find(
+                      (year) =>
+                        year.academicYear === selectedAcademicYear?.title
+                    )?.grade || ""
+                  }
+                  onChange={onStudentGradeChanged}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                >
+                  <option value="">Select Grade</option>
                   {["0", "1", "2", "3", "4", "5", "6", "7"].map((grade) => (
-                    <option key={grade} value={grade}>Grade {grade}</option>
+                    <option key={grade} value={grade}>
+                      Grade {grade}
+                    </option>
                   ))}
-               </select>
-          </div>
-        )}
+                </select>
+              </div>
+            )}
           </div>
         </div>
 
@@ -620,11 +630,14 @@ console.log(selectedAcademicYear.title, 'selectedAcademicYear.title')
                       className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
                     >
                       <option value="">Select Year</option>
-                      {academicYears.map((year) => (
-                       (year.title !== "1000") &&( <option key={year.id} value={year.title}>
-                          {year.title}
-                        </option>)
-                      ))}
+                      {academicYears.map(
+                        (year) =>
+                          year.title !== "1000" && (
+                            <option key={year.id} value={year.title}>
+                              {year.title}
+                            </option>
+                          )
+                      )}
                     </select>
                   </div>
 
@@ -691,9 +704,10 @@ console.log(selectedAcademicYear.title, 'selectedAcademicYear.title')
         </div>
 
         <div className="mb-6">
-          <h3 className="text-xl font-semibold mb-2">Student Education {" "}{!validCurrentEducation && (
-                <span className="text-red-500">*</span>
-              )}</h3>
+          <h3 className="text-xl font-semibold mb-2">
+            Student Education{" "}
+            {!validCurrentEducation && <span className="text-red-500">*</span>}
+          </h3>
           {Array.isArray(studentEducation) &&
             studentEducation.length > 0 &&
             studentEducation.map((entry, index) => (
@@ -718,11 +732,14 @@ console.log(selectedAcademicYear.title, 'selectedAcademicYear.title')
                       className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
                     >
                       <option value="">Select Year</option>
-                      {academicYears.map((year) => (
-                       (year.title !== "1000") &&(  <option key={year.id} value={year.title}>
-                          {year.title}
-                        </option>)
-                      ))}
+                      {academicYears.map(
+                        (year) =>
+                          year.title !== "1000" && (
+                            <option key={year.id} value={year.title}>
+                              {year.title}
+                            </option>
+                          )
+                      )}
                     </select>
                   </div>
                   <div className="mb-2">
@@ -747,12 +764,14 @@ console.log(selectedAcademicYear.title, 'selectedAcademicYear.title')
                       <option value="">Select School</option>
                       {schoolIsSuccess &&
                         attendedSchools
-                        .filter((school) => school.schoolName !== "First Steps")
-                        .map((school) => (
-                          <option key={school.id} value={school.id}>
-                           {school.schoolName}
-                          </option>
-                        ))}
+                          .filter(
+                            (school) => school.schoolName !== "First Steps"
+                          )
+                          .map((school) => (
+                            <option key={school.id} value={school.id}>
+                              {school.schoolName}
+                            </option>
+                          ))}
                     </select>
                   </div>
                   <div className="mb-2">
@@ -811,6 +830,14 @@ console.log(selectedAcademicYear.title, 'selectedAcademicYear.title')
           </button>
         </div>
       </form>
+       {/* Confirmation Modal */}
+       <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save this student?"
+      />
     </>
   );
 

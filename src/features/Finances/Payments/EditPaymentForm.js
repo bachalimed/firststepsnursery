@@ -23,7 +23,7 @@ import {
   NUMBER_REGEX,
   COMMENT_REGEX,
 } from "../../../config/REGEX"
-
+import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 const EditPaymentForm = ({ payment }) => {
   const { userId, isManager } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -76,7 +76,8 @@ const EditPaymentForm = ({ payment }) => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+//confirmation Modal states
+const [showConfirmation, setShowConfirmation] = useState(false);
   // Validate inputs using regex patterns
   useEffect(() => {
     setValidity((prev) => ({
@@ -145,10 +146,14 @@ console.log(validity)
     e.preventDefault();
 
     // Ensure all fields are valid
-    if (!canSubmit) {
-      //setError("Please fill in all fields correctly.");
-      return;
+    if (canSubmit) {
+      setShowConfirmation(true);
     }
+  };
+
+  const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
 
     try {
       const updatedPayment = await updatePayment(formData).unwrap();
@@ -156,7 +161,10 @@ console.log(validity)
       //setError("Failed to add the attended school.");
     }
   };
-
+// Close the modal without saving
+const handleCloseModal = () => {
+  setShowConfirmation(false);
+};
   // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;

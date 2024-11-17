@@ -23,6 +23,7 @@ import {
   NUMBER_REGEX,
 } from "../../../config/REGEX"
 import { MONTHS } from "../../../config/Months";
+import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 const NewInvoiceForm = () => {
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -72,7 +73,8 @@ const NewInvoiceForm = () => {
     invoiceCreator: userId,
     invoiceOperator: userId,
   });
-
+//confirmation Modal states
+const [showConfirmation, setShowConfirmation] = useState(false);
   //let schoolsList = isSchoolSuccess ? Object.values(schools.entities) : [];
 
   let enrolmentList = [];
@@ -151,18 +153,24 @@ const NewInvoiceForm = () => {
     e.preventDefault();
 
     // Ensure all fields are valid
-    if (!canSubmit) {
-      //setError("Please fill in all fields correctly.");
-      return;
+    if (canSubmit) {
+      setShowConfirmation(true);
     }
-
+  };
+ // This function handles the confirmed save action
+ const handleConfirmSave = async () => {
+  // Close the confirmation modal
+  setShowConfirmation(false);
     try {
       const newInvoices = await addNewInvoice(formData).unwrap();
     } catch (err) {
-      //setError("Failed to add the attended school.");
+      console.error("Error saving student:", err);
     }
   };
-
+// Close the modal without saving
+const handleCloseModal = () => {
+  setShowConfirmation(false);
+};
   // Handler for changing input values
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -319,6 +327,14 @@ const NewInvoiceForm = () => {
           </div>
         </form>
       </div>
+       {/* Confirmation Modal */}
+       <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save this student?"
+      />
     </>
   );
 };

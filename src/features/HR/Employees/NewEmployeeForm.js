@@ -3,7 +3,11 @@ import { useAddNewEmployeeMutation } from "./employeesApiSlice";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { POSITIONS, CONTRACT_TYPES, PAYMENT_PERIODS } from "../../../config/UserRoles";
+import {
+  POSITIONS,
+  CONTRACT_TYPES,
+  PAYMENT_PERIODS,
+} from "../../../config/UserRoles";
 import { ACTIONS } from "../../../config/UserActions";
 import HR from "../HR";
 
@@ -20,8 +24,8 @@ import {
   PHONE_REGEX,
   DATE_REGEX,
   YEAR_REGEX,
-} from "../../../config/REGEX"
-
+} from "../../../config/REGEX";
+import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 const NewEmployeeForm = () => {
   const navigate = useNavigate();
 
@@ -36,7 +40,8 @@ const NewEmployeeForm = () => {
 
   const generateRandomUsername = () =>
     `user${Math.random().toString(36).substring(2, 10)}`;
-
+  //confirmation Modal states
+  const [showConfirmation, setShowConfirmation] = useState(false);
   // Consolidated form state
   const [formData, setFormData] = useState({
     username: generateRandomUsername(),
@@ -259,15 +264,24 @@ const NewEmployeeForm = () => {
   const onSaveEmployeeClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
-      try {
-        await addNewEmployee(formData);
-      } catch (err) {
-        console.error("Failed to save the employee:", err);
-      }
+      setShowConfirmation(true);
     }
   };
-  const handleCancel = () => {
-    navigate("/hr/employees/");
+  // This function handles the confirmed save action
+  const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
+
+    try {
+      await addNewEmployee(formData);
+    } catch (err) {
+      console.error("Failed to save the employee:", err);
+    }
+  };
+
+  // Close the modal without saving
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
   };
 
   const content = (
@@ -789,37 +803,39 @@ const NewEmployeeForm = () => {
             </div>
 
             <div>
-    <label className="block text-sm font-medium text-gray-700">
-      Contract Type{" "}
-      {!validity.validContractType && (
-        <span className="text-red-500">*</span>
-      )}
-    </label>
-    <select
-      name="contractType"
-      value={formData.employeeCurrentEmployment.contractType}
-      onChange={(e) =>
-        setFormData((prev) => ({
-          ...prev,
-          employeeCurrentEmployment: {
-            ...prev.employeeCurrentEmployment,
-            contractType: e.target.value,
-          },
-        }))
-      }
-      className={`mt-1 block w-full border ${
-        validity.validContractType ? "border-gray-300" : "border-red-500"
-      } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-      required
-    >
-      <option value="">Select Contract Type</option>
-      {CONTRACT_TYPES.map((type) => (
-        <option key={type} value={type}>
-          {type}
-        </option>
-      ))}
-    </select>
-  </div>
+              <label className="block text-sm font-medium text-gray-700">
+                Contract Type{" "}
+                {!validity.validContractType && (
+                  <span className="text-red-500">*</span>
+                )}
+              </label>
+              <select
+                name="contractType"
+                value={formData.employeeCurrentEmployment.contractType}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    employeeCurrentEmployment: {
+                      ...prev.employeeCurrentEmployment,
+                      contractType: e.target.value,
+                    },
+                  }))
+                }
+                className={`mt-1 block w-full border ${
+                  validity.validContractType
+                    ? "border-gray-300"
+                    : "border-red-500"
+                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                required
+              >
+                <option value="">Select Contract Type</option>
+                {CONTRACT_TYPES.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -858,40 +874,44 @@ const NewEmployeeForm = () => {
                   />
                 </div>
                 <div>
-    <label className="block text-sm font-medium text-gray-700">
-      Payment{" "}
-      {!validity.validPayment && (
-        <span className="text-red-500">*</span>
-      )}
-    </label>
-    <select
-      name="payment"
-      value={formData.employeeCurrentEmployment.salaryPackage.payment}
-      onChange={(e) =>
-        setFormData((prev) => ({
-          ...prev,
-          employeeCurrentEmployment: {
-            ...prev.employeeCurrentEmployment,
-            salaryPackage: {
-              ...prev.employeeCurrentEmployment.salaryPackage,
-              payment: e.target.value,
-            },
-          },
-        }))
-      }
-      className={`mt-1 block w-full border ${
-        validity.validPayment ? "border-gray-300" : "border-red-500"
-      } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-      required
-    >
-      <option value="">Select Payment Period</option>
-      {PAYMENT_PERIODS.map((period) => (
-        <option key={period} value={period}>
-          {period}
-        </option>
-      ))}
-    </select>
-  </div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Payment{" "}
+                    {!validity.validPayment && (
+                      <span className="text-red-500">*</span>
+                    )}
+                  </label>
+                  <select
+                    name="payment"
+                    value={
+                      formData.employeeCurrentEmployment.salaryPackage.payment
+                    }
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        employeeCurrentEmployment: {
+                          ...prev.employeeCurrentEmployment,
+                          salaryPackage: {
+                            ...prev.employeeCurrentEmployment.salaryPackage,
+                            payment: e.target.value,
+                          },
+                        },
+                      }))
+                    }
+                    className={`mt-1 block w-full border ${
+                      validity.validPayment
+                        ? "border-gray-300"
+                        : "border-red-500"
+                    } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                    required
+                  >
+                    <option value="">Select Payment Period</option>
+                    {PAYMENT_PERIODS.map((period) => (
+                      <option key={period} value={period}>
+                        {period}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
@@ -1122,6 +1142,14 @@ const NewEmployeeForm = () => {
           </div>
         </form>
       </section>
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save this student?"
+      />
     </>
   );
   return content;

@@ -9,7 +9,7 @@ import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../../../config/UserRoles";
 import { ACTIONS } from "../../../../config/UserActions";
 import useAuth from "../../../../hooks/useAuth";
-
+import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 import { useSelector } from "react-redux";
 import { selectAllAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { useGetAcademicYearsQuery } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
@@ -28,6 +28,8 @@ const EditStudentForm = ({ student }) => {
   const { userId, canEdit, canDelete, canAdd, canCreate, isParent, status2 } =
     useAuth();
 
+//confirmation Modal states
+const [showConfirmation, setShowConfirmation] = useState(false);
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
@@ -290,6 +292,12 @@ const validCurrentEducation = () => {
 
   const onUpdateStudentClicked = async (e) => {
     e.preventDefault();
+    setShowConfirmation(true);
+  }
+
+  const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
     //generate the objects before saving
     const toSave = {
       
@@ -303,7 +311,8 @@ const validCurrentEducation = () => {
       studentGardien,
       operator,
     };
-    console.log(toSave);
+    
+    
     await updateStudent({
       id,
       studentName,
@@ -320,7 +329,10 @@ const validCurrentEducation = () => {
       console.log("error savingg", updateError); //handle the error msg to be shown  in the logs??
     }
   };
-
+  // Close the modal without saving
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
+  };
   const handleCancel = () => {
     navigate("/students/studentsParents/students/");
   };
@@ -799,6 +811,14 @@ const validCurrentEducation = () => {
           </button>
         </div>
       </form>
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save this student?"
+      />
     </>
   );
   return content;

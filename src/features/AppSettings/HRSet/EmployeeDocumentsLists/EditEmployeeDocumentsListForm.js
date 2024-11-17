@@ -13,9 +13,9 @@ import { useSelector } from "react-redux";
 import { Puff } from "react-loading-icons";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-//constrains on inputs when creating new user
+import { TITLE_REGEX } from "../../../../config/REGEX";
+import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 
-const TITLE_REGEX = /^[A-z/ 0-9]{8,20}$/;
 
 const EditEmployeeDocumentsListForm = ({ listToEdit }) => {
   //console.log(listToEdit.documentsAcademicYear,'lllllyear')
@@ -30,6 +30,8 @@ const EditEmployeeDocumentsListForm = ({ listToEdit }) => {
   );
   const [documentTitle, setDocumentTitle] = useState("");
   const [validDocumentTitle, setValidDocumentTitle] = useState(false);
+//confirmation Modal states
+const [showConfirmation, setShowConfirmation] = useState(false);
 
   const { userId, canEdit, canDelete, canAdd, canCreate, isParent, status2 } =
     useAuth();
@@ -88,6 +90,15 @@ const EditEmployeeDocumentsListForm = ({ listToEdit }) => {
   const onSaveEmployeeDocumentsListClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
+      
+      setShowConfirmation(true);
+    }
+  };
+
+  const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
+
       await updateEmployeeDocumentsList({
         id: listToEdit.id,
         documentsList: employeeDocumentsList,
@@ -97,8 +108,11 @@ const EditEmployeeDocumentsListForm = ({ listToEdit }) => {
         console.error("Error saving:", error);
       }
     }
-  };
 
+// Close the modal without saving
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
+  };
   const handleCancel = () => {
     Navigate("/settings/employeesSet/employeeDocumentsListsList/");
   };
@@ -186,6 +200,14 @@ const EditEmployeeDocumentsListForm = ({ listToEdit }) => {
           </button>
         </div>
       </form>
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save this student?"
+      />
     </>
   );
 

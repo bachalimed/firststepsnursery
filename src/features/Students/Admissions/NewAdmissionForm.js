@@ -27,7 +27,7 @@ import {
   COMMENT_REGEX,
   OBJECTID_REGEX,
 } from "../../../config/REGEX"
-
+import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
@@ -122,6 +122,9 @@ const NewAdmissionForm = () => {
       refetchOnMountOrArgChange: true,
     }
   );
+
+   //confirmation Modal states
+   const [showConfirmation, setShowConfirmation] = useState(false);
   // Local state for form data
   const [formData, setFormData] = useState({
     student: "",
@@ -307,6 +310,11 @@ const NewAdmissionForm = () => {
   // Submit the form
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setShowConfirmation(true);}
+
+const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
     try {
       await addNewAdmission(formData).unwrap();
       // navigate("/students/admissions/admissions");
@@ -314,7 +322,10 @@ const NewAdmissionForm = () => {
       console.error("Error submitting form", error);
     }
   };
-
+// Close the modal without saving
+const handleCloseModal = () => {
+  setShowConfirmation(false);
+};
   useEffect(() => {
     if (isAdmissionSuccess) {
       //if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
@@ -788,6 +799,14 @@ const NewAdmissionForm = () => {
       ) : (
         "No new Students for admission available"
       )}
+       {/* Confirmation Modal */}
+       <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save this student?"
+      />
     </>
   );
 
