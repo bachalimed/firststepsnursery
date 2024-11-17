@@ -1,15 +1,13 @@
 import NavbarHeader from "./NavbarHeader";
 import useAuth from "../../../hooks/useAuth";
-import AcademicYearsSelection from "../../AcademicYearsSelection";
+
 // import { useNavigate, useLocation } from "react-router"
 //import useAcademicYears from '../../../hooks/useAcademicYears'
 
 const DashboardHeader = () => {
   const { userId, username, userRoles, canEdit, canDelete, canAdd, canCreate } =
     useAuth();
-
-  //const { allAcademicYears, currentAcademicYear } = useAcademicYears()
-
+//console.log(userRoles)
   const content = (
     <header>
       <div className="bg-white h-18 px-10 flex justify-between items-center ">

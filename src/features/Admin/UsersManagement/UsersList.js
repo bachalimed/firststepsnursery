@@ -21,6 +21,7 @@ import { useDispatch } from "react-redux";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import { ROLES } from "../../../config/UserRoles";
 import { ACTIONS } from "../../../config/UserActions";
+import DeletionConfirmModal from '../../../Components/Shared/Modals/DeletionConfirmModal'
 const UsersList = () => {
   //initialise state variables and hooks
   const navigate = useNavigate();
@@ -64,7 +65,7 @@ const UsersList = () => {
     const { entities } = users;
     usersList = Object.values(entities);
 
-    dispatch(setUsers(usersList)); //timing issue to update the state and use it the same time
+    //dispatch(setUsers(usersList)); //timing issue to update the state and use it the same time
 
     // Filtering Logic
     filteredUsers = usersList?.filter((item) => {
@@ -107,9 +108,7 @@ const UsersList = () => {
   const handleRoleChange = (e) => setSelectedUserRoles(e.target.value);
   const handleActionChange = (e) => setSelectedUserActions(e.target.value);
 
-  const handleSearch = (e) => {
-    setSearchQuery(e.target.value);
-  };
+  
 
   // Handler for selecting rows
   const handleRowSelected = (state) => {
@@ -117,34 +116,28 @@ const UsersList = () => {
     //console.log('selectedRows', selectedRows)
   };
 
-  //handle edit
-  const handleEdit = (id) => {
-    navigate(`/admin/usersManagement/${id}/`); //the path to be set in app.js and to be checked with server.js in backend, this is editing page of user
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
+  const [idUserToDelete, setIdUserToDelete] = useState(null); // State to track which document to delete
+  
+
+  // Function to handle the delete button click
+  const onDeleteUserClicked = (id) => {
+    setIdUserToDelete(id);
+    setIsDeleteModalOpen(true);
   };
 
-  const onDeleteUserClicked = async (id) => {
-    await deleteUser({ id });
+  // Function to confirm deletion in the modal
+  const handleConfirmDelete = async () => {
+    await deleteUser({ id: idUserToDelete });
+    setIsDeleteModalOpen(false); // Close the modal
   };
 
-  // Handler for duplicating selected rows,
-  const handleDuplicateSelected = () => {
-    console.log("Selected Rows to duplicate:", selectedRows);
-    // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
-    //ensure only one can be selected: the last one
-    const toDuplicate = selectedRows[-1];
-
-    setSelectedRows([]); // Clear selection after delete
+  // Function to close the modal without deleting
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setIdUserToDelete(null);
   };
 
-  // Handler for duplicating selected rows,
-  const handleDetailsSelected = () => {
-    console.log("Selected Rows to detail:", selectedRows);
-    // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
-    //ensure only one can be selected: the last one
-    const toDuplicate = selectedRows[-1];
-
-    setSelectedRows([]); // Clear selection after delete
-  };
 
   const errContent =
     (usersError?.data?.message || delerror?.data?.message) ?? "";
@@ -489,6 +482,12 @@ const UsersList = () => {
             </button> */}
           </div>
         </div>
+
+        <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
       </>
     );
   }

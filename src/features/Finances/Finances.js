@@ -27,8 +27,8 @@ const Finances = () => {
   const tabs = [
     //{ label: 'New Assignment', path: '/academics/expenses/NewAnimatorsAssignmentForm' },
     { label: 'Invoices', path: '/finances/invoices/invoicesList/' },
-    { label: 'Expenses', path: '/finances/expenses/expensesList/' },
     { label: 'Payments', path: '/finances/payments/paymentsList/' },
+    { label: 'Expenses', path: '/finances/expenses/expensesList/' },
     
    
   ];

@@ -1,14 +1,113 @@
-import React from "react";
-import NewUserPhotoForm from "./NewUserPhotoForm";
-import UsersManagement from "../UsersManagement";
-
+import { useSelector } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
+import { selectUserById } from "./usersApiSlice";
+import useAuth from "../../../hooks/useAuth";
 const UserDetails = () => {
+  const { id } = useParams();
+  const user = useSelector((state) => state.user?.entities[id]);
+  const navigate = useNavigate();
+const {isAdmin, isManager} = useAuth()
+  
+
   return (
-    <>
-      <UsersManagement />
-      <div>UserDetails</div>
-      {/* <NewUserPhotoForm/> */}
-    </>
+    <div className="max-w-4xl mx-auto mt-8 bg-white p-8 shadow-lg rounded-lg">
+      <h1 className="text-2xl font-bold mb-6 text-gray-800">
+        User Details
+      </h1>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Full Name */}
+        <div>
+          <p className="text-sm font-medium text-gray-700">Full Name</p>
+          <p className="text-lg text-gray-900">
+            {user?.userFullName?.userFirstName}{" "}
+            {user?.userFullName?.userMiddleName}{" "}
+            {user?.userFullName?.userLastName || ""}
+          </p>
+        </div>
+
+        {/* Date of Birth */}
+        <div>
+          <p className="text-sm font-medium text-gray-700">Date of Birth</p>
+          <p className="text-lg text-gray-900">
+            {user?.userDob ? new Date(user.userDob).toLocaleDateString("en-GB") : "N/A"}
+          </p>
+        </div>
+
+        {/* Sex */}
+        <div>
+          <p className="text-sm font-medium text-gray-700">Sex</p>
+          <p className="text-lg text-gray-900">{user?.userSex || "N/A"}</p>
+        </div>
+
+        {/* Address */}
+        <div>
+          <p className="text-sm font-medium text-gray-700">Address</p>
+          <p className="text-lg text-gray-900">
+            {user?.userAddress?.house} {user?.userAddress?.street}
+          </p>
+          <p className="text-lg text-gray-900">{user?.userAddress?.area}</p>
+          <p className="text-lg text-gray-900">{user?.userAddress?.postCode}</p>
+          <p className="text-lg text-gray-900">{user?.userAddress?.city}</p>
+        </div>
+
+        {/* Contact */}
+        <div>
+          <p className="text-sm font-medium text-gray-700">Contact</p>
+          <p className="text-lg text-gray-900">
+            {user?.userContact?.primaryPhone || "N/A"}
+          </p>
+          <p className="text-lg text-gray-900">
+            {user?.userContact?.secondaryPhone || "N/A"}
+          </p>
+          <p className="text-lg text-gray-900">
+            {user?.userContact?.email || "N/A"}
+          </p>
+        </div>
+
+        {/* Roles */}
+        <div>
+          <p className="text-sm font-medium text-gray-700">Roles</p>
+          <p className="text-lg text-gray-900">
+            {user?.userRoles?.length > 0 ? user.userRoles.join(", ") : "N/A"}
+          </p>
+        </div>
+        {/* Actionis */}
+        <div>
+          <p className="text-sm font-medium text-gray-700">Allowed Actions</p>
+          <p className="text-lg text-gray-900">
+            {user?.userAllowedActions?.length > 0 ? user.userAllowedActions.join(", ") : "N/A"}
+          </p>
+        </div>
+
+        {/* Active Status */}
+        <div>
+          <p className="text-sm font-medium text-gray-700">Active Status</p>
+          <p
+            className={`text-lg font-semibold ${
+              user?.userIsActive ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {user?.userIsActive ? "Active" : "Inactive"}
+          </p>
+        </div>
+      </div>
+
+      <div className="flex justify-end items-center space-x-4 mt-6">
+        <button
+          onClick={()=>navigate("/admin/usersManagement/users/")}
+          className="px-4 py-2 bg-gray-500 text-white rounded"
+        >
+          Back to List
+        </button>
+       {isAdmin&& <button
+          onClick={() => navigate(`/admin/usersManagement/${id}/`)}
+          className="px-4 py-2 bg-yellow-400 text-white rounded"
+        >
+          Edit User
+        </button>}
+      </div>
+    </div>
   );
 };
 

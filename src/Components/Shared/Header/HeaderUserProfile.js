@@ -7,7 +7,7 @@ import { TbLogout } from "react-icons/tb";
 import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useSendLogoutMutation } from "../../../features/auth/authApiSlice";
-
+import useAuth from '../../../hooks/useAuth'
 //these will be used to compare to the location in the url
 const DASH_REGEX = /^\/dashboard(\/)?$/;
 const TASKS_REGEX = /^\/desk\/tasks(\/)?$/;
@@ -16,7 +16,7 @@ const USERS_REGEX = /^\/admin\/users(\/)?$/;
 const HeaderUserProfile = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-
+const {userId}=useAuth()
   const [sendLogout, { isLoading, isSuccess, isError, error }] =
     useSendLogoutMutation();
 
@@ -43,6 +43,7 @@ const HeaderUserProfile = () => {
       Logout
     </button>
   );
+  
 
   const content = (
     <Menu>
@@ -69,6 +70,7 @@ const HeaderUserProfile = () => {
             </button>
           </MenuItem> */}
         <MenuItem>
+         
           <button
             onClick={() => navigate("/users/ResetPassword")}
             className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
@@ -78,6 +80,21 @@ const HeaderUserProfile = () => {
             Reset Password
           </button>
         </MenuItem>
+        <MenuItem>
+         
+        <button
+            onClick={() => navigate(`/admin/usersManagement/userDetails/${userId}`)}
+            className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
+            href="/target 1"
+          >
+            <LuUserCircle2 className="size-4 fill-white/30" />
+            My Profile
+          </button>
+        </MenuItem>
+
+
+
+
         <div className="my-1 h-px bg-gray-500 " />
         <MenuItem>{logoutButton}</MenuItem>
       </MenuItems>

@@ -217,7 +217,8 @@ const DashboardSidebar = () => {
               <Link
                 to="/academics/sections/nurserySectionsList/"
                 className={
-                  location.pathname === "/academics/sections/nurserySectionsList/"
+                  location.pathname ===
+                  "/academics/sections/nurserySectionsList/"
                     ? "text-teal-200"
                     : ""
                 }
@@ -236,7 +237,8 @@ const DashboardSidebar = () => {
               <Link
                 to="/academics/plannings/sectionsPlannings/"
                 className={
-                  location.pathname === "/academics/plannings/sectionsPlannings/"
+                  location.pathname ===
+                  "/academics/plannings/sectionsPlannings/"
                     ? "text-teal-200"
                     : ""
                 }
@@ -321,7 +323,7 @@ const DashboardSidebar = () => {
           </Link>
           {open && financesOpen && (
             <ul>
-              <Link
+              {/* <Link
                 to="/finances/expenses/"
                 className={
                   location.pathname === "/finances/expenses/"
@@ -339,7 +341,7 @@ const DashboardSidebar = () => {
                   </span>
                   Expenses
                 </li>
-              </Link>
+              </Link> */}
 
               <Link
                 to="/finances/invoices/"
@@ -413,7 +415,9 @@ const DashboardSidebar = () => {
               <Link
                 to="/hr/employees/employeesList/"
                 className={
-                  location.pathname === "/hr/employees/employeesList/" ? "text-teal-200" : ""
+                  location.pathname === "/hr/employees/employeesList/"
+                    ? "text-teal-200"
+                    : ""
                 }
               >
                 <li
@@ -427,7 +431,7 @@ const DashboardSidebar = () => {
                   Employees
                 </li>
               </Link>
-              <Link
+              {/* <Link
                 to="/hr/payroll/"
                 className={
                   location.pathname === "/hr/payroll/" ? "text-teal-200" : ""
@@ -443,8 +447,8 @@ const DashboardSidebar = () => {
                   </span>
                   Payroll
                 </li>
-              </Link>
-              <Link
+              </Link> */}
+              {/* <Link
                 to="/hr/leave/"
                 className={
                   location.pathname === "/hr/leave/" ? "text-teal-200" : ""
@@ -460,10 +464,10 @@ const DashboardSidebar = () => {
                   </span>
                   Leave
                 </li>
-              </Link>
+              </Link> */}
             </ul>
           )}
-          <Link to="/desk/inquiries/">
+          {/* <Link to="/desk/inquiries/">
             <li
               className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}
             >
@@ -563,7 +567,7 @@ const DashboardSidebar = () => {
                 </li>
               </Link>
             </ul>
-          )}
+          )} */}
           <Link to="/cms/">
             <li
               className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}
@@ -650,7 +654,7 @@ const DashboardSidebar = () => {
                     Users Management
                   </li>
                 </Link>
-                <Link
+                {/* <Link
                   to="/settings/deskSet/blabla"
                   className={
                     location.pathname === "/settings/deskSet/blabla"
@@ -668,7 +672,7 @@ const DashboardSidebar = () => {
                     </span>
                     Blabla
                   </li>
-                </Link>
+                </Link> */}
               </ul>
             )}
             <Link to="">
@@ -795,7 +799,7 @@ const DashboardSidebar = () => {
                     HR
                   </li>
                 </Link>
-                <Link
+                {/* <Link
                   to="/settings/deskSet/"
                   className={
                     location.pathname === "/settings/deskSet/"
@@ -813,8 +817,8 @@ const DashboardSidebar = () => {
                     </span>
                     Desk
                   </li>
-                </Link>
-                <Link
+                </Link> */}
+                {/* <Link
                   to="/settings/cmsSet/"
                   className={
                     location.pathname === "/settings/cmsSet/"
@@ -832,7 +836,7 @@ const DashboardSidebar = () => {
                     </span>
                     CMS
                   </li>
-                </Link>
+                </Link> */}
               </ul>
             )}
           </div>

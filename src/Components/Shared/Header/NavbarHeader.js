@@ -7,9 +7,11 @@ import HeaderUserProfile from "./HeaderUserProfile";
 const NavbarHeader = () => {
   return (
     <div className="flex items-center gap-2 mr-2">
-      <div className="">
+      
+      
+      {/* <div className="">
         <HeaderChat className="" />
-      </div>
+      </div> */}
       <div>
         <HeaderNotifications className="" />
       </div>

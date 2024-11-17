@@ -271,7 +271,7 @@ const StudentsList = () => {
         " " +
         row.studentName?.lastName,
       sortable: true,
-      width: "200px",
+      width: "180px",
       cell: (row) => (
         <Link to={`/students/studentsParents/studentDetails/${row.id}`}>
           {row.studentName?.firstName +
@@ -330,7 +330,7 @@ const StudentsList = () => {
       },
 
       sortable: true,
-      width: "180px",
+      width: "160px",
     },
     {
       name: "DOB",
