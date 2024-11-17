@@ -57,13 +57,13 @@ const NewPaymentForm = ({ invoice }) => {
   );
 
   const [formData, setFormData] = useState({
-    paymentYear: selectedAcademicYear?.title || "",
+    paymentYear: selectedAcademicYear?.title ,
     paymentAmount: "",
     paymentStudent: "",
     paymentInvoices: [], // can pay once for many invoices
     paymentNote: "",
     paymentType: "",
-    paymentTypeReference: "",
+    paymentReference: "",
     paymentDate: "",
     paymentRecordDate: "",
     paymentCreator: userId,
@@ -78,12 +78,13 @@ const NewPaymentForm = ({ invoice }) => {
   // State to track the selected invoice
   const [selectedInvoiceId, setSelectedInvoiceId] = useState(null);
   const [validity, setValidity] = useState({
+   validPaymentYear: false,
     validPaymentAmount: false,
     validPaymentStudent: false,
     validPaymentInvoices: false, // can pay once for many invoices
     validPaymentNote: false,
     validPaymentType: false,
-    validPaymentTypeReference: false,
+    validPaymentReference: false,
     validPaymentDate: false,
   });
   console.log(validity);
@@ -112,19 +113,19 @@ const NewPaymentForm = ({ invoice }) => {
   useEffect(() => {
     const isAmountValid = NUMBER_REGEX.test(formData.paymentAmount);
     const isAmountWithinLimit =
-      parseFloat(formData.paymentAmount) <= totalInvoiceAmount;
+      parseFloat(formData.paymentAmount) === totalInvoiceAmount;
     setValidity((prev) => ({
       ...prev,
+      validPaymentYear:YEAR_REGEX.test(formData.paymentYear),
       validPaymentAmount: isAmountValid && isAmountWithinLimit,
-      validPaymentStudent:OBJECTID_REGEX.test(formData.paymentStudent),
+      validPaymentStudent: OBJECTID_REGEX.test(formData.paymentStudent),
       validPaymentInvoices: formData?.paymentInvoices?.length > 0,
       validPaymentNote: COMMENT_REGEX.test(formData?.paymentNote),
       validPaymentType: NAME_REGEX.test(formData?.paymentType),
-      validPaymentTypeReference: NAME_REGEX.test(
-        formData?.paymentTypeReference
-      ),
+      validPaymentReference: formData?.paymentReference === "" || NAME_REGEX.test(formData?.paymentReference),
       validPaymentDate: DATE_REGEX.test(formData?.paymentDate),
     }));
+    console.log(validity)
   }, [formData, totalInvoiceAmount]);
 
   // Clear form and errors on success
@@ -137,7 +138,7 @@ const NewPaymentForm = ({ invoice }) => {
         paymentInvoices: [],
         paymentNote: "",
         paymentType: "",
-        paymentTypeReference: "",
+        paymentReference: "",
         paymentDate: "",
         paymentRecordDate: new Date().toISOString().split("T")[0],
         paymentCreator: userId,
@@ -173,7 +174,11 @@ const NewPaymentForm = ({ invoice }) => {
       (s) => s.id === selectedStudentId
     );
     setSelectedStudent(student);
-    setFormData({ ...formData, paymentInvoices: [] });
+    setFormData({
+      ...formData,
+      paymentStudent: selectedStudentId,
+      paymentInvoices: [],
+    });
     setSelectedInvoices([]);
     setTotalInvoiceAmount(0);
   };
@@ -253,16 +258,16 @@ const NewPaymentForm = ({ invoice }) => {
     <>
       <Finances />
       <div className="p-6 bg-white rounded-lg shadow-md max-w-md mx-auto">
-        <h2 className="text-2xl font-bold mb-6 text-center">Add Payments</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">Add Payment</h2>
 
         <form onSubmit={handleSubmit}>
           {/* Student Selection */}
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               Select Student{" "}
-                {!validity.validPrimaryPhone && (
-                  <span className="text-red-500">*</span>
-                )}
+              {!validity.validPaymentStudent && (
+                <span className="text-red-500">*</span>
+              )}
             </label>
             <select
               value={selectedStudent?.id || ""}
@@ -281,7 +286,12 @@ const NewPaymentForm = ({ invoice }) => {
           {/* Invoices List */}
           {selectedStudent && (
             <div className="mb-4">
-              <h3 className="text-gray-700 font-bold mb-2">Select Invoices</h3>
+              <h3 className="text-gray-700 font-bold mb-2">
+                Select Invoices{" "}
+                {!validity.validPaymentInvoices && (
+                  <span className="text-red-500">*</span>
+                )}
+              </h3>
               <ul className="border rounded-md p-2 max-h-80 overflow-y-auto">
                 {selectedStudent.enrolments.map((enrolment) => (
                   <li
@@ -339,25 +349,14 @@ const NewPaymentForm = ({ invoice }) => {
             </div>
           )}
 
-          {/* Payment Date */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
-              Payment Date
-            </label>
-            <input
-              type="date"
-              name="paymentDate"
-              value={formData.paymentDate}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-
           {/* Payment Amount */}
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
-              Payment Amount (€)
+              Payment Amount{" "}
+              {!validity.validPaymentAmount && (
+                <span className="text-red-500">*</span>
+              )}{" "}
+              ({CurrencySymbol})
             </label>
             <input
               type="number"
@@ -373,16 +372,36 @@ const NewPaymentForm = ({ invoice }) => {
             />
             {!validity.validPaymentAmount && (
               <p className="text-red-500 text-sm">
-                Amount must be a valid number and not exceed the total invoice
+                Amount must be a valid number and equal to the total invoice
                 amount.
               </p>
             )}
+          </div>
+          {/* Payment Date */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-bold mb-2">
+              Payment Date{" "}
+              {!validity.validPaymentDate && (
+                <span className="text-red-500">*</span>
+              )}
+            </label>
+            <input
+              type="date"
+              name="paymentDate"
+              value={formData.paymentDate}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
           </div>
 
           {/* Payment Type */}
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
-              Payment Type
+              Payment Type{" "}
+              {!validity.validPaymentType && (
+                <span className="text-red-500">*</span>
+              )}
             </label>
             <select
               name="paymentType"
@@ -409,15 +428,15 @@ const NewPaymentForm = ({ invoice }) => {
             </label>
             <input
               type="text"
-              name="paymentTypeReference"
-              value={formData.paymentTypeReference}
+              name="paymentReference"
+              value={formData.paymentReference}
               onChange={handleInputChange}
               className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
-                validity.validPaymentTypeReference
+                validity.validPaymentReference
                   ? "focus:ring-blue-500"
                   : "focus:ring-red-500"
               }`}
-              required
+             
             />
           </div>
 

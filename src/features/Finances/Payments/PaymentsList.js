@@ -1,5 +1,4 @@
 import {
-
   useGetPaymentsByYearQuery,
   useDeletePaymentMutation,
 } from "./paymentsApiSlice";
@@ -42,7 +41,6 @@ const PaymentsList = () => {
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idPaymentToDelete, setIdPaymentToDelete] = useState(null); // State to track which document to delete
-
 
   //function to return curent month for month selection
   const getCurrentMonth = () => {
@@ -130,10 +128,9 @@ const PaymentsList = () => {
   let paymentsList = [];
   let filteredPayments = [];
 
-  const [discountedFilter, setDiscountedFilter] = useState(""); // "paymentd" or "unpaymentd"
+  const PaymentTypes = ["Cash", "Cheque", "Bank Transfer", "Online Payment"];
+  const [selectedPaymentType, setSelectedPaymentType] = useState(""); // "paid" or "unpaid"
 
-  const [paidFilter, setPaidFilter] = useState(""); // "paid" or "unpaid"
-  const [selectedServiceType, setSelectedServiceType] = useState(""); // service type from servicesList
   const [selectedPaymentMonth, setSelectedPaymentMonth] = useState(
     getCurrentMonth()
   ); // payment month
@@ -145,44 +142,43 @@ const PaymentsList = () => {
     paymentsList = Object.values(entities); //we are using entity adapter in this query
     //dispatch(setPayments(paymentsList)); //timing issue to update the state and use it the same time
 
-    filteredPayments = paymentsList.filter((invoi) => {
-      // Check if the student's name or any other field contains the search query
+   filteredPayments = paymentsList.filter((paymnt) => {
+      // Normalize the search query
+      const normalizedSearchQuery = searchQuery.toLowerCase();
+    
+      // Check if the student's name contains the search query
       const nameMatches = [
-        invoi?.enrolments[0]?.student?.studentName?.firstName,
-        invoi?.enrolments[0]?.student?.studentName?.middleName,
-        invoi?.enrolments[0]?.student?.studentName?.lastName,
-      ].some((name) => name?.toLowerCase().includes(searchQuery.toLowerCase()));
-
-      const otherMatches = Object.values(invoi)
+        paymnt?.paymentStudent?.studentName?.firstName,
+        paymnt?.paymentStudent?.studentName?.middleName,
+        paymnt?.paymentStudent?.studentName?.lastName,
+      ].some((name) => name?.toLowerCase().includes(normalizedSearchQuery));
+    
+      // Check if any other field in the payment object contains the search query
+      const otherMatches = Object.values(paymnt)
         .flat()
         .some((val) =>
-          val?.toString().toLowerCase().includes(searchQuery.toLowerCase())
+          val?.toString().toLowerCase().includes(normalizedSearchQuery)
         );
-
-      // Apply all filters with AND logic
-      const meetsDiscountedCriteria =
-        !discountedFilter ||
-        (discountedFilter === "Discounted"
-          ? parseFloat(invoi.paymentDiscountAmount) !== 0
-          : parseFloat(invoi.paymentDiscountAmount) === 0);
-
-      const meetsPaidCriteria =
-        !paidFilter ||
-        (paidFilter === "paid" ? invoi.isFullyPaid : !invoi.isFullyPaid);
-      const meetsServiceTypeCriteria =
-        !selectedServiceType ||
-        invoi.enrolments[0]?.serviceType === selectedServiceType;
+    
+      // Check if the payment type matches the selected payment type
+      const meetsPaymentTypeCriteria =
+        !selectedPaymentType || paymnt.paymentType === selectedPaymentType;
+    
+      // Check if any of the payment's invoices have the selected payment month
       const meetsPaymentMonthCriteria =
-        !selectedPaymentMonth || invoi.paymentMonth === selectedPaymentMonth;
-
+        !selectedPaymentMonth ||
+        paymnt.paymentInvoices.some(
+          (invoice) => invoice.invoiceMonth === selectedPaymentMonth
+        );
+    
+      // Return true if all criteria are met
       return (
         (nameMatches || otherMatches) &&
-        meetsDiscountedCriteria &&
-        meetsPaidCriteria &&
-        meetsServiceTypeCriteria &&
+        meetsPaymentTypeCriteria &&
         meetsPaymentMonthCriteria
       );
     });
+    
   }
 
   const handleSearch = (e) => {
@@ -216,135 +212,107 @@ const PaymentsList = () => {
         }
       : null,
     {
-      name: "Month",
-      selector: (row) => row.paymentMonth,
-      sortable: true,
-      width: "100px",
-    },
-    {
-      name: " Paid",
-      selector: (row) => row?.paymentIsFullyPaid,
-      cell: (row) => (
-        <span>
-          {row?.paymentIsFullyPaid ? (
-            <MdOutlinePaid className="text-green-500 text-2xl" />
-          ) : (
-            <MdPaid className="text-red-400 text-2xl" />
-          )}
-        </span>
-      ),
-      sortable: true,
-      width: "80px",
-    },
-    {
       name: "Student Name",
       selector: (row) =>
-        row?.enrolments[0]?.student?.studentName?.firstName +
+        row?.paymentStudent?.studentName?.firstName +
         " " +
-        row?.enrolments[0]?.student?.studentName?.middleName +
+        row?.paymentStudent?.studentName?.middleName +
         " " +
-        row?.enrolments[0]?.student?.studentName?.lastName,
+        row?.paymentStudent?.studentName?.lastName,
       sortable: true,
       width: "160px",
     },
     {
-      name: "Paymentd", //means authorised
-      selector: (row) => (
-        
-          <div>{row?.paymentAmount} </div>
-        
-      ),
+      name: "Payment Details",
+      selector: (row) => `${row?.paymentAmount} ${row?.paymentType}`,
       sortable: true,
-      
-      width: "110px",
+      width: "150px",
     },
     {
-      name: "Agreed", //means authorised
-      selector: (row) => (
-        <>
-          <div>Final {row?.enrolments[0]?.serviceFinalFee}</div>
-          <div>Authorised {row.enrolments[0]?.serviceAuthorisedFee}</div>
-        </>
-      ),
+      name: "Invoice Month",
       sortable: true,
       width: "140px",
-    },
-
-    {
-      name: "Service",
-      selector: (row) => (
-        <>
-          <div>{row.enrolments[0]?.serviceType}</div>
-          <div>{row.enrolments[0]?.servicePeriod}</div>
-        </>
-      ),
-
-      sortable: true,
-      width: "120px",
-    },
-
-    {
-      name: "Discount",
-
-      selector: (row) => (
+      cell: (row) => (
         <div>
-          <div>{row?.paymentDiscountType ? `-${row?.paymentDiscountType}` : "--"}</div>
-          <div>{row?.paymentDiscountAmount !=="0"? `-${row?.paymentDiscountAmount}` : "--"}</div>
+          {row.paymentInvoices.map((invoice) => (
+            <div key={invoice?._id}>{invoice?.invoiceMonth}</div>
+          ))}
         </div>
       ),
+    },
 
+   
+
+    {
+      name: " Authorised",
+      cell: (row) => (
+        <div>
+          {row.paymentInvoices.map((invoice) => (
+            <div key={invoice?._id}>{invoice?.invoiceAuthorisedAmount}</div>
+          ))}
+        </div>
+      ),
       sortable: true,
       width: "120px",
+    },
+    {
+      name: " Discount",
+      cell: (row) => (
+        <div>
+          {row.paymentInvoices.map((invoice) => (
+            <div key={invoice?._id}>{invoice?.invoiceDiscountAmount}</div>
+          ))}
+        </div>
+      ),
+      sortable: true,
+      width: "100px",
     },
 
     {
       name: "Due Date",
-      selector: (row) => (
-        <>
-          <div>
-            on{" "}
-            {new Date(row.paymentDueDate).toLocaleDateString("en-GB", {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-            })}
-          </div>
-        </>
-      ),
-
-      sortable: true,
-      width: "140px",
-    },
-
-    // {
-    //   name: "Authorised", //means authorised
-    //   selector: (row) =>
-    //     row.admission.agreedServices?.isAuthorised ? "yes" : "No",
-
-    //   sortable: true,
-    //   width: "140px",
-    // },
-
-    {
-      name: "Payment Date",
-      selector: (row) => (
-        <>
-          <div>
-            on{" "}
-            {new Date(row.paymentEnrolment?.PAidOn).toLocaleDateString(
-              "en-GB",
-              {
+      cell: (row) => (
+        <div>
+          {row.paymentInvoices.map((invoice) => (
+            <div key={invoice?._id}>
+              {new Date(invoice?.invoiceDueDate).toLocaleDateString("en-GB", {
                 year: "numeric",
                 month: "2-digit",
                 day: "2-digit",
-              }
-            )}
-          </div>
-        </>
+              })}
+            </div>
+          ))}
+        </div>
       ),
 
       sortable: true,
-      width: "140px",
+      width: "110px",
+    },
+
+    {
+      name: "Payment Date",
+      cell: (row) => (
+        <div>
+          {new Date(row.paymentDate).toLocaleDateString("en-GB", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          })}
+        </div>
+      ),
+
+      sortable: true,
+      width: "110px",
+    },
+    {
+      name: "Payment Note",
+      selector: (row) => row?.paymentNote,
+      cell: (row) => (
+        <div style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
+          {row?.paymentNote}
+        </div>
+      ),
+      sortable: true,
+      width: "150px",
     },
 
     {
@@ -360,7 +328,7 @@ const PaymentsList = () => {
           >
             <ImProfile className="text-2xl" />
           </button> */}
-          {canEdit ? (
+          {/* {canEdit ? (
             <button
               className="text-yellow-400"
               onClick={() =>
@@ -369,7 +337,7 @@ const PaymentsList = () => {
             >
               <FiEdit className="text-2xl" />
             </button>
-          ) : null}
+          ) : null} */}
           {canDelete && !isDelLoading && (
             <button
               className="text-red-500"
@@ -390,7 +358,9 @@ const PaymentsList = () => {
   // Custom header to include the row count
   const tableHeader = (
     <div>
-      <h2>Payments List:      <span> {filteredPayments.length} payments</span></h2>
+      <h2>
+        Payments List: <span> {filteredPayments.length} payments</span>
+      </h2>
     </div>
   );
 
@@ -430,60 +400,47 @@ const PaymentsList = () => {
             className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
           />
         </div>
-        {/* Payment Month Filter */}
-        <select
-          value={selectedPaymentMonth}
-          onChange={(e) => setSelectedPaymentMonth(e.target.value)}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
-        >
-          {/* Default option is the current month */}
-          <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
+       {/* Payment Month Filter */}
+<select
+  value={selectedPaymentMonth}
+  onChange={(e) => setSelectedPaymentMonth(e.target.value)}
+  className="text-sm h-8 border border-gray-300 rounded-md px-4"
+>
+  {/* Default option is the current month */}
 
-          {/* Render the rest of the months, excluding the current month */}
-          {MONTHS.map(
-            (month, index) =>
-              month !== getCurrentMonth() && (
-                <option key={index} value={month}>
-                  {month}
-                </option>
-              )
-          )}
-        </select>
-        {/* Service Type Filter */}
-        <select
-          value={selectedServiceType}
-          onChange={(e) => setSelectedServiceType(e.target.value)}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
-        >
-          <option value="">All Services</option>
-          {servicesList.map((service, index) => (
-            <option key={index} value={service?.serviceType}>
-              {service?.serviceType}
-            </option>
-          ))}
-        </select>
+  <option value="">All Months</option>
+  <option value="">{getCurrentMonth()}</option>
 
-        {/* Paymentd Filter */}
-        <select
-          value={discountedFilter}
-          onChange={(e) => setDiscountedFilter(e.target.value)}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
-        >
-          <option value="">All discounts</option>
-          <option value="Discounted">Discounted</option>
-          <option value="Not Discounted">Not Discounted</option>
-        </select>
+  {/* Render the rest of the months, excluding the current month */}
+  {MONTHS.map((month, index) => {
+    if (month !== getCurrentMonth()) {
+      return (
+        <option key={index} value={month}>
+          {month}
+        </option>
+      );
+    }
+    return null; // Ensure there's no option for the current month if it's already included
+  })}
+</select>
 
-        {/* Paid Filter */}
-        <select
-          value={paidFilter}
-          onChange={(e) => setPaidFilter(e.target.value)}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
-        >
-          <option value="">All payments</option>
-          <option value="paid">Paid</option>
-          <option value="unpaid">Unpaid</option>
-        </select>
+{/* Service Type Filter */}
+<select
+  value={selectedPaymentType}
+  onChange={(e) => setSelectedPaymentType(e.target.value)}
+  className="text-sm h-8 border border-gray-300 rounded-md px-4"
+>
+  {/* Option for all payment types */}
+  <option value="">All Types</option>
+
+  {/* Render available payment types */}
+  {PaymentTypes.map((paym, index) => (
+    <option key={index} value={paym}>
+      {paym}
+    </option>
+  ))}
+</select>
+
       </div>
       <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
         <DataTable
