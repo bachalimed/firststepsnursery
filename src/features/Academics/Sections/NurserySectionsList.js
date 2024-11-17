@@ -413,6 +413,17 @@ const handleCloseDeleteModal = () => {
       button: true,
     },
   ];
+ // Custom header to include the row count
+ const tableHeader = (
+  <div>
+    <h2>Sections List: 
+    <span> {filteredSections.length} users</span></h2>
+  </div>
+);
+
+
+
+
   let content;
   if (isLoading) content = <LoadingStateIcon />;
   if (isError) {
@@ -448,6 +459,7 @@ const handleCloseDeleteModal = () => {
 
       <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
         <DataTable
+        title={tableHeader}
           columns={column}
           data={filteredSections}
           pagination
@@ -456,15 +468,31 @@ const handleCloseDeleteModal = () => {
           pageSizeControl
           onSelectedRowsChange={handleRowSelected}
           selectableRowsHighlight
+          customStyles={{
+            headCells: {
+              style: {
+                // Apply Tailwind style via a class-like syntax
+                justifyContent: 'center', // Align headers to the center
+                textAlign: 'center', // Center header text
+              },
+            },
+            // cells: {
+            //   style: {
+            //     justifyContent: 'center', // Center cell content
+            //     textAlign: 'center',
+            //   },
+            // },
+          }}
+
         ></DataTable>
         <div className="flex justify-end items-center space-x-4">
         {isAdmin && (  <button
             className=" px-4 py-2 bg-green-500 text-white rounded"
             onClick={() => navigate("/academics/sections/newSection/")}
-            disabled={selectedRows.length !== 1} // Disable if no rows are selected
+            //disabled={selectedRows.length !== 1} // Disable if no rows are selected
             hidden={!canCreate}
           >
-            New Nursery Section
+            New Section
           </button> )}
 
         </div> 

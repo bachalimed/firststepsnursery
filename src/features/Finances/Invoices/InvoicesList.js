@@ -1,5 +1,4 @@
 import {
-
   useGetInvoicesByYearQuery,
   useDeleteInvoiceMutation,
 } from "./invoicesApiSlice";
@@ -42,7 +41,6 @@ const InvoicesList = () => {
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idInvoiceToDelete, setIdInvoiceToDelete] = useState(null); // State to track which document to delete
-  
 
   //function to return curent month for month selection
   const getCurrentMonth = () => {
@@ -168,7 +166,9 @@ const InvoicesList = () => {
 
       const meetsPaidCriteria =
         !paidFilter ||
-        (paidFilter === "paid" ? invoi.isFullyPaid : !invoi.isFullyPaid);
+        (paidFilter === "paid"
+          ? invoi.invoiceIsFullyPaid
+          : !invoi.invoiceIsFullyPaid);
       const meetsServiceTypeCriteria =
         !selectedServiceType ||
         invoi.enrolments[0]?.serviceType === selectedServiceType;
@@ -184,7 +184,7 @@ const InvoicesList = () => {
       );
     });
   }
-
+  console.log(filteredInvoices, "filteredInvoices");
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
@@ -249,13 +249,9 @@ const InvoicesList = () => {
     },
     {
       name: "Invoiced", //means authorised
-      selector: (row) => (
-        
-          <div>{row?.invoiceAmount} </div>
-        
-      ),
+      selector: (row) => <div>{row?.invoiceAmount} </div>,
       sortable: true,
-      
+
       width: "110px",
     },
     {
@@ -288,8 +284,14 @@ const InvoicesList = () => {
 
       selector: (row) => (
         <div>
-          <div>{row?.invoiceDiscountType ? `-${row?.invoiceDiscountType}` : "--"}</div>
-          <div>{row?.invoiceDiscountAmount !=="0"? `-${row?.invoiceDiscountAmount}` : "--"}</div>
+          <div>
+            {row?.invoiceDiscountType ? `-${row?.invoiceDiscountType}` : "--"}
+          </div>
+          <div>
+            {row?.invoiceDiscountAmount !== "0"
+              ? `-${row?.invoiceDiscountAmount}`
+              : "--"}
+          </div>
         </div>
       ),
 
@@ -302,7 +304,6 @@ const InvoicesList = () => {
       selector: (row) => (
         <>
           <div>
-            on{" "}
             {new Date(row.invoiceDueDate).toLocaleDateString("en-GB", {
               year: "numeric",
               month: "2-digit",
@@ -313,7 +314,7 @@ const InvoicesList = () => {
       ),
 
       sortable: true,
-      width: "140px",
+      width: "130px",
     },
 
     // {
@@ -330,28 +331,33 @@ const InvoicesList = () => {
       selector: (row) => (
         <>
           <div>
-            on{" "}
-            {new Date(row.invoiceEnrolment?.PAidOn).toLocaleDateString(
-              "en-GB",
-              {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-              }
+            {row?.invoicePayment?.paymentDate ? (
+              <>
+                {new Date(row.invoicePayment.paymentDate).toLocaleDateString(
+                  "en-GB",
+                  {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                  }
+                )}
+              </>
+            ) : (
+              "--"
             )}
           </div>
         </>
       ),
 
       sortable: true,
-      width: "140px",
+      width: "130px",
     },
 
     {
       name: "Actions",
       cell: (row) => (
         <div className="space-x-1">
-         {/* {! row?.invoiceIsFullyPaid&& <button
+          {/* {! row?.invoiceIsFullyPaid&& <button
             className="text-teal-500"
             fontSize={20}
             onClick={() =>
@@ -390,8 +396,10 @@ const InvoicesList = () => {
   // Custom header to include the row count
   const tableHeader = (
     <div>
-      <h2>Invoices List: 
-      <span> {filteredInvoices.length} invoices</span></h2>
+      <h2>
+        Invoices List:
+        <span> {filteredInvoices.length} invoices</span>
+      </h2>
     </div>
   );
 
@@ -439,7 +447,7 @@ const InvoicesList = () => {
         >
           {/* Default option is the current month */}
           <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
-
+          <option value="">All Months</option>
           {/* Render the rest of the months, excluding the current month */}
           {MONTHS.map(
             (month, index) =>
@@ -497,6 +505,21 @@ const InvoicesList = () => {
           pageSizeControl
           onSelectedRowsChange={handleRowSelected}
           selectableRowsHighlight
+          customStyles={{
+            headCells: {
+              style: {
+                // Apply Tailwind style via a class-like syntax
+                justifyContent: "center", // Align headers to the center
+                textAlign: "center", // Center header text
+              },
+            },
+            // cells: {
+            //   style: {
+            //     justifyContent: 'center', // Center cell content
+            //     textAlign: 'center',
+            //   },
+            // },
+          }}
         ></DataTable>
         <div className="flex justify-end items-center space-x-4">
           <div className="flex justify-end items-center space-x-4">

@@ -278,6 +278,13 @@ console.log(filteredSchoolSections,'filteredSchoolSections')
     //   width: "220px",
     // },
   ];
+    // Custom header to include the row count
+    const tableHeader = (
+      <div>
+        <h2>Users List: 
+        <span> {filteredSchoolSections.length} users</span></h2>
+      </div>
+    );
   let content;
   if (isLoading) content = <LoadingStateIcon />;
   if (isError) {
@@ -312,6 +319,7 @@ console.log(filteredSchoolSections,'filteredSchoolSections')
       </div>
       <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
         <DataTable
+          title={tableHeader}
           columns={column}
           data={filteredSchoolSections}
           pagination
@@ -320,6 +328,21 @@ console.log(filteredSchoolSections,'filteredSchoolSections')
           pageSizeControl
           onSelectedRowsChange={handleRowSelected}
           selectableRowsHighlight
+          customStyles={{
+            headCells: {
+              style: {
+                // Apply Tailwind style via a class-like syntax
+                justifyContent: 'center', // Align headers to the center
+                textAlign: 'center', // Center header text
+              },
+            },
+            // cells: {
+            //   style: {
+            //     justifyContent: 'center', // Center cell content
+            //     textAlign: 'center',
+            //   },
+            // },
+          }}
         ></DataTable>
       </div>
     </>

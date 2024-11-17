@@ -677,6 +677,21 @@ const AdmissionsList = () => {
             pageSizeControl
             onSelectedRowsChange={handleRowSelected}
             selectableRowsHighlight
+            customStyles={{
+              headCells: {
+                style: {
+                  // Apply Tailwind style via a class-like syntax
+                  justifyContent: "center", // Align headers to the center
+                  textAlign: "center", // Center header text
+                },
+              },
+              // cells: {
+              //   style: {
+              //     justifyContent: 'center', // Center cell content
+              //     textAlign: 'center',
+              //   },
+              // },
+            }}
           ></DataTable>
 
           <div className="flex justify-end items-center space-x-4">

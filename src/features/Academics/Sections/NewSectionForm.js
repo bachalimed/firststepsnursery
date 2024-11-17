@@ -93,7 +93,7 @@ const NewSectionForm = () => {
     isError: isStudentError,
     error: studentError,
   } = useGetStudentsByYearQuery(
-    {
+    {criteria:"activeStudents",
       selectedYear: selectedAcademicYear?.title,
       endpointName: "NewSectionForm",
     } || {},
