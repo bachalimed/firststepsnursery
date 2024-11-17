@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-
+import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
 import useAuth from "../../../../hooks/useAuth";
 import {
@@ -52,11 +52,10 @@ const AnimatorsAssignmentsList = () => {
       endpointName: "AnimatorsAssignmentList",
     } || {},
     {
-      //this param will be passed in req.params to select only employees for taht year
-      //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+   
       //pollingInterval: 60000,//will refetch data every 60seconds
-      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
-      refetchOnMountOrArgChange: true, //refetch when we remount the component
+      refetchOnFocus: true, 
+      refetchOnMountOrArgChange: true,
     }
   );
   const {
@@ -70,7 +69,7 @@ const AnimatorsAssignmentsList = () => {
 
   const {
     data: assignments, //the data is renamed schools
-    isLoading: isAssignmentsLoading, //monitor several situations is loading...
+    isLoading: isAssignmentsLoading, 
     isSuccess: isAssignmentsSuccess,
     isError: isAssignmentsError,
     error: assignmentsError,
@@ -306,13 +305,13 @@ const AnimatorsAssignmentsList = () => {
    // Custom header to include the row count
    const tableHeader = (
     <div>
-      <h2>Users List: 
-      <span> {filteredAssignments.length} users</span></h2>
+      <h2>Assignments List: 
+      <span> {filteredAssignments.length} assignments</span></h2>
     </div>
   );
   let content;
 
-  if (isSchoolLoading) content = <p>Loading...</p>;
+  if (isSchoolLoading) content = <> <Academics /><LoadingStateIcon/>...</>;
 
   if (isSchoolError) {
     content = <p className="errmsg">{schoolError?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error

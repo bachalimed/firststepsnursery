@@ -133,8 +133,8 @@ const StudentDocumentsList = ({ student }) => {
   }, [selectedAcademicYear]);
 
   const {
-    data: studentDocumentsListing, //the data is renamed parents
-    isLoading: listIsLoading, //monitor several situations
+    data: studentDocumentsListing, 
+    isLoading: listIsLoading, 
     isSuccess: listIsSuccess,
     isError: listIsError,
     error: listError,
@@ -145,7 +145,7 @@ const StudentDocumentsList = ({ student }) => {
       endpointName: "StudentDocumentsList",
     } || {},
     {
-      pollingInterval: 60000, //will refetch data every 60seconds
+      pollingInterval: 60000, 
       refetchOnFocus: true,
       refetchOnMountOrArgChange: true,
     }

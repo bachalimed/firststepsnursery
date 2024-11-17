@@ -33,15 +33,15 @@
 
 // //get several things from the query
 // const {
-//   data: parents,//the data is renamed parents
+//   data: parents,
 //   isLoading: isParentLoading,//monitor several situations
 //   isSuccess: isParentSuccess,
 //   isError: isParentError,
 //   error: parentError
-// } = useGetParentsByYearQuery({selectedYear:'1000' ,endpointName: 'parentsList'}||{},{//this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-//   //pollingInterval: 60000,//will refetch data every 60seconds
-//   refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
-//   refetchOnMountOrArgChange: true//refetch when we remount the component
+// } = useGetParentsByYearQuery({selectedYear:'1000' ,endpointName: 'parentsList'}||{},{
+//   //pollingInterval: 60000,
+//   refetchOnFocus: true,
+//   refetchOnMountOrArgChange: true
 // })
 
 // //this ensures teh selected year is chosen before running hte useeffect it is working perfectly to dispaptch the selected year
@@ -53,10 +53,10 @@
 //         isError:isStudentError,
 //         error:studentError
 // } = useGetStudentsByYearQuery({selectedYear:'1000' ,endpointName: 'studentsList'}||{},{//this param will be passed in req.params to select only students for taht year
-//   //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-//   //pollingInterval: 60000,//will refetch data every 60seconds
-//   refetchOnFocus: true,//when we focus on another window then come back to the window ti will refetch data
-//   refetchOnMountOrArgChange: true//refetch when we remount the component
+//  
+//   //pollingInterval: 60000,
+//   refetchOnFocus: true,
+//   refetchOnMountOrArgChange: true
 // })
 
 // // State to hold selected rows

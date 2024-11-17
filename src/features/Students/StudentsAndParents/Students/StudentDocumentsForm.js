@@ -47,8 +47,8 @@
 //  const{userId,canEdit, canDelete, canAdd, canCreate, isParent, status2}=useAuth()
 
 // const {
-//     data: studentDocumentsListsList,//the data is renamed parents
-//     isLoading: listsListIsLoading,//monitor several situations
+//     data: studentDocumentsListsList,
+//     isLoading: listsListIsLoading,
 //     isSuccess: listsListIsSuccess,
 //     isError: listsListIsError,
 //     error: listsListError

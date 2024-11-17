@@ -64,28 +64,13 @@ const NewEnrolmentForm = () => {
       endpointName: "NewEnrolmentForm",
     } || {},
     {
-      //this param will be passed in req.params to select only admissions for taht year
-      //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-      pollingInterval: 60000, //will refetch data every 60seconds
-      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
-      refetchOnMountOrArgChange: true, //refetch when we remount the component
+      
+      pollingInterval: 60000, 
+      refetchOnFocus: true, 
+      refetchOnMountOrArgChange: true, 
     }
   );
-  // const {
-  //   data: students,
-  //   isLoading: isStudentsLoading,
-  //   isSuccess: isStudentsSuccess,
-  // } = useGetStudentsByYearQuery(
-  //   {
-  //     selectedYear: selectedAcademicYear?.title,
-  //     criteria: "withAdmission",
-  //     endpointName: "studentsList",
-  //   },
-  //   {
-  //     refetchOnFocus: true,
-  //     refetchOnMountOrArgChange: true,
-  //   }
-  // );
+ 
   let noEnrolmentStudentsList = [];
   // List for dropdowns
   // const studentsList = isStudentsSuccess

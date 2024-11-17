@@ -65,11 +65,9 @@ const EmployeesList = () => {
       endpointName: "employeesList",
     } || {},
     {
-      //this param will be passed in req.params to select only employees for taht year
-      //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-      //pollingInterval: 60000,//will refetch data every 60seconds
-      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
-      refetchOnMountOrArgChange: true, //refetch when we remount the component
+     
+      refetchOnFocus: true, 
+      refetchOnMountOrArgChange: true, 
     }
   );
 

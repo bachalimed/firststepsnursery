@@ -168,9 +168,6 @@ if (isError) {
 
 // if (isSuccess ) {
 
-
-  
-
 return (
   <>
   <AcademicsSet/>

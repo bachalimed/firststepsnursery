@@ -37,9 +37,9 @@ const UsersList = () => {
     isError: isUsersError,
     error: usersError,
   } = useGetUsersQuery("usersList", {
-    //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
+   
     pollingInterval: 60000, //will refetch data every 60seconds
-    refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
+    refetchOnFocus: true, 
     refetchOnMountOrArgChange: true, //refetch when we remount the component
   });
 
@@ -59,7 +59,7 @@ const UsersList = () => {
 
   //the serach result data
   let usersList;
-  let filteredUsers;
+  let filteredUsers=[];
   if (isUsersSuccess) {
     const { entities } = users;
     usersList = Object.values(entities);
@@ -449,7 +449,7 @@ const UsersList = () => {
             columns={column}
             data={filteredUsers}
             pagination
-            selectableRows
+            //selectableRows
             removableRows
             pageSizeControl
             onSelectedRowsChange={handleRowSelected}

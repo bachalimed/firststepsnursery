@@ -21,24 +21,11 @@ const EditPayment = () => {
     isError: isPaymentError,
     error: paymentError,
   } = useGetPaymentByIdQuery({ id: id, endpointName: "EditPayment" } || {}, {
-    // "dry" will not ppoulate children fully
-    //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-    //pollingInterval: 60000,//will refetch data every 60seconds
-    refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
-    refetchOnMountOrArgChange: true, //refetch when we remount the component
+   
+    refetchOnFocus: true, 
+    refetchOnMountOrArgChange: true, 
   });
-  //console.log('hiiiiiiiiiiii')
-  // useEffect(() => {
-  //   if (isPaymentSuccess) {
-       //console.log('helllllow',paymentToEdit, 'mystu')
-  //     //const paymentInit = Object.values(paymentToEdit.entities)
-  //     // setPayment(paymentToEdit); // Set payment state to the first object
-  //     //console.log('helllllow',payment, 'mystu')
-  //   }
-  // // }, [isPaymentSuccess, paymentToEdit]);
-  // let paymentTE = isPaymentSuccess
-  // ? Object.values(paymentToEdit.entities)
-  // : null;
+ 
   let content;
 
   content = paymentToEdit ? (

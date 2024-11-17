@@ -38,16 +38,14 @@ const NewExpenseForm = () => {
       endpointName: "NewExpenseForm",
     } || {},
     {
-      //this param will be passed in req.params to select only employees for taht year
-      //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-      //pollingInterval: 60000,//will refetch data every 60seconds
-      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
-      refetchOnMountOrArgChange: true, //refetch when we remount the component
+   
+      refetchOnFocus: true, 
+      refetchOnMountOrArgChange: true, 
     }
   );
   const {
-    data: schools, //the data is renamed schools
-    isLoading: isSchoolLoading, //monitor several situations is loading...
+    data: schools,
+    isLoading: isSchoolLoading,
     isSuccess: isSchoolSuccess,
     isError: isSchoolError,
     error: schoolError,
@@ -56,8 +54,8 @@ const NewExpenseForm = () => {
   }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
 
   const {
-    data: expenses, //the data is renamed schools
-    isLoading: isExpensesLoading, //monitor several situations is loading...
+    data: expenses,
+    isLoading: isExpensesLoading,
     isSuccess: isExpensesSuccess,
     isError: isExpensesError,
     error: expensesError,

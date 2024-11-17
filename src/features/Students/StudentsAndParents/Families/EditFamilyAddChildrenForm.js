@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../../../config/UserRoles";
 import { ACTIONS } from "../../../../config/UserActions";
-import Students from "../../Students";
+
 import { useGetFamiliesByYearQuery } from "./familiesApiSlice";
 import { useGetStudentsByYearQuery } from "../Students/studentsApiSlice";
 import { useContext } from "react";
@@ -21,7 +21,7 @@ export default function EditFamilyAddChildrenForm() {
   //console.log(children,'children frist in add children')
   const [isUpdatingChildren, setIsUpdatingChildren] = useState(false); //to ensure state properly updated
   const {
-    data: students, //the data is renamed parents
+    data: students, 
     isLoading: isStudentListLoading, //monitor several situations
     isSuccess: isStudentListSuccess,
     isError: isStudentListError,
@@ -33,10 +33,9 @@ export default function EditFamilyAddChildrenForm() {
       endpointName: "EditFamilyAddChildrenForm",
     } || {},
     {
-      //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-      //pollingInterval: 60000,//will refetch data every 60seconds
-      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
-      refetchOnMountOrArgChange: true, //refetch when we remount the component
+      
+      refetchOnFocus: true, 
+      refetchOnMountOrArgChange: true,
     }
   );
   let studentsList = [];

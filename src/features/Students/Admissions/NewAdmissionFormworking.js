@@ -20,9 +20,13 @@ import { ACTIONS } from "../../../config/UserActions";
 import useAuth from "../../../hooks/useAuth";
 import { useGetAcademicYearsQuery } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
 import { selectAllAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import { OBJECTID_REGEX, DATE_REGEX, FEE_REGEX, COMMENT_REGEX } from "../../../Components/lib/Utils/REGEX"
+import {
+  OBJECTID_REGEX,
+  DATE_REGEX,
+  FEE_REGEX,
+  COMMENT_REGEX,
+} from "../../../Components/lib/Utils/REGEX";
 //constrains on inputs when creating new user
-
 
 const NewAdmissionForm = () => {
   const { isAdmin, userId } = useAuth();
@@ -53,7 +57,7 @@ const NewAdmissionForm = () => {
         feeValue: null,
         feePeriod: "",
         feeStartDate: "",
-        
+
         isFlagged: false,
         //authorisedBy:"", it will generate error in mongo if ""
         comment: "",
@@ -74,17 +78,14 @@ const NewAdmissionForm = () => {
       endpointName: "NewAdmissionForm",
     } || {},
     {
-      //this param will be passed in req.params to select only students for taht year
-      //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-      // pollingInterval: 60000,//will refetch data every 60seconds
-      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
-      refetchOnMountOrArgChange: true, //refetch when we remount the component
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
 
   const {
-    data: services, //the data is renamed services
-    isLoading: isServicesLoading, //monitor several situations is loading...
+    data: services,
+    isLoading: isServicesLoading,
     isSuccess: isServicesSuccess,
     isError: isServicesError,
     error: servicesError,
@@ -94,11 +95,8 @@ const NewAdmissionForm = () => {
       endpointName: "NewAdmissionForm",
     } || {},
     {
-      //this param will be passed in req.params to select only services for taht year
-      //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-      //pollingInterval: 60000,//will refetch data every 60seconds
-      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
-      refetchOnMountOrArgChange: true, //refetch when we remount the component
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
 
@@ -109,7 +107,6 @@ const NewAdmissionForm = () => {
   const servicesList = isServicesSuccess
     ? Object.values(services.entities)
     : [];
-
 
   const [validity, setValidity] = useState({
     validStudent: false,
@@ -138,15 +135,16 @@ const NewAdmissionForm = () => {
   }, [formData]);
 
   console.log(
-  validity.validStudent,
-  validity.validAdmissionYear,
-  validity.validAdmissionDate,
-  validity.validService, 'feevalue:',
-  validity.validFeeValue,
-  validity.validFeePeriod,'feestart:',
-  validity.validFeeStartDate,
-
-  )
+    validity.validStudent,
+    validity.validAdmissionYear,
+    validity.validAdmissionDate,
+    validity.validService,
+    "feevalue:",
+    validity.validFeeValue,
+    validity.validFeePeriod,
+    "feestart:",
+    validity.validFeeStartDate
+  );
 
   // Handle form input changes
   const handleInputChange = (e) => {
@@ -178,8 +176,7 @@ const NewAdmissionForm = () => {
         formData?.agreedServices[0]?.feePeriod &&
         selectedService.serviceAnchor.oneTimeOff
       ) {
-        const serviceAnchorValue =
-          selectedService.serviceAnchor.oneTimeOff; // Get the corresponding serviceAnchor value
+        const serviceAnchorValue = selectedService.serviceAnchor.oneTimeOff; // Get the corresponding serviceAnchor value
         //console.log(serviceAnchorValue, 'service anchor value');
 
         // If the agreedFee is less than the serviceAnchor value, set isFlagged to true
@@ -218,8 +215,7 @@ const NewAdmissionForm = () => {
     const { name, value } = e.target;
     const updatedFees = [...formData.agreedServices];
     updatedFees[index][name] = value;
-   
-  
+
     setFormData((prevData) => ({
       ...prevData,
       agreedServices: updatedFees,
@@ -378,8 +374,8 @@ const NewAdmissionForm = () => {
                 >
                   <option value="">Select Service</option>
                   {servicesList.map((service) => (
-                  //  (service.serviceType==="Admission")&&
-                  //(selectedServiceIds)&&
+                    //  (service.serviceType==="Admission")&&
+                    //(selectedServiceIds)&&
                     <option key={service.id} value={service.id}>
                       {service.serviceType}
                     </option>
@@ -445,18 +441,23 @@ const NewAdmissionForm = () => {
               </div>
 
               {/* Comment Input Field */}
-              
-            <div>
-              <label htmlFor={`comment-${index}`} className="block text-sm font-medium text-gray-700">Comment</label>
-              <input
-                type="text"
-                id={`comment-${index}`}
-                name="comment"
-                value={fee.comment}
-                onChange={(e) => handleAgreedServicesChange(index, e)}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              />
-            </div>
+
+              <div>
+                <label
+                  htmlFor={`comment-${index}`}
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Comment
+                </label>
+                <input
+                  type="text"
+                  id={`comment-${index}`}
+                  name="comment"
+                  value={fee.comment}
+                  onChange={(e) => handleAgreedServicesChange(index, e)}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                />
+              </div>
 
               {/* Fee Start Date */}
               <div>
@@ -503,7 +504,6 @@ const NewAdmissionForm = () => {
           >
             Add Agreed Service
           </button>
-          
         </div>
 
         {/* Submit Button */}

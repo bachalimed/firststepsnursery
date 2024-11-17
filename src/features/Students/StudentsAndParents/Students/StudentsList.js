@@ -1,5 +1,4 @@
 import {
-  useGetStudentsQuery,
   useUpdateStudentMutation,
   useGetStudentsByYearQuery,
   useDeleteStudentMutation,
@@ -30,7 +29,6 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { setAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
 import useAuth from "../../../../hooks/useAuth";
-
 import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
 import {
   setSomeStudents,
@@ -38,65 +36,56 @@ import {
   currentStudentsList,
 } from "./studentsSlice";
 import { IoDocumentAttachOutline } from "react-icons/io5";
-
+import { gradeOptions } from "../../../../config/Constants";
 const StudentsList = () => {
+
   //this is for the academic year selection
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  //variables to be used for authorisation
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
-  const [selectedGrade, setSelectedGrade] = useState(""); // New state for grade filter
-  const [selectedSchoolName, setSelectedSchoolName] = useState(""); // School name filter
+  //filter states
+  const [selectedGrade, setSelectedGrade] = useState("");
+  const [selectedSchoolName, setSelectedSchoolName] = useState("");
+  //selected academicYears
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-  // useEffect(() => {
-  //     if (selectedAcademicYearId) {
-  //         // Fetch the students for the selected academic year, if required
-  //         console.log('Fetch students for academic year Id:', selectedAcademicYearId);
-  //     }
-  // }, [selectedAcademicYearId]);
-
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idStudentToDelete, setIdStudentToDelete] = useState(null); // State to track which document to delete
 
-  //console.log("Fetch students for academic year:", selectedAcademicYear);
+  //query the students
   const {
     data: students, //the data is renamed students
-    isLoading, //monitor several situations is loading...
-    isSuccess,
-    isError,
-    error,
+    isLoading:isStudentsLoading, //monitor several situations is loading...
+    isSuccess:isStudentsSuccess,
+    isError:isStudentsError,
+    error:studentsError,
   } = useGetStudentsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
       endpointName: "studentsList",
     } || {},
     {
-      //this param will be passed in req.params to select only students for taht year
-      //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-      pollingInterval: 60000, //will refetch data every 60seconds
-      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
-      refetchOnMountOrArgChange: true, //refetch when we remount the component
+      
+      pollingInterval: 60000,
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
   const {
-    data: attendedSchoolsList, //the data is renamed parents
-    isLoading: schoolIsLoading, //monitor several situations
+    data: attendedSchoolsList,
+    isLoading: schoolIsLoading,
     isSuccess: schoolIsSuccess,
     isError: schoolIsError,
     error: schoolError,
-  } = useGetAttendedSchoolsQuery(
-    { endpointName: "StudentsList" } || {},
-    {
-      //this inside the brackets is using the listeners in store.js to update the data we use on multiple access devices
-      //pollingInterval: 60000,//will refetch data every 60seconds
-      refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
-      refetchOnMountOrArgChange: true, //refetch when we remount the component
-    }
-  );
+  } = useGetAttendedSchoolsQuery({ endpointName: "StudentsList" } || {}, {
+    //pollingInterval: 60000
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
+  });
 
   //initialising the delete Mutation
   const [
@@ -111,8 +100,8 @@ const StudentsList = () => {
 
   // Function to handle the delete button click
   const onDeleteStudentClicked = (id) => {
-    setIdStudentToDelete(id); // Set the document to delete
-    setIsDeleteModalOpen(true); // Open the modal
+    setIdStudentToDelete(id);
+    setIsDeleteModalOpen(true);
   };
 
   // Function to confirm deletion in the modal
@@ -137,26 +126,19 @@ const StudentsList = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   //state to hold the search query
   const [searchQuery, setSearchQuery] = useState("");
-  //const [filteredStudents, setFilteredStudents] = useState([])
-  //we need to declare the variable outside of if statement to be able to use it outside later
+
   let studentsList = [];
   let filteredStudents = [];
-  let attendedSchools;
-  if (schoolIsSuccess) {
-    const { entities } = attendedSchoolsList;
-    attendedSchools = Object.values(entities);
-    //console.log(attendedSchools,'attendedSchools')
-  }
-  if (isSuccess) {
-    //set to the state to be used for other component s and edit student component
 
-    const { entities } = students;
+  const attendedSchools = schoolIsSuccess
+    ? Object.values(attendedSchoolsList.entities)
+    : [];
+  if (isStudentsSuccess) {
+       const { entities } = students;
 
-    //we need to change into array to be read??
-    studentsList = Object.values(entities); //we are using entity adapter in this query
+    studentsList = Object.values(entities); 
     dispatch(setStudents(studentsList)); //timing issue to update the state and use it the same time
 
-    //the serach result data
     // Apply filters to the students list
     filteredStudents = studentsList.filter((student) => {
       // Search filter
@@ -193,27 +175,17 @@ const StudentsList = () => {
     });
   }
   const handleSearch = (e) => setSearchQuery(e.target.value);
-  const handleGradeChange = (e) => setSelectedGrade(e.target.value); // Update selected grade
+  const handleGradeChange = (e) => setSelectedGrade(e.target.value); 
   const handleSchoolChange = (e) => setSelectedSchoolName(e.target.value);
   // UI component for grade filter dropdown
-  const gradeOptions = ["0", "1", "2", "3", "4", "5", "6", "7"]; // Add appropriate grade options
+ 
   // Handler for selecting rows
   const handleRowSelected = (state) => {
     setSelectedRows(state.selectedRows);
     //console.log('selectedRows', selectedRows)
   };
-
-  // Handler for duplicating selected rows,
-  const handleDuplicateSelected = () => {
-    //console.log('Selected Rows to duplicate:', selectedRows);
-    // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
-    //ensure only one can be selected: the last one
-    const toDuplicate = selectedRows[-1];
-
-    setSelectedRows([]); // Clear selection after delete
-  };
-
-  const [
+//update to be used on registering student
+    const [
     updateStudent,
     {
       isLoading: isUpdateLoading,
@@ -225,34 +197,24 @@ const StudentsList = () => {
   const [studentObject, setStudentObject] = useState("");
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
 
-  //console.log(academicYears)
+ 
   // Handler for registering selected row,
   const [studentYears, setStudentYears] = useState([]);
   const handleRegisterSelected = () => {
     //we already allowed only one to be selected in the button options
-    //console.log('Selected Rows to detail:', selectedRows)
-
     setStudentObject(selectedRows[0]);
-    //console.log(studentObject, "studentObject");
-    //const {studentYears}= (studentObject)
-
     setStudentYears(studentObject.studentYears);
     //console.log("student years and id", studentYears);
     setIsRegisterModalOpen(true);
-
     //setSelectedRows([]); // Clear selection after process
   };
 
   // This is called when saving the updated student years from the modal
   const onUpdateStudentClicked = async (updatedYears) => {
-    //console.log("Updated studentYears from modal:", updatedYears);
-
     const updatedStudentObject = {
       ...studentObject,
       studentYears: updatedYears, // Merge updated studentYears
     };
-
-    //console.log("Saving updated student:", updatedStudentObject);
 
     try {
       await updateStudent(updatedStudentObject); // Save updated student to backend
@@ -260,33 +222,22 @@ const StudentsList = () => {
     } catch (error) {
       console.log("Error saving student:", error);
     }
-
     setIsRegisterModalOpen(false); // Close modal
   };
 
-  //const [studentYears, setStudentYears] = useState([])
-  //adds to the previous entries in arrays for gardien, schools...
-  const onStudentYearsChanged = (e, selectedYear) => {
-    if (e.target.checked) {
-      // Add the selectedYear to studentYears if it's checked
-      setStudentYears([...studentYears, selectedYear]);
-    } else {
-      // Remove the selectedYear from studentYears if it's unchecked
-      setStudentYears(studentYears.filter((year) => year !== selectedYear));
-    }
-  };
+
 
   const column = [
     {
-      name: "#", // New column for entry number
+      name: "#",
       cell: (row, index) => index + 1, // Display the index + 1 (for 1-based numbering)
       sortable: false,
       width: "50px",
     },
-    //show this column only if user is a parent and not employee
+    
     {
       name: "Active",
-      selector: (row) => row.studentIsActive, //changed from userSex
+      selector: (row) => row.studentIsActive,
       cell: (row) => (
         <span>
           {row.studentIsActive ? (
@@ -354,8 +305,6 @@ const StudentsList = () => {
         const studentYearForSelectedYear = row.studentYears.find(
           (year) => year.academicYear === selectedAcademicYear.title
         );
-        // console.log(studentYearForSelectedYear,'studentYearForSelectedYear')
-        //console.log(selectedAcademicYear,'selectedAcademicYear')
 
         // Get the grade from the found student year
         const gradeForSelectedYear = studentYearForSelectedYear?.grade;
@@ -395,14 +344,6 @@ const StudentsList = () => {
       sortable: true,
       width: "100px",
     },
-    // {name: "Father",
-    //   selector:row=>row.studentFather._id,
-    //   sortable:true
-    // },
-    // {name: "Mother",
-    //   selector:row=>row.studentMother._id,
-    //   sortable:true
-    // },
 
     {
       name: "Admissions",
@@ -476,18 +417,20 @@ const StudentsList = () => {
   // Custom header to include the row count
   const tableHeader = (
     <div>
-      <h2>Students List: 
-      <span> {filteredStudents.length} students</span></h2>
+      <h2>
+        Students List:
+        <span> {filteredStudents.length} students</span>
+      </h2>
     </div>
   );
 
   //console.log(filteredStudents, "filteredStudents");
   let content;
-  if (isLoading) content = <LoadingStateIcon />;
-  if (isError) {
-    content = <p className="errmsg">{error?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
+  if (isStudentsLoading) content = <LoadingStateIcon />;
+  if (isStudentsError) {
+    content = <p className="errmsg">{studentsError?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
   }
-  //if (isSuccess){
+  if (isStudentsSuccess || filteredStudents?.length>0){
 
   content = (
     <>
@@ -538,7 +481,7 @@ const StudentsList = () => {
       </div>
       <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
         <DataTable
-        title={tableHeader}
+          title={tableHeader}
           columns={column}
           data={filteredStudents}
           pagination
@@ -566,23 +509,22 @@ const StudentsList = () => {
         <div className="flex justify-end items-center space-x-4">
           <button
             className="px-3 py-2 bg-green-500 text-white rounded"
-            onClick={()=>navigate("/students/studentsParents/newStudent/")}
+            onClick={() => navigate("/students/studentsParents/newStudent/")}
             // disabled={selectedRows.length !== 1} // Disable if no rows are selected
             hidden={!canCreate}
           >
-          New Student
+            New Student
           </button>
           <button
-          className={`px-4 py-2 ${selectedRows?.length ===1 ? 'bg-teal-500' : 'bg-gray-500'} text-white rounded`}
-
+            className={`px-4 py-2 ${
+              selectedRows?.length === 1 ? "bg-teal-500" : "bg-gray-500"
+            } text-white rounded`}
             onClick={handleRegisterSelected}
             disabled={selectedRows?.length !== 1} // Disable if no rows are selected
             hidden={!canCreate}
           >
             Register
           </button>
-
-        
         </div>
       </div>
       <DeletionConfirmModal
@@ -602,7 +544,7 @@ const StudentsList = () => {
       />
     </>
   );
-  //}
+  }
   return content;
 };
 export default StudentsList;
