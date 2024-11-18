@@ -1,15 +1,49 @@
 import { useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
-import { selectUserById } from "./usersApiSlice";
+import { selectUserById,useGetUserByIdQuery } from "./usersApiSlice";
 import useAuth from "../../../hooks/useAuth";
+import UsersManagement from "../UsersManagement";
 const UserDetails = () => {
   const { id } = useParams();
-  const user = useSelector((state) => state.user?.entities[id]);
+  //const user = useSelector((state) => state.user?.entities[id]);
+ 
+
+
   const navigate = useNavigate();
 const {isAdmin, isManager} = useAuth()
   
+ //import users using RTK query
+ const {
+  data: userToEdit, //deconstructing data into users
+  isLoading: isUserLoading,
+  isSuccess: isUserSuccess,
+  isError: isUserError,
+  error: userError,
+} = useGetUserByIdQuery(
+  {
+    id: id,
+    criteria:"userDetails",
+    endpointName: "UserDetails",
+  }, {
+ 
+  //pollingInterval: 60000, //will refetch data every 60seconds
+  refetchOnFocus: true, 
+  refetchOnMountOrArgChange: true, //refetch when we remount the component
+});
+
+const user = isUserSuccess
+? Object.values(userToEdit.entities)[0]
+: [];
+
+console.log(user,'user')
+
+
+
+
+
 
   return (
+    <> <UsersManagement />
     <div className="max-w-4xl mx-auto mt-8 bg-white p-8 shadow-lg rounded-lg">
       <h1 className="text-2xl font-bold mb-6 text-gray-800">
         User Details
@@ -108,6 +142,7 @@ const {isAdmin, isManager} = useAuth()
         </button>}
       </div>
     </div>
+    </>
   );
 };
 

@@ -36,8 +36,8 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         return response.status === 200 && !result.isError;
       },
 
-      ransformResponse: (responseData) => {
-        console.log(responseData, 'responsedataaaaaaa')
+      transformResponse: (responseData) => {
+        //console.log(responseData, 'responsedataaaaaaa')
         // Handle the single user object directly
         const user = { ...responseData };
         user.id = user._id;  // Change `_id` from MongoDB to `id`

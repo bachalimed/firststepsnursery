@@ -7,6 +7,7 @@ import AcademicYearsSelection from "../../AcademicYearsSelection";
 const DashboardHeader = () => {
   const { userId, username, userRoles, canEdit, canDelete, canAdd, canCreate } =
     useAuth();
+     //const { allAcademicYears, currentAcademicYear } = useAcademicYears()
 //console.log(userRoles)
   const content = (
     <header>

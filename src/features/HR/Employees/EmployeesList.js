@@ -100,21 +100,6 @@ const EmployeesList = () => {
     setIdEmployeeToDelete(null);
   };
 
-  //this ensures teh selected year is chosen before running hte useeffect it is working perfectly to dispaptch the selected year
-  // useEffect(() => {
-  //   if (selectedAcademicYear?.title) {
-  //     setSelectedYear(selectedAcademicYear.title);
-  //     //console.log('Selected year updated:', selectedAcademicYear.title)
-  //   }
-  // }, [selectedAcademicYear]);
-  //console.log('selectedAcademicYear',selectedAcademicYear)
-
-  // const myStu = useSelector(state=> state.employee)
-  // console.log(myStu, 'mystu')
-
-  //const allEmployees = useSelector(selectAllEmployees)// not the same cache list we re looking for this is from getemployees query and not getemployeebyyear wuery
-
-  //console.log('allEmployees from the state by year',allEmployees)
   // State to hold selected rows
   const [selectedRows, setSelectedRows] = useState([]);
   //state to hold the search query
@@ -131,7 +116,7 @@ const EmployeesList = () => {
     //we need to change into array to be read??
     employeesList = Object.values(entities); //we are using entity adapter in this query
     //console.log(employeesList,'employeesList')
-    dispatch(setEmployees(employeesList)); //timing issue to update the state and use it the same time
+    //dispatch(setEmployees(employeesList)); //timing issue to update the state and use it the same time
 
     //the serach result data
     filteredEmployees = employeesList?.filter((item) => {

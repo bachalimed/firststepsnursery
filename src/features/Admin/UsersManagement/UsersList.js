@@ -65,7 +65,7 @@ const UsersList = () => {
     const { entities } = users;
     usersList = Object.values(entities);
 
-    //dispatch(setUsers(usersList)); //timing issue to update the state and use it the same time
+   // dispatch(setUsers(usersList)); //timing issue to update the state and use it the same time
 
     // Filtering Logic
     filteredUsers = usersList?.filter((item) => {
