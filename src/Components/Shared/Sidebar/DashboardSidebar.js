@@ -675,7 +675,7 @@ const DashboardSidebar = () => {
                 </Link> */}
               </ul>
             )}
-            <Link to="">
+            <Link to="/settings/studentsSet/">
               <li
                 className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}
               >

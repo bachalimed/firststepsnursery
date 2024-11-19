@@ -8,10 +8,7 @@ import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useSendLogoutMutation } from "../../../features/auth/authApiSlice";
 import useAuth from "../../../hooks/useAuth";
-//these will be used to compare to the location in the url
-const DASH_REGEX = /^\/dashboard(\/)?$/;
-const TASKS_REGEX = /^\/desk\/tasks(\/)?$/;
-const USERS_REGEX = /^\/admin\/users(\/)?$/;
+import { PiUserSquare } from "react-icons/pi";
 
 const HeaderUserProfile = () => {
   const navigate = useNavigate();
@@ -47,7 +44,7 @@ const HeaderUserProfile = () => {
   const content = (
     <Menu>
       <MenuButton className=" ">
-        <LuUserCircle2 fontSize={24} />
+        <LuUserCircle2 fontSize={24} className="text-4xl text-green-500" />
       </MenuButton>
 
       <MenuItems
@@ -55,7 +52,7 @@ const HeaderUserProfile = () => {
         anchor="bottom end"
         className=" origin-top-right rounded-md border  w-36 bg-sky-100 p-1 text-sm/6 text-gray-800 transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
       >
-        <strong>Manage user profile</strong>
+        <strong>Manage profile</strong>
         {/* <MenuItem>
             
             <button onClick={()=>navigate('/login')} className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10" href="link1target1StudentsParents">
@@ -76,22 +73,22 @@ const HeaderUserProfile = () => {
             className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
             href="/target 1"
           >
-            <LuUserCircle2 className="size-4 fill-white/30" />
+            <LuUserCircle2 className="size-4 fill-white/30  "/>
             My Profile
           </button>
         </MenuItem>
-        <MenuItem>
+        {/* <MenuItem>
           <button
             onClick={() => navigate("/users/ResetPassword")}
             className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
             href="/target 1"
           >
-            {/* <LuUserCircle2 className="size-4 fill-white/30" /> */}
+           
             Reset Password
           </button>
-        </MenuItem>
+        </MenuItem> */}
 
-        <div className="my-1 h-px bg-gray-500 " />
+        <div className="my-1 h-px bg-gray-500 "></div>
         <MenuItem>{logoutButton}</MenuItem>
       </MenuItems>
     </Menu>

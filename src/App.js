@@ -4,7 +4,9 @@ import PublicLayout from "./Components/PublicLayout";
 import DashboardLayout from "./Components/DashboardLayout";
 import Public from "./pages/Public";
 import Login from "./features/auth/Login";
+
 import Dashboard from "./features/Dashboard/Dashboard";
+import StudentsDash from "./features/Dashboard/Students/StudentsDash";
 
 import Students from "./features/Students/Students"; //main tab
 import StudentsList from "./features/Students/StudentsAndParents/Students/StudentsList";
@@ -15,11 +17,11 @@ import EditFamily from "./features/Students/StudentsAndParents/Families/EditFami
 import NewStudentForm from "./features/Students/StudentsAndParents/Students/NewStudentForm";
 import StudentDetails from "./features/Students/StudentsAndParents/Students/StudentDetails";
 
-import StudentDocuments from "./features/Students/StudentsAndParents/Students/StudentDocuments";
+import StudentDocuments from "./features/Students/StudentsAndParents/Students/StudentDocuments/StudentDocuments";
 import EditStudentForm from "./features/Students/StudentsAndParents/Students/EditStudentForm";
 import StudentDocumentsListsList from "./features/AppSettings/StudentsSet/StudentDocumentsLists/StudentDocumentsListsList";
-import StudentDocumentsList from "./features/Students/StudentsAndParents/Students/StudentDocumentsList";
-import StudentDocumentsForm from "./features/Students/StudentsAndParents/Students/StudentDocumentsList";
+import StudentDocumentsList from './features/Students/StudentsAndParents/Students/StudentDocuments/StudentDocumentsList'
+
 import NewStudentDocumentsListForm from "./features/AppSettings/StudentsSet/StudentDocumentsLists/NewStudentDocumentsListForm";
 import EditStudentDocumentsList from "./features/AppSettings/StudentsSet/StudentDocumentsLists/EditStudentDocumentsList";
 import ServicesList from "./features/AppSettings/StudentsSet/NurseryServices/ServicesList";
@@ -75,6 +77,7 @@ import HR from "./features/HR/HR";//main tab
 import EmployeesList from "./features/HR/Employees/EmployeesList";
 import NewEmployeeForm from "./features/HR/Employees/NewEmployeeForm";
 import EmployeeDetails from "./features/HR/Employees/EmployeeDetails";
+import EmployeeDocuments from "./features/HR/Employees/EmployeeDocuments/EmployeeDocuments";
 import EditEmployee from "./features/HR/Employees/EditEmployee";
 
 import Chat from "./features/Desk/Chat";
@@ -167,12 +170,18 @@ const App = () => {
             {/*this wrapper will RequireAuth and protect all routes below, any role allowed to the protected routes */}
             <Route element={<Prefetch />}>
               {/*this wrapper will prefetch for all inside routes */}
+
+
               <Route path="dashboard" element={<DashboardLayout />}>
                 {" "}
                 {/*this will wrap around components that are protected by this route*/}
                 <Route index element={<Dashboard />} />{" "}
                 {/*  index will show as a default in the dashboard layout*/}
+                <Route path="studentsDash/" element={<StudentsDash />} />
+
               </Route>{" "}
+
+
               {/* end of dashboard route */}
               <Route path="students" element={<DashboardLayout />}>
                 <Route path="studentsParents">
@@ -187,7 +196,7 @@ const App = () => {
                   />
                   <Route
                     path="studentDocuments/upload/:id/"
-                    element={<StudentDocumentsForm />}
+                    //element={<StudentDocumentsForm />}
                   />
                   <Route
                     path="studentDetails/:id/"
@@ -327,6 +336,10 @@ const App = () => {
                   <Route
                     path="employeeDetails/:id/"
                     element={<EmployeeDetails />}
+                  />
+                  <Route
+                    path="employeeDocumentsList/:id/"
+                    element={<EmployeeDocuments />}
                   />
                 </Route>{" "}
                 {/* end of employees route */}

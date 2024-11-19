@@ -21,12 +21,12 @@ import { useDispatch } from "react-redux";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import { ROLES } from "../../../config/UserRoles";
 import { ACTIONS } from "../../../config/UserActions";
-import DeletionConfirmModal from '../../../Components/Shared/Modals/DeletionConfirmModal'
+import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
 const UsersList = () => {
   //initialise state variables and hooks
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { canEdit, canDelete, canAdd, canCreate, isParent, status2 } =
+  //const dispatch = useDispatch();
+  const { canEdit, canDelete, canView,canAdd, canCreate, isParent, status2 } =
     useAuth();
   const [selectedRows, setSelectedRows] = useState([]);
 
@@ -38,9 +38,8 @@ const UsersList = () => {
     isError: isUsersError,
     error: usersError,
   } = useGetUsersQuery("usersList", {
-   
     pollingInterval: 60000, //will refetch data every 60seconds
-    refetchOnFocus: true, 
+    refetchOnFocus: true,
     refetchOnMountOrArgChange: true, //refetch when we remount the component
   });
 
@@ -60,12 +59,12 @@ const UsersList = () => {
 
   //the serach result data
   let usersList;
-  let filteredUsers=[];
+  let filteredUsers = [];
   if (isUsersSuccess) {
     const { entities } = users;
     usersList = Object.values(entities);
 
-   // dispatch(setUsers(usersList)); //timing issue to update the state and use it the same time
+    // dispatch(setUsers(usersList)); //timing issue to update the state and use it the same time
 
     // Filtering Logic
     filteredUsers = usersList?.filter((item) => {
@@ -108,8 +107,6 @@ const UsersList = () => {
   const handleRoleChange = (e) => setSelectedUserRoles(e.target.value);
   const handleActionChange = (e) => setSelectedUserActions(e.target.value);
 
-  
-
   // Handler for selecting rows
   const handleRowSelected = (state) => {
     setSelectedRows(state.selectedRows);
@@ -118,7 +115,6 @@ const UsersList = () => {
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idUserToDelete, setIdUserToDelete] = useState(null); // State to track which document to delete
-  
 
   // Function to handle the delete button click
   const onDeleteUserClicked = (id) => {
@@ -137,7 +133,6 @@ const UsersList = () => {
     setIsDeleteModalOpen(false);
     setIdUserToDelete(null);
   };
-
 
   const errContent =
     (usersError?.data?.message || delerror?.data?.message) ?? "";
@@ -333,26 +328,27 @@ const UsersList = () => {
             onClick={() =>
               navigate(`/admin/usersManagement/userDetails/${row._id}`)
             }
+            hidden ={!canView}
           >
             <ImProfile fontSize={20} />
           </button>
           {/* /////////////////////condition is canEdit and not ! of it */}
-          {canEdit ? (
-            <button
-              className="text-yellow-400"
-              onClick={() => navigate(`/admin/usersManagement/${row._id}/`)}
-            >
-              <FiEdit fontSize={20} />
-            </button>
-          ) : null}
-          {canDelete ? (
-            <button
-              className="text-red-500"
-              onClick={() => onDeleteUserClicked(row._id)}
-            >
-              <RiDeleteBin6Line fontSize={20} />
-            </button>
-          ) : null}
+
+          <button
+            className="text-yellow-400"
+            onClick={() => navigate(`/admin/usersManagement/${row._id}/`)}
+            hidden={!canEdit}
+          >
+            <FiEdit fontSize={20} />
+          </button>
+
+          <button
+            className="text-red-500"
+            onClick={() => onDeleteUserClicked(row._id)}
+            hidden={!canDelete}
+          >
+            <RiDeleteBin6Line fontSize={20} />
+          </button>
         </div>
       ),
       ignoreRowClick: true,
@@ -361,14 +357,16 @@ const UsersList = () => {
     },
   ];
 
-    // Custom header to include the row count
-    const tableHeader = (
-      <div>
-        <h2>Users List: 
-        <span> {filteredUsers.length} users</span></h2>
-      </div>
-    );
-   
+  // Custom header to include the row count
+  const tableHeader = (
+    <div>
+      <h2>
+        Users List:
+        <span> {filteredUsers.length} users</span>
+      </h2>
+    </div>
+  );
+
   let content;
 
   if (isUsersLoading)
@@ -426,7 +424,7 @@ const UsersList = () => {
           <select
             value={selectedUserActions}
             onChange={handleActionChange}
-             className="text-sm h-8 border border-gray-300 rounded-md px-4"
+            className="text-sm h-8 border border-gray-300 rounded-md px-4"
           >
             <option value="">All Actions</option>
             {Object.values(ACTIONS).map((action) => (
@@ -438,7 +436,7 @@ const UsersList = () => {
         </div>
         <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
           <DataTable
-           title={tableHeader}
+            title={tableHeader}
             columns={column}
             data={filteredUsers}
             pagination
@@ -451,8 +449,8 @@ const UsersList = () => {
               headCells: {
                 style: {
                   // Apply Tailwind style via a class-like syntax
-                  justifyContent: 'center', // Align headers to the center
-                  textAlign: 'center', // Center header text
+                  justifyContent: "center", // Align headers to the center
+                  textAlign: "center", // Center header text
                 },
               },
               // cells: {
@@ -466,7 +464,7 @@ const UsersList = () => {
           <div className="flex justify-end items-center space-x-4">
             <button
               className=" px-4 py-2 bg-green-500 text-white rounded"
-              onClick={()=>navigate("/admin/usersManagement/newUser/")}
+              onClick={() => navigate("/admin/usersManagement/newUser/")}
               // disabled={selectedRows.length !== 1} // Disable if no rows are selected
             >
               New User
@@ -484,10 +482,10 @@ const UsersList = () => {
         </div>
 
         <DeletionConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
-      />
+          isOpen={isDeleteModalOpen}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+        />
       </>
     );
   }

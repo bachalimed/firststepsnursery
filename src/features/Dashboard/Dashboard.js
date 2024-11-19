@@ -41,9 +41,11 @@ const Dashboard = () => {
   // Define the tab data with paths and labels
   const tabs = [
     //{ label: 'New Assignment', path: '/academics/expenses/NewAnimatorsAssignmentForm' },
-    { label: 'bla', path: '/dashboard/ibbb/' },
-   // { label: 'Payments', path: '/finances/payments/paymentsList/' },
-   // { label: 'Expenses', path: '/finances/expenses/expensesList/' },
+    { label: 'students', path: '/dashboard/studentsDash/' },
+    { label: 'Admissions', path: '/dashboard/admissions/' },
+    { label: 'enrolments', path: '/dashboard/enrolments/' },
+    { label: 'Finances', path: '/dashboard/finances/' },
+ 
     
    
   ];

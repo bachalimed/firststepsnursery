@@ -27,8 +27,7 @@ const StudentsSet = () => {
       title: "Student Documents List",
       path: "/settings/studentsSet/studentDocumentsListsList",
     },
-    { title: "Services",
-      path: "/settings/studentsSet/services" },
+    { title: "Services", path: "/settings/studentsSet/services" },
     { title: "Otherkjhhj", path: "/settings/studentsSet/" },
   ];
 

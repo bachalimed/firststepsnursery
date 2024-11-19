@@ -12,9 +12,9 @@ const NavbarHeader = () => {
       {/* <div className="">
         <HeaderChat className="" />
       </div> */}
-      <div>
+      {/* <div>
         <HeaderNotifications className="" />
-      </div>
+      </div> */}
       <div>
         <HeaderUserProfile />
       </div>

@@ -270,7 +270,7 @@ const AnimatorsAssignmentsList = () => {
       width: "180px",
     },
 
-    {
+   (isAdmin&& {
       name: "Actions",
       cell: (row) => (
         <div className="space-x-1">
@@ -282,24 +282,26 @@ const AnimatorsAssignmentsList = () => {
                   `/academics/plannings/editAnimatorsAssignment/${row.id}`
                 )
               }
+              hidden ={!canEdit}
             >
               <FiEdit fontSize={20} />
             </button>
           ) : null}
-          {canDelete ? (
+          {isAdmin && (
             <button
               className="text-red-500"
               onClick={() => onDeleteAttendedSchoolClicked(row.id)}
+              hidden ={!canDelete}
             >
               <RiDeleteBin6Line fontSize={20} />
             </button>
-          ) : null}
+          ) }
         </div>
       ),
       ignoreRowClick: true,
 
       button: true,
-    },
+    }),
   ];
 
    // Custom header to include the row count

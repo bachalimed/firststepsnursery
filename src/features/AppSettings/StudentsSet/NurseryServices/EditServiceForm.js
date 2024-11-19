@@ -13,15 +13,9 @@ import {
   selectAcademicYearById,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { useSelector } from "react-redux";
-
+import {USER_REGEX,NAME_REGEX,NUMBER_REGEX,PHONE_REGEX,YEAR_REGEX,DATE_REGEX }  from'../../../../config/REGEX'
 import { useGetAcademicYearsQuery } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
-//constrains on inputs when creating new user
-const USER_REGEX = /^[A-z 0-9]{6,20}$/;
-const NAME_REGEX = /^[A-z 0-9]{3,18}$/;
-const NUMBER_REGEX = /^[0-9]{1,4}(\.[0-9]{0,3})?$/;
-const PHONE_REGEX = /^[0-9]{6,15}$/;
-const DOB_REGEX = /^[0-9/-]{4,10}$/;
-const YEAR_REGEX = /^[0-9]{4}\/[0-9]{4}$/;
+
 const EditServiceForm = ({ service }) => {
   const navigate = useNavigate();
 
@@ -68,7 +62,6 @@ const EditServiceForm = ({ service }) => {
     validDob: false,
     validUserSex: false,
     validHouse: false,
-
     validStreet: false,
     validCity: false,
     validPrimaryPhone: false,
@@ -87,7 +80,7 @@ const EditServiceForm = ({ service }) => {
 
       validFirstName: NAME_REGEX.test(formData.userFullName?.userFirstName),
       validLastName: NAME_REGEX.test(formData.userFullName?.userLastName),
-      validDob: DOB_REGEX.test(formData.userDob.split("T")[0]),
+      validDob: DATE_REGEX.test(formData.userDob.split("T")[0]),
       validUserSex: NAME_REGEX.test(formData.userSex),
       validHouse: NAME_REGEX.test(formData.userAddress?.house),
       validStreet: NAME_REGEX.test(formData.userAddress?.street),
@@ -96,7 +89,7 @@ const EditServiceForm = ({ service }) => {
       validCurrentPosition: USER_REGEX.test(
         formData.serviceCurrentEmployment?.position
       ),
-      validJoinDate: DOB_REGEX.test(
+      validJoinDate: DATE_REGEX.test(
         formData.serviceCurrentEmployment.joinDate.split("T")[0]
       ),
       validContractType: USER_REGEX.test(

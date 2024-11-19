@@ -20,8 +20,11 @@ const TITLE_REGEX = /^[A-z/ 0-9]{8,20}$/;
 const EditStudentDocumentsListForm = ({ listToEdit }) => {
   //console.log(listToEdit.documentsAcademicYear,'lllllyear')
   const Navigate = useNavigate();
-  const id = listToEdit.id;
-  console.log(id, "ddddd");
+  const {_id} = listToEdit;
+  console.log(_id, "ddddd");
+  console.log(listToEdit, "listToEdit");
+
+  
   const [documentsAcademicYear, setDocumentsAcademicYear] = useState(
     listToEdit.documentsAcademicYear
   );
@@ -53,6 +56,7 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
     if (isSuccess) {
       setStudentDocumentsList([]);
       setDocumentsAcademicYear("");
+      setDocumentTitle("")
       Navigate("/settings/studentsSet/studentDocumentsListsList"); //will navigate here after saving
     }
   }, [isSuccess, Navigate]); //even if no success it will navigate and not show any warning if failed or success
@@ -87,7 +91,7 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
     e.preventDefault();
     if (canSave) {
       await updateStudentDocumentsList({
-        id: listToEdit.id,
+       id:_id,
         documentsList: studentDocumentsList,
         documentsAcademicYear,
       });
@@ -101,17 +105,7 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
     Navigate("/settings/studentsSet/studentDocumentsListsList/");
   };
 
-  // const [isRequired, setIsRequired] = useState(false)
-  // const [isLegalised, setIsLegalised] = useState(false)
-  // const [documentsList, setDocumentsList] = useState([])
-  // //use effect is used to validate the inputs against the defined REGEX above
-  // //the previous constrains have to be verified on the form for teh user to know
-  // //handlers to get the individual states from the input
-
-  // //const onDocumentReferenceChanged = e => setDocumentReference(e.target.value)
-  // const onDocumentTitleChanged = e => setDocumentTitle(e.target.value)
-  // const onIsRequiredChanged = e => setIsRequired(e.target.value)
-  // const onIsLegalisedChanged = e => setIsLegalised(e.target.value)
+  
 
   //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
   const errClass = isError ? "errmsg" : "offscreen";

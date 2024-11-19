@@ -80,7 +80,7 @@ const PublicHeader = () => {
       <div className="flex-1 ">{goDashButton}</div>
       <Menu>
         <MenuButton className="mr-4 ">
-          <LuUserCircle2 fontSize={24} />
+          <LuUserCircle2 fontSize={24} className="text-4xl" />
         </MenuButton>
         <MenuItems
           transition

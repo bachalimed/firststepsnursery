@@ -27,7 +27,7 @@ const EditEmployeeDocumentsList = () => {
   let content;
 
   content = employeeDocumentsList ? (
-    <><HRSet/><EditEmployeeDocumentsListForm listToEdit={employeeDocumentsList} /></>
+    <><EditEmployeeDocumentsListForm listToEdit={employeeDocumentsList} /></>
   ) : (
     <><HRSet/><LoadingStateIcons /></>
   );

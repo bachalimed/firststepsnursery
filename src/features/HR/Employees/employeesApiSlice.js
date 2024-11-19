@@ -52,6 +52,21 @@ export const employeesApiSlice = apiSlice.injectEndpoints({
       },
       providesTags: ["employee"],
     }),
+    getEmployeeById: builder.query({
+      query: (params) => {
+        const queryString = new URLSearchParams(params).toString();
+        return `/hr/employees?${queryString}`;
+      },
+
+      validateStatus: (response, result) => {
+        return response.status === 200 && !result.isError;
+      },
+
+      transformResponse: (responseData) => {
+        return responseData;
+      },
+      providesTags: ["employee"],
+    }),
     addNewEmployee: builder.mutation({
       query: (initialEmployeeData) => ({
         url: "/hr/employees",
@@ -89,6 +104,7 @@ export const employeesApiSlice = apiSlice.injectEndpoints({
 export const {
   useGetEmployeesQuery,
   useGetEmployeesByYearQuery,
+  useGetEmployeeByIdQuery,
   useAddNewEmployeeMutation,
   useUpdateEmployeeMutation,
   useDeleteEmployeeMutation,

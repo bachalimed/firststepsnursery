@@ -74,7 +74,7 @@ const NewEmployeeDocumentsListForm = () => {
       setEmployeeDocumentsList([]);
       setDocumentsAcademicYear("");
       setValidDocumentsAcademicYear(false);
-      Navigate("/settings/employeesSet/employeeDocumentsListsList"); //will navigate here after saving
+      Navigate("/settings/hrSet/employeeDocumentsListsList"); //will navigate here after saving
     }
   }, [isAddSuccess, Navigate]); //even if no success it will navigate and not show any warning if failed or success
 
@@ -141,7 +141,7 @@ const NewEmployeeDocumentsListForm = () => {
     setShowConfirmation(false);
   };
   const handleCancel = () => {
-    Navigate("/settings/employeesSet/employeeDocumentsListsList");
+    Navigate("/settings/hrSet/employeeDocumentsListsList");
   };
 
   //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass

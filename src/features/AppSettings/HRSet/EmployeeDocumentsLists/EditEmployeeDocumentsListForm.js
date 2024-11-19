@@ -1,5 +1,5 @@
 import React from "react";
-import EmployeesSet from "../../HRSet";
+import HRSet from "../../HRSet";
 import { useState, useEffect } from "react";
 import { useGetAcademicYearsQuery } from "../../AcademicsSet/AcademicYears/academicYearsApiSlice";
 import { useUpdateEmployeeDocumentsListMutation } from "./employeeDocumentsListsApiSlice";
@@ -137,7 +137,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
 
   const content = (
     <>
-      <EmployeesSet />
+      <HRSet />
       <p className={errClass}>{error?.data?.message}</p>
       <form className="form" onSubmit={onSaveEmployeeDocumentsListClicked}>
         <div className="form__title-row">

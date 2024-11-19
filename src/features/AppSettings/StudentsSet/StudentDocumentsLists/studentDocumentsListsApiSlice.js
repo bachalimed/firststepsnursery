@@ -49,6 +49,22 @@ export const studentDocumentsListsApiSlice = apiSlice.injectEndpoints({
       },
       providesTags: ["studentDocument"],
     }),
+    getStudentDocumentsListById: builder.query({
+      //will get the list for that year and append studtn document id if exisits
+      query: (params) => {
+        const queryString = new URLSearchParams(params).toString();
+        return `/settings/studentsSet/studentDocumentsLists?${queryString}`;
+      },
+
+      validateStatus: (response, result) => {
+        return response.status === 200 && !result.isError;
+      },
+
+      transformResponse: (responseData) => {
+        return responseData;
+      },
+      providesTags: ["studentDocument"],
+    }),
     updateStudentDocumentsList: builder.mutation({
       query: (initialStudentDocumentsListData) => ({
         url: "/settings/studentsSet/studentDocumentsLists/",
@@ -83,6 +99,7 @@ export const {
   //hooks created automatically from endpoint
   useGetStudentDocumentsListsQuery, //this can be used whereven we want to fetch the data
   useGetStudentDocumentsByYearByIdQuery,
+  useGetStudentDocumentsListByIdQuery,
   useAddNewStudentDocumentsListMutation,
   useUpdateStudentDocumentsListMutation,
   useDeleteStudentDocumentsListMutation,

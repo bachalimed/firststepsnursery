@@ -3,30 +3,30 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setStudentDocuments } from "./studentDocumentsSlice";
-import Students from "../../Students";
-import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
+import Students from "../../../Students";
+import { useGetAttendedSchoolsQuery } from "../../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
 import { useState, useEffect } from "react";
 import {
   useAddStudentDocumentsMutation,
   useDeleteStudentDocumentMutation,
 } from "./studentDocumentsApiSlice";
-import { useGetStudentDocumentsByYearByIdQuery } from "../../../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice";
-import { selectCurrentToken } from "../../../auth/authSlice";
-import { ROLES } from "../../../../config/UserRoles";
-import { ACTIONS } from "../../../../config/UserActions";
-import useAuth from "../../../../hooks/useAuth";
-import UploadDocumentFormModal from "./UploadDocumentFormModal";
-
+import { useGetStudentDocumentsByYearByIdQuery } from "../../../../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice";
+import { selectCurrentToken } from "../../../../auth/authSlice";
+import { ROLES } from "../../../../../config/UserRoles";
+import { ACTIONS } from "../../../../../config/UserActions";
+import useAuth from "../../../../../hooks/useAuth";
+import UploadDocumentFormModal from "../UploadDocumentFormModal";
+import LoadingStateIcon from '../../../../../Components/LoadingStateIcon'
 import ViewDocumentModal from "./ViewDocumentModal";
 
 import {
   useGetStudentsQuery,
   useGetStudentsByYearQuery,
-} from "./studentsApiSlice";
+} from "../studentsApiSlice";
 import DataTable from "react-data-table-component";
-import { selectAllStudentsByYear, selectAllStudents } from "./studentsApiSlice"; //use the memoized selector
-import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
-import { setAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
+import { selectAllStudentsByYear, selectAllStudents } from "../studentsApiSlice"; //use the memoized selector
+import DeletionConfirmModal from "../../../../../Components/Shared/Modals/DeletionConfirmModal";
+import { setAcademicYears } from "../../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 
 
 import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
@@ -51,13 +51,13 @@ import {
   setSomeStudents,
   setStudents,
   currentStudentsList,
-} from "./studentsSlice";
+} from "../studentsSlice";
 
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
   selectAllAcademicYears,
-} from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
+} from "../../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 //constrains on inputs when creating new user
 
 const NAME_REGEX = /^[A-z 0-9.-_]{6,20}$/;
@@ -382,7 +382,7 @@ const StudentDocumentsList = ({ student }) => {
     },
   ];
   let content;
-  if (listIsLoading) content = <p>Loading...</p>;
+  if (listIsLoading) content = <><Students /><LoadingStateIcon/></>;
   if (listIsError) {
     content = <p className="errmsg">{listError?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
   }

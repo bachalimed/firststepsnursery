@@ -34,8 +34,17 @@ const StudentDocumentsListsList = () => {
     isSuccess,
     isError,
     error,
-  } = useGetStudentDocumentsListsQuery("studentDocumentsListsList") || {};
-
+  } = useGetStudentDocumentsListsQuery(
+    {
+     
+      endpointName: "StudentDocumentsListsList",
+    } || {},
+    {
+     
+      refetchOnFocus: true, 
+      refetchOnMountOrArgChange: true, 
+    }
+  );
   //initialising the delete Mutation
   const [
     deleteStudentDocumentsList,
@@ -202,18 +211,19 @@ const StudentDocumentsListsList = () => {
                   `/settings/studentsSet/studentDocumentsList/edit/${row.id}`
                 )
               }
+              hidden={!canEdit}
             >
               <FiEdit fontSize={20} />
             </button>
           ) : null}
-          {canDelete ? (
-            <button
-              className="text-red-500"
-              onClick={() => onDeleteStudentDocumentsListClicked(row.id)}
-            >
-              <RiDeleteBin6Line fontSize={20} />
-            </button>
-          ) : null}
+
+          <button
+            className="text-red-500"
+            onClick={() => onDeleteStudentDocumentsListClicked(row.id)}
+            hidden={!canDelete}
+          >
+            <RiDeleteBin6Line fontSize={20} />
+          </button>
         </div>
       ),
       ignoreRowClick: true,
@@ -256,7 +266,7 @@ const StudentDocumentsListsList = () => {
         />
         <div className="flex justify-end items-center space-x-4">
           <button
-            className="px-3 py-2 bg-yellow-400 text-white rounded"
+            className="px-3 py-2 bg-green-400 text-white rounded"
             onClick={() =>
               Navigate("/settings/studentsSet/newStudentDocumentsList")
             }

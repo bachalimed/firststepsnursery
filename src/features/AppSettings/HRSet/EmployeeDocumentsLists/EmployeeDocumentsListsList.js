@@ -199,7 +199,7 @@ const EmployeeDocumentsListsList = () => {
               className="text-yellow-400"
               onClick={() =>
                 Navigate(
-                  `/settings/employeesSet/employeeDocumentsList/edit/${row.id}`
+                  `/settings/hrSet/employeeDocumentsList/edit/${row.id}`
                 )
               }
             >
@@ -256,14 +256,14 @@ const EmployeeDocumentsListsList = () => {
         />
         <div className="flex justify-end items-center space-x-4">
           <button
-            className="px-3 py-2 bg-yellow-400 text-white rounded"
+            className="px-3 py-2 bg-green-400 text-white rounded"
             onClick={() =>
-              Navigate("/settings/employeesSet/newEmployeeDocumentsList")
+              Navigate("/settings/hrSet/newEmployeeDocumentsList")
             }
             disabled={selectedRows.length !== 0}
             hidden={!canCreate}
           >
-            Create List
+            New Documents List
           </button>
         </div>
       </div>

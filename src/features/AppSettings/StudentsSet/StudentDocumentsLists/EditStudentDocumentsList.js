@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom"; //because we will get the userId from the url
 import { useSelector } from "react-redux";
 import EditStudentDocumentsListForm from "./EditStudentDocumentsListForm";
-import { useGetStudentDocumentsListsQuery } from "./studentDocumentsListsApiSlice";
+import { useGetStudentDocumentsListByIdQuery } from "./studentDocumentsListsApiSlice";
 import useAuth from "../../../../hooks/useAuth";
 import { Puff } from "react-loading-icons";
 import StudentsSet from "../../StudentsSet";
@@ -10,30 +10,66 @@ const EditStudentDocumentsList = () => {
   //pull the id from use params from the url
   const { id } = useParams();
   //console.log(id,'idddd')
-  //RTK query the studentDocumentsList and not from the state to reduce cache data
-  const { studentDocumentsList } = useGetStudentDocumentsListsQuery(
-    "studentDocumentsList",
+
+  // const { studentDocumentsList } = useGetStudentDocumentsListsQuery(
+  //   "studentDocumentsList",
+  //   {
+  //     selectFromResult: ({ data }) => ({
+  //       studentDocumentsList: data?.entities[id],
+  //     }),
+  //   }
+  // );
+
+  const {
+    data: studentDocumentsListToEdit,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+  } = useGetStudentDocumentsListByIdQuery(
     {
-      selectFromResult: ({ data }) => ({
-        studentDocumentsList: data?.entities[id],
-      }),
+      id: id,
+      endpointName: "EditStudentDocumentsList",
+    },
+    {
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
-  );
+  ) || {};
+
+  //console.log('helllllow',studentDocumentsListToEdit, 'list id')
+  const studentDocumentsList = isSuccess ? studentDocumentsListToEdit : [];
 
   // will not get from the state because not set to state already
   // const studentDocumentsListToEdit = useSelector(state=> state.studentDocumentsList?.entities[id])
-  //console.log('helllllow',studentDocumentsList, 'list id')
-  
+  //console.log('helllllow',studentDocumentsList, 'studentDocumentsList')
+
   let content;
 
-  content = studentDocumentsList ? (
+  // if (studentDocumentsList != [] &&isSuccess) {
+  //   content = (
+  //     <>
+  //       <EditStudentDocumentsListForm listToEdit={studentDocumentsList} />
+  //     </>
+  //   );
+  // } else {
+  //   content = (
+  //     <>
+  //       <StudentsSet />
+  //       <LoadingStateIcons />
+  //     </>
+  //   );
+  // }
+
+  content = studentDocumentsList ? ( //sometimes isSuccess generates error
     <>
-      <StudentsSet />
       <EditStudentDocumentsListForm listToEdit={studentDocumentsList} />
     </>
   ) : (
     <>
-      <StudentsSet /><LoadingStateIcons /></>
+      <StudentsSet />
+      <LoadingStateIcons />
+    </>
   );
 
   return content;

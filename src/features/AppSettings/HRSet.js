@@ -22,6 +22,7 @@ const HRSet = () => {
     ],
   };
 
+  
   // Define the tabs with their titles and paths
   const tabs = [
     {

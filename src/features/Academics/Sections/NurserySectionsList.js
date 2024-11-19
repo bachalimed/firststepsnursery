@@ -392,6 +392,7 @@ const handleCloseDeleteModal = () => {
               onClick={() =>
                 navigate(`/academics/sections/editSection/${row.id}`)
               }
+              hidden ={!canEdit}
             >
               <FiEdit className="text-2xl" />
             </button>
@@ -401,6 +402,7 @@ const handleCloseDeleteModal = () => {
               <button
                 className="text-red-500"
                 onClick={() => onDeleteStudentClicked(row.id)}
+                hidden ={!canDelete}
               >
                 <RiDeleteBin6Line className="text-2xl" />
               </button>

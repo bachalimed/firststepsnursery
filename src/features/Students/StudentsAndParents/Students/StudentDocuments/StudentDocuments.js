@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom"; //because we will get the userId from the url
 import { useSelector } from "react-redux";
-import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
+import LoadingStateIcon from "../../../../../Components/LoadingStateIcon";
 import StudentDocumentsList from "./StudentDocumentsList";
-import useAuth from "../../../../hooks/useAuth";
-import { currentStudentsList } from "./studentsSlice";
-import Students from "../../Students";
+import useAuth from "../../../../../hooks/useAuth";
+import { currentStudentsList } from "../studentsSlice";
+import Students from "../../../Students";
 
 const StudentDocuments = () => {
   const { id } = useParams(); //pull the id from use params from the url
