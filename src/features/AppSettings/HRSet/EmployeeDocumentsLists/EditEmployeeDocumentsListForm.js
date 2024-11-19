@@ -55,7 +55,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
     if (isSuccess) {
       setEmployeeDocumentsList([]);
       setDocumentsAcademicYear("");
-      Navigate("/settings/employeesSet/employeeDocumentsListsList"); //will navigate here after saving
+      Navigate("/settings/HRSet/EmployeeDocumentsListsList/"); //will navigate here after saving
     }
   }, [isSuccess, Navigate]); //even if no success it will navigate and not show any warning if failed or success
 
