@@ -1,15 +1,39 @@
 import { useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { selectEmployeeById } from "./employeesApiSlice";
-
+import { useGetEmployeeByIdQuery} from './employeesApiSlice'
 const EmployeeDetails = () => {
   const { id } = useParams();
-  const employee = useSelector((state) => state.employee?.entities[id]);
+  //const employee = useSelector((state) => state.employee?.entities[id]);
   const navigate = useNavigate();
+
+
+const {
+  data: employee, //the data is renamed employees
+  isLoading: isEmployeeLoading, //monitor several situations is loading...
+  isSuccess: isEmployeeSuccess,
+  isError: isEmployeeError,
+  error: employeeError,
+} = useGetEmployeeByIdQuery(
+  {
+    id:id,
+    endpointName: "employeesList",
+  } || {},
+  {
+   
+    refetchOnFocus: true, 
+    refetchOnMountOrArgChange: true, 
+  }
+);
+
 console.log(employee,'employee')
-  const handleBack = () => {
-    navigate("/hr/employees/");
-  };
+const employeeToview = isEmployeeSuccess ? employee
+  : [];
+
+console.log(employeeToview)
+
+
+
 
   return (
     <div className="max-w-4xl mx-auto mt-8 bg-white p-8 shadow-lg rounded-lg">
