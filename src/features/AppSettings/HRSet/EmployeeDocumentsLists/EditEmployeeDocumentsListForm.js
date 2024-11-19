@@ -59,6 +59,11 @@ const [showConfirmation, setShowConfirmation] = useState(false);
     }
   }, [isSuccess, Navigate]); //even if no success it will navigate and not show any warning if failed or success
 
+
+  
+   // Ensure that the first three documents cannot be removed
+   const isRemovable = (index) => index >= 1;
+
   const handleFieldChange = (index, field, value) => {
     setEmployeeDocumentsList((prevState) =>
       prevState.map((doc, i) =>
@@ -75,9 +80,11 @@ const [showConfirmation, setShowConfirmation] = useState(false);
   };
 
   const handleRemoveEntry = (index) => {
-    setEmployeeDocumentsList(
-      employeeDocumentsList.filter((_, i) => i !== index)
-    );
+    if (isRemovable(index)) {
+      setEmployeeDocumentsList(
+        employeeDocumentsList.filter((_, i) => i !== index)
+      );
+    }
   };
 
   //to check if we can save before onsave, if every one is true, and also if we are not loading status
@@ -153,6 +160,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
               onChange={(e) =>
                 handleFieldChange(index, "documentTitle", e.target.value)
               }
+              disabled={index < 1} // Disable editing for the first three elements if needed
             />
             <label>
               <input
@@ -174,15 +182,22 @@ const [showConfirmation, setShowConfirmation] = useState(false);
               />
               Is Legalised?
             </label>
-            <button type="button" onClick={() => handleRemoveEntry(index)}>
+            {isRemovable(index) && (  <button type="button" onClick={() => handleRemoveEntry(index)}>
               Remove
-            </button>
+            </button>)}
           </div>
         ))}
         <button type="button" onClick={handleAddEntry}>
           Add Document
         </button>
         <div className="flex justify-end items-center space-x-4">
+         
+          <button
+            className="px-4 py-2 bg-red-500 text-white rounded"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
           <button
             className="px-4 py-2 bg-green-500 text-white rounded"
             type="submit"
@@ -192,12 +207,6 @@ const [showConfirmation, setShowConfirmation] = useState(false);
           >
             Save Changes
           </button>
-          <button
-            className="px-4 py-2 bg-red-500 text-white rounded"
-            onClick={handleCancel}
-          >
-            Cancel
-          </button>
         </div>
       </form>
       {/* Confirmation Modal */}
@@ -206,7 +215,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
         onClose={handleCloseModal}
         onConfirm={handleConfirmSave}
         title="Confirm Save"
-        message="Are you sure you want to save?"
+        message="Are you sure you want to save Changes?"
       />
     </>
   );

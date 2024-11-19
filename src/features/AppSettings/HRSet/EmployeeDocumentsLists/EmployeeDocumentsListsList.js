@@ -210,6 +210,7 @@ const EmployeeDocumentsListsList = () => {
             <button
               className="text-red-500"
               onClick={() => onDeleteEmployeeDocumentsListClicked(row.id)}
+              hidden={!canDelete}
             >
               <RiDeleteBin6Line fontSize={20} />
             </button>

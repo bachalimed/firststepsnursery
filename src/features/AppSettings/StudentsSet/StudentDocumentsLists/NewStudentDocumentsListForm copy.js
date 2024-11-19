@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import StudentsSet from "../../StudentsSet";
+import { useState, useEffect } from "react";
 import { useAddNewStudentDocumentsListMutation } from "./studentDocumentsListsApiSlice";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,10 +9,7 @@ import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../../../config/UserRoles";
 import { ACTIONS } from "../../../../config/UserActions";
 import useAuth from "../../../../hooks/useAuth";
-import {
-  useGetStudentDocumentsListsQuery,
-  useDeleteStudentDocumentsListMutation,
-} from "./studentDocumentsListsApiSlice";
+
 import { useSelector } from "react-redux";
 import {
   selectAllAcademicYears,
@@ -28,59 +26,26 @@ const NewStudentDocumentsListForm = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-  const {
-    data: studentDocumentsListsData,
-    isLoading:isDocsListLoading,
-    isSuccess:isDocsListSucess,
-    isError:isDocsListError,
-    error:docsListError,
-  } = useGetStudentDocumentsListsQuery(
-    {
-     
-      endpointName: "NewStudentDocumentsListForm",
-    } || {},
-    {
-     
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
-    }
-  );
+
   const [
     addNewStudentDocumentsList,
     {
+      //an object that calls the status when we execute the newUserForm function
       isLoading: isAddLoading,
       isSuccess: isAddSuccess,
       isError: isAddError,
       error: addError,
     },
-  ] = useAddNewStudentDocumentsListMutation();
+  ] = useAddNewStudentDocumentsListMutation(); //it will not execute the mutation nownow but when called
 
-  // Prepare the permission variables
+  //prepare the permission variables
   const { userId, canEdit, canDelete, canAdd, canCreate, isParent, status2 } =
     useAuth();
-    let filteredAcademicYearsList = [];
-if (isDocsListSucess) {
-  // Extract entities and convert to an array
-  const { entities } = studentDocumentsListsData;
-  const studentDocumentsListsArray = Object.values(entities);
-
-  // Filter the academicYears based on documentsAcademicYear
-  filteredAcademicYearsList = academicYears.filter((academicYear) =>
-    !studentDocumentsListsArray.some(
-      (doc) => doc.documentsAcademicYear === academicYear.title
-    )
-  );
-}
-
-  // Confirmation Modal states
-  const [showConfirmation, setShowConfirmation] = useState(false);
-
-  // Initialization of states for each input
-  const [studentDocumentsList, setStudentDocumentsList] = useState([
-    { documentTitle: "Student Photo", isRequired: false, isLegalised: false },
-    { documentTitle: "Father Photo", isRequired: false, isLegalised: false },
-    { documentTitle: "Mother Photo", isRequired: false, isLegalised: false },
-  ]);
+//confirmation Modal states
+const [showConfirmation, setShowConfirmation] = useState(false);
+  //initialisation of states for each input
+  const [studentDocumentsList, setStudentDocumentsList] = useState([]);
+  //const [documentReference, setDocumentReference] = useState('')
   const [documentTitle, setDocumentTitle] = useState("");
   const [validDocumentTitle, setValidDocumentTitle] = useState(false);
   const [isRequired, setIsRequired] = useState(false);
@@ -90,37 +55,37 @@ if (isDocsListSucess) {
   const [validDocumentsAcademicYear, setValidDocumentsAcademicYear] =
     useState("");
 
-  // Validation effects
+  //use effect is used to validate the inputs against the defined REGEX above
+  //the previous constrains have to be verified on the form for teh user to know
+
   useEffect(() => {
     setValidDocumentTitle(TITLE_REGEX.test(documentTitle));
   }, [documentTitle]);
-
   useEffect(() => {
     setValidDocumentsAcademicYear(TITLE_REGEX.test(documentsAcademicYear));
   }, [documentsAcademicYear]);
 
   useEffect(() => {
     if (isAddSuccess) {
-      // Clear form and navigate back on successful save
-      setStudentDocumentsList([
-        { documentTitle: "Student Photo", isRequired: false, isLegalised: false },
-        { documentTitle: "Father Photo", isRequired: false, isLegalised: false },
-        { documentTitle: "Mother Photo", isRequired: false, isLegalised: false },
-      ]);
+      //if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
+
+      setStudentDocumentsList([]);
       setDocumentsAcademicYear("");
       setValidDocumentsAcademicYear(false);
-      Navigate("/settings/studentsSet/studentDocumentsListsList");
+      Navigate("/settings/studentsSet/studentDocumentsListsList"); //will navigate here after saving
     }
-  }, [isAddSuccess, Navigate]);
+  }, [isAddSuccess, Navigate]); //even if no success it will navigate and not show any warning if failed or success
 
-  // Handlers to get the individual states from the input
+  //handlers to get the individual states from the input
+
+  //const onDocumentReferenceChanged = e => setDocumentReference(e.target.value)
   const onDocumentTitleChanged = (e) => setDocumentTitle(e.target.value);
   const onIsRequiredChanged = (e) => setIsRequired(e.target.value);
   const onIsLegalisedChanged = (e) => setIsLegalised(e.target.value);
   const onDocumentsAcademicYearChanged = (e) =>
     setDocumentsAcademicYear(e.target.value);
 
-  // To deal with studentDocumentsList entries:
+  // to deal with studentDocumentsList education entries:
   // Handler to update an entry field
   const handleFieldChange = (index, field, value) => {
     const updatedEntries = [...studentDocumentsList];
@@ -140,7 +105,7 @@ if (isDocsListSucess) {
     setStudentDocumentsList(updatedEntries);
   };
 
-  // Check if we can save before calling onSave
+  //to check if we can save before onsave, if every one is true, and also if we are not loading status
   const canSave =
     [
       validDocumentsAcademicYear,
@@ -150,17 +115,17 @@ if (isDocsListSucess) {
   const onSaveStudentDocumentsListClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
-      // Show the confirmation modal before saving
-      setShowConfirmation(true);
-    }
-  };
+ // Show the confirmation modal before saving
+ setShowConfirmation(true);
+}
+};
+// This function handles the confirmed save action
+const handleConfirmSave = async () => {
+  // Close the confirmation modal
+  setShowConfirmation(false);
 
-  // This function handles the confirmed save action
-  const handleConfirmSave = async () => {
-    // Close the confirmation modal
-    setShowConfirmation(false);
+  try {
 
-    try {
       await addNewStudentDocumentsList({
         documentsList: studentDocumentsList,
         documentsAcademicYear,
@@ -172,17 +137,20 @@ if (isDocsListSucess) {
       console.error("Error saving student:", addError);
     }
   };
-
-  // Close the modal without saving
-  const handleCloseModal = () => {
-    setShowConfirmation(false);
-  };
+ // Close the modal without saving
+ const handleCloseModal = () => {
+  setShowConfirmation(false);
+};
 
   const handleCancel = () => {
     Navigate("/settings/studentsSet/studentDocumentsListsList");
   };
 
+  //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
   const errClass = isAddError ? "errmsg" : "offscreen";
+  //const validStudentDocumentsListClass = !validStudentDocumentsListName ? 'form__input--incomplete' : ''
+  //const validPwdClass = !validPassword ? 'form__input--incomplete' : ''
+  //const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
 
   const content = (
     <>
@@ -191,7 +159,7 @@ if (isDocsListSucess) {
         {addError?.data?.message}
       </p>
       <form
-        className="form bg-gray-100 p-6 rounded shadow-lg max-w-md mx-auto"
+        lassName="form bg-gray-100 p-6 rounded shadow-lg max-w-md mx-auto"
         onSubmit={onSaveStudentDocumentsListClicked}
       >
         <div className="form__title-row mb-4">
@@ -212,7 +180,7 @@ if (isDocsListSucess) {
             className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           >
             <option value="">Select Year</option>
-            {filteredAcademicYearsList.map((year) => (
+            {academicYears.map((year) => (
               <option key={year.id} value={year.title}>
                 {year.title}
               </option>
@@ -231,7 +199,6 @@ if (isDocsListSucess) {
                   handleFieldChange(index, "documentTitle", e.target.value)
                 }
                 className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                disabled={index < 3} // Disable input for the first three elements
               />
             </div>
             <div className="flex items-center mb-2">
@@ -243,6 +210,7 @@ if (isDocsListSucess) {
                 }
                 className="mr-2"
               />
+
               <label className="text-sm text-gray-700">Is Required?</label>
             </div>
             <div className="flex items-center mb-2">
@@ -256,50 +224,46 @@ if (isDocsListSucess) {
               />
               <label className="text-sm text-gray-700">Is Legalised?</label>
             </div>
-            {index >= 3 && (
-              <button
-                type="button"
-                onClick={() => handleRemoveEntry(index)}
-                className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-              >
-                Remove
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={() => handleRemoveEntry(index)}
+              className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+            >
+              Remove
+            </button>
           </div>
         ))}
-        <div className="flex justify-between mt-6">
+        <button type="button" onClick={handleAddEntry}>
+          Add Document
+        </button>
+        <div className="flex justify-end items-center space-x-4">
           <button
-            type="button"
-            onClick={handleAddEntry}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            type="submit"
+            onClick={onSaveStudentDocumentsListClicked}
+            disabled={!canSave}
           >
-            Add Document
+            Save Changes
           </button>
           <button
-            type="submit"
-            disabled={!canSave}
-            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            onClick={handleCancel}
           >
-            <FontAwesomeIcon icon={faSave} className="mr-2" />
-            Save
+            Cancel
           </button>
         </div>
       </form>
-
-      {/* Confirmation Modal */}
-      {showConfirmation && (
-        <ConfirmationModal
+       {/* Confirmation Modal */}
+       <ConfirmationModal
         show={showConfirmation}
         onClose={handleCloseModal}
         onConfirm={handleConfirmSave}
         title="Confirm Save"
         message="Are you sure you want to save?"
       />
-      )}
     </>
   );
 
   return content;
 };
-
 export default NewStudentDocumentsListForm;

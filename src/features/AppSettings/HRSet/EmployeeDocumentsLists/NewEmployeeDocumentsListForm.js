@@ -9,7 +9,10 @@ import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../../../config/UserRoles";
 import { ACTIONS } from "../../../../config/UserActions";
 import useAuth from "../../../../hooks/useAuth";
-
+import {
+  useGetEmployeeDocumentsListsQuery,
+  
+} from "./employeeDocumentsListsApiSlice";
 import { useSelector } from "react-redux";
 import {
   selectAllAcademicYears,
@@ -43,9 +46,41 @@ const NewEmployeeDocumentsListForm = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-
+  const {
+    data: employeeDocumentsListsData,
+    isLoading:isEmpDocsLoading,
+    isSuccess:isEmpDocsSuccess,
+    isError:isEmpDocsError,
+    error:empDocsError,
+  } = useGetEmployeeDocumentsListsQuery(
+    {
+     
+      endpointName: "NewEmployeeDocumentsListForm",
+    } || {},
+    {
+     
+      refetchOnFocus: true, 
+      refetchOnMountOrArgChange: true, 
+    }
+  );
+  let filteredAcademicYearsList = [];
+  if (isEmpDocsSuccess) {
+    // Extract entities and convert to an array
+    const { entities } = employeeDocumentsListsData;
+    const employeeDocumentsListsArray = Object.values(entities);
+  
+    // Filter the academicYears based on documentsAcademicYear
+    filteredAcademicYearsList = academicYears.filter((academicYear) =>
+      !employeeDocumentsListsArray.some(
+        (doc) => doc.documentsAcademicYear === academicYear.title
+      )
+    );
+  }
   //initialisation of states for each input
-  const [employeeDocumentsList, setEmployeeDocumentsList] = useState([]);
+  const [employeeDocumentsList, setEmployeeDocumentsList] = useState([
+    { documentTitle: "Employee Photo", isRequired: false, isLegalised: false },
+
+  ]);
   //const [documentReference, setDocumentReference] = useState('')
   const [documentTitle, setDocumentTitle] = useState("");
   const [validDocumentTitle, setValidDocumentTitle] = useState(false);
@@ -71,7 +106,7 @@ const NewEmployeeDocumentsListForm = () => {
     if (isAddSuccess) {
       //if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
 
-      setEmployeeDocumentsList([]);
+      setEmployeeDocumentsList([{ documentTitle: "Employee Photo", isRequired: false, isLegalised: false },]);
       setDocumentsAcademicYear("");
       setValidDocumentsAcademicYear(false);
       Navigate("/settings/hrSet/employeeDocumentsListsList"); //will navigate here after saving
@@ -178,7 +213,7 @@ const NewEmployeeDocumentsListForm = () => {
             className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           >
             <option value="">Select Year</option>
-            {academicYears.map((year) => (
+            {filteredAcademicYearsList.map((year) => (
               <option key={year.id} value={year.title}>
                 {year.title}
               </option>
@@ -222,13 +257,13 @@ const NewEmployeeDocumentsListForm = () => {
               />
               <label className="text-sm text-gray-700">Is Legalised?</label>
             </div>
-            <button
+            {index >= 1 && (<button
               type="button"
               onClick={() => handleRemoveEntry(index)}
               className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
             >
               Remove
-            </button>
+            </button>)}
           </div>
         ))}
         <button type="button" onClick={handleAddEntry}>

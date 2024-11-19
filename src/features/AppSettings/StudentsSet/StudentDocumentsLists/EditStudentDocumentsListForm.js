@@ -8,7 +8,7 @@ import { ROLES } from "../../../../config/UserRoles";
 import { ACTIONS } from "../../../../config/UserActions";
 import { selectAllAcademicYears } from "../../AcademicsSet/AcademicYears/academicYearsApiSlice";
 import useAuth from "../../../../hooks/useAuth";
-
+import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 import { useSelector } from "react-redux";
 import { Puff } from "react-loading-icons";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
@@ -21,8 +21,7 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
   //console.log(listToEdit.documentsAcademicYear,'lllllyear')
   const Navigate = useNavigate();
   const {_id} = listToEdit;
-  console.log(_id, "ddddd");
-  console.log(listToEdit, "listToEdit");
+ 
 
   
   const [documentsAcademicYear, setDocumentsAcademicYear] = useState(
@@ -36,7 +35,8 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
 
   const { userId, canEdit, canDelete, canAdd, canCreate, isParent, status2 } =
     useAuth();
-
+ // Confirmation Modal states
+ const [showConfirmation, setShowConfirmation] = useState(false);
   const [
     updateStudentDocumentsList,
     {
@@ -61,6 +61,11 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
     }
   }, [isSuccess, Navigate]); //even if no success it will navigate and not show any warning if failed or success
 
+
+   // Ensure that the first three documents cannot be removed
+   const isRemovable = (index) => index >= 1;
+
+
   const handleFieldChange = (index, field, value) => {
     setStudentDocumentsList((prevState) =>
       prevState.map((doc, i) =>
@@ -76,8 +81,12 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
     ]);
   };
 
-  const handleRemoveEntry = (index) => {
-    setStudentDocumentsList(studentDocumentsList.filter((_, i) => i !== index));
+ const handleRemoveEntry = (index) => {
+    if (isRemovable(index)) {
+      setStudentDocumentsList(
+        studentDocumentsList.filter((_, i) => i !== index)
+      );
+    }
   };
 
   //to check if we can save before onsave, if every one is true, and also if we are not loading status
@@ -90,17 +99,25 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
   const onSaveStudentDocumentsListClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
-      await updateStudentDocumentsList({
-       id:_id,
-        documentsList: studentDocumentsList,
-        documentsAcademicYear,
-      });
-      if (isError) {
-        console.error("Error saving:", error);
-      }
+      setShowConfirmation(true);
     }
   };
 
+     const handleConfirmSave = async () => {
+    setShowConfirmation(false);
+
+    await updateStudentDocumentsList({
+      id: _id,
+      documentsList: studentDocumentsList,
+      documentsAcademicYear,
+    });
+    if (isError) {
+      console.error("Error saving:", error);
+    }
+  };
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
+  };
   const handleCancel = () => {
     Navigate("/settings/studentsSet/studentDocumentsListsList/");
   };
@@ -131,6 +148,7 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
               onChange={(e) =>
                 handleFieldChange(index, "documentTitle", e.target.value)
               }
+              disabled={index < 3} // Disable editing for the first three elements if needed
             />
             <label>
               <input
@@ -152,15 +170,21 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
               />
               Is Legalised?
             </label>
-            <button type="button" onClick={() => handleRemoveEntry(index)}>
+            {isRemovable(index) && ( <button type="button" onClick={() => handleRemoveEntry(index)}>
               Remove
-            </button>
+            </button>)}
           </div>
         ))}
         <button type="button" onClick={handleAddEntry}>
           Add Document
         </button>
         <div className="flex justify-end items-center space-x-4">
+        <button
+            className="px-4 py-2 bg-red-500 text-white rounded"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
           <button
             className="px-4 py-2 bg-green-500 text-white rounded"
             type="submit"
@@ -170,14 +194,17 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
           >
             Save Changes
           </button>
-          <button
-            className="px-4 py-2 bg-red-500 text-white rounded"
-            onClick={handleCancel}
-          >
-            Cancel
-          </button>
+          
         </div>
       </form>
+       {/* Confirmation Modal */}
+       <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save Changes?"
+      />
     </>
   );
 
