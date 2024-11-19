@@ -11,24 +11,51 @@ import HR from "../HR";
 import LoadingStateIcons from "react-loading-icons";
 const EditEmployee = () => {
   const { id } = useParams(); //pull the id from use params from the url
-
   //will get hte student from the state
-  const employeeToEdit = useSelector((state) => state.employee?.entities[id]);
-  //console.log('helllllow',employeeToEdit.userFullName.userFirstName, 'mystu', id)
+  //const employeeToEdit = useSelector((state) => state.employee?.entities[id]);
+  console.log("helllllow employeeToEdit", "mystu", id);
+  console.log(id, "id");
+  const {
+    data: employee, //the data is renamed employees
+    isLoading: isEmployeeLoading, //monitor several situations is loading...
+    isSuccess: isEmployeeSuccess,
+    isError: isEmployeeError,
+    error: employeeError,
+  } = useGetEmployeeByIdQuery(
+    {
+      id: id,
+      endpointName: "EditEmployee",
+    } || {},
+    {
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
+    }
+  );
+
+  let employeeToEdit;
+  if (isEmployeeSuccess) {
+    console.log(employee, "employe");
+    employeeToEdit = employee;
+  }
+
+  console.log(employeeToEdit, "employeToedit");
 
   let content;
-
-  content = employeeToEdit ? (
-    <>
-      
-      <EditEmployeeForm employee={employeeToEdit} />
-    </>
-  ) : (
-    <>
-      <HR />
-      <LoadingStateIcons />
-    </>
-  );
+  if (isEmployeeSuccess) {
+    content = 
+      <>
+        <EditEmployeeForm employee={employeeToEdit} />
+      </>
+    
+  } 
+  // else {
+  //   content = 
+  //     <>
+  //       <HR />
+  //       <LoadingStateIcons />
+  //     </>
+    
+  // }
 
   //}
   //if(isError){<h1>is error</h1>}

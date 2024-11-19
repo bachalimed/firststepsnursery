@@ -43,20 +43,20 @@ const EditEmployeeForm = ({ employee }) => {
 const [showConfirmation, setShowConfirmation] = useState(false);
   // Consolidated form state
   const [formData, setFormData] = useState({
-    employeeId: employee?.employeeId,
-    userId: employee?.id,
+    employeeId: employee?.employeeId._id,
+    userId: employee?._id,
     userFullName: employee?.userFullName,
     userDob: employee?.userDob.split("T")[0],
     userSex: employee?.userSex,
     userAddress: employee?.userAddress,
     userContact: employee?.userContact,
     userRoles: employee?.userRoles,
-    employeeAssessment: employee?.employeeData?.employeeAssessment,
-    employeeWorkHistory: employee.employeeData?.employeeWorkHistory || [],
-    employeeIsActive: employee?.employeeData?.employeeIsActive,
-    employeeYears: employee?.employeeData?.employeeYears || [],
-    employeeCurrentEmployment: employee?.employeeData
-      .employeeCurrentEmployment || {
+    employeeAssessment: employee?.employeeId?.employeeAssessment,
+    employeeWorkHistory: employee?.employeeId?.employeeWorkHistory || [],
+    employeeIsActive: employee?.employeeId?.employeeIsActive,
+    employeeYears: employee?.employeeId?.employeeYears || [],
+    employeeCurrentEmployment: employee?.employeeId
+      ?.employeeCurrentEmployment || {
       position: "",
       joinDate: "",
       contractType: "",
@@ -66,7 +66,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
       },
     },
   });
-  console.log(formData.userRoles);
+  //console.log(formData.userRoles);
   const [validity, setValidity] = useState({
     validFirstName: false,
     validLastName: false,
@@ -98,7 +98,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
       validStreet: NAME_REGEX.test(formData.userAddress?.street),
       validCity: NAME_REGEX.test(formData.userAddress?.city),
       validPrimaryPhone: PHONE_REGEX.test(formData.userContact?.primaryPhone),
-      validCurrentPosition: USER_REGEX.test(
+      validCurrentPosition: NAME_REGEX.test(
         formData.employeeCurrentEmployment?.position
       ),
       validJoinDate: DATE_REGEX.test(
@@ -107,6 +107,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
       validContractType: USER_REGEX.test(
         formData.employeeCurrentEmployment?.contractType
       ),
+     
       validBasic: NUMBER_REGEX.test(
         formData.employeeCurrentEmployment?.salaryPackage?.basic
       ),
@@ -114,7 +115,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
         formData.employeeCurrentEmployment?.salaryPackage?.payment
       ),
       validEmployeeYear: YEAR_REGEX.test(
-        formData.employeeYears[0].academicYear
+        formData.employeeYears[0]?.academicYear
       ),
     }));
   }, [formData]);
@@ -139,7 +140,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
     if (isSuccess) {
       setFormData({});
 
-      navigate("/hr/employees/employees/");
+      navigate("/hr/employees/employeesList/");
     }
   }, [isSuccess, navigate]);
   const handleInputChange = (e) => {
@@ -301,7 +302,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
       <section className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold mb-4">
           Edit Employee :{" "}
-          {`${formData.userFullName.userFirstName} ${formData.userFullName.userMiddleName} ${formData.userFullName.userLastName}`}
+          {`${formData?.userFullName?.userFirstName} ${formData?.userFullName?.userMiddleName} ${formData?.userFullName?.userLastName}`}
         </h2>
         <form onSubmit={onSaveEmployeeClicked} className="space-y-6">
           <div className="space-y-4">
@@ -317,7 +318,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                 <input
                   type="text"
                   name="userFullName.userFirstName" // Changed to match the nested structure
-                  value={formData.userFullName.userFirstName}
+                  value={formData?.userFullName?.userFirstName}
                   onChange={handleInputChange}
                   className={`mt-1 block w-full border ${
                     validity.validFirstName
@@ -918,7 +919,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
               disabled={!canSave}
               className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
                 canSave
-                  ? "bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500"
+                  ? "bg-green-600 hover:bg-green-700 focus:ring-green-500"
                   : "bg-gray-400 cursor-not-allowed"
               } focus:outline-none focus:ring-2 focus:ring-offset-2`}
             >
@@ -933,7 +934,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
         onClose={handleCloseModal}
         onConfirm={handleConfirmSave}
         title="Confirm Save"
-        message="Are you sure you want to save this student?"
+        message="Are you sure you want to save?"
       />
     </>
   );

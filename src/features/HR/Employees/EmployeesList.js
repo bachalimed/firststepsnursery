@@ -249,7 +249,7 @@ const EmployeesList = () => {
       ),
 
       sortable: true,
-      width: "240px",
+      width: "260px",
     },
     //  (isAdmin)&&{
     // name: "Employee ID",
@@ -425,7 +425,7 @@ const EmployeesList = () => {
   const tableHeader = (
     <div>
       <h2>
-        Employees List: <span> {filteredEmployees.length} payments</span>
+        Employees List: <span> {filteredEmployees.length} employees</span>
       </h2>
     </div>
   );

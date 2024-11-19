@@ -29,7 +29,7 @@ const EmployeeDetails = () => {
   } = useGetEmployeeByIdQuery(
     {
       id: id,
-      endpointName: "employeesList",
+      endpointName: "EmployeeDetails",
     } || {},
     {
       refetchOnFocus: true,
@@ -199,8 +199,8 @@ const EmployeeDetails = () => {
           <div>
             <p className="text-sm font-medium text-gray-700">Academic Years</p>
             <ul className="list-disc list-inside text-lg text-gray-900">
-              {employee?.employeeData?.employeeYears?.length > 0 ? (
-                employee.employeeData.employeeYears.map((year, idx) => (
+              {employee?.employeeId?.employeeYears?.length > 0 ? (
+                employee.employeeId.employeeYears.map((year, idx) => (
                   <li key={idx}>{year.academicYear}</li>
                 ))
               ) : (
@@ -215,11 +215,11 @@ const EmployeeDetails = () => {
               Current Employment
             </p>
             <p className="text-lg text-gray-900">
-              {employee?.employeeData?.employeeCurrentEmployment?.position
+              {employee?.employeeId?.employeeCurrentEmployment?.position
                 ? `${
-                    employee?.employeeData?.employeeCurrentEmployment?.position
+                    employee?.employeeId?.employeeCurrentEmployment?.position
                   }, Joined on: ${
-                    employee?.employeeData?.employeeCurrentEmployment?.joinDate.split(
+                    employee?.employeeId?.employeeCurrentEmployment?.joinDate.split(
                       "T"
                     )[0]
                   }`
@@ -231,8 +231,8 @@ const EmployeeDetails = () => {
           <div>
             <p className="text-sm font-medium text-gray-700">Work History</p>
             <ul className="list-disc list-inside text-lg text-gray-900">
-              {employee?.employeeData?.employeeWorkHistory?.length > 0 ? (
-                employee.employeeData.employeeWorkHistory.map(
+              {employee?.employeeId?.employeeWorkHistory?.length > 0 ? (
+                employee.employeeId.employeeWorkHistory.map(
                   (history, idx) => (
                     <li key={idx}>
                       {history.position} at {history.company} (
@@ -249,7 +249,7 @@ const EmployeeDetails = () => {
 
         <div className="flex justify-end items-center space-x-4 mt-6">
           <button
-            onClick={() => navigate(`/hr/employees/employees/`)}
+            onClick={() => navigate(`/hr/employees/employeesList/`)}
             className="px-4 py-2 bg-gray-500 text-white rounded"
           >
             Back to List

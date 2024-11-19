@@ -716,21 +716,14 @@ const EditAdmissionForm = ({ admission }) => {
           </button>
         </div>
       </form>
+      
       {/* Confirmation Modal */}
       <ConfirmationModal
         show={showConfirmation}
         onClose={handleCloseModal}
         onConfirm={handleConfirmSave}
         title="Confirm Save"
-        message="Are you sure you want to save this student?"
-      />
-      {/* Confirmation Modal */}
-      <ConfirmationModal
-        show={showConfirmation}
-        onClose={handleCloseModal}
-        onConfirm={handleConfirmSave}
-        title="Confirm Save"
-        message="Are you sure you want to save this student?"
+        message="Are you sure you want to save?"
       />
     </>
   );

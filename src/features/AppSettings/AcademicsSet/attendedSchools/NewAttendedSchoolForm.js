@@ -199,7 +199,7 @@ const NewAttendedSchoolForm = () => {
         onClose={handleCloseModal}
         onConfirm={handleConfirmSave}
         title="Confirm Save"
-        message="Are you sure you want to save this student?"
+        message="Are you sure you want to save?"
       />
     </>
   );
