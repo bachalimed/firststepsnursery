@@ -11,6 +11,7 @@ const useFetchPhoto = (photoId) => {
       if (!photoId) return;
 
       try {
+        console.log("Fetching photo with ID:", photoId);
         const response = await axios.get(
           `http://localhost:3500/students/studentsParents/studentDocuments/${photoId}`,
           {
@@ -24,6 +25,7 @@ const useFetchPhoto = (photoId) => {
         const contentType = response.headers["content-type"];
         const blob = new Blob([response.data], { type: contentType });
         const url = window.URL.createObjectURL(blob);
+        console.log("Fetched photo URL:", url); 
         setPhotoUrl(url);
       } catch (error) {
         console.error("Error fetching student photo:", error);
@@ -34,7 +36,7 @@ const useFetchPhoto = (photoId) => {
     fetchPhoto();
   }, [photoId, token]);
 
-  return { photoUrl, error };
+  return { photoUrl, error };///this is how to retrienve the photo: deconstruct into {photUrl}=useFethcPhoto
 };
 
 export default useFetchPhoto;

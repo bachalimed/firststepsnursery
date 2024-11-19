@@ -16,11 +16,11 @@ export const store = configureStore({
   reducer: {
     // Add the generated reducer as a specific top-level slice
     [apiSlice.reducerPath]: apiSlice.reducer, //what ever we name in the reducerpath will be given the name to this apislice, the default is 'api'
-    auth: authReducer,
+    auth: authReducer,//keep
     user: usersReducer,
     academicYear: academicYearsReducer,
-    student: studentsReducer,
-    family: familiesReducer,
+    student: studentsReducer,//keep
+    family: familiesReducer,//keep
     //studentDocument: studentDocumentsReducer,
     //employeeDocument:employeeDocumentsListReducer,
     employee: employeeReducer,

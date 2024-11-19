@@ -38,7 +38,6 @@ import {
 import { IoDocumentAttachOutline } from "react-icons/io5";
 import { gradeOptions } from "../../../../config/Constants";
 const StudentsList = () => {
-
   //this is for the academic year selection
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -59,17 +58,16 @@ const StudentsList = () => {
   //query the students
   const {
     data: students, //the data is renamed students
-    isLoading:isStudentsLoading, //monitor several situations is loading...
-    isSuccess:isStudentsSuccess,
-    isError:isStudentsError,
-    error:studentsError,
+    isLoading: isStudentsLoading, //monitor several situations is loading...
+    isSuccess: isStudentsSuccess,
+    isError: isStudentsError,
+    error: studentsError,
   } = useGetStudentsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
       endpointName: "studentsList",
     } || {},
     {
-      
       pollingInterval: 60000,
       refetchOnFocus: true,
       refetchOnMountOrArgChange: true,
@@ -134,9 +132,9 @@ const StudentsList = () => {
     ? Object.values(attendedSchoolsList.entities)
     : [];
   if (isStudentsSuccess) {
-       const { entities } = students;
+    const { entities } = students;
 
-    studentsList = Object.values(entities); 
+    studentsList = Object.values(entities);
     dispatch(setStudents(studentsList)); //timing issue to update the state and use it the same time
 
     // Apply filters to the students list
@@ -175,17 +173,17 @@ const StudentsList = () => {
     });
   }
   const handleSearch = (e) => setSearchQuery(e.target.value);
-  const handleGradeChange = (e) => setSelectedGrade(e.target.value); 
+  const handleGradeChange = (e) => setSelectedGrade(e.target.value);
   const handleSchoolChange = (e) => setSelectedSchoolName(e.target.value);
   // UI component for grade filter dropdown
- 
+
   // Handler for selecting rows
   const handleRowSelected = (state) => {
     setSelectedRows(state.selectedRows);
     //console.log('selectedRows', selectedRows)
   };
-//update to be used on registering student
-    const [
+  //update to be used on registering student
+  const [
     updateStudent,
     {
       isLoading: isUpdateLoading,
@@ -197,7 +195,6 @@ const StudentsList = () => {
   const [studentObject, setStudentObject] = useState("");
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
 
- 
   // Handler for registering selected row,
   const [studentYears, setStudentYears] = useState([]);
   const handleRegisterSelected = () => {
@@ -225,8 +222,6 @@ const StudentsList = () => {
     setIsRegisterModalOpen(false); // Close modal
   };
 
-
-
   const column = [
     {
       name: "#",
@@ -234,7 +229,7 @@ const StudentsList = () => {
       sortable: false,
       width: "50px",
     },
-    
+
     {
       name: "Active",
       selector: (row) => row.studentIsActive,
@@ -426,124 +421,135 @@ const StudentsList = () => {
 
   //console.log(filteredStudents, "filteredStudents");
   let content;
-  if (isStudentsLoading) content = <LoadingStateIcon />;
+  if (isStudentsLoading)
+    content = (
+      <>
+        <Students />
+        <LoadingStateIcon />
+      </>
+    );
   if (isStudentsError) {
-    content = <p className="errmsg">{studentsError?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
+    content = (
+      <>
+        <Students /> <p className="errmsg">{studentsError?.data?.message}</p>
+        
+      </>
+    ); //errormessage class defined in the css, the error has data and inside we have message of error
   }
-  if (isStudentsSuccess || filteredStudents?.length>0){
-
-  content = (
-    <>
-      <Students />
-      <div className="flex space-x-2 items-center">
-        {/* Search Bar */}
-        <div className="relative h-10 mr-2 ">
-          <HiOutlineSearch
-            fontSize={20}
-            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-          />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={handleSearch}
-            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
-          />
+  if (isStudentsSuccess || filteredStudents?.length > 0) {
+    content = (
+      <>
+        <Students />
+        <div className="flex space-x-2 items-center">
+          {/* Search Bar */}
+          <div className="relative h-10 mr-2 ">
+            <HiOutlineSearch
+              fontSize={20}
+              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+            />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearch}
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
+            />
+          </div>
+          {/* Grade Filter Dropdown */}
+          <select
+            value={selectedGrade}
+            onChange={handleGradeChange}
+            className="text-sm h-8 border border-gray-300 rounded-md px-4"
+          >
+            <option value="">All Grades</option>
+            {gradeOptions.map((grade) => (
+              <option key={grade} value={grade}>
+                Grade {grade}
+              </option>
+            ))}
+          </select>
+          {/* Attended school selection dropdown */}
+          <select
+            value={selectedSchoolName}
+            onChange={handleSchoolChange}
+            className="text-sm h-8 border border-gray-300 rounded-md px-4"
+          >
+            <option value="">All Schools</option>
+            {attendedSchools?.map(
+              (school) =>
+                school.schoolName !== "First Steps" && (
+                  <option key={school.id} value={school.schoolName}>
+                    {school.schoolName}
+                  </option>
+                )
+            )}
+          </select>
         </div>
-        {/* Grade Filter Dropdown */}
-        <select
-          value={selectedGrade}
-          onChange={handleGradeChange}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
-        >
-          <option value="">All Grades</option>
-          {gradeOptions.map((grade) => (
-            <option key={grade} value={grade}>
-              Grade {grade}
-            </option>
-          ))}
-        </select>
-        {/* Attended school selection dropdown */}
-        <select
-          value={selectedSchoolName}
-          onChange={handleSchoolChange}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
-        >
-          <option value="">All Schools</option>
-          {attendedSchools?.map(
-            (school) =>
-              school.schoolName !== "First Steps" && (
-                <option key={school.id} value={school.schoolName}>
-                  {school.schoolName}
-                </option>
-              )
-          )}
-        </select>
-      </div>
-      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-        <DataTable
-          title={tableHeader}
-          columns={column}
-          data={filteredStudents}
-          pagination
-          selectableRows
-          removableRows
-          pageSizeControl
-          onSelectedRowsChange={handleRowSelected}
-          selectableRowsHighlight
-          customStyles={{
-            headCells: {
-              style: {
-                // Apply Tailwind style via a class-like syntax
-                justifyContent: "center", // Align headers to the center
-                textAlign: "center", // Center header text
+       
+        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+          <DataTable
+            title={tableHeader}
+            columns={column}
+            data={filteredStudents}
+            pagination
+            selectableRows
+            removableRows
+            pageSizeControl
+            onSelectedRowsChange={handleRowSelected}
+            selectableRowsHighlight
+            customStyles={{
+              headCells: {
+                style: {
+                  // Apply Tailwind style via a class-like syntax
+                  justifyContent: "center", // Align headers to the center
+                  textAlign: "center", // Center header text
+                },
               },
-            },
-            // cells: {
-            //   style: {
-            //     justifyContent: 'center', // Center cell content
-            //     textAlign: 'center',
-            //   },
-            // },
-          }}
-        ></DataTable>
-        <div className="flex justify-end items-center space-x-4">
-          <button
-            className="px-3 py-2 bg-green-500 text-white rounded"
-            onClick={() => navigate("/students/studentsParents/newStudent/")}
-            // disabled={selectedRows.length !== 1} // Disable if no rows are selected
-            hidden={!canCreate}
-          >
-            New Student
-          </button>
-          <button
-            className={`px-4 py-2 ${
-              selectedRows?.length === 1 ? "bg-teal-500" : "bg-gray-500"
-            } text-white rounded`}
-            onClick={handleRegisterSelected}
-            disabled={selectedRows?.length !== 1} // Disable if no rows are selected
-            hidden={!canCreate}
-          >
-            Register
-          </button>
+              // cells: {
+              //   style: {
+              //     justifyContent: 'center', // Center cell content
+              //     textAlign: 'center',
+              //   },
+              // },
+            }}
+          ></DataTable>
+          <div className="flex justify-end items-center space-x-4">
+            <button
+              className="px-3 py-2 bg-green-500 text-white rounded"
+              onClick={() => navigate("/students/studentsParents/newStudent/")}
+              // disabled={selectedRows.length !== 1} // Disable if no rows are selected
+              hidden={!canCreate}
+            >
+              New Student
+            </button>
+            <button
+              className={`px-4 py-2 ${
+                selectedRows?.length === 1 ? "bg-teal-500" : "bg-gray-500"
+              } text-white rounded`}
+              onClick={handleRegisterSelected}
+              disabled={selectedRows?.length !== 1} // Disable if no rows are selected
+              hidden={!canCreate}
+            >
+              Register
+            </button>
+          </div>
         </div>
-      </div>
-      <DeletionConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
-      />
-      <RegisterModal //will allow to add or remove studetnYEars
-        isOpen={isRegisterModalOpen}
-        onClose={() => setIsRegisterModalOpen(false)}
-        studentYears={studentYears}
-        studentObject={studentObject}
-        setStudentObject={setStudentObject}
-        setStudentYears={setStudentYears}
-        academicYears={academicYears}
-        onSave={onUpdateStudentClicked}
-      />
-    </>
-  );
+        <DeletionConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+        />
+        <RegisterModal //will allow to add or remove studetnYEars
+          isOpen={isRegisterModalOpen}
+          onClose={() => setIsRegisterModalOpen(false)}
+          studentYears={studentYears}
+          studentObject={studentObject}
+          setStudentObject={setStudentObject}
+          setStudentYears={setStudentYears}
+          academicYears={academicYears}
+          onSave={onUpdateStudentClicked}
+        />
+      </>
+    );
   }
   return content;
 };
