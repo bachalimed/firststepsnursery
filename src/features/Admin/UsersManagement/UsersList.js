@@ -146,7 +146,7 @@ const UsersList = () => {
     //show this column only if user is a parent and not employee
 
     {
-      name: "Active",
+      name: "Active User",
       selector: (row) => row.userIsActive,
       cell: (row) => (
         <span>
@@ -158,7 +158,7 @@ const UsersList = () => {
         </span>
       ),
       sortable: true,
-      width: "80px",
+      width: "120px",
     },
     {
       name: "Sex",
@@ -186,12 +186,12 @@ const UsersList = () => {
           </Link>
           {row.employeeId && (
             <Link to={`/hr/employees/employeeDetails/${row._id}`}>
-              <div>Employee {row.employeeId}</div>
+              <div>Emp {row.employeeId}</div>
             </Link>
           )}
           {row.familyId && (
             <Link to={`/students/studentsParents/familyDetails/${row._id}`}>
-              <div>Family {row.familyId}</div>
+              <div>Fam {row.familyId}</div>
             </Link>
           )}
         </div>

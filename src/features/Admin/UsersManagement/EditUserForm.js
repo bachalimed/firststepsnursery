@@ -728,6 +728,12 @@ const [showConfirmation, setShowConfirmation] = useState(false);
             </div>
           </div>
           <div className="flex justify-end items-center space-x-4">
+          <button
+              className=" px-4 py-2 bg-red-500 text-white rounded"
+              onClick={handleCancel}
+            >
+              Cancel
+            </button>
             <button
               className=" px-4 py-2 bg-green-500 text-white rounded"
               type="submit"
@@ -737,15 +743,18 @@ const [showConfirmation, setShowConfirmation] = useState(false);
             >
               Save Changes
             </button>
-            <button
-              className=" px-4 py-2 bg-red-500 text-white rounded"
-              onClick={handleCancel}
-            >
-              Cancel
-            </button>
+           
           </div>
         </form>
       </section>
+       {/* Confirmation Modal */}
+       <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save Changes?"
+      />
     </>
   );
 
