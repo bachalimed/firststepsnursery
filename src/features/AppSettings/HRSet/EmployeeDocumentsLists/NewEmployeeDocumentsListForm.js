@@ -296,7 +296,6 @@ const NewEmployeeDocumentsListForm = () => {
       />
     </>
   );
-
   return content;
 };
 export default NewEmployeeDocumentsListForm;

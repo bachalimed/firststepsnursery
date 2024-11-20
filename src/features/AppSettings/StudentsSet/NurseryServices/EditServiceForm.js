@@ -15,6 +15,7 @@ import {
 import { useSelector } from "react-redux";
 import {USER_REGEX,NAME_REGEX,NUMBER_REGEX,PHONE_REGEX,YEAR_REGEX,DATE_REGEX }  from'../../../../config/REGEX'
 import { useGetAcademicYearsQuery } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
+import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 
 const EditServiceForm = ({ service }) => {
   const navigate = useNavigate();
@@ -29,6 +30,10 @@ const EditServiceForm = ({ service }) => {
 
   const [updateService, { isLoading, isSuccess, isError, error }] =
     useUpdateServiceMutation();
+
+
+    //confirmation Modal states
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   // Consolidated form state
   const [formData, setFormData] = useState({
@@ -256,11 +261,19 @@ const EditServiceForm = ({ service }) => {
     formData?.userRoles?.length > 0 &&
     !isLoading;
 
-  console.log(formData, "formData");
-  console.log(canSave, "canSave");
+  //console.log(formData, "formData");
+ // console.log(canSave, "canSave");
   const onSaveServiceClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
+      setShowConfirmation(true);
+    }
+  };
+
+   // This function handles the confirmed save action
+   const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
       try {
         await updateService(formData);
       } catch (err) {
@@ -269,10 +282,11 @@ const EditServiceForm = ({ service }) => {
     }
   };
 
-  const handleCancel = () => {
-    navigate("/hr/services/");
+   // Close the modal without saving
+   const handleCloseModal = () => {
+    setShowConfirmation(false);
   };
-
+ 
   const content = (
     <>
       <Services />
@@ -895,6 +909,14 @@ const EditServiceForm = ({ service }) => {
           </div>
         </form>
       </section>
+       {/* Confirmation Modal */}
+       <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save?"
+      />
     </>
   );
   return content;

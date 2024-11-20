@@ -43,9 +43,8 @@ const EditFamily = () => {
   } = useGetFamilyByIdQuery(
     { id: id, criteria: "Dry", endpointName: "EditFamily" } || {},
     {
-     
       refetchOnFocus: true,
-      refetchOnMountOrArgChange: true, 
+      refetchOnMountOrArgChange: true,
     }
   );
 
