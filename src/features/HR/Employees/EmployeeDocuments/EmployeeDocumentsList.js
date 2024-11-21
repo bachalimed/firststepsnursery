@@ -66,9 +66,9 @@ const EmployeeDocumentsList = ({ user }) => {
   //initialising state variables and hooks
   const Navigate = useNavigate();
   const Dispatch = useDispatch();
-  const { id,userFullName } = user;
-  console.log(id,'the id in teh list')
-  const [userId, setUserId] = useState(id); // we get from previous page
+  const { id:userId,userFullName } = user;
+  console.log(userId,'the id in teh list')
+  
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
@@ -143,7 +143,7 @@ const EmployeeDocumentsList = ({ user }) => {
     error: listError,
   } = useGetEmployeeDocumentsByYearByIdQuery(
     {
-      userId: id,
+      userId: userId,
     
       year: employeeDocumentYear,
       endpointName: "EmployeeDocumentsList",
@@ -417,7 +417,7 @@ const EmployeeDocumentsList = ({ user }) => {
             <button
               className=" px-4 py-2 bg-blue-500 text-white rounded"
               onClick={() =>
-                Navigate(`/employees/employeesParents/employeeDetails/${id}`)
+                Navigate(`/employees/employeesParents/employeeDetails/${userId}`)
               }
             >
               Employee Details

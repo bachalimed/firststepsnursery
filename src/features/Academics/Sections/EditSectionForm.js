@@ -112,8 +112,8 @@ const [showConfirmation, setShowConfirmation] = useState(false);
     students: section?.students?.map((student) => student._id) || [], // Keep only _id
     sectionColor: section?.sectionColor,
     sectionType: section?.sectionType,
-    sectionFrom: section?.sectionFrom,
-    sectionTo: section?.sectionTo,
+    sectionFrom: section?.sectionFrom?.split("T")[0] ,
+    sectionTo: section?.sectionTo?.split("T")[0],
     sectionAnimator: section?.sectionAnimator,
     sectionLocation: section?.sectionLocation,
     operator: userId,
@@ -483,7 +483,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
               disabled={!canSave}
               className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
                 canSave
-                  ? "bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500"
+                  ? "bg-green-600 hover:bg-green-700 focus:ring-green-500"
                   : "bg-gray-400 cursor-not-allowed"
               } focus:outline-none focus:ring-2 focus:ring-offset-2`}
             >

@@ -481,7 +481,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
               disabled={!canSave}
               className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
                 canSave
-                  ? "bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500"
+                  ? "bg-green-600 hover:bg-green-700 focus:ring-green-500"
                   : "bg-gray-400 cursor-not-allowed"
               } focus:outline-none focus:ring-2 focus:ring-offset-2`}
             >

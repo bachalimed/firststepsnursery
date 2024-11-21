@@ -523,7 +523,7 @@ const StudentsList = () => {
             </button>
             <button
               className={`px-4 py-2 ${
-                selectedRows?.length === 1 ? "bg-teal-500" : "bg-gray-500"
+                selectedRows?.length === 1 ? "bg-teal-500" : "bg-gray-300"
               } text-white rounded`}
               onClick={handleRegisterSelected}
               disabled={selectedRows?.length !== 1} // Disable if no rows are selected

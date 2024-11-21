@@ -264,9 +264,9 @@ const NewStudentForm = () => {
     );
   }, [studentEducation, selectedAcademicYear.title]);
 
-  console.log(validCurrentEducation, "education");
-  console.log(studentEducation, "studentEducation");
-  console.log(selectedAcademicYear.title, "selectedAcademicYear.title");
+ // console.log(validCurrentEducation, "education");
+ // console.log(studentEducation, "studentEducation");
+ // console.log(selectedAcademicYear.title, "selectedAcademicYear.title");
 
   //to check if we can save before onsave, if every one is true, and also if we are not loading status
   const canSave =
@@ -288,6 +288,11 @@ const NewStudentForm = () => {
     }
   };
 
+
+//for status messaage
+  const [statusMessage, setStatusMessage] = useState("");
+  const [statusType, setStatusType] = useState(""); // 'success' or 'error'
+  const [showMessage, setShowMessage] = useState(false);
   // This function handles the confirmed save action
   const handleConfirmSave = async () => {
     // Close the confirmation modal
@@ -307,12 +312,32 @@ const NewStudentForm = () => {
       });
 
       if (isError) {
-        console.log("Error saving:", error);
+        setStatusType("error");
+        setStatusMessage(error?.data?.message || "Error saving student.");
+        setShowMessage(true);
+      } else {
+        setStatusType("success");
+        setStatusMessage("Student saved successfully!");
+        setShowMessage(true);
       }
+
+      // Clear the message after 1 second
+      setTimeout(() => {
+        setShowMessage(false);
+      }, 1000);
     } catch (error) {
+      setStatusType("error");
+      setStatusMessage("An unexpected error occurred.");
+      setShowMessage(true);
+
+      setTimeout(() => {
+        setShowMessage(false);
+      }, 1000);
+
       console.error("Error saving student:", error);
     }
   };
+
 
   // Close the modal without saving
   const handleCloseModal = () => {
@@ -324,7 +349,7 @@ const NewStudentForm = () => {
   };
 
   //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
-  const errClass = isError ? "errmsg" : "offscreen";
+  //const errClass = isError ? "errmsg" : "offscreen";
   //const validStudentClass = !validStudentName ? 'form__input--incomplete' : ''
   //const validPwdClass = !validPassword ? 'form__input--incomplete' : ''
   //const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
@@ -332,8 +357,16 @@ const NewStudentForm = () => {
   const content = (
     <>
       <Students />
-      <p className={`text-red-500 ${errClass}`}>{error?.data?.message}</p>{" "}
-      {/* Display error messages */}
+       {/* Display status message */}
+       {showMessage && (
+        <p
+          className={`mt-4 text-center ${
+            statusType === "success" ? "text-green-500" : "text-red-500"
+          }`}
+        >
+          {statusMessage}
+        </p>
+      )}
       <form
         className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md"
         onSubmit={onSaveStudentClicked}
