@@ -29,6 +29,7 @@ import {
   OBJECTID_REGEX,
 } from "../../../config/REGEX"
 import { SERVICETYPES } from "../../../config/SchedulerConsts";
+import { CurrencySymbol } from "../../../config/Currency";
 //import { MONTHS } from "../../../config/Months";
 const NewEnrolmentForm = () => {
   // State and hooks initialization
@@ -458,7 +459,7 @@ const getCurrentMonthName = () => {
                   />
                   <label htmlFor={service.service}>{service.serviceType}</label>
                   <span className="ml-4">
-                    Authorized Fee: ${service.serviceAuthorisedFee}
+                    Authorized Fee: {service.serviceAuthorisedFee} {`${CurrencySymbol}`}
                   </span>
                   <span className="ml-4">Period: {service.servicePeriod}</span>
                   {isChecked && (

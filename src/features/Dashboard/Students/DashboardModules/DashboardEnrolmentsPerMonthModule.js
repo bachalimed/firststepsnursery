@@ -1,9 +1,8 @@
 import React from "react";
 import { useStudentsStats } from "../../../../hooks/useStudentsStats";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LabelList } from 'recharts';
 
 const DashboardEnrolmentsPerMonthModule = () => {
-
   const { enrolmentsStats } = useStudentsStats();
 
   // Destructure the required stats from enrolmentsStats
@@ -18,10 +17,12 @@ const DashboardEnrolmentsPerMonthModule = () => {
 
   // Process data for the chart
   const chartData = monthlyStats.map((stat) => {
-    // Create an object for each month containing the month and all service types
+    // Create an object for each month containing the month, service types, and trends
     const serviceData = serviceTypes.reduce((acc, type) => {
       // If the service type exists for this month, use its value, otherwise set it to 0
       acc[type] = stat.serviceTypes[type] || 0;
+      // Add the trend for each service type, if available
+      acc[`${type}Trend`] = stat.serviceTypeTrends[type] || 0;
       return acc;
     }, {});
 
@@ -33,14 +34,13 @@ const DashboardEnrolmentsPerMonthModule = () => {
 
   // Define colors for each service type dynamically
   const COLORS = [
-    "#020344",
-    "#08215c",
-    "#0f3f74",
-    "#155e8d",
-    "#1b7ca5",
-    "#229abd",
-    "#28b8d5",
-    "#34b8d5",
+    "#f94144",
+    "#3d0066",
+    "#219ebc",
+    "#ffb703",
+    "#fb8500",
+    "#8ecae6",
+    "#023047",
   ];
 
   return (
@@ -52,7 +52,7 @@ const DashboardEnrolmentsPerMonthModule = () => {
             height={300}
             data={chartData}
             margin={{
-              top: 5,
+              top: 30, // Increased margin at the top for better visibility of labels
               right: 30,
               left: 20,
               bottom: 5,
@@ -71,7 +71,16 @@ const DashboardEnrolmentsPerMonthModule = () => {
                 dataKey={type}
                 fill={COLORS[index % COLORS.length]}
                 barSize={30} // Adjust bar size for better visual clarity
-              />
+              >
+                {/* Display the trend percentage above each bar */}
+                <LabelList
+                  dataKey={`${type}Trend`}
+                  position="top"
+                  formatter={(value) => `${value}%`}
+                  style={{ fill: "#333" }} // Customize label style
+                  offset={2} // Adjust the vertical offset of the trend label
+                />
+              </Bar>
             ))}
           </BarChart>
         </ResponsiveContainer>

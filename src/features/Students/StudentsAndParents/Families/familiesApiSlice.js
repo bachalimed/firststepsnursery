@@ -52,6 +52,27 @@ export const familiesApiSlice = apiSlice.injectEndpoints({
       //     } else return [{ type: 'parent', id: 'LIST' }]
       // }
     }),
+    getFamiliesStatsByYear: builder.query({
+      query: (params) => {
+        const queryString = new URLSearchParams(params).toString();
+        return `/students/studentsParents/families?${queryString}`;
+      },
+
+      validateStatus: (response, result) => {
+        return response.status === 200 && !result.isError;
+      },
+      transformResponse: (responseData) => {
+        // console.log('  in the APIslice',responseData.total)
+
+        
+        return responseData
+      },
+
+     
+      providesTags: ["familiesStats"],
+
+     
+    }),
     getFamilyById: builder.query({
       query: (params) => {
         const queryString = new URLSearchParams(params).toString();
@@ -113,6 +134,7 @@ export const {
   useUpdateFamilyMutation,
   useDeleteFamilyMutation,
   useGetFamiliesByYearQuery,
+  useGetFamiliesStatsByYearQuery,
   useGetFamilyByIdQuery,
 } = familiesApiSlice;
 

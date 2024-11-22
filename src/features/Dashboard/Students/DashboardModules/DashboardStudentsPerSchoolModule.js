@@ -80,7 +80,7 @@ const DashboardStudentsPerSchoolModule = () => {
               align="center"
               verticalAlign="top"
               iconType="circle"
-              iconSize={10}
+              iconSize={14}
             />
           </PieChart>
         </ResponsiveContainer>

@@ -5,6 +5,7 @@ import {
 } from "../features/AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { useGetStudentsStatsByYearQuery } from "../features/Students/StudentsAndParents/Students/studentsApiSlice";
 import { useGetEnrolmentsStatsByYearQuery } from "../features/Students/Enrolments/enrolmentsApiSlice"
+import { useGetFamiliesStatsByYearQuery } from "../features/Students/StudentsAndParents/Families/familiesApiSlice"
 
 export const useStudentsStats = () => {
   // Selected academic year
@@ -50,19 +51,36 @@ export const useStudentsStats = () => {
       refetchOnMountOrArgChange: true,
     }
   );
+  const {
+    data: families, //the data is renamed students
+    isLoading: isFamiliesLoading,
+    isSuccess: isFamiliesSuccess,
+    isError: isFamiliesError,
+    error: familiesError,
+  } = useGetFamiliesStatsByYearQuery(
+    {
+      criteria: "familiesTotalStats",
+      selectedYear: selectedAcademicYear?.title,
+      endpointName: "useStudentsStats",
+    },
+    {
+      pollingInterval: 60000,
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
+    }
+  );
 
   
   // Return the stats or an empty object if not successful
   const studentsStats = isStudentsSuccess ? students : {};
   const enrolmentsStats = isEnrolmentsSuccess ? enrolments : {};
+  const familiesStats = isFamiliesSuccess ? families : {};
 
   return {
-  
+    familiesStats,
     enrolmentsStats,
     studentsStats,
-    isStudentsLoading,
-    isStudentsSuccess,
-    isStudentsError,
-    studentsError,
+    selectedAcademicYear,
+    
   };
 };

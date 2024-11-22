@@ -298,8 +298,15 @@ const EnrolmentsList = () => {
     },
     {
       name: "Amount",
-      selector: (row) => `${row?.serviceFinalFee}`,
-
+      selector: (row) => (
+        <span
+          style={{
+            color: row?.serviceFinalFee < row?.serviceAuthorisedFee ? "red" : "black",
+          }}
+        >
+          {row?.serviceFinalFee}
+        </span>
+      ),
       sortable: true,
       width: "100px",
     },
@@ -471,6 +478,7 @@ const EnrolmentsList = () => {
               onClick={() =>
                 navigate(`/students/enrolments/editEnrolment/${row.id}`)
               }
+              hidden={row?.enrolmentInvoice?.invoiceAmount}//no editing for already invoiced enrolments
             >
               <FiEdit className="text-2xl" />
             </button>

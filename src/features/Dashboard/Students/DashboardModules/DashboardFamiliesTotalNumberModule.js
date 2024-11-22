@@ -4,50 +4,48 @@ import React from "react";
 import { PiStudent } from "react-icons/pi";
 import { useStudentsStats } from "../../../../hooks/useStudentsStats";
 import { useSelector } from "react-redux";
-import { IoFileTrayStackedOutline, IoSchoolOutline } from "react-icons/io5";
+import { RiParentLine } from "react-icons/ri";
 
-const DashboardStudentsAdmissionNumberModule = () => {
-
-  const { studentsStats } = useStudentsStats();
+const DashboardFamiliesTotalNumberModule = () => {
+  const { familiesStats } = useStudentsStats();
 
   // Destructure the required stats from studentsStats
-  const {
-    studentsMatchingAcademicYear = 0,
-    inactiveStudentsCount = 0,
-    studentsWithAdmission = 0,
-    registeredStudents=0,
-    studentGrades = {},
-  } = studentsStats;
- 
-  
+  const { familiesChildren,                
+    familySituationCount,            
+    familiesWithStudentsInYear
+   
+  } = familiesStats;
+console.log(familiesStats,'familiesStats')
+
+
   return (
-  
     <div
-      
+      div
       className="bg-gray-100 rounded-sm p-3 flex-1 border border-gray-300 flex items-center "
     >
       <div className="rounded-full h-12 w-12 flex items-center justify-center bg-sky-200">
-        <IoFileTrayStackedOutline className="text-2xl" />
+        <RiParentLine className="text-2xl" />
       </div>
       <div className="pl-4">
         <span className="text-sm text-gray-800 font-light">
           {" "}
-          Total Admissions
+          Total Families
         </span>
         <div className="flex items-center">
-          <strong className="text-xl text-gray-700 font-semi-bold">
+          <strong className="text-xl text-gray-900 font-semi-bold">
             {" "}
-            {studentsWithAdmission}
+            {familiesWithStudentsInYear}
           </strong>
           <span className="pl-2 text-sm text-red-500">
-          +{registeredStudents} Regisered{" "}
+            {familySituationCount?.Separated} separated{" "}
+          </span>
+          <span className="pl-2 text-sm text-red-500">
+            {familySituationCount?.Joint} Joint{" "}
           </span>
         </div>
       </div>
     </div>
-   
-   
   );
 };
 
-export default DashboardStudentsAdmissionNumberModule;
+export default DashboardFamiliesTotalNumberModule;

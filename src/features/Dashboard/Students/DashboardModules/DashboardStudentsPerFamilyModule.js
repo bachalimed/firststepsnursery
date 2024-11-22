@@ -1,4 +1,5 @@
 
+
 import React from "react";
 import { PiStudent } from "react-icons/pi";
 import { useStudentsStats } from "../../../../hooks/useStudentsStats";
@@ -13,43 +14,44 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const DashboardStudentsPerGradeModule = () => {
-
-  const { studentsStats } = useStudentsStats();
+const DashboardStudentsPerFamilyModule = () => {
+  const { familiesStats, selectedAcademicYear } = useStudentsStats();
 
   // Destructure the required stats from studentsStats
-  const {
-    studentsMatchingAcademicYear = 0,
-    inactiveStudentsCount = 0,
-    studentsWithAdmission = 0,
-    studentGrades = {},
-  } = studentsStats;
-
-  const COLORS = ["#ffed57",
-    "#ffc100",
-    "#ff9a00",
-    "#ff7400",
-    "#ff4d00",
-    "#ff3d00",
-    "#ff0000",
+  const { familiesChildren={},                
+    familySituationCount={},            
+    familiesWithStudentsInYear=""
     
-    "#ffc658",
-    "#fcc658",
+   
+  } = familiesStats;
+console.log(familiesStats,'familiesStats')
+
+
+  const COLORS = [
+    "#2feaa8",
+    "#20cbc1",
+    "#11abda",
+    "#0a9ce7",
+    "#028cf3",
+  
   ];
 
+
+  
   // Convert the studentGrades object into an array of objects for Pie chart
-  const gradesArray = Object.keys(studentGrades).map((key) => ({
-    name: `Grade ${key}`,
-    value: studentGrades[key],
+  const familiesArray = Object.keys(familiesChildren).map((key) => ({
+    name: `${key}`,
+    value: familiesChildren[key],
   }));
 
   return (
     <div className="bg-gray-100 rounded-sm p-3 flex-1 border border-gray-300 flex items-center">
-      <div className="pl-4 w-full h-full" style={{ minHeight: "300px" }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
+    <div className="pl-4 w-full h-full" style={{ minHeight: "300px" }}>
+      <ResponsiveContainer width="100%" height="100%">
+      <PieChart>
             <Pie
-              data={gradesArray}
+              data={familiesArray}
+             
               cx="50%" // Center the pie chart
               cy="50%" // Center the pie chart
               innerRadius={50}
@@ -58,35 +60,42 @@ const DashboardStudentsPerGradeModule = () => {
               fill="#8884d8"
               paddingAngle={4}
               dataKey="value"
-              stroke="none" // Remove the border color by setting stroke to none
+               stroke="none" // Remove the border color by setting stroke to none
             >
-              {gradesArray.map((entry, index) => (
+              {familiesArray.map((entry, index) => (
                 <Cell
-                  key={`cell-${index}`}
+                  key={`cell-${index} `}
                   fill={COLORS[index % COLORS.length]}
                 />
               ))}
               {/* Add labels to each slice using LabelList */}
               <LabelList
                 dataKey="value" // Show the value of each slice
-                position="inside" // Position label at the center of each slice
+                position="left" // Position label at the center of each slice
                 fill="#ffffff" // Label text color
                 fontSize={16} // Label font size
               />
             </Pie>
             {/* Add Legend */}
             <Legend
-              layout="horizontal"
+              layout="vertical"
               align="center"
               verticalAlign="top"
               iconType="circle"
               iconSize={14}
             />
           </PieChart>
+          
         </ResponsiveContainer>
+      
+      
       </div>
+     {/* Title below the pie chart */}
+    
+      
+     {`children per family: ${selectedAcademicYear?.title} `}
     </div>
   );
 };
 
-export default DashboardStudentsPerGradeModule;
+export default DashboardStudentsPerFamilyModule;
