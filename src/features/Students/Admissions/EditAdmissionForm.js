@@ -694,10 +694,17 @@ const EditAdmissionForm = ({ admission }) => {
         )}
 
         {/* Submit Button */}
-        <div className="mt-6">
+        <div className="flex justify-end space-x-4">
+        <button
+            type="button"
+            className="cancel-button"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
           <button
             type="submit"
-            disabled={!canSave}
+            disabled={!canSave||isAdmissionLoading}
             className={`inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
               canSave
                 ? "bg-blue-600 hover:bg-blue-700"
@@ -707,16 +714,10 @@ const EditAdmissionForm = ({ admission }) => {
             <FontAwesomeIcon icon={faSave} className="mr-2" />
             {isAdmissionLoading ? "Saving..." : "Save Admission"}
           </button>
-          <button
-            type="button"
-           className="cancel-button"
-            onClick={handleCancel}
-          >
-            Cancel
-          </button>
+          
         </div>
       </form>
-      
+
       {/* Confirmation Modal */}
       <ConfirmationModal
         show={showConfirmation}

@@ -184,7 +184,7 @@ const EmployeesList = () => {
     //console.log(employeeObject, "employeeObject");
     //const {employeeYears}= (employeeObject)
 
-    setEmployeeYears(employeeObject.employeeYears);
+    setEmployeeYears(employeeObject?.employeeYears);
     //console.log("employee years and id", employeeYears);
     setIsRegisterModalOpen(true);
 
@@ -482,7 +482,7 @@ const EmployeesList = () => {
         <div className="flex justify-end items-center space-x-4">
           <button
             className=" px-4 py-2 bg-green-500 text-white rounded"
-            onClick={handleRegisterSelected}
+            onClick={()=>navigate('/hr/employees/newEmployee')}
             // disabled={selectedRows.length !== 1} // Disable if no rows are selected
             hidden={!canCreate}
           >
@@ -491,7 +491,7 @@ const EmployeesList = () => {
 
         
 
-          {isAdmin && (
+          {/* {isAdmin && (
             <button
               className="px-3 py-2 bg-gray-400 text-white rounded"
               onClick={handleDuplicateSelected}
@@ -500,7 +500,7 @@ const EmployeesList = () => {
             >
               optional button
             </button>
-          )}
+          )} */}
         </div>
       </div>
       <DeletionConfirmModal

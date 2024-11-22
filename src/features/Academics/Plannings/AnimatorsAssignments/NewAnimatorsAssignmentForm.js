@@ -386,28 +386,30 @@ const NewAnimatorsAssignmentForm = () => {
           <button
             type="button"
             onClick={addAssignment}
-            className="w-full bg-blue-200 text-gray-700 py-2 px-4 rounded-md mt-2 hover:bg-blue-300 transition duration-200"
+            className="w-full mb-4 bg-blue-200 text-gray-700 py-2 px-4 rounded-md mt-2 hover:bg-blue-300 transition duration-200"
           >
             Add Another Assignment
           </button>
-
-          <button
-            type="submit"
-            disabled={!canSubmit}
-            className="w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-200 mt-4"
-          >
-            {isAddLoading ? "Adding..." : "Add Assignment"}
-          </button>
-          <button
-            type="button"
-            //disabled={!canSubmit}
-            className="cancel-button"
-            onClick={() =>
-              navigate("/academics/plannings/animatorsAssignments/")
-            }
-          >
-            Cancel
-          </button>
+          <div className="flex justify-end gap-4">
+           
+            <button
+              type="button"
+              //disabled={!canSubmit}
+              className="cancel-button"
+              onClick={() =>
+                navigate("/academics/plannings/animatorsAssignments/")
+              }
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={!canSubmit || isAddLoading}
+              className=" bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-200 mt-4"
+            >
+              {isAddLoading ? "Adding..." : "Add Assignment"}
+            </button>
+          </div>
         </form>
         {/* Confirmation Modal */}
         <ConfirmationModal

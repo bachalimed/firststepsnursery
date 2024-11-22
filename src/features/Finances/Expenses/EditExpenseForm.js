@@ -387,22 +387,24 @@ const EditExpenseForm = ({ expense }) => {
           >
             Add Animator
           </button>
-
+          <div className="flex justify-end gap-4">
+          
           <button
-            type="submit"
-            disabled={!canSubmit}
-            className="w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-200 mt-4"
-          >
-            {isUpdateLoading ? "Updating..." : "Update Assignment"}
-          </button>
-          <button
-            type="submit"
+            type="button"
             //disabled={!canSubmit}
             className="cancel-button"
             onClick={() => navigate("/academics/plannings/expenses/")}
           >
             Cancel
           </button>
+          <button
+            type="submit"
+            disabled={!canSubmit||isUpdateLoading}
+            className="w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-200 mt-4"
+          >
+            {isUpdateLoading ? "Updating..." : "Update Assignment"}
+          </button>
+          </div>
         </form>
       </div>
       {/* Confirmation Modal */}

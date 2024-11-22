@@ -312,10 +312,17 @@ const handleCloseModal = () => {
             />
           </div>
 
-          <div className="text-center">
+          <div className="flex justify-end space-x-4">
+          <button
+            type="button"
+            className="cancel-button"
+            onClick={()=>navigate('/finances/payments/paymentsList/')}
+          >
+            Cancel
+          </button>
             <button
               type="submit"
-              disabled={!canSubmit}
+              disabled={!canSubmit||isUpdateLoading}
               className={`w-full py-2 px-4 font-bold text-white rounded-md focus:outline-none ${
                 canSubmit
                   ? "bg-blue-500 hover:bg-blue-700"

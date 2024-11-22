@@ -17,8 +17,7 @@ import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import {NAME_REGEX, DATE_REGEX } from '../../../../config/REGEX'
-
+import { NAME_REGEX, DATE_REGEX } from "../../../../config/REGEX";
 
 const EditStudentForm = ({ student }) => {
   //initialising state variables and hooks
@@ -28,8 +27,8 @@ const EditStudentForm = ({ student }) => {
   const { userId, canEdit, canDelete, canAdd, canCreate, isParent, status2 } =
     useAuth();
 
-//confirmation Modal states
-const [showConfirmation, setShowConfirmation] = useState(false);
+  //confirmation Modal states
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
@@ -47,19 +46,15 @@ const [showConfirmation, setShowConfirmation] = useState(false);
   ] = useUpdateStudentMutation(); //it will not execute the mutation nownow but when called
 
   const {
-    data: attendedSchoolsList, 
-    isLoading: schoolIsLoading, 
+    data: attendedSchoolsList,
+    isLoading: schoolIsLoading,
     isSuccess: schoolIsSuccess,
     isError: schoolIsError,
     error: schoolError,
-  } = useGetAttendedSchoolsQuery(
-    { endpointName: "EditStudentForm" } || {},
-    {
-     
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
-    }
-  );
+  } = useGetAttendedSchoolsQuery({ endpointName: "EditStudentForm" } || {}, {
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
+  });
 
   let attendedSchools;
   if (schoolIsSuccess) {
@@ -127,7 +122,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
       )
     );
   }, [studentYears, selectedAcademicYear.title]);
-  console.log(studentYears)
+  console.log(studentYears);
   useEffect(() => {
     setValidFirstName(NAME_REGEX.test(firstName));
   }, [firstName]);
@@ -156,7 +151,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
       setStudentSex("");
       setStudentIsActive(false);
       setStudentYears([]); //will be true when the username is validated
-      setValidStudentGrade(false)
+      setValidStudentGrade(false);
       // setStudentJointFamily('')
       setGardienFirstName("");
       setgardienMiddleName("");
@@ -269,38 +264,44 @@ const [showConfirmation, setShowConfirmation] = useState(false);
 
   const onStudentGradeChanged = (e) => {
     const selectedGrade = e.target.value;
-  
+
     setStudentYears((prevYears) =>
-      prevYears.map((year) =>
-        year.academicYear === selectedAcademicYear?.title
-          ? { ...year, grade: selectedGrade }  // Update the grade for the selected academic year
-          : year  // Keep other years unchanged
+      prevYears.map(
+        (year) =>
+          year.academicYear === selectedAcademicYear?.title
+            ? { ...year, grade: selectedGrade } // Update the grade for the selected academic year
+            : year // Keep other years unchanged
       )
     );
   };
 
-  
-const validCurrentEducation = () => {
-  // Check if there is a valid entry for the given academic year
-  return studentEducation.some(entry => entry.schoolYear === selectedAcademicYear.title && entry.attendedSchool);
-};
+  const validCurrentEducation = () => {
+    // Check if there is a valid entry for the given academic year
+    return studentEducation.some(
+      (entry) =>
+        entry.schoolYear === selectedAcademicYear.title && entry.attendedSchool
+    );
+  };
   //to check if we can save before onsave, if every one is true, and also if we are not loading status
   const canSave =
-    [validCurrentEducation(),validFirstName, validLastName, validStudentDob, studentSex].every(
-      Boolean
-    ) && !isUpdateLoading;
+    [
+      validCurrentEducation(),
+      validFirstName,
+      validLastName,
+      validStudentDob,
+      studentSex,
+    ].every(Boolean) && !isUpdateLoading;
 
   const onUpdateStudentClicked = async (e) => {
     e.preventDefault();
     setShowConfirmation(true);
-  }
+  };
 
   const handleConfirmSave = async () => {
     // Close the confirmation modal
     setShowConfirmation(false);
     //generate the objects before saving
     const toSave = {
-      
       id,
       studentName,
       studentDob,
@@ -311,8 +312,7 @@ const validCurrentEducation = () => {
       studentGardien,
       operator,
     };
-    
-    
+
     await updateStudent({
       id,
       studentName,
@@ -367,9 +367,8 @@ const validCurrentEducation = () => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="firstName"
             >
-              First Name{" "}{!validFirstName && (
-                <span className="text-red-500">*</span>
-              )}
+              First Name{" "}
+              {!validFirstName && <span className="text-red-500">*</span>}
               <span className="text-gray-500 text-xs">[3-20 letters]</span>
             </label>
             <input
@@ -407,9 +406,8 @@ const validCurrentEducation = () => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="lastName"
             >
-              Last Name{" "}{!validLastName && (
-                <span className="text-red-500">*</span>
-              )}
+              Last Name{" "}
+              {!validLastName && <span className="text-red-500">*</span>}
               <span className="text-gray-500 text-xs">[3-20 letters]</span>
             </label>
             <input
@@ -429,9 +427,8 @@ const validCurrentEducation = () => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="studentDob"
             >
-              Date Of Birth{" "}{!validStudentDob && (
-                <span className="text-red-500">*</span>
-              )}
+              Date Of Birth{" "}
+              {!validStudentDob && <span className="text-red-500">*</span>}
               <span className="text-gray-500 text-xs">[dd/mm/yyyy]</span>
             </label>
             <input
@@ -497,33 +494,40 @@ const validCurrentEducation = () => {
             </label>
           </div>
           <div className="flex items-center mb-2">
-  {studentYears.some(
-    (year) => year.academicYear === selectedAcademicYear?.title
-  ) && (
-    <div className="mb-6">
-      <label htmlFor="studentGrade" className="block text-sm font-medium text-gray-700">
-        Grade{" "}{!validStudentGrade && (
-                <span className="text-red-500">*</span>
-              )}
-      </label>
-      <select
-        id="studentGrade"
-        value={studentYears.find(
-          (year) => year.academicYear === selectedAcademicYear?.title
-        )?.grade || ""}
-        onChange={onStudentGradeChanged}
-        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-      >
-        <option value="">Select Grade</option>
-        {[0, 1, 2, 3, 4, 5, 6, 7].map((grade) => (
-          <option key={grade} value={grade}>
-            Grade {grade}
-          </option>
-        ))}
-      </select>
-    </div>
-  )}
-</div>
+            {studentYears.some(
+              (year) => year.academicYear === selectedAcademicYear?.title
+            ) && (
+              <div className="mb-6">
+                <label
+                  htmlFor="studentGrade"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Grade{" "}
+                  {!validStudentGrade && (
+                    <span className="text-red-500">*</span>
+                  )}
+                </label>
+                <select
+                  id="studentGrade"
+                  value={
+                    studentYears.find(
+                      (year) =>
+                        year.academicYear === selectedAcademicYear?.title
+                    )?.grade || ""
+                  }
+                  onChange={onStudentGradeChanged}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                >
+                  <option value="">Select Grade</option>
+                  {[0, 1, 2, 3, 4, 5, 6, 7].map((grade) => (
+                    <option key={grade} value={grade}>
+                      Grade {grade}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
 
           {/* <div className="flex items-center mb-2">
                 <input
@@ -543,7 +547,6 @@ const validCurrentEducation = () => {
           {Array.isArray(studentGardien) &&
             studentGardien.length > 0 &&
             studentGardien.map((entry, index) => (
-              
               <div
                 key={index}
                 className="bg-gray-50 p-4 rounded-lg shadow-sm mb-4"
@@ -794,20 +797,20 @@ const validCurrentEducation = () => {
 
         <div className="flex justify-end space-x-4">
           <button
-            type="submit"
-            className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-            title="Save"
-            onClick={onUpdateStudentClicked}
-            disabled={!canSave}
-          >
-            Save Changes
-          </button>
-          <button
             type="button"
             className="cancel-button"
             onClick={handleCancel}
           >
             Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+            title="Save"
+            onClick={onUpdateStudentClicked}
+            disabled={!canSave || isUpdateLoading}
+          >
+            Save Changes
           </button>
         </div>
       </form>

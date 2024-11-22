@@ -15,7 +15,7 @@ const DOB_REGEX = /^[0-9/-]{4,10}$/;
 
 const NewEmployeeForm = () => {
   //an add user function that can be called inside the component
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [
     addNewEmployee,
@@ -196,9 +196,9 @@ const NewEmployeeForm = () => {
       setCurrentOther("");
       setCurrentPayment("");
 
-      Navigate("/hr/employees/"); //will navigate here after saving
+      navigate("/hr/employees/"); //will navigate here after saving
     }
-  }, [isEmployeeSuccess, Navigate]); //even if no success it will navigate and not show any warning if failed or success
+  }, [isEmployeeSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success
 
   //handlers to get the individual states from the input
 
@@ -368,9 +368,7 @@ const NewEmployeeForm = () => {
       }
     }
   };
-  const handleCancel = () => {
-    Navigate("/admin/usersManagement/users/");
-  };
+ 
 
   //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
   // const errClass = isEmployeeError ? "errmsg" : "offscreen"
@@ -620,10 +618,10 @@ const NewEmployeeForm = () => {
                     ))}
                     </div> */}
 
-        <div className="flex justify-end items-center space-x-4">
+<div className="flex justify-end gap-4">
           <button
             className="cancel-button"
-            onClick={handleCancel}
+            onClick={() => navigate("/admin/usersManagement/users/")}
           >
             Cancel
           </button>
@@ -632,7 +630,7 @@ const NewEmployeeForm = () => {
             type="submit"
             title="Save"
             onClick={onSaveEmployeeClicked}
-            disabled={!canSave}
+            disabled={!canSave||isEmployeeLoading}
           >
             Save Employee
           </button>

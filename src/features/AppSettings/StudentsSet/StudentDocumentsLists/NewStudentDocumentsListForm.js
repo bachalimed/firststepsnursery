@@ -22,7 +22,7 @@ import { TITLE_REGEX } from "../../../../config/REGEX";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 
 const NewStudentDocumentsListForm = () => {
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
@@ -109,9 +109,9 @@ if (isDocsListSucess) {
       ]);
       setDocumentsAcademicYear("");
       setValidDocumentsAcademicYear(false);
-      Navigate("/settings/studentsSet/studentDocumentsListsList");
+      navigate("/settings/studentsSet/studentDocumentsListsList");
     }
-  }, [isAddSuccess, Navigate]);
+  }, [isAddSuccess, navigate]);
 
   // Handlers to get the individual states from the input
   const onDocumentTitleChanged = (e) => setDocumentTitle(e.target.value);
@@ -178,9 +178,7 @@ if (isDocsListSucess) {
     setShowConfirmation(false);
   };
 
-  const handleCancel = () => {
-    Navigate("/settings/studentsSet/studentDocumentsListsList");
-  };
+ 
 
   const errClass = isAddError ? "errmsg" : "offscreen";
 
@@ -275,9 +273,17 @@ if (isDocsListSucess) {
           >
             Add Document
           </button>
+          </div>
+          <div className="flex justify-end gap-4">
+        <button
+            className="cancel-button"
+            onClick={() => navigate("/settings/studentsSet/studentDocumentsListsList")}
+          >
+            Cancel
+          </button>
           <button
             type="submit"
-            disabled={!canSave}
+            disabled={!canSave||isAddLoading}
             className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
           >
             <FontAwesomeIcon icon={faSave} className="mr-2" />

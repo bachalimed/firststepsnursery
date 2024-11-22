@@ -16,7 +16,7 @@ import {
   selectAcademicYearById,
   selectAllAcademicYears,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import { NAME_REGEX, DATE_REGEX } from "../../../config/REGEX"
+import { NAME_REGEX, DATE_REGEX } from "../../../config/REGEX";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 const NewExpenseForm = () => {
   const { userId } = useAuth();
@@ -38,9 +38,8 @@ const NewExpenseForm = () => {
       endpointName: "NewExpenseForm",
     } || {},
     {
-   
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
   const {
@@ -79,8 +78,8 @@ const NewExpenseForm = () => {
   // let employeesList = isEmployeesSuccess
   //   ? Object.values(employees.entities)
   //   : [];
- //confirmation Modal states
- const [showConfirmation, setShowConfirmation] = useState(false);
+  //confirmation Modal states
+  const [showConfirmation, setShowConfirmation] = useState(false);
   let employeesList = [];
   let activeEmployeesList = [];
 
@@ -91,9 +90,7 @@ const NewExpenseForm = () => {
       (employee) => employee.employeeData.employeeIsActive === true
     );
   }
-  let expensesList = isExpensesSuccess
-    ? Object.values(expenses.entities)
-    : [];
+  let expensesList = isExpensesSuccess ? Object.values(expenses.entities) : [];
 
   const [validity, setValidity] = useState({
     validExpenseYear: false,
@@ -118,17 +115,16 @@ const NewExpenseForm = () => {
   ] = useAddNewExpenseMutation();
   // Check if any dates overlap with existing expenses
   const checkNoOverlap = (from, to) => {
-    if(expensesList!=[]){
-    return expensesList.every((expense) => {
-     
-      const existingFrom = new Date(expense.assignedFrom);
-      const existingTo = new Date(expense.assignedTo);
-      const newFrom = new Date(from);
-      const newTo = new Date(to);
+    if (expensesList != []) {
+      return expensesList.every((expense) => {
+        const existingFrom = new Date(expense.assignedFrom);
+        const existingTo = new Date(expense.assignedTo);
+        const newFrom = new Date(from);
+        const newTo = new Date(to);
 
-      return newTo < existingFrom || newFrom > existingTo; // Ensure no date overlap
-    });
-  }
+        return newTo < existingFrom || newFrom > existingTo; // Ensure no date overlap
+      });
+    }
   };
   // Validate inputs using regex patterns
   useEffect(() => {
@@ -185,23 +181,21 @@ const NewExpenseForm = () => {
     }
   };
 
-// This function handles the confirmed save action
-const handleConfirmSave = async () => {
-  // Close the confirmation modal
-  setShowConfirmation(false);
+  // This function handles the confirmed save action
+  const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
 
     try {
-      const newExpense = await addNewExpense(
-        formData
-      ).unwrap();
+      const newExpense = await addNewExpense(formData).unwrap();
     } catch (err) {
       console.error("Error saving student:", err);
     }
   };
- // Close the modal without saving
- const handleCloseModal = () => {
-  setShowConfirmation(false);
-};
+  // Close the modal without saving
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
+  };
   // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -213,13 +207,10 @@ const handleConfirmSave = async () => {
 
   // Filter available  by excluding already selected ones
   const getAvailable = (index) => {
-    const selected = formData.expenses.map(
-      (expense) => expense.animator
-    );
+    const selected = formData.expenses.map((expense) => expense.animator);
     return activeEmployeesList.filter(
       (employee) =>
-        !selected.includes(employee.id) ||
-        selected[index] === employee.id
+        !selected.includes(employee.id) || selected[index] === employee.id
     );
   };
 
@@ -274,9 +265,7 @@ const handleConfirmSave = async () => {
     <>
       <Finances />
       <div className="p-6 bg-white rounded-lg shadow-md max-w-md mx-auto">
-        <h2 className="text-2xl font-bold mb-6 text-center">
-          Add New Expense
-        </h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">Add New Expense</h2>
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -315,7 +304,7 @@ const handleConfirmSave = async () => {
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               To{" "}
-              {(!validity.validAssignedTo ||! validity.noOverlap) && (
+              {(!validity.validAssignedTo || !validity.noOverlap) && (
                 <span className="text-red-500">*</span>
               )}
             </label>
@@ -392,24 +381,23 @@ const handleConfirmSave = async () => {
           >
             Add Another Expense
           </button>
-
-          <button
-            type="submit"
-            disabled={!canSubmit}
-            className="w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-200 mt-4"
-          >
-            {isAddLoading ? "Adding..." : "Add Expense"}
-          </button>
-          <button
-            type="submit"
-            //disabled={!canSubmit}
-            className="cancel-button"
-            onClick={() =>
-              navigate("/academics/plannings/Expenses/")
-            }
-          >
-            Cancel
-          </button>
+          <div className="flex justify-end gap-4">
+            <button
+              type="submit"
+              disabled={!canSubmit || isExpensesLoading}
+              className="w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-200 mt-4"
+            >
+              {isAddLoading ? "Adding..." : "Add Expense"}
+            </button>
+            <button
+              type="button"
+              //disabled={!canSubmit}
+              className="cancel-button"
+              onClick={() => navigate("/academics/plannings/Expenses/")}
+            >
+              Cancel
+            </button>
+          </div>
         </form>
       </div>
       {/* Confirmation Modal */}

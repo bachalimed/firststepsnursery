@@ -79,7 +79,7 @@ const EmployeeDocumentsList = ({ user }) => {
   const [documents, setDocuments] = useState([]);
 
   const [employeeDocumentYear, setEmployeeDocumentYear] = useState(
-    selectedAcademicYear.title || ""
+    selectedAcademicYear?.title || ""
   );
   const [employeeDocumentLabel, setEmployeeDocumentLabel] = useState("");
   const [validEmployeeDocumentLabel, setValidEmployeeDocumentLabel] =
@@ -409,28 +409,21 @@ const EmployeeDocumentsList = ({ user }) => {
 
           <div className="flex justify-end items-center space-x-4">
             <button
-              className=" px-4 py-2 bg-gray-500 text-white rounded"
-              onClick={() => Navigate(`/employees/employeesParents/employees`)}
+              className="cancel-button"
+              onClick={() => Navigate(`/hr/employees/employeesList/`)}
             >
               Back to List
             </button>
             <button
               className=" px-4 py-2 bg-blue-500 text-white rounded"
               onClick={() =>
-                Navigate(`/employees/employeesParents/employeeDetails/${userId}`)
+                Navigate(`/hr/employees/employeeDetails/${userId}`)
               }
             >
               Employee Details
             </button>
 
-            {isAdmin && (
-              <button
-                className="px-3 py-2 bg-gray-400 text-white rounded"
-                hidden={!canCreate}
-              >
-                All
-              </button>
-            )}
+          
           </div>
         </div>
         <UploadDocumentFormModal

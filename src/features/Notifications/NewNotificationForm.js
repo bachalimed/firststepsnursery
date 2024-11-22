@@ -1091,13 +1091,13 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
             <button
               type="button"
               onClick={() => navigate("/hr/notifications/notifications/")}
-              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-500 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
+              className="cancel-button"
+              >
               Cancel
             </button>
             <button
               type="submit"
-              disabled={!canSave}
+              disabled={!canSave||isLoading}
               className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
                 canSave
                   ? "bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500"

@@ -130,7 +130,7 @@ console.log(user,'user')
       <div className="flex justify-end items-center space-x-4 mt-6">
         <button
           onClick={()=>navigate("/admin/usersManagement/users/")}
-          className="px-4 py-2 bg-gray-500 text-white rounded"
+         className="cancel-button"
         >
           Back to List
         </button>

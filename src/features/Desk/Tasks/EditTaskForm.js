@@ -106,7 +106,7 @@ const EditTaskForm = ({ task, users }) => {
                             className="icon-button"
                             title="Save"
                             onClick={onSaveTaskClicked}
-                            disabled={!canSave}
+                            disabled={!canSave||isLoading}
                         >
                             <FontAwesomeIcon icon={faSave} />
                         </button>

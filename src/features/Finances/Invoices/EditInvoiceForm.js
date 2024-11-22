@@ -312,11 +312,21 @@ console.log(validity)
             />
           </div>
 
-          <div className="text-center">
+          <div className="flex justify-end gap-4">
+          <button
+            type="button"
+            
+            className="cancel-button"
+            onClick={() =>
+              navigate("/academics/plannings/animatorsAssignments/")
+            }
+          >
+            Cancel
+          </button>
             <button
               type="submit"
-              disabled={!canSubmit}
-              className={`w-full py-2 px-4 font-bold text-white rounded-md focus:outline-none ${
+              disabled={!canSubmit||isUpdateLoading}
+              className={` py-2 px-4 font-bold text-white rounded-md focus:outline-none ${
                 canSubmit
                   ? "bg-blue-500 hover:bg-blue-700"
                   : "bg-gray-400 cursor-not-allowed"

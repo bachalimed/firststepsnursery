@@ -48,15 +48,14 @@ const NewPaymentForm = ({ invoice }) => {
       endpointName: "NewPaymentForm",
     } || {},
     {
-    
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
-//confirmation Modal states
-const [showConfirmation, setShowConfirmation] = useState(false);
+  //confirmation Modal states
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const [formData, setFormData] = useState({
-    paymentYear: selectedAcademicYear?.title ,
+    paymentYear: selectedAcademicYear?.title,
     paymentAmount: "",
     paymentStudent: "",
     paymentInvoices: [], // can pay once for many invoices
@@ -77,7 +76,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
   // State to track the selected invoice
   const [selectedInvoiceId, setSelectedInvoiceId] = useState(null);
   const [validity, setValidity] = useState({
-   validPaymentYear: false,
+    validPaymentYear: false,
     validPaymentAmount: false,
     validPaymentStudent: false,
     validPaymentInvoices: false, // can pay once for many invoices
@@ -115,16 +114,18 @@ const [showConfirmation, setShowConfirmation] = useState(false);
       parseFloat(formData.paymentAmount) === totalInvoiceAmount;
     setValidity((prev) => ({
       ...prev,
-      validPaymentYear:YEAR_REGEX.test(formData.paymentYear),
+      validPaymentYear: YEAR_REGEX.test(formData.paymentYear),
       validPaymentAmount: isAmountValid && isAmountWithinLimit,
       validPaymentStudent: OBJECTID_REGEX.test(formData.paymentStudent),
       validPaymentInvoices: formData?.paymentInvoices?.length > 0,
       validPaymentNote: COMMENT_REGEX.test(formData?.paymentNote),
       validPaymentType: NAME_REGEX.test(formData?.paymentType),
-      validPaymentReference: formData?.paymentReference === "" || NAME_REGEX.test(formData?.paymentReference),
+      validPaymentReference:
+        formData?.paymentReference === "" ||
+        NAME_REGEX.test(formData?.paymentReference),
       validPaymentDate: DATE_REGEX.test(formData?.paymentDate),
     }));
-    console.log(validity)
+    console.log(validity);
   }, [formData, totalInvoiceAmount]);
 
   // Clear form and errors on success
@@ -163,20 +164,20 @@ const [showConfirmation, setShowConfirmation] = useState(false);
     }
   };
 
-// This function handles the confirmed save action
-const handleConfirmSave = async () => {
-  // Close the confirmation modal
-  setShowConfirmation(false);
+  // This function handles the confirmed save action
+  const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
     try {
       await addNewPayment(formData).unwrap();
     } catch (err) {
       console.error("Failed to add the payment.", err);
     }
   };
-// Close the modal without saving
-const handleCloseModal = () => {
-  setShowConfirmation(false);
-};
+  // Close the modal without saving
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
+  };
   const handleStudentChange = (e) => {
     const selectedStudentId = e.target.value;
     const student = studentsEnrolmentsList.find(
@@ -445,7 +446,6 @@ const handleCloseModal = () => {
                   ? "focus:ring-blue-500"
                   : "focus:ring-red-500"
               }`}
-             
             />
           </div>
 
@@ -468,19 +468,30 @@ const handleCloseModal = () => {
           </div>
 
           {/* Submit Button */}
-          <button
-            type="submit"
-            className={`w-full bg-blue-500 text-white font-bold py-2 px-4 rounded ${
-              canSubmit ? "hover:bg-blue-600" : "opacity-50 cursor-not-allowed"
-            }`}
-            disabled={!canSubmit}
-          >
-            {isAddLoading ? "Submitting..." : "Submit Payment"}
-          </button>
+          <div className="flex justify-end space-x-4">
+            <button
+              type="button"
+              className="cancel-button"
+              onClick={() => navigate("/finances/payments/paymentsList/")}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className={` bg-blue-500 text-white font-bold py-2 px-4 rounded ${
+                canSubmit
+                  ? "hover:bg-blue-600"
+                  : "opacity-50 cursor-not-allowed"
+              }`}
+              disabled={!canSubmit||isAddLoading}
+            >
+              {isAddLoading ? "Submitting..." : "Submit Payment"}
+            </button>
+          </div>
         </form>
       </div>
-       {/* Confirmation Modal */}
-       <ConfirmationModal
+      {/* Confirmation Modal */}
+      <ConfirmationModal
         show={showConfirmation}
         onClose={handleCloseModal}
         onConfirm={handleConfirmSave}

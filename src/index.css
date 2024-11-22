@@ -22,7 +22,7 @@
 /* to be appoied to all cancel buttons */
 
 .cancel-button {
-  @apply px-4 py-2 border border-gray-400 text-blue-500 rounded bg-transparent hover:bg-gray-100;
+  @apply px-4 py-2 border border-gray-400 text-gray-500 rounded bg-transparent hover:bg-gray-100  hover:text-gray-800;
 }
 
 

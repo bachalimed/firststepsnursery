@@ -260,7 +260,7 @@ const isYearFound = student?.studentYears?.some(
           <div className="flex justify-end items-center space-x-4 mt-6">
             <button
               onClick={() => navigate(`/students/studentsParents/students`)}
-              className="px-4 py-2 bg-gray-500 text-white rounded"
+              className="cancel-button"
             >
               Back to List
             </button>

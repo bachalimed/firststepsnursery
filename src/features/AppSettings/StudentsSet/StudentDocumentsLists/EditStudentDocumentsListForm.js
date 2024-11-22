@@ -178,7 +178,7 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
         <button type="button" onClick={handleAddEntry}>
           Add Document
         </button>
-        <div className="flex justify-end items-center space-x-4">
+        <div className="flex justify-end gap-4">
         <button
             className="cancel-button"
             onClick={handleCancel}
@@ -190,7 +190,7 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
             type="submit"
             title="Save"
             onClick={onSaveStudentDocumentsListClicked}
-            disabled={!canSave}
+            disabled={!canSave||isLoading}
           >
             Save Changes
           </button>

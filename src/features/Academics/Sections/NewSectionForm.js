@@ -472,13 +472,13 @@ const [showConfirmation, setShowConfirmation] = useState(false);
               onClick={() =>
                 navigate("/academics/sections/nurserySectionsList/")
               }
-              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-500 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="cancel-button"
             >
               Cancel
             </button>
             <button
               type="submit"
-              disabled={!canSave}
+              disabled={!canSave||isAddSectionLoading}
               className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
                 canSave
                   ? "bg-green-600 hover:bg-green-700 focus:ring-green-500"

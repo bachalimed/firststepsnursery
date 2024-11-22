@@ -20,7 +20,7 @@ import { TITLE_REGEX } from "../../../../config/REGEX";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 
 const NewStudentDocumentsListForm = () => {
-  const Navigate = useNavigate();
+  const  = useNavigate();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
@@ -67,14 +67,14 @@ const [showConfirmation, setShowConfirmation] = useState(false);
 
   useEffect(() => {
     if (isAddSuccess) {
-      //if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
+      //if the add of new user using the mutation is success, empty all the individual states and  back to the users list
 
       setStudentDocumentsList([]);
       setDocumentsAcademicYear("");
       setValidDocumentsAcademicYear(false);
-      Navigate("/settings/studentsSet/studentDocumentsListsList"); //will navigate here after saving
+      ("/settings/studentsSet/studentDocumentsListsList"); //will  here after saving
     }
-  }, [isAddSuccess, Navigate]); //even if no success it will navigate and not show any warning if failed or success
+  }, [isAddSuccess, ]); //even if no success it will  and not show any warning if failed or success
 
   //handlers to get the individual states from the input
 
@@ -142,9 +142,7 @@ const handleConfirmSave = async () => {
   setShowConfirmation(false);
 };
 
-  const handleCancel = () => {
-    Navigate("/settings/studentsSet/studentDocumentsListsList");
-  };
+  
 
   //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
   const errClass = isAddError ? "errmsg" : "offscreen";
@@ -236,21 +234,22 @@ const handleConfirmSave = async () => {
         <button type="button" onClick={handleAddEntry}>
           Add Document
         </button>
-        <div className="flex justify-end items-center space-x-4">
+        <div className="flex justify-end gap-4">
+        <button
+           className="cancel-button"
+            onClick={() => navigate("/settings/studentsSet/studentDocumentsListsList")}
+          >
+            Cancel
+          </button>
           <button
             className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
             type="submit"
             onClick={onSaveStudentDocumentsListClicked}
-            disabled={!canSave}
+            disabled={!canSave||isAddLoading}
           >
             Save Changes
           </button>
-          <button
-           className="cancel-button"
-            onClick={handleCancel}
-          >
-            Cancel
-          </button>
+          
         </div>
       </form>
        {/* Confirmation Modal */}

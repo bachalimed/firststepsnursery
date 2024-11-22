@@ -269,21 +269,22 @@ const NewEmployeeDocumentsListForm = () => {
         <button type="button" onClick={handleAddEntry}>
           Add Document
         </button>
-        <div className="flex justify-end items-center space-x-4">
-          <button
-            className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            type="submit"
-            onClick={onSaveEmployeeDocumentsListClicked}
-            disabled={!canSave}
-          >
-            Save Changes
-          </button>
-          <button
+        <div className="flex justify-end gap-4">
+        <button
             className="cancel-button"
             onClick={handleCancel}
           >
             Cancel
           </button>
+          <button
+            className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            type="submit"
+            onClick={onSaveEmployeeDocumentsListClicked}
+            disabled={!canSave||isAddLoading}
+          >
+            Save Changes
+          </button>
+          
         </div>
       </form>
       {/* Confirmation Modal */}

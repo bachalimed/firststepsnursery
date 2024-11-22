@@ -748,22 +748,23 @@ const NewUserForm = () => {
               </div>
             </div>
           </div>
-          <div className="flex justify-end items-center space-x-4">
+          <div className="flex justify-end gap-4">
+          <button
+              className="cancel-button"
+              onClick={handleCancel}
+            >
+              Cancel
+            </button>
             <button
               className=" px-4 py-2 bg-green-500 text-white rounded"
               type="submit"
               title="Save"
               onClick={onSaveUserClicked}
-              disabled={!canSave}
+              disabled={!canSave||isLoading}
             >
               Save Changes
             </button>
-            <button
-              className=" px-4 py-2 bg-red-500 text-white rounded"
-              onClick={handleCancel}
-            >
-              Cancel
-            </button>
+           
           </div>
         </form>
       </section>

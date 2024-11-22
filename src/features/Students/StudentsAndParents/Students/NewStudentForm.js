@@ -845,21 +845,22 @@ const NewStudentForm = () => {
         </div>
 
         <div className="flex justify-end space-x-4">
-          <button
-            type="submit"
-            className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-            title="Save"
-            onClick={onSaveStudentClicked}
-            disabled={!canSave}
-          >
-            Save Changes
-          </button>
+          
           <button
             type="button"
             className="cancel-button"
             onClick={handleCancel}
           >
             Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+            title="Save"
+            onClick={onSaveStudentClicked}
+            disabled={!canSave||isLoading}
+          >
+            Save Changes
           </button>
         </div>
       </form>

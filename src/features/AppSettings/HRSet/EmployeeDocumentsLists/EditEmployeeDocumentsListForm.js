@@ -203,7 +203,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
             type="submit"
             title="Save"
             onClick={onSaveEmployeeDocumentsListClicked}
-            disabled={!canSave}
+            disabled={!canSave||isLoading}
           >
             Save Changes
           </button>
