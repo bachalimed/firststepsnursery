@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-
-  useGetAdmissionsByYearQuery,
- 
-} from "../Admissions/admissionsApiSlice";
+import { useGetAdmissionsByYearQuery } from "../Admissions/admissionsApiSlice";
 import { useSelector } from "react-redux"; // Assuming you're using Redux for state management
 import { useNavigate } from "react-router-dom";
 import Students from "../Students";
@@ -27,7 +23,7 @@ import {
   DATE_REGEX,
   COMMENT_REGEX,
   OBJECTID_REGEX,
-} from "../../../config/REGEX"
+} from "../../../config/REGEX";
 import { SERVICETYPES } from "../../../config/SchedulerConsts";
 import { CurrencySymbol } from "../../../config/Currency";
 //import { MONTHS } from "../../../config/Months";
@@ -51,8 +47,8 @@ const NewEnrolmentForm = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   );
   const academicYears = useSelector(selectAllAcademicYears);
-   //confirmation Modal states
-   const [showConfirmation, setShowConfirmation] = useState(false);
+  //confirmation Modal states
+  const [showConfirmation, setShowConfirmation] = useState(false);
   //the list of studetns with their admissions was filtered inteh backend and removed the months that are already enrolled for
   const {
     data: admissions, //the data is renamed admissions
@@ -67,13 +63,12 @@ const NewEnrolmentForm = () => {
       endpointName: "NewEnrolmentForm",
     } || {},
     {
-      
-      pollingInterval: 60000, 
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
+      pollingInterval: 60000,
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
- 
+
   let noEnrolmentStudentsList = [];
   // List for dropdowns
   // const studentsList = isStudentsSuccess
@@ -88,21 +83,20 @@ const NewEnrolmentForm = () => {
     //we need to change into array to be read??
     noEnrolmentStudentsList = Object.values(entities); //got the studtnlisty from admission, nounerolled criteria
   }
-//return curretn month in english langauge
-const getCurrentMonthName = () => {
-  const date = new Date();
-  return date.toLocaleString('en-US', { month: 'long' }).replace(
-    /^./,
-    (str) => str.toUpperCase()
-  );
-};
+  //return curretn month in english langauge
+  const getCurrentMonthName = () => {
+    const date = new Date();
+    return date
+      .toLocaleString("en-US", { month: "long" })
+      .replace(/^./, (str) => str.toUpperCase());
+  };
 
   // State for form data and validity
   const [formData, setFormData] = useState({
     student: "",
     admission: "",
-    enrolmentYear: selectedAcademicYear?.title||"",
-    enrolmentMonth: getCurrentMonthName()||"",
+    enrolmentYear: selectedAcademicYear?.title || "",
+    enrolmentMonth: getCurrentMonthName() || "",
     enrolmentNote: "",
 
     enrolmentCreator: userId,
@@ -121,7 +115,8 @@ const getCurrentMonthName = () => {
       },
     ],
   });
-  const [noEnrolmentMonthStudentsList, setNoEnrolmentMonthStudentsList] = useState([]);
+  const [noEnrolmentMonthStudentsList, setNoEnrolmentMonthStudentsList] =
+    useState([]);
   const [studentServicesList, setStudentServicesList] = useState([]); //will hold update of service for selected studetn
   const [validity, setValidity] = useState({
     validStudent: false,
@@ -198,7 +193,6 @@ const getCurrentMonthName = () => {
   }, [formData]);
   const canSave = Object.values(validity).every(Boolean) && !isEnrolmentLoading;
 
-  
   // Populate services list when the enrolment month or student changes
   useEffect(() => {
     if (formData.student && formData.enrolmentMonth) {
@@ -226,8 +220,8 @@ const getCurrentMonthName = () => {
         ) => service.feeMonths.includes(formData.enrolmentMonth)
       )
     );
-    setNoEnrolmentMonthStudentsList(filteredList)
-    console.log(noEnrolmentMonthStudentsList,'noEnrolmentMonthStudentsList')
+    setNoEnrolmentMonthStudentsList(filteredList);
+    console.log(noEnrolmentMonthStudentsList, "noEnrolmentMonthStudentsList");
   }, [formData.student, formData.enrolmentMonth, isEnrolmentSuccess]);
 
   // Handle toggling services in the form
@@ -293,14 +287,13 @@ const getCurrentMonthName = () => {
     // Close the confirmation modal
     setShowConfirmation(false);
 
-      try {
-        await addNewEnrolment(formData);
-        navigate("/students/enrolments/enrolments/");
-      } catch (err) {
-        console.error("Failed to save the enrolment", err);
-      }
+    try {
+      await addNewEnrolment(formData);
+      navigate("/students/enrolments/enrolments/");
+    } catch (err) {
+      console.error("Failed to save the enrolment", err);
     }
-  
+  };
 
   // Close the modal without saving
   const handleCloseModal = () => {
@@ -333,7 +326,6 @@ const getCurrentMonthName = () => {
             id="enrolmentYear"
             name="enrolmentYear"
             value={formData.enrolmentYear}
-           
             onChange={(e) =>
               setFormData({ ...formData, enrolmentYear: e.target.value })
             }
@@ -376,113 +368,137 @@ const getCurrentMonthName = () => {
             ))}
           </select>
         </div>
-        {/* Student Selection */}
-        <div>
-          <label
-            htmlFor="student"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Student{" "}
-            {!validity.validStudent && <span className="text-red-500">*</span>}
-          </label>
-          <select
-            id="student"
-            name="student"
-            value={formData.student}
-            onChange={(e) => {
-              const selectedStudent = noEnrolmentMonthStudentsList.find(
-                (student) => student.student._id === e.target.value
-              );
-              //console.log('hello', selectedStudent)
-              setFormData({
-                ...formData,
-                student: e.target.value,
-                admission: selectedStudent?.id, //the list is originally admissions so id is for admission
-              });
-            }}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            required
-            disabled={!formData?.enrolmentMonth}
-          >
-            <option value="">Select Student</option>
-            {isAdmissionSuccess &&
-              noEnrolmentMonthStudentsList.map((student) => (
-                <option key={student.student._id} value={student.student._id}>
-                  {`${student.student.studentName?.firstName} ${
-                    student.student.studentName?.middleName || ""
-                  } ${student.student.studentName?.lastName}`}
-                </option>
-              ))}
-          </select>
-        </div>
-        {/* enrolment note */}
-        <div>
-          <label
-            htmlFor="enrolmentNote"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Enrolment Note
-          </label>
-          <textarea
-            id="enrolmentNote"
-            name="enrolmentNote"
-            value={formData.enrolmentNote}
-            onChange={(e) =>
-              setFormData({ ...formData, enrolmentNote: e.target.value })
-            }
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            rows="4" // Adjust the number of rows as needed
-            placeholder="Enter any additional notes here..."
-          />
-        </div>
-        {/* Services Section */}
-        <fieldset>
-          <legend className="block text-sm font-medium text-gray-700">
-            Services
-          </legend>
-          <div className="mt-4 space-y-4">
-            {studentServicesList.map((service) => {
-              const isChecked = formData.enrolments.some(
-                (enrolment) => enrolment.service === service.service
-              );
+        {noEnrolmentMonthStudentsList?.length ? (
+          <div>
+            {/* Student Selection */}
+            <div>
+              <label
+                htmlFor="student"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Student{" "}
+                {!validity.validStudent && (
+                  <span className="text-red-500">*</span>
+                )}
+              </label>
+              <select
+                id="student"
+                name="student"
+                value={formData.student}
+                onChange={(e) => {
+                  const selectedStudent = noEnrolmentMonthStudentsList.find(
+                    (student) => student.student._id === e.target.value
+                  );
+                  //console.log('hello', selectedStudent)
+                  setFormData({
+                    ...formData,
+                    student: e.target.value,
+                    admission: selectedStudent?.id, //the list is originally admissions so id is for admission
+                  });
+                }}
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                required
+                disabled={!formData?.enrolmentMonth}
+              >
+                <option value="">Select Student</option>
+                {isAdmissionSuccess &&
+                  noEnrolmentMonthStudentsList.map((student) => (
+                    <option
+                      key={student.student._id}
+                      value={student.student._id}
+                    >
+                      {`${student.student.studentName?.firstName} ${
+                        student.student.studentName?.middleName || ""
+                      } ${student.student.studentName?.lastName}`}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            {/* enrolment note */}
+            <div>
+              <label
+                htmlFor="enrolmentNote"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Enrolment Note
+              </label>
+              <textarea
+                id="enrolmentNote"
+                name="enrolmentNote"
+                value={formData.enrolmentNote}
+                onChange={(e) =>
+                  setFormData({ ...formData, enrolmentNote: e.target.value })
+                }
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                rows="4" // Adjust the number of rows as needed
+                placeholder="Enter any additional notes here..."
+              />
+            </div>
+            {/* Services Section */}
+            <fieldset>
+              <legend className="block text-sm font-medium text-gray-700">
+                Services
+              </legend>
+              <div className="mt-4 space-y-4">
+                {studentServicesList.map((service) => {
+                  const isChecked = formData.enrolments.some(
+                    (enrolment) => enrolment.service === service.service
+                  );
 
-              return (
-                <div key={service.service} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id={service.service}
-                    checked={isChecked}
-                    onChange={(e) =>
-                      handleServiceToggle(service.service, e.target.checked)
-                    }
-                    className="mr-2"
-                  />
-                  <label htmlFor={service.service}>{service.serviceType}</label>
-                  <span className="ml-4">
-                    Authorized Fee: {service.serviceAuthorisedFee} {`${CurrencySymbol}`}
-                  </span>
-                  <span className="ml-4">Period: {service.servicePeriod}</span>
-                  {isChecked && (
-                    <input
-                      type="number"
-                      value={
-                        formData.enrolments.find(
-                          (enrolment) => enrolment.service === service.service
-                        )?.serviceFinalFee || ""
-                      }
-                      onChange={(e) =>
-                        handleServiceChange(service.service, e.target.value)
-                      }
-                      className="ml-4 border rounded-md p-1"
-                      placeholder="Final Fee"
-                    />
-                  )}
-                </div>
-              );
-            })}
+                  return (
+                    <div key={service.service} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id={service.service}
+                        checked={isChecked}
+                        onChange={(e) =>
+                          handleServiceToggle(service.service, e.target.checked)
+                        }
+                        className="mr-2"
+                      />
+                      <label htmlFor={service.service}>
+                        {service.serviceType}
+                      </label>
+                      <span className="ml-4">
+                        Authorized Fee: {service.serviceAuthorisedFee}{" "}
+                        {`${CurrencySymbol}`}
+                      </span>
+                      <span className="ml-4">
+                        Period: {service.servicePeriod}
+                      </span>
+                      {isChecked && (
+                        <input
+                          type="number"
+                          value={
+                            formData.enrolments.find(
+                              (enrolment) =>
+                                enrolment.service === service.service
+                            )?.serviceFinalFee || ""
+                          }
+                          onChange={(e) =>
+                            handleServiceChange(service.service, e.target.value)
+                          }
+                          className="ml-4 border rounded-md p-1"
+                          placeholder="Final Fee"
+                        />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </fieldset>
           </div>
-        </fieldset>
-        <div className="flex justify-end mt-6">
+        ) : (
+          <div>{`No enrolments available to add for ${formData?.enrolmentMonth}`}</div>
+        )}
+        <div className="flex justify-end space-x-4">
+          <button
+            type="button"
+            className="cancel-button"
+            onClick={() => navigate("/students/enrolments/enrolments")}
+          >
+            Cancel
+          </button>
           <button
             type="submit"
             disabled={!canSave}
@@ -504,8 +520,8 @@ const getCurrentMonthName = () => {
           </div>
         )}
       </form>
-       {/* Confirmation Modal */}
-       <ConfirmationModal
+      {/* Confirmation Modal */}
+      <ConfirmationModal
         show={showConfirmation}
         onClose={handleCloseModal}
         onConfirm={handleConfirmSave}

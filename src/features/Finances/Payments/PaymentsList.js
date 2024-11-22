@@ -44,9 +44,7 @@ const PaymentsList = () => {
   const PaymentTypes = ["Cash", "Cheque", "Bank Transfer", "Online Payment"];
   const [selectedPaymentType, setSelectedPaymentType] = useState(""); // "paid" or "unpaid"
 
-  const [selectedPaymentMonth, setSelectedPaymentMonth] = useState(
-    getCurrentMonth()
-  ); // payment month
+  const [selectedPaymentMonth, setSelectedPaymentMonth] = useState(""); // payment month
   //function to return curent month for month selection
   const getCurrentMonth = () => {
     const currentMonthIndex = new Date().getMonth(); // Get current month (0-11)

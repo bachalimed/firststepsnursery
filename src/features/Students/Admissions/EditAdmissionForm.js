@@ -709,7 +709,7 @@ const EditAdmissionForm = ({ admission }) => {
           </button>
           <button
             type="button"
-            className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium bg-red-500 text-white rounded-md hover:bg-red-600"
+           className="cancel-button"
             onClick={handleCancel}
           >
             Cancel

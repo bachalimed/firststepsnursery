@@ -16,7 +16,7 @@ const DeleteConfirmModal = ({ isOpen, onClose, onConfirm }) => {
         <h2 className="modal-title">Confirm Deletion</h2>
         <p>Are you sure you want to delete ? This action cannot be undone.</p>
         <div className="modal-actions">
-          <button onClick={onClose} className="px-4 py-2 bg-gray-300 rounded">
+          <button onClick={onClose} className="cancel-button">
             Cancel
           </button>
           <button

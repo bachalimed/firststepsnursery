@@ -180,7 +180,7 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
         </button>
         <div className="flex justify-end items-center space-x-4">
         <button
-            className="px-4 py-2 bg-red-500 text-white rounded"
+            className="cancel-button"
             onClick={handleCancel}
           >
             Cancel

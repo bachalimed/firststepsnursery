@@ -15,3 +15,4 @@ export const EXPENSE_CATEGORIES = {
   Catering: "Catering",
   TAx: "Tax",
 };
+

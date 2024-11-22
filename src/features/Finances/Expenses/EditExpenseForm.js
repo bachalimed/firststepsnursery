@@ -398,7 +398,7 @@ const EditExpenseForm = ({ expense }) => {
           <button
             type="submit"
             //disabled={!canSubmit}
-            className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-200 mt-4"
+            className="cancel-button"
             onClick={() => navigate("/academics/plannings/expenses/")}
           >
             Cancel

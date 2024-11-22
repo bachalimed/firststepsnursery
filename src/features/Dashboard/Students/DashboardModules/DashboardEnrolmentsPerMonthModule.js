@@ -70,14 +70,17 @@ const DashboardEnrolmentsPerMonthModule = () => {
                 key={type}
                 dataKey={type}
                 fill={COLORS[index % COLORS.length]}
-                barSize={30} // Adjust bar size for better visual clarity
+                barSize={20} // Adjust bar size for better visual clarity
               >
                 {/* Display the trend percentage above each bar */}
                 <LabelList
                   dataKey={`${type}Trend`}
                   position="top"
                   formatter={(value) => `${value}%`}
-                  style={{ fill: "#333" }} // Customize label style
+                  style={{
+                    fill: "#333", // Customize label color
+                    fontSize: "12px", // Adjust the font size to make it smaller
+                  }}
                   offset={2} // Adjust the vertical offset of the trend label
                 />
               </Bar>
