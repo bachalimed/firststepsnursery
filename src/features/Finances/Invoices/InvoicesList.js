@@ -41,7 +41,11 @@ const InvoicesList = () => {
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idInvoiceToDelete, setIdInvoiceToDelete] = useState(null); // State to track which document to delete
+  const [discountedFilter, setDiscountedFilter] = useState(""); // "invoiced" or "uninvoiced"
 
+  const [paidFilter, setPaidFilter] = useState(""); // "paid" or "unpaid"
+  const [selectedServiceType, setSelectedServiceType] = useState(""); // service type from servicesList
+  const [selectedInvoiceMonth, setSelectedInvoiceMonth] = useState(""); // invoice month
   //function to return curent month for month selection
   const getCurrentMonth = () => {
     const currentMonthIndex = new Date().getMonth(); // Get current month (0-11)
@@ -56,14 +60,15 @@ const InvoicesList = () => {
     error: invoiceGetError,
   } = useGetInvoicesByYearQuery(
     {
-      selectedMonth: getCurrentMonth(),
+      selectedMonth: selectedInvoiceMonth
+        ? selectedInvoiceMonth
+        : getCurrentMonth(),
       selectedYear: selectedAcademicYear?.title,
       endpointName: "InvoicesList",
     } || {},
     {
-     
-      pollingInterval: 60000, 
-      refetchOnFocus: true, 
+      pollingInterval: 60000,
+      refetchOnFocus: true,
       refetchOnMountOrArgChange: true,
     }
   );
@@ -80,9 +85,8 @@ const InvoicesList = () => {
       endpointName: "InvoicesList",
     } || {},
     {
-     
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
   //initialising the delete Mutation
@@ -124,14 +128,6 @@ const InvoicesList = () => {
   //we need to declare the variable outside of if statement to be able to use it outside later
   let invoicesList = [];
   let filteredInvoices = [];
-
-  const [discountedFilter, setDiscountedFilter] = useState(""); // "invoiced" or "uninvoiced"
-
-  const [paidFilter, setPaidFilter] = useState(""); // "paid" or "unpaid"
-  const [selectedServiceType, setSelectedServiceType] = useState(""); // service type from servicesList
-  const [selectedInvoiceMonth, setSelectedInvoiceMonth] = useState(
-    getCurrentMonth()
-  ); // invoice month
 
   if (isInvoiceGetSuccess) {
     //set to the state to be used for other component s and edit invoice component

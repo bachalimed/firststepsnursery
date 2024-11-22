@@ -1,5 +1,4 @@
 import {
-
   useGetEnrolmentsByYearQuery,
   useDeleteEnrolmentMutation,
 } from "./enrolmentsApiSlice";
@@ -44,8 +43,10 @@ const EnrolmentsList = () => {
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idEnrolmentToDelete, setIdEnrolmentToDelete] = useState(null); // State to track which document to delete
- 
-
+  const [invoicedFilter, setInvoicedFilter] = useState(""); // "invoiced" or "notInvoiced"
+  const [paidFilter, setPaidFilter] = useState(""); // "paid" or "unpaid"
+  const [selectedServiceType, setSelectedServiceType] = useState(""); // service type from servicesList
+  const [selectedEnrolmentMonth, setSelectedEnrolmentMonth] = useState(""); // enrolment month
 
   //function to return curent month for month selection
   const getCurrentMonth = () => {
@@ -60,15 +61,18 @@ const EnrolmentsList = () => {
     isError: isEnrolmentGetError,
     error: enrolmentGetError,
   } = useGetEnrolmentsByYearQuery(
-    {selectedMonth: getCurrentMonth(),
+    {
+      // selectedMonth: getCurrentMonth(),
+      selectedMonth: selectedEnrolmentMonth
+        ? selectedEnrolmentMonth
+        : getCurrentMonth(),
       selectedYear: selectedAcademicYear?.title,
       endpointName: "EnrolmentsList",
     } || {},
     {
-      
-      pollingInterval: 60000, 
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
+      pollingInterval: 60000,
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
   // Redux mutation for adding the attended school
@@ -94,9 +98,8 @@ const EnrolmentsList = () => {
       endpointName: "EnrolmentsList",
     } || {},
     {
-     
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
   //initialising the delete Mutation
@@ -130,9 +133,6 @@ const EnrolmentsList = () => {
   const servicesList = isServicesSuccess
     ? Object.values(services.entities)
     : [];
-  
-    
- 
 
   //state to hold the search query
   const [searchQuery, setSearchQuery] = useState("");
@@ -140,11 +140,6 @@ const EnrolmentsList = () => {
   //we need to declare the variable outside of if statement to be able to use it outside later
   let enrolmentsList = [];
   let filteredEnrolments = [];
-
-  const [invoicedFilter, setInvoicedFilter] = useState(""); // "invoiced" or "notInvoiced"
-  const [paidFilter, setPaidFilter] = useState(""); // "paid" or "unpaid"
-  const [selectedServiceType, setSelectedServiceType] = useState(""); // service type from servicesList
-  const [selectedEnrolmentMonth, setSelectedEnrolmentMonth] = useState(""); // enrolment month
 
   if (isEnrolmentGetSuccess) {
     //set to the state to be used for other component s and edit enrolment component
@@ -198,18 +193,15 @@ const EnrolmentsList = () => {
   };
 
   // Effect to clear the selection after successful addition
-useEffect(() => {
-  if (isAddSuccess) {
-    // Clear the selected rows in the state
-    setSelectedRows([]);
+  useEffect(() => {
+    if (isAddSuccess) {
+      // Clear the selected rows in the state
+      setSelectedRows([]);
 
-  
-    console.log("Rows unselected after successful addition");
-  }
-}, [isAddSuccess]);
+      console.log("Rows unselected after successful addition");
+    }
+  }, [isAddSuccess]);
 
-
-  
   // Handler for selecting rows
   // Handler for selecting rows
   const handleRowSelected = (state) => {
@@ -421,9 +413,12 @@ useEffect(() => {
                 })}`
               : "No"}
           </div>
-          <div> {row?.enrolmentInvoice?.invoiceIssueDate
+          <div>
+            {" "}
+            {row?.enrolmentInvoice?.invoiceIssueDate
               ? `for ${row?.enrolmentInvoice?.invoiceAmount} $ /${row?.enrolmentInvoice?.invoiceAuthorisedAmount} `
-              : ""}</div>
+              : ""}
+          </div>
         </>
       ),
 
@@ -497,14 +492,16 @@ useEffect(() => {
     },
   ];
 
-    // Custom header to include the row count
-    const tableHeader = (
-      <div>
-        <h2>Enrolments List: 
-        <span> {filteredEnrolments.length} enrolments</span></h2>
-      </div>
-    );
-  
+  // Custom header to include the row count
+  const tableHeader = (
+    <div>
+      <h2>
+        Enrolments List:
+        <span> {filteredEnrolments.length} enrolments</span>
+      </h2>
+    </div>
+  );
+
   let content;
   if (isEnrolmentGetLoading)
     content = (
@@ -546,9 +543,9 @@ useEffect(() => {
           onChange={(e) => setSelectedEnrolmentMonth(e.target.value)}
           className="text-sm h-8 border border-gray-300 rounded-md px-4"
         >
-           {/* Default option is the current month */}
-           <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
-           {MONTHS.map(
+          {/* Default option is the current month */}
+          <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
+          {MONTHS.map(
             (month, index) =>
               month !== getCurrentMonth() && (
                 <option key={index} value={month}>
@@ -595,7 +592,7 @@ useEffect(() => {
       </div>
       <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
         <DataTable
-        title={tableHeader}
+          title={tableHeader}
           columns={column}
           data={filteredEnrolments}
           pagination

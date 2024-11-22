@@ -63,6 +63,27 @@ export const studentsApiSlice = apiSlice.injectEndpoints({
       //     } else return [{ type: 'student', id: 'LIST' }]
       // }
     }),
+    getStudentsStatsByYear: builder.query({
+      query: (params) => {
+        const queryString = new URLSearchParams(params).toString();
+        return `/students/studentsParents/students?${queryString}`;
+      },
+
+      validateStatus: (response, result) => {
+        return response.status === 200 && !result.isError;
+      },
+      transformResponse: (responseData) => {
+        // console.log('  in the APIslice',responseData.total)
+
+        
+        return responseData
+      },
+
+     
+      providesTags: ["studentsStats"],
+
+     
+    }),
     getStudentById: builder.query({
       query: (params) => {
         const queryString = new URLSearchParams(params).toString();
@@ -138,6 +159,7 @@ export const {
   useUpdateStudentMutation,
   useDeleteStudentMutation,
   useGetStudentsByYearQuery,
+  useGetStudentsStatsByYearQuery,
   useGetStudentByIdQuery,
 } = studentsApiSlice;
 

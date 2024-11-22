@@ -1,5 +1,5 @@
 import React from 'react'
-import DashboardStatsGrid from '../../Components/Shared/DashboardStatsGrid'
+import DashboardStatsGrid from './Students/DashboardModules/DashboardStatsGrid'
 import PaymentPie from '../../Components/lib/PaymentPie'
 import { Link, useLocation } from "react-router-dom";
 import { MdOutlineBusinessCenter } from "react-icons/md";

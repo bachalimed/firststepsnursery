@@ -1,6 +1,10 @@
 import React from "react";
 // import { GrUserExpert } from "react-icons/gr";
-import DashboardStatStudentInNrsery from "../../../Components/lib/DashboardStatStudentInNrsery";
+import DashboardStudentsTotalNumberModule from "./DashboardModules/DashboardStudentsTotalNumberModule";
+import DashboardStudentsAdmissionNumberModule from "./DashboardModules/DashboardStudentsAdmissionNumberModule";
+import DashboardStudentsPerGradeModule from "./DashboardModules/DashboardStudentsPerGradeModule";
+import DashboardStudentsPerSchoolModule from "./DashboardModules/DashboardStudentsPerSchoolModule";
+import DashboardEnrolmentsPerMonthModule from "./DashboardModules/DashboardEnrolmentsPerMonthModule";
 import Dashboard from "../Dashboard";
 //a wrapper to format the stats
 // const BoxWrapper=({children})=> {
@@ -9,20 +13,45 @@ import Dashboard from "../Dashboard";
 // }
 
 const DashboardStatsGrid = () => {
+
+
+
+
   return (
     <>
       <Dashboard />
-      //we can plan ;ultiple dashboardstas and import here
+      
+      <div className=" gap-4 ">
       <div className="flex gap-4 w-full">
-        <DashboardStatStudentInNrsery />
-        <DashboardStatStudentInNrsery />
-        <DashboardStatStudentInNrsery />
-        <DashboardStatStudentInNrsery />
+        <DashboardStudentsTotalNumberModule />
+        <DashboardStudentsAdmissionNumberModule />
+        <DashboardStudentsAdmissionNumberModule />
+       
+        {/* <DashboardStudentsNumberStats /> */}
 
         {/* <BoxWrapper >element of stats</BoxWrapper>
        <BoxWrapper >element of stats</BoxWrapper>
        <BoxWrapper >element of stats</BoxWrapper> */}
       </div>
+      
+      <div className="flex gap-4 w-full">
+        <DashboardStudentsPerGradeModule />
+        <DashboardStudentsPerSchoolModule />
+        
+       
+        <DashboardStudentsAdmissionNumberModule />
+        {/* <DashboardStudentsNumberStats /> */}
+
+        {/* <BoxWrapper >element of stats</BoxWrapper>
+       <BoxWrapper >element of stats</BoxWrapper>
+       <BoxWrapper >element of stats</BoxWrapper> */}
+      </div>
+      <div className="flex gap-4 w-full">
+        <DashboardEnrolmentsPerMonthModule />
+       
+      </div>
+      </div>
+      
     </>
   );
 };

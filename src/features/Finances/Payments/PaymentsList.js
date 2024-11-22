@@ -41,7 +41,12 @@ const PaymentsList = () => {
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idPaymentToDelete, setIdPaymentToDelete] = useState(null); // State to track which document to delete
+  const PaymentTypes = ["Cash", "Cheque", "Bank Transfer", "Online Payment"];
+  const [selectedPaymentType, setSelectedPaymentType] = useState(""); // "paid" or "unpaid"
 
+  const [selectedPaymentMonth, setSelectedPaymentMonth] = useState(
+    getCurrentMonth()
+  ); // payment month
   //function to return curent month for month selection
   const getCurrentMonth = () => {
     const currentMonthIndex = new Date().getMonth(); // Get current month (0-11)
@@ -56,15 +61,16 @@ const PaymentsList = () => {
     error: paymentGetError,
   } = useGetPaymentsByYearQuery(
     {
-      selectedMonth: getCurrentMonth(),
+      selectedMonth: selectedPaymentMonth
+        ? selectedPaymentMonth
+        : getCurrentMonth(),
       selectedYear: selectedAcademicYear?.title,
       endpointName: "PaymentsList",
     } || {},
     {
-     
-      pollingInterval: 60000, 
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
+      pollingInterval: 60000,
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
 
@@ -80,8 +86,7 @@ const PaymentsList = () => {
       endpointName: "PaymentsList",
     } || {},
     {
-     
-      refetchOnFocus: true, 
+      refetchOnFocus: true,
       refetchOnMountOrArgChange: true,
     }
   );
@@ -125,13 +130,6 @@ const PaymentsList = () => {
   let paymentsList = [];
   let filteredPayments = [];
 
-  const PaymentTypes = ["Cash", "Cheque", "Bank Transfer", "Online Payment"];
-  const [selectedPaymentType, setSelectedPaymentType] = useState(""); // "paid" or "unpaid"
-
-  const [selectedPaymentMonth, setSelectedPaymentMonth] = useState(
-    getCurrentMonth()
-  ); // payment month
-
   if (isPaymentGetSuccess) {
     //set to the state to be used for other component s and edit payment component
     const { entities } = payments;
@@ -139,35 +137,35 @@ const PaymentsList = () => {
     paymentsList = Object.values(entities); //we are using entity adapter in this query
     //dispatch(setPayments(paymentsList)); //timing issue to update the state and use it the same time
 
-   filteredPayments = paymentsList.filter((paymnt) => {
+    filteredPayments = paymentsList.filter((paymnt) => {
       // Normalize the search query
       const normalizedSearchQuery = searchQuery.toLowerCase();
-    
+
       // Check if the student's name contains the search query
       const nameMatches = [
         paymnt?.paymentStudent?.studentName?.firstName,
         paymnt?.paymentStudent?.studentName?.middleName,
         paymnt?.paymentStudent?.studentName?.lastName,
       ].some((name) => name?.toLowerCase().includes(normalizedSearchQuery));
-    
+
       // Check if any other field in the payment object contains the search query
       const otherMatches = Object.values(paymnt)
         .flat()
         .some((val) =>
           val?.toString().toLowerCase().includes(normalizedSearchQuery)
         );
-    
+
       // Check if the payment type matches the selected payment type
       const meetsPaymentTypeCriteria =
         !selectedPaymentType || paymnt.paymentType === selectedPaymentType;
-    
+
       // Check if any of the payment's invoices have the selected payment month
       const meetsPaymentMonthCriteria =
         !selectedPaymentMonth ||
         paymnt.paymentInvoices.some(
           (invoice) => invoice.invoiceMonth === selectedPaymentMonth
         );
-    
+
       // Return true if all criteria are met
       return (
         (nameMatches || otherMatches) &&
@@ -175,7 +173,6 @@ const PaymentsList = () => {
         meetsPaymentMonthCriteria
       );
     });
-    
   }
 
   const handleSearch = (e) => {
@@ -237,8 +234,6 @@ const PaymentsList = () => {
         </div>
       ),
     },
-
-   
 
     {
       name: " Authorised",
@@ -397,47 +392,46 @@ const PaymentsList = () => {
             className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
           />
         </div>
-       {/* Payment Month Filter */}
-<select
-  value={selectedPaymentMonth}
-  onChange={(e) => setSelectedPaymentMonth(e.target.value)}
-  className="text-sm h-8 border border-gray-300 rounded-md px-4"
->
-  {/* Default option is the current month */}
+        {/* Payment Month Filter */}
+        <select
+          value={selectedPaymentMonth}
+          onChange={(e) => setSelectedPaymentMonth(e.target.value)}
+          className="text-sm h-8 border border-gray-300 rounded-md px-4"
+        >
+          {/* Default option is the current month */}
 
-  <option value="">All Months</option>
-  <option value="">{getCurrentMonth()}</option>
+          <option value="">All Months</option>
+          <option value="">{getCurrentMonth()}</option>
 
-  {/* Render the rest of the months, excluding the current month */}
-  {MONTHS.map((month, index) => {
-    if (month !== getCurrentMonth()) {
-      return (
-        <option key={index} value={month}>
-          {month}
-        </option>
-      );
-    }
-    return null; // Ensure there's no option for the current month if it's already included
-  })}
-</select>
+          {/* Render the rest of the months, excluding the current month */}
+          {MONTHS.map((month, index) => {
+            if (month !== getCurrentMonth()) {
+              return (
+                <option key={index} value={month}>
+                  {month}
+                </option>
+              );
+            }
+            return null; // Ensure there's no option for the current month if it's already included
+          })}
+        </select>
 
-{/* Service Type Filter */}
-<select
-  value={selectedPaymentType}
-  onChange={(e) => setSelectedPaymentType(e.target.value)}
-  className="text-sm h-8 border border-gray-300 rounded-md px-4"
->
-  {/* Option for all payment types */}
-  <option value="">All Types</option>
+        {/* Service Type Filter */}
+        <select
+          value={selectedPaymentType}
+          onChange={(e) => setSelectedPaymentType(e.target.value)}
+          className="text-sm h-8 border border-gray-300 rounded-md px-4"
+        >
+          {/* Option for all payment types */}
+          <option value="">All Types</option>
 
-  {/* Render available payment types */}
-  {PaymentTypes.map((paym, index) => (
-    <option key={index} value={paym}>
-      {paym}
-    </option>
-  ))}
-</select>
-
+          {/* Render available payment types */}
+          {PaymentTypes.map((paym, index) => (
+            <option key={index} value={paym}>
+              {paym}
+            </option>
+          ))}
+        </select>
       </div>
       <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
         <DataTable
@@ -465,8 +459,6 @@ const PaymentsList = () => {
             //   },
             // },
           }}
-
-
         ></DataTable>
         <div className="flex justify-end items-center space-x-4">
           <div className="flex justify-end items-center space-x-4">

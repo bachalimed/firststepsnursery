@@ -97,6 +97,27 @@ export const enrolmentsApiSlice = apiSlice.injectEndpoints({
       //     } else return [{ type: 'enrolment', id: 'LIST' }]
       // }
     }),
+    getEnrolmentsStatsByYear: builder.query({
+      query: (params) => {
+        const queryString = new URLSearchParams(params).toString();
+        return `/students/enrolments/enrolments?${queryString}`;
+      },
+
+      validateStatus: (response, result) => {
+        return response.status === 200 && !result.isError;
+      },
+      transformResponse: (responseData) => {
+        // console.log('  in the APIslice',responseData.total)
+
+        
+        return responseData
+      },
+
+     
+      providesTags: ["enrolmentsStats"],
+
+     
+    }),
     addNewEnrolment: builder.mutation({
       query: (initialEnrolmentData) => ({
         url: "/students/enrolments/enrolments/",
@@ -137,6 +158,7 @@ export const enrolmentsApiSlice = apiSlice.injectEndpoints({
 export const {
   useGetEnrolmentsQuery,
   useGetEnrolmentsByYearQuery,
+  useGetEnrolmentsStatsByYearQuery,
   useGetEnrolmentByIdQuery,
   useAddNewEnrolmentMutation,
   useUpdateEnrolmentMutation,
