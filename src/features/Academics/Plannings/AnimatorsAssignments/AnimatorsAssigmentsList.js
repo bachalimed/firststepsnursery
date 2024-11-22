@@ -374,7 +374,7 @@ const AnimatorsAssignmentsList = () => {
           ></DataTable>
           <div className="flex justify-end items-center space-x-4">
             <button
-              className="px-3 py-2 bg-green-500 text-white rounded"
+              className="add-button"
               onClick={() =>
                 navigate("/academics/plannings/NewAnimatorsAssignmentForm/")
               }

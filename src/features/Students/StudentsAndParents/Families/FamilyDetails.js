@@ -13,9 +13,11 @@ import {
 import { useNavigate } from "react-router";
 import useFetchPhoto from "../../../../hooks/useFetchPhoto";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
+import useAuth from "../../../../hooks/useAuth";
+
 const FamilyDetails = () => {
   const { id } = useParams();
-
+const {canEdit}=useAuth()
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
@@ -301,9 +303,10 @@ console.log(child1PhotoId,'child1PhotoId',fatherPhotoId,'fatherPhotoId')
               onClick={() =>
                 navigate(`/students/studentsParents/editFamily/${id}`)
               }
-              className="px-4 py-2 bg-yellow-400 text-white rounded"
+              className="edit-button"
+              hidden={!canEdit}
             >
-              Edit Family{" "}
+              Edit Family
             </button>
           </div>
         </div>

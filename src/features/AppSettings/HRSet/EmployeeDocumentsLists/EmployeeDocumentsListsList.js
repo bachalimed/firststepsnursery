@@ -257,7 +257,7 @@ const EmployeeDocumentsListsList = () => {
         />
         <div className="flex justify-end items-center space-x-4">
           <button
-            className="px-3 py-2 bg-green-400 text-white rounded"
+            className="add-button"
             onClick={() =>
               Navigate("/settings/hrSet/newEmployeeDocumentsList")
             }

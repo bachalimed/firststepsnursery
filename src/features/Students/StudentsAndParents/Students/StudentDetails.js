@@ -12,8 +12,10 @@ import {
 import { useGetStudentDocumentsByYearByIdQuery } from "../../../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice";
 import Students from "../../Students";
 import useFetchPhoto from "../../../../hooks/useFetchPhoto";
-
+import useAuth from "../../../../hooks/useAuth";
 const StudentDetails = () => {
+
+  const {canEdit}=useAuth()
   const { id } = useParams();
   const navigate = useNavigate();
   const [photoId, setPhotoId] = useState(null);
@@ -268,7 +270,8 @@ const isYearFound = student?.studentYears?.some(
               onClick={() =>
                 navigate(`/students/studentsParents/editStudent/${id}`)
               }
-              className="px-4 py-2 bg-yellow-400 text-white rounded"
+              className="edit-button"
+              hidden={!canEdit}
             >
               Edit Student
             </button>

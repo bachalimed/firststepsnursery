@@ -11,8 +11,14 @@ import useFetchUserPhoto from "../../../hooks/useFetchUserPhoto";
 import { useGetEmployeeDocumentsByYearByIdQuery } from "../../AppSettings/HRSet/EmployeeDocumentsLists/employeeDocumentsListsApiSlice"
 import {useState, useEffect} from "react"
 import HR from "../HR";
+
+import useAuth from "../../../hooks/useAuth";
+
 const EmployeeDetails = () => {
   const { id } = useParams();
+
+
+  const {canEdit}=useAuth()
   //const employee = useSelector((state) => state.employee?.entities[id]);
   const navigate = useNavigate();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -256,7 +262,8 @@ const EmployeeDetails = () => {
           </button>
           <button
             onClick={() => navigate(`/hr/employees/editEmployee/${id}`)}
-            className="px-4 py-2 bg-yellow-400 text-white rounded"
+            className="edit-button"
+               hidden={!canEdit}
           >
             Edit Employee
           </button>

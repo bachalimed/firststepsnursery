@@ -3,14 +3,16 @@ import { useParams, useNavigate } from "react-router-dom";
 import { selectUserById,useGetUserByIdQuery } from "./usersApiSlice";
 import useAuth from "../../../hooks/useAuth";
 import UsersManagement from "../UsersManagement";
+
+
 const UserDetails = () => {
   const { id } = useParams();
   //const user = useSelector((state) => state.user?.entities[id]);
- 
+
 
 
   const navigate = useNavigate();
-const {isAdmin, isManager} = useAuth()
+const {isAdmin, isManager,canEdit} = useAuth()
   
  //import users using RTK query
  const {
@@ -136,7 +138,8 @@ console.log(user,'user')
         </button>
        {isAdmin&& <button
           onClick={() => navigate(`/admin/usersManagement/${id}/`)}
-          className="px-4 py-2 bg-yellow-400 text-white rounded"
+          className="edit-button"
+          hidden={!canEdit}
         >
           Edit User
         </button>}

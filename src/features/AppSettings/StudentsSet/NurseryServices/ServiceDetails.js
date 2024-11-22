@@ -150,7 +150,8 @@ const ServiceDetails = () => {
         </button>
         <button
           onClick={() => navigate(`/hr/services/editService/${id}`)}
-          className="px-4 py-2 bg-yellow-400 text-white rounded"
+          className="edit-button"
+          hidden={!canEdit}
         >
           Edit Service
         </button>

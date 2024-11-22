@@ -243,13 +243,13 @@ const EmployeesList = () => {
           <Link to={`/hr/employees/employeeDetails/${row.id}`}>
             {" "}
             {/* the employee details use the user Id and not employeeId */}{" "}
-            {row.employeeId && <div>Employee {row.employeeId} </div>}
+            {row.employeeId && <div>Emp {row.employeeId} </div>}
           </Link>
         </div>
       ),
 
       sortable: true,
-      width: "260px",
+      width: "240px",
     },
     //  (isAdmin)&&{
     // name: "Employee ID",
@@ -481,7 +481,7 @@ const EmployeesList = () => {
         ></DataTable>
         <div className="flex justify-end items-center space-x-4">
           <button
-            className=" px-4 py-2 bg-green-500 text-white rounded"
+            className="add-button"
             onClick={()=>navigate('/hr/employees/newEmployee')}
             // disabled={selectedRows.length !== 1} // Disable if no rows are selected
             hidden={!canCreate}

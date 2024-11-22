@@ -207,7 +207,7 @@ return (
       
 		
         <button 
-			className="px-3 py-2 bg-green-400 text-white rounded"
+			className="add-button"
 			onClick={() => Navigate('/settings/academicsSet/newSchool')}
 			disabled={selectedRows.length !== 0} // Disable if no rows are selected
       hidden={!canCreate}

@@ -19,7 +19,7 @@ const ConfirmationModal = ({ show, onClose, onConfirm, title, message }) => {
           </button>
           <button
             onClick={onConfirm}
-            className="px-4 py-2 bg-green-500 text-white rounded"
+            className="save-button"
           >
             Confirm
           </button>

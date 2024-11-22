@@ -67,7 +67,7 @@ const EmployeeDocumentsList = ({ user }) => {
   const Navigate = useNavigate();
   const Dispatch = useDispatch();
   const { id:userId,userFullName } = user;
-  console.log(userId,'the id in teh list')
+  //console.log(userId,'the id in teh list')
   
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>

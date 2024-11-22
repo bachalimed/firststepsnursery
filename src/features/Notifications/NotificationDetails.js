@@ -150,7 +150,8 @@ const NotificationDetails = () => {
         </button>
         <button
           onClick={() => navigate(`/hr/notifications/editNotification/${id}`)}
-          className="px-4 py-2 bg-yellow-400 text-white rounded"
+          className="edit-button"
+          hidden={!canEdit}
         >
           Edit Notification
         </button>

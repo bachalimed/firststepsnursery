@@ -463,7 +463,7 @@ const UsersList = () => {
           ></DataTable>
           <div className="flex justify-end items-center space-x-4">
             <button
-              className=" px-4 py-2 bg-green-500 text-white rounded"
+              className="add-button"
               onClick={() => navigate("/admin/usersManagement/newUser/")}
               // disabled={selectedRows.length !== 1} // Disable if no rows are selected
             >

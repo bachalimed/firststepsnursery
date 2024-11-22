@@ -267,7 +267,8 @@ const isYearFound = enrolment?.enrolmentYears?.some(
               onClick={() =>
                 navigate(`/enrolments/enrolmentsParents/editEnrolment/${id}`)
               }
-              className="px-4 py-2 bg-yellow-400 text-white rounded"
+              className="edit-button"
+              hidden={!canEdit}
             >
               Edit Enrolment
             </button>
