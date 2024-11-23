@@ -193,11 +193,11 @@ const NewExpenseCategoryForm = () => {
               name="expenseCategoryLabel"
               value={formData.expenseCategoryLabel}
               onChange={handleInputChange}
-              className={`mt-1 block w-full border ${
+              className={`mt-1 block w-full h-10 border ${
                 validity.validExpenseCategoryLabel
                   ? "border-gray-300"
                   : "border-red-500"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 `}
               placeholder="Enter ExpenseCategory Label"
               required
             />
@@ -215,9 +215,9 @@ const NewExpenseCategoryForm = () => {
               name="expenseCategoryService"
               value={formData.expenseCategoryService}
               onChange={handleServiceChange}
-              className={`mt-1 block w-full border ${
+              className={`mt-1 block w-full h-10 border ${
                 validity.validExpenseCategoryService ? "border-gray-300" : "border-red-500"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 `}
               required
             >
               <option value="">Select a Service Type</option>
@@ -291,16 +291,16 @@ const NewExpenseCategoryForm = () => {
                 name="newItemInput"
                 value={formData.newItemInput}
                 onChange={handleInputChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                className="mt-1 block w-full h-10 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 "
                 placeholder="Enter new item"
               />
               <button
                 type="button"
                 onClick={handleAddItem}
-                className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500"
+                className="save-button"
               >
-                <FontAwesomeIcon icon={faPlus} className="mr-1" />
-                Add
+                <FontAwesomeIcon icon={faPlus} />
+              
               </button>
             </div>
 

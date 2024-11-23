@@ -9,22 +9,24 @@ import FinancesSet from "../../FinancesSet";
 import useAuth from "../../../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import {
+  useGetServicesByYearQuery,
+ 
+} from "../../StudentsSet/NurseryServices/servicesApiSlice";
+import {  faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
   selectAllAcademicYears,
   selectCurrentAcademicYearId,
   selectAcademicYearById,
 } from "../../AcademicsSet/AcademicYears/academicYearsSlice";
 import {
-  COMMENT_REGEX,
+  OBJECTID_REGEX,
   NAME_REGEX,
-  NUMBER_REGEX,
-  USER_REGEX,
-  PHONE_REGEX,
-  DATE_REGEX,
-  YEAR_REGEX,
 } from "../../../../config/REGEX";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 import { EXPENSE_CATEGORIES } from "../../../../config/ExpenseCategories";
 const EditExpenseCategoryForm = ({expenseCategory}) => {
+
+
   const navigate = useNavigate();
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -32,9 +34,31 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-
   const [updateExpenseCategory, { isLoading, isSuccess, isError, error }] =
-    useUpdateExpenseCategoryMutation();
+  useUpdateExpenseCategoryMutation();
+
+    const {
+      data: services, //the data is renamed services
+      isLoading: isServicesLoading, //monitor several situations is loading...
+      isSuccess: isServicesSuccess,
+      isError: isServicesError,
+      error: servicesError,
+    } = useGetServicesByYearQuery(
+      {
+        selectedYear: selectedAcademicYear?.title,
+        endpointName: "NewExpenseCategoryForm",
+      } || {},
+      {
+       
+        refetchOnFocus: true,
+        refetchOnMountOrArgChange: true,
+      }
+    );
+
+    let servicesList = isServicesSuccess
+    ? Object.values(services.entities)
+    : [];
+
 
   //confirmation Modal states
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -42,38 +66,29 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
   const [formData, setFormData] = useState({
     id:expenseCategory?._id,
     expenseCategoryLabel: expenseCategory?.expenseCategoryLabel,
-    expenseCategoryPhone: expenseCategory?.expenseCategoryPhone,
-    expenseCategoryAddress: expenseCategory?.expenseCategoryAddress,
-    expenseCategoryNotes: expenseCategory?.expenseCategoryNotes,
-    expenseCategoryIsActive: expenseCategory?.expenseCategoryIsActive,
     expenseCategoryYears: expenseCategory?.expenseCategoryYears,
-    //expenseCategoryCategories: expenseCategory?.expenseCategoryCategories,
+    expenseCategoryItems: expenseCategory?.expenseCategoryItems,
+    expenseCategoryService:expenseCategory?.expenseCategoryService?._id,
+    expenseCategoryIsActive:expenseCategory?.expenseCategoryIsActive,
     expenseCategoryOperator: userId,
+   
   });
 
   const [validity, setValidity] = useState({
     validExpenseCategoryLabel: false,
-    validExpenseCategoryPhone: false,
-    validExpenseCategoryAddress: false,
-    validExpenseCategoryNotes: false,
     validExpenseCategoryYears: false,
-    //validExpenseCategoryCategories: false,
+    validExpenseCategoryItems: false,
+    validExpenseCategoryService: false,
   });
 
   // Validate inputs using regex patterns
   useEffect(() => {
     setValidity((prev) => ({
       ...prev,
-
       validExpenseCategoryLabel: NAME_REGEX.test(formData.expenseCategoryLabel),
-      validExpenseCategoryPhone:
-        PHONE_REGEX.test(formData.expenseCategoryPhone) || formData?.expenseCategoryPhone === "",
-      validExpenseCategoryAddress:
-        COMMENT_REGEX.test(formData.expenseCategoryAddress) ||
-        formData?.expenseCategoryAddress === "",
-      validExpenseCategoryNotes: COMMENT_REGEX.test(formData.expenseCategoryNotes),
       validExpenseCategoryYears: formData?.expenseCategoryYears?.length > 0,
-      //validExpenseCategoryCategories: formData?.expenseCategoryCategories?.length > 0,
+      validExpenseCategoryItems: formData?.expenseCategoryItems?.length > 0,
+      validExpenseCategoryService: OBJECTID_REGEX.test(formData.expenseCategoryService)
     }));
   }, [formData]);
 
@@ -81,14 +96,12 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
     if (isSuccess) {
       setFormData({
         expenseCategoryLabel: "",
-        expenseCategoryPhone: "",
-        expenseCategoryAddress: "",
-        expenseCategoryNotes: "",
-        expenseCategoryIsActive: "",
         expenseCategoryYears: [],
-        //expenseCategoryCategories: [],
+        expenseCategoryItems: [],
+        expenseCategoryIsActive:"",
+        expenseCategoryService:"",
         expenseCategoryOperator: "",
-
+        expenseCategoryCreator: "",
       });
       navigate("/settings/financesSet/expenseCategoriesList/");
     }
@@ -108,14 +121,29 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
     });
   };
 
-  // const handleCategoryChange = (category) => {
-  //   setFormData((prev) => {
-  //     const updatedCategories = prev.expenseCategoryCategories.includes(category)
-  //       ? prev.expenseCategoryCategories.filter((cat) => cat !== category)
-  //       : [...prev.expenseCategoryCategories, category];
-  //     return { ...prev, expenseCategoryCategories: updatedCategories };
-  //   });
-  // };
+  const handleAddItem = () => {
+    const newItem = formData.newItemInput.trim();
+    if (newItem && !formData.expenseCategoryItems.includes(newItem)) {
+      setFormData((prev) => ({
+        ...prev,
+        expenseCategoryItems: [...prev.expenseCategoryItems, newItem],
+        newItemInput: "", // Reset the input field after adding
+      }));
+    }
+  };
+  const handleServiceChange = (e) => {
+    const selectedServiceId = e.target.value;
+    setFormData((prev) => ({ ...prev, expenseCategoryService: selectedServiceId }));
+  };
+
+  const handleRemoveItem = (itemToRemove) => {
+    setFormData((prev) => ({
+      ...prev,
+      expenseCategoryItems: prev.expenseCategoryItems.filter(
+        (item) => item !== itemToRemove
+      ),
+    }));
+  };
 
   const canSave = Object.values(validity).every(Boolean) && !isLoading;
 
@@ -169,16 +197,45 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
               value={formData.expenseCategoryLabel}
               onChange={handleInputChange}
               className={`mt-1 block w-full border ${
-                validity.validExpenseCategoryLabel ? "border-gray-300" : "border-red-500"
+                validity.validExpenseCategoryLabel
+                  ? "border-gray-300"
+                  : "border-red-500"
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
               placeholder="Enter ExpenseCategory Label"
               required
             />
           </div>
-          {/* ExpenseCategory Active Status */}
+
+          {/* Service Selection Dropdown */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              ExpenseCategory Is Active
+              Select Service Type{" "}
+              {!validity.validExpenseCategoryService && (
+                <span className="text-red-500">*</span>
+              )}
+            </label>
+            <select
+              name="expenseCategoryService"
+              value={formData.expenseCategoryService}
+              onChange={handleServiceChange}
+              className={`mt-1 block w-full border ${
+                validity.validExpenseCategoryService ? "border-gray-300" : "border-red-500"
+              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+              required
+            >
+              <option value="">Select a Service Type</option>
+              {servicesList.map((service) => (
+                <option key={service.id} value={service.id}>
+                  {service.serviceType}
+                </option>
+              ))}
+            </select>
+          </div>
+
+           {/* ExpenseCategory Active Status */}
+           <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Expense Category Is Active
             </label>
             <input
               type="checkbox"
@@ -223,107 +280,60 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
             </div>
           </div>
 
-          {/* ExpenseCategory Categories Selection */}
-          {/* <div>
+          {/* ExpenseCategory Items Selection - Using Input to Add Items */}
+          <div>
             <label className="block text-sm font-medium text-gray-700">
-              ExpenseCategory Categories{" "}
-              {!validity.validExpenseCategoryCategories && (
+              ExpenseCategory Items{" "}
+              {!validity.validExpenseCategoryItems && (
                 <span className="text-red-500">*</span>
               )}
             </label>
-            <div className="space-y-2">
-              {Object.values(EXPENSE_CATEGORIES).map((category) => (
-                <div key={category} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id={category}
-                    checked={formData.expenseCategoryCategories.includes(category)}
-                    onChange={() => handleCategoryChange(category)}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                  <label
-                    htmlFor={category}
-                    className="ml-2 text-sm font-medium text-gray-700"
+            <div className="flex items-center space-x-2">
+              <input
+                type="text"
+                name="newItemInput"
+                value={formData.newItemInput}
+                onChange={handleInputChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                placeholder="Enter new item"
+              />
+              <button
+                type="button"
+                onClick={handleAddItem}
+                className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500"
+              >
+                <FontAwesomeIcon icon={faPlus} className="mr-1" />
+                Add
+              </button>
+            </div>
+
+            {/* Display Added Items with Remove Option */}
+            <div className="mt-4 space-y-2">
+              {formData.expenseCategoryItems.map((item) => (
+                <div
+                  key={item}
+                  className="flex items-center justify-between border border-gray-300 p-2 rounded-md"
+                >
+                  <span>{item}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveItem(item)}
+                    className="text-red-500 hover:text-red-700"
                   >
-                    {category}
-                  </label>
+                    <FontAwesomeIcon icon={faTrash} />
+                  </button>
                 </div>
               ))}
             </div>
-          </div> */}
-
-          {/* Contact Information */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                ExpenseCategory Phone{" "}
-                {!validity.validExpenseCategoryPhone && (
-                  <span className="text-red-500">*</span>
-                )}
-              </label>
-              <input
-                type="text"
-                name="expenseCategoryPhone"
-                value={formData.expenseCategoryPhone}
-                onChange={handleInputChange}
-                className={`mt-1 block w-full border ${
-                  validity.validExpenseCategoryPhone
-                    ? "border-gray-300"
-                    : "border-red-500"
-                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                placeholder="Enter ExpenseCategory Phone"
-                
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                ExpenseCategory Address{" "}
-                {!validity.validExpenseCategoryAddress && (
-                  <span className="text-red-500">*</span>
-                )}
-              </label>
-              <input
-                type="text"
-                name="expenseCategoryAddress"
-                value={formData.expenseCategoryAddress}
-                onChange={handleInputChange}
-                className={`mt-1 block w-full border ${
-                  validity.validExpenseCategoryAddress
-                    ? "border-gray-300"
-                    : "border-red-500"
-                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                placeholder="Enter ExpenseCategory Address"
-           
-              />
-            </div>
           </div>
-
-          {/* ExpenseCategory Notes */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              ExpenseCategory Notes{" "}
-              {!validity.validExpenseCategoryNotes && (
-                <span className="text-red-500">*</span>
-              )}
-            </label>
-            <textarea
-              name="expenseCategoryNotes"
-              value={formData.expenseCategoryNotes}
-              onChange={handleInputChange}
-              className={`mt-1 block w-full border ${
-                validity.validExpenseCategoryNotes ? "border-gray-300" : "border-red-500"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-              placeholder="Enter ExpenseCategory Notes"
-           
-            ></textarea>
-          </div>
-
           {/* Save Button */}
           <div className="flex justify-end space-x-4">
             <button
               type="button"
               className="cancel-button"
-              onClick={() => navigate("/settings/financesSet/expenseCategoriesList/")}
+              onClick={() =>
+                navigate("/settings/financesSet/expenseCategoriesList/")
+              }
             >
               Cancel
             </button>
