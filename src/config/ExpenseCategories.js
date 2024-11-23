@@ -7,6 +7,7 @@ export const EXPENSE_CATEGORIES = {
   Insurance: "Insurance",
   Maintenance: "Maintenance",
   Legal: "Legal",
+  Stationary: "Stationary",
   Consumables: "Consumables",
   Salaries: "Salaries",
   Material: "Material",

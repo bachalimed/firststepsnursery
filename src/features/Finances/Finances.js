@@ -4,10 +4,10 @@ import useAuth from "../../hooks/useAuth";
 import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
 const Finances = () => {
   const location = useLocation();
-  const schoolExpensesTabs = {
-    title: "Sections Expenses",
+  const FinancesTabs = {
+    title: "finances",
     icon: <MdOutlineBusinessCenter />,
-    path: "/academics/expenses",
+    path: "/finances/expenses",
     allowedRoles: [
       "Parent",
       "ContentManager",
@@ -29,6 +29,7 @@ const Finances = () => {
     { label: 'Invoices', path: '/finances/invoices/invoicesList/' },
     { label: 'Payments', path: '/finances/payments/paymentsList/' },
     { label: 'Expenses', path: '/finances/expenses/expensesList/' },
+    
     
    
   ];

@@ -434,7 +434,7 @@ const EmployeesList = () => {
   if (isEmployeesError) {
     content = <p className="errmsg">{employeesError?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
   }
-  //if (isEmployeesSuccess){
+  if (isEmployeesSuccess){
 
   content = (
     <>
@@ -517,7 +517,7 @@ const EmployeesList = () => {
       /> */}
     </>
   );
-  //}
+  }
   return content;
 };
 export default EmployeesList;

@@ -91,6 +91,11 @@ import AcademicsSet from "./features/AppSettings/AcademicsSet";
 //import AcademicYearsSelection from './Components/Shared/Header/AcademicYearsSelection'
 import CmsSet from "./features/AppSettings/CmsSet";
 import FinancesSet from "./features/AppSettings/FinancesSet";
+import PayeesList from "./features/AppSettings/FinancesSet/Payees/PayeesList";
+import NewPayeeForm from "./features/AppSettings/FinancesSet/Payees/NewPayeeForm";
+import EditPayee from "./features/AppSettings/FinancesSet/Payees/EditPayee";
+import PayeeDetails from "./features/AppSettings/FinancesSet/Payees/PayeeDetails";
+
 import StudentsSet from "./features/AppSettings/StudentsSet";
 
 import HRSet from "./features/AppSettings/HRSet";
@@ -444,9 +449,41 @@ const App = () => {
                   <Route path="classrooms/" element={<ClassroomsList />} />
                 </Route>{" "}
                 {/* end of academicsSet route */}
+
+
+
+
+
                 <Route path="financesSet">
                   <Route index element={<FinancesSet />} />
+                  <Route
+                    path="payeesList/"
+                    element={<PayeesList />}
+                  />
+                  <Route
+                    path="newPayess/"
+                    element={<NewPayeeForm />}
+                  />
+                
+                  <Route
+                    path="editPayee/:id/"
+                    element={<EditPayee />}
+                  />
+                  <Route
+                    path="payeeDetails/:id/"
+                    element={<PayeeDetails />}
+                  />
+
+
+
+
+
+
+
                 </Route>{" "}
+
+
+
                 {/* end of financesSet route */}
                 <Route path="HRSet">
                   <Route index element={<HRSet />} />
