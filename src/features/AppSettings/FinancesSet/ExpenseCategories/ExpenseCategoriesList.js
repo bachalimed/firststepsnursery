@@ -1,17 +1,17 @@
 import {
-  useGetPayeesByYearQuery,
-  useUpdatePayeeMutation,
-  useDeletePayeeMutation,
-} from "./payeesApiSlice";
+  useGetExpenseCategoriesByYearQuery,
+  useUpdateExpenseCategoryMutation,
+  useDeleteExpenseCategoryMutation,
+} from "./expenseCategoriesApiSlice";
 import { HiOutlineSearch } from "react-icons/hi";
 import FinancesSet from "../../FinancesSet";
 import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
-//import { useGetPayeeDocumentsByYearByIdQuery } from "../../../AppSettings/PayeesSet/PayeeDocumentsLists/payeeDocumentsListsApiSlice"
+
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
-// import RegisterModal from './RegisterModal'
+
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { ImProfile } from "react-icons/im";
@@ -20,28 +20,29 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import {
   setAcademicYears,
   selectAllAcademicYears,
-} from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
+} from "../../AcademicsSet/AcademicYears/academicYearsSlice";
 import useAuth from "../../../../hooks/useAuth";
 import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
 import { IoShieldCheckmarkOutline, IoShieldOutline } from "react-icons/io5";
-import { setSomePayees, setPayees, currentPayeesList } from "./payeesSlice";
+
 import { IoDocumentAttachOutline } from "react-icons/io5";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
-} from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
+} from "../../AcademicsSet/AcademicYears/academicYearsSlice";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
-const PayeesList = () => {
+const ExpenseCategoriesList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
   const [requiredDocNumber, setRequiredDocNumber] = useState("");
-  const [payeeDocNumber, setPayeeDocNumber] = useState("");
+  const [expenseCategoryDocNumber, setExpenseCategoryDocNumber] = useState("");
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
-  const [idPayeeToDelete, setIdPayeeToDelete] = useState(null); // State to track which document to delete
+  const [idExpenseCategoryToDelete, setIdExpenseCategoryToDelete] =
+    useState(null); // State to track which document to delete
 
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
@@ -50,15 +51,15 @@ const PayeesList = () => {
   const academicYears = useSelector(selectAllAcademicYears);
 
   const {
-    data: payees, //the data is renamed payees
-    isLoading: isPayeesLoading, //monitor several situations is loading...
-    isSuccess: isPayeesSuccess,
-    isError: isPayeesError,
-    error: payeesError,
-  } = useGetPayeesByYearQuery(
+    data: expenseCategories, //the data is renamed expenseCategories
+    isLoading: isExpenseCategoriesLoading, //monitor several situations is loading...
+    isSuccess: isExpenseCategoriesSuccess,
+    isError: isExpenseCategoriesError,
+    error: expenseCategoriesError,
+  } = useGetExpenseCategoriesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
-      endpointName: "payeesList",
+      endpointName: "expenseCategoriesList",
     } || {},
     {
       refetchOnFocus: true,
@@ -68,59 +69,56 @@ const PayeesList = () => {
 
   //initialising the delete Mutation
   const [
-    deletePayee,
+    deleteExpenseCategory,
     {
       isLoading: isDelLoading,
       isSuccess: isDelSuccess,
       isError: isDelError,
       error: delerror,
     },
-  ] = useDeletePayeeMutation();
+  ] = useDeleteExpenseCategoryMutation();
 
   // Function to handle the delete button click
-  const onDeletePayeeClicked = (id) => {
-    setIdPayeeToDelete(id); // Set the document to delete
+  const onDeleteExpenseCategoryClicked = (id) => {
+    setIdExpenseCategoryToDelete(id); // Set the document to delete
     setIsDeleteModalOpen(true); // Open the modal
   };
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    await deletePayee({ id: idPayeeToDelete });
+    await deleteExpenseCategory({ id: idExpenseCategoryToDelete });
     setIsDeleteModalOpen(false); // Close the modal
   };
 
   // Function to close the modal without deleting
   const handleCloseDeleteModal = () => {
     setIsDeleteModalOpen(false);
-    setIdPayeeToDelete(null);
+    setIdExpenseCategoryToDelete(null);
   };
 
   // State to hold selected rows
   const [selectedRows, setSelectedRows] = useState([]);
   //state to hold the search query
   const [searchQuery, setSearchQuery] = useState("");
-  //const [filteredPayees, setFilteredPayees] = useState([])
+  //const [filteredExpenseCategories, setFilteredExpenseCategories] = useState([])
   //we need to declare the variable outside of if statement to be able to use it outside later
-  let payeesList = [];
-  let filteredPayees = [];
-  if (isPayeesSuccess) {
-    //set to the state to be used for other component s and edit payee component
+  let expenseCategoriesList = [];
+  let filteredExpenseCategories = [];
+  if (isExpenseCategoriesSuccess) {
+    //set to the state to be used for other component s and edit expenseCategory component
 
-    const { entities } = payees;
+    const { entities } = expenseCategories;
 
     //we need to change into array to be read??
-    payeesList = Object.values(entities); //we are using entity adapter in this query
-    //console.log(payeesList,'payeesList')
-    //dispatch(setPayees(payeesList)); //timing issue to update the state and use it the same time
+    expenseCategoriesList = Object.values(entities); //we are using entity adapter in this query
+    //console.log(expenseCategoriesList,'expenseCategoriesList')
+    //dispatch(setExpenseCategories(expenseCategoriesList)); //timing issue to update the state and use it the same time
 
     //the serach result data
-    filteredPayees = payeesList?.filter((item) => {
-      
-      //console.log('filteredPayees in the success', item)
-      return (
-        Object.values(item).some((val) =>
-          String(val).toLowerCase().includes(searchQuery.toLowerCase())
-        )
+    filteredExpenseCategories = expenseCategoriesList?.filter((item) => {
+      //console.log('filteredExpenseCategories in the success', item)
+      return Object.values(item).some((val) =>
+        String(val).toLowerCase().includes(searchQuery.toLowerCase())
       );
     });
   }
@@ -134,8 +132,7 @@ const PayeesList = () => {
     //console.log('selectedRows', selectedRows)
   };
 
- 
-  //console.log(filteredPayees, "filteredPayees");
+  //console.log(filteredExpenseCategories, "filteredExpenseCategories");
 
   const column = [
     {
@@ -144,13 +141,13 @@ const PayeesList = () => {
       sortable: false,
       width: "50px",
     },
-    //show this column only if user is a parent and not payee
+    //show this column only if user is a parent and not expenseCategory
 
     isAdmin && {
       name: "ID",
       selector: (row) => (
         <div>
-          <Link to={`/settings/financesSet/payeeDetails/${row.id}`}>
+          <Link to={`/settings/financesSet/expenseCategoryDetails/${row.id}`}>
             <div>{row.id} </div>
           </Link>
         </div>
@@ -160,29 +157,13 @@ const PayeesList = () => {
       width: "240px",
     },
 
-    {
-      name: "Years",
-
-      selector: (row) => (
-        <div>
-          {(row?.payeeYears).map((year) => (
-            <div key={year}>{year}</div>
-          ))}
-        </div>
-      ),
-
-      sortable: true,
-      removableRows: true,
-      width: "120px",
-    },
-   
-
+    
     {
       name: "Active",
-      selector: (row) => row.payeeData?.payeeIsActive,
+      selector: (row) => row?.expenseCategoryIsActive,
       cell: (row) => (
         <span>
-          {row?.payeeIsActive ? (
+          {row?.expenseCategoryIsActive ? (
             <IoShieldCheckmarkOutline className="text-green-500 text-2xl" />
           ) : (
             <IoShieldOutline className="text-yellow-400 text-2xl" />
@@ -193,42 +174,48 @@ const PayeesList = () => {
       width: "80px",
     },
     {
+      name: "Service",
+      selector: (row) => row?.expenseCategoryService?.serviceType,
+      sortable: true,
+      width: "100px",
+    },
+    {
       name: "Label",
-      selector: (row) => row?.payeeLabel,
+      selector: (row) => row?.expenseCategoryLabel,
       sortable: true,
       width: "150px",
     },
-    // {
-    //   name: "Categories",
-
-    //   selector: (row) => (
-    //     <div>
-    //       {(row?.payeeCategories).map((cat) => (
-    //         <div key={cat}>{cat}</div>
-    //       ))}
-    //     </div>
-    //   ),
-
-    //   sortable: true,
-    //   removableRows: true,
-    //   width: "140px",
-    // },
-
     {
-      name: "Phone",
-      selector: (row) => row?.payeePhone,
+      name: "Items",
 
-      sortable: true,
-      width: "110px",
-    },
+      selector: (row) => (
+        <div>
+          {(row?.expenseCategoryItems).map((itm) => (
+            <div key={itm}>{itm}</div>
+          ))}
+        </div>
+      ),
 
-    {
-      name: "Notes",
-      selector: (row) => row?.payeeNotes,
       sortable: true,
       removableRows: true,
-      width: "130px",
+      width: "100px",
     },
+    {
+      name: "Years",
+
+      selector: (row) => (
+        <div>
+          {(row?.expenseCategoryYears).map((year) => (
+            <div key={year}>{year}</div>
+          ))}
+        </div>
+      ),
+
+      sortable: true,
+      removableRows: true,
+      width: "120px",
+    },
+
 
     {
       name: "Actions",
@@ -237,14 +224,18 @@ const PayeesList = () => {
           <button
             className="text-blue-500"
             fontSize={20}
-            onClick={() => navigate(`/settings/financesSet/payeeDetails/${row.id}`)}
+            onClick={() =>
+              navigate(`/settings/financesSet/expenseCategoryDetails/${row.id}`)
+            }
           >
             <ImProfile className="text-2xl" />
           </button>
           {canEdit ? (
             <button
               className="text-yellow-400"
-              onClick={() => navigate(`/settings/financesSet/editPayee/${row.id}`)}
+              onClick={() =>
+                navigate(`/settings/financesSet/editExpenseCategory/${row.id}`)
+              }
             >
               <FiEdit className="text-2xl" />
             </button>
@@ -252,7 +243,7 @@ const PayeesList = () => {
           {canDelete && !isDelLoading && (
             <button
               className="text-red-500"
-              onClick={() => onDeletePayeeClicked(row.id)}
+              onClick={() => onDeleteExpenseCategoryClicked(row.id)}
             >
               <RiDeleteBin6Line className="text-2xl" />
             </button>
@@ -269,27 +260,28 @@ const PayeesList = () => {
   const tableHeader = (
     <div>
       <h2>
-        Payees List: <span> {filteredPayees.length} payees</span>
+        ExpenseCategories List:{" "}
+        <span> {filteredExpenseCategories.length} expenseCategories</span>
       </h2>
     </div>
   );
   let content;
-  if (isPayeesLoading)
+  if (isExpenseCategoriesLoading)
     content = (
       <>
         <FinancesSet />
         <LoadingStateIcon />
       </>
     );
-  if (isPayeesError) {
+  if (isExpenseCategoriesError) {
     content = (
       <>
         <FinancesSet />
-        <p className="errmsg">{payeesError?.data?.message}</p>
+        <p className="errmsg">{expenseCategoriesError?.data?.message}</p>
       </>
     ); //errormessage class defined in the css, the error has data and inside we have message of error
   }
-  if (isPayeesSuccess) {
+  if (isExpenseCategoriesSuccess) {
     content = (
       <>
         <FinancesSet />
@@ -310,7 +302,7 @@ const PayeesList = () => {
           <DataTable
             title={tableHeader}
             columns={column}
-            data={filteredPayees}
+            data={filteredExpenseCategories}
             pagination
             selectableRows
             removableRows
@@ -336,11 +328,13 @@ const PayeesList = () => {
           <div className="flex justify-end items-center space-x-4">
             <button
               className="add-button"
-              onClick={() => navigate("/settings/financesSet/newPayee/")}
+              onClick={() =>
+                navigate("/settings/financesSet/newExpenseCategory/")
+              }
               // disabled={selectedRows.length !== 1} // Disable if no rows are selected
               hidden={!canCreate}
             >
-              New Payee
+              New Category
             </button>
 
             {/* {isAdmin && (
@@ -360,10 +354,9 @@ const PayeesList = () => {
           onClose={handleCloseDeleteModal}
           onConfirm={handleConfirmDelete}
         />
-       
       </>
     );
   }
   return content;
 };
-export default PayeesList;
+export default ExpenseCategoriesList;

@@ -46,7 +46,7 @@ const NewPayeeForm = () => {
     payeeNotes: "",
     payeeIsActive: true,
     payeeYears: [],
-    payeeCategories: [],
+    //payeeCategories: [],
     payeeOperator: userId,
     payeeCreator: userId,
   });
@@ -57,7 +57,7 @@ const NewPayeeForm = () => {
     validPayeeAddress: false,
     validPayeeNotes: false,
     validPayeeYears: false,
-    validPayeeCategories: false,
+    //validPayeeCategories: false,
   });
 
   // Validate inputs using regex patterns
@@ -73,7 +73,7 @@ const NewPayeeForm = () => {
         formData?.payeeAddress === "",
       validPayeeNotes: COMMENT_REGEX.test(formData.payeeNotes),
       validPayeeYears: formData?.payeeYears?.length > 0,
-      validPayeeCategories: formData?.payeeCategories?.length > 0,
+      //validPayeeCategories: formData?.payeeCategories?.length > 0,
     }));
   }, [formData]);
 
@@ -86,7 +86,7 @@ const NewPayeeForm = () => {
         payeeNotes: "",
         payeeIsActive: false,
         payeeYears: [],
-        payeeCategories: [],
+        //payeeCategories: [],
         payeeOperator: "",
         payeeCreator: "",
       });
@@ -108,14 +108,14 @@ const NewPayeeForm = () => {
     });
   };
 
-  const handleCategoryChange = (category) => {
-    setFormData((prev) => {
-      const updatedCategories = prev.payeeCategories.includes(category)
-        ? prev.payeeCategories.filter((cat) => cat !== category)
-        : [...prev.payeeCategories, category];
-      return { ...prev, payeeCategories: updatedCategories };
-    });
-  };
+  // const handleCategoryChange = (category) => {
+  //   setFormData((prev) => {
+  //     const updatedCategories = prev.payeeCategories.includes(category)
+  //       ? prev.payeeCategories.filter((cat) => cat !== category)
+  //       : [...prev.payeeCategories, category];
+  //     return { ...prev, payeeCategories: updatedCategories };
+  //   });
+  // };
 
   const canSave = Object.values(validity).every(Boolean) && !isLoading;
 
@@ -224,7 +224,7 @@ const NewPayeeForm = () => {
           </div>
 
           {/* Payee Categories Selection */}
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700">
               Payee Categories{" "}
               {!validity.validPayeeCategories && (
@@ -250,7 +250,7 @@ const NewPayeeForm = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
 
           {/* Contact Information */}
           <div className="grid grid-cols-2 gap-4">

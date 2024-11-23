@@ -25,6 +25,7 @@ const FinancesSet = () => {
  const tabs = [
   //{ label: 'New Assignment', path: '/academics/expenses/NewAnimatorsAssignmentForm' },
   { label: 'Payees', path: '/settings/financesSet/payeesList/' },
+  { label: 'Expense Categories', path: '/settings/financesSet/expenseCategoriesList/' },
   { label: 'bla', path: '/settings/financesSet/payments/bla/' },
  
   

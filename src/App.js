@@ -95,6 +95,10 @@ import PayeesList from "./features/AppSettings/FinancesSet/Payees/PayeesList";
 import NewPayeeForm from "./features/AppSettings/FinancesSet/Payees/NewPayeeForm";
 import EditPayee from "./features/AppSettings/FinancesSet/Payees/EditPayee";
 import PayeeDetails from "./features/AppSettings/FinancesSet/Payees/PayeeDetails";
+import ExpenseCategoriesList from "./features/AppSettings/FinancesSet/ExpenseCategories/ExpenseCategoriesList";
+import NewExpenseCategoryForm from "./features/AppSettings/FinancesSet/ExpenseCategories/NewExpenseCategoryForm";
+import EditExpenseCategory from "./features/AppSettings/FinancesSet/ExpenseCategories/EditExpenseCategory";
+import ExpenseCategoryDetails from "./features/AppSettings/FinancesSet/ExpenseCategories/ExpenseCategoryDetails";
 
 import StudentsSet from "./features/AppSettings/StudentsSet";
 
@@ -473,6 +477,23 @@ const App = () => {
                     path="payeeDetails/:id/"
                     element={<PayeeDetails />}
                   />
+                  <Route
+                    path="expenseCategoriesList/"
+                    element={<ExpenseCategoriesList />}
+                  />
+                  <Route
+                    path="newExpenseCategory/"
+                    element={<NewExpenseCategoryForm />}
+                  />
+                
+                  <Route
+                    path="editExpenseCategory/:id/"
+                    element={<EditExpenseCategory />}
+                  />
+                  <Route
+                    path="expenseCategoryDetails/:id/"
+                    element={<ExpenseCategoryDetails />}
+                  />
 
 
 
@@ -481,10 +502,10 @@ const App = () => {
 
 
                 </Route>{" "}
-
-
-
                 {/* end of financesSet route */}
+
+
+
                 <Route path="HRSet">
                   <Route index element={<HRSet />} />
                   <Route
