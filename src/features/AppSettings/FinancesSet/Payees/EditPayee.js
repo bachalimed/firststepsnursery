@@ -13,8 +13,8 @@ const EditPayee = () => {
   const { id } = useParams(); //pull the id from use params from the url
   //will get hte student from the state
   //const payeeToEdit = useSelector((state) => state.payee?.entities[id]);
-  console.log("helllllow payeeToEdit", "mystu", id);
-  console.log(id, "id");
+ // console.log("helllllow payeeToEdit", "mystu", id);
+  //console.log(id, "id");
   const {
     data: payee, //the data is renamed payees
     isLoading: isPayeeLoading, //monitor several situations is loading...
@@ -34,11 +34,11 @@ const EditPayee = () => {
 
   let payeeToEdit;
   if (isPayeeSuccess) {
-    console.log(payee, "employe");
-    payeeToEdit = payee;
+    //console.log(payee, "payee");
+    payeeToEdit = payee[0];
   }
 
-  console.log(payeeToEdit, "employeToedit");
+  //console.log(payeeToEdit, "payeeToedit");
 
   let content;
   if (isPayeeSuccess) {

@@ -319,14 +319,14 @@ const PayeesList = () => {
           <button
             className="text-blue-500"
             fontSize={20}
-            onClick={() => navigate(`/hr/payees/payeeDetails/${row.id}`)}
+            onClick={() => navigate(`/settings/financesSet/payeeDetails/${row.id}`)}
           >
             <ImProfile className="text-2xl" />
           </button>
           {canEdit ? (
             <button
               className="text-yellow-400"
-              onClick={() => navigate(`/hr/payees/editPayee/${row.id}`)}
+              onClick={() => navigate(`/settings/financesSet/editPayee/${row.id}`)}
             >
               <FiEdit className="text-2xl" />
             </button>

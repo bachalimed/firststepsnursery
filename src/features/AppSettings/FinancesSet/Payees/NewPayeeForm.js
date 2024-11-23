@@ -3,11 +3,7 @@ import { useAddNewPayeeMutation } from "./payeesApiSlice";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
-import {
-  POSITIONS,
-  CONTRACT_TYPES,
-  PAYMENT_PERIODS,
-} from "../../../../config/UserRoles";
+import { ROLES } from "../../../../config/UserRoles";
 import { ACTIONS } from "../../../../config/UserActions";
 import FinancesSet from "../../FinancesSet";
 import useAuth from "../../../../hooks/useAuth";
@@ -17,7 +13,8 @@ import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import {COMMENT_REGEX,
+import {
+  COMMENT_REGEX,
   NAME_REGEX,
   NUMBER_REGEX,
   USER_REGEX,
@@ -29,7 +26,7 @@ import ConfirmationModal from "../../../../Components/Shared/Modals/Confirmation
 import { EXPENSE_CATEGORIES } from "../../../../config/ExpenseCategories";
 const NewPayeeForm = () => {
   const navigate = useNavigate();
-const{userId} =useAuth()
+  const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
@@ -61,35 +58,38 @@ const{userId} =useAuth()
     validPayeeNotes: false,
     validPayeeYears: false,
     validPayeeCategories: false,
-  
   });
 
   // Validate inputs using regex patterns
   useEffect(() => {
     setValidity((prev) => ({
       ...prev,
-      
+
       validPayeeLabel: NAME_REGEX.test(formData.payeeLabel),
-      validPayeePhone: PHONE_REGEX.test(formData.payeePhone)||formData?.payeePhone==="",
-      validPayeeAddress: COMMENT_REGEX.test(formData.payeeAddress)||formData?.payeeAddress==="",
-      validPayeeNotes:  COMMENT_REGEX.test(formData.payeeNotes),
-      validPayeeYears: formData?.payeeYears?.length>0,
-      validPayeeCategories: formData?.payeeCategories?.length>0,
-    }))
+      validPayeePhone:
+        PHONE_REGEX.test(formData.payeePhone) || formData?.payeePhone === "",
+      validPayeeAddress:
+        COMMENT_REGEX.test(formData.payeeAddress) ||
+        formData?.payeeAddress === "",
+      validPayeeNotes: COMMENT_REGEX.test(formData.payeeNotes),
+      validPayeeYears: formData?.payeeYears?.length > 0,
+      validPayeeCategories: formData?.payeeCategories?.length > 0,
+    }));
   }, [formData]);
 
   useEffect(() => {
     if (isSuccess) {
       setFormData({
         payeeLabel: "",
-    payeePhone: "",
-    payeeAddress: "",
-    payeeNotes: "",
-    payeeIsActive: false,
-    payeeYears: [],
-    payeeCategories: [],
-    payeeOperator: "",
-    payeeCreator: "",})
+        payeePhone: "",
+        payeeAddress: "",
+        payeeNotes: "",
+        payeeIsActive: false,
+        payeeYears: [],
+        payeeCategories: [],
+        payeeOperator: "",
+        payeeCreator: "",
+      });
       navigate("/settings/financesSet/payeesList/");
     }
   }, [isSuccess, navigate]);
@@ -99,12 +99,11 @@ const{userId} =useAuth()
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleYearSelection = (e) => {
-    const selectedYear = e.target.value;
+  const handleYearChange = (year) => {
     setFormData((prev) => {
-      const updatedYears = prev.payeeYears.includes(selectedYear)
-        ? prev.payeeYears.filter((year) => year !== selectedYear)
-        : [...prev.payeeYears, selectedYear];
+      const updatedYears = prev.payeeYears.includes(year)
+        ? prev.payeeYears.filter((yr) => yr !== year)
+        : [...prev.payeeYears, year];
       return { ...prev, payeeYears: updatedYears };
     });
   };
@@ -117,14 +116,9 @@ const{userId} =useAuth()
       return { ...prev, payeeCategories: updatedCategories };
     });
   };
- 
 
- 
+  const canSave = Object.values(validity).every(Boolean) && !isLoading;
 
- 
-  const canSave =
-    Object.values(validity).every(Boolean) &&  !isLoading;
-  
   const onSavePayeeClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
@@ -147,9 +141,9 @@ const{userId} =useAuth()
   const handleCloseModal = () => {
     setShowConfirmation(false);
   };
-console.log(validity, 'valisty')
+  console.log(validity, "valisty");
 
-  console.log(formData,'formData')
+  console.log(formData, "formData");
   const content = (
     <>
       <FinancesSet />
@@ -157,13 +151,17 @@ console.log(validity, 'valisty')
         <h2 className="text-2xl font-bold mb-4">
           Add New Payee: {`${formData?.payeeLabel} `}
         </h2>
-        {isError && <p className="text-red-500">Error: {error?.data?.message}</p>}
+        {isError && (
+          <p className="text-red-500">Error: {error?.data?.message}</p>
+        )}
         <form onSubmit={onSavePayeeClicked} className="space-y-6">
           {/* Payee Label */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Payee Label{" "}
-              {!validity.validPayeeLabel && <span className="text-red-500">*</span>}
+              {!validity.validPayeeLabel && (
+                <span className="text-red-500">*</span>
+              )}
             </label>
             <input
               type="text"
@@ -177,31 +175,61 @@ console.log(validity, 'valisty')
               required
             />
           </div>
+          {/* Payee Active Status */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Payee Is Active
+            </label>
+            <input
+              type="checkbox"
+              name="payeeIsActive"
+              checked={formData.payeeIsActive}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  payeeIsActive: e.target.checked,
+                }))
+              }
+              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+          </div>
 
-          {/* Payee Years Selection */}
+          {/* Payee Years Selection - Using Checkboxes */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Payee Years{" "}
-              {!validity.validPayeeYears && <span className="text-red-500">*</span>}
+              {!validity.validPayeeYears && (
+                <span className="text-red-500">*</span>
+              )}
             </label>
-            <select
-              multiple
-              onChange={handleYearSelection}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            >
+            <div className="space-y-2">
               {academicYears.map((year) => (
-                <option key={year.id} value={year.title}>
-                  {year.title}
-                </option>
+                <div key={year.id} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id={`year-${year.id}`}
+                    checked={formData.payeeYears.includes(year.title)}
+                    onChange={() => handleYearChange(year.title)}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  <label
+                    htmlFor={`year-${year.id}`}
+                    className="ml-2 text-sm font-medium text-gray-700"
+                  >
+                    {year.title}
+                  </label>
+                </div>
               ))}
-            </select>
+            </div>
           </div>
 
           {/* Payee Categories Selection */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Payee Categories{" "}
-              {!validity.validPayeeCategories && <span className="text-red-500">*</span>}
+              {!validity.validPayeeCategories && (
+                <span className="text-red-500">*</span>
+              )}
             </label>
             <div className="space-y-2">
               {Object.values(EXPENSE_CATEGORIES).map((category) => (
@@ -229,7 +257,9 @@ console.log(validity, 'valisty')
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Payee Phone{" "}
-                {!validity.validPayeePhone && <span className="text-red-500">*</span>}
+                {!validity.validPayeePhone && (
+                  <span className="text-red-500">*</span>
+                )}
               </label>
               <input
                 type="text"
@@ -237,37 +267,44 @@ console.log(validity, 'valisty')
                 value={formData.payeePhone}
                 onChange={handleInputChange}
                 className={`mt-1 block w-full border ${
-                  validity.validPayeePhone ? "border-gray-300" : "border-red-500"
+                  validity.validPayeePhone
+                    ? "border-gray-300"
+                    : "border-red-500"
                 } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                 placeholder="Enter Payee Phone"
+                
               />
             </div>
-          </div>
-
-          {/* Payee Address */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Payee Address{" "}
-              {!validity.validPayeeAddress && <span className="text-red-500">*</span>}
-            </label>
-            <input
-              type="text"
-              name="payeeAddress"
-              value={formData.payeeAddress}
-              onChange={handleInputChange}
-              className={`mt-1 block w-full border ${
-                validity.validPayeeAddress ? "border-gray-300" : "border-red-500"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-              placeholder="Enter Payee Address"
-              required
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Payee Address{" "}
+                {!validity.validPayeeAddress && (
+                  <span className="text-red-500">*</span>
+                )}
+              </label>
+              <input
+                type="text"
+                name="payeeAddress"
+                value={formData.payeeAddress}
+                onChange={handleInputChange}
+                className={`mt-1 block w-full border ${
+                  validity.validPayeeAddress
+                    ? "border-gray-300"
+                    : "border-red-500"
+                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                placeholder="Enter Payee Address"
+           
+              />
+            </div>
           </div>
 
           {/* Payee Notes */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Payee Notes{" "}
-              {!validity.validPayeeNotes && <span className="text-red-500">*</span>}
+              {!validity.validPayeeNotes && (
+                <span className="text-red-500">*</span>
+              )}
             </label>
             <textarea
               name="payeeNotes"
@@ -276,37 +313,14 @@ console.log(validity, 'valisty')
               className={`mt-1 block w-full border ${
                 validity.validPayeeNotes ? "border-gray-300" : "border-red-500"
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-              rows="3"
-              placeholder="Enter Notes"
-            />
-          </div>
-
-          {/* Payee Active Status */}
-          <div className="flex items-center">
-            <input
-              id="payeeIsActive"
-              type="checkbox"
-              name="payeeIsActive"
-              checked={formData.payeeIsActive}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  payeeIsActive: e.target.checked,
-                }))
-              }
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label
-              htmlFor="payeeIsActive"
-              className="ml-2 block text-sm font-medium text-gray-700"
-            >
-              Active Payee
-            </label>
+              placeholder="Enter Payee Notes"
+           
+            ></textarea>
           </div>
 
           {/* Save Button */}
           <div className="flex justify-end space-x-4">
-          <button
+            <button
               type="button"
               className="cancel-button"
               onClick={() => navigate("/settings/financesSet/payeesList/")}
@@ -316,24 +330,22 @@ console.log(validity, 'valisty')
             <button
               type="submit"
               className="save-button"
-              disabled={!canSave||isLoading}
+              disabled={!canSave || isLoading}
             >
-              
               <span className="ml-2">Save Payee</span>
             </button>
           </div>
         </form>
 
         {/* Confirmation Modal */}
-       
-         <ConfirmationModal
-         show={showConfirmation}
-         onClose={handleCloseModal}
-         onConfirm={handleConfirmSave}
-         title="Confirm Save"
-         message="Are you sure you want to save?"
-       />
-       
+
+        <ConfirmationModal
+          show={showConfirmation}
+          onClose={handleCloseModal}
+          onConfirm={handleConfirmSave}
+          title="Confirm Save"
+          message="Are you sure you want to save?"
+        />
       </section>
     </>
   );
