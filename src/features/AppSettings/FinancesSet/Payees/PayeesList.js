@@ -418,7 +418,7 @@ const PayeesList = () => {
           <div className="flex justify-end items-center space-x-4">
             <button
               className="add-button"
-              onClick={() => navigate("/hr/payees/newPayee")}
+              onClick={() => navigate("/settings/financesSet/newPayee/")}
               // disabled={selectedRows.length !== 1} // Disable if no rows are selected
               hidden={!canCreate}
             >
@@ -442,13 +442,7 @@ const PayeesList = () => {
           onClose={handleCloseDeleteModal}
           onConfirm={handleConfirmDelete}
         />
-        {/* <RegisterModal 
-        isOpen={isRegisterModalOpen}
-        onClose={() => setIsRegisterModalOpen(false)}
-        payeeYears={payeeYears}
-        academicYears={academicYears}
-        onSave={onUpdatePayeeClicked}
-      /> */}
+       
       </>
     );
   }

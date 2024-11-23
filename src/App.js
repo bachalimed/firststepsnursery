@@ -461,7 +461,7 @@ const App = () => {
                     element={<PayeesList />}
                   />
                   <Route
-                    path="newPayess/"
+                    path="newPayee/"
                     element={<NewPayeeForm />}
                   />
                 

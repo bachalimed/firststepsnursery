@@ -459,7 +459,7 @@ const PaymentsList = () => {
           }}
         ></DataTable>
         <div className="flex justify-end items-center space-x-4">
-          <div className="flex justify-end items-center space-x-4">
+          
             <button
              className="add-button"
               onClick={() => navigate("/finances/payments/newPayment/")}
@@ -467,7 +467,7 @@ const PaymentsList = () => {
             >
               Add Payment
             </button>
-          </div>
+          
         </div>
       </div>
       <DeletionConfirmModal
