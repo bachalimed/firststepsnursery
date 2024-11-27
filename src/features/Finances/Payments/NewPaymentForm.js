@@ -25,7 +25,7 @@ import {
 } from "../../../config/REGEX";
 import { MONTHS } from "../../../config/Months";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
-const NewPaymentForm = ({ invoice }) => {
+const NewPaymentForm = () => {
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>

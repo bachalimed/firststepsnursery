@@ -46,7 +46,7 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
     } = useGetServicesByYearQuery(
       {
         selectedYear: selectedAcademicYear?.title,
-        endpointName: "NewExpenseCategoryForm",
+        endpointName: "EditExpenseCategoryForm",
       } || {},
       {
        
@@ -68,7 +68,7 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
     expenseCategoryLabel: expenseCategory?.expenseCategoryLabel,
     expenseCategoryYears: expenseCategory?.expenseCategoryYears,
     expenseCategoryItems: expenseCategory?.expenseCategoryItems,
-    expenseCategoryService:expenseCategory?.expenseCategoryService?._id,
+   // expenseCategoryService:expenseCategory?.expenseCategoryService?._id,
     expenseCategoryIsActive:expenseCategory?.expenseCategoryIsActive,
     expenseCategoryOperator: userId,
    
@@ -78,7 +78,7 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
     validExpenseCategoryLabel: false,
     validExpenseCategoryYears: false,
     validExpenseCategoryItems: false,
-    validExpenseCategoryService: false,
+   // validExpenseCategoryService: false,
   });
 
   // Validate inputs using regex patterns
@@ -88,18 +88,19 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
       validExpenseCategoryLabel: NAME_REGEX.test(formData.expenseCategoryLabel),
       validExpenseCategoryYears: formData?.expenseCategoryYears?.length > 0,
       validExpenseCategoryItems: formData?.expenseCategoryItems?.length > 0,
-      validExpenseCategoryService: OBJECTID_REGEX.test(formData.expenseCategoryService)
+     // validExpenseCategoryService: OBJECTID_REGEX.test(formData.expenseCategoryService)
     }));
   }, [formData]);
 
   useEffect(() => {
     if (isSuccess) {
       setFormData({
+        id:"",
         expenseCategoryLabel: "",
         expenseCategoryYears: [],
         expenseCategoryItems: [],
         expenseCategoryIsActive:"",
-        expenseCategoryService:"",
+       // expenseCategoryService:"",
         expenseCategoryOperator: "",
         expenseCategoryCreator: "",
       });
@@ -207,7 +208,7 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
           </div>
 
           {/* Service Selection Dropdown */}
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700">
               Select Service Type{" "}
               {!validity.validExpenseCategoryService && (
@@ -230,7 +231,7 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
                 </option>
               ))}
             </select>
-          </div>
+          </div> */}
 
            {/* ExpenseCategory Active Status */}
            <div>
@@ -265,7 +266,7 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
                   <input
                     type="checkbox"
                     id={`year-${year.id}`}
-                    checked={formData.expenseCategoryYears.includes(year.title)}
+                    checked={formData.expenseCategoryYears?.includes(year.title)}
                     onChange={() => handleYearChange(year.title)}
                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />

@@ -12,7 +12,7 @@ export const expensesApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     //a hook will be created automatically based on the end point :getexpenses
     getExpenses: builder.query({
-      query: () => "/academics/expenses/", //this route is as defined in the backend server.js to give all expenses
+      query: () => "/finances/expenses/", //this route is as defined in the backend server.js to give all expenses
       validateStatus: (response, result) => {
         //to validate the status as per documentation
         return response.status === 200 && !result.isError;
@@ -36,7 +36,7 @@ export const expensesApiSlice = apiSlice.injectEndpoints({
     getExpenseById: builder.query({
       query: (params) => {
         const queryString = new URLSearchParams(params).toString();
-        return `/academics/expenses?${queryString}`;
+        return `/finances/expenses?${queryString}`;
       },
       validateStatus: (response, result) => {
         return response.status === 200 && !result.isError;
@@ -46,7 +46,7 @@ export const expensesApiSlice = apiSlice.injectEndpoints({
     }),
     addNewExpense: builder.mutation({
       query: (initialExpenseData) => ({
-        url: "/academics/expenses/",
+        url: "/finances/expenses/",
         method: "POST",
         body: {
           ...initialExpenseData,
@@ -56,7 +56,7 @@ export const expensesApiSlice = apiSlice.injectEndpoints({
     }),
     updateExpense: builder.mutation({
       query: (initialExpenseData) => ({
-        url: "/academics/expenses/",
+        url: "/finances/expenses/",
         method: "PATCH",
         body: {
           ...initialExpenseData,
@@ -66,7 +66,7 @@ export const expensesApiSlice = apiSlice.injectEndpoints({
     }),
     deleteExpense: builder.mutation({
       query: ({ id }) => ({
-        url: "/academics/expenses/",
+        url: "/finances/expenses/",
         method: "DELETE",
         body: { id },
       }),

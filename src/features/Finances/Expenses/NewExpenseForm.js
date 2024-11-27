@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
-
+import { useGetServicesByYearQuery } from "../../AppSettings/StudentsSet/NurseryServices/servicesApiSlice";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   useAddNewExpenseMutation,
   useGetExpensesQuery,
 } from "./expensesApiSlice"; // Redux API action
-
+import { useGetExpenseCategoriesByYearQuery } from "../../AppSettings/FinancesSet/ExpenseCategories/expenseCategoriesApiSlice";
+import { useGetPayeesByYearQuery } from "../../AppSettings/FinancesSet/Payees/payeesApiSlice";
 import Finances from "../Finances";
 import useAuth from "../../../hooks/useAuth";
 import { useGetAttendedSchoolsQuery } from "../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
@@ -16,8 +17,17 @@ import {
   selectAcademicYearById,
   selectAllAcademicYears,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import { NAME_REGEX, DATE_REGEX } from "../../../config/REGEX";
+import {
+  NAME_REGEX,
+  YEAR_REGEX,
+  DATE_REGEX,
+  OBJECTID_REGEX,
+  COMMENT_REGEX,
+  FEE_REGEX,
+} from "../../../config/REGEX";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
+import { MONTHS } from "../../../config/Months";
+import { CurrencySymbol } from "../../../config/Currency";
 const NewExpenseForm = () => {
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -27,12 +37,12 @@ const NewExpenseForm = () => {
   const academicYears = useSelector(selectAllAcademicYears);
 
   const {
-    data: employees, //the data is renamed employees
-    isLoading: isEmployeesLoading, //monitor several situations is loading...
-    isSuccess: isEmployeesSuccess,
-    isError: isEmployeesError,
-    error: employeesError,
-  } = useGetEmployeesByYearQuery(
+    data: expenseCategories, //the data is renamed expenseCategories
+    isLoading: isExpenseCategoriesLoading, //monitor several situations is loading...
+    isSuccess: isExpenseCategoriesSuccess,
+    isError: isExpenseCategoriesError,
+    error: expenseCategoriesError,
+  } = useGetExpenseCategoriesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
       endpointName: "NewExpenseForm",
@@ -43,65 +53,38 @@ const NewExpenseForm = () => {
     }
   );
   const {
-    data: schools,
-    isLoading: isSchoolLoading,
-    isSuccess: isSchoolSuccess,
-    isError: isSchoolError,
-    error: schoolError,
-  } = useGetAttendedSchoolsQuery({
-    endpointName: "NewExpenseForm",
-  }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
+    data: payees, //the data is renamed payees
+    isLoading: isPayeesLoading, //monitor several situations is loading...
+    isSuccess: isPayeesSuccess,
+    isError: isPayeesError,
+    error: payeesError,
+  } = useGetPayeesByYearQuery(
+    {
+      selectedYear: selectedAcademicYear?.title,
+      endpointName: "NewExpenseForm",
+    } || {},
+    {
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
+    }
+  );
 
   const {
-    data: expenses,
-    isLoading: isExpensesLoading,
-    isSuccess: isExpensesSuccess,
-    isError: isExpensesError,
-    error: expensesError,
-  } = useGetExpensesQuery({
-    endpointName: "NewExpenseForm",
-  }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
-  const [formData, setFormData] = useState({
-    expenseYear: selectedAcademicYear?.title || "",
-    expenses: [
-      {
-        animator: "",
-        schools: [],
-      },
-    ],
-    assignedFrom: "",
-    assignedTo: "",
-    creator: userId,
-    operator: userId,
-  });
-  let schoolsList = isSchoolSuccess ? Object.values(schools.entities) : [];
-  // let employeesList = isEmployeesSuccess
-  //   ? Object.values(employees.entities)
-  //   : [];
-  //confirmation Modal states
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  let employeesList = [];
-  let activeEmployeesList = [];
-
-  if (isEmployeesSuccess) {
-    const { entities } = employees;
-    employeesList = Object.values(entities);
-    activeEmployeesList = employeesList.filter(
-      (employee) => employee.employeeData.employeeIsActive === true
-    );
-  }
-  let expensesList = isExpensesSuccess ? Object.values(expenses.entities) : [];
-
-  const [validity, setValidity] = useState({
-    validExpenseYear: false,
-    validExpenses: false,
-    validAssignedFrom: false,
-    validAssignedTo: false,
-    noOverlap: true, // New validity check for date overlap
-  });
-
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+    data: services, //the data is renamed services
+    isLoading: isServicesLoading, //monitor several situations is loading...
+    isSuccess: isServicesSuccess,
+    isError: isServicesError,
+    error: servicesError,
+  } = useGetServicesByYearQuery(
+    {
+      selectedYear: selectedAcademicYear?.title,
+      endpointName: "NewExpenseForm",
+    } || {},
+    {
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
+    }
+  );
 
   // Redux mutation for adding the attended school
   const [
@@ -113,57 +96,103 @@ const NewExpenseForm = () => {
       isSuccess: isAddSuccess,
     },
   ] = useAddNewExpenseMutation();
-  // Check if any dates overlap with existing expenses
-  const checkNoOverlap = (from, to) => {
-    if (expensesList != []) {
-      return expensesList.every((expense) => {
-        const existingFrom = new Date(expense.assignedFrom);
-        const existingTo = new Date(expense.assignedTo);
-        const newFrom = new Date(from);
-        const newTo = new Date(to);
 
-        return newTo < existingFrom || newFrom > existingTo; // Ensure no date overlap
-      });
-    }
-  };
+  let servicesList = isServicesSuccess ? Object.values(services.entities) : [];
+  let payeesList = isPayeesSuccess ? Object.values(payees.entities) : [];
+  let expenseCategoriesList = isExpenseCategoriesSuccess
+    ? Object.values(expenseCategories.entities)
+    : [];
+  //console.log(selectedAcademicYear?.title, "selectedAcademicYear?.title");
+
+  const [formData, setFormData] = useState({
+    expenseYear: selectedAcademicYear?.title,
+    expenseMonth: "",
+    expenseAmount: "",
+    expenseNote: "",
+    expenseCategory: "",
+    expenseItems: [],
+    expensePayee: "",
+    expenseService: "",
+    expenseDate: "",
+    expensePaymentDate: "",
+
+    expenseMethod: "",
+    expenseOperator: userId,
+    expenseCreator: userId,
+  });
+
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const [usedItems, setUsedItems] = useState({}); // Track used items by category
+  //confirmation Modal states
+  const [showConfirmation, setShowConfirmation] = useState(false);
+
+  const [validity, setValidity] = useState({
+    validExpenseYear: false,
+    validExpenseMonth: false,
+    validExpenseAmount: false,
+    validExpenseNote: false,
+    validExpenseCategory: false,
+    validExpenseItems: false,
+    validExpensePayee: false,
+    validExpenseService: false,
+    validExpenseDate: false,
+    validExpensePaymentDate: false,
+
+    validExpenseMethod: false,
+    validExpenseOperator: false,
+    validExpenseCreator: false,
+  });
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   // Validate inputs using regex patterns
   useEffect(() => {
     setValidity((prev) => ({
       ...prev,
-      validExpenseYear: DATE_REGEX.test(formData.expenseYear),
-      validExpenses:
-        formData.expenses.length > 0 &&
-        formData.expenses.every((animator) => animator !== ""),
-      validAssignedFrom: DATE_REGEX.test(formData.assignedFrom), // Ensure schoolType is selected
-      validAssignedTo:
-        !!formData.assignedTo &&
-        new Date(formData?.assignedFrom) < new Date(formData.assignedTo),
-      noOverlap: checkNoOverlap(formData.assignedFrom, formData.assignedTo),
+      validExpenseYear: YEAR_REGEX.test(formData.expenseYear),
+      validExpenseCategory: OBJECTID_REGEX.test(formData.expenseCategory),
+      validExpenseItems:
+        formData.expenseItems.length > 0 &&
+        formData.expenseItems.every((item) => item !== ""),
+      validItem: NAME_REGEX.test(formData.item),
+      validExpenseMonth: NAME_REGEX.test(formData.expenseMonth),
+      validExpenseAmount: FEE_REGEX.test(formData.expenseAmount),
+      validExpenseNote: COMMENT_REGEX.test(formData.expenseNote),
+      validExpenseService: OBJECTID_REGEX.test(formData.expenseService),
+      validExpensePayee: OBJECTID_REGEX.test(formData.expensePayee),
+      validExpenseDate: DATE_REGEX.test(formData.expenseDate),
+      validExpensePaymentDate:
+        DATE_REGEX.test(formData.expensePaymentDate) ||
+        formData.expensePaymentDate === "",
+
+      validExpenseMethod: NAME_REGEX.test(formData.expenseMethod),
+      validExpenseOperator: OBJECTID_REGEX.test(formData.expenseOperator),
+      validExpenseCreator: OBJECTID_REGEX.test(formData.expenseCreator),
     }));
   }, [formData]);
-  // console.log(
-  //   validity.validExpenseYear,
-  //   validity.validExpenses,
-  //   validity.validAssignedFrom,
-  //   validity.validAssignedTo
-  // );
+
   // Clear form and errors on success
   useEffect(() => {
     if (isAddSuccess) {
       setFormData({
-        expenses: [
-          {
-            animator: "",
-            schools: [],
-          },
-        ],
-        assignedFrom: "",
-        assignedTo: "",
-        creator: "",
-        operator: "",
+        expenseYear: "",
+        expenseMonth: "",
+        expenseAmount: "",
+        expenseNote: "",
+        expenseCategory: "",
+        expenseItems: [],
+        expensePayee: "",
+        expenseDate: "",
+        expensePaymentDate: "",
+
+        expenseMethod: "",
+        expenseOperator: "",
+        expenseCreator: "",
       });
 
-      navigate("/academics/plannings/Expenses");
+      navigate("/finances/expenses/expensesList/");
     }
   }, [isAddSuccess, navigate]);
 
@@ -197,6 +226,8 @@ const NewExpenseForm = () => {
     setShowConfirmation(false);
   };
   // Handle input change
+
+  // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -205,197 +236,361 @@ const NewExpenseForm = () => {
     }));
   };
 
-  // Filter available  by excluding already selected ones
-  const getAvailable = (index) => {
-    const selected = formData.expenses.map((expense) => expense.animator);
-    return activeEmployeesList.filter(
-      (employee) =>
-        !selected.includes(employee.id) || selected[index] === employee.id
-    );
-  };
-
-  // Get available schools for the current expense index
-  const getAvailableSchools = (index) => {
-    // Gather all selected schools from previous expenses
-    const selectedSchools = formData.expenses
-      .slice(0, index) // Only consider previous expenses to allow unique school selection per animator
-      .flatMap((expense) => expense.schools);
-
-    // Filter out schools already selected in previous expenses
-    return schoolsList.filter(
-      (school) =>
-        !selectedSchools.includes(school.id) &&
-        school.schoolName !== "First Steps"
-    );
-  };
-
-  // Handle animator or school selection changes in each expense
-  const handleExpenseChange = (index, field, value) => {
-    const updatedExpenses = formData.expenses.map((expense, i) =>
-      i === index ? { ...expense, [field]: value } : expense
-    );
-    setFormData((prev) => ({ ...prev, expenses: updatedExpenses }));
-  };
-
-  // Toggle school selection for multiple schools in each expense
-  const toggleSchoolSelection = (index, schoolId) => {
-    const updatedExpenses = formData.expenses.map((expense, i) => {
-      if (i === index) {
-        const schools = expense.schools.includes(schoolId)
-          ? expense.schools.filter((id) => id !== schoolId) // Remove if already selected
-          : [...expense.schools, schoolId]; // Add if not selected
-        return { ...expense, schools };
-      }
-      return expense;
-    });
-    setFormData((prev) => ({ ...prev, expenses: updatedExpenses }));
-  };
-
-  // Add a new expense row for another animator
-  const addExpense = () => {
-    setFormData((prev) => ({
-      ...prev,
-      expenses: [...prev.expenses, { animator: "", schools: [] }],
+  // Find the category that matches formData.expenseCategory
+  const selectedCategory = expenseCategoriesList.find(
+    (category) => category.id === formData?.expenseCategory
+  );
+  // Reset selected items when the category changes
+  useEffect(() => {
+    setSelectedItems([]);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      expenseItems: [], // Clear items for the new category
     }));
+  }, [formData.expenseCategory, setFormData]);
+
+  const handleItemClick = (item) => {
+    setSelectedItems((prevSelected) => {
+      const updatedSelection = prevSelected.includes(item)
+        ? prevSelected.filter((selectedItem) => selectedItem !== item) // Remove if already selected
+        : [...prevSelected, item]; // Add if not selected
+
+      // Update formData with the new selection
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        expenseItems: updatedSelection,
+      }));
+
+      return updatedSelection;
+    });
   };
 
   console.log(formData, "formdata");
+  //console.log(validity, "validity");
 
   return (
     <>
       <Finances />
       <div className="p-6 bg-white rounded-lg shadow-md max-w-md mx-auto">
-        <h2 className="text-2xl font-bold mb-6 text-center">Add New Expense</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">
+          Add New Expense {selectedAcademicYear?.title}
+        </h2>
 
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               Expense Year{" "}
               {!validity.validExpenseYear && (
                 <span className="text-red-500">*</span>
               )}
             </label>
-            <input
+            <select
               type="text"
               name="expenseYear"
               value={formData.expenseYear}
-              onChange={handleChange}
+              // onChange={handleChange}
               placeholder="Enter Year"
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+              required
+             
+            >
+              <option value={selectedAcademicYear?.title}>
+                {selectedAcademicYear?.title}
+              </option>
+            </select>
+          </div> */}
+
+          {/* Expense Month */}
+          <div className="mb-4">
+            <label
+              htmlFor="expenseMonth"
+              className="block text-gray-700 font-bold mb-2"
+            >
+              Expense Month{" "}
+              {!validity.validExpenseMonth && (
+                <span className="text-red-500">*</span>
+              )}
+            </label>
+            <select
+              id="expenseMonth"
+              value={formData.expenseMonth || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, expenseMonth: e.target.value })
+              }
+              required
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Select a month</option>
+              {MONTHS.map((month) => (
+                <option key={month} value={month}>
+                  {month}
+                </option>
+              ))}
+            </select>
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
-              From{" "}
-              {(!validity.validAssignedFrom || !validity.noOverlap) && (
+          {/* Expense Service */}
+          <div style={{ marginBottom: "16px" }}>
+            <label
+              htmlFor="expenseService"
+              className="block text-gray-700 font-bold mb-2"
+            >
+              Expense Service{" "}
+              {!validity.validExpenseService && (
+                <span className="text-red-500">*</span>
+              )}
+            </label>
+            <select
+              id="expenseService"
+              value={formData?.expenseService}
+              onChange={(e) =>
+                setFormData({ ...formData, expenseService: e.target.value })
+              }
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              <option value="">Select a service</option>
+              {servicesList.map((serv) => (
+                <option key={serv?.id} value={serv?.id}>
+                  {serv?.serviceType}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Expense Payee */}
+          <div style={{ marginBottom: "16px" }}>
+            <label
+              htmlFor="expensePayee"
+              className="block text-gray-700 font-bold mb-2"
+            >
+              Expense Payee{" "}
+              {!validity.validExpensePayee && (
+                <span className="text-red-500">*</span>
+              )}
+            </label>
+            <select
+              id="expensePayee"
+              value={formData?.expensePayee}
+              onChange={(e) =>
+                setFormData({ ...formData, expensePayee: e.target.value })
+              }
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              <option value="">Select a payee</option>
+              {payeesList.map((payee) => (
+                <option key={payee?.id} value={payee?.id}>
+                  {payee?.payeeLabel}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Expense Category */}
+          <div style={{ marginBottom: "16px" }}>
+            <label
+              htmlFor="expenseCategory"
+              className="block text-gray-700 font-bold mb-2"
+            >
+              Expense Categroy{" "}
+              {!validity.validExpenseCategory && (
+                <span className="text-red-500">*</span>
+              )}
+            </label>
+            <select
+              id="expenseCategory"
+              value={formData?.expenseCategory}
+              onChange={(e) =>
+                setFormData({ ...formData, expenseCategory: e.target.value })
+              }
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              <option value="">Select a Category</option>
+              {expenseCategoriesList.map((cat) => (
+                <option key={cat?.id} value={cat?.id}>
+                  {cat?.expenseCategoryLabel}
+                </option>
+              ))}
+            </select>
+          </div>
+          {/* Expense Category items*/}
+
+          <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+            <h3>{selectedCategory?.categoryName || "Select a Category"}</h3>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+              {selectedCategory?.expenseCategoryItems?.map((item, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleItemClick(item)}
+                  style={{
+                    padding: "10px 15px",
+                    border: "1px solid #007bff",
+                    borderRadius: "5px",
+                    backgroundColor: selectedItems.includes(item)
+                      ? "#007bff"
+                      : "#ffffff",
+                    color: selectedItems.includes(item) ? "#ffffff" : "#007bff",
+                    cursor: "pointer",
+                  }}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+            <div style={{ marginTop: "20px" }}>
+              <h4>Selected Items:</h4>
+              {selectedItems.length > 0 ? (
+                <ul>
+                  {selectedItems.map((item, index) => (
+                    <li key={index}>{item}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No items selected</p>
+              )}
+            </div>
+          </div>
+
+          {/* Expense Amount */}
+          <div style={{ marginBottom: "16px" }}>
+            <label
+              htmlFor="expenseAmount"
+              className="block text-gray-700 font-bold mb-2"
+            >
+              Expense Amount{" "}
+              {!validity.validExpenseAmount && (
+                <span className="text-red-500">*</span>
+              )}{" "}
+              ({CurrencySymbol})
+            </label>
+            <input
+              type="number"
+              id="expenseAmount"
+              value={formData.expenseAmount || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, expenseAmount: e.target.value })
+              }
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          {/* Expense Method */}
+          <div style={{ marginBottom: "16px" }}>
+            <label
+              htmlFor="paymentMethod"
+              className="block text-gray-700 font-bold mb-2"
+            >
+              Payment Method{" "}
+              {!validity.validExpenseMethod && (
+                <span className="text-red-500">*</span>
+              )}
+            </label>
+            <select
+              id="expenseMethod"
+              value={formData.expenseMethod || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, expenseMethod: e.target.value })
+              }
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              <option value="">Select a method</option>
+              {[
+                "Cash",
+                "Credit Card",
+                "Bank Transfer",
+                "Online Payment",
+                "Credit",
+              ].map((method) => (
+                <option key={method} value={method}>
+                  {method}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Expense Date */}
+          <div style={{ marginBottom: "16px" }}>
+            <label
+              htmlFor="expenseDate"
+              className="block text-gray-700 font-bold mb-2"
+            >
+              Expense Date{" "}
+              {!validity.validExpenseDate && (
                 <span className="text-red-500">*</span>
               )}
             </label>
             <input
               type="date"
-              name="assignedFrom"
-              value={formData.assignedFrom}
-              onChange={handleChange}
-              placeholder="Enter Date"
+              id="expenseDate"
+              value={formData.expenseDate || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, expenseDate: e.target.value })
+              }
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
-              To{" "}
-              {(!validity.validAssignedTo || !validity.noOverlap) && (
-                <span className="text-red-500">*</span>
-              )}
-            </label>
-            <input
-              type="date"
-              name="assignedTo"
-              value={formData.assignedTo}
-              onChange={handleChange}
-              placeholder="Enter Date"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <h3 className="text-xl font-bold mb-4">Expenses</h3>
-          {formData.expenses.map((expense, index) => (
-            <div key={index} className="mb-4 p-4 border rounded-md">
-              <label className="block text-gray-700 font-bold mb-2">
-                Animator
+          {/* Expense Payment Date */}
+          {formData?.expenseMethod === "Credit" && (
+            <div style={{ marginBottom: "16px" }}>
+              <label
+                htmlFor="expensePaymentDate"
+                className="block text-gray-700 font-bold mb-2"
+              >
+                Expense Payment Date
               </label>
-              <select
-                value={expense.animator}
+              <input
+                type="date"
+                id="expensePaymentDate"
+                value={formData.expensePaymentDate || ""}
                 onChange={(e) =>
-                  handleExpenseChange(index, "animator", e.target.value)
+                  setFormData({
+                    ...formData,
+                    expensePaymentDate: e.target.value,
+                  })
                 }
                 className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Select Animator</option>
-                {getAvailable(index).map((employee) => (
-                  <option key={employee.id} value={employee.id}>
-                    {employee.userFullName.userFirstName}{" "}
-                    {employee.userFullName.userMiddleName}{" "}
-                    {employee.userFullName.userLastName}
-                  </option>
-                ))}
-              </select>
-
-              <label className="block text-gray-700 font-bold mt-4 mb-2">
-                Schools
-              </label>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {getAvailableSchools(index).map((school) => (
-                  <button
-                    key={school.id}
-                    type="button"
-                    onClick={() => toggleSchoolSelection(index, school.id)}
-                    className={`px-3 py-1 rounded-md ${
-                      expense.schools.includes(school.id)
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    {school.schoolName}
-                  </button>
-                ))}
-              </div>
-
-              <div className="mt-2 text-gray-600">
-                Selected Schools:{" "}
-                {expense.schools
-                  .map(
-                    (schoolId) =>
-                      schoolsList.find((school) => school.id === schoolId)
-                        ?.schoolName
-                  )
-                  .join(", ")}
-              </div>
+              />
             </div>
-          ))}
+          )}
 
-          <button
-            type="button"
-            onClick={addExpense}
-            className="w-full bg-blue-200 text-gray-700 py-2 px-4 rounded-md mt-2 hover:bg-blue-300 transition duration-200"
-          >
-            Add Another Expense
-          </button>
-          <div className="flex justify-end gap-4">
-            <button
-              type="submit"
-              disabled={!canSubmit || isExpensesLoading}
-              className="w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-200 mt-4"
+          {/* Expense Note */}
+          <div style={{ marginBottom: "16px" }}>
+            <label
+              htmlFor="expenseNote"
+              className="block text-gray-700 font-bold mb-2"
             >
-              {isAddLoading ? "Adding..." : "Add Expense"}
-            </button>
+              Expense Note
+            </label>
+            <textarea
+              id="expenseNote"
+              value={formData.expenseNote || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, expenseNote: e.target.value })
+              }
+              rows="4"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div className="flex justify-end space-x-4">
             <button
               type="button"
               //disabled={!canSubmit}
               className="cancel-button"
-              onClick={() => navigate("/academics/plannings/Expenses/")}
+              onClick={() => navigate("/finances/expenses/expensesList/")}
             >
               Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={!canSubmit || isAddLoading}
+              className="save-button"
+            >
+              {isAddLoading ? "Adding..." : "Add Expense"}
             </button>
           </div>
         </form>

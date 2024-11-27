@@ -14,7 +14,7 @@ const EditExpenseCategory = () => {
   //will get hte student from the state
   //const expenseCategoryToEdit = useSelector((state) => state.expenseCategory?.entities[id]);
  // console.log("helllllow expenseCategoryToEdit", "mystu", id);
-  //console.log(id, "id");
+  console.log(id, "id");
   const {
     data: expenseCategory, //the data is renamed expenseCategories
     isLoading: isExpenseCategoryLoading, //monitor several situations is loading...

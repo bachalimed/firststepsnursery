@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-
+import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
 import useAuth from "../../../hooks/useAuth";
 import {
@@ -15,7 +15,7 @@ import {
   selectAcademicYearById,
   selectAllAcademicYears,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-
+import { MONTHS } from "../../../config/Months";
 import {
   useGetExpensesQuery,
   useDeleteExpenseMutation,
@@ -35,30 +35,6 @@ const ExpensesList = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-  const {
-    data: employees, //the data is renamed employees
-    isLoading: isEmployeesLoading, //monitor several situations is loading...
-    isSuccess: isEmployeesSuccess,
-    isError: isEmployeesError,
-    error: employeesError,
-  } = useGetEmployeesByYearQuery(
-    {
-      selectedYear: selectedAcademicYear?.title,
-      endpointName: "ExpenseList",
-    } || {},
-    {
- 
-      refetchOnFocus: true,
-      refetchOnMountOrArgChange: true,
-    }
-  );
-  const {
-    data: schools, //the data is renamed schools
-    isLoading: isSchoolLoading, //monitor several situations is loading...
-    isSuccess: isSchoolSuccess,
-    isError: isSchoolError,
-    error: schoolError,
-  } = useGetAttendedSchoolsQuery({ endpointName: "ExpenseList" }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
 
   const {
     data: expenses, //the data is renamed schools
@@ -88,10 +64,7 @@ const ExpensesList = () => {
     useState(null); // State to track which document to delete
 
   //initialising the delete Mutation
-  let schoolsList = isSchoolSuccess ? Object.values(schools.entities) : [];
-  let employeesList = isEmployeesSuccess
-    ? Object.values(employees.entities)
-    : [];
+
   // let expensesList = isExpensesSuccess
   //   ? Object.values(expenses.entities)
   //   : [];
@@ -175,106 +148,81 @@ const ExpensesList = () => {
       sortable: false,
       width: "50px",
     },
-
     {
-      name: "From",
-      selector: (row) =>
-        new Date(row.assignedFrom).toLocaleDateString("en-GB", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        }),
+      name: "Month",
+      selector: (row) => row?.expenseMonth,
+
       sortable: true,
       width: "100px",
     },
     {
-      name: "To",
-      selector: (row) =>
-        new Date(row.assignedTo).toLocaleDateString("en-GB", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        }),
+      name: "Payee",
+      selector: (row) => row?.expensePayee?.payeeLabel,
+
       sortable: true,
-      width: "100px",
+      width: "150px",
     },
-    // {
-    //   name: "Animator",
-    //   selector: (row) => (
-    //     <div>
-    //       {row?.expenses.map((expense, index) => {
-    //         const animator = employeesList.find(
-    //           (employee) => employee.id === expense.animator
-    //         );
-
-    //         const animatorName = animator
-    //           ? `${animator.userFullName.userFirstName} ${animator.userFullName.userMiddleName || ""} ${animator.userFullName.userLastName || ""}`.trim()
-    //           : "Unknown";
-
-    //         return (
-    //           <div key={index} style={{ marginBottom: "4px" }}>
-    //       {animatorName}
-    //       {index < row.expenses.length - 1 && (
-    //         <hr style={{ border: "0.5px solid #ccc", margin: "4px 0" }} />
-    //       )}
-    //     </div>
-    //         );
-    //       })}
-    //     </div>
-    //   ),
-
-    //   sortable: true,
-    //   width: "160px",
-    // },
     {
-      name: "Expenses",
+      name: "Payment",
+      selector: (row) => (
+        <>
+          {row?.expenseAmount} {row?.expenseMethod}
+        </>
+      ),
+      sortable: true,
+      width: "120px",
+
+    },
+    {
+      name: "Category",
+      selector: (row) =>
+        row?.expenseCategory?.expenseCategoryLabel,
+      sortable: true,
+      width: "120px",
+    },
+    {
+      name: "Items",
       selector: (row) => (
         <div>
-          {row?.expenses.map((expense, expenseIndex) => {
-            const animator = employeesList.find(
-              (employee) => employee.id === expense.animator
-            );
-
-            const animatorName = animator
-              ? `${animator.userFullName.userFirstName} ${
-                  animator.userFullName.userMiddleName || ""
-                } ${animator.userFullName.userLastName || ""}`.trim()
-              : "Unknown";
-
-            return (
-              <div key={expenseIndex} style={{ marginBottom: "8px" }}>
-                <div style={{ fontWeight: "bold" }}>
-                  {animatorName}
-                  <hr style={{ border: "0.5px solid #ddd", margin: "4px 1" }} />
-                </div>
-
-                {expense.schools.map((schoolId, schoolIndex) => {
-                  const schoolName =
-                    schoolsList.find((school) => school.id === schoolId)
-                      ?.schoolName || "Unknown";
-
-                  return (
-                    <div key={schoolId} style={{ marginBottom: "4px" }}>
-                      {schoolName}
-                      {
-                        schoolIndex < expense.schools.length - 1
-                        // && ( <hr style={{ border: "0.5px solid #ddd", margin: "4px 0" }} />  )
-                      }
-                    </div>
-                  );
-                })}
-
-                {expenseIndex < row.expenses.length - 1 && (
-                  <hr style={{ border: "0.5px solid #aaa", margin: "8px 0" }} />
-                )}
-              </div>
-            );
-          })}
+          {row?.expenseItems?.map((item, index) => (
+            <div key={index}>
+              {item}
+            </div>
+          ))}
         </div>
       ),
+      sortable: false,
+      width: "90px",
+    },
 
+    {
+      name: "Date",
+      selector: (row) =>
+        new Date(row?.expenseDate).toLocaleDateString("en-GB", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }),
       sortable: true,
-      width: "180px",
+      width: "120px",
+    },
+
+    {
+      name: "Payment Date",
+      selector: (row) =>
+        row?.expensePaymentDate
+          ? new Date(row?.expensePaymentDate).toLocaleDateString("en-GB", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+            })
+          : new Date(row?.expenseDate).toLocaleDateString("en-GB", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+            }),
+      sortable: true,
+      width: "130px",
     },
 
     {
@@ -285,7 +233,7 @@ const ExpensesList = () => {
             <button
               className="text-yellow-400"
               onClick={() =>
-                navigate(`/academics/plannings/editExpense/${row.id}`)
+                navigate(`/finances/expenses/editExpense/${row.id}`)
               }
             >
               <FiEdit fontSize={20} />
@@ -319,13 +267,18 @@ const ExpensesList = () => {
 
   let content;
 
-  if (isSchoolLoading) content = <p>Loading...</p>;
+  if (isExpensesLoading)
+    content = (
+      <p>
+        <LoadingStateIcon />
+      </p>
+    );
 
-  if (isSchoolError) {
-    content = <p className="errmsg">{schoolError?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
+  if (isExpensesError) {
+    content = <p className="errmsg">{expensesError?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
   }
 
-  if (isSchoolSuccess) {
+  if (isExpensesSuccess) {
     return (
       <>
         <Finances />
@@ -339,19 +292,7 @@ const ExpensesList = () => {
                 onChange={handleMonthChange}
                 className="text-sm h-8 border border-gray-300 rounded-md px-4"
               >
-                <option value="">All Months</option>
-                <option value="09">September</option>
-                <option value="10">October</option>
-                <option value="11">November</option>
-                <option value="12">December</option>
-                <option value="01">January</option>
-                <option value="02">February</option>
-                <option value="03">March</option>
-                <option value="04">April</option>
-                <option value="05">May</option>
-                <option value="06">June</option>
-                <option value="07">July</option>
-                <option value="08">August</option>
+                {MONTHS}
               </select>
             )}
           </div>
@@ -383,7 +324,7 @@ const ExpensesList = () => {
           <div className="flex justify-end items-center space-x-4">
             <button
               className="add-button"
-              onClick={() => navigate("/academics/plannings/NewExpenseForm/")}
+              onClick={() => navigate("/finances/expenses/newExpense/")}
               disabled={selectedRows.length !== 0} // Disable if no rows are selected
               hidden={!canCreate}
             >

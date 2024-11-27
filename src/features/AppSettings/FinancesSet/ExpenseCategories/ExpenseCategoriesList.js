@@ -10,8 +10,7 @@ import DataTable from "react-data-table-component";
 
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
-
+import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal"
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { ImProfile } from "react-icons/im";
@@ -173,12 +172,12 @@ const ExpenseCategoriesList = () => {
       sortable: true,
       width: "80px",
     },
-    {
-      name: "Service",
-      selector: (row) => row?.expenseCategoryService?.serviceType,
-      sortable: true,
-      width: "100px",
-    },
+    // {
+    //   name: "Service",
+    //   selector: (row) => row?.expenseCategoryService?.serviceType,
+    //   sortable: true,
+    //   width: "100px",
+    // },
     {
       name: "Label",
       selector: (row) => row?.expenseCategoryLabel,

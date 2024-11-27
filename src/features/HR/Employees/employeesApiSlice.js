@@ -21,14 +21,7 @@ export const employeesApiSlice = apiSlice.injectEndpoints({
         return employeesAdapter.setAll(initialState, loadedEmployees);
       },
       providesTags: ["employee"],
-      // providesTags: (result, error, arg) => {
-      //     if (result?.ids) {
-      //         return [
-      //             { type: 'employee', id: 'LIST' },
-      //             ...result.ids.map(id => ({ type: 'employee', id }))
-      //         ]
-      //     } else return [{ type: 'employee', id: 'LIST' }]
-      // }
+     
     }),
     getEmployeesByYear: builder.query({
       query: (params) => {

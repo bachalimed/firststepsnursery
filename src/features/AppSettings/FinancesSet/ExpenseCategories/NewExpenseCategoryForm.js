@@ -65,7 +65,7 @@ const NewExpenseCategoryForm = () => {
     expenseCategoryLabel: "",
     expenseCategoryYears: [],
     expenseCategoryItems: [],
-    expenseCategoryService:"",
+   // expenseCategoryService:"",
     expenseCategoryIsActive:true,
     expenseCategoryOperator: userId,
     expenseCategoryCreator: userId,
@@ -75,7 +75,7 @@ const NewExpenseCategoryForm = () => {
     validExpenseCategoryLabel: false,
     validExpenseCategoryYears: false,
     validExpenseCategoryItems: false,
-    validExpenseCategoryService: false,
+   // validExpenseCategoryService: false,
   });
 
   // Validate inputs using regex patterns
@@ -85,7 +85,7 @@ const NewExpenseCategoryForm = () => {
       validExpenseCategoryLabel: NAME_REGEX.test(formData.expenseCategoryLabel),
       validExpenseCategoryYears: formData?.expenseCategoryYears?.length > 0,
       validExpenseCategoryItems: formData?.expenseCategoryItems?.length > 0,
-      validExpenseCategoryService: OBJECTID_REGEX.test(formData.expenseCategoryService)
+     // validExpenseCategoryService: OBJECTID_REGEX.test(formData.expenseCategoryService)
     }));
   }, [formData]);
 
@@ -96,7 +96,7 @@ const NewExpenseCategoryForm = () => {
         expenseCategoryYears: [],
         expenseCategoryItems: [],
         expenseCategoryIsActive:"",
-        expenseCategoryService:"",
+      //  expenseCategoryService:"",
         expenseCategoryOperator: "",
         expenseCategoryCreator: "",
       });
@@ -204,7 +204,7 @@ const NewExpenseCategoryForm = () => {
           </div>
 
           {/* Service Selection Dropdown */}
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700">
               Select Service Type{" "}
               {!validity.validExpenseCategoryService && (
@@ -227,7 +227,7 @@ const NewExpenseCategoryForm = () => {
                 </option>
               ))}
             </select>
-          </div>
+          </div> */}
 
            {/* ExpenseCategory Active Status */}
            <div>

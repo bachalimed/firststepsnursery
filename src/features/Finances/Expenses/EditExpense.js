@@ -13,13 +13,13 @@ import Finances from "../Finances";
 const EditExpense = () => {
   const { id } = useParams(); //pull the id from use params from the url
   //console.log(id,'id')
-  const [assignment, setAssignment] = useState("");
+  const [expense, setExpense] = useState("");
   const {
-    data: assignmentToEdit, //the data is renamed families
-    isLoading: isAssignmentLoading, //monitor several situations
-    isSuccess: isAssignmentSuccess,
-    isError: isAssignmentError,
-    error: assignmentError,
+    data: expenseToEdit, //the data is renamed families
+    isLoading: isExpenseLoading, //monitor several situations
+    isSuccess: isExpenseSuccess,
+    isError: isExpenseError,
+    error: expenseError,
   } = useGetExpenseByIdQuery({ id: id, endpointName: "EditExpense" } || {}, {
 
     //pollingInterval: 60000,
@@ -28,22 +28,22 @@ const EditExpense = () => {
   });
   console.log('hiiiiiiiiiiii')
   // useEffect(() => {
-  //   if (isAssignmentSuccess) {
-       console.log('helllllow',assignmentToEdit, 'mystu')
-  //     //const assignmentInit = Object.values(assignmentToEdit.entities)
-  //     // setAssignment(assignmentToEdit); // Set assignment state to the first object
-  //     //console.log('helllllow',assignment, 'mystu')
+  //   if (isExpenseSuccess) {
+       console.log('helllllow',expenseToEdit, 'mystu')
+  //     //const expenseInit = Object.values(expenseToEdit.entities)
+  //     // setExpense(expenseToEdit); // Set expense state to the first object
+  //     //console.log('helllllow',expense, 'mystu')
   //   }
-  // // }, [isAssignmentSuccess, assignmentToEdit]);
-  // let assignmentTE = isAssignmentSuccess
-  // ? Object.values(assignmentToEdit.entities)
+  // // }, [isExpenseSuccess, expenseToEdit]);
+  // let expenseTE = isExpenseSuccess
+  // ? Object.values(expenseToEdit.entities)
   // : null;
   let content;
 
-  content = assignmentToEdit ? (
+  content = expenseToEdit ? (
     <>
      
-      <EditExpenseForm expense={assignmentToEdit} />
+      <EditExpenseForm expense={(expenseToEdit[0])} />
     </>
   ) : (
     <>
