@@ -33,6 +33,27 @@ export const expensesApiSlice = apiSlice.injectEndpoints({
       },
       providesTags: ["expense"],
     }),
+    getExpensesStatsByYear: builder.query({
+      query: (params) => {
+        const queryString = new URLSearchParams(params).toString();
+        return `/finances/expenses?${queryString}`;
+      },
+
+      validateStatus: (response, result) => {
+        return response.status === 200 && !result.isError;
+      },
+      transformResponse: (responseData) => {
+        // console.log('  in the APIslice',responseData.total)
+
+        
+        return responseData
+      },
+
+     
+      providesTags: ["expense"],
+
+     
+    }),
     getExpenseById: builder.query({
       query: (params) => {
         const queryString = new URLSearchParams(params).toString();
@@ -78,6 +99,7 @@ export const {
   //hooks created automatically from endpoint
   useGetExpensesQuery, //this can be used whereven we want to fetch the data
   useGetExpenseByIdQuery,
+  useGetExpensesStatsByYearQuery,
   useAddNewExpenseMutation,
   useUpdateExpenseMutation,
   useDeleteExpenseMutation,

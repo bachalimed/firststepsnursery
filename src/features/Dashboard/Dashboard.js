@@ -44,7 +44,7 @@ const Dashboard = () => {
     { label: 'students', path: '/dashboard/studentsDash/' },
     { label: 'Admissions', path: '/dashboard/admissions/' },
     { label: 'enrolments', path: '/dashboard/enrolments/' },
-    { label: 'Finances', path: '/dashboard/finances/' },
+    { label: 'Finances', path: '/dashboard/financesDash/' },
  
     
    

@@ -11,6 +11,7 @@ import Finances from "../Finances";
 import useAuth from "../../../hooks/useAuth";
 import { useGetAttendedSchoolsQuery } from "../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
 import { useGetEmployeesByYearQuery } from "../../HR/Employees/employeesApiSlice";
+import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
@@ -36,7 +37,6 @@ const EditExpenseForm = ({ expense }) => {
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
 
-  
   // Redux mutation for adding
   const [
     updateExpense,
@@ -48,7 +48,6 @@ const EditExpenseForm = ({ expense }) => {
     },
   ] = useUpdateExpenseMutation();
 
-  
   const {
     data: expenseCategories, //the data is renamed expenseCategories
     isLoading: isExpenseCategoriesLoading, //monitor several situations is loading...
@@ -99,44 +98,42 @@ const EditExpenseForm = ({ expense }) => {
     }
   );
 
-  
-
   let servicesList = isServicesSuccess ? Object.values(services.entities) : [];
   let payeesList = isPayeesSuccess ? Object.values(payees.entities) : [];
   let expenseCategoriesList = isExpenseCategoriesSuccess
     ? Object.values(expenseCategories.entities)
     : [];
-console.log(selectedAcademicYear?.title,'selectedAcademicYear?.title')
-
+  console.log(selectedAcademicYear?.title, "selectedAcademicYear?.title");
 
   const [formData, setFormData] = useState({
+    id:expense?._id,
     expenseYear: expense?.expenseYear,
     expenseMonth: expense?.expenseMonth,
     expenseAmount: expense?.expenseAmount,
     expenseNote: expense?.expenseNote,
-    expenseItems: expense?.expenseItems,
+    expenseCategory: expense?.expenseCategory,
+    expenseItems: expense?.expenseItems || [],
     expensePayee: expense?.expensePayee,
     expenseService: expense?.expenseService,
     expenseDate: expense?.expenseDate?.split("T")[0],
-    expensePaymentDate: expense?.expensePaymentDate?.split("T")[0],
-
+    expensePaymentDate: expense?.expensePaymentDate
+      ? expense?.expensePaymentDate?.split("T")[0]
+      : "",
     expenseMethod: expense?.expenseMethod,
     expenseOperator: userId,
-    
   });
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [categoryItems, setCategoryItems] = useState([]);
-  const [selectedItems, setSelectedItems] = useState([]);
-  const [usedCategories, setUsedCategories] = useState([]); // Track used categories
-  const [usedItems, setUsedItems] = useState({}); // Track used items by category
+  const [selectedItems, setSelectedItems] = useState(formData?.expenseItems);
+
   //confirmation Modal states
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   const [validity, setValidity] = useState({
+    validId:false,
     validExpenseYear: false,
     validExpenseMonth: false,
     validExpenseAmount: false,
     validExpenseNote: false,
+    validExpenseCategory: false,
     validExpenseItems: false,
     validExpensePayee: false,
     validExpenseService: false,
@@ -145,7 +142,6 @@ console.log(selectedAcademicYear?.title,'selectedAcademicYear?.title')
 
     validExpenseMethod: false,
     validExpenseOperator: false,
-    validExpenseCreator: false,
   });
 
   const navigate = useNavigate();
@@ -155,7 +151,9 @@ console.log(selectedAcademicYear?.title,'selectedAcademicYear?.title')
   useEffect(() => {
     setValidity((prev) => ({
       ...prev,
+      validId:OBJECTID_REGEX.test(formData.id),
       validExpenseYear: YEAR_REGEX.test(formData.expenseYear),
+      validExpenseCategory: OBJECTID_REGEX.test(formData.expenseCategory),
       validExpenseItems:
         formData.expenseItems.length > 0 &&
         formData.expenseItems.every((item) => item !== ""),
@@ -166,11 +164,12 @@ console.log(selectedAcademicYear?.title,'selectedAcademicYear?.title')
       validExpenseService: OBJECTID_REGEX.test(formData.expenseService),
       validExpensePayee: OBJECTID_REGEX.test(formData.expensePayee),
       validExpenseDate: DATE_REGEX.test(formData.expenseDate),
-      validExpensePaymentDate: DATE_REGEX.test(formData.expensePaymentDate)||formData.expensePaymentDate==="",
+      validExpensePaymentDate:
+        DATE_REGEX.test(formData.expensePaymentDate) ||
+        formData.expensePaymentDate === "",
 
       validExpenseMethod: NAME_REGEX.test(formData.expenseMethod),
       validExpenseOperator: OBJECTID_REGEX.test(formData.expenseOperator),
-      validExpenseCreator: OBJECTID_REGEX.test(formData.expenseCreator),
     }));
   }, [formData]);
 
@@ -178,18 +177,19 @@ console.log(selectedAcademicYear?.title,'selectedAcademicYear?.title')
   useEffect(() => {
     if (isUpdateSuccess) {
       setFormData({
+        id:"",
         expenseYear: "",
         expenseMonth: "",
         expenseAmount: "",
         expenseNote: "",
+        expenseCategory: "",
         expenseItems: [],
         expensePayee: "",
         expenseDate: "",
         expensePaymentDate: "",
-
+        expenseService: "",
         expenseMethod: "",
         expenseOperator: "",
-        expenseCreator: "",
       });
 
       navigate("/finances/expenses/expensesList/");
@@ -227,129 +227,54 @@ console.log(selectedAcademicYear?.title,'selectedAcademicYear?.title')
   };
   // Handle input change
 
-  // Handle input change
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  // Handle category selection
-  const handleCategoryChange = (event) => {
-    const selectedCategoryId = event.target.value;
-    setSelectedCategory(selectedCategoryId);
-
-    // Fetch items based on the selected category
-    const selectedCategoryObj = expenseCategoriesList.find(
-      (categ) => categ.id === selectedCategoryId
-    );
-
-    if (selectedCategoryObj) {
-      // Assuming the category object has an array of items
-      setCategoryItems(selectedCategoryObj.expenseCategoryItems || []);
-    }
-  };
-
-  // Handle item selection within a category
-  const handleItemChange = (event) => {
-    const selectedItem = event.target.value;
-    if (selectedItem && !selectedItems.includes(selectedItem)) {
-      setSelectedItems([...selectedItems, selectedItem]);
-    }
-  };
-
-  // Save the selected category and its items
-  const handleAddCategoryItems = () => {
-    if (selectedCategory && selectedItems.length > 0) {
-      const newExpenseItem = {
-        expenseCategory: selectedCategory,
-        expenseCategoryItems: selectedItems,
-      };
-
-      setFormData({
-        ...formData,
-        expenseItems: [...formData.expenseItems, newExpenseItem],
-      });
-
-      // Track used categories
-      setUsedCategories([...usedCategories, selectedCategory]);
-
-      // Track used items per category
-      setUsedItems({
-        ...usedItems,
-        [selectedCategory]: selectedItems,
-      });
-
-      // Reset the selections
-      setSelectedCategory("");
-      setCategoryItems([]);
+  // Find the category that matches formData.expenseCategory
+  const selectedCategory = expenseCategoriesList.find(
+    (category) => category.id === formData?.expenseCategory
+  );
+  //sets expenseITems to [] when we change
+  useEffect(() => {
+    if (formData.expenseCategory) {
       setSelectedItems([]);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        expenseItems: [], // Clear items for the new category
+      }));
     }
-  };
+  }, [formData.expenseCategory]);
 
-  // Handle removing an entire category and its items
-  const handleRemoveCategory = (categoryId) => {
-    setFormData({
-      ...formData,
-      expenseItems: formData.expenseItems.filter(
-        (item) => item.expenseCategory !== categoryId
-      ),
+  const handleItemClick = (item) => {
+    setSelectedItems((prevSelected) => {
+      const updatedSelection = prevSelected.includes(item)
+        ? prevSelected.filter((selectedItem) => selectedItem !== item) // Remove if already selected
+        : [...prevSelected, item]; // Add if not selected
+
+      // Update formData with the new selection
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        expenseItems: updatedSelection,
+      }));
+
+      return updatedSelection;
     });
-
-    // Remove the category from the used list
-    setUsedCategories(usedCategories.filter((id) => id !== categoryId));
-
-    // Remove the items associated with the category
-    const updatedUsedItems = { ...usedItems };
-    delete updatedUsedItems[categoryId];
-    setUsedItems(updatedUsedItems);
   };
-
-  // Handle removing individual items from a category
-  const handleRemoveItem = (categoryId, itemToRemove) => {
-    setFormData({
-      ...formData,
-      expenseItems: formData.expenseItems.map((item) =>
-        item.expenseCategory === categoryId
-          ? {
-              ...item,
-              expenseCategoryItems: item.expenseCategoryItems.filter(
-                (selectedItem) => selectedItem !== itemToRemove
-              ),
-            }
-          : item
-      ),
-    });
-
-    // Remove the item from the used items tracking
-    const updatedUsedItems = { ...usedItems };
-    updatedUsedItems[categoryId] = updatedUsedItems[categoryId].filter(
-      (item) => item !== itemToRemove
-    );
-    setUsedItems(updatedUsedItems);
-  };
-
-  // Filter out used categories from the dropdown
-  const availableCategories = expenseCategoriesList.filter(
-    (categ) => !usedCategories.includes(categ.id)
-  );
-
-  // Filter out used items for the currently selected category
-  const availableItems = categoryItems.filter(
-    (item) =>
-      !(usedItems[selectedCategory] || []).includes(item)
-  );
 
   console.log(formData, "formdata");
   console.log(validity, "validity");
+  if (isPayeesLoading || isServicesLoading || isExpenseCategoriesLoading) {
+    return (
+      <div>
+        <LoadingStateIcon />
+      </div>
+    );
+  }
 
   return (
     <>
       <Finances />
       <div className="p-6 bg-white rounded-lg shadow-md max-w-md mx-auto">
-        <h2 className="text-2xl font-bold mb-6 text-center">Add New Expense {selectedAcademicYear?.title}</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">
+          Add New Expense {selectedAcademicYear?.title}
+        </h2>
 
         <form onSubmit={handleSubmit}>
           {/* <div className="mb-4">
@@ -462,140 +387,72 @@ console.log(selectedAcademicYear?.title,'selectedAcademicYear?.title')
             </select>
           </div>
 
-
-
-
-
-          <div className="mb-4">
-      <label
-        htmlFor="expenseCategory"
-        className="block text-gray-700 font-bold mb-2"
-      >
-        Expense Category{" "}
-              {!validity?.validExpenseItems && (
+          {/* Expense Category */}
+          <div style={{ marginBottom: "16px" }}>
+            <label
+              htmlFor="expenseCategory"
+              className="block text-gray-700 font-bold mb-2"
+            >
+              Expense Categroy{" "}
+              {!validity.validExpenseCategory && (
                 <span className="text-red-500">*</span>
               )}
-      </label>
-      <select
-        id="expenseCategory"
-        value={selectedCategory}
-        onChange={handleCategoryChange}
-        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
-        <option value="">Select a category</option>
-        {availableCategories.map((categ) => (
-          <option key={categ.id} value={categ.id}>
-            {categ.expenseCategoryLabel}
-          </option>
-        ))}
-      </select>
+            </label>
+            <select
+              id="expenseCategory"
+              value={formData?.expenseCategory}
+              onChange={(e) =>
+                setFormData({ ...formData, expenseCategory: e.target.value })
+              }
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              <option value="">Select a Category</option>
+              {expenseCategoriesList.map((cat) => (
+                <option key={cat?.id} value={cat?.id}>
+                  {cat?.expenseCategoryLabel}
+                </option>
+              ))}
+            </select>
+          </div>
+          {/* Expense Category items*/}
 
-      {/* Show item dropdown when a category is selected */}
-      {selectedCategory && (
-        <div className="mt-4">
-          <label
-            htmlFor="expenseCategoryItems"
-            className="block text-gray-700 font-bold mb-2"
-          >
-            Select Items
-          </label>
-          <select
-            id="expenseCategoryItems"
-            value=""
-            onChange={handleItemChange}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Select item to add</option>
-            {availableItems.map((item, index) => (
-              <option key={index} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
-
-          {/* Show selected items */}
-          <div className="mt-2">
-            {selectedItems.map((item, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between p-2 bg-gray-100 rounded-md mb-1"
-              >
-                <span>{item}</span>
+          <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+            <h3>{selectedCategory?.categoryName || "Select a Category"}</h3>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+              {selectedCategory?.expenseCategoryItems?.map((item, index) => (
                 <button
                   type="button"
-                  className="text-red-500"
-                  onClick={() =>
-                    setSelectedItems(
-                      selectedItems.filter((selectedItem) => selectedItem !== item)
-                    )
-                  }
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
-          </div>
-
-          {/* Button to save selected items for the category */}
-          <button
-            type="button"
-            onClick={handleAddCategoryItems}
-            className="save-button"
-          >
-            Save Category & Items
-          </button>
-        </div>
-      )}
-
-      {/* Display saved expense items */}
-      <div className="mt-6">
-        <h3 className="text-lg font-bold mb-2">Selected Expense Items</h3>
-        {formData.expenseItems.map((item) => (
-          <div key={item.expenseCategory} className="mb-4">
-            <div className="flex items-center justify-between bg-gray-200 p-2 rounded-md">
-              <span className="font-semibold">
-                Category:{" "}
-                {
-                  expenseCategoriesList.find(
-                    (categ) => categ.id === item.expenseCategory
-                  )?.expenseCategoryLabel
-                }
-              </span>
-              <button
-                type="button"
-                className="text-red-500"
-                onClick={() => handleRemoveCategory(item.expenseCategory)}
-              >
-                Remove Category
-              </button>
-            </div>
-            <div className="mt-2">
-              {item.expenseCategoryItems.map((expenseItem, index) => (
-                <div
                   key={index}
-                  className="flex items-center justify-between p-2 bg-gray-100 rounded-md mb-1"
+                  onClick={() => handleItemClick(item)}
+                  style={{
+                    padding: "10px 15px",
+                    border: "1px solid #007bff",
+                    borderRadius: "5px",
+                    backgroundColor: selectedItems.includes(item)
+                      ? "#007bff"
+                      : "#ffffff",
+                    color: selectedItems.includes(item) ? "#ffffff" : "#007bff",
+                    cursor: "pointer",
+                  }}
                 >
-                  <span>{expenseItem}</span>
-                  <button
-                    type="button"
-                    className="text-red-500"
-                    onClick={() =>
-                      handleRemoveItem(item.expenseCategory, expenseItem)
-                    }
-                  >
-                    Remove
-                  </button>
-                </div>
+                  {item}
+                </button>
               ))}
             </div>
+            {/* <div style={{ marginTop: "20px" }}>
+              <h4>Selected Items:</h4>
+              {selectedItems.length > 0 ? (
+                <ul>
+                  {selectedItems.map((item, index) => (
+                    <li key={index}>{item}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No items selected</p>
+              )}
+            </div> */}
           </div>
-        ))}
-      </div>
-    </div>
-
-
-
-
 
           {/* Expense Amount */}
           <div style={{ marginBottom: "16px" }}>
@@ -606,7 +463,8 @@ console.log(selectedAcademicYear?.title,'selectedAcademicYear?.title')
               Expense Amount{" "}
               {!validity.validExpenseAmount && (
                 <span className="text-red-500">*</span>
-              )} ({CurrencySymbol})
+              )}{" "}
+              ({CurrencySymbol})
             </label>
             <input
               type="number"
@@ -625,7 +483,7 @@ console.log(selectedAcademicYear?.title,'selectedAcademicYear?.title')
               htmlFor="paymentMethod"
               className="block text-gray-700 font-bold mb-2"
             >
-              Payment Method {" "}
+              Payment Method{" "}
               {!validity.validExpenseMethod && (
                 <span className="text-red-500">*</span>
               )}
@@ -677,24 +535,28 @@ console.log(selectedAcademicYear?.title,'selectedAcademicYear?.title')
             />
           </div>
           {/* Expense Payment Date */}
-      {formData?.expenseMethod==="Credit" &&(<div style={{ marginBottom: "16px" }}>
-            <label
-              htmlFor="expensePaymentDate"
-              className="block text-gray-700 font-bold mb-2"
-            >
-              Expense Payment Date
-            </label>
-            <input
-              type="date"
-              id="expensePaymentDate"
-              value={formData.expensePaymentDate || ""}
-              onChange={(e) =>
-                setFormData({ ...formData, expensePaymentDate: e.target.value })
-              }
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-           
-            />
-          </div>)}
+          {formData?.expenseMethod === "Credit" && (
+            <div style={{ marginBottom: "16px" }}>
+              <label
+                htmlFor="expensePaymentDate"
+                className="block text-gray-700 font-bold mb-2"
+              >
+                Expense Payment Date
+              </label>
+              <input
+                type="date"
+                id="expensePaymentDate"
+                value={formData.expensePaymentDate || ""}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    expensePaymentDate: e.target.value,
+                  })
+                }
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          )}
 
           {/* Expense Note */}
           <div style={{ marginBottom: "16px" }}>
@@ -712,7 +574,6 @@ console.log(selectedAcademicYear?.title,'selectedAcademicYear?.title')
               }
               rows="4"
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-             
             />
           </div>
 
@@ -730,7 +591,7 @@ console.log(selectedAcademicYear?.title,'selectedAcademicYear?.title')
               disabled={!canSubmit || isUpdateLoading}
               className="save-button"
             >
-              {isUpdateLoading ? "Adding..." : "Add Expense"}
+              {isUpdateLoading ? "Adding..." : "Save Expense"}
             </button>
           </div>
         </form>

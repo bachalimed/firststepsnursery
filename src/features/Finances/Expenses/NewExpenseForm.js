@@ -123,7 +123,7 @@ const NewExpenseForm = () => {
 
   const [selectedItems, setSelectedItems] = useState([]);
 
-  const [usedItems, setUsedItems] = useState({}); // Track used items by category
+  
   //confirmation Modal states
   const [showConfirmation, setShowConfirmation] = useState(false);
 
@@ -138,7 +138,6 @@ const NewExpenseForm = () => {
     validExpenseService: false,
     validExpenseDate: false,
     validExpensePaymentDate: false,
-
     validExpenseMethod: false,
     validExpenseOperator: false,
     validExpenseCreator: false,
@@ -266,7 +265,7 @@ const NewExpenseForm = () => {
   };
 
   console.log(formData, "formdata");
-  //console.log(validity, "validity");
+  console.log(validity, "validity");
 
   return (
     <>

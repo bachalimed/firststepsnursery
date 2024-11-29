@@ -7,6 +7,7 @@ import Login from "./features/auth/Login";
 
 import Dashboard from "./features/Dashboard/Dashboard";
 import StudentsDash from "./features/Dashboard/Students/StudentsDash";
+import FinancesDash from "./features/Dashboard/FinancesDash/FinancesDash";
 
 import Students from "./features/Students/Students"; //main tab
 import StudentsList from "./features/Students/StudentsAndParents/Students/StudentsList";
@@ -79,6 +80,11 @@ import NewEmployeeForm from "./features/HR/Employees/NewEmployeeForm";
 import EmployeeDetails from "./features/HR/Employees/EmployeeDetails";
 import EmployeeDocuments from "./features/HR/Employees/EmployeeDocuments/EmployeeDocuments";
 import EditEmployee from "./features/HR/Employees/EditEmployee";
+import PayslipsList from "./features/HR/Payslips/PayslipsList";
+import NewPayslipForm from "./features/HR/Payslips/NewPayslipForm";
+import PayslipDetails from "./features/HR/Payslips/PayslipDetails";
+//import PayslipDocuments from "./features/HR/Payslips/EmployeeDocuments/EmployeeDocuments";
+import EditPayslip from "./features/HR/Payslips/EditPayslip";
 
 import Chat from "./features/Desk/Chat";
 
@@ -187,6 +193,7 @@ const App = () => {
                 <Route index element={<Dashboard />} />{" "}
                 {/*  index will show as a default in the dashboard layout*/}
                 <Route path="studentsDash/" element={<StudentsDash />} />
+                <Route path="financesDash/" element={<FinancesDash />} />
 
               </Route>{" "}
 
@@ -352,6 +359,25 @@ const App = () => {
                   />
                 </Route>{" "}
                 {/* end of employees route */}
+
+                <Route path="payslips">
+                  <Route path="payslipsList" element={<PayslipsList />} />
+                  <Route path="newPayslip" element={<NewPayslipForm />} />
+                  <Route path="editPayslip/:id/" element={<EditPayslip />} />
+                  <Route
+                    path="payslipDetails/:id/"
+                    element={<PayslipDetails />}
+                  />
+                 
+                 
+                </Route>{" "}
+                {/* end of payslips route */}
+
+
+
+
+
+
                 <Route path="payroll">
                   <Route index element={<HR />} />
                 </Route>{" "}

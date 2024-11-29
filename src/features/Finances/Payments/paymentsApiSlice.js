@@ -63,6 +63,27 @@ export const paymentsApiSlice = apiSlice.injectEndpoints({
       //     } else return [{ type: 'payment', id: 'LIST' }]
       // }
     }),
+    getPaymentsStatsByYear: builder.query({
+      query: (params) => {
+        const queryString = new URLSearchParams(params).toString();
+        return `/finances/payments?${queryString}`;
+      },
+
+      validateStatus: (response, result) => {
+        return response.status === 200 && !result.isError;
+      },
+      transformResponse: (responseData) => {
+        // console.log('  in the APIslice',responseData.total)
+
+        
+        return responseData
+      },
+
+     
+      providesTags: ["payment"],
+
+     
+    }),
     getPaymentById: builder.query({
       query: (params) => {
         const queryString = new URLSearchParams(params).toString();
@@ -137,6 +158,7 @@ export const paymentsApiSlice = apiSlice.injectEndpoints({
 export const {
   useGetPaymentsQuery,
   useGetPaymentsByYearQuery,
+  useGetPaymentsStatsByYearQuery,
   useGetPaymentByIdQuery,
   useAddNewPaymentMutation,
   useUpdatePaymentMutation,

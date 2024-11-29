@@ -63,6 +63,27 @@ export const invoicesApiSlice = apiSlice.injectEndpoints({
       //     } else return [{ type: 'invoice', id: 'LIST' }]
       // }
     }),
+    getInvoicesStatsByYear: builder.query({
+      query: (params) => {
+        const queryString = new URLSearchParams(params).toString();
+        return `/finances/invoices?${queryString}`;
+      },
+
+      validateStatus: (response, result) => {
+        return response.status === 200 && !result.isError;
+      },
+      transformResponse: (responseData) => {
+        // console.log('  in the APIslice',responseData.total)
+
+        
+        return responseData
+      },
+
+     
+      providesTags: ["invoice"],
+
+     
+    }),
     getInvoiceById: builder.query({
       query: (params) => {
         const queryString = new URLSearchParams(params).toString();
@@ -137,6 +158,7 @@ export const invoicesApiSlice = apiSlice.injectEndpoints({
 export const {
   useGetInvoicesQuery,
   useGetInvoicesByYearQuery,
+  useGetInvoicesStatsByYearQuery,
   useGetInvoiceByIdQuery,
   useAddNewInvoiceMutation,
   useUpdateInvoiceMutation,
