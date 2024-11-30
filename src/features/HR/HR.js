@@ -15,9 +15,9 @@ const employeesTabs=
     // Define the tab data with paths and labels
     const tabs = [
       { label: 'Employees', path: '/hr/employees/employeesList/' },
+      { label: 'Leaves', path: '/hr/leaves/leavesList/' },
       { label: 'PaySlips', path: '/hr/payslips/payslipsList/' },
-      //{ label: 'Leaves', path: '/hr/leaves/leavesList/' },
-      //{ label: 'New Employee', path: '/hr/employees/newEmployee/' },
+   
      // { label: 'New blbls', path: '/hr/employees/employeedddddds/' },
       
       ];

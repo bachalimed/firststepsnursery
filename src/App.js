@@ -85,6 +85,11 @@ import NewPayslipForm from "./features/HR/Payslips/NewPayslipForm";
 import PayslipDetails from "./features/HR/Payslips/PayslipDetails";
 //import PayslipDocuments from "./features/HR/Payslips/EmployeeDocuments/EmployeeDocuments";
 import EditPayslip from "./features/HR/Payslips/EditPayslip";
+import LeavesList from "./features/HR/Leaves/LeavesList";
+import NewLeaveForm from "./features/HR/Leaves/NewLeaveForm";
+import LeaveDetails from "./features/HR/Leaves/LeaveDetails";
+//import PayslipDocuments from "./features/HR/Payslips/EmployeeDocuments/EmployeeDocuments";
+import EditLeave from "./features/HR/Leaves/EditLeave";
 
 import Chat from "./features/Desk/Chat";
 
@@ -372,6 +377,18 @@ const App = () => {
                  
                 </Route>{" "}
                 {/* end of payslips route */}
+                <Route path="leaves">
+                  <Route path="leavesList" element={<LeavesList />} />
+                  <Route path="newLeave" element={<NewLeaveForm />} />
+                  <Route path="editLeave/:id/" element={<EditLeave />} />
+                  <Route
+                    path="leaveDetails/:id/"
+                    element={<LeaveDetails />}
+                  />
+                 
+                 
+                </Route>{" "}
+                {/* end of leaves route */}
 
 
 
