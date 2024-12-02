@@ -1,4 +1,5 @@
 import React from "react";
+import { useOutletContext } from "react-router-dom";
 import Students from "../../Students";
 import {
   selectCurrentAcademicYearId,
@@ -37,6 +38,10 @@ const NewStudentForm = () => {
       error,
     },
   ] = useAddNewStudentMutation(); //it will not execute the mutation nownow but when called
+  
+ 
+
+
 
   //prepare the permission variables
   const { userId, canEdit, canDelete, canAdd, canCreate, isParent, status2 } =
@@ -264,6 +269,10 @@ const NewStudentForm = () => {
     );
   }, [studentEducation, selectedAcademicYear.title]);
 
+
+
+
+
  // console.log(validCurrentEducation, "education");
  // console.log(studentEducation, "studentEducation");
  // console.log(selectedAcademicYear.title, "selectedAcademicYear.title");
@@ -279,6 +288,11 @@ const NewStudentForm = () => {
       studentSex,
     ].every(Boolean) && !isLoading;
 
+
+
+    const { triggerBanner } = useOutletContext(); // Access banner trigger
+
+
   const onSaveStudentClicked = async (e) => {
     e.preventDefault();
 
@@ -289,10 +303,6 @@ const NewStudentForm = () => {
   };
 
 
-//for status messaage
-  const [statusMessage, setStatusMessage] = useState("");
-  const [statusType, setStatusType] = useState(""); // 'success' or 'error'
-  const [showMessage, setShowMessage] = useState(false);
   // This function handles the confirmed save action
   const handleConfirmSave = async () => {
     // Close the confirmation modal
@@ -300,7 +310,7 @@ const NewStudentForm = () => {
 
     // Proceed with saving the student data
     try {
-      await addNewStudent({
+      const response = await addNewStudent({
         studentName,
         studentDob,
         studentSex,
@@ -310,29 +320,20 @@ const NewStudentForm = () => {
         studentGardien,
         operator,
       });
+      console.log(response,'response')
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
 
-      if (isError) {
-        setStatusType("error");
-        setStatusMessage(error?.data?.message || "Error saving student.");
-        setShowMessage(true);
+      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
       } else {
-        setStatusType("success");
-        setStatusMessage("Student saved successfully!");
-        setShowMessage(true);
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
       }
-
-      // Clear the message after 1 second
-      setTimeout(() => {
-        setShowMessage(false);
-      }, 1000);
     } catch (error) {
-      setStatusType("error");
-      setStatusMessage("An unexpected error occurred.");
-      setShowMessage(true);
-
-      setTimeout(() => {
-        setShowMessage(false);
-      }, 1000);
+      triggerBanner("Failed to add student. Please try again.", "error");
 
       console.error("Error saving student:", error);
     }
@@ -358,7 +359,7 @@ const NewStudentForm = () => {
     <>
       <Students />
        {/* Display status message */}
-       {showMessage && (
+       {/* {showMessage && (
         <p
           className={`mt-4 text-center ${
             statusType === "success" ? "text-green-500" : "text-red-500"
@@ -366,7 +367,7 @@ const NewStudentForm = () => {
         >
           {statusMessage}
         </p>
-      )}
+      )} */}
       <form
         className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md"
         onSubmit={onSaveStudentClicked}

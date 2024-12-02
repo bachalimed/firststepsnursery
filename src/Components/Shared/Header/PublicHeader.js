@@ -1,118 +1,132 @@
-import React from "react";
-
+import React, { useEffect, useState } from "react";
 import { VscDashboard } from "react-icons/vsc";
-
 import { LuUserCircle2 } from "react-icons/lu";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import logo from "../../../Data/logo.jpg";
-// import { Link} from 'react-router'
-
-import { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useSendLogoutMutation } from "../../../features/auth/authApiSlice";
 import useAuth from "../../../hooks/useAuth";
 
-//these will be used to compare to the location in the url
-const DASH_REGEX = /^\/dashboard(\/)?$/;
-const TASKS_REGEX = /^\/desk\/tasks(\/)?$/;
-const USERS_REGEX = /^\/admin\/users(\/)?$/;
 
 const PublicHeader = () => {
   const { username } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-
+  const [isBannerVisible, setIsBannerVisible] = useState(true);
   const [sendLogout, { isLoading, isSuccess, isError, error }] =
     useSendLogoutMutation();
-
+    const handleCloseBanner = () => {
+      setIsBannerVisible(false);
+    };
   useEffect(() => {
     if (isSuccess) navigate("/");
   }, [isSuccess, navigate]);
 
   if (isLoading) return <p>Logging Out...</p>;
-
   if (isError) return <p>Error: {error.data?.message}</p>;
-
-  // let dashClass = null
-  // if (!DASH_REGEX.test(pathname) && !TASKS_REGEX.test(pathname) && !USERS_REGEX.test(pathname)) {
-  //     dashClass = "dash-header__container--small"
-  // }
 
   const logoutButton = (
     <button
-      className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
+      className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 hover:bg-gray-200"
       title="Logout"
       onClick={sendLogout}
     >
-      {" "}
       Logout
-      <FontAwesomeIcon icon={faRightFromBracket} className="right" />
+      <FontAwesomeIcon icon={faRightFromBracket} className="ml-2" />
     </button>
   );
 
-  //will show the dashboard button  icon in the header when not in dashboard page
   const onGoDashClicked = () => navigate("/dashboard");
-  let goDashButton = null;
-  if (pathname !== "/dashboard") {
-    goDashButton = (
+  const goDashButton =
+    pathname !== "/dashboard" ? (
       <button
-        className={username ? "" : "hidden"}
+        className={`${
+          username ? "" : "hidden"
+        } text-gray-600 hover:text-gray-800`}
         title="Dashboard"
         onClick={onGoDashClicked}
       >
-        <VscDashboard />
+        <VscDashboard className="text-2xl" />
       </button>
-    );
-  }
+    ) : null;
 
-  const content = (
-    <div className="flex  items-center place-content-stretch  bg-gray-100 h-20">
-      <div className="mr-2 ">
-        {" "}
-        <img
-          src={logo}
-          className="h-14 w-14 rounded block float-left  "
-          alt="logo image"
-        />
+  return (
+    <header className="bg-gray-100 shadow-lg">
+      {/* Top Navigation */}
+      <div className="flex items-center justify-between px-4 py-3 md:px-8">
+        {/* Logo */}
+        <div className="flex items-center">
+          <img
+            src={logo}
+            className="h-12 w-12 rounded-md object-cover"
+            alt="Logo"
+          />
+          <h1 className="ml-3 text-lg font-semibold text-gray-700">
+            First Steps Nursery  -  حضانة الخطوات الأولى
+          </h1>
+        </div>
+
+        {/* Dashboard Button */}
+        <div>{goDashButton}</div>
+
+        {/* User Profile Menu */}
+        <Menu>
+          <MenuButton className="focus:outline-none">
+            <LuUserCircle2 className="text-3xl text-gray-600 hover:text-gray-800" />
+          </MenuButton>
+          <MenuItems
+            className="absolute right-4 top-16 mt-2 w-40 rounded-md border bg-white shadow-lg"
+          >
+            <div className="p-2">
+              <strong className="block mb-2 text-sm text-gray-600">
+                User Profile
+              </strong>
+              <MenuItem>
+                <button
+                  onClick={() => navigate("/login")}
+                  className="block w-full px-3 py-2 text-left text-gray-700 hover:bg-gray-100"
+                >
+                  Login
+                </button>
+              </MenuItem>
+              <MenuItem>
+                <button
+                  onClick={() => navigate("/users/ForgotPassword")}
+                  className="block w-full px-3 py-2 text-left text-gray-700 hover:bg-gray-100"
+                >
+                  Forgot Password
+                </button>
+              </MenuItem>
+              <hr className="my-2 border-gray-300" />
+              <MenuItem>{logoutButton}</MenuItem>
+            </div>
+          </MenuItems>
+        </Menu>
       </div>
-      <div className="flex-1 ">{goDashButton}</div>
-      <Menu>
-        <MenuButton className="mr-4 ">
-          <LuUserCircle2 fontSize={24} className="text-4xl" />
-        </MenuButton>
-        <MenuItems
-          transition
-          anchor="bottom end"
-          className=" origin-top-right rounded-md border  w-36 bg-sky-100 p-1 text-sm/6 text-gray-800 transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
-        >
-          <strong>User profile</strong>
-          <MenuItem>
+
+     
+      {/* Banner Section */}
+      {isBannerVisible && (
+        <div className="relative bg-blue-600 text-white">
+          <div className="max-w-7xl mx-auto p-4 text-center relative">
+            <p className="text-sm sm:text-base">
+              🌟 *Enroll now for our upcoming term! Special discounts for early
+              registrations.* 🌟
+            </p>
             <button
-              onClick={() => navigate("/login")}
-              className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
-              href="link1target1StudentsParents"
+              className="absolute top-1/2 right-4 transform -translate-y-1/2 text-white hover:text-gray-300 focus:outline-none"
+              onClick={handleCloseBanner}
+              title="Close Banner"
             >
-              Login
+              ✖
             </button>
-          </MenuItem>
-          <MenuItem>
-            <button
-              onClick={() => navigate("/users/ForgotPassword")}
-              className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
-              href="/target 1"
-            >
-              Forgot Password
-            </button>
-          </MenuItem>
-          <div className="my-1 h-px bg-gray-500" />
-          <MenuItem>{logoutButton}</MenuItem>
-        </MenuItems>
-      </Menu>
-    </div>
+          </div>
+        </div>
+      )}
+    </header>
   );
-  return content;
 };
 
 export default PublicHeader;

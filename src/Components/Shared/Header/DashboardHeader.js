@@ -9,6 +9,11 @@ const DashboardHeader = () => {
   const { username } = useAuth();
   const [currentTime, setCurrentTime] = useState(new Date());
 
+
+
+
+
+  
   // Update the time every second
   useEffect(() => {
     const timer = setInterval(() => {
@@ -31,6 +36,7 @@ const DashboardHeader = () => {
     minute: "2-digit",
     second: "2-digit",
   });
+
 
   const content = (
     <header className="bg-blue-500 text-white h-20 px-10 flex justify-between items-center shadow-md">

@@ -44,7 +44,7 @@ const HeaderUserProfile = () => {
   const content = (
     <Menu>
       <MenuButton className=" ">
-        <LuUserCircle2 fontSize={24} className="text-4xl text-green-500" />
+        <LuUserCircle2 fontSize={24} className="text-4xl text-white-500" />
       </MenuButton>
 
       <MenuItems
