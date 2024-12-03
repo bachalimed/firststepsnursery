@@ -22,6 +22,8 @@ import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import { ROLES } from "../../../config/UserRoles";
 import { ACTIONS } from "../../../config/UserActions";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
+
+import { useOutletContext } from "react-router-dom";
 const UsersList = () => {
   //initialise state variables and hooks
   const navigate = useNavigate();
@@ -115,7 +117,7 @@ const UsersList = () => {
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idUserToDelete, setIdUserToDelete] = useState(null); // State to track which document to delete
-
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   // Function to handle the delete button click
   const onDeleteUserClicked = (id) => {
     setIdUserToDelete(id);
@@ -124,7 +126,24 @@ const UsersList = () => {
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    await deleteUser({ id: idUserToDelete });
+    try {
+      const response=  await deleteUser({ id: idUserToDelete });
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+
+      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner("Failed to delete user. Please try again.", "error");
+
+      console.error("Error deleting:", error);
+    }
     setIsDeleteModalOpen(false); // Close the modal
   };
 
@@ -134,8 +153,7 @@ const UsersList = () => {
     setIdUserToDelete(null);
   };
 
-  const errContent =
-    (usersError?.data?.message || delerror?.data?.message) ?? "";
+
   const column = [
     {
       name: "#", // New column for entry number

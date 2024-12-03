@@ -290,7 +290,7 @@ const NewStudentForm = () => {
 
 
 
-    const { triggerBanner } = useOutletContext(); // Access banner trigger
+   const { triggerBanner } = useOutletContext(); // Access banner trigger
 
 
   const onSaveStudentClicked = async (e) => {
@@ -335,7 +335,7 @@ const NewStudentForm = () => {
     } catch (error) {
       triggerBanner("Failed to add student. Please try again.", "error");
 
-      console.error("Error saving student:", error);
+      console.error("Error saving:", error);
     }
   };
 

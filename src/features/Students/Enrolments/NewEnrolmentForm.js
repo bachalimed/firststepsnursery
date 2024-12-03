@@ -15,7 +15,7 @@ import { ROLES } from "../../../config/UserRoles";
 import { ACTIONS } from "../../../config/UserActions";
 import useAuth from "../../../hooks/useAuth";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
-
+import { useOutletContext } from "react-router-dom";
 import { selectAllAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { MONTHS } from "../../../config/Months";
 import {
@@ -276,6 +276,9 @@ const NewEnrolmentForm = () => {
       ),
     }));
   };
+
+
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (canSave) {
@@ -288,10 +291,23 @@ const NewEnrolmentForm = () => {
     setShowConfirmation(false);
 
     try {
-      await addNewEnrolment(formData);
+      const response = await addNewEnrolment(formData);
       navigate("/students/enrolments/enrolments/");
-    } catch (err) {
-      console.error("Failed to save the enrolment", err);
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+
+      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner("Failed to add enrolment. Please try again.", "error");
+
+      console.error("Error saving:", error);
     }
   };
 

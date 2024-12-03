@@ -24,6 +24,8 @@ import {
 } from "../../../../config/REGEX";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 import { EXPENSE_CATEGORIES } from "../../../../config/ExpenseCategories";
+import { useOutletContext } from "react-router-dom";
+
 const EditExpenseCategoryForm = ({expenseCategory}) => {
 
 
@@ -154,15 +156,31 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
       setShowConfirmation(true);
     }
   };
+
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   // This function handles the confirmed save action
   const handleConfirmSave = async () => {
     // Close the confirmation modal
     setShowConfirmation(false);
 
     try {
-      await updateExpenseCategory(formData);
-    } catch (err) {
-      console.error("Failed to save the expenseCategory:", err);
+      const response =  await updateExpenseCategory(formData);
+      console.log(response,'response')
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+
+      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner("Failed to update expense. Please try again.", "error");
+
+      console.error("Error saving:", error);
     }
   };
 

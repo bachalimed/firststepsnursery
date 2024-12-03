@@ -26,6 +26,8 @@ import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import useAuth from "../../../hooks/useAuth";
 import { setAdmissions } from "./admissionsSlice";
+import { useOutletContext } from "react-router-dom";
+
 
 const AdmissionsList = () => {
   //this is for the academic year selection
@@ -92,7 +94,7 @@ const AdmissionsList = () => {
       error: delerror,
     },
   ] = useDeleteAdmissionMutation();
-
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   // Function to handle the delete button click
   const onDeleteAdmissionClicked = (id) => {
     setIdAdmissionToDelete(id); // Set the document to delete
@@ -101,8 +103,25 @@ const AdmissionsList = () => {
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    await deleteAdmission({ id: idAdmissionToDelete });
+    try {
+      const response= await deleteAdmission({ id: idAdmissionToDelete });
     setIsDeleteModalOpen(false); // Close the modal
+    if (response.data && response.data.message) {
+      // Success response
+      triggerBanner(response.data.message, "success");
+
+    } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      // Error response
+      triggerBanner(response.error.data.message, "error");
+    } else {
+      // In case of unexpected response format
+      triggerBanner("Unexpected response from server.", "error");
+    }
+  } catch (error) {
+    triggerBanner("Failed to delete admission. Please try again.", "error");
+
+    console.error("Error deleting:", error);
+  }
   };
 
   // Function to close the modal without deleting

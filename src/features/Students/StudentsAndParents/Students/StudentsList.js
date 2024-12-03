@@ -37,6 +37,9 @@ import {
 } from "./studentsSlice";
 import { IoDocumentAttachOutline } from "react-icons/io5";
 import { gradeOptions } from "../../../../config/Constants";
+import { useOutletContext } from "react-router-dom";
+
+
 const StudentsList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
@@ -84,7 +87,7 @@ const StudentsList = () => {
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });
-
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   //initialising the delete Mutation
   const [
     deleteStudent,
@@ -92,7 +95,7 @@ const StudentsList = () => {
       isLoading: isDelLoading,
       isSuccess: isDelSuccess,
       isError: isDelError,
-      error: delerror,
+      error: delError,
     },
   ] = useDeleteStudentMutation();
 
@@ -104,8 +107,27 @@ const StudentsList = () => {
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    await deleteStudent({ id: idStudentToDelete });
+    try {
+      const response =  await deleteStudent({ id: idStudentToDelete });
     setIsDeleteModalOpen(false); // Close the modal
+    //console.log(response,'response')
+   
+    if (response.data && response.data.message) {
+      // Success response
+      triggerBanner(response.data.message, "success");
+
+    } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      // Error response
+      triggerBanner(response.error.data.message, "error");
+    } else {
+      // In case of unexpected response format
+      triggerBanner("Unexpected response from server.", "error");
+    }
+  } catch (error) {
+    triggerBanner("Failed to delete student. Please try again.", "error");
+
+    console.error("Error deleting:", error);
+  }
   };
 
   // Function to close the modal without deleting
@@ -206,6 +228,8 @@ const StudentsList = () => {
     //setSelectedRows([]); // Clear selection after process
   };
 
+
+ 
   // This is called when saving the updated student years from the modal
   const onUpdateStudentClicked = async (updatedYears) => {
     const updatedStudentObject = {
@@ -214,10 +238,24 @@ const StudentsList = () => {
     };
 
     try {
-      await updateStudent(updatedStudentObject); // Save updated student to backend
-      console.log("Student updated successfully");
+      const response= await updateStudent(updatedStudentObject); // Save updated student to backend
+      //console.log(response,'response')
+     // console.log(updateError,'updateError')
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+
+      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
     } catch (error) {
-      console.log("Error saving student:", error);
+      triggerBanner("Failed to update student. Please try again.", "error");
+
+      console.error("Error saving:", error);
     }
     setIsRegisterModalOpen(false); // Close modal
   };

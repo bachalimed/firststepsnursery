@@ -6,6 +6,7 @@ import { attendedSchoolAdded } from "./attendedSchoolsSlice";
 import AcademicsSet from "../../AcademicsSet";
 import { NAME_REGEX } from "../../../../config/REGEX";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
+import { useOutletContext } from "react-router-dom";
 
 const EditAttendedSchoolForm = ({ attendedSchool }) => {
   
@@ -50,7 +51,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
 
   // Check if form is ready for submission
   const canSubmit = Object.values(validity).every(Boolean) && !isLoading;
-
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -64,10 +65,23 @@ const [showConfirmation, setShowConfirmation] = useState(false);
     // Close the confirmation modal
     setShowConfirmation(false);
     try {
-      const newAttendedSchool = await updateAttendedSchool(formData).unwrap();
-      setError("");
-    } catch (err) {
-      setError("Failed to update the attended school.");
+      const response = await updateAttendedSchool(formData).unwrap();
+      console.log(response,'response')
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+
+      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner("Failed to update attended school. Please try again.", "error");
+
+      console.error("Error saving:", error);
     }
   };
 

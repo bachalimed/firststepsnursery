@@ -20,7 +20,7 @@ import {
   useDeleteAnimatorsAssignmentMutation,
 } from "./animatorsAssignmentsApiSlice";
 import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
-
+import { useOutletContext } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import Academics from "../../Academics";
@@ -104,6 +104,8 @@ const AnimatorsAssignmentsList = () => {
   // let assignmentsList = isAssignmentsSuccess
   //   ? Object.values(assignments.entities)
   //   : [];
+
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   // Function to handle the delete button click
   const onDeleteAttendedSchoolClicked = (id) => {
     setIdAttendedSchoolToDelete(id); // Set the document to delete
@@ -112,8 +114,25 @@ const AnimatorsAssignmentsList = () => {
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    await deleteAssignment({ id: idAttendedSchoolToDelete });
-    setIsDeleteModalOpen(false); // Close the modal
+    try {
+      const response= await deleteAssignment({ id: idAttendedSchoolToDelete });
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+
+      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner("Failed to add assignment. Please try again.", "error");
+
+      console.error("Error saving assignment:", error);
+    }
+      setIsDeleteModalOpen(false); // Close the modal
   };
 
   // Function to close the modal without deleting
@@ -152,11 +171,7 @@ const AnimatorsAssignmentsList = () => {
     });
   }
 
-  //handle delete
-
-  const handleDelete = () => {
-    console.log("deleting");
-  };
+  
 
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
 

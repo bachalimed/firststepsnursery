@@ -28,6 +28,8 @@ import {
 } from "../../../config/REGEX"
 //constrains on inputs when creating new user
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
+import { useOutletContext } from "react-router-dom";
+
 const EditSectionForm = ({ section }) => {
   const navigate = useNavigate();
   const { userId } = useAuth();
@@ -226,16 +228,30 @@ const [showConfirmation, setShowConfirmation] = useState(false);
         setShowConfirmation(true);
       }
     };
-
+    const { triggerBanner } = useOutletContext(); // Access banner trigger
     const handleConfirmSave = async () => {
       // Close the confirmation modal
       setShowConfirmation(false);
 
-        try {
-          await updateSection(formData);
-        } catch (err) {
-          console.error("Failed to save the section:", err);
-        }
+      try {
+        const response = await updateSection(formData);
+        console.log(response,'response')
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+
+      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner("Failed to update section. Please try again.", "error");
+
+      console.error("Error saving section:", error);
+    }
       }
  
     // Close the modal without saving
@@ -252,11 +268,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
         <h2 className="text-2xl font-bold mb-4">
          Edit Section: {`${formData.sectionLabel}`}
         </h2>
-        {isUpdateSectionError && (
-          <p className="text-red-500">
-            Error: {updateSectionError?.data?.message}
-          </p>
-        )}
+       
         <form onSubmit={onSaveSectionClicked} className="space-y-6">
           {/* Section Label */}
           <div>

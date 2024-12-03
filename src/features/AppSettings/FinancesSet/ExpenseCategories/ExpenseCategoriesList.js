@@ -23,7 +23,7 @@ import {
 import useAuth from "../../../../hooks/useAuth";
 import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
 import { IoShieldCheckmarkOutline, IoShieldOutline } from "react-icons/io5";
-
+import { useOutletContext } from "react-router-dom";
 import { IoDocumentAttachOutline } from "react-icons/io5";
 import {
   selectCurrentAcademicYearId,
@@ -82,11 +82,28 @@ const ExpenseCategoriesList = () => {
     setIdExpenseCategoryToDelete(id); // Set the document to delete
     setIsDeleteModalOpen(true); // Open the modal
   };
-
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    await deleteExpenseCategory({ id: idExpenseCategoryToDelete });
+    try {
+      const response = await deleteExpenseCategory({ id: idExpenseCategoryToDelete });
     setIsDeleteModalOpen(false); // Close the modal
+    if (response.data && response.data.message) {
+      // Success response
+      triggerBanner(response.data.message, "success");
+
+    } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      // Error response
+      triggerBanner(response.error.data.message, "error");
+    } else {
+      // In case of unexpected response format
+      triggerBanner("Unexpected response from server.", "error");
+    }
+  } catch (error) {
+    triggerBanner("Failed to delete expense. Please try again.", "error");
+
+    console.error("Error deleting:", error);
+  }
   };
 
   // Function to close the modal without deleting

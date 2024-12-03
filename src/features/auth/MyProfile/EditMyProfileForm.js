@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { useAddNewUserMutation } from "./usersApiSlice";
+import { useUpdateUserMutation } from "../../Admin/UsersManagement/usersApiSlice";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../../config/UserRoles";
 import { ACTIONS } from "../../../config/UserActions";
-import UsersManagement from "../UsersManagement";
+import MyProfile from "../MyProfile";
 import {
   DATE_REGEX,
   USER_REGEX,
@@ -13,122 +13,93 @@ import {
   NAME_REGEX,
   PHONE_REGEX,
   OBJECTID_REGEX,
-} from "../../../config/REGEX";
+} from "../../../config/REGEX"
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
+
 import { useOutletContext } from "react-router-dom";
 
-
-const NewUserForm = () => {
-  //an add user function that can be called inside the component
-  const [
-    addNewUser,
-    {
-      //an object that calls the status when we execute the newUserForm function
-      isLoading,
-      isSuccess,
-      isError,
-      error,
-    },
-  ] = useAddNewUserMutation(); //it will not execute the mutation nownow but when called
-
+const EditMyProfileForm = ({ user }) => {
+  //user was passed as prop in editUser
   const navigate = useNavigate();
 
+  //initialise the mutation to be used later
+  const [updateUser, { isLoading, isSuccess, isError, error }] =
+    useUpdateUserMutation();
+
+
+    //confirmation Modal states
+const [showConfirmation, setShowConfirmation] = useState(false);
+
+  //initialise the parameters with the user details
   // Consolidated form state
   const [formData, setFormData] = useState({
-    username: `user${Math.random().toString(36).substring(2, 10)}`,
+    id: user.id,
+    username: user.username,
     password: "",
-    userRoles: [],
-    userAllowedActions: [],
+    
     userFullName: {
-      userFirstName: "",
-      userMiddleName: "",
-      userLastName: "",
+      userFirstName: user.userFullName.userFirstName,
+      userMiddleName: user.userFullName?.userMiddleName || "",
+      userLastName: user.userFullName.userLastName,
     },
-    userDob: "",
-    userSex: "",
-    userIsActive: false,
+    userDob: user.userDob.split("T")[0],
+    userSex: user.userSex,
+   
+   
     userAddress: {
-      house: "",
-      street: "",
-      area: "",
-      postCode: "",
-      city: "",
+      house: user.userAddress.house,
+      street: user.userAddress.street,
+      area: user.userAddress?.area,
+      postCode: user.userAddress?.postCode,
+      city: user.userAddress.city,
     },
     userContact: {
-      primaryPhone: "",
-      secondaryPhone: "",
-      email: "",
+      primaryPhone: user.userContact.primaryPhone,
+      secondaryPhone: user.userContact?.secondaryPhone || "",
+      email: user.email || "",
     },
-    familyId: undefined,
-    employeeId: undefined,
+   
   });
-
-  //confirmation Modal states
-  const [showConfirmation, setShowConfirmation] = useState(false);
   const [validity, setValidity] = useState({
     validUsername: false,
     validPassword: false,
     validFirstName: false,
     validLastName: false,
-    validDob: false,
+    validUserDob: false,
     validUserSex: false,
     validHouse: false,
     validStreet: false,
     validCity: false,
     validPrimaryPhone: false,
-    validEmployeeId: false,
-    validFamilyId: false,
+   
   });
   // Validate inputs using regex patterns
   useEffect(() => {
     setValidity((prev) => ({
       ...prev,
       validUsername: USER_REGEX.test(formData.username),
-      validPassword: PWD_REGEX.test(formData.password),
+      validPassword: formData.password
+        ? PWD_REGEX.test(formData.password)
+        : true, //if not changed, set to true
       validFirstName: NAME_REGEX.test(formData.userFullName.userFirstName),
       validLastName: NAME_REGEX.test(formData.userFullName.userLastName),
-      validDob: DATE_REGEX.test(formData.userDob),
+      validUserDob: DATE_REGEX.test(formData.userDob),
       validUserSex: NAME_REGEX.test(formData.userSex),
       validHouse: NAME_REGEX.test(formData.userAddress.house),
       validStreet: NAME_REGEX.test(formData.userAddress.street),
       validCity: NAME_REGEX.test(formData.userAddress.city),
       validPrimaryPhone: PHONE_REGEX.test(formData.userContact.primaryPhone),
-      validEmployeeId:
-        formData.employeeId !== undefined && formData.employeeId !== ""
-          ? OBJECTID_REGEX.test(formData.employeeId)
-          : true,
-      validFamilyId:
-        formData.familyId !== undefined && formData.familyId !== ""
-          ? OBJECTID_REGEX.test(formData.familyId)
-          : true,
-      validUserRoles: formData.userRoles.length > 0, // At least one role should be selected
-      // validUserAllowedActions: formData.userAllowedActions.length > 0, // At least one action should be selected
+     
     }));
   }, [formData]);
-
-  console.log(
-    validity.validUsername,
-    validity.validPassword,
-    validity.validFirstName,
-    validity.validLastName,
-    validity.validDob,
-    validity.validUserSex,
-    validity.validHouse,
-    validity.validStreet,
-    validity.validCity,
-    validity.validPrimaryPhone,
-    validity.validEmployeeId,
-    validity.validFamilyId,
-    validity.validUserRoles
-  );
 
   useEffect(() => {
     if (isSuccess) {
       setFormData({
         username: "",
-        password: "",
-        userRoles: [],
-        userAllowedActions: [],
+        password: undefined,
+       
+       
         userFullName: {
           userFirstName: "",
           userMiddleName: "",
@@ -136,7 +107,8 @@ const NewUserForm = () => {
         },
         userDob: "",
         userSex: "",
-        userIsActive: false,
+       
+      
         userAddress: {
           house: "",
           street: "",
@@ -149,10 +121,9 @@ const NewUserForm = () => {
           secondaryPhone: "",
           email: "",
         },
-        familyId: undefined,
-        employeeId: undefined,
+      
       });
-      navigate("/admin/usersManagement/users/");
+      navigate(`/myProfile/myDetails/${user?.id}`);
     }
   }, [isSuccess, navigate]);
 
@@ -187,22 +158,25 @@ const NewUserForm = () => {
 
   //to check if we can save before onsave, if every one is true, and also if we are not loading status
   const canSave = Object.values(validity).every(Boolean) && !isLoading;
+
   const { triggerBanner } = useOutletContext(); // Access banner trigger
+
   const onSaveUserClicked = async (e) => {
+    //console.log(` 'first name' ${userFirstName}', fullfirstname,' ${userFullName.userFirstName}', house: '${house}', usercontact house' ${userContact.house},    ${userRoles.length},${isParent}, ${employeeId}` )
     e.preventDefault();
 
     if (canSave) {
       setShowConfirmation(true);
     }
   };
-  // This function handles the confirmed save action
+
   const handleConfirmSave = async () => {
     // Close the confirmation modal
     setShowConfirmation(false);
 
-    try {
-      const response =  await addNewUser({ formData }); //we call the add new user mutation and set the arguments to be saved
-      //added this to confirm save
+
+      try {
+      const response =await updateUser({ formData });
       console.log(response,'response')
       if (response.data && response.data.message) {
         // Success response
@@ -216,28 +190,31 @@ const NewUserForm = () => {
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to add user. Please try again.", "error");
+      triggerBanner("Failed to update user. Please try again.", "error");
 
       console.error("Error saving:", error);
     }
-  };
-  // Close the modal without saving
-  const handleCloseModal = () => {
-    setShowConfirmation(false);
-  };
+    }
+ 
+ // Close the modal without saving
+ const handleCloseModal = () => {
+  setShowConfirmation(false);
+};
   const handleCancel = () => {
-    navigate("/admin/usersManagement/users/");
+    navigate(`/myProfile/myDetails/${user.id}`);
   };
   console.log(formData, "formData");
+
+
   const content = (
     <>
-      <UsersManagement />
+      <MyProfile />
       <section className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
+        {isError && <p className="text-red-600">{error?.data?.message}</p>}
         <h2 className="text-2xl font-bold mb-4">
-          Create New User{" "}
+          Edit User{" "}
           {`${formData.userFullName.userFirstName} ${formData.userFullName.userMiddleName} ${formData.userFullName.userLastName}`}
         </h2>
-       
 
         <form onSubmit={onSaveUserClicked} className="space-y-6">
           <div className="space-y-4">
@@ -387,7 +364,7 @@ const NewUserForm = () => {
                   htmlFor="userDob"
                 >
                   Date of Birth{" "}
-                  {!validity.validDob && (
+                  {!validity.validUserDob && (
                     <span className="text-red-500">*</span>
                   )}
                 </label>
@@ -397,7 +374,7 @@ const NewUserForm = () => {
                   value={formData.userDob}
                   onChange={handleInputChange}
                   className={`mt-1 block w-full border ${
-                    validity.validDob ? "border-gray-300" : "border-red-500"
+                    validity.validUserDob ? "border-gray-300" : "border-red-500"
                   } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                   required
                 />
@@ -462,7 +439,7 @@ const NewUserForm = () => {
               </div>
             </div>
           </div>
-          <h3 className="text-lg font-semibold">Contact</h3>
+          <h3 className="text-lg font-semibold">User Contact</h3>
           <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
             {/* Contact Information */}
             <div className="grid grid-cols-2 gap-4">
@@ -540,10 +517,7 @@ const NewUserForm = () => {
                 placeholder="Enter Email Address"
               />
             </div>
-          </div>
-          {/* Address Information */}
-          <h3 className="text-lg font-semibold">Contact</h3>
-          <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
+         
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700">
@@ -582,7 +556,7 @@ const NewUserForm = () => {
                 <input
                   type="text"
                   name="street"
-                  value={formData.street}
+                  value={formData.userAddress.street}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
@@ -671,7 +645,7 @@ const NewUserForm = () => {
               </div>
             </div>
           </div>
-          <h3 className="text-lg font-semibold">Permissions</h3>
+          <h3 className="text-lg font-semibold">User Roles and Permissions</h3>
           <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
             {/* Family ID Input */}
             <div>
@@ -782,17 +756,17 @@ const NewUserForm = () => {
           </div>
         </form>
       </section>
-      {/* Confirmation Modal */}
-      <ConfirmationModal
+       {/* Confirmation Modal */}
+       <ConfirmationModal
         show={showConfirmation}
         onClose={handleCloseModal}
         onConfirm={handleConfirmSave}
         title="Confirm Save"
-        message="Are you sure you want to save?"
+        message="Are you sure you want to save Changes?"
       />
     </>
   );
 
   return content;
 };
-export default NewUserForm;
+export default EditMyProfileForm;

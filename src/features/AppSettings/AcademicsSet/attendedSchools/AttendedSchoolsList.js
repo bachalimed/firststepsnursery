@@ -12,7 +12,7 @@ import { RiDeleteBin6Line } from "react-icons/ri"
 import { setAttendedSchools } from "./attendedSchoolsSlice"
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
 import useAuth from '../../../../hooks/useAuth'
-
+import { useOutletContext } from "react-router-dom";
 
 import { useGetAttendedSchoolsQuery,  useDeleteAttendedSchoolMutation,} from "./attendedSchoolsApiSlice"
 
@@ -48,7 +48,7 @@ const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for 
       error: delerror,
     },
   ] = useDeleteAttendedSchoolMutation();
-
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   // Function to handle the delete button click
   const onDeleteAttendedSchoolClicked = (id) => {
     setIdAttendedSchoolToDelete(id); // Set the document to delete
@@ -57,8 +57,25 @@ const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for 
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    await deleteAttendedSchool({ id: idAttendedSchoolToDelete });
+    try {
+      const response = await deleteAttendedSchool({ id: idAttendedSchoolToDelete });
     setIsDeleteModalOpen(false); // Close the modal
+    if (response.data && response.data.message) {
+      // Success response
+      triggerBanner(response.data.message, "success");
+
+    } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      // Error response
+      triggerBanner(response.error.data.message, "error");
+    } else {
+      // In case of unexpected response format
+      triggerBanner("Unexpected response from server.", "error");
+    }
+  } catch (error) {
+    triggerBanner("Failed to delete attended School. Please try again.", "error");
+
+    console.error("Error deleting:", error);
+  }
   };
 
   // Function to close the modal without deleting
@@ -74,11 +91,6 @@ const handleRowSelected = (state) => {
   //console.log('selectedRows', selectedRows)
 }
 
-//handle delete
-
-const handleDelete=()=>{
-console.log('deleting')
-}
 
 
 

@@ -6,6 +6,7 @@ import { attendedSchoolAdded } from "./attendedSchoolsSlice"; // Redux action fo
 import AcademicsSet from "../../AcademicsSet";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 import { NAME_REGEX } from "../../../../config/REGEX";
+import { useOutletContext } from "react-router-dom";
 
 const NewAttendedSchoolForm = () => {
   const [formData, setFormData] = useState({
@@ -59,6 +60,8 @@ const NewAttendedSchoolForm = () => {
   // Check if all fields are valid and enable the submit button
   const canSubmit = Object.values(validity).every(Boolean) && !isLoading;
 
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -71,6 +74,8 @@ const NewAttendedSchoolForm = () => {
     // Show the confirmation modal before saving
     setShowConfirmation(true);
   };
+
+  
   // This function handles the confirmed save action
   const handleConfirmSave = async () => {
     // Close the confirmation modal
@@ -79,8 +84,22 @@ const NewAttendedSchoolForm = () => {
     try {
       const newAttendedSchool = await addNewAttendedSchool(formData).unwrap();
       dispatch(attendedSchoolAdded(newAttendedSchool)); // Optionally update Redux state
-    } catch (err) {
-      setError("Failed to add the attended school.");
+      console.log(newAttendedSchool,'newAttendedSchool')
+      if (newAttendedSchool.data && newAttendedSchool.data.message) {
+        // Success response
+        triggerBanner(newAttendedSchool.data.message, "success");
+
+      } else if (newAttendedSchool?.error && newAttendedSchool?.error?.data && newAttendedSchool?.error?.data?.message) {
+        // Error response
+        triggerBanner(newAttendedSchool.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner("Failed to add school. Please try again.", "error");
+
+      console.error("Error saving:", error);
     }
   };
   // Close the modal without saving

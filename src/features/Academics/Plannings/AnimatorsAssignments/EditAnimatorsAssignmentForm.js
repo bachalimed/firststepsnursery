@@ -6,7 +6,7 @@ import {
   useUpdateAnimatorsAssignmentMutation,
   useGetAnimatorsAssignmentsQuery,
 } from "./animatorsAssignmentsApiSlice"; // Redux API action
-
+import { useOutletContext } from "react-router-dom";
 import Academics from "../../Academics";
 import useAuth from "../../../../hooks/useAuth";
 import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
@@ -177,7 +177,7 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
 
   // Check if all fields are valid and enable the submit button
   const canSubmit = Object.values(validity).every(Boolean) && !isUpdateLoading;
-
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -191,11 +191,25 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
     // Close the confirmation modal
     setShowConfirmation(false);
     try {
-      const updatedAnimatorsAssignment = await updateAnimatorsAssignment(
+      const response = await updateAnimatorsAssignment(
         formData
       ).unwrap();
-    } catch (err) {
-      //setError("Failed to add the attended school.");
+      console.log(response,'response')
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+
+      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner("Failed to update assignment. Please try again.", "error");
+
+      console.error("Error saving assignment:", error);
     }
   };
 

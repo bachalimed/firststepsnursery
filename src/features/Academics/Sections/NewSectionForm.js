@@ -31,7 +31,7 @@ import {
   NAME_REGEX,
 } from "../../../config/REGEX"
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
-//constrains on inputs when creating new user
+import { useOutletContext } from "react-router-dom";
 
 const NewSectionForm = () => {
   const navigate = useNavigate();
@@ -219,6 +219,8 @@ const [showConfirmation, setShowConfirmation] = useState(false);
   const canSave =
     Object.values(validity).every(Boolean) && !isAddSectionLoading;
 
+    const { triggerBanner } = useOutletContext(); // Access banner trigger
+
   const onSaveSectionClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
@@ -230,10 +232,24 @@ const [showConfirmation, setShowConfirmation] = useState(false);
     // Close the confirmation modal
     setShowConfirmation(false);
       try {
-        await addNewSection(formData);
-      } catch (err) {
-        console.error("Failed to save the section:", err);
+      const response =  await addNewSection(formData);
+      console.log(response,'response')
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+
+      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
       }
+    } catch (error) {
+      triggerBanner("Failed to add section. Please try again.", "error");
+
+      console.error("Error saving section:", error);
+    }
     }
   
   // Close the modal without saving
@@ -251,11 +267,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
         <h2 className="text-2xl font-bold mb-4">
           Add New Section: {`${formData.sectionLabel}`}
         </h2>
-        {isAddSectionError && (
-          <p className="text-red-500">
-            Error: {addSectionError?.data?.message}
-          </p>
-        )}
+       
         <form onSubmit={onSaveSectionClicked} className="space-y-6">
           {/* Section Label */}
           <div>

@@ -27,6 +27,8 @@ import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import useAuth from "../../../hooks/useAuth";
 import { MONTHS } from "../../../config/Months";
+import { useOutletContext } from "react-router-dom";
+
 
 const EnrolmentsList = () => {
   //this is for the academic year selection
@@ -102,6 +104,8 @@ const EnrolmentsList = () => {
       refetchOnMountOrArgChange: true,
     }
   );
+
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   //initialising the delete Mutation
   const [
     deleteEnrolment,
@@ -121,8 +125,26 @@ const EnrolmentsList = () => {
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    await deleteEnrolment({ id: idEnrolmentToDelete });
+    try {
+      const response=await deleteEnrolment({ id: idEnrolmentToDelete });
     setIsDeleteModalOpen(false); // Close the modal
+    console.log(response,'response')
+    if (response.data && response.data.message) {
+      // Success response
+      triggerBanner(response.data.message, "success");
+
+    } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      // Error response
+      triggerBanner(response.error.data.message, "error");
+    } else {
+      // In case of unexpected response format
+      triggerBanner("Unexpected response from server.", "error");
+    }
+  } catch (error) {
+    triggerBanner("Failed to delete enrolment. Please try again.", "error");
+
+    console.error("Error deleting:", error);
+  }
   };
 
   // Function to close the modal without deleting
@@ -209,17 +231,29 @@ const EnrolmentsList = () => {
     setSelectedRows(state.selectedRows);
     console.log("selectedRows:", state.selectedRows);
   };
-
+  
   // Handler for generating an invoice
   const handleGenerateInvoice = async () => {
     try {
-      const newInvoices = await addNewInvoice({
+      const response=   await addNewInvoice({
         formData: selectedRows,
         operator: userId,
       });
-      console.log("selectedRows:", selectedRows); // Now this should correctly show the selected rows
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+
+      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
     } catch (error) {
-      console.error("Error generating invoices:", error);
+      triggerBanner("Failed to add invoice. Please try again.", "error");
+
+      console.error("Error saving:", error);
     }
   };
 

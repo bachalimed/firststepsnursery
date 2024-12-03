@@ -18,7 +18,7 @@ import {
   selectAcademicYearById,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { NAME_REGEX, DATE_REGEX } from "../../../../config/REGEX";
-
+import { useOutletContext } from "react-router-dom";
 const EditStudentForm = ({ student }) => {
   //initialising state variables and hooks
   const navigate = useNavigate();
@@ -292,6 +292,12 @@ const EditStudentForm = ({ student }) => {
       studentSex,
     ].every(Boolean) && !isUpdateLoading;
 
+
+
+
+    const { triggerBanner } = useOutletContext(); // Access banner trigger
+
+
   const onUpdateStudentClicked = async (e) => {
     e.preventDefault();
     setShowConfirmation(true);
@@ -312,8 +318,8 @@ const EditStudentForm = ({ student }) => {
       studentGardien,
       operator,
     };
-
-    await updateStudent({
+try{
+   const response = await updateStudent({
       id,
       studentName,
       studentDob,
@@ -325,8 +331,22 @@ const EditStudentForm = ({ student }) => {
       operator,
     }); //we call the add new user mutation and set the arguments to be saved
     //added this to confirm save
-    if (isUpdateError) {
-      console.log("error savingg", updateError); //handle the error msg to be shown  in the logs??
+    console.log(response,'response')
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+
+      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner("Failed to update student. Please try again.", "error");
+
+      console.error("Error saving:", error);
     }
   };
   // Close the modal without saving

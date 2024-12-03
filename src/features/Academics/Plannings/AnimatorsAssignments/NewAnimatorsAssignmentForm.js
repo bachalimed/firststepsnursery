@@ -17,6 +17,8 @@ import {
   selectAllAcademicYears,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { NAME_REGEX, DATE_REGEX } from "../../../../config/REGEX";
+import { useOutletContext } from "react-router-dom";
+
 
 const NewAnimatorsAssignmentForm = () => {
   const { userId } = useAuth();
@@ -183,17 +185,33 @@ const NewAnimatorsAssignmentForm = () => {
     }
   };
   //setError("Please fill in all fields correctly.");
+
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   // This function handles the confirmed save action
   const handleConfirmSave = async () => {
     // Close the confirmation modal
     setShowConfirmation(false);
 
     try {
-      const newAnimatorsAssignment = await addNewAnimatorsAssignment(
+      const response = await addNewAnimatorsAssignment(
         formData
       ).unwrap();
-    } catch (err) {
-      //setError("Failed to add the attended school.");
+      console.log(response,'response')
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+
+      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner("Failed to add assignment. Please try again.", "error");
+
+      console.error("Error saving assignment:", error);
     }
   };
   // Close the modal without saving
@@ -258,6 +276,7 @@ const NewAnimatorsAssignmentForm = () => {
     setFormData((prev) => ({ ...prev, assignments: updatedAssignments }));
   };
 
+  
   // Add a new assignment row for another animator
   const addAssignment = () => {
     setFormData((prev) => ({

@@ -16,6 +16,8 @@ import NewFamilyAddChildrenForm from "./NewFamilyAddChildrenForm";
 import FamilyCompleted from "./FamilyCompleted";
 import { StepperContext } from "../../../../contexts/StepperContext";
 import { selectAllAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice"
+import { useOutletContext } from "react-router-dom";
+
 const NewFamily = () => {
   //an add parent function that can be called inside the component
 
@@ -74,7 +76,7 @@ const NewFamily = () => {
     //check if step are within bounds
     newStep > 0 && newStep <= steps.length && setCurrentStep(newStep);
   };
-
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   const handleSubmit = async () => {
     //remove last element of children if it is empty
     if (children[children.length - 1]?.child === "") {
@@ -83,19 +85,38 @@ const NewFamily = () => {
     }
     console.log("children", children);
 
-    await addNewFamily({
+    try {
+      const response = await addNewFamily({
       father: father,
       mother: mother,
       children: children,
       familySituation: familySituation,
     }); //we call the add new user mutation and set the arguments to be saved
     //added this to confirm save
-    if (isAddError) {
-      console.log("error savingg", addError); //handle the error msg to be shown  in the logs??
+    console.log(response,'response')
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+        setCurrentStep(4)
+
+      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+        setCurrentStep(3)
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+        setCurrentStep(3)
+      }
+    } catch (error) {
+      setCurrentStep(3)
+      triggerBanner("Failed to add family. Please try again.", "error");
+
+      console.error("Error saving family:", error);
     }
-    if (!isAddLoading) {
-      setCurrentStep(4);
-    }
+    // if (!isAddLoading) {
+    //   setCurrentStep(4);
+    // }
   };
   //console.log( father, 'father', mother, 'mother', children, familySituation,'data in parent form')
   //maybe check here and allow steps to move on

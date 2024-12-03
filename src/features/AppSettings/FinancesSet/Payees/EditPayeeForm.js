@@ -24,6 +24,8 @@ import {
 } from "../../../../config/REGEX";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 import { EXPENSE_CATEGORIES } from "../../../../config/ExpenseCategories";
+import { useOutletContext } from "react-router-dom";
+
 const EditPayeeForm = ({payee}) => {
   const navigate = useNavigate();
   const { userId } = useAuth();
@@ -118,7 +120,7 @@ const EditPayeeForm = ({payee}) => {
   // };
 
   const canSave = Object.values(validity).every(Boolean) && !isLoading;
-
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   const onSavePayeeClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
@@ -131,9 +133,23 @@ const EditPayeeForm = ({payee}) => {
     setShowConfirmation(false);
 
     try {
-      await updatePayee(formData);
-    } catch (err) {
-      console.error("Failed to save the payee:", err);
+      const response =  await updatePayee(formData);
+      console.log(response,'response')
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+
+      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner("Failed to update payee. Please try again.", "error");
+
+      console.error("Error saving:", error);
     }
   };
 

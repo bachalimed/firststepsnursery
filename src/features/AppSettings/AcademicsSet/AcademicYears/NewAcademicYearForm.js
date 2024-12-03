@@ -11,6 +11,7 @@ import {
 import AcademicsSet from "../../AcademicsSet";
 import useAuth from "../../../../hooks/useAuth";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
+import { useOutletContext } from "react-router-dom";
 
 const NewAcademicYearForm = () => {
   const navigate = useNavigate();
@@ -93,6 +94,8 @@ const [showConfirmation, setShowConfirmation] = useState(false);
     },
   ] = useAddNewAcademicYearMutation();
 
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -120,8 +123,21 @@ const [showConfirmation, setShowConfirmation] = useState(false);
       dispatch(academicYearAdded(newAcademicYear));//maybe no need to dispatch because it will update when querying again
 
       navigate("/settings/academicsSet/academicYears/"); // Redirect after successful creation
-    } catch (err) {
-      setError("Failed to create the academic year.");
+    if (newAcademicYear.data && newAcademicYear.data.message) {
+        // Success response
+        triggerBanner(newAcademicYear.data.message, "success");
+
+      } else if (newAcademicYear?.error && newAcademicYear?.error?.data && newAcademicYear?.error?.data?.message) {
+        // Error response
+        triggerBanner(newAcademicYear.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner("Failed to add academic year. Please try again.", "error");
+
+      console.error("Error saving:", error);
     }
   };
 // Close the modal without saving
@@ -138,16 +154,16 @@ const handleCloseModal = () => {
         !titleError
     );
   }, [title, yearStart, yearEnd, academicYearCreator, titleError]);
-  console.log(
-    title,
-    yearStart,
-    yearEnd,
-    academicYearCreator,
-    "title ,yearStart ,yearEnd,academicYearCreator"
-  );
-  academicYears.map((year) => {
-    console.log(year, "year");
-  });
+  // console.log(
+  //   title,
+  //   yearStart,
+  //   yearEnd,
+  //   academicYearCreator,
+  //   "title ,yearStart ,yearEnd,academicYearCreator"
+  // );
+  // academicYears.map((year) => {
+  //   console.log(year, "year");
+  // });
   return (
     <>
       <AcademicsSet />

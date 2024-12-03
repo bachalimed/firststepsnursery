@@ -9,6 +9,7 @@ import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useSendLogoutMutation } from "../../../features/auth/authApiSlice";
 import useAuth from "../../../hooks/useAuth";
 import { PiUserSquare } from "react-icons/pi";
+import { LuKeyRound } from "react-icons/lu";
 
 const HeaderUserProfile = () => {
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ const HeaderUserProfile = () => {
       <MenuItems
         transition
         anchor="bottom end"
-        className=" origin-top-right rounded-md border  w-36 bg-sky-100 p-1 text-sm/6 text-gray-800 transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
+        className=" origin-top-right rounded-md border  w-40 bg-sky-100 p-1 text-sm/6 text-gray-800 transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
       >
         <strong>Manage profile</strong>
         {/* <MenuItem>
@@ -68,7 +69,7 @@ const HeaderUserProfile = () => {
         <MenuItem>
           <button
             onClick={() =>
-              navigate(`/admin/usersManagement/userDetails/${userId}`)
+              navigate(`/myProfile/myDetails/${userId}`)
             }
             className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
             href="/target 1"
@@ -77,16 +78,17 @@ const HeaderUserProfile = () => {
             My Profile
           </button>
         </MenuItem>
-        {/* <MenuItem>
+        <MenuItem>
           <button
-            onClick={() => navigate("/users/ResetPassword")}
+            onClick={() => navigate("/MyProfile/ResetPassword/")}
             className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
             href="/target 1"
           >
            
+            <LuKeyRound className="size-4 fill-white/30  "/>
             Reset Password
           </button>
-        </MenuItem> */}
+        </MenuItem>
 
         <div className="my-1 h-px bg-gray-500 "></div>
         <MenuItem>{logoutButton}</MenuItem>

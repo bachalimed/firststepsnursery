@@ -21,6 +21,8 @@ import useAuth from "../../../../hooks/useAuth";
 import { ImProfile } from "react-icons/im";
 import { useDispatch } from "react-redux";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
+import { useOutletContext } from "react-router-dom";
+
 const FamiliesList = () => {
   //this is for the academic year selection
 
@@ -151,18 +153,36 @@ const FamiliesList = () => {
     setSelectedRows(state.selectedRows);
     //console.log('selectedRows', selectedRows)
   };
-
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idFamilyToDelete, setIdFamilyToDelete] = useState(null);
   const onDeleteFamilyClicked = (id) => {
+    console.log(id,'idtodelete')
     setIdFamilyToDelete(id);
     setIsDeleteModalOpen(true);
   };
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    await deleteFamily({ id: idFamilyToDelete });
+    try {
+      const response =  await deleteFamily({ id: idFamilyToDelete });
     setIsDeleteModalOpen(false); // Close the modal
+    if (response.data && response.data.message) {
+      // Success response
+      triggerBanner(response.data.message, "success");
+
+    } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      // Error response
+      triggerBanner(response.error.data.message, "error");
+    } else {
+      // In case of unexpected response format
+      triggerBanner("Unexpected response from server.", "error");
+    }
+  } catch (error) {
+    triggerBanner("Failed to delete family. Please try again.", "error");
+
+    console.error("Error deleting:", error);
+  }
   };
   // Function to close the modal without deleting
   const handleCloseDeleteModal = () => {
@@ -370,7 +390,7 @@ const FamiliesList = () => {
           {isAdmin && canDelete ? (
             <button
               className="text-red-500"
-              onClick={() => onDeleteFamilyClicked(row._id)}
+              onClick={() => onDeleteFamilyClicked(row.id)}
             >
               <RiDeleteBin6Line className="text-2xl" />
             </button>

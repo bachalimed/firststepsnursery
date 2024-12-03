@@ -6,6 +6,7 @@ import { classroomAdded } from "./classroomsSlice"; // Redux action for state up
 import AcademicsSet from "../../AcademicsSet"
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 import { NAME_REGEX } from "../../../../config/REGEX";
+import { useOutletContext } from "react-router-dom";
 
 const NewClassroomForm = () => {
   const [formData, setFormData] = useState({
@@ -55,7 +56,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
 
   // Check if all fields are valid and enable the submit button
   const canSubmit = Object.values(validity).every(Boolean) && !isLoading;
-
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -76,8 +77,22 @@ const handleConfirmSave = async () => {
     try {
       const newClassroom = await addNewClassroom(formData).unwrap();
       dispatch(classroomAdded(newClassroom)); // Optionally update Redux state
-    } catch (err) {
-      setError("Failed to add the attended school.");
+      console.log(response,'response')
+      if (newClassroom.data && newClassroom.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+
+      } else if (newClassroom?.error && respnewClassroomonse?.error?.data && newClassroom?.error?.data?.message) {
+        // Error response
+        triggerBanner(newClassroom.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner("Failed to add classroom. Please try again.", "error");
+
+      console.error("Error saving:", error);
     }
   };
 

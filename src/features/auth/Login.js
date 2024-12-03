@@ -4,7 +4,7 @@ import LoadingStateIcon from "../../Components/LoadingStateIcon";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "./authSlice";
 import { useLoginMutation } from "./authApiSlice";
-
+import { PiEyeClosedThin,PiEyeLight  } from "react-icons/pi";
 import usePersist from "../../hooks/usePersist";
 
 const Login = () => {
@@ -52,6 +52,12 @@ const Login = () => {
       }
     }
   };
+  const [passwordVisibility, setPasswordVisibility] = useState({
+    password: false,
+    
+  });
+  const togglePasswordVisibility = () =>
+    setPasswordVisibility((prevVisibility) => !prevVisibility);
 
   const handleUserInput = (e) => setUsername(e.target.value);
   const handlePwdInput = (e) => setPassword(e.target.value);
@@ -94,23 +100,36 @@ const Login = () => {
             />
           </div>
 
-          <div className="mb-4">
+          <div className="mb-4 relative">
             <label
               htmlFor="password"
               className="block text-gray-700 text-sm font-bold mb-2"
             >
               Password:
             </label>
+            <div className="flex items-center">
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              type="password"
+              type={passwordVisibility ? "password" : "text"}
               id="password"
               onChange={handlePwdInput}
               value={password}
               required
             />
+             <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="absolute right-3"
+                aria-label="Toggle Password Visibility"
+              >
+                {passwordVisibility ? (
+                  < PiEyeClosedThin className="text-gray-500" />
+                ) : (
+                  < PiEyeLight className="text-gray-500" />
+                )}
+              </button>
           </div>
-
+          </div>
           <div className="flex items-center justify-between">
             <label
               htmlFor="persist"

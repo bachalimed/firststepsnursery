@@ -9,6 +9,11 @@ import Dashboard from "./features/Dashboard/Dashboard";
 import StudentsDash from "./features/Dashboard/Students/StudentsDash";
 import FinancesDash from "./features/Dashboard/FinancesDash/FinancesDash";
 
+import ResetPassword from "./features/auth/MyProfile/ResetPassword";
+import MyProfile from "./features/auth/MyProfile";
+import EditMyProfile from "./features/auth/MyProfile/EditMyProfile";
+import MyDetails from "./features/auth/MyProfile/MyDetails";
+
 import Students from "./features/Students/Students"; //main tab
 import StudentsList from "./features/Students/StudentsAndParents/Students/StudentsList";
 import FamiliesList from "./features/Students/StudentsAndParents/Families/FamiliesList";
@@ -199,6 +204,17 @@ const App = () => {
                 {/*  index will show as a default in the dashboard layout*/}
                 <Route path="studentsDash/" element={<StudentsDash />} />
                 <Route path="financesDash/" element={<FinancesDash />} />
+
+              </Route>{" "}
+              <Route path="myProfile" element={<DashboardLayout />}>
+                {" "}
+                {/*this will wrap around components that are protected by this route*/}
+                <Route index element={<MyProfile />} />{" "}
+                {/*  index will show as a default in the dashboard layout*/}
+                <Route path="resetPassword/" element={<ResetPassword />} />
+                <Route path="myDetails/:id/" element={<MyDetails />} />
+                <Route path="editMyProfile/:id/" element={<EditMyProfile />} />
+                
 
               </Route>{" "}
 

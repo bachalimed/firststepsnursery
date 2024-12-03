@@ -15,7 +15,7 @@ import RegisterModal from "./RegisterModal";
 import Academics from "../Academics";
 import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
-
+import { useOutletContext } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectAllSectionsByYear, selectAllSections } from "./sectionsApiSlice"; //use the memoized selector
 import { useEffect, useState } from "react";
@@ -188,7 +188,7 @@ const NurserySectionsList = () => {
 
     //setSelectedRows([]); // Clear selection after process
   };
-
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   // This is called when saving the updated section years from the modal
   const onUpdateSectionClicked = async (updatedYears) => {
     //console.log("Updated sectionYears from modal:", updatedYears);
@@ -201,10 +201,23 @@ const NurserySectionsList = () => {
     //console.log("Saving updated section:", updatedSectionObject);
 
     try {
-      await updateSection(updatedSectionObject); // Save updated section to backend
+      const response=await updateSection(updatedSectionObject); // Save updated section to backend
       console.log("Section updated successfully");
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+
+      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
     } catch (error) {
-      console.log("Error saving section:", error);
+      triggerBanner("Failed to update section. Please try again.", "error");
+
+      console.error("Error saving:", error);
     }
 
     setIsRegisterModalOpen(false); // Close modal
@@ -244,7 +257,24 @@ const onDeleteStudentClicked = (id) => {
 
 // Function to confirm deletion in the modal
 const handleConfirmDelete = async () => {
-  await deleteSection({ id: idSectionToDelete });
+  try {
+    const response=  await deleteSection({ id: idSectionToDelete });
+    if (response.data && response.data.message) {
+      // Success response
+      triggerBanner(response.data.message, "success");
+
+    } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      // Error response
+      triggerBanner(response.error.data.message, "error");
+    } else {
+      // In case of unexpected response format
+      triggerBanner("Unexpected response from server.", "error");
+    }
+  } catch (error) {
+    triggerBanner("Failed to delete section. Please try again.", "error");
+
+    console.error("Error saving:", error);
+  }
   setIsDeleteModalOpen(false); // Close the modal
 };
 

@@ -31,6 +31,7 @@ import {
   selectAcademicYearById,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
+import { useOutletContext } from "react-router-dom";
 const PayeesList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
@@ -76,7 +77,7 @@ const PayeesList = () => {
       error: delerror,
     },
   ] = useDeletePayeeMutation();
-
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   // Function to handle the delete button click
   const onDeletePayeeClicked = (id) => {
     setIdPayeeToDelete(id); // Set the document to delete
@@ -85,8 +86,25 @@ const PayeesList = () => {
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    await deletePayee({ id: idPayeeToDelete });
+    try {
+      const response = await deletePayee({ id: idPayeeToDelete });
     setIsDeleteModalOpen(false); // Close the modal
+    if (response.data && response.data.message) {
+      // Success response
+      triggerBanner(response.data.message, "success");
+
+    } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      // Error response
+      triggerBanner(response.error.data.message, "error");
+    } else {
+      // In case of unexpected response format
+      triggerBanner("Unexpected response from server.", "error");
+    }
+  } catch (error) {
+    triggerBanner("Failed to delete payee. Please try again.", "error");
+
+    console.error("Error deleting:", error);
+  }
   };
 
   // Function to close the modal without deleting

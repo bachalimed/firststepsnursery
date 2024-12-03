@@ -15,6 +15,9 @@ import {
   OBJECTID_REGEX,
 } from "../../../config/REGEX"
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
+
+import { useOutletContext } from "react-router-dom";
+
 const EditUserForm = ({ user }) => {
   //user was passed as prop in editUser
   const navigate = useNavigate();
@@ -167,6 +170,8 @@ const [showConfirmation, setShowConfirmation] = useState(false);
   //to check if we can save before onsave, if every one is true, and also if we are not loading status
   const canSave = Object.values(validity).every(Boolean) && !isLoading;
 
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
+
   const onSaveUserClicked = async (e) => {
     //console.log(` 'first name' ${userFirstName}', fullfirstname,' ${userFullName.userFirstName}', house: '${house}', usercontact house' ${userContact.house},    ${userRoles.length},${isParent}, ${employeeId}` )
     e.preventDefault();
@@ -181,10 +186,25 @@ const [showConfirmation, setShowConfirmation] = useState(false);
     setShowConfirmation(false);
 
 
-      await updateUser({ formData });
-      if (isError) {
-        console.log("error savingg", error); //handle the error msg to be shown  in the logs??
+      try {
+      const response =await updateUser({ formData });
+      console.log(response,'response')
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+
+      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
       }
+    } catch (error) {
+      triggerBanner("Failed to update user. Please try again.", "error");
+
+      console.error("Error saving:", error);
+    }
     }
  
  // Close the modal without saving

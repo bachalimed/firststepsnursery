@@ -28,6 +28,9 @@ import {
   OBJECTID_REGEX,
 } from "../../../config/REGEX";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
+import { useOutletContext } from "react-router-dom";
+
+
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
@@ -364,7 +367,7 @@ const EditAdmissionForm = ({ admission }) => {
     ) &&
     Object.values(primaryValidity).every(Boolean) &&
     !isAdmissionLoading;
-
+    const { triggerBanner } = useOutletContext(); // Access banner trigger
   // Submit the form
 
   const handleSubmit = async (e) => {
@@ -378,10 +381,24 @@ const EditAdmissionForm = ({ admission }) => {
     // Close the confirmation modal
     setShowConfirmation(false);
     try {
-      await updateAdmission(formData).unwrap();
+      const response = await updateAdmission(formData).unwrap();
       // navigate("/students/admissions/admissions");
+      console.log(response,'response')
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+
+      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
     } catch (error) {
-      console.error("Error submitting form", error);
+      triggerBanner("Failed to update admission. Please try again.", "error");
+
+      console.error("Error saving:", error);
     }
   };
   // Close the modal without saving

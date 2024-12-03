@@ -29,6 +29,9 @@ import {
 } from "../../../config/REGEX";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 import { CurrencySymbol } from "../../../config/Currency";
+import { useOutletContext } from "react-router-dom";
+
+
 
 const EditEnrolmentForm = ({ enrolment }) => {
   console.log(enrolment, "enrolment");
@@ -126,6 +129,9 @@ const EditEnrolmentForm = ({ enrolment }) => {
 
   // Submit the form
 
+
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (canSave) {
@@ -137,10 +143,23 @@ const EditEnrolmentForm = ({ enrolment }) => {
     // Close the confirmation modal
     setShowConfirmation(false);
     try {
-      await updateEnrolment(formData).unwrap();
+      const response= await updateEnrolment(formData).unwrap();
       // navigate("/students/enrolments/enrolments");
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+
+      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
     } catch (error) {
-      console.error("Error submitting form", error);
+      triggerBanner("Failed to update enrolment. Please try again.", "error");
+
+      console.error("Error saving:", error);
     }
   };
   // Close the modal without saving

@@ -18,6 +18,7 @@ import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
 } from "../../AcademicsSet/AcademicYears/academicYearsSlice";
+import { useOutletContext } from "react-router-dom";
 import {
   OBJECTID_REGEX,
   NAME_REGEX,
@@ -143,7 +144,7 @@ const NewExpenseCategoryForm = () => {
   };
 
   const canSave = Object.values(validity).every(Boolean) && !isLoading;
-
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   const onSaveExpenseCategoryClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
@@ -156,9 +157,23 @@ const NewExpenseCategoryForm = () => {
     setShowConfirmation(false);
 
     try {
-      await addNewExpenseCategory(formData);
-    } catch (err) {
-      console.error("Failed to save the expenseCategory:", err);
+      const response = await addNewExpenseCategory(formData);
+      console.log(response,'response')
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+
+      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner("Failed to add expense. Please try again.", "error");
+
+      console.error("Error saving:", error);
     }
   };
 
