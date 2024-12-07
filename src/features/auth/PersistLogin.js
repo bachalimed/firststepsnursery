@@ -1,16 +1,16 @@
 //will keep us logged in every afetr refreshing the applicationimport React from 'react'
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link ,useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { useRefreshMutation } from "./authApiSlice";
 import usePersist from "../../hooks/usePersist";
 import { useSelector } from "react-redux";
 import { selectCurrentToken } from "./authSlice";
-
+import LoadingStateIcon from '../../Components/LoadingStateIcon'
 const PersistLogin = () => {
   const [persist] = usePersist();
   const token = useSelector(selectCurrentToken);
   const effectRan = useRef(false);
-
+  const navigate = useNavigate();
   const [trueSuccess, setTrueSuccess] = useState(false);
 
   const [
@@ -48,6 +48,15 @@ const PersistLogin = () => {
     // eslint-disable-next-line
   }, []);
 
+
+//added this to automatically redirect to home
+  // useEffect(() => {
+  //   if (isError) {
+  //     // Automatically redirect to the login page on error
+  //     navigate("/");
+  //   }
+  // }, [isError, navigate]);
+
   let content;
   if (!persist) {
     // persist: no
@@ -56,14 +65,14 @@ const PersistLogin = () => {
   } else if (isLoading) {
     //persist: yes, token: no
     //console.log('loading in persist file')
-    content = <p>Loading...</p>;
+    content = <p><LoadingStateIcon/></p>;
   } else if (isError) {
     //persist: yes, token: no
     //console.log('error in persist file')
     content = (
       <p className="errmsg">
         {`${error?.data?.message} - `}
-        <Link to="/login">Please login again</Link>.
+        <Link to="/login/">Login again</Link>.
       </p>
     );
   } else if (isSuccess && trueSuccess) {

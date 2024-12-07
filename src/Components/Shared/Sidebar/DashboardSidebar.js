@@ -29,6 +29,7 @@ import { sidebarMenuUp } from "../../lib/Consts/SidebarMenu";
 import { LuChevronLeft } from "react-icons/lu";
 import { GrUserAdmin, GrTask } from "react-icons/gr";
 import { CiViewList } from "react-icons/ci";
+import { IoMenuOutline } from "react-icons/io5";
 
 // import { CgPushChevronLeftR } from "react-icons/cg"
 
@@ -49,14 +50,15 @@ const DashboardSidebar = () => {
   let content;
   content = (
     <div
-      className={`bg-gray-900  ${
-        open ? "w-56" : "w-20"
-      } p-3 flex flex-1 flex-col min-h-screen text-white  duration-300 relative`}
-    >
-      <div className="inline-flex items-center ">
+    className={`bg-gray-900  ${
+      open ? "w-56" : "w-20"
+    } p-3 flex flex-col min-h-screen text-white duration-300 relative`}
+  >
+    
+    <div className="flex items-center space-x-2">
         <img
           src={logo}
-          className="h-14 w-14 rounded block float-left mr-2 mt-4 "
+           className="h-12 w-12 rounded-lg"
           alt="logo image"
         />
         <span
@@ -75,8 +77,8 @@ const DashboardSidebar = () => {
         onClick={() => setOpen(!open)}
       />
       <br />
-      <div className="flex-1 border-t border-neutral-600">
-        <ul className="pt-2 ">
+      <div className="flex-1 border-t border-neutral-600 pt-4">
+      <ul className="space-y-2">
           <Link to="/dashboard/">
             <li
               className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}
@@ -569,7 +571,7 @@ const DashboardSidebar = () => {
               </Link>
             </ul>
           )} */}
-          <Link to="/cms/">
+          {/* <Link to="/cms/">
             <li
               className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}
               onClick={() => setOpen(!open)}
@@ -586,8 +588,8 @@ const DashboardSidebar = () => {
                 CMS
               </span>
             </li>
-          </Link>
-          <Link to="/public/">
+          </Link> */}
+          <Link to="/">
             <li
               className={`text-grey-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}
               onClick={() => setOpen(!open)}

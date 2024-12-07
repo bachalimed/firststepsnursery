@@ -1,8 +1,11 @@
-import { Link } from "react-router-dom";
-import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
 
+import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
+import useAuth from "../../hooks/useAuth";
+import { useLocation, Link } from "react-router-dom";
 //we will  find the object corresponding to the page and extract the section tabs
 const Dashboard = () => {
+  const location = useLocation();
+  const { isAdmin, isManager } = useAuth();
   const studentsParentTabs = {
     title: "Dashboard",
     path: "/settings/dashboardSet",
@@ -21,28 +24,40 @@ const Dashboard = () => {
     ],
   };
 
-  let content;
-  content = (
+ 
+
+   // Define the tab data with paths and labels
+   const tabs = [
+    { label: " Dashboard", path: "/settings/dashboardSet/" },
+    { label: "Parents", path: "settings/dashboardSet/" },
+    { label: " New Student", path: "/students/admissions/admissions/" },
+    { label: "Enrolments", path: "/students/enrolments/enrolments/" },
+    (isAdmin || isManager) && {
+      label: "Unenrolled Students",
+      path: "/students/enrolments/unenrolments/",
+    },
+    //{ label: "New Admission", path: "/students/admissions/newAdmission/" },
+  ];
+
+  const isActive = (path) => location.pathname === path;
+  return (
     <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6">
       <AcademicYearsSelection />
-      <Link to={"/settings/dashboardSet"}>
-        <li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">
-          Dashboard
-        </li>
-      </Link>
-      <Link to={"/settings/dashboardSet"}>
-        <li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">
-          Parents
-        </li>
-      </Link>
-      <Link to={"/settings/dashboardSet"}>
-        <li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">
-          New Student
-        </li>
-      </Link>
+      {tabs.map((tab) => (
+        <Link key={tab.path} to={tab.path}>
+          <li
+            className={`list-none cursor-pointer px-4 py-2 border border-gray-400 rounded-md ${
+              isActive(tab.path)
+                ? "text-blue-500 border-blue-500 bg-blue-100"
+                : "text-gray-800 hover:text-blue-500"
+            }`}
+          >
+            {tab.label}
+          </li>
+        </Link>
+      ))}
     </div>
   );
-  return content;
 };
 
 export default Dashboard;

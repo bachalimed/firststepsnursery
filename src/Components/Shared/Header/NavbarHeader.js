@@ -6,13 +6,12 @@ import HeaderUserProfile from "./HeaderUserProfile";
 
 const NavbarHeader = () => {
   return (
-    <div className="flex items-center gap-2 mr-2">
+    <div className="flex items-center gap-2 md:gap-4">
       
-      
-      {/* <div className="">
+      {/* <div className="hidden sm:block">
         <HeaderChat className="" />
       </div> */}
-      {/* <div>
+      {/* <div className="hidden sm:block">
         <HeaderNotifications className="" />
       </div> */}
       <div>

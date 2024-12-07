@@ -17,23 +17,23 @@ const DashboardLayout = () => {
     }, 3000);
   };
   return (
-    <div className="flex bg-neutral-100 min-h-screen w-screen ">
-      <div className="overflow-visible h-screen">{<DashboardSidebar />}</div>
-      <div className="flex-1">
-        <div className="flex-1 ">{<DashboardHeader />}</div>
-        <div className="flex-1 ">
-          {/* Result Banner that appears below the header */}
-      {banner.message && (
-        <ResultBanner message={banner.message} type={banner.type} />
-      )}
-        </div>
-        <main className=" flex-1 p-1 min-h-screen ">
-          {<Outlet context={{ triggerBanner }} className="" />}
+    <div className="flex bg-neutral-100 min-h-screen w-full">
+      <div className="overflow-hidden lg:overflow-visible h-screen">
+        <DashboardSidebar />
+      </div>
+      <div className="flex-1 flex flex-col">
+        <DashboardHeader />
+        {/* Result Banner */}
+        {banner.message && (
+          <ResultBanner message={banner.message} type={banner.type} />
+        )}
+        <main className="flex-1 p-4 overflow-auto">
+          <Outlet context={{ triggerBanner }} />
         </main>
-        {/* <div className=' flex-1 p-1 h-screen'>{<Outlet/>}</div> */}
-        <div className=" flex-1 bg-teal-200 w-full ">{<DashboardFooter />}</div>
+        <DashboardFooter />
       </div>
     </div>
   );
 };
+
 export default DashboardLayout;

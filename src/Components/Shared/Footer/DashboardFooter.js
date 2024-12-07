@@ -1,12 +1,13 @@
 import React from "react";
-// import { HiOutlineSearch } from 'react-icons/hi'
 
 const DashboardFooter = () => {
-  const today = new Date();
+  const currentYear = new Date().getFullYear();
+
   return (
-    <footer className="flex  h-24 place-content-center border-b border-gray-200">
-      <p>{today.getFullYear()}</p>
+    <footer className="flex items-center justify-center h-16 border-t border-gray-300 text-sm text-gray-600">
+      <p>&copy; {currentYear}</p>
     </footer>
   );
 };
+
 export default DashboardFooter;

@@ -19,7 +19,7 @@ const HeaderUserProfile = () => {
     useSendLogoutMutation();
 
   useEffect(() => {
-    if (isSuccess) navigate("/");
+    if (isSuccess) {navigate("/")};
   }, [isSuccess, navigate]);
 
   if (isLoading) return <p>Logging Out...</p>;

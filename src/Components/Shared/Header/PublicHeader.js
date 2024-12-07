@@ -73,6 +73,7 @@ const PublicHeader = () => {
 
         {/* User Profile Menu */}
         <Menu>
+        
           <MenuButton className="focus:outline-none">
             <LuUserCircle2 className="text-3xl text-gray-600 hover:text-gray-800" />
           </MenuButton>
@@ -85,7 +86,7 @@ const PublicHeader = () => {
               </strong>
               <MenuItem>
                 <button
-                  onClick={() => navigate("/login")}
+                  onClick={() => navigate("/login/")}
                   className="block w-full px-3 py-2 text-left text-gray-700 hover:bg-gray-100"
                 >
                   Login
@@ -93,7 +94,7 @@ const PublicHeader = () => {
               </MenuItem>
               <MenuItem>
                 <button
-                  onClick={() => navigate("/users/ForgotPassword")}
+                  onClick={() => navigate("/users/ForgotPassword/")}
                   className="block w-full px-3 py-2 text-left text-gray-700 hover:bg-gray-100"
                 >
                   Forgot Password

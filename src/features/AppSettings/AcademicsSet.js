@@ -52,7 +52,6 @@ const AcademicsSet = () => {
       },
     ],
   };
-
   // Define the tabs with their titles and paths
   const tabs = [
     {
@@ -76,9 +75,9 @@ const AcademicsSet = () => {
       {tabs.map((tab) => (
         <Link key={tab.path} to={tab.path}>
           <li
-            className={`list-none cursor-pointer ${
+            className={`list-none cursor-pointer px-4 py-2 border border-gray-400 rounded-md ${
               isActive(tab.path)
-                ? "text-blue-500"
+                ? "text-blue-500 border-blue-500 bg-blue-100"
                 : "text-gray-800 hover:text-blue-500"
             }`}
           >

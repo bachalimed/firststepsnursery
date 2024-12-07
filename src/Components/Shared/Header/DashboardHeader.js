@@ -39,12 +39,12 @@ const DashboardHeader = () => {
 
 
   const content = (
-    <header className="bg-blue-500 text-white h-20 px-10 flex justify-between items-center shadow-md">
-      <div className="flex items-center space-x-6">
-        <p className="text-lg font-semibold">
+    <header className="bg-blue-500 text-white py-4 px-4 md:px-8 flex flex-col md:flex-row md:justify-between items-center shadow-md">
+      <div className="flex flex-col md:flex-row items-center md:space-x-6 mb-2 md:mb-0">
+        <p className="text-lg font-semibold text-center md:text-left">
           Welcome back, {username}!
         </p>
-        <div className="text-sm">
+        <div className="text-sm text-center md:text-left">
           <p>{formattedDate}</p>
           <p>{formattedTime}</p>
         </div>
