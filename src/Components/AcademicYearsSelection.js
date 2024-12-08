@@ -21,16 +21,15 @@ const AcademicYearsSelection = () => {
   const dispatch = useDispatch();
   //const listOfAcademicYears = useSelector(state => selectAllAcademicYears(state))//this is original but not working if we did not use the query in the list
   const academicYears = useSelector(selectAllAcademicYears); //this works because prefetch and from apislice not slice not in teh state redux yet
-  const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId ); // Get the currently selected academic year
+  const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the currently selected academic year
   const { isAdmin, isManager, isDirector } = useAuth();
-  
+
   //to ensure update of value every render
   useEffect(() => {
     if (academicYears && academicYears.length > 0) {
-    dispatch(setAcademicYears(academicYears))
+      dispatch(setAcademicYears(academicYears));
     } //dispatch list to state,this only shows tehn redux state not empty in the browser tools, check later if this is needed as the query updated the state in apislice
   }, [academicYears, dispatch]); // added dispatch here
-  
 
   // Automatically select the first academic year if none is selected
   useEffect(() => {
@@ -40,12 +39,11 @@ const AcademicYearsSelection = () => {
     }
   }, [selectedAcademicYearId, academicYears, dispatch]);
 
-  
   //console.log("selected year idnow", selectedAcademicYearId);
   //update the state when we select a year using the reducer from slice
   const handleSelectedAcademicYear = (e) => {
     const id = e.target.value;
-    console.log(selectedAcademicYearId)
+    console.log(selectedAcademicYearId);
     //this will publish the curretn selectiont ob eused by other components
     dispatch(academicYearSelected({ id }));
   };
@@ -62,14 +60,22 @@ const AcademicYearsSelection = () => {
         <Select
           name="SelectedAcademicYear"
           onChange={handleSelectedAcademicYear}
-          value={selectedAcademicYearId } // Set the value to the currently selected academic year
-          className="relative mt-1 w-36 pl-3 pr-8 py-2 text-md text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          value={selectedAcademicYearId} // Set the value to the currently selected academic year
+          className="relative mt-1 w-36 pl-3 pr-8 py-2 text-md bg-gray-300 text-gray-900  border border-gray-400 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         >
-          
-          {academicYears.map((year) => (year.title !== "1000" || isAdmin || isManager || isDirector) && (
-            <option key={year.id} value={year.id} aria-placeholder="select AcademicYear">
-              {year.title}
-            </option>))}
+          {academicYears.map(
+            (year) =>
+              (year.title !== "1000" || isAdmin || isManager || isDirector) && (
+                <option
+                
+                  key={year.id}
+                  value={year.id}
+                  aria-placeholder="select AcademicYear"
+                >
+                  {year.title}
+                </option>
+              )
+          )}
         </Select>
       </div>
     </Field>
