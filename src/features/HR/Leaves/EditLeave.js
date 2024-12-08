@@ -17,7 +17,7 @@ const EditLeave = () => {
   //console.log(id, "id");
   const {
     data: leave, //the data is renamed leaves
-    isLoading: isLeaveLoading, //monitor several situations is loading...
+    isLoading: isLeaveLoading, 
     isSuccess: isLeaveSuccess,
     isError: isLeaveError,
     error: leaveError,

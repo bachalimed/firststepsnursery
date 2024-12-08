@@ -38,7 +38,7 @@ const NewExpenseForm = () => {
 
   const {
     data: expenseCategories, //the data is renamed expenseCategories
-    isLoading: isExpenseCategoriesLoading, //monitor several situations is loading...
+    isLoading: isExpenseCategoriesLoading, 
     isSuccess: isExpenseCategoriesSuccess,
     isError: isExpenseCategoriesError,
     error: expenseCategoriesError,
@@ -54,7 +54,7 @@ const NewExpenseForm = () => {
   );
   const {
     data: payees, //the data is renamed payees
-    isLoading: isPayeesLoading, //monitor several situations is loading...
+    isLoading: isPayeesLoading, 
     isSuccess: isPayeesSuccess,
     isError: isPayeesError,
     error: payeesError,
@@ -71,7 +71,7 @@ const NewExpenseForm = () => {
 
   const {
     data: services, //the data is renamed services
-    isLoading: isServicesLoading, //monitor several situations is loading...
+    isLoading: isServicesLoading, 
     isSuccess: isServicesSuccess,
     isError: isServicesError,
     error: servicesError,

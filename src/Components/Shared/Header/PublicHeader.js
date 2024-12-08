@@ -8,7 +8,7 @@ import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSendLogoutMutation } from "../../../features/auth/authApiSlice";
 import useAuth from "../../../hooks/useAuth";
-
+import { Link } from "react-router-dom";
 
 const PublicHeader = () => {
   const { username } = useAuth();
@@ -40,7 +40,7 @@ const PublicHeader = () => {
 
   const onGoDashClicked = () => navigate("/dashboard");
   const goDashButton =
-    pathname !== "/dashboard" ? (
+    pathname !== "/dashboard/" ? (
       <button
         className={`${
           username ? "" : "hidden"
@@ -58,11 +58,11 @@ const PublicHeader = () => {
       <div className="flex items-center justify-between px-4 py-3 md:px-8">
         {/* Logo */}
         <div className="flex items-center">
-          <img
+        <Link to="/"> <img
             src={logo}
             className="h-12 w-12 rounded-md object-cover"
             alt="Logo"
-          />
+          /></Link>
           <h1 className="ml-3 text-lg font-semibold text-gray-700">
             First Steps Nursery  -  حضانة الخطوات الأولى
           </h1>

@@ -86,7 +86,7 @@ const NewAdmissionForm = () => {
 
   const {
     data: admissions, //the data is renamed admissions
-    isLoading: isAdmissionGetLoading, //monitor several situations is loading...
+    isLoading: isAdmissionGetLoading, 
     isSuccess: isAdmissionGetSuccess,
     isError: isAdmissionGetError,
     error: admissionGetError,

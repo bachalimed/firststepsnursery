@@ -39,7 +39,7 @@ const Sections = () => {
 
   // Render the component content
   return (
-    <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6">
+    <div className="flex bg-gray-300 p-1 px-4 md:px-8 items-center justify-start space-x-4">
       <AcademicYearsSelection />
         {tabs.map((tab) => (
         <Link key={tab.path} to={tab.path}>

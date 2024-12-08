@@ -53,7 +53,7 @@ const PaymentsList = () => {
   //console.log("Fetch payments for academic year:", selectedAcademicYear);
   const {
     data: payments, //the data is renamed payments
-    isLoading: isPaymentGetLoading, //monitor several situations is loading...
+    isLoading: isPaymentGetLoading, 
     isSuccess: isPaymentGetSuccess,
     isError: isPaymentGetError,
     error: paymentGetError,

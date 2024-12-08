@@ -54,7 +54,7 @@ const InvoicesList = () => {
   //console.log("Fetch invoices for academic year:", selectedAcademicYear);
   const {
     data: invoices, //the data is renamed invoices
-    isLoading: isInvoiceGetLoading, //monitor several situations is loading...
+    isLoading: isInvoiceGetLoading, 
     isSuccess: isInvoiceGetSuccess,
     isError: isInvoiceGetError,
     error: invoiceGetError,

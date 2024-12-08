@@ -17,7 +17,7 @@ const EditExpenseCategory = () => {
   console.log(id, "id");
   const {
     data: expenseCategory, //the data is renamed expenseCategories
-    isLoading: isExpenseCategoryLoading, //monitor several situations is loading...
+    isLoading: isExpenseCategoryLoading, 
     isSuccess: isExpenseCategoriesuccess,
     isError: isExpenseCategoryError,
     error: expenseCategoryError,

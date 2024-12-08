@@ -37,7 +37,7 @@ const NewPaymentForm = () => {
 
   const {
     data: studentsEnrolments, //the enrolments are retirved and transformed as students with arrays of enrolments
-    isLoading: isEnrolmentsLoading, //monitor several situations is loading...
+    isLoading: isEnrolmentsLoading, 
     isSuccess: isEnrolmentsSuccess,
     isError: isEnrolmentsError,
     error: enrolmentsError,

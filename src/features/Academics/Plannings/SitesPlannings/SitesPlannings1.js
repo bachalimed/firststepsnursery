@@ -67,7 +67,7 @@ const SitesPlannings = () => {
 
   const {
     data: sections, //the data is renamed sessions
-    isLoading: isSectionsLoading, //monitor several situations is loading...
+    isLoading: isSectionsLoading, 
     isSuccess: isSectionsSuccess,
     isError: isSectionsError,
     error: sectionsError,
@@ -84,7 +84,7 @@ const SitesPlannings = () => {
   );
   const {
     data: schools, //the data is renamed sessions
-    isLoading: isSchoolsLoading, //monitor several situations is loading...
+    isLoading: isSchoolsLoading, 
     isSuccess: isSchoolsSuccess,
     isError: isSchoolsError,
     error: schoolsError,
@@ -101,7 +101,7 @@ const SitesPlannings = () => {
   
   const {
     data: sessions, //the data is renamed sessions
-    isLoading: isSessionsLoading, //monitor several situations is loading...
+    isLoading: isSessionsLoading, 
     isSuccess: isSessionsSuccess,
     isError: isSessionsError,
     error: sessionsError,

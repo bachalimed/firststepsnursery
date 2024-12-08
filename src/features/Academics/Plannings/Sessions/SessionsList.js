@@ -34,7 +34,7 @@ import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-
+import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 const SessionsList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ const SessionsList = () => {
 
   const {
     data: sessions, //the data is renamed sessions
-    isLoading: isSessionsLoading, //monitor several situations is loading...
+    isLoading: isSessionsLoading, 
     isSuccess: isSessionsSuccess,
     isError: isSessionsError,
     error: sessionsError,
@@ -437,7 +437,7 @@ const SessionsList = () => {
     },
   ];
   let content;
-  if (isSessionsLoading) content = <p>Loading...</p>;
+  if (isSessionsLoading) content = <p><LoadingStateIcon/></p>;
   if (isSessionsError) {
     content = <p className="errmsg">{sessionsError?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
   }

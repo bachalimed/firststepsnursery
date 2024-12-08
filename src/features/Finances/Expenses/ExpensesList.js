@@ -38,7 +38,7 @@ const ExpensesList = () => {
 
   const {
     data: expenses, //the data is renamed schools
-    isLoading: isExpensesLoading, //monitor several situations is loading...
+    isLoading: isExpensesLoading, 
     isSuccess: isExpensesSuccess,
     isError: isExpensesError,
     error: expensesError,

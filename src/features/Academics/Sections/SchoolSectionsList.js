@@ -63,7 +63,7 @@ const SchoolSectionsList = () => {
   //console.log("Fetch sections for academic year:", selectedAcademicYear);
   const {
     data: sections, //the data is renamed sections
-    isLoading, //monitor several situations is loading...
+    isLoading, 
     isSuccess,
     isError,
     error,

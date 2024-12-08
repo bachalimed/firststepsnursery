@@ -51,7 +51,7 @@ const ExpenseCategoriesList = () => {
 
   const {
     data: expenseCategories, //the data is renamed expenseCategories
-    isLoading: isExpenseCategoriesLoading, //monitor several situations is loading...
+    isLoading: isExpenseCategoriesLoading, 
     isSuccess: isExpenseCategoriesSuccess,
     isError: isExpenseCategoriesError,
     error: expenseCategoriesError,

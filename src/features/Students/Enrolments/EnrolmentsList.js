@@ -58,7 +58,7 @@ const EnrolmentsList = () => {
   //console.log("Fetch enrolments for academic year:", selectedAcademicYear);
   const {
     data: enrolments, //the data is renamed enrolments
-    isLoading: isEnrolmentGetLoading, //monitor several situations is loading...
+    isLoading: isEnrolmentGetLoading, 
     isSuccess: isEnrolmentGetSuccess,
     isError: isEnrolmentGetError,
     error: enrolmentGetError,

@@ -41,7 +41,7 @@ const NewInvoiceForm = () => {
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
   const {
     data: enrolment, //the data is renamed enrolment
-    isLoading: isEnrolmentLoading, //monitor several situations is loading...
+    isLoading: isEnrolmentLoading, 
     isSuccess: isEnrolmentSuccess,
     isError: isEnrolmentError,
     error: enrolmentError,

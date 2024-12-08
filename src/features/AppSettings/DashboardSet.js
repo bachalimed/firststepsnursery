@@ -28,20 +28,14 @@ const Dashboard = () => {
 
    // Define the tab data with paths and labels
    const tabs = [
-    { label: " Dashboard", path: "/settings/dashboardSet/" },
-    { label: "Parents", path: "settings/dashboardSet/" },
-    { label: " New Student", path: "/students/admissions/admissions/" },
-    { label: "Enrolments", path: "/students/enrolments/enrolments/" },
-    (isAdmin || isManager) && {
-      label: "Unenrolled Students",
-      path: "/students/enrolments/unenrolments/",
-    },
-    //{ label: "New Admission", path: "/students/admissions/newAdmission/" },
+    { label: " bla", path: "/settings/dashboardSet/" },
+    { label: "bls", path: "settings/dashboardSet/" },
+   
   ];
 
   const isActive = (path) => location.pathname === path;
   return (
-    <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6">
+    <div className="flex bg-gray-300 p-1 px-4 md:px-8 items-center justify-start space-x-4">
       <AcademicYearsSelection />
       {tabs.map((tab) => (
         <Link key={tab.path} to={tab.path}>

@@ -28,7 +28,7 @@ const LeaveDetails = () => {
   const academicYears = useSelector(selectAllAcademicYears);
   const {
     data: leave, //the data is renamed leaves
-    isLoading: isLeaveLoading, //monitor several situations is loading...
+    isLoading: isLeaveLoading, 
     isSuccess: isLeaveSuccess,
     isError: isLeaveError,
     error: leaveError,

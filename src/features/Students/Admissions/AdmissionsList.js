@@ -49,7 +49,7 @@ const AdmissionsList = () => {
   //console.log("Fetch admissions for academic year:", selectedAcademicYear);
   const {
     data: admissions, //the data is renamed admissions
-    isLoading: isAdmissionLoading, //monitor several situations is loading...
+    isLoading: isAdmissionLoading, 
     isSuccess: isAdmissionSuccess,
     isError: isAdmissionError,
     error: admissionError,

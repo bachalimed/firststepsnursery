@@ -52,7 +52,7 @@ const NewEnrolmentForm = () => {
   //the list of studetns with their admissions was filtered inteh backend and removed the months that are already enrolled for
   const {
     data: admissions, //the data is renamed admissions
-    isLoading: isAdmissionLoading, //monitor several situations is loading...
+    isLoading: isAdmissionLoading, 
     isSuccess: isAdmissionSuccess,
     isError: isAdmissionError,
     error: admissionError,

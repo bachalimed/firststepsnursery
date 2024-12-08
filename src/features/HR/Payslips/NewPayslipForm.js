@@ -52,7 +52,7 @@ const NewPayslipForm = () => {
 
   const {
     data: employees, //the data is renamed employees
-    isLoading: isEmployeesLoading, //monitor several situations is loading...
+    isLoading: isEmployeesLoading, 
     isSuccess: isEmployeesSuccess,
     isError: isEmployeesError,
     error: employeesError,
@@ -70,7 +70,7 @@ const NewPayslipForm = () => {
 
   const {
     data: leaves, //the data is renamed leaves
-    isLoading: isLeavesLoading, //monitor several situations is loading...
+    isLoading: isLeavesLoading, 
     isSuccess: isLeavesSuccess,
     isError: isLeavesError,
     error: leavesError,

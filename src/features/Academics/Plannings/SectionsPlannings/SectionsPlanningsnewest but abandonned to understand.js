@@ -88,7 +88,7 @@ const SectionsPlannings = () => {
 
   const {
     data: sections, //the data is renamed sessions
-    isLoading: isSectionsLoading, //monitor several situations is loading...
+    isLoading: isSectionsLoading, 
     isSuccess: isSectionsSuccess,
     isError: isSectionsError,
     error: sectionsError,
@@ -106,21 +106,21 @@ const SectionsPlannings = () => {
 
   const {
     data: attendedSchools, //the data is renamed attendedSchoolsData
-    isLoading: isAttendedSchoolsLoading, //monitor several situations is loading...
+    isLoading: isAttendedSchoolsLoading, 
     isSuccess: isAttendedSchoolsSuccess,
     isError: isAttendedSchoolsError,
     error: attendedSchoolsError,
   } = useGetAttendedSchoolsQuery("attendedSchoolsList") || {};
   const {
     data: classrooms, //the data is renamed attendedSchoolsData
-    isLoading: isClassroomsLoading, //monitor several situations is loading...
+    isLoading: isClassroomsLoading, 
     isSuccess: isClassroomsSuccess,
     isError: isClassroomsError,
     error: classroomsError,
   } = useGetClassroomsQuery("classroomsList") || {};
   const {
     data: students, //the data is renamed sessions
-    isLoading: isStudentsLoading, //monitor several situations is loading...
+    isLoading: isStudentsLoading, 
     isSuccess: isStudentsSuccess,
     isError: isStudentsError,
     error: studentsError,
@@ -140,7 +140,7 @@ const SectionsPlannings = () => {
 
   const {
     data: sessions, //the data is renamed sessions
-    isLoading: isSessionsLoading, //monitor several situations is loading...
+    isLoading: isSessionsLoading, 
     isSuccess: isSessionsSuccess,
     isError: isSessionsError,
     error: sessionsError,
@@ -159,7 +159,7 @@ const SectionsPlannings = () => {
 
   const {
     data: employees, //the data is renamed sessions
-    isLoading: isEmployeesLoading, //monitor several situations is loading...
+    isLoading: isEmployeesLoading, 
     isSuccess: isEmployeesSuccess,
     isError: isEmployeesError,
     error: employeesError,

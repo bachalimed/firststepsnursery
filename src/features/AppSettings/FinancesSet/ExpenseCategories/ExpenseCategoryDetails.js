@@ -28,7 +28,7 @@ const ExpenseCategoryDetails = () => {
   const academicYears = useSelector(selectAllAcademicYears);
   const {
     data: expenseCategory, //the data is renamed expenseCategories
-    isLoading: isExpenseCategoryLoading, //monitor several situations is loading...
+    isLoading: isExpenseCategoryLoading, 
     isSuccess: isExpenseCategorySuccess,
     isError: isExpenseCategoryError,
     error: expenseCategoryError,

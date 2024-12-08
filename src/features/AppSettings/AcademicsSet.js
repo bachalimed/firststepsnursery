@@ -63,14 +63,14 @@ const AcademicsSet = () => {
       path: "/settings/academicsSet/attendedSchools/",
     },
     { title: "Classrooms", path: "/settings/academicsSet/classrooms/" },
-    { title: "Otherkjhhj", path: "/settings/academicsSet/blaother" },
+   // { title: "Otherkjhhj", path: "/settings/academicsSet/blaother" },
   ];
 
   // Function to determine if the tab is active based on the current path
   const isActive = (path) => location.pathname === path;
 
   return (
-    <div className="flex bg-gray-300 p-1 items-center justify-start space-x-6">
+    <div className="flex bg-gray-300 p-1 px-4 md:px-8  items-center justify-start space-x-4">
       <AcademicYearsSelection />
       {tabs.map((tab) => (
         <Link key={tab.path} to={tab.path}>

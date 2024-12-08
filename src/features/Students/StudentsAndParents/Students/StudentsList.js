@@ -61,7 +61,7 @@ const StudentsList = () => {
   //query the students
   const {
     data: students, //the data is renamed students
-    isLoading: isStudentsLoading, //monitor several situations is loading...
+    isLoading: isStudentsLoading, 
     isSuccess: isStudentsSuccess,
     isError: isStudentsError,
     error: studentsError,

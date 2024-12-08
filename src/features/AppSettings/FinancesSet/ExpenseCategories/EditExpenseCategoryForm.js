@@ -41,7 +41,7 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
 
     const {
       data: services, //the data is renamed services
-      isLoading: isServicesLoading, //monitor several situations is loading...
+      isLoading: isServicesLoading, 
       isSuccess: isServicesSuccess,
       isError: isServicesError,
       error: servicesError,

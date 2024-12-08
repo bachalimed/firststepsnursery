@@ -34,7 +34,7 @@ import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-
+import LoadingStateIcon from "../../Components/LoadingStateIcon";
 const NotificationsList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ const NotificationsList = () => {
 
   const {
     data: notifications, //the data is renamed notifications
-    isLoading: isNotificationsLoading, //monitor several situations is loading...
+    isLoading: isNotificationsLoading, 
     isSuccess: isNotificationsSuccess,
     isError: isNotificationsError,
     error: notificationsError,
@@ -436,7 +436,7 @@ const NotificationsList = () => {
     },
   ];
   let content;
-  if (isNotificationsLoading) content = <p>Loading...</p>;
+  if (isNotificationsLoading) content = <p><LoadingStateIcon/>.</p>;
   if (isNotificationsError) {
     content = <p className="errmsg">{notificationsError?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
   }

@@ -17,7 +17,7 @@ const EditPayee = () => {
   //console.log(id, "id");
   const {
     data: payee, //the data is renamed payees
-    isLoading: isPayeeLoading, //monitor several situations is loading...
+    isLoading: isPayeeLoading, 
     isSuccess: isPayeeSuccess,
     isError: isPayeeError,
     error: payeeError,

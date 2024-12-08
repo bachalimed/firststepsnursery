@@ -12,13 +12,13 @@ import { FiEdit, FiCheckSquare  } from "react-icons/fi"
 import { RiDeleteBin6Line } from "react-icons/ri"
 import useAuth from '../../../hooks/useAuth'
 import {PRIORITY, ICONS} from '../../../config/PRIORITY'
-
+import LoadingStateIcon from "../../../Components/LoadingStateIcon"
 const TasksList = () => {
 
 //get several things from the query
 const {
   data: tasks,//the data is renamed tasks
-        isLoading,//monitor several situations is loading...
+        isLoading,
         isSuccess,
         isError,
         error
@@ -190,7 +190,7 @@ width:'220px'
 ]
 let content
 
-if (isLoading) content = <p>Loading...</p>
+if (isLoading) content = <p><LoadingStateIcon/></p>
 
 if (isError) {
     content = <p className="errmsg">{error?.data?.message}</p>//errormessage class defined in the css, the error has data and inside we have message of error

@@ -42,7 +42,7 @@ const AnimatorsAssignmentsList = () => {
   };
   const {
     data: employees, //the data is renamed employees
-    isLoading: isEmployeesLoading, //monitor several situations is loading...
+    isLoading: isEmployeesLoading, 
     isSuccess: isEmployeesSuccess,
     isError: isEmployeesError,
     error: employeesError,
@@ -60,7 +60,7 @@ const AnimatorsAssignmentsList = () => {
   );
   const {
     data: schools, //the data is renamed schools
-    isLoading: isSchoolLoading, //monitor several situations is loading...
+    isLoading: isSchoolLoading,
     isSuccess: isSchoolSuccess,
     isError: isSchoolError,
     error: schoolError,

@@ -59,7 +59,7 @@ const PayslipsList = () => {
 
   const {
     data: payslips, //the data is renamed payslips
-    isLoading: isPayslipsLoading, //monitor several situations is loading...
+    isLoading: isPayslipsLoading, 
     isSuccess: isPayslipsSuccess,
     isError: isPayslipsError,
     error: payslipsError,

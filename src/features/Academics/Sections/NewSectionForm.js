@@ -53,7 +53,7 @@ const NewSectionForm = () => {
   ] = useAddNewSectionMutation();
   const {
     data: employees, //the data is renamed employees
-    isLoading: isEmployeesLoading, //monitor several situations is loading...
+    isLoading: isEmployeesLoading, 
     isSuccess: isEmployeesSuccess,
     isError: isEmployeesError,
     error: employeesError,
@@ -72,7 +72,7 @@ const NewSectionForm = () => {
   );
   const {
     data: classrooms, //the data is renamed sessions
-    isLoading: isClassroomsLoading, //monitor several situations is loading...
+    isLoading: isClassroomsLoading, 
     isSuccess: isClassroomsSuccess,
     isError: isClassroomsError,
     error: classroomsError,
@@ -88,7 +88,7 @@ const NewSectionForm = () => {
   );
   const {
     data: students, //the data is renamed students
-    isLoading: isStudentLoading, //monitor several situations is loading...
+    isLoading: isStudentLoading, 
     isSuccess: isStudentSuccess,
     isError: isStudentError,
     error: studentError,

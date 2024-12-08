@@ -52,7 +52,7 @@ const PayeesList = () => {
 
   const {
     data: payees, //the data is renamed payees
-    isLoading: isPayeesLoading, //monitor several situations is loading...
+    isLoading: isPayeesLoading, 
     isSuccess: isPayeesSuccess,
     isError: isPayeesError,
     error: payeesError,

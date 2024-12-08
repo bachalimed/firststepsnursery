@@ -28,7 +28,7 @@ const EmployeeDetails = () => {
   const academicYears = useSelector(selectAllAcademicYears);
   const {
     data: employee, //the data is renamed employees
-    isLoading: isEmployeeLoading, //monitor several situations is loading...
+    isLoading: isEmployeeLoading, 
     isSuccess: isEmployeeSuccess,
     isError: isEmployeeError,
     error: employeeError,

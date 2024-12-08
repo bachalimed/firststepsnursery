@@ -17,7 +17,7 @@ const EditEmployee = () => {
   console.log(id, "id");
   const {
     data: employee, //the data is renamed employees
-    isLoading: isEmployeeLoading, //monitor several situations is loading...
+    isLoading: isEmployeeLoading, 
     isSuccess: isEmployeeSuccess,
     isError: isEmployeeError,
     error: employeeError,

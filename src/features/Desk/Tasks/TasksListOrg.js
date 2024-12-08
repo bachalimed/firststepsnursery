@@ -6,7 +6,7 @@
 import { useGetTasksQuery } from "./tasksApiSlice"
 import Task from "./Task"
 import SectionTabs from '../../../Components/Shared/Tabs/SectionTabs'
-
+import LoadingStateIcon from "../../../Components/LoadingStateIcon"
 
 
 
@@ -25,7 +25,7 @@ const TasksList = () => {
 
     let content
 
-    if (isLoading) content = <p>Loading...</p>
+    if (isLoading) content = <p><LoadingStateIcon/></p>
 
     if (isError) {
         content = <p className="errmsg">{error?.data?.message}</p>

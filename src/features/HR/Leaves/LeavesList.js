@@ -61,7 +61,7 @@ const LeavesList = () => {
 
   const {
     data: leaves, //the data is renamed leaves
-    isLoading: isLeavesLoading, //monitor several situations is loading...
+    isLoading: isLeavesLoading, 
     isSuccess: isLeavesSuccess,
     isError: isLeavesError,
     error: leavesError,

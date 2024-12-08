@@ -1,19 +1,16 @@
 import NavbarHeader from "./NavbarHeader";
+import { Link } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import AcademicYearsSelection from "../../AcademicYearsSelection";
 // import { useNavigate, useLocation } from "react-router"
 import { useState, useEffect } from "react";
-
-
+import logo from "./../../../Data/logo.jpg";
+import { IoMenuOutline } from "react-icons/io5";
 const DashboardHeader = () => {
   const { username } = useAuth();
   const [currentTime, setCurrentTime] = useState(new Date());
+  const company = { label: "First Steps", type: "Nursery" };
 
-
-
-
-
-  
   // Update the time every second
   useEffect(() => {
     const timer = setInterval(() => {
@@ -37,9 +34,18 @@ const DashboardHeader = () => {
     second: "2-digit",
   });
 
-
   const content = (
-    <header className="bg-blue-500 text-white py-4 px-4 md:px-8 flex flex-col md:flex-row md:justify-between items-center shadow-md">
+    <header className="bg-blue-500 text-white py-1 px-4 md:px-8 flex  md:flex-row md:justify-between items-center shadow-md">
+      <div
+        className={` "w-56" p-3 flex  text-white  relative`}
+      >
+        <Link to="/dashboard/"><img src={logo} className="h-12 w-12 rounded" alt="logo image" /></Link>
+        <span className={`origin-left font-medium px-2 `}>
+          {company.label} <br />
+          {company.type}
+        </span>
+      
+      </div>
       <div className="flex flex-col md:flex-row items-center md:space-x-6 mb-2 md:mb-0">
         <p className="text-lg font-semibold text-center md:text-left">
           Welcome back, {username}!

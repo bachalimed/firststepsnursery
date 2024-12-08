@@ -30,7 +30,7 @@ const NewAnimatorsAssignmentForm = () => {
 
   const {
     data: employees, //the data is renamed employees
-    isLoading: isEmployeesLoading, //monitor several situations is loading...
+    isLoading: isEmployeesLoading,
     isSuccess: isEmployeesSuccess,
     isError: isEmployeesError,
     error: employeesError,
@@ -47,7 +47,7 @@ const NewAnimatorsAssignmentForm = () => {
   );
   const {
     data: schools, //the data is renamed schools
-    isLoading: isSchoolLoading, //monitor several situations is loading...
+    isLoading: isSchoolLoading, 
     isSuccess: isSchoolSuccess,
     isError: isSchoolError,
     error: schoolError,
@@ -57,7 +57,7 @@ const NewAnimatorsAssignmentForm = () => {
 
   const {
     data: assignments, //the data is renamed schools
-    isLoading: isAssignmentsLoading, //monitor several situations is loading...
+    isLoading: isAssignmentsLoading, 
     isSuccess: isAssignmentsSuccess,
     isError: isAssignmentsError,
     error: assignmentsError,

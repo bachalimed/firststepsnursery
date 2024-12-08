@@ -164,7 +164,7 @@ const UsersList = () => {
     //show this column only if user is a parent and not employee
 
     {
-      name: "Active User",
+      name: "Active",
       selector: (row) => row.userIsActive,
       cell: (row) => (
         <span>
@@ -176,7 +176,7 @@ const UsersList = () => {
         </span>
       ),
       sortable: true,
-      width: "120px",
+      width: "100px",
     },
     {
       name: "Sex",
@@ -276,39 +276,18 @@ const UsersList = () => {
         return 0;
       },
     },
-    {
-      name: "DOB",
-      selector: (row) =>
-        new Date(row.userDob).toLocaleString("en-US", {
-          day: "numeric",
-          month: "numeric",
-          year: "numeric",
-        }),
-      width: "100px",
-      sortable: true,
-    },
     // {
-    //   name: "Employee?",
-    //   selector: (row) => row.employeeId,
-    //   cell: (row) => (
-    //     <span>
-    //       {row.employeeId  ? "Yes" : "No"}
-    //     </span>
-    //   ),
+    //   name: "DOB",
+    //   selector: (row) =>
+    //     new Date(row.userDob).toLocaleString("en-US", {
+    //       day: "numeric",
+    //       month: "numeric",
+    //       year: "numeric",
+    //     }),
+    //   width: "100px",
     //   sortable: true,
-    //   width: "110px",
     // },
-    // {
-    //   name: "Parent?",
-    //   selector: (row) => row.familyId,
-    //   cell: (row) => (
-    //     <span>
-    //       {row.familyId  ? "Yes" : "No"}
-    //     </span>
-    //   ),
-    //   sortable: true,
-    //   width: "110px",
-    // },
+   
     {
       name: "Roles",
       selector: (row) => (
@@ -323,7 +302,7 @@ const UsersList = () => {
       width: "130px",
     },
     {
-      name: " Allowed Actions",
+      name: "Actions",
       selector: (row) => (
         <div>
           {(row?.userAllowedActions).map((action) => (
@@ -333,7 +312,7 @@ const UsersList = () => {
       ),
       sortable: true,
       removableRows: true,
-      width: "100px",
+      width: "120px",
     },
 
     {

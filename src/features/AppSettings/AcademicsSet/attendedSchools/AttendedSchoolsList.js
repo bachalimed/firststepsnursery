@@ -1,7 +1,7 @@
 
 
 import { HiOutlineSearch } from 'react-icons/hi'
-
+import LoadingStateIcon from '../../../../Components/LoadingStateIcon'
 import DataTable from 'react-data-table-component'
 import { useEffect, useState } from "react"
 import { Link } from 'react-router-dom'
@@ -27,7 +27,7 @@ const AttendedSchoolsList = () => {
 //get several things from the query
 const {
   data: attendedSchoolsData,//the data is renamed attendedSchoolsData
-        isLoading,//monitor several situations is loading...
+        isLoading,
         isSuccess,
         isError,
         error
@@ -193,7 +193,7 @@ width:"160px"
 
 let content
 
-if (isLoading) content = <p>Loading...</p>
+if (isLoading) content = <p><LoadingStateIcon/></p>
 
 if (isError) {
     content = <p className="errmsg">{error?.data?.message}</p>//errormessage class defined in the css, the error has data and inside we have message of error

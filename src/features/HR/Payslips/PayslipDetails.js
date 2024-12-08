@@ -28,7 +28,7 @@ const PayslipDetails = () => {
   const academicYears = useSelector(selectAllAcademicYears);
   const {
     data: payslip, //the data is renamed payslips
-    isLoading: isPayslipLoading, //monitor several situations is loading...
+    isLoading: isPayslipLoading, 
     isSuccess: isPayslipSuccess,
     isError: isPayslipError,
     error: payslipError,

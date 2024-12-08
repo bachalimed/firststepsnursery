@@ -46,7 +46,7 @@ const NewLeaveForm = () => {
     useAddNewLeaveMutation();
     const {
       data: employees, //the data is renamed employees
-      isLoading: isEmployeesLoading, //monitor several situations is loading...
+      isLoading: isEmployeesLoading, 
       isSuccess: isEmployeesSuccess,
       isError: isEmployeesError,
       error: employeesError,
