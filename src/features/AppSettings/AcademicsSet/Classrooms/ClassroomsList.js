@@ -26,11 +26,11 @@ const ClassroomsList = () => {
   const dispatch = useDispatch()
 //get several things from the query
 const {
-  data: classroomsData,//the data is renamed classroomsData
-        isLoading,
-        isSuccess,
-        isError,
-        error
+  data: classrooms,//the data is renamed classroomsData
+        isLoading:isClassroomsLoading,
+        isSuccess:isClassroomsSuccess,
+        isError:isClassroomsError,
+        error:classroomsError
 } = useGetClassroomsQuery('classroomsList')||{}//this should match the endpoint defined in your API slice.!! what does it mean?
 //we do not want to import from state but from DB
 const [selectedRows, setSelectedRows] = useState([])
@@ -105,16 +105,16 @@ const{canEdit, isAdmin, canDelete, canCreate, status2}=useAuth()
 //console.log(classroomsData)
 //const [classrooms, setClassroomsState] = useState([])
 
-  let classrooms =[]
-  if (isSuccess ) {
+  let classroomsList =[]
+  if (isClassroomsSuccess ) {
     //console.log('classroomsData',classroomsData)
     //transform into an array
-    const {entities}=classroomsData
-     classrooms =Object.values(entities)
+    const {entities}=classrooms
+     classroomsList =Object.values(entities)
     //setClassroomsState(classroomsArray)
     
     //dispatch(setClassrooms(entities)); // Dispatch to state  using setALL which will create the ids and entities automatically
-    console.log('classrooms',classrooms)
+   // console.log('classrooms',classrooms)
   } 
 
 
@@ -173,18 +173,26 @@ width:"100px"
  const tableHeader = (
   <div>
     <h2>Classrooms List: 
-    <span> {classrooms.length} users</span></h2>
+    <span> {classroomsList?.length} users</span></h2>
   </div>
 );
 let content
 
-if (isLoading) content = <p><LoadingStateIcon/></p>
+if (isClassroomsLoading) content = <> <AcademicsSet/><LoadingStateIcon/></>
 
-if (isError) {
-    content = <p className="errmsg">{error?.data?.message}</p>//errormessage class defined in the css, the error has data and inside we have message of error
-}
+if (isClassroomsError) {
+    content =  (
+      <>
+       
+        <AcademicsSet />
+        <div className="error-bar">
+          {classroomsError?.data?.message}
+         
+        </div>
+      </>
+    ); }
 
-// if (isSuccess ) {
+ if (isClassroomsSuccess ) {
 
 return (
   <>
@@ -198,7 +206,7 @@ return (
    <DataTable
     title={tableHeader}
     columns={column}
-    data={classrooms}
+    data={classroomsList}
     pagination
     selectableRows
     removableRows
@@ -246,5 +254,5 @@ return (
 
 }
 
-//}
+}
 export default ClassroomsList

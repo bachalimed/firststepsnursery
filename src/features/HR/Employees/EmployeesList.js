@@ -55,7 +55,7 @@ const EmployeesList = () => {
 
   const {
     data: employees, //the data is renamed employees
-    isLoading: isEmployeesLoading, 
+    isLoading: isEmployeesLoading,
     isSuccess: isEmployeesSuccess,
     isError: isEmployeesError,
     error: employeesError,
@@ -65,9 +65,8 @@ const EmployeesList = () => {
       endpointName: "employeesList",
     } || {},
     {
-     
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
 
@@ -430,68 +429,76 @@ const EmployeesList = () => {
     </div>
   );
   let content;
-  if (isEmployeesLoading) content = <p><LoadingStateIcon/></p>;
+  if (isEmployeesLoading)
+    content = (
+      <>
+        <HR />
+        <LoadingStateIcon />
+      </>
+    );
   if (isEmployeesError) {
-    content = <p className="errmsg">{employeesError?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
+    content = (
+      <>
+        <HR />
+        <div className="error-bar">{employeesError?.data?.message}</div>
+      </>
+    );
   }
-  if (isEmployeesSuccess){
+  if (isEmployeesSuccess) {
+    content = (
+      <>
+        <HR />
 
-  content = (
-    <>
-      <HR />
-
-      <div className="relative h-10 mr-2 ">
-        <HiOutlineSearch
-          fontSize={20}
-          className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-        />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={handleSearch}
-          className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
-        />
-      </div>
-      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-        <DataTable
-        title={tableHeader}
-          columns={column}
-          data={filteredEmployees}
-          pagination
-          selectableRows
-          removableRows
-          pageSizeControl
-          onSelectedRowsChange={handleRowSelected}
-          selectableRowsHighlight
-          customStyles={{
-            headCells: {
-              style: {
-                // Apply Tailwind style via a class-like syntax
-                justifyContent: "center", // Align headers to the center
-                textAlign: "center", // Center header text
+        <div className="relative h-10 mr-2 ">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+          />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+          />
+        </div>
+        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+          <DataTable
+            title={tableHeader}
+            columns={column}
+            data={filteredEmployees}
+            pagination
+            selectableRows
+            removableRows
+            pageSizeControl
+            onSelectedRowsChange={handleRowSelected}
+            selectableRowsHighlight
+            customStyles={{
+              headCells: {
+                style: {
+                  // Apply Tailwind style via a class-like syntax
+                  justifyContent: "center", // Align headers to the center
+                  textAlign: "center", // Center header text
+                },
               },
-            },
-            // cells: {
-            //   style: {
-            //     justifyContent: 'center', // Center cell content
-            //     textAlign: 'center',
-            //   },
-            // },
-          }}
-        ></DataTable>
-        <div className="flex justify-end items-center space-x-4">
-          <button
-            className="add-button"
-            onClick={()=>navigate('/hr/employees/newEmployee')}
-            // disabled={selectedRows.length !== 1} // Disable if no rows are selected
-            hidden={!canCreate}
-          >
-            New Employee
-          </button>
+              // cells: {
+              //   style: {
+              //     justifyContent: 'center', // Center cell content
+              //     textAlign: 'center',
+              //   },
+              // },
+            }}
+          ></DataTable>
+          <div className="flex justify-end items-center space-x-4">
+            <button
+              className="add-button"
+              onClick={() => navigate("/hr/employees/newEmployee")}
+              // disabled={selectedRows.length !== 1} // Disable if no rows are selected
+              hidden={!canCreate}
+            >
+              New Employee
+            </button>
 
-        
-
-          {/* {isAdmin && (
+            {/* {isAdmin && (
             <button
               className="px-3 py-2 bg-gray-400 text-white rounded"
               onClick={handleDuplicateSelected}
@@ -501,22 +508,22 @@ const EmployeesList = () => {
               optional button
             </button>
           )} */}
+          </div>
         </div>
-      </div>
-      <DeletionConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
-      />
-      {/* <RegisterModal 
+        <DeletionConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+        />
+        {/* <RegisterModal 
         isOpen={isRegisterModalOpen}
         onClose={() => setIsRegisterModalOpen(false)}
         employeeYears={employeeYears}
         academicYears={academicYears}
         onSave={onUpdateEmployeeClicked}
       /> */}
-    </>
-  );
+      </>
+    );
   }
   return content;
 };

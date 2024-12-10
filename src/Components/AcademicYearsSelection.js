@@ -54,14 +54,14 @@ const AcademicYearsSelection = () => {
       <Label className="text-sm font-medium text-black">Academic Year</Label>
       <div className="inline-flex relative">
         <BsChevronDown
-          className="absolute right-2 top-3 pointer-events-none text-gray-400"
+          className="absolute right-2 top-3 pointer-events-none text-gray-300"
           aria-hidden="true"
         />
         <Select
           name="SelectedAcademicYear"
           onChange={handleSelectedAcademicYear}
           value={selectedAcademicYearId} // Set the value to the currently selected academic year
-          className="relative mt-1 w-36 pl-3 pr-8 py-2 text-md bg-gray-300 text-gray-900  border border-gray-400 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-700 focus:border-sky-700"
+          className="relative mt-1 w-36 pl-3 pr-8 py-2 text-md bg-gray-300 text-gray-900  border border-gray-400  shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-700 focus:border-sky-700"
         >
           {academicYears.map(
             (year) =>

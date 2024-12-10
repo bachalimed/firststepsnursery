@@ -1,4 +1,3 @@
-
 import { HiOutlineSearch } from "react-icons/hi";
 import {
   selectCurrentAcademicYearId,
@@ -19,13 +18,11 @@ import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConf
 import { IoAddCircleOutline } from "react-icons/io5";
 
 import {
-
   useGetAdmissionsByYearQuery,
   useDeleteAdmissionMutation,
 } from "../Admissions/admissionsApiSlice";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-
 
 import useAuth from "../../../hooks/useAuth";
 import { MONTHS } from "../../../config/Months";
@@ -46,22 +43,19 @@ const UnenrolmentsList = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idEnrolmentToDelete, setIdEnrolmentToDelete] = useState(null); // State to track which document to delete
 
-
-
-   //function to return curent month for month selection
-   const getCurrentMonth = () => {
+  //function to return curent month for month selection
+  const getCurrentMonth = () => {
     const currentMonthIndex = new Date().getMonth(); // Get current month (0-11)
     return MONTHS[currentMonthIndex]; // Return the month name with the first letter capitalized
   };
-  
 
   //console.log("Fetch enrolments for academic year:", selectedAcademicYear);
   const {
     data: admissions, //the data is renamed admissions
-    isLoading: isAdmissionLoading, 
-    isSuccess: isAdmissionSuccess,
-    isError: isAdmissionError,
-    error: admissionError,
+    isLoading: isAdmissionsLoading,
+    isSuccess: isAdmissionsSuccess,
+    isError: isAdmissionsError,
+    error: admissionsError,
   } = useGetAdmissionsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -69,10 +63,9 @@ const UnenrolmentsList = () => {
       endpointName: "UnenrolmentsList",
     } || {},
     {
-      
-      pollingInterval: 60000, 
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
+      pollingInterval: 60000,
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
 
@@ -88,9 +81,8 @@ const UnenrolmentsList = () => {
       endpointName: "UnenrolmentsList",
     } || {},
     {
-     
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
 
@@ -111,7 +103,7 @@ const UnenrolmentsList = () => {
   const servicesList = isServicesSuccess
     ? Object.values(services.entities)
     : [];
-  if (isAdmissionSuccess) {
+  if (isAdmissionsSuccess) {
     //set to the state to be used for other component s and edit enrolment component
     const { entities } = admissions;
     //we need to change into array to be read??
@@ -284,114 +276,116 @@ const UnenrolmentsList = () => {
     },
   ];
   let content;
-  if (isAdmissionLoading)
+  if (isAdmissionsLoading || isServicesLoading)
     content = (
       <>
         <Students />
         <LoadingStateIcon />
       </>
     );
-  if (isAdmissionError) {
+  if (isAdmissionsError || isServicesError) {
     content = (
       <>
         <Students />
-        <p className="errmsg">{admissionError?.data?.message}</p>
-      </>
-    ); //errormessage class defined in the css, the error has data and inside we have message of error
-  }
-  //if (isenrolmentGetSuccess){
-
-  content = (
-    <>
-      <Students />
-      <div className="flex space-x-2 items-center">
-        {/* Search Bar */}
-        <div className="relative h-10 mr-2 ">
-          <HiOutlineSearch
-            fontSize={20}
-            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-          />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={handleSearch}
-            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
-          />
+        <div className="error-bar">
+          {admissionsError?.data?.message}
+          {servicesError?.data?.message}
         </div>
-        {/* Enrolment Month Filter */}
-        <select
-          value={selectedFeeMonth}
-          onChange={(e) => setSelectedFeeMonth(e.target.value)}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
-        >
-        <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
-           {MONTHS.map(
-            (month, index) =>
-              month !== getCurrentMonth() && (
-                <option key={index} value={month}>
-                  {month}
-                </option>
-              )
-          )}
-        </select>
-        {/* Service Type Filter */}
-        <select
-          value={selectedServiceType}
-          onChange={(e) => setSelectedServiceType(e.target.value)}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
-        >
-          <option value="">All Services</option>
-          {servicesList.map((service, index) => (
-            <option key={index} value={service.serviceType}>
-              {service.serviceType}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-        <DataTable
-          columns={column}
-          data={filteredAdmissions}
-          pagination
-          selectableRows
-          removableRows
-          pageSizeControl
-          onSelectedRowsChange={handleRowSelected}
-          selectableRowsHighlight
-        ></DataTable>
-        <div className="flex justify-end items-center space-x-4">
-          <button
-            className=" px-4 py-2 bg-green-600 text-white rounded"
-            disabled={selectedRows.length !== 1} // Disable if no rows are selected
-            hidden={!canCreate}
+      </>
+    );
+  }
+  if (isAdmissionsSuccess && isServicesSuccess) {
+    content = (
+      <>
+        <Students />
+        <div className="flex space-x-2 items-center">
+          {/* Search Bar */}
+          <div className="relative h-10 mr-2 ">
+            <HiOutlineSearch
+              fontSize={20}
+              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+            />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearch}
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+            />
+          </div>
+          {/* Enrolment Month Filter */}
+          <select
+            value={selectedFeeMonth}
+            onChange={(e) => setSelectedFeeMonth(e.target.value)}
+            className="text-sm h-8 border border-gray-300  px-4"
           >
-            tobechanged
-          </button>
-
-          <button
-            className="px-3 py-2 bg-amber-300 text-white rounded"
-            onClick={handleDuplicateSelected}
-            disabled={selectedRows.length !== 1} // Disable if no rows are selected
-            hidden={!canCreate}
+            <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
+            {MONTHS.map(
+              (month, index) =>
+                month !== getCurrentMonth() && (
+                  <option key={index} value={month}>
+                    {month}
+                  </option>
+                )
+            )}
+          </select>
+          {/* Service Type Filter */}
+          <select
+            value={selectedServiceType}
+            onChange={(e) => setSelectedServiceType(e.target.value)}
+            className="text-sm h-8 border border-gray-300  px-4"
           >
-            Re-hhh
-          </button>
-
-          {isAdmin && (
+            <option value="">All Services</option>
+            {servicesList.map((service, index) => (
+              <option key={index} value={service.serviceType}>
+                {service.serviceType}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+          <DataTable
+            columns={column}
+            data={filteredAdmissions}
+            pagination
+            selectableRows
+            removableRows
+            pageSizeControl
+            onSelectedRowsChange={handleRowSelected}
+            selectableRowsHighlight
+          ></DataTable>
+          <div className="flex justify-end items-center space-x-4">
             <button
-              className="px-3 py-2 bg-gray-400 text-white rounded"
+              className=" px-4 py-2 bg-green-600 text-white rounded"
+              disabled={selectedRows.length !== 1} // Disable if no rows are selected
+              hidden={!canCreate}
+            >
+              tobechanged
+            </button>
+
+            <button
+              className="px-3 py-2 bg-amber-300 text-white rounded"
               onClick={handleDuplicateSelected}
               disabled={selectedRows.length !== 1} // Disable if no rows are selected
               hidden={!canCreate}
             >
-              All
+              Re-hhh
             </button>
-          )}
+
+            {isAdmin && (
+              <button
+                className="px-3 py-2 bg-gray-400 text-white rounded"
+                onClick={handleDuplicateSelected}
+                disabled={selectedRows.length !== 1} // Disable if no rows are selected
+                hidden={!canCreate}
+              >
+                All
+              </button>
+            )}
+          </div>
         </div>
-      </div>
-    </>
-  );
-  //}
+      </>
+    );
+  }
   return content;
 };
 export default UnenrolmentsList;

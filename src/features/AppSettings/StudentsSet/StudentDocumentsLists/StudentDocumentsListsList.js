@@ -30,10 +30,10 @@ const StudentDocumentsListsList = () => {
   //RTK query studentDocumentsLists import
   const {
     data: studentDocumentsListsData,
-    isLoading,
-    isSuccess,
-    isError,
-    error,
+    isLoading:isDocumentsListsLoading,
+    isSuccess:isDocumentsListsSuccess,
+    isError:isDocumentsListsError,
+    error:documentsListsError,
   } = useGetStudentDocumentsListsQuery(
     {
      
@@ -85,10 +85,8 @@ const StudentDocumentsListsList = () => {
   //console.log(studentDocumentsListsData)
   let filteredStudentDocumentsLists;
 
-  if (isError) {
-    console.log("error:", error);
-  }
-  if (isSuccess) {
+ 
+  if (isDocumentsListsSuccess) {
     //transform into an array
     const { entities } = studentDocumentsListsData;
     const studentDocumentsListsArray = Object.values(entities);
@@ -233,12 +231,21 @@ const StudentDocumentsListsList = () => {
   ];
   let content;
 
-  if (isLoading) content = <LoadingStateIcon />;
+  if (isDocumentsListsLoading) content = ( <>
+      <StudentsSet /><LoadingStateIcon /></>);
 
-  if (isError) {
-    content = <p className="errmsg">{error?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
-  }
-
+  if (isDocumentsListsError) {
+    content =  (
+      <>
+       
+        <StudentsSet />
+        <div className="error-bar">
+         
+          {documentsListsError?.data?.message}
+        </div>
+      </>
+    ); }
+if(isDocumentsListsSuccess){
   content = (
     <>
       <StudentsSet />
@@ -251,7 +258,7 @@ const StudentDocumentsListsList = () => {
           type="text"
           value={searchQuery}
           onChange={handleSearch}
-          className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
+          className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
         />
       </div>
       <div className="flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
@@ -283,7 +290,7 @@ const StudentDocumentsListsList = () => {
         onConfirm={handleConfirmDelete}
       />
     </>
-  );
+  );}
 
   return content;
 };

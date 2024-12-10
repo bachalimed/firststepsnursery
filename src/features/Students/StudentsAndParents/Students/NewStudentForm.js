@@ -349,12 +349,7 @@ const NewStudentForm = () => {
     naviagte("/students/studentsParents/students/");
   };
 
-  //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
-  //const errClass = isError ? "errmsg" : "offscreen";
-  //const validStudentClass = !validStudentName ? 'form__input--incomplete' : ''
-  //const validPwdClass = !validPassword ? 'form__input--incomplete' : ''
-  //const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
-
+  
   const content = (
     <>
       <Students />

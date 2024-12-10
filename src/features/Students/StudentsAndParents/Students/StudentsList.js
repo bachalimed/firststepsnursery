@@ -78,10 +78,10 @@ const StudentsList = () => {
   );
   const {
     data: attendedSchoolsList,
-    isLoading: schoolIsLoading,
-    isSuccess: schoolIsSuccess,
-    isError: schoolIsError,
-    error: schoolError,
+    isLoading: isSchoolsLoading,
+    isSuccess: isSchoolsSuccess,
+    isError: isSchoolsError,
+    error: schoolsError,
   } = useGetAttendedSchoolsQuery({ endpointName: "StudentsList" } || {}, {
     //pollingInterval: 60000
     refetchOnFocus: true,
@@ -150,7 +150,7 @@ const StudentsList = () => {
   let studentsList = [];
   let filteredStudents = [];
 
-  const attendedSchools = schoolIsSuccess
+  const attendedSchools = isSchoolsSuccess
     ? Object.values(attendedSchoolsList.entities)
     : [];
   if (isStudentsSuccess) {
@@ -466,14 +466,21 @@ const StudentsList = () => {
         <LoadingStateIcon />
       </>
     );
-  if (isStudentsError) {
-    content = (
-      <>
-        <Students /> <p className="errmsg">{studentsError?.data?.message}</p>
-        
-      </>
-    ); //errormessage class defined in the css, the error has data and inside we have message of error
-  }
+    if (isStudentsError || isSchoolsError) {
+      content = (
+        <>
+          <Students />
+          <div className="error-bar">
+            {studentsError?.data?.message && (
+              <p>{studentsError.data.message}</p>
+            )}
+            {schoolsError?.data?.message && (
+              <p>{schoolsError.data.message}</p>
+            )}
+          </div>
+        </>
+      );
+    }
   if (isStudentsSuccess || filteredStudents?.length > 0) {
     content = (
       <>
@@ -489,14 +496,14 @@ const StudentsList = () => {
               type="text"
               value={searchQuery}
               onChange={handleSearch}
-              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
             />
           </div>
           {/* Grade Filter Dropdown */}
           <select
             value={selectedGrade}
             onChange={handleGradeChange}
-            className="text-sm h-8 border border-gray-300 rounded-md px-4"
+            className="text-sm h-8 border border-gray-300  px-4"
           >
             <option value="">All Grades</option>
             {gradeOptions.map((grade) => (
@@ -509,7 +516,7 @@ const StudentsList = () => {
           <select
             value={selectedSchoolName}
             onChange={handleSchoolChange}
-            className="text-sm h-8 border border-gray-300 rounded-md px-4"
+            className="text-sm h-8 border border-gray-300  px-4"
           >
             <option value="">All Schools</option>
             {attendedSchools?.map(
@@ -561,7 +568,7 @@ const StudentsList = () => {
             </button>
             <button
               className={`px-4 py-2 ${
-                selectedRows?.length === 1 ? "bg-green-500" : "bg-gray-300"
+                selectedRows?.length === 1 ? "add-button" : "bg-gray-300"
               } text-white rounded`}
               onClick={handleRegisterSelected}
               disabled={selectedRows?.length !== 1} // Disable if no rows are selected

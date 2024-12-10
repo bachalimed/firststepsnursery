@@ -52,6 +52,38 @@ const PublicHeader = () => {
       </button>
     ) : null;
 
+//random circles
+const generateCircles = (count) => {
+  const colors = ['bg-red-600', 'bg-green-500', 'bg-sky-500', 'bg-amber-300', 'bg-fuchsia-500'];
+  const circles = Array.from({ length: count }).map((_, index) => {
+    const size = Math.random() * 50 + 10; // Random size between 10px and 60px
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const top = Math.random() * 100; // Random position
+    const left = Math.random() * 100;
+    return (
+      <div
+        key={index}
+        className={`absolute ${color} rounded-full opacity-50`}
+        style={{
+          width: `${size}px`,
+          height: `${size}px`,
+          top: `${top}%`,
+          left: `${left}%`,
+        }}
+      />
+    );
+  });
+
+  return circles;
+};
+    const circles = generateCircles(10); // Generate 10 random circles
+
+
+    // <header className="bg-sky-700 text-white py-1 px-3 md:px-1 flex md:flex-row md:justify-between items-center shadow-md relative overflow-hidden">
+    //   {/* Background circles */}
+    //   <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+    //     {circles}
+    //   </div>
   return (
     <header className="bg-gray-100 shadow-lg">
       {/* Top Navigation */}

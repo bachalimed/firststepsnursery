@@ -533,3 +533,15 @@ header .bg-blue-600 p {
 
 /* end of banner page ////////////////////////////////////////////*/
 
+/* /////////////////////////////error in list   */
+.error-bar {
+  background-color: #fcd34d; /* Amber-300 */
+  color: #000000; /* Text color for better contrast */
+  padding: 10px 15px;
+  border-radius: 2px;
+  margin: 15px 0;
+  font-weight: bold;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+/* /////////////////////////////error in list end  */

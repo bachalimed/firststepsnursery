@@ -47,23 +47,13 @@ const MenuButtons = () => {
   let content;
   content = (
     <div className="relative">
-      <header
-        className={`bg-sky-700 text-white py-1 px-4 md:px-8 flex  gap-x-4 items-center shadow-md `}
-      >
-        {/* <button className="text-grey-300 p-2 hover:bg-red-800 rounded-md md:hidden">
-          <IoMenuOutline className="text-2xl" />
-        </button> */}
-        <Link to="/">
-          <li
-            className={`text-grey-300 text-sm flex border  border-white items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-500 rounded-md  `}
-          >
-            <BiHome className="text-2xl " />
-            <span className="flex-1 hidden md:block">Public</span>
-          </li>
-        </Link>
+      <header className="flex items-center md:px-1 bg-sky-700">
+       
         <Link to="/dashboard/">
           <li
-            className={`text-grey-300 text-sm flex border border-white items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-500 rounded-md `}
+           className={`text-grey-300 text-sm flex text-white items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 ${
+            location.pathname.startsWith("/dashboard/") ? "bg-gray-300 text-gray-950" : ""
+          } `}
           >
             <VscDashboard className="text-2xl" />
             <span className="flex-1 hidden md:block">Dashboard</span>
@@ -71,20 +61,27 @@ const MenuButtons = () => {
         </Link>
        
         <div className="relative">
-          <Link to="/students/studentsParents/students/">
+          <Link to="/students/studentsParents/students/" >
             <li
-              className={`text-grey-300 text-sm flex border border-white items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-500 rounded-md`}
+              className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
+                location.pathname.startsWith("/students/")
+                  ? "bg-gray-300 text-gray-950"
+                  : ""
+              } `}
             >
               <PiStudent className="text-2xl" />
               <span className="flex-1 hidden md:block">Students</span>
             </li>
           </Link>
         </div>
-        {/* this link will start the first tab instead of the sections  */}
         <div className="relative">
           <Link to="/academics/sections/nurserySectionsList/">
             <li
-              className={`text-grey-300 text-sm flex border  border-white items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-500 rounded-md  `}
+              className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
+                location.pathname.startsWith("/academics/")
+                  ? "bg-gray-300 text-gray-950"
+                  : ""
+              }`}
             >
               <IoSchoolOutline className="text-2xl " />
               <span className="flex-1 hidden md:block">Academics</span>
@@ -92,9 +89,13 @@ const MenuButtons = () => {
           </Link>
         </div>
         <div className="relative">
-          <Link to="/finances/Invoices/invoicesList">
+          <Link to="/finances/invoices/invoicesList/">
             <li
-              className={`text-grey-300 text-sm flex border  border-white items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-500 rounded-md  `}
+              className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
+                location.pathname.startsWith("/finances/")
+                  ? "bg-gray-300 text-gray-950"
+                  : ""
+              }`}
             >
               <LuCircleDollarSign className="text-2xl " />
               <span className="flex-1 hidden md:block">Finances</span>
@@ -104,18 +105,25 @@ const MenuButtons = () => {
         <div className="relative">
           <Link to="/hr/employees/employeesList/">
             <li
-              className={`text-grey-300 text-sm flex border  border-white items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-500 rounded-md  `}
+              className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
+                location.pathname.startsWith("/hr/")
+                  ? "bg-gray-300 text-gray-950"
+                  : ""
+              }`}
             >
               <GiHumanPyramid className="text-2xl " />
               <span className="flex-1 hidden md:block">HR</span>
             </li>
           </Link>
         </div>
-
         <div className="relative">
           <Link to="/admin/usersManagement/users/">
             <li
-              className={`text-grey-300 text-sm flex border  border-white items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-500 rounded-md  `}
+              className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
+                location.pathname.startsWith("/admin/")
+                  ? "bg-gray-300 text-gray-950"
+                  : ""
+              }`}
             >
               <GrUserAdmin className="text-2xl " />
               <span className="flex-1 hidden md:block">Admin</span>
@@ -123,125 +131,87 @@ const MenuButtons = () => {
           </Link>
         </div>
         <div
-  className="relative"
-  onMouseEnter={() => setSettingsOpen(true)}
-  onMouseLeave={() => setSettingsOpen(false)}
->
-  <Link to="/settings/studentsSet/">
-    <li
-      className={`text-grey-300 text-sm flex border border-white items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-500 rounded-md`}
-    >
-      <SlSettings className="text-2xl" />
-      <span className="flex-1 hidden md:block">Settings</span>
-    </li>
-  </Link>
-  {settingsOpen && (
-    <ul className="absolute top-full left-0 bg-sky-700 text-white border border-white rounded-md shadow-md transition-all duration-300">
-      {/* <Link
-        to="/settings/dashboardSet/"
-        className={
-          location.pathname === "/settings/dashboardSet/"
-            ? "text-teal-200"
-            : ""
-        }
-      >
-        <li
-          className={`text-grey-300 text-sm flex border border-gray-300 items-center gap-x-4 cursor-pointer p-2 hover:bg-red-800 rounded-md`}
+          className="relative"
+          onMouseEnter={() => setSettingsOpen(true)}
+          onMouseLeave={() => setSettingsOpen(false)}
         >
-          Dashboard
-        </li>
-      </Link> */}
-      <Link
-        to="/settings/studentsSet/"
-        className={
-          location.pathname === "/settings/studentsSet/"
-            ? "bg-sky-100"
-            : ""
-        }
-      >
-        <li
-          className={`text-grey-300 text-sm flex  items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-500 rounded-md`}
-        >
-          Students
-        </li>
-      </Link>
-      <Link
-        to="/settings/academicsSet/"
-        className={
-          location.pathname === "/settings/academicsSet/"
-            ? "bg-sky-100"
-            : ""
-        }
-      >
-        <li
-          className={`text-grey-300 text-sm flex  items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-500  rounded-md`}
-        >
-          Academics
-        </li>
-      </Link>
-      <Link
-        to="/settings/financesSet/"
-        className={
-          location.pathname === "/settings/financesSet/"
-            ? "bg-sky-100"
-            : ""
-        }
-      >
-        <li
-          className={`text-grey-300 text-sm flex  items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-500 rounded-md`}
-        >
-          Finances
-        </li>
-      </Link>
-      <Link
-        to="/settings/HRSet/"
-        className={
-          location.pathname === "/settings/HRSet/"
-            ? "bg-sky-100"
-            : ""
-        }
-      >
-        <li
-          className={`text-grey-300 text-sm flex  items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-500 rounded-md`}
-        >
-          HR
-        </li>
-      </Link>
-      {/* <Link
-        to="/settings/deskSet/"
-        className={
-          location.pathname === "/settings/deskSet/"
-            ? "text-teal-200"
-            : ""
-        }
-      >
-        <li
-          className={`text-grey-300 text-sm flex border border-gray-300 items-center gap-x-4 cursor-pointer p-2 hover:bg-red-800 rounded-md`}
-        >
-          Desk
-        </li>
-      </Link> */}
-      {/* <Link
-        to="/settings/cmsSet/"
-        className={
-          location.pathname === "/settings/cmsSet/"
-            ? "text-teal-200"
-            : ""
-        }
-      >
-        <li
-          className={`text-grey-300 text-sm flex border border-gray-300 items-center gap-x-4 cursor-pointer p-2 hover:bg-red-800 rounded-md`}
-        >
-          CMS
-        </li>
-      </Link> */}
-    </ul>
-  )}
-</div>
-
+          <Link to="/settings/studentsSet/">
+            <li
+              className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
+                location.pathname.startsWith("/settings/")
+                  ? "bg-gray-300 text-gray-950"
+                  : ""
+              }`}
+            >
+              <SlSettings className="text-2xl" />
+              <span className="flex-1 hidden md:block">Settings</span>
+            </li>
+          </Link>
+          {settingsOpen && (
+            <ul className="absolute top-full left-0 bg-sky-700 text-white    shadow-md transition-all duration-300">
+              <Link
+                to="/settings/studentsSet/"
+                className={
+                  location.pathname.startsWith("/settings/")
+                    ? "bg-sky-100"
+                    : ""
+                }
+              >
+                <li
+                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 `}
+                >
+                  Students
+                </li>
+              </Link>
+              <Link
+                to="/settings/academicsSet/"
+                className={
+                  location.pathname.startsWith("/settings/")
+                    ? "bg-sky-100"
+                    : ""
+                }
+              >
+                <li
+                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 `}
+                >
+                  Academics
+                </li>
+              </Link>
+              <Link
+                to="/settings/financesSet/"
+                className={
+                  location.pathname.startsWith("/settings/")
+                    ? "bg-sky-100"
+                    : ""
+                }
+              >
+                <li
+                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 `}
+                >
+                  Finances
+                </li>
+              </Link>
+              <Link
+                to="/settings/HRSet/"
+                className={
+                  location.pathname.startsWith("/settings/")
+                    ? "bg-sky-100"
+                    : ""
+                }
+              >
+                <li
+                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 `}
+                >
+                  HR
+                </li>
+              </Link>
+            </ul>
+          )}
+        </div>
       </header>
     </div>
   );
   return content;
 };
+
 export default MenuButtons;

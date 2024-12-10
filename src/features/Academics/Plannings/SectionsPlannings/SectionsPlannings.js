@@ -1116,7 +1116,7 @@ useEffect(() => {
         <select
           value={selectedSchoolId}
           onChange={handleSchoolChange}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
+          className="text-sm h-8 border border-gray-300  px-4"
         >
           <option value="">All Schools</option>
           {schoolsList?.map((school) => (
@@ -1129,7 +1129,7 @@ useEffect(() => {
         <select
           value={selectedSessionType}
           onChange={handleSessionTypeChange}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
+          className="text-sm h-8 border border-gray-300  px-4"
         >
          <option value="">All Types</option>
         <option value="Drop">Drop</option>

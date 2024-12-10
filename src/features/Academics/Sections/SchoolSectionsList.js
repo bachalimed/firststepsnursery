@@ -63,10 +63,10 @@ const SchoolSectionsList = () => {
   //console.log("Fetch sections for academic year:", selectedAcademicYear);
   const {
     data: sections, //the data is renamed sections
-    isLoading, 
-    isSuccess,
-    isError,
-    error,
+    isLoading: isSectionsLoading,
+    isSuccess: isSectionsSuccess,
+    isError: isSectionsError,
+    error: sectionsError,
   } = useGetSectionsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -74,10 +74,9 @@ const SchoolSectionsList = () => {
       endpointName: "schoolSectionsList",
     } || {},
     {
-     
       //pollingInterval: 60000,
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
 
@@ -93,7 +92,7 @@ const SchoolSectionsList = () => {
   const [currentSectionsFilter, setCurrentSectionsFilter] = useState(false);
   let schoolSectionsList = [];
   let filteredSchoolSections = [];
-  if (isSuccess) {
+  if (isSectionsSuccess) {
     //set to the state to be used for other component s and edit section component
 
     const { entities } = sections;
@@ -106,14 +105,18 @@ const SchoolSectionsList = () => {
     // Filter sections based on search query, including student names
     filteredSchoolSections = schoolSectionsList?.filter((school) => {
       // Check sectionTo validity for the current school if filtering is active
-      const sectionToIsValid = !currentSectionsFilter || 
-        school.students?.some(student => student.sectionTo !== undefined && student.sectionTo !== null);
-    
+      const sectionToIsValid =
+        !currentSectionsFilter ||
+        school.students?.some(
+          (student) =>
+            student.sectionTo !== undefined && student.sectionTo !== null
+        );
+
       // Check if the school's name matches the search query
       const schoolNameMatches = school.schoolName
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
-    
+
       // Check if any student in the school matches the search query
       const studentMatches = school.students?.some((student) => {
         const firstNameMatch = student?.studentName?.firstName
@@ -125,7 +128,7 @@ const SchoolSectionsList = () => {
         const lastNameMatch = student?.studentName?.lastName
           ?.toLowerCase()
           .includes(searchQuery.toLowerCase());
-    
+
         // Check additional fields like section label, classroom label, etc.
         const sectionLabelMatch = student?.sectionLabel
           ?.toLowerCase()
@@ -133,7 +136,7 @@ const SchoolSectionsList = () => {
         const classroomLabelMatch = student?.classroomLabel
           ?.toLowerCase()
           .includes(searchQuery.toLowerCase());
-    
+
         // Return true if any student fields match the search query
         return (
           firstNameMatch ||
@@ -143,13 +146,12 @@ const SchoolSectionsList = () => {
           classroomLabelMatch
         );
       });
-    
+
       // Return true if either the school name or any student fields match the search query, and sectionTo is valid for the current school
       return (schoolNameMatches || studentMatches) && sectionToIsValid;
     });
-
   }
-console.log(filteredSchoolSections,'filteredSchoolSections')
+  console.log(filteredSchoolSections, "filteredSchoolSections");
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
@@ -194,7 +196,6 @@ console.log(filteredSchoolSections,'filteredSchoolSections')
       selector: (row) => row?.schoolName,
       sortable: true,
       width: "150px",
-     
     },
     {
       name: "Students",
@@ -223,9 +224,7 @@ console.log(filteredSchoolSections,'filteredSchoolSections')
       selector: (row) => (
         <div>
           {row.students.map((student) => (
-            <div key={student._id}>
-              {student.sectionLabel} 
-            </div>
+            <div key={student._id}>{student.sectionLabel}</div>
           ))}
         </div>
       ),
@@ -246,7 +245,6 @@ console.log(filteredSchoolSections,'filteredSchoolSections')
       sortable: true,
       width: "180px",
     },
-    
 
     // {
     //   name: "Section Formed",
@@ -277,37 +275,50 @@ console.log(filteredSchoolSections,'filteredSchoolSections')
     //   width: "220px",
     // },
   ];
-    // Custom header to include the row count
-    const tableHeader = (
-      <div>
-        <h2>Users List: 
-        <span> {filteredSchoolSections.length} users</span></h2>
-      </div>
-    );
+  // Custom header to include the row count
+  const tableHeader = (
+    <div>
+      <h2>
+        Users List:
+        <span> {filteredSchoolSections.length} users</span>
+      </h2>
+    </div>
+  );
   let content;
-  if (isLoading) content = <LoadingStateIcon />;
-  if (isError) {
-    content = <p className="errmsg">{error?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
+  if (isSectionsLoading)
+    content = (
+      <>
+        <Academics />
+        <LoadingStateIcon />
+      </>
+    );
+  if (isSectionsError) {
+    content = (
+      <>
+        <Academics />
+        <div className="error-bar">{sectionsError?.data?.message}</div>
+      </>
+    );
   }
-  //if (isSuccess){
+  if (isSectionsSuccess){
 
   content = (
     <>
       <Academics />
       <div className="flex space-x-2 items-center">
-      <div className="relative h-10 mr-2 ">
-        <HiOutlineSearch
-          fontSize={20}
-          className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-        />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={handleSearch}
-          className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
-        />
-      </div>
-      <button
+        <div className="relative h-10 mr-2 ">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+          />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+          />
+        </div>
+        <button
           onClick={() => setCurrentSectionsFilter((prev) => !prev)}
           className="ml-2 p-2 bg-gray-200 rounded hover:text-blue-600"
         >
@@ -331,8 +342,8 @@ console.log(filteredSchoolSections,'filteredSchoolSections')
             headCells: {
               style: {
                 // Apply Tailwind style via a class-like syntax
-                justifyContent: 'center', // Align headers to the center
-                textAlign: 'center', // Center header text
+                justifyContent: "center", // Align headers to the center
+                textAlign: "center", // Center header text
               },
             },
             // cells: {
@@ -346,7 +357,7 @@ console.log(filteredSchoolSections,'filteredSchoolSections')
       </div>
     </>
   );
-  //}
+  }
   return content;
 };
 export default SchoolSectionsList;

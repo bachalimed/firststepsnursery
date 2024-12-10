@@ -38,7 +38,7 @@ const ExpensesList = () => {
 
   const {
     data: expenses, //the data is renamed schools
-    isLoading: isExpensesLoading, 
+    isLoading: isExpensesLoading,
     isSuccess: isExpensesSuccess,
     isError: isExpensesError,
     error: expensesError,
@@ -171,12 +171,10 @@ const ExpensesList = () => {
       ),
       sortable: true,
       width: "120px",
-
     },
     {
       name: "Category",
-      selector: (row) =>
-        row?.expenseCategory?.expenseCategoryLabel,
+      selector: (row) => row?.expenseCategory?.expenseCategoryLabel,
       sortable: true,
       width: "120px",
     },
@@ -185,9 +183,7 @@ const ExpensesList = () => {
       selector: (row) => (
         <div>
           {row?.expenseItems?.map((item, index) => (
-            <div key={index}>
-              {item}
-            </div>
+            <div key={index}>{item}</div>
           ))}
         </div>
       ),
@@ -275,7 +271,12 @@ const ExpensesList = () => {
     );
 
   if (isExpensesError) {
-    content = <p className="errmsg">{expensesError?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
+    content = (
+      <>
+        <Finances />
+        <div className="error-bar">{expensesError?.data?.message}</div>
+      </>
+    );
   }
 
   if (isExpensesSuccess) {
@@ -290,7 +291,7 @@ const ExpensesList = () => {
             {filteredExpenses?.length > 0 && (
               <select
                 onChange={handleMonthChange}
-                className="text-sm h-8 border border-gray-300 rounded-md px-4"
+                className="text-sm h-8 border border-gray-300  px-4"
               >
                 {MONTHS}
               </select>

@@ -1002,7 +1002,7 @@ useEffect(() => {
         <select
           // value={selectedSchoolName}
           //onChange={handleSchoolChange}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
+          className="text-sm h-8 border border-gray-300  px-4"
         >
           <option value="">All Schools</option>
           {schoolsList?.map(

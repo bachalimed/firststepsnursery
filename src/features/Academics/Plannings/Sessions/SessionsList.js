@@ -55,7 +55,7 @@ const SessionsList = () => {
 
   const {
     data: sessions, //the data is renamed sessions
-    isLoading: isSessionsLoading, 
+    isLoading: isSessionsLoading,
     isSuccess: isSessionsSuccess,
     isError: isSessionsError,
     error: sessionsError,
@@ -65,13 +65,12 @@ const SessionsList = () => {
       endpointName: "sessionsList",
     } || {},
     {
-   
       //pollingInterval: 60000,
-      refetchOnFocus: true, 
+      refetchOnFocus: true,
       refetchOnMountOrArgChange: true,
     }
   );
-  
+
   //initialising the delete Mutation
   const [
     deleteSession,
@@ -378,8 +377,7 @@ const SessionsList = () => {
           {row.sessionData?.sessionCurrentEmployment?.salaryPackage?.cnss && (
             <div>{`cnss: ${row.sessionData?.sessionCurrentEmployment?.salaryPackage?.cnss}`}</div>
           )}
-          {row.sessionData?.sessionCurrentEmployment?.salaryPackage
-            ?.other && (
+          {row.sessionData?.sessionCurrentEmployment?.salaryPackage?.other && (
             <div>{`other: ${row.sessionData?.sessionCurrentEmployment?.salaryPackage?.other}`}</div>
           )}
         </div>
@@ -437,85 +435,93 @@ const SessionsList = () => {
     },
   ];
   let content;
-  if (isSessionsLoading) content = <p><LoadingStateIcon/></p>;
+  if (isSessionsLoading)
+    content = (
+      <p>
+        <LoadingStateIcon />
+      </p>
+    );
   if (isSessionsError) {
-    content = <p className="errmsg">{sessionsError?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
+    content = (
+      <>
+        <div className="error-bar">{sessionsError?.data?.message}</div>
+      </>
+    );
   }
-  //if (isSessionsSuccess){
+  if (isSessionsSuccess) {
+    content = (
+      <>
+        <Academics />
 
-  content = (
-    <>
-      <Academics />
-
-      <div className="relative h-10 mr-2 ">
-        <HiOutlineSearch
-          fontSize={20}
-          className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-        />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={handleSearch}
-          className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
-        />
-      </div>
-      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-        <DataTable
-          columns={column}
-          data={filteredSessions}
-          pagination
-          selectableRows
-          removableRows
-          pageSizeControl
-          onSelectedRowsChange={handleRowSelected}
-          selectableRowsHighlight
-        ></DataTable>
-        <div className="flex justify-end items-center space-x-4">
-          <button
-            className=" px-4 py-2 bg-green-600 text-white rounded"
-            onClick={handleRegisterSelected}
-            disabled={selectedRows.length !== 1} // Disable if no rows are selected
-            hidden={!canCreate}
-          >
-            Register
-          </button>
-
-          <button
-            className="px-3 py-2 bg-amber-300 text-white rounded"
-            onClick={handleDuplicateSelected}
-            disabled={selectedRows.length !== 1} // Disable if no rows are selected
-            hidden={!canCreate}
-          >
-            Re-hhh
-          </button>
-
-          {isAdmin && (
+        <div className="relative h-10 mr-2 ">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+          />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
+          />
+        </div>
+        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+          <DataTable
+            columns={column}
+            data={filteredSessions}
+            pagination
+            selectableRows
+            removableRows
+            pageSizeControl
+            onSelectedRowsChange={handleRowSelected}
+            selectableRowsHighlight
+          ></DataTable>
+          <div className="flex justify-end items-center space-x-4">
             <button
-              className="px-3 py-2 bg-gray-400 text-white rounded"
+              className=" px-4 py-2 bg-green-600 text-white rounded"
+              onClick={handleRegisterSelected}
+              disabled={selectedRows.length !== 1} // Disable if no rows are selected
+              hidden={!canCreate}
+            >
+              Register
+            </button>
+
+            <button
+              className="px-3 py-2 bg-amber-300 text-white rounded"
               onClick={handleDuplicateSelected}
               disabled={selectedRows.length !== 1} // Disable if no rows are selected
               hidden={!canCreate}
             >
-              All
+              Re-hhh
             </button>
-          )}
+
+            {isAdmin && (
+              <button
+                className="px-3 py-2 bg-gray-400 text-white rounded"
+                onClick={handleDuplicateSelected}
+                disabled={selectedRows.length !== 1} // Disable if no rows are selected
+                hidden={!canCreate}
+              >
+                All
+              </button>
+            )}
+          </div>
         </div>
-      </div>
-      <DeletionConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
-      />
-      {/* <RegisterModal 
+        <DeletionConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+        />
+        {/* <RegisterModal 
         isOpen={isRegisterModalOpen}
         onClose={() => setIsRegisterModalOpen(false)}
         sessionYears={sessionYears}
         academicYears={academicYears}
         onSave={onUpdateSessionClicked}
       /> */}
-    </>
-  );
-  //}
+      </>
+    );
+  }
   return content;
 };
 export default SessionsList;

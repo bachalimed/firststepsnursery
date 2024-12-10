@@ -179,18 +179,11 @@ const NewEmployeeDocumentsListForm = () => {
     Navigate("/settings/hrSet/employeeDocumentsListsList");
   };
 
-  //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
-  const errClass = isAddError ? "errmsg" : "offscreen";
-  //const validEmployeeDocumentsListClass = !validEmployeeDocumentsListName ? 'form__input--incomplete' : ''
-  //const validPwdClass = !validPassword ? 'form__input--incomplete' : ''
-  //const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
-
+ 
   const content = (
     <>
       <EmployeesSet />
-      <p className={isAddError ? "errmsg" : "offscreen"}>
-        {addError?.data?.message}
-      </p>
+     
       <form
         lassName="form bg-gray-100 p-6 rounded shadow-lg max-w-md mx-auto"
         onSubmit={onSaveEmployeeDocumentsListClicked}

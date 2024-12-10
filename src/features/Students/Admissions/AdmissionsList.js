@@ -49,10 +49,10 @@ const AdmissionsList = () => {
   //console.log("Fetch admissions for academic year:", selectedAcademicYear);
   const {
     data: admissions, //the data is renamed admissions
-    isLoading: isAdmissionLoading, 
-    isSuccess: isAdmissionSuccess,
-    isError: isAdmissionError,
-    error: admissionError,
+    isLoading: isAdmissionsLoading, 
+    isSuccess: isAdmissionsSuccess,
+    isError: isAdmissionsError,
+    error: admissionsError,
   } = useGetAdmissionsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -144,7 +144,7 @@ const AdmissionsList = () => {
   const [serviceTypeFilter, setServiceTypeFilter] = useState(""); // Filter for service type
   const [isFlaggedFilter, setIsFlaggedFilter] = useState(false); // State to manage the flagged filter
   const [isAuthorisedFilter, setIsAuthorisedFilter] = useState(false); // Authorised filter state
-  if (isAdmissionSuccess) {
+  if (isAdmissionsSuccess) {
     //set to the state to be used for other component s and edit admission component
 
     const { entities } = admissions;
@@ -595,21 +595,26 @@ const AdmissionsList = () => {
   
   
   let content;
-  if (isAdmissionLoading)
+  if (isAdmissionsLoading || isServicesLoading)
     content = (
       <>
         <Students />
         <LoadingStateIcon />
       </>
     );
-  if (isAdmissionError) {
+  if (isAdmissionsError || isServicesError) {
     content = (
-      <p className="errmsg">
-        <Students /> {admissionError?.data?.message}
-      </p>
-    ); //errormessage class defined in the css, the error has data and inside we have message of error
-  }
-  if (isAdmissionSuccess) {
+      <>
+       
+        <Students />
+        <div className="error-bar">
+          {admissionsError?.data?.message}
+          {servicesError?.data?.message}
+         
+        </div>
+      </>
+    ); }
+  if (isAdmissionsSuccess && isServicesSuccess) {
     content = (
       <>
         <Students />
@@ -624,7 +629,7 @@ const AdmissionsList = () => {
               type="text"
               value={searchQuery}
               onChange={handleSearch}
-              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
             />
           </div>
           {/* feeMonths Filter Dropdown */}
@@ -632,7 +637,7 @@ const AdmissionsList = () => {
           <select
             onChange={handleMonthFilterChange}
             value={monthFilter}
-            className="text-sm h-8 border border-gray-300 rounded-md px-4"
+            className="text-sm h-8 border border-gray-300  px-4"
           >
             <option value="">All Months</option>
             <option value="September">September</option>
@@ -652,7 +657,7 @@ const AdmissionsList = () => {
           <select
             onChange={handleServiceTypeFilterChange}
             value={serviceTypeFilter}
-            className="text-sm h-8 border border-gray-300 rounded-md px-4"
+            className="text-sm h-8 border border-gray-300  px-4"
           >
             <option value="">All Services</option>
             {/* Assuming serviceList contains unique serviceType values */}
@@ -666,7 +671,7 @@ const AdmissionsList = () => {
           <select
             value={isFlaggedFilter}
             onChange={(e) => setIsFlaggedFilter(e.target.value)}
-            className="text-sm h-8 border border-gray-300 rounded-md px-4"
+            className="text-sm h-8 border border-gray-300  px-4"
           >
             <option value="">Flag Status</option>
             <option value="flagged">Flagged</option>
@@ -676,7 +681,7 @@ const AdmissionsList = () => {
           <select
             value={isAuthorisedFilter}
             onChange={(e) => setIsAuthorisedFilter(e.target.value)}
-            className="text-sm h-8 border border-gray-300 rounded-md px-4"
+            className="text-sm h-8 border border-gray-300  px-4"
           >
             <option value="">Authorisation Status</option>
             <option value="authorised">Authorised</option>

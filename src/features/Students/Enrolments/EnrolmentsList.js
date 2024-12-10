@@ -29,7 +29,6 @@ import useAuth from "../../../hooks/useAuth";
 import { MONTHS } from "../../../config/Months";
 import { useOutletContext } from "react-router-dom";
 
-
 const EnrolmentsList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
@@ -58,10 +57,10 @@ const EnrolmentsList = () => {
   //console.log("Fetch enrolments for academic year:", selectedAcademicYear);
   const {
     data: enrolments, //the data is renamed enrolments
-    isLoading: isEnrolmentGetLoading, 
-    isSuccess: isEnrolmentGetSuccess,
-    isError: isEnrolmentGetError,
-    error: enrolmentGetError,
+    isLoading: isEnrolmentsLoading,
+    isSuccess: isEnrolmentsSuccess,
+    isError: isEnrolmentsError,
+    error: enrolmentsError,
   } = useGetEnrolmentsByYearQuery(
     {
       // selectedMonth: getCurrentMonth(),
@@ -126,25 +125,28 @@ const EnrolmentsList = () => {
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
     try {
-      const response=await deleteEnrolment({ id: idEnrolmentToDelete });
-    setIsDeleteModalOpen(false); // Close the modal
-    console.log(response,'response')
-    if (response.data && response.data.message) {
-      // Success response
-      triggerBanner(response.data.message, "success");
+      const response = await deleteEnrolment({ id: idEnrolmentToDelete });
+      setIsDeleteModalOpen(false); // Close the modal
+      console.log(response, "response");
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner("Failed to delete enrolment. Please try again.", "error");
 
-    } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
-      // Error response
-      triggerBanner(response.error.data.message, "error");
-    } else {
-      // In case of unexpected response format
-      triggerBanner("Unexpected response from server.", "error");
+      console.error("Error deleting:", error);
     }
-  } catch (error) {
-    triggerBanner("Failed to delete enrolment. Please try again.", "error");
-
-    console.error("Error deleting:", error);
-  }
   };
 
   // Function to close the modal without deleting
@@ -163,7 +165,7 @@ const EnrolmentsList = () => {
   let enrolmentsList = [];
   let filteredEnrolments = [];
 
-  if (isEnrolmentGetSuccess) {
+  if (isEnrolmentsSuccess) {
     //set to the state to be used for other component s and edit enrolment component
     const { entities } = enrolments;
     //we need to change into array to be read??
@@ -231,19 +233,22 @@ const EnrolmentsList = () => {
     setSelectedRows(state.selectedRows);
     console.log("selectedRows:", state.selectedRows);
   };
-  
+
   // Handler for generating an invoice
   const handleGenerateInvoice = async () => {
     try {
-      const response=   await addNewInvoice({
+      const response = await addNewInvoice({
         formData: selectedRows,
         operator: userId,
       });
       if (response.data && response.data.message) {
         // Success response
         triggerBanner(response.data.message, "success");
-
-      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
         // Error response
         triggerBanner(response.error.data.message, "error");
       } else {
@@ -335,7 +340,10 @@ const EnrolmentsList = () => {
       selector: (row) => (
         <span
           style={{
-            color: row?.serviceFinalFee < row?.serviceAuthorisedFee ? "red" : "black",
+            color:
+              row?.serviceFinalFee < row?.serviceAuthorisedFee
+                ? "red"
+                : "black",
           }}
         >
           {row?.serviceFinalFee}
@@ -512,7 +520,7 @@ const EnrolmentsList = () => {
               onClick={() =>
                 navigate(`/students/enrolments/editEnrolment/${row.id}`)
               }
-              hidden={row?.enrolmentInvoice?.invoiceAmount}//no editing for already invoiced enrolments
+              hidden={row?.enrolmentInvoice?.invoiceAmount} //no editing for already invoiced enrolments
             >
               <FiEdit className="text-2xl" />
             </button>
@@ -545,121 +553,123 @@ const EnrolmentsList = () => {
   );
 
   let content;
-  if (isEnrolmentGetLoading)
+  if (isEnrolmentsLoading || isServicesLoading)
     content = (
       <>
         <Students />
         <LoadingStateIcon />
       </>
     );
-  if (isEnrolmentGetError) {
+  if (isEnrolmentsError || isServicesError) {
     content = (
       <>
         <Students />
-        <p className="errmsg">{enrolmentGetError?.data?.message}</p>
-      </>
-    ); //errormessage class defined in the css, the error has data and inside we have message of error
-  }
-  //if (isenrolmentGetSuccess){
-
-  content = (
-    <>
-      <Students />
-      <div className="flex space-x-2 items-center">
-        {/* Search Bar */}
-        <div className="relative h-10 mr-2 ">
-          <HiOutlineSearch
-            fontSize={20}
-            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-          />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={handleSearch}
-            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
-          />
+        <div className="error-bar">
+          {enrolmentsError?.data?.message}
+          {servicesError?.data?.message}
         </div>
-        {/* Enrolment Month Filter */}
-        <select
-          value={selectedEnrolmentMonth}
-          onChange={(e) => setSelectedEnrolmentMonth(e.target.value)}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
-        >
-          {/* Default option is the current month */}
-          <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
-          {MONTHS.map(
-            (month, index) =>
-              month !== getCurrentMonth() && (
-                <option key={index} value={month}>
-                  {month}
-                </option>
-              )
-          )}
-        </select>
-        {/* Service Type Filter */}
-        <select
-          value={selectedServiceType}
-          onChange={(e) => setSelectedServiceType(e.target.value)}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
-        >
-          <option value="">All Services</option>
-          {servicesList.map((service, index) => (
-            <option key={index} value={service.serviceType}>
-              {service.serviceType}
-            </option>
-          ))}
-        </select>
+      </>
+    );
+  }
+  if (isEnrolmentsSuccess && isServicesSuccess) {
+    content = (
+      <>
+        <Students />
+        <div className="flex space-x-2 items-center">
+          {/* Search Bar */}
+          <div className="relative h-10 mr-2 ">
+            <HiOutlineSearch
+              fontSize={20}
+              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+            />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearch}
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+            />
+          </div>
+          {/* Enrolment Month Filter */}
+          <select
+            value={selectedEnrolmentMonth}
+            onChange={(e) => setSelectedEnrolmentMonth(e.target.value)}
+            className="text-sm h-8 border border-gray-300  px-4"
+          >
+            {/* Default option is the current month */}
+            <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
+            {MONTHS.map(
+              (month, index) =>
+                month !== getCurrentMonth() && (
+                  <option key={index} value={month}>
+                    {month}
+                  </option>
+                )
+            )}
+          </select>
+          {/* Service Type Filter */}
+          <select
+            value={selectedServiceType}
+            onChange={(e) => setSelectedServiceType(e.target.value)}
+            className="text-sm h-8 border border-gray-300  px-4"
+          >
+            <option value="">All Services</option>
+            {servicesList.map((service, index) => (
+              <option key={index} value={service.serviceType}>
+                {service.serviceType}
+              </option>
+            ))}
+          </select>
 
-        {/* Invoiced Filter */}
-        <select
-          value={invoicedFilter}
-          onChange={(e) => setInvoicedFilter(e.target.value)}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
-        >
-          <option value="">All invoicing</option>
-          <option value="invoiced">Invoiced</option>
-          <option value="notInvoiced">Not Invoiced</option>
-        </select>
+          {/* Invoiced Filter */}
+          <select
+            value={invoicedFilter}
+            onChange={(e) => setInvoicedFilter(e.target.value)}
+            className="text-sm h-8 border border-gray-300  px-4"
+          >
+            <option value="">All invoicing</option>
+            <option value="invoiced">Invoiced</option>
+            <option value="notInvoiced">Not Invoiced</option>
+          </select>
 
-        {/* Paid Filter */}
-        <select
-          value={paidFilter}
-          onChange={(e) => setPaidFilter(e.target.value)}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
-        >
-          <option value="">All payment</option>
-          <option value="paid">Paid</option>
-          <option value="unpaid">Unpaid</option>
-        </select>
-      </div>
-      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-        <DataTable
-          title={tableHeader}
-          columns={column}
-          data={filteredEnrolments}
-          pagination
-          selectableRows
-          removableRows
-          pageSizeControl
-          onSelectedRowsChange={handleRowSelected}
-          selectableRowsHighlight
-          customStyles={{
-            headCells: {
-              style: {
-                // Apply Tailwind style via a class-like syntax
-                justifyContent: "center", // Align headers to the center
-                textAlign: "center", // Center header text
+          {/* Paid Filter */}
+          <select
+            value={paidFilter}
+            onChange={(e) => setPaidFilter(e.target.value)}
+            className="text-sm h-8 border border-gray-300  px-4"
+          >
+            <option value="">All payment</option>
+            <option value="paid">Paid</option>
+            <option value="unpaid">Unpaid</option>
+          </select>
+        </div>
+        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+          <DataTable
+            title={tableHeader}
+            columns={column}
+            data={filteredEnrolments}
+            pagination
+            selectableRows
+            removableRows
+            pageSizeControl
+            onSelectedRowsChange={handleRowSelected}
+            selectableRowsHighlight
+            customStyles={{
+              headCells: {
+                style: {
+                  // Apply Tailwind style via a class-like syntax
+                  justifyContent: "center", // Align headers to the center
+                  textAlign: "center", // Center header text
+                },
               },
-            },
-            // cells: {
-            //   style: {
-            //     justifyContent: 'center', // Center cell content
-            //     textAlign: 'center',
-            //   },
-            // },
-          }}
-        ></DataTable>
-       
+              // cells: {
+              //   style: {
+              //     justifyContent: 'center', // Center cell content
+              //     textAlign: 'center',
+              //   },
+              // },
+            }}
+          ></DataTable>
+
           <div className="flex justify-end items-center space-x-4">
             <button
               className="add-button"
@@ -669,24 +679,25 @@ const EnrolmentsList = () => {
               New Enrolment
             </button>
             <button
-              className="add-button"
+              className={`px-4 py-2 ${
+                selectedRows?.length === 1 ? "add-button" : "bg-gray-300"
+              } text-white rounded`}
               onClick={handleGenerateInvoice}
               hidden={!canCreate}
-              disabled={selectedRows?.length > 20}
+              disabled={selectedRows?.length > 20 || selectedRows?.length < 1}
             >
               Generate {selectedRows?.length} Invoices
             </button>
           </div>
-       
-      </div>
-      <DeletionConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
-      />
-    </>
-  );
-  //}
+        </div>
+        <DeletionConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+        />
+      </>
+    );
+  }
   return content;
 };
 export default EnrolmentsList;

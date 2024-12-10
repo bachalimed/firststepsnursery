@@ -61,7 +61,7 @@ const LeavesList = () => {
 
   const {
     data: leaves, //the data is renamed leaves
-    isLoading: isLeavesLoading, 
+    isLoading: isLeavesLoading,
     isSuccess: isLeavesSuccess,
     isError: isLeavesError,
     error: leavesError,
@@ -349,18 +349,23 @@ const LeavesList = () => {
             // Ensure the dates are properly parsed
             const startDate = new Date(leaveStartDate);
             const endDate = new Date(leaveEndDate);
-          
+
             // Calculate the duration in days (inclusive)
             const leaveDuration = Math.max(
               Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1,
               0
             ); // Ensure the duration doesn't go negative
-          
+
             return <div>{leaveDuration} day(s)</div>;
           };
-          
+
           // Usage
-          return <LeaveDuration leaveStartDate={row?.leaveStartDate} leaveEndDate={row?.leaveEndDate} />;
+          return (
+            <LeaveDuration
+              leaveStartDate={row?.leaveStartDate}
+              leaveEndDate={row?.leaveEndDate}
+            />
+          );
         }
       },
       sortable: true,
@@ -420,7 +425,7 @@ const LeavesList = () => {
       removableRows: true,
       width: "150px",
     },
-    
+
     //  {name: "Worked hours",
     //   selector:row=>(row?.TBD),
 
@@ -499,18 +504,18 @@ const LeavesList = () => {
   let content;
   if (isLeavesLoading)
     content = (
-      <p>
+      <>
         <HR />
         <LoadingStateIcon />
-      </p>
+      </>
     );
   if (isLeavesError) {
     content = (
-      <p className="errmsg">
+      <>
         <HR />
-        {leavesError?.data?.message}
-      </p>
-    ); //errormessage class defined in the css, the error has data and inside we have message of error
+        <div className="error-bar">{leavesError?.data?.message}</div>
+      </>
+    );
   }
   if (isLeavesSuccess) {
     content = (
@@ -528,14 +533,14 @@ const LeavesList = () => {
               type="text"
               value={searchQuery}
               onChange={handleSearch}
-              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
             />
           </div>
           {/*  Month Filter */}
           <select
             value={selectedLeaveMonth}
             onChange={(e) => setSelectedLeaveMonth(e.target.value)}
-            className="text-sm h-8 border border-gray-300 rounded-md px-4"
+            className="text-sm h-8 border border-gray-300  px-4"
           >
             {/* Default option is the current month */}
             <option value={getCurrentMonth()}>{getCurrentMonth()}</option>

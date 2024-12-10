@@ -63,10 +63,10 @@ const NurserySectionsList = () => {
   //console.log("Fetch sections for academic year:", selectedAcademicYear);
   const {
     data: sections, //the data is renamed sections
-    isLoading, 
-    isSuccess,
-    isError,
-    error,
+    isLoading: isSectionsLoading,
+    isSuccess: isSectionsSuccess,
+    isError: isSectionsError,
+    error: sectionsError,
   } = useGetSectionsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -74,10 +74,9 @@ const NurserySectionsList = () => {
       endpointName: "NurserySectionsList",
     } || {},
     {
-     
-      //pollingInterval: 60000,  
+      //pollingInterval: 60000,
       refetchOnFocus: true,
-      refetchOnMountOrArgChange: true, 
+      refetchOnMountOrArgChange: true,
     }
   );
 
@@ -93,7 +92,7 @@ const NurserySectionsList = () => {
   const [currentSectionsFilter, setCurrentSectionsFilter] = useState(false);
   let sectionsList = [];
   let filteredSections = [];
-  if (isSuccess) {
+  if (isSectionsSuccess) {
     //set to the state to be used for other component s and edit section component
 
     const { entities } = sections;
@@ -107,13 +106,15 @@ const NurserySectionsList = () => {
     filteredSections = sectionsList?.filter((section) => {
       // Apply filter for sectionTo if needed
       const sectionToIsValid =
-        !currentSectionsFilter || (section.sectionTo === undefined || section.sectionTo === null);
-    
+        !currentSectionsFilter ||
+        section.sectionTo === undefined ||
+        section.sectionTo === null;
+
       // Check section fields for search query
       const sectionMatches = Object.values(section).some((val) =>
         String(val).toLowerCase().includes(searchQuery.toLowerCase())
       );
-    
+
       // Check student details for search query
       const studentMatches = section.students?.some((student) => {
         const firstNameMatch = student?.studentName?.firstName
@@ -125,19 +126,21 @@ const NurserySectionsList = () => {
         const lastNameMatch = student?.studentName?.lastName
           ?.toLowerCase()
           .includes(searchQuery.toLowerCase());
-    
+
         // Check studentEducation.attendedSchool.schoolName
-        const schoolNameMatch = student?.studentEducation?.attendedSchool?.schoolName
-          ?.toLowerCase()
-          .includes(searchQuery.toLowerCase());
-    
-        return firstNameMatch || middleNameMatch || lastNameMatch || schoolNameMatch;
+        const schoolNameMatch =
+          student?.studentEducation?.attendedSchool?.schoolName
+            ?.toLowerCase()
+            .includes(searchQuery.toLowerCase());
+
+        return (
+          firstNameMatch || middleNameMatch || lastNameMatch || schoolNameMatch
+        );
       });
-    
+
       // Return true if section matches search query, student matches search query, and sectionTo is valid
       return (sectionMatches || studentMatches) && sectionToIsValid;
     });
-    
   }
 
   const handleSearch = (e) => {
@@ -201,13 +204,16 @@ const NurserySectionsList = () => {
     //console.log("Saving updated section:", updatedSectionObject);
 
     try {
-      const response=await updateSection(updatedSectionObject); // Save updated section to backend
+      const response = await updateSection(updatedSectionObject); // Save updated section to backend
       console.log("Section updated successfully");
       if (response.data && response.data.message) {
         // Success response
         triggerBanner(response.data.message, "success");
-
-      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
         // Error response
         triggerBanner(response.error.data.message, "error");
       } else {
@@ -234,55 +240,55 @@ const NurserySectionsList = () => {
       setSectionYears(sectionYears.filter((year) => year !== selectedYear));
     }
   };
- 
- 
 
- 
   //initialising the delete Mutation
- const [
-  deleteSection,
-  {
-    isLoading: isDelSectionLoading,
-    isSuccess: isDelSectionSuccess,
-    isError: isDelSectionError,
-    error: delSectionError,
-  },
-] = useDeleteSectionMutation();
+  const [
+    deleteSection,
+    {
+      isLoading: isDelSectionLoading,
+      isSuccess: isDelSectionSuccess,
+      isError: isDelSectionError,
+      error: delSectionError,
+    },
+  ] = useDeleteSectionMutation();
 
-// Function to handle the delete button click
-const onDeleteStudentClicked = (id) => {
-  setIdSectionToDelete(id); // Set the document to delete
-  setIsDeleteModalOpen(true); // Open the modal
-};
+  // Function to handle the delete button click
+  const onDeleteStudentClicked = (id) => {
+    setIdSectionToDelete(id); // Set the document to delete
+    setIsDeleteModalOpen(true); // Open the modal
+  };
 
-// Function to confirm deletion in the modal
-const handleConfirmDelete = async () => {
-  try {
-    const response=  await deleteSection({ id: idSectionToDelete });
-    if (response.data && response.data.message) {
-      // Success response
-      triggerBanner(response.data.message, "success");
+  // Function to confirm deletion in the modal
+  const handleConfirmDelete = async () => {
+    try {
+      const response = await deleteSection({ id: idSectionToDelete });
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner("Failed to delete section. Please try again.", "error");
 
-    } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
-      // Error response
-      triggerBanner(response.error.data.message, "error");
-    } else {
-      // In case of unexpected response format
-      triggerBanner("Unexpected response from server.", "error");
+      console.error("Error saving:", error);
     }
-  } catch (error) {
-    triggerBanner("Failed to delete section. Please try again.", "error");
+    setIsDeleteModalOpen(false); // Close the modal
+  };
 
-    console.error("Error saving:", error);
-  }
-  setIsDeleteModalOpen(false); // Close the modal
-};
-
-// Function to close the modal without deleting
-const handleCloseDeleteModal = () => {
-  setIsDeleteModalOpen(false);
-  setIdSectionToDelete(null);
-};
+  // Function to close the modal without deleting
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setIdSectionToDelete(null);
+  };
 
   const column = [
     {
@@ -422,21 +428,21 @@ const handleCloseDeleteModal = () => {
               onClick={() =>
                 navigate(`/academics/sections/editSection/${row.id}`)
               }
-              hidden ={!canEdit}
+              hidden={!canEdit}
             >
               <FiEdit className="text-2xl" />
             </button>
           ) : null}
-          
+
           {canDelete && (
-              <button
-                className="text-red-600"
-                onClick={() => onDeleteStudentClicked(row.id)}
-                hidden ={!canDelete}
-              >
-                <RiDeleteBin6Line className="text-2xl" />
-              </button>
-            )}
+            <button
+              className="text-red-600"
+              onClick={() => onDeleteStudentClicked(row.id)}
+              hidden={!canDelete}
+            >
+              <RiDeleteBin6Line className="text-2xl" />
+            </button>
+          )}
         </div>
       ),
       ignoreRowClick: true,
@@ -444,109 +450,111 @@ const handleCloseDeleteModal = () => {
       button: true,
     },
   ];
- // Custom header to include the row count
- const tableHeader = (
-  <div>
-    <h2>Sections List: 
-    <span> {filteredSections.length} sections</span></h2>
-  </div>
-);
-
-
-
+  // Custom header to include the row count
+  const tableHeader = (
+    <div>
+      <h2>
+        Sections List:
+        <span> {filteredSections.length} sections</span>
+      </h2>
+    </div>
+  );
 
   let content;
-  if (isLoading) content = <LoadingStateIcon />;
-  if (isError) {
-    content = <p className="errmsg">{error?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
+  if (isSectionsLoading) content = <LoadingStateIcon />;
+  if (isSectionsError) {
+    content = (
+      <>
+        <Academics />
+        <div className="error-bar">{sectionsError?.data?.message}</div>
+      </>
+    );
   }
-  //if (isSuccess){
-
-  content = (
-    <>
-      <Academics />
-      <div className="flex space-x-2 items-center">
-        <div className="relative h-10 mr-2 ">
-          <HiOutlineSearch
-            fontSize={20}
-            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-          />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={handleSearch}
-            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
-          />
-        </div>
-        <button
-          onClick={() => setCurrentSectionsFilter((prev) => !prev)}
-          className="ml-2 p-2 bg-gray-200 rounded hover:text-blue-600"
-        >
-          {currentSectionsFilter
-            ? "Current Sections Shown"
-            : "All Sections Shown"}
-        </button>
-      </div>
-
-      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-        <DataTable
-        title={tableHeader}
-          columns={column}
-          data={filteredSections}
-          pagination
-          selectableRows
-          removableRows
-          pageSizeControl
-          onSelectedRowsChange={handleRowSelected}
-          selectableRowsHighlight
-          customStyles={{
-            headCells: {
-              style: {
-                // Apply Tailwind style via a class-like syntax
-                justifyContent: 'center', // Align headers to the center
-                textAlign: 'center', // Center header text
-              },
-            },
-            // cells: {
-            //   style: {
-            //     justifyContent: 'center', // Center cell content
-            //     textAlign: 'center',
-            //   },
-            // },
-          }}
-
-        ></DataTable>
-        <div className="flex justify-end items-center space-x-4">
-        {isAdmin && (  <button
-            className="add-button"
-            onClick={() => navigate("/academics/sections/newSection/")}
-            //disabled={selectedRows.length !== 1} // Disable if no rows are selected
-            hidden={!canCreate}
+  if (isSectionsSuccess) {
+    content = (
+      <>
+        <Academics />
+        <div className="flex space-x-2 items-center">
+          <div className="relative h-10 mr-2 ">
+            <HiOutlineSearch
+              fontSize={20}
+              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+            />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearch}
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+            />
+          </div>
+          <button
+            onClick={() => setCurrentSectionsFilter((prev) => !prev)}
+            className="ml-2 p-2 bg-gray-200 rounded hover:text-blue-600"
           >
-            New Section
-          </button> )}
+            {currentSectionsFilter
+              ? "Current Sections Shown"
+              : "All Sections Shown"}
+          </button>
+        </div>
 
-        </div> 
-       
-      </div>
-      <DeletionConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
-      />
-      <RegisterModal
-        isOpen={isRegisterModalOpen}
-        onClose={() => setIsRegisterModalOpen(false)}
-        sectionYears={sectionYears}
-        sectionObject={sectionObject}
-        setSectionObject={setSectionObject}
-        setSectionYears={setSectionYears}
-        academicYears={academicYears}
-        onSave={onUpdateSectionClicked}
-      />
-    </>
-  );
-  //}
+        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+          <DataTable
+            title={tableHeader}
+            columns={column}
+            data={filteredSections}
+            pagination
+            selectableRows
+            removableRows
+            pageSizeControl
+            onSelectedRowsChange={handleRowSelected}
+            selectableRowsHighlight
+            customStyles={{
+              headCells: {
+                style: {
+                  // Apply Tailwind style via a class-like syntax
+                  justifyContent: "center", // Align headers to the center
+                  textAlign: "center", // Center header text
+                },
+              },
+              // cells: {
+              //   style: {
+              //     justifyContent: 'center', // Center cell content
+              //     textAlign: 'center',
+              //   },
+              // },
+            }}
+          ></DataTable>
+          <div className="flex justify-end items-center space-x-4">
+            {isAdmin && (
+              <button
+                className="add-button"
+                onClick={() => navigate("/academics/sections/newSection/")}
+                //disabled={selectedRows.length !== 1} // Disable if no rows are selected
+                hidden={!canCreate}
+              >
+                New Section
+              </button>
+            )}
+          </div>
+        </div>
+        <DeletionConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+        />
+        <RegisterModal
+          isOpen={isRegisterModalOpen}
+          onClose={() => setIsRegisterModalOpen(false)}
+          sectionYears={sectionYears}
+          sectionObject={sectionObject}
+          setSectionObject={setSectionObject}
+          setSectionYears={setSectionYears}
+          academicYears={academicYears}
+          onSave={onUpdateSectionClicked}
+        />
+      </>
+    );
+  }
   return content;
 };
 export default NurserySectionsList;

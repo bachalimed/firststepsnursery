@@ -44,16 +44,17 @@ const FamiliesList = () => {
   //get several things from the query
   const {
     data: families, //the data is renamed families
-    isLoading: isFamilyLoading, //monitor several situations
-    isSuccess: isFamilySuccess,
-    isError: isFamilyError,
-    error: familyError,
+    isLoading: isFamiliesLoading, //monitor several situations
+    isSuccess: isFamiliesSuccess,
+    isError: isFamiliesError,
+    error: familiesError,
   } = useGetFamiliesByYearQuery(
-    { selectedYear: selectedAcademicYear?.title, endpointName: "FamiliesList" } ||
-      {},
     {
-     
-      refetchOnFocus: true, 
+      selectedYear: selectedAcademicYear?.title,
+      endpointName: "FamiliesList",
+    } || {},
+    {
+      refetchOnFocus: true,
       refetchOnMountOrArgChange: true,
     }
   );
@@ -72,7 +73,7 @@ const FamiliesList = () => {
 
   let familiesList = [];
   let filteredFamilies = [];
-  if (isFamilySuccess) {
+  if (isFamiliesSuccess) {
     //set to the state to be used for other component s and edit student component
 
     const { entities } = families;
@@ -141,7 +142,7 @@ const FamiliesList = () => {
 
   const [
     deleteFamily,
-    { isFamilySuccess: isDelSuccess, isError: isDelError, error: delerror },
+    { isSuccess: isDelSuccess, isError: isDelError, error: delerror },
   ] = useDeleteFamilyMutation();
 
   const handleSearch = (e) => {
@@ -157,7 +158,7 @@ const FamiliesList = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idFamilyToDelete, setIdFamilyToDelete] = useState(null);
   const onDeleteFamilyClicked = (id) => {
-    console.log(id,'idtodelete')
+    console.log(id, "idtodelete");
     setIdFamilyToDelete(id);
     setIsDeleteModalOpen(true);
   };
@@ -165,24 +166,27 @@ const FamiliesList = () => {
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
     try {
-      const response =  await deleteFamily({ id: idFamilyToDelete });
-    setIsDeleteModalOpen(false); // Close the modal
-    if (response.data && response.data.message) {
-      // Success response
-      triggerBanner(response.data.message, "success");
+      const response = await deleteFamily({ id: idFamilyToDelete });
+      setIsDeleteModalOpen(false); // Close the modal
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner("Failed to delete family. Please try again.", "error");
 
-    } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
-      // Error response
-      triggerBanner(response.error.data.message, "error");
-    } else {
-      // In case of unexpected response format
-      triggerBanner("Unexpected response from server.", "error");
+      console.error("Error deleting:", error);
     }
-  } catch (error) {
-    triggerBanner("Failed to delete family. Please try again.", "error");
-
-    console.error("Error deleting:", error);
-  }
   };
   // Function to close the modal without deleting
   const handleCloseDeleteModal = () => {
@@ -209,10 +213,6 @@ const FamiliesList = () => {
 
     setSelectedRows([]); // Clear selection after delete
   };
-
-  const errContent =
-    (isFamilyError?.data?.message || isDelError?.data?.message) ?? "";
-  //define the content to be conditionally rendered
 
   const column = [
     {
@@ -403,92 +403,100 @@ const FamiliesList = () => {
     },
   ];
 
-    // Custom header to include the row count
-    const tableHeader = (
-      <div>
-        <h2>Families List: 
-        <span> {filteredFamilies.length} families</span></h2>
-      </div>
-    );
-   
+  // Custom header to include the row count
+  const tableHeader = (
+    <div>
+      <h2>
+        Families List:
+        <span> {filteredFamilies.length} families</span>
+      </h2>
+    </div>
+  );
+
   let content;
 
-  if (isFamilyLoading) content = <LoadingStateIcon />;
+  if (isFamiliesLoading)
+    content = (
+      <>
+        <Students />
+        <LoadingStateIcon />
+      </>
+    );
 
-  if (isFamilyError | isDelError) {
-    content = <p className="errmsg">error msg {Error?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
+  if (isFamiliesError) {
+    content = (
+      <>
+        <Students />
+        <div className="error-bar">{familiesError?.data?.message}</div>
+      </>
+    );
   }
 
-  //if (isFamilySuccess||isDelSuccess) {
+  if (isFamiliesSuccess) {
+    //console.log('filtered and success', filteredFamilies)
 
-  //console.log('filtered and success', filteredFamilies)
-
-  content = (
-    <>
-      <Students />
-      <div className="relative h-10 mr-2 ">
-        <HiOutlineSearch
-          fontSize={20}
-          className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-        />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={handleSearch}
-          className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
-        />
-      </div>
-      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-        {/* <div>
+    content = (
+      <>
+        <Students />
+        <div className="relative h-10 mr-2 ">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+          />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+          />
+        </div>
+        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+          {/* <div>
     <input type="text" placeholder="search" onChange={handleFilter}/>
    </div> */}
 
-        <DataTable
-        title={tableHeader}
-          columns={column}
-          data={filteredFamilies}
-          pagination
-         // selectableRows
-          removableRows
-          pageSizeControl
-          customStyles={{
-            headCells: {
-              style: {
-                // Apply Tailwind style via a class-like syntax
-                justifyContent: "center", // Align headers to the center
-                textAlign: "center", // Center header text
+          <DataTable
+            title={tableHeader}
+            columns={column}
+            data={filteredFamilies}
+            pagination
+            // selectableRows
+            removableRows
+            pageSizeControl
+            customStyles={{
+              headCells: {
+                style: {
+                  // Apply Tailwind style via a class-like syntax
+                  justifyContent: "center", // Align headers to the center
+                  textAlign: "center", // Center header text
+                },
               },
-            },
-            // cells: {
-            //   style: {
-            //     justifyContent: 'center', // Center cell content
-            //     textAlign: 'center',
-            //   },
-            // },
-          }}
-        ></DataTable>
-        <div className="flex justify-end items-center space-x-4">
-          <button
-           className="add-button"
-            onClick={()=> navigate("/students/studentsParents/newFamily/")}
-            hidden={!canCreate}
-          >
-           New Family
-          </button>
-
-          
-        
+              // cells: {
+              //   style: {
+              //     justifyContent: 'center', // Center cell content
+              //     textAlign: 'center',
+              //   },
+              // },
+            }}
+          ></DataTable>
+          <div className="flex justify-end items-center space-x-4">
+            <button
+              className="add-button"
+              onClick={() => navigate("/students/studentsParents/newFamily/")}
+              hidden={!canCreate}
+            >
+              New Family
+            </button>
+          </div>
         </div>
-      </div>
-      <DeletionConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
-      />
-    </>
-  );
-
-  //}
+        <DeletionConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+        />
+      </>
+    );
+  }
   return content;
 };
 export default FamiliesList;

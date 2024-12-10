@@ -34,7 +34,7 @@ const AnimatorsAssignmentsList = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-  
+
   //function to return curent month for month selection
   const getCurrentMonth = () => {
     const currentMonthIndex = new Date().getMonth(); // Get current month (0-11)
@@ -42,7 +42,7 @@ const AnimatorsAssignmentsList = () => {
   };
   const {
     data: employees, //the data is renamed employees
-    isLoading: isEmployeesLoading, 
+    isLoading: isEmployeesLoading,
     isSuccess: isEmployeesSuccess,
     isError: isEmployeesError,
     error: employeesError,
@@ -52,24 +52,23 @@ const AnimatorsAssignmentsList = () => {
       endpointName: "AnimatorsAssignmentList",
     } || {},
     {
-   
       //pollingInterval: 60000,//will refetch data every 60seconds
-      refetchOnFocus: true, 
+      refetchOnFocus: true,
       refetchOnMountOrArgChange: true,
     }
   );
   const {
     data: schools, //the data is renamed schools
-    isLoading: isSchoolLoading,
-    isSuccess: isSchoolSuccess,
-    isError: isSchoolError,
-    error: schoolError,
+    isLoading: isSchoolsLoading,
+    isSuccess: isSchoolsSuccess,
+    isError: isSchoolsError,
+    error: schoolsError,
   } = useGetAttendedSchoolsQuery({ endpointName: "AnimatorsAssignmentList" }) ||
   {}; //this should match the endpoint defined in your API slice.!! what does it mean?
 
   const {
     data: assignments, //the data is renamed schools
-    isLoading: isAssignmentsLoading, 
+    isLoading: isAssignmentsLoading,
     isSuccess: isAssignmentsSuccess,
     isError: isAssignmentsError,
     error: assignmentsError,
@@ -97,7 +96,7 @@ const AnimatorsAssignmentsList = () => {
     useState(null); // State to track which document to delete
 
   //initialising the delete Mutation
-  let schoolsList = isSchoolSuccess ? Object.values(schools.entities) : [];
+  let schoolsList = isSchoolsSuccess ? Object.values(schools.entities) : [];
   let employeesList = isEmployeesSuccess
     ? Object.values(employees.entities)
     : [];
@@ -115,12 +114,15 @@ const AnimatorsAssignmentsList = () => {
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
     try {
-      const response= await deleteAssignment({ id: idAttendedSchoolToDelete });
+      const response = await deleteAssignment({ id: idAttendedSchoolToDelete });
       if (response.data && response.data.message) {
         // Success response
         triggerBanner(response.data.message, "success");
-
-      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
         // Error response
         triggerBanner(response.error.data.message, "error");
       } else {
@@ -132,7 +134,7 @@ const AnimatorsAssignmentsList = () => {
 
       console.error("Error saving assignment:", error);
     }
-      setIsDeleteModalOpen(false); // Close the modal
+    setIsDeleteModalOpen(false); // Close the modal
   };
 
   // Function to close the modal without deleting
@@ -154,7 +156,7 @@ const AnimatorsAssignmentsList = () => {
     assignmentsList = Object.values(entities); //we are using entity adapter in this query
 
     // Filter assignments based on the selected month
-     filteredAssignments = assignmentsList.filter((assignment) => {
+    filteredAssignments = assignmentsList.filter((assignment) => {
       const startMonth = getCurrentMonth(assignment.startTime);
       const endMonth = getCurrentMonth(assignment.endTime);
       const assignedFromMonth = getCurrentMonth(assignment.assignedFrom);
@@ -170,8 +172,6 @@ const AnimatorsAssignmentsList = () => {
       );
     });
   }
-
-  
 
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
 
@@ -285,7 +285,7 @@ const AnimatorsAssignmentsList = () => {
       width: "180px",
     },
 
-   (isAdmin&& {
+    isAdmin && {
       name: "Actions",
       cell: (row) => (
         <div className="space-x-1">
@@ -297,7 +297,7 @@ const AnimatorsAssignmentsList = () => {
                   `/academics/plannings/editAnimatorsAssignment/${row.id}`
                 )
               }
-              hidden ={!canEdit}
+              hidden={!canEdit}
             >
               <FiEdit fontSize={20} />
             </button>
@@ -306,35 +306,55 @@ const AnimatorsAssignmentsList = () => {
             <button
               className="text-red-600"
               onClick={() => onDeleteAttendedSchoolClicked(row.id)}
-              hidden ={!canDelete}
+              hidden={!canDelete}
             >
               <RiDeleteBin6Line fontSize={20} />
             </button>
-          ) }
+          )}
         </div>
       ),
       ignoreRowClick: true,
 
       button: true,
-    }),
+    },
   ];
 
-   // Custom header to include the row count
-   const tableHeader = (
+  // Custom header to include the row count
+  const tableHeader = (
     <div>
-      <h2>Assignments List: 
-      <span> {filteredAssignments.length} assignments</span></h2>
+      <h2>
+        Assignments List:
+        <span> {filteredAssignments.length} assignments</span>
+      </h2>
     </div>
   );
   let content;
 
-  if (isSchoolLoading) content = <> <Academics /><LoadingStateIcon/>...</>;
+  if (isSchoolsLoading)
+    content = (
+      <>
+      
+        <Academics />
+        <LoadingStateIcon />
+       
+      </>
+    );
 
-  if (isSchoolError) {
-    content = <p className="errmsg">{schoolError?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
+  if (isSchoolsError || isEmployeesError || isAssignmentsError) {
+    content = (
+      <>
+       
+        <Academics />
+        <div className="error-bar">
+          {schoolsError?.data?.message}
+          {assignmentsError?.data?.message}
+          {employeesError?.data?.message}
+        </div>
+      </>
+    ); 
   }
 
-  if (isSchoolSuccess) {
+  if (isSchoolsSuccess) {
     return (
       <>
         <Academics />
@@ -346,7 +366,7 @@ const AnimatorsAssignmentsList = () => {
             <select
               value={monthFilter}
               onChange={(e) => setMonthFilter(e.target.value)}
-              className="text-sm h-8 border border-gray-300 rounded-md px-4"
+              className="text-sm h-8 border border-gray-300  px-4"
             >
               {/* Default option is the current month */}
               <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
@@ -375,8 +395,8 @@ const AnimatorsAssignmentsList = () => {
               headCells: {
                 style: {
                   // Apply Tailwind style via a class-like syntax
-                  justifyContent: 'center', // Align headers to the center
-                  textAlign: 'center', // Center header text
+                  justifyContent: "center", // Align headers to the center
+                  textAlign: "center", // Center header text
                 },
               },
               // cells: {
@@ -387,7 +407,7 @@ const AnimatorsAssignmentsList = () => {
               // },
             }}
           ></DataTable>
-          <div className="flex justify-end items-center space-x-4">
+          <div className="flex justify-end items-center  space-x-4">
             <button
               className="add-button"
               onClick={() =>

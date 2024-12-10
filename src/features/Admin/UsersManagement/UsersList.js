@@ -28,7 +28,7 @@ const UsersList = () => {
   //initialise state variables and hooks
   const navigate = useNavigate();
   //const dispatch = useDispatch();
-  const { canEdit, canDelete, canView,canAdd, canCreate, isParent, status2 } =
+  const { canEdit, canDelete, canView, canAdd, canCreate, isParent, status2 } =
     useAuth();
   const [selectedRows, setSelectedRows] = useState([]);
 
@@ -127,12 +127,15 @@ const UsersList = () => {
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
     try {
-      const response=  await deleteUser({ id: idUserToDelete });
+      const response = await deleteUser({ id: idUserToDelete });
       if (response.data && response.data.message) {
         // Success response
         triggerBanner(response.data.message, "success");
-
-      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
         // Error response
         triggerBanner(response.error.data.message, "error");
       } else {
@@ -152,7 +155,6 @@ const UsersList = () => {
     setIsDeleteModalOpen(false);
     setIdUserToDelete(null);
   };
-
 
   const column = [
     {
@@ -287,7 +289,7 @@ const UsersList = () => {
     //   width: "100px",
     //   sortable: true,
     // },
-   
+
     {
       name: "Roles",
       selector: (row) => (
@@ -325,7 +327,7 @@ const UsersList = () => {
             onClick={() =>
               navigate(`/admin/usersManagement/userDetails/${row._id}`)
             }
-            hidden ={!canView}
+            hidden={!canView}
           >
             <ImProfile fontSize={20} />
           </button>
@@ -369,6 +371,7 @@ const UsersList = () => {
   if (isUsersLoading)
     content = (
       <>
+        <UsersManagement />
         <LoadingStateIcon />
       </>
     );
@@ -376,11 +379,10 @@ const UsersList = () => {
   if (isUsersError) {
     content = (
       <>
-        {" "}
         <UsersManagement />
-        <p className="errmsg">{usersError?.data?.message}</p>
+        <div className="error-bar">{usersError?.data?.message}</div>
       </>
-    ); //errormessage class defined in the css, the error has data and inside we have message of error
+    );
   }
 
   if (isUsersSuccess || isDelSuccess) {
@@ -398,7 +400,7 @@ const UsersList = () => {
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
-              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
             />
           </div>
           {/* User Roles Filter */}
@@ -406,7 +408,7 @@ const UsersList = () => {
           <select
             value={selectedUserRoles}
             onChange={handleRoleChange}
-            className="text-sm h-8 border border-gray-300 rounded-md px-4"
+            className="text-sm h-8 border border-gray-300  px-4"
           >
             <option value="">All Roles</option>
             {Object.values(ROLES).map((role) => (
@@ -421,7 +423,7 @@ const UsersList = () => {
           <select
             value={selectedUserActions}
             onChange={handleActionChange}
-            className="text-sm h-8 border border-gray-300 rounded-md px-4"
+            className="text-sm h-8 border border-gray-300  px-4"
           >
             <option value="">All Actions</option>
             {Object.values(ACTIONS).map((action) => (

@@ -54,10 +54,10 @@ const InvoicesList = () => {
   //console.log("Fetch invoices for academic year:", selectedAcademicYear);
   const {
     data: invoices, //the data is renamed invoices
-    isLoading: isInvoiceGetLoading, 
-    isSuccess: isInvoiceGetSuccess,
-    isError: isInvoiceGetError,
-    error: invoiceGetError,
+    isLoading: isInvoicesLoading,
+    isSuccess: isInvoicesSuccess,
+    isError: isInvoicesError,
+    error: invoicesError,
   } = useGetInvoicesByYearQuery(
     {
       selectedMonth: selectedInvoiceMonth
@@ -129,7 +129,7 @@ const InvoicesList = () => {
   let invoicesList = [];
   let filteredInvoices = [];
 
-  if (isInvoiceGetSuccess) {
+  if (isInvoicesSuccess) {
     //set to the state to be used for other component s and edit invoice component
     const { entities } = invoices;
     //we need to change into array to be read??
@@ -222,7 +222,7 @@ const InvoicesList = () => {
           {row?.invoiceIsFullyPaid ? (
             <MdOutlinePaid className="text-green-500 text-2xl" />
           ) : (
-            <MdPaid className="text-red-400 text-2xl" />
+            <MdPaid className="text-red-600 text-2xl" />
           )}
         </span>
       ),
@@ -397,143 +397,145 @@ const InvoicesList = () => {
   );
 
   let content;
-  if (isInvoiceGetLoading)
+  if (isInvoicesLoading)
     content = (
       <>
         <Finances />
         <LoadingStateIcon />
       </>
     );
-  if (isInvoiceGetError) {
+  if (isInvoicesError || isServicesError) {
     content = (
       <>
         <Finances />
-        <p className="errmsg">{invoiceGetError?.data?.message}</p>
+        <div className="error-bar">
+          {invoicesError?.data?.message}
+          {servicesError?.data?.message}
+        </div>
       </>
-    ); //errormessage class defined in the css, the error has data and inside we have message of error
+    );
   }
 
-  //if (isinvoiceGetSuccess){
+  if (isInvoicesSuccess && isServicesSuccess) {
+    content = (
+      <>
+        <Finances />
+        <div className="flex space-x-2 items-center">
+          {/* Search Bar */}
+          <div className="relative h-10 mr-2 ">
+            <HiOutlineSearch
+              fontSize={20}
+              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+            />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearch}
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+            />
+          </div>
+          {/* Invoice Month Filter */}
+          <select
+            value={selectedInvoiceMonth}
+            onChange={(e) => setSelectedInvoiceMonth(e.target.value)}
+            className="text-sm h-8 border border-gray-300  px-4"
+          >
+            {/* Default option is the current month */}
+            <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
+            <option value="">All Months</option>
+            {/* Render the rest of the months, excluding the current month */}
+            {MONTHS.map(
+              (month, index) =>
+                month !== getCurrentMonth() && (
+                  <option key={index} value={month}>
+                    {month}
+                  </option>
+                )
+            )}
+          </select>
+          {/* Service Type Filter */}
+          <select
+            value={selectedServiceType}
+            onChange={(e) => setSelectedServiceType(e.target.value)}
+            className="text-sm h-8 border border-gray-300  px-4"
+          >
+            <option value="">All Services</option>
+            {servicesList.map((service, index) => (
+              <option key={index} value={service?.serviceType}>
+                {service?.serviceType}
+              </option>
+            ))}
+          </select>
 
-  content = (
-    <>
-      <Finances />
-      <div className="flex space-x-2 items-center">
-        {/* Search Bar */}
-        <div className="relative h-10 mr-2 ">
-          <HiOutlineSearch
-            fontSize={20}
-            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-          />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={handleSearch}
-            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
-          />
+          {/* Invoiced Filter */}
+          <select
+            value={discountedFilter}
+            onChange={(e) => setDiscountedFilter(e.target.value)}
+            className="text-sm h-8 border border-gray-300  px-4"
+          >
+            <option value="">All discounts</option>
+            <option value="Discounted">Discounted</option>
+            <option value="Not Discounted">Not Discounted</option>
+          </select>
+
+          {/* Paid Filter */}
+          <select
+            value={paidFilter}
+            onChange={(e) => setPaidFilter(e.target.value)}
+            className="text-sm h-8 border border-gray-300  px-4"
+          >
+            <option value="">All payments</option>
+            <option value="paid">Paid</option>
+            <option value="unpaid">Unpaid</option>
+          </select>
         </div>
-        {/* Invoice Month Filter */}
-        <select
-          value={selectedInvoiceMonth}
-          onChange={(e) => setSelectedInvoiceMonth(e.target.value)}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
-        >
-          {/* Default option is the current month */}
-          <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
-          <option value="">All Months</option>
-          {/* Render the rest of the months, excluding the current month */}
-          {MONTHS.map(
-            (month, index) =>
-              month !== getCurrentMonth() && (
-                <option key={index} value={month}>
-                  {month}
-                </option>
-              )
-          )}
-        </select>
-        {/* Service Type Filter */}
-        <select
-          value={selectedServiceType}
-          onChange={(e) => setSelectedServiceType(e.target.value)}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
-        >
-          <option value="">All Services</option>
-          {servicesList.map((service, index) => (
-            <option key={index} value={service?.serviceType}>
-              {service?.serviceType}
-            </option>
-          ))}
-        </select>
-
-        {/* Invoiced Filter */}
-        <select
-          value={discountedFilter}
-          onChange={(e) => setDiscountedFilter(e.target.value)}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
-        >
-          <option value="">All discounts</option>
-          <option value="Discounted">Discounted</option>
-          <option value="Not Discounted">Not Discounted</option>
-        </select>
-
-        {/* Paid Filter */}
-        <select
-          value={paidFilter}
-          onChange={(e) => setPaidFilter(e.target.value)}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
-        >
-          <option value="">All payments</option>
-          <option value="paid">Paid</option>
-          <option value="unpaid">Unpaid</option>
-        </select>
-      </div>
-      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-        <DataTable
-          title={tableHeader}
-          columns={column}
-          data={filteredInvoices}
-          pagination
-          //selectableRows
-          removableRows
-          pageSizeControl
-          onSelectedRowsChange={handleRowSelected}
-          selectableRowsHighlight
-          customStyles={{
-            headCells: {
-              style: {
-                // Apply Tailwind style via a class-like syntax
-                justifyContent: "center", // Align headers to the center
-                textAlign: "center", // Center header text
+        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+          <DataTable
+            title={tableHeader}
+            columns={column}
+            data={filteredInvoices}
+            pagination
+            //selectableRows
+            removableRows
+            pageSizeControl
+            onSelectedRowsChange={handleRowSelected}
+            selectableRowsHighlight
+            customStyles={{
+              headCells: {
+                style: {
+                  // Apply Tailwind style via a class-like syntax
+                  justifyContent: "center", // Align headers to the center
+                  textAlign: "center", // Center header text
+                },
               },
-            },
-            // cells: {
-            //   style: {
-            //     justifyContent: 'center', // Center cell content
-            //     textAlign: 'center',
-            //   },
-            // },
-          }}
-        ></DataTable>
-        <div className="flex justify-end items-center space-x-4">
+              // cells: {
+              //   style: {
+              //     justifyContent: 'center', // Center cell content
+              //     textAlign: 'center',
+              //   },
+              // },
+            }}
+          ></DataTable>
           <div className="flex justify-end items-center space-x-4">
-            <button
-              className="add-button"
-              onClick={() => navigate("/students/enrolments/enrolments/")}
-              hidden={!canCreate}
-            >
-              Invoice from Enrolment
-            </button>
+            <div className="flex justify-end items-center space-x-4">
+              <button
+                className="add-button"
+                onClick={() => navigate("/students/enrolments/enrolments/")}
+                hidden={!canCreate}
+              >
+                Invoice from Enrolment
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      <DeletionConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
-      />
-    </>
-  );
-  //}
+        <DeletionConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+        />
+      </>
+    );
+  }
   return content;
 };
 export default InvoicesList;

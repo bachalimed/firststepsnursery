@@ -59,7 +59,7 @@ const PayslipsList = () => {
 
   const {
     data: payslips, //the data is renamed payslips
-    isLoading: isPayslipsLoading, 
+    isLoading: isPayslipsLoading,
     isSuccess: isPayslipsSuccess,
     isError: isPayslipsError,
     error: payslipsError,
@@ -69,9 +69,8 @@ const PayslipsList = () => {
       endpointName: "payslipsList",
     } || {},
     {
-     
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
 
@@ -128,25 +127,25 @@ const PayslipsList = () => {
       const firstNameMatch = item?.payslipEmployee?.userFullName?.userFirstName
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
-      const middleNameMatch = item?.payslipEmployee?.userFullName?.userMiddleName
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
+      const middleNameMatch =
+        item?.payslipEmployee?.userFullName?.userMiddleName
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase());
       const lastNameMatch = item?.payslipEmployee?.userFullName?.userLastName
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
       //console.log('filteredPayslips in the success', item)
       const meetsPayslipMonthCriteria =
-      !selectedPayslipMonth || item.payslipMonth === selectedPayslipMonth;
-
-
+        !selectedPayslipMonth || item.payslipMonth === selectedPayslipMonth;
 
       return (
         (Object.values(item).some((val) =>
           String(val).toLowerCase().includes(searchQuery.toLowerCase())
         ) ||
-        firstNameMatch ||
-        middleNameMatch ||
-        lastNameMatch)&&meetsPayslipMonthCriteria
+          firstNameMatch ||
+          middleNameMatch ||
+          lastNameMatch) &&
+        meetsPayslipMonthCriteria
       );
     });
   }
@@ -312,33 +311,35 @@ const PayslipsList = () => {
       width: "200px",
       cell: (row) => (
         <Link to={`/hr/payslips/payslipDetails/${row.id}`}>
-          {row?.payslipEmployee?.userFullName?.userFirstName} {row?.payslipEmployee?.userFullName?.userMiddleName}{" "}
+          {row?.payslipEmployee?.userFullName?.userFirstName}{" "}
+          {row?.payslipEmployee?.userFullName?.userMiddleName}{" "}
           {row?.payslipEmployee?.userFullName?.userLastName}
         </Link>
       ),
     },
-   
 
     {
       name: "Total",
       selector: (row) => {
-        if (!row.payslipSalaryComponents || !Array.isArray(row?.payslipSalaryComponents)) {
+        if (
+          !row.payslipSalaryComponents ||
+          !Array.isArray(row?.payslipSalaryComponents)
+        ) {
           return 0; // Return 0 if no components exist
         }
-    
+
         // Calculate total amount
         const total = row?.payslipSalaryComponents?.reduce((sum, component) => {
           const amount = Number(component?.amount) || 0; // Ensure amount is numeric
           const reduction = Number(component?.reduction) || 0; // Ensure reduction is numeric
           return sum + amount - reduction; // Add amount and subtract reduction
         }, 0);
-    
+
         return total.toFixed(2); // Format to 2 decimal places
       },
       sortable: true,
-      width: '100px'
+      width: "100px",
     },
-    
 
     {
       name: "Leave Days",
@@ -346,18 +347,17 @@ const PayslipsList = () => {
         <div>
           {row?.payslipAbsentDays?.map((day, index) => (
             <div key={index}>
-                {day?.dayIsPaid ? "paid: " : "unpaid: "}
+              {day?.dayIsPaid ? "paid: " : "unpaid: "}
               {new Date(day?.absentDate).toLocaleDateString("en-GB", {
                 year: "numeric",
                 month: "2-digit",
                 day: "2-digit",
               })}
-             
             </div>
           ))}
         </div>
       ),
-      
+
       sortable: true,
       removableRows: true,
       width: "130px",
@@ -374,23 +374,16 @@ const PayslipsList = () => {
         <div>
           {row?.payslipSalaryComponents?.map((comp, index) => (
             <div key={index}>
-                
-              {comp?.component}  {comp?.amount} {comp?.periodicity} 
-             
+              {comp?.component} {comp?.amount} {comp?.periodicity}
             </div>
           ))}
         </div>
       ),
-      
+
       sortable: true,
       removableRows: true,
       width: "180px",
     },
-
-   
-
-
-    
 
     // {
     //   name: "Documents",
@@ -449,92 +442,98 @@ const PayslipsList = () => {
     </div>
   );
   let content;
-  if (isPayslipsLoading) content = <p><HR /><LoadingStateIcon/></p>;
+  if (isPayslipsLoading)
+    content = (
+      <>
+        <HR />
+        <LoadingStateIcon />
+      </>
+    );
   if (isPayslipsError) {
-    content = <p className="errmsg">{payslipsError?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
+    content = (
+      <>
+        <HR />
+        <div className="error-bar">{payslipsError?.data?.message}</div>
+      </>
+    );
   }
-  if (isPayslipsSuccess){
+  if (isPayslipsSuccess) {
+    content = (
+      <>
+        <HR />
 
-  content = (
-    <>
-      <HR />
-
-      <div className="flex space-x-2 items-center">
-        {/* Search Bar */}
-        <div className="relative h-10 mr-2 ">
-        <HiOutlineSearch
-          fontSize={20}
-          className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-        />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={handleSearch}
-          className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
-        />
-      </div>
-{/*  Month Filter */}
-<select
-          value={selectedPayslipMonth}
-          onChange={(e) => setSelectedPayslipMonth(e.target.value)}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
-        >
-          {/* Default option is the current month */}
-          <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
-          <option value="">All Months</option>
-          {/* Render the rest of the months, excluding the current month */}
-          {MONTHS.map(
-            (month, index) =>
-              month !== getCurrentMonth() && (
-                <option key={index} value={month}>
-                  {month}
-                </option>
-              )
-          )}
-        </select>
-
-
-      </div>
-      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-        <DataTable
-        title={tableHeader}
-          columns={column}
-          data={filteredPayslips}
-          pagination
-          selectableRows
-          removableRows
-          pageSizeControl
-          onSelectedRowsChange={handleRowSelected}
-          selectableRowsHighlight
-          customStyles={{
-            headCells: {
-              style: {
-                // Apply Tailwind style via a class-like syntax
-                justifyContent: "center", // Align headers to the center
-                textAlign: "center", // Center header text
-              },
-            },
-            // cells: {
-            //   style: {
-            //     justifyContent: 'center', // Center cell content
-            //     textAlign: 'center',
-            //   },
-            // },
-          }}
-        ></DataTable>
-        <div className="flex justify-end items-center space-x-4">
-          <button
-            className="add-button"
-            onClick={()=>navigate('/hr/payslips/newPayslip')}
-            // disabled={selectedRows.length !== 1} // Disable if no rows are selected
-            hidden={!canCreate}
+        <div className="flex space-x-2 items-center">
+          {/* Search Bar */}
+          <div className="relative h-10 mr-2 ">
+            <HiOutlineSearch
+              fontSize={20}
+              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+            />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearch}
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+            />
+          </div>
+          {/*  Month Filter */}
+          <select
+            value={selectedPayslipMonth}
+            onChange={(e) => setSelectedPayslipMonth(e.target.value)}
+            className="text-sm h-8 border border-gray-300  px-4"
           >
-            New Payslip
-          </button>
+            {/* Default option is the current month */}
+            <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
+            <option value="">All Months</option>
+            {/* Render the rest of the months, excluding the current month */}
+            {MONTHS.map(
+              (month, index) =>
+                month !== getCurrentMonth() && (
+                  <option key={index} value={month}>
+                    {month}
+                  </option>
+                )
+            )}
+          </select>
+        </div>
+        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+          <DataTable
+            title={tableHeader}
+            columns={column}
+            data={filteredPayslips}
+            pagination
+            selectableRows
+            removableRows
+            pageSizeControl
+            onSelectedRowsChange={handleRowSelected}
+            selectableRowsHighlight
+            customStyles={{
+              headCells: {
+                style: {
+                  // Apply Tailwind style via a class-like syntax
+                  justifyContent: "center", // Align headers to the center
+                  textAlign: "center", // Center header text
+                },
+              },
+              // cells: {
+              //   style: {
+              //     justifyContent: 'center', // Center cell content
+              //     textAlign: 'center',
+              //   },
+              // },
+            }}
+          ></DataTable>
+          <div className="flex justify-end items-center space-x-4">
+            <button
+              className="add-button"
+              onClick={() => navigate("/hr/payslips/newPayslip")}
+              // disabled={selectedRows.length !== 1} // Disable if no rows are selected
+              hidden={!canCreate}
+            >
+              New Payslip
+            </button>
 
-        
-
-          {/* {isAdmin && (
+            {/* {isAdmin && (
             <button
               className="px-3 py-2 bg-gray-400 text-white rounded"
               onClick={handleDuplicateSelected}
@@ -544,22 +543,22 @@ const PayslipsList = () => {
               optional button
             </button>
           )} */}
+          </div>
         </div>
-      </div>
-      <DeletionConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
-      />
-      {/* <RegisterModal 
+        <DeletionConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+        />
+        {/* <RegisterModal 
         isOpen={isRegisterModalOpen}
         onClose={() => setIsRegisterModalOpen(false)}
         payslipYears={payslipYears}
         academicYears={academicYears}
         onSave={onUpdatePayslipClicked}
       /> */}
-    </>
-  );
+      </>
+    );
   }
   return content;
 };

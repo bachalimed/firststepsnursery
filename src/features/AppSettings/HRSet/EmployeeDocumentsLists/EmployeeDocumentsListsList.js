@@ -30,10 +30,10 @@ const EmployeeDocumentsListsList = () => {
   //RTK query employeeDocumentsLists import
   const {
     data: employeeDocumentsListsData,
-    isLoading,
-    isSuccess,
-    isError,
-    error,
+    isLoading: isDocumentsListsLoading,
+    isSuccess: isDocumentsListsSuccess,
+    isError: isDocumentsListsError,
+    error: documentsListsError,
   } = useGetEmployeeDocumentsListsQuery("employeeDocumentsListsList") || {};
 
   //initialising the delete Mutation
@@ -76,10 +76,7 @@ const EmployeeDocumentsListsList = () => {
   //console.log(employeeDocumentsListsData)
   let filteredEmployeeDocumentsLists;
 
-  if (isError) {
-    console.log("error:", error);
-  }
-  if (isSuccess) {
+  if (isDocumentsListsSuccess) {
     //transform into an array
     const { entities } = employeeDocumentsListsData;
     const employeeDocumentsListsArray = Object.values(entities);
@@ -198,9 +195,7 @@ const EmployeeDocumentsListsList = () => {
             <button
               className="text-amber-300"
               onClick={() =>
-                Navigate(
-                  `/settings/hrSet/employeeDocumentsList/edit/${row.id}`
-                )
+                Navigate(`/settings/hrSet/employeeDocumentsList/edit/${row.id}`)
               }
             >
               <FiEdit fontSize={20} />
@@ -224,58 +219,69 @@ const EmployeeDocumentsListsList = () => {
   ];
   let content;
 
-  if (isLoading) content = <LoadingStateIcon />;
+  if (isDocumentsListsLoading)
+    content = (
+      <>
+        <EmployeesSet />
+        <LoadingStateIcon />
+      </>
+    );
 
-  if (isError) {
-    content = <p className="errmsg">{error?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
+  if (isDocumentsListsError) {
+    content = (
+      <>
+        <EmployeesSet />
+        <div className="error-bar">{documentsListsError?.data?.message}</div>
+      </>
+    );
   }
-
-  content = (
-    <>
-      <EmployeesSet />
-      <div className="relative h-10 mr-2">
-        <HiOutlineSearch
-          fontSize={20}
-          className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-        />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={handleSearch}
-          className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
-        />
-      </div>
-      <div className="flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-        <DataTable
-          columns={column}
-          data={filteredEmployeeDocumentsLists}
-          pagination
-          selectableRows
-          removableRows
-          onSelectedRowsChange={handleRowSelected}
-          selectableRowsHighlight
-        />
-        <div className="flex justify-end items-center space-x-4">
-          <button
-            className="add-button"
-            onClick={() =>
-              Navigate("/settings/hrSet/newEmployeeDocumentsList")
-            }
-            disabled={selectedRows.length !== 0}
-            hidden={!canCreate}
-          >
-            New Documents List
-          </button>
+  if (isDocumentsListsSuccess) {
+    content = (
+      <>
+        <EmployeesSet />
+        <div className="relative h-10 mr-2">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+          />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+          />
         </div>
-      </div>
-      <DeletionConfirmModal
-        isOpen={deleteModalOpen}
-        onClose={handleCloseModal}
-        onConfirm={handleConfirmDelete}
-      />
-    </>
-  );
-
+        <div className="flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+          <DataTable
+            columns={column}
+            data={filteredEmployeeDocumentsLists}
+            pagination
+            selectableRows
+            removableRows
+            onSelectedRowsChange={handleRowSelected}
+            selectableRowsHighlight
+          />
+          <div className="flex justify-end items-center space-x-4">
+            <button
+              className="add-button"
+              onClick={() =>
+                Navigate("/settings/hrSet/newEmployeeDocumentsList")
+              }
+              disabled={selectedRows.length !== 0}
+              hidden={!canCreate}
+            >
+              New Documents List
+            </button>
+          </div>
+        </div>
+        <DeletionConfirmModal
+          isOpen={deleteModalOpen}
+          onClose={handleCloseModal}
+          onConfirm={handleConfirmDelete}
+        />
+      </>
+    );
+  }
   return content;
 };
 export default EmployeeDocumentsListsList;

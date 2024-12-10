@@ -53,10 +53,10 @@ const PaymentsList = () => {
   //console.log("Fetch payments for academic year:", selectedAcademicYear);
   const {
     data: payments, //the data is renamed payments
-    isLoading: isPaymentGetLoading, 
-    isSuccess: isPaymentGetSuccess,
-    isError: isPaymentGetError,
-    error: paymentGetError,
+    isLoading: isPaymentsLoading, 
+    isSuccess: isPaymentsSuccess,
+    isError: isPaymentsError,
+    error: paymentsError,
   } = useGetPaymentsByYearQuery(
     {
       selectedMonth: selectedPaymentMonth
@@ -128,7 +128,7 @@ const PaymentsList = () => {
   let paymentsList = [];
   let filteredPayments = [];
 
-  if (isPaymentGetSuccess) {
+  if (isPaymentsSuccess) {
     //set to the state to be used for other component s and edit payment component
     const { entities } = payments;
     //we need to change into array to be read??
@@ -355,23 +355,27 @@ const PaymentsList = () => {
   );
 
   let content;
-  if (isPaymentGetLoading)
+  if (isPaymentsLoading||isServicesLoading)
     content = (
       <>
         <Finances />
         <LoadingStateIcon />
       </>
     );
-  if (isPaymentGetError) {
+  if (isPaymentsError || isServicesError) {
     content = (
       <>
         <Finances />
-        <p className="errmsg">{paymentGetError?.data?.message}</p>
+        <div className="error-bar">
+          {paymentsError?.data?.message}
+          {servicesError?.data?.message}
+          
+        </div>
       </>
     ); //errormessage class defined in the css, the error has data and inside we have message of error
   }
 
-  //if (ispaymentGetSuccess){
+  if (isPaymentsSuccess && isServicesSuccess){
 
   content = (
     <>
@@ -387,14 +391,14 @@ const PaymentsList = () => {
             type="text"
             value={searchQuery}
             onChange={handleSearch}
-            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
           />
         </div>
         {/* Payment Month Filter */}
         <select
           value={selectedPaymentMonth}
           onChange={(e) => setSelectedPaymentMonth(e.target.value)}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
+          className="text-sm h-8 border border-gray-300  px-4"
         >
           {/* Default option is the current month */}
 
@@ -418,7 +422,7 @@ const PaymentsList = () => {
         <select
           value={selectedPaymentType}
           onChange={(e) => setSelectedPaymentType(e.target.value)}
-          className="text-sm h-8 border border-gray-300 rounded-md px-4"
+          className="text-sm h-8 border border-gray-300  px-4"
         >
           {/* Option for all payment types */}
           <option value="">All Types</option>
@@ -477,7 +481,7 @@ const PaymentsList = () => {
       />
     </>
   );
-  //}
+  }
   return content;
 };
 export default PaymentsList;

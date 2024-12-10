@@ -13,7 +13,7 @@ const HeaderNotifications = () => {
       <MenuItems
         transition
         anchor="bottom end"
-        className=" origin-top-right rounded-md border bg-sky-100 p-1 text-sm/6 text-gray-800 transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
+        className=" origin-top-right  border bg-sky-100 p-1 text-sm/6 text-gray-800 transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
       >
         <strong>Notifications</strong>
         {HeaderNotificationSample.slice(0, 10).map((Notif, index) => (

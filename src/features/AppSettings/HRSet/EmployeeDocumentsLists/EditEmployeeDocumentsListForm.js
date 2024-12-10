@@ -40,10 +40,10 @@ const [showConfirmation, setShowConfirmation] = useState(false);
     updateEmployeeDocumentsList,
     {
       //an object that calls the status when we execute the newUserForm function
-      isLoading,
-      isSuccess,
-      isError,
-      error,
+      isLoading:isDocumentsLoading,
+      isSuccess:isDocumentsSuccess,
+      isError:isDocumentsError,
+      error:documentsError,
     },
   ] = useUpdateEmployeeDocumentsListMutation(); //it will not execute the mutation nownow but when called
 
@@ -52,12 +52,12 @@ const [showConfirmation, setShowConfirmation] = useState(false);
   }, [documentTitle]);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isDocumentsSuccess) {
       setEmployeeDocumentsList([]);
       setDocumentsAcademicYear("");
       Navigate("/settings/HRSet/EmployeeDocumentsListsList/"); //will navigate here after saving
     }
-  }, [isSuccess, Navigate]); //even if no success it will navigate and not show any warning if failed or success
+  }, [isDocumentsSuccess, Navigate]); //even if no success it will navigate and not show any warning if failed or success
 
 
   
@@ -92,7 +92,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
     [
       documentsAcademicYear,
       ...employeeDocumentsList.map((entry) => entry.documentTitle),
-    ].every(Boolean) && !isLoading;
+    ].every(Boolean) && !isDocumentsLoading;
 
   const onSaveEmployeeDocumentsListClicked = async (e) => {
     e.preventDefault();
@@ -111,8 +111,8 @@ const [showConfirmation, setShowConfirmation] = useState(false);
         documentsList: employeeDocumentsList,
         documentsAcademicYear,
       });
-      if (isError) {
-        console.error("Error saving:", error);
+      if (isDocumentsError) {
+        console.error("Error saving:", documentsError);
       }
     }
 
@@ -137,15 +137,12 @@ const [showConfirmation, setShowConfirmation] = useState(false);
   // const onIsLegalisedChanged = e => setIsLegalised(e.target.value)
 
   //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
-  const errClass = isError ? "errmsg" : "offscreen";
-  //const validEmployeeDocumentsListClass = !validEmployeeDocumentsListName ? 'form__input--incomplete' : ''
-  //const validPwdClass = !validPassword ? 'form__input--incomplete' : ''
-  //const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
+  const errClass = isDocumentsError ? "error-bar" : "offscreen";
 
   const content = (
     <>
       <HRSet />
-      <p className={errClass}>{error?.data?.message}</p>
+      <p className={errClass}>{documentsError?.data?.message}</p>
       <form className="form" onSubmit={onSaveEmployeeDocumentsListClicked}>
         <div className="form__title-row">
           <h2>Editing Employee Documents List for {documentsAcademicYear}</h2>
@@ -203,7 +200,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
             type="submit"
             title="Save"
             onClick={onSaveEmployeeDocumentsListClicked}
-            disabled={!canSave||isLoading}
+            disabled={!canSave||isDocumentsLoading}
           >
             Save Changes
           </button>
