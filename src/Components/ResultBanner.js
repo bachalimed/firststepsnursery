@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 const ResultBanner = ({ message, type }) => {
     const bannerStyles = {
       success: "bg-green-400 text-white ",
-      error: "bg-red-500 text-white ",
+      error: "bg-red-600 text-white ",
     };
   
     return (

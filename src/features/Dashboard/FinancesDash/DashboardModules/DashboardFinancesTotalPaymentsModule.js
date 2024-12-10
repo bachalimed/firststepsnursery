@@ -41,7 +41,7 @@ const DashboardFinancesTotalPaymentsModule = () => {
             {" "}
             {totalPayments}
           </strong>
-          <span className="pl-2 text-sm text-blue-500">
+          <span className="pl-2 text-sm text-sky-700">
             {totalInvoicedAmount} invoiced{" "}
           </span>
         </div>

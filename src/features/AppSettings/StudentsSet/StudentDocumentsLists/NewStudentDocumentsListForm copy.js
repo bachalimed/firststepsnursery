@@ -175,7 +175,7 @@ const handleConfirmSave = async () => {
           <select
             value={documentsAcademicYear}
             onChange={onDocumentsAcademicYearChanged}
-            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-700 focus:border-sky-700 sm:text-sm"
           >
             <option value="">Select Year</option>
             {academicYears.map((year) => (
@@ -196,7 +196,7 @@ const handleConfirmSave = async () => {
                 onChange={(e) =>
                   handleFieldChange(index, "documentTitle", e.target.value)
                 }
-                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-700 focus:border-sky-700 sm:text-sm"
               />
             </div>
             <div className="flex items-center mb-2">
@@ -225,7 +225,7 @@ const handleConfirmSave = async () => {
             <button
               type="button"
               onClick={() => handleRemoveEntry(index)}
-              className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+              className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500"
             >
               Remove
             </button>
@@ -242,7 +242,7 @@ const handleConfirmSave = async () => {
             Cancel
           </button>
           <button
-            className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="mb-4 px-4 py-2 bg-sky-700 text-white rounded hover:bg-blue-600"
             type="submit"
             onClick={onSaveStudentDocumentsListClicked}
             disabled={!canSave||isAddLoading}

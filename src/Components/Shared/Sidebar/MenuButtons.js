@@ -48,32 +48,32 @@ const MenuButtons = () => {
   content = (
     <div className="relative">
       <header
-        className={`bg-teal-500 text-white py-1 px-4 md:px-8 flex  gap-x-4 items-center shadow-md `}
+        className={`bg-sky-700 text-white py-1 px-4 md:px-8 flex  gap-x-4 items-center shadow-md `}
       >
-        <button className="text-grey-300 p-2 hover:bg-sky-700 rounded-md md:hidden">
+        {/* <button className="text-grey-300 p-2 hover:bg-red-800 rounded-md md:hidden">
           <IoMenuOutline className="text-2xl" />
-        </button>
-
-        <Link to="/dashboard/">
-          <li
-            className={`text-grey-300 text-sm flex border border-gray-300 items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md `}
-          >
-            <VscDashboard className="text-2xl" />
-            <span className="flex-1 hidden md:block">Dashboard</span>
-          </li>
-        </Link>
+        </button> */}
         <Link to="/">
           <li
-            className={`text-grey-300 text-sm flex border  border-gray-300 items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md  `}
+            className={`text-grey-300 text-sm flex border  border-white items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-500 rounded-md  `}
           >
             <BiHome className="text-2xl " />
             <span className="flex-1 hidden md:block">Public</span>
           </li>
         </Link>
+        <Link to="/dashboard/">
+          <li
+            className={`text-grey-300 text-sm flex border border-white items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-500 rounded-md `}
+          >
+            <VscDashboard className="text-2xl" />
+            <span className="flex-1 hidden md:block">Dashboard</span>
+          </li>
+        </Link>
+       
         <div className="relative">
           <Link to="/students/studentsParents/students/">
             <li
-              className={`text-grey-300 text-sm flex border border-gray-300 items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md`}
+              className={`text-grey-300 text-sm flex border border-white items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-500 rounded-md`}
             >
               <PiStudent className="text-2xl" />
               <span className="flex-1 hidden md:block">Students</span>
@@ -84,7 +84,7 @@ const MenuButtons = () => {
         <div className="relative">
           <Link to="/academics/sections/nurserySectionsList/">
             <li
-              className={`text-grey-300 text-sm flex border  border-gray-300 items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md  `}
+              className={`text-grey-300 text-sm flex border  border-white items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-500 rounded-md  `}
             >
               <IoSchoolOutline className="text-2xl " />
               <span className="flex-1 hidden md:block">Academics</span>
@@ -94,7 +94,7 @@ const MenuButtons = () => {
         <div className="relative">
           <Link to="/finances/Invoices/invoicesList">
             <li
-              className={`text-grey-300 text-sm flex border  border-gray-300 items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md  `}
+              className={`text-grey-300 text-sm flex border  border-white items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-500 rounded-md  `}
             >
               <LuCircleDollarSign className="text-2xl " />
               <span className="flex-1 hidden md:block">Finances</span>
@@ -104,7 +104,7 @@ const MenuButtons = () => {
         <div className="relative">
           <Link to="/hr/employees/employeesList/">
             <li
-              className={`text-grey-300 text-sm flex border  border-gray-300 items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md  `}
+              className={`text-grey-300 text-sm flex border  border-white items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-500 rounded-md  `}
             >
               <GiHumanPyramid className="text-2xl " />
               <span className="flex-1 hidden md:block">HR</span>
@@ -115,7 +115,7 @@ const MenuButtons = () => {
         <div className="relative">
           <Link to="/admin/usersManagement/users/">
             <li
-              className={`text-grey-300 text-sm flex border  border-gray-300 items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md  `}
+              className={`text-grey-300 text-sm flex border  border-white items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-500 rounded-md  `}
             >
               <GrUserAdmin className="text-2xl " />
               <span className="flex-1 hidden md:block">Admin</span>
@@ -129,14 +129,14 @@ const MenuButtons = () => {
 >
   <Link to="/settings/studentsSet/">
     <li
-      className={`text-grey-300 text-sm flex border border-gray-300 items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md`}
+      className={`text-grey-300 text-sm flex border border-white items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-500 rounded-md`}
     >
       <SlSettings className="text-2xl" />
       <span className="flex-1 hidden md:block">Settings</span>
     </li>
   </Link>
   {settingsOpen && (
-    <ul className="absolute top-full left-0 bg-teal-500 text-white border border-gray-300 rounded-md shadow-md transition-all duration-300">
+    <ul className="absolute top-full left-0 bg-sky-700 text-white border border-white rounded-md shadow-md transition-all duration-300">
       {/* <Link
         to="/settings/dashboardSet/"
         className={
@@ -146,7 +146,7 @@ const MenuButtons = () => {
         }
       >
         <li
-          className={`text-grey-300 text-sm flex border border-gray-300 items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md`}
+          className={`text-grey-300 text-sm flex border border-gray-300 items-center gap-x-4 cursor-pointer p-2 hover:bg-red-800 rounded-md`}
         >
           Dashboard
         </li>
@@ -155,12 +155,12 @@ const MenuButtons = () => {
         to="/settings/studentsSet/"
         className={
           location.pathname === "/settings/studentsSet/"
-            ? "text-teal-200"
+            ? "bg-sky-100"
             : ""
         }
       >
         <li
-          className={`text-grey-300 text-sm flex border border-gray-300 items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md`}
+          className={`text-grey-300 text-sm flex  items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-500 rounded-md`}
         >
           Students
         </li>
@@ -169,12 +169,12 @@ const MenuButtons = () => {
         to="/settings/academicsSet/"
         className={
           location.pathname === "/settings/academicsSet/"
-            ? "text-teal-200"
+            ? "bg-sky-100"
             : ""
         }
       >
         <li
-          className={`text-grey-300 text-sm flex border border-gray-300 items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md`}
+          className={`text-grey-300 text-sm flex  items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-500  rounded-md`}
         >
           Academics
         </li>
@@ -183,12 +183,12 @@ const MenuButtons = () => {
         to="/settings/financesSet/"
         className={
           location.pathname === "/settings/financesSet/"
-            ? "text-teal-200"
+            ? "bg-sky-100"
             : ""
         }
       >
         <li
-          className={`text-grey-300 text-sm flex border border-gray-300 items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md`}
+          className={`text-grey-300 text-sm flex  items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-500 rounded-md`}
         >
           Finances
         </li>
@@ -197,12 +197,12 @@ const MenuButtons = () => {
         to="/settings/HRSet/"
         className={
           location.pathname === "/settings/HRSet/"
-            ? "text-teal-200"
+            ? "bg-sky-100"
             : ""
         }
       >
         <li
-          className={`text-grey-300 text-sm flex border border-gray-300 items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md`}
+          className={`text-grey-300 text-sm flex  items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-500 rounded-md`}
         >
           HR
         </li>
@@ -216,7 +216,7 @@ const MenuButtons = () => {
         }
       >
         <li
-          className={`text-grey-300 text-sm flex border border-gray-300 items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md`}
+          className={`text-grey-300 text-sm flex border border-gray-300 items-center gap-x-4 cursor-pointer p-2 hover:bg-red-800 rounded-md`}
         >
           Desk
         </li>
@@ -230,7 +230,7 @@ const MenuButtons = () => {
         }
       >
         <li
-          className={`text-grey-300 text-sm flex border border-gray-300 items-center gap-x-4 cursor-pointer p-2 hover:bg-sky-700 rounded-md`}
+          className={`text-grey-300 text-sm flex border border-gray-300 items-center gap-x-4 cursor-pointer p-2 hover:bg-red-800 rounded-md`}
         >
           CMS
         </li>

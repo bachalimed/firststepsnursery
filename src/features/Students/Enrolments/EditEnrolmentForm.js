@@ -300,7 +300,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
             <span className="ml-4">
               Authorized Fee: {formData?.serviceAuthorisedFee}{" "}
               {`${CurrencySymbol}.`} Final Fee:{" "}{!validity?.validServiceFinalFee && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </span>
            

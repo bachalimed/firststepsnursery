@@ -281,7 +281,7 @@ const SessionsList = () => {
           {row.sessionData?.sessionIsActive ? (
             <IoShieldCheckmarkOutline className="text-green-500 text-2xl" />
           ) : (
-            <IoShieldOutline className="text-yellow-400 text-2xl" />
+            <IoShieldOutline className="text-amber-300 text-2xl" />
           )}
         </span>
       ),
@@ -309,9 +309,9 @@ const SessionsList = () => {
       cell: (row) => (
         <span>
           {row.userSex === "Male" ? (
-            <LiaMaleSolid className="text-blue-500 text-3xl" />
+            <LiaMaleSolid className="text-sky-700 text-3xl" />
           ) : (
-            <LiaFemaleSolid className="text-rose-500 text-3xl" />
+            <LiaFemaleSolid className="text-red-600 text-3xl" />
           )}
         </span>
       ),
@@ -407,7 +407,7 @@ const SessionsList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
-            className="text-blue-500"
+            className="text-sky-700"
             fontSize={20}
             onClick={() => navigate(`/hr/sessions/sessionDetails/${row.id}`)}
           >
@@ -415,7 +415,7 @@ const SessionsList = () => {
           </button>
           {canEdit ? (
             <button
-              className="text-yellow-400"
+              className="text-amber300"
               onClick={() => navigate(`/hr/sessions/editSession/${row.id}`)}
             >
               <FiEdit className="text-2xl" />
@@ -423,7 +423,7 @@ const SessionsList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
-              className="text-red-500"
+              className="text-red-600"
               onClick={() => onDeleteSessionClicked(row.id)}
             >
               <RiDeleteBin6Line className="text-2xl" />
@@ -472,7 +472,7 @@ const SessionsList = () => {
         ></DataTable>
         <div className="flex justify-end items-center space-x-4">
           <button
-            className=" px-4 py-2 bg-green-500 text-white rounded"
+            className=" px-4 py-2 bg-green-600 text-white rounded"
             onClick={handleRegisterSelected}
             disabled={selectedRows.length !== 1} // Disable if no rows are selected
             hidden={!canCreate}
@@ -481,7 +481,7 @@ const SessionsList = () => {
           </button>
 
           <button
-            className="px-3 py-2 bg-yellow-400 text-white rounded"
+            className="px-3 py-2 bg-amber-300 text-white rounded"
             onClick={handleDuplicateSelected}
             disabled={selectedRows.length !== 1} // Disable if no rows are selected
             hidden={!canCreate}

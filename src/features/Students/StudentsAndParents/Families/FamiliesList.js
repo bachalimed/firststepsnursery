@@ -368,7 +368,7 @@ const FamiliesList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
-            className="text-blue-500"
+            className="text-sky-700"
             fontSize={20}
             onClick={() =>
               navigate(`/students/studentsParents/familyDetails/${row.id}`)
@@ -379,7 +379,7 @@ const FamiliesList = () => {
           {/* /////////////////////condition is canEdit and not ! of it */}
           {canEdit ? (
             <button
-              className="text-yellow-400"
+              className="text-amber-300"
               onClick={() =>
                 navigate(`/students/studentsParents/editFamily/${row.id}`)
               }
@@ -389,7 +389,7 @@ const FamiliesList = () => {
           ) : null}
           {isAdmin && canDelete ? (
             <button
-              className="text-red-500"
+              className="text-red-600"
               onClick={() => onDeleteFamilyClicked(row.id)}
             >
               <RiDeleteBin6Line className="text-2xl" />

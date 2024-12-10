@@ -80,7 +80,7 @@ const NewUserPhotoForm = () => {
 
         <div className="flex justify-end items-center space-x-4">
           <button
-            className=" px-4 py-2 bg-green-500 text-white rounded"
+            className=" px-4 py-2 bg-green-600 text-white rounded"
             type="submit"
             title="Save"
             onClick={onSavePhotoClicked}

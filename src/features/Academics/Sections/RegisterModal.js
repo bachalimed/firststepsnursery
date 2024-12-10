@@ -74,7 +74,7 @@ const RegisterModal = ({
                 id={`year-${index}`}
                 checked={year.selected}
                 onChange={() => handleCheckboxChange(index)}
-                className="mr-2 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                className="mr-2 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-sky-700"
               />
               <label
                 htmlFor={`year-${index}`}

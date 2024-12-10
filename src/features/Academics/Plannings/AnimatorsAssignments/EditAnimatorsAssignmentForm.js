@@ -296,7 +296,7 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
             <label className="block text-gray-700 font-bold mb-2">
               Assignment Year{" "}
               {!validity.validAssignmentYear && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <input
@@ -305,7 +305,7 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
               value={formData.assignmentYear}
               onChange={handleChange}
               placeholder="Enter Year"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
             />
           </div>
 
@@ -313,7 +313,7 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
             <label className="block text-gray-700 font-bold mb-2">
               From{" "}
               {(!validity.validAssignedTo || !validity.noOverlap) && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <input
@@ -322,14 +322,14 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
               value={formData.assignedFrom}
               onChange={handleChange}
               placeholder="Enter Date"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
             />
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               To{" "}
               {(!validity.validAssignedTo || !validity.noOverlap) && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <input
@@ -338,7 +338,7 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
               value={formData.assignedTo}
               onChange={handleChange}
               placeholder="Enter Date"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
             />
           </div>
 
@@ -353,7 +353,7 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
                 onChange={(e) =>
                   handleAssignmentChange(index, "animator", e.target.value)
                 }
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
               >
                 <option value="">Select Animator</option>
                 {getAvailableAnimators(index).map((employee) => (
@@ -376,7 +376,7 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
                     onClick={() => toggleSchoolSelection(index, school.id)}
                     className={`px-3 py-1 rounded-md ${
                       assignment.schools.includes(school.id)
-                        ? "bg-blue-500 text-white"
+                        ? "bg-sky-700 text-white"
                         : "bg-gray-200 text-gray-700"
                     }`}
                   >
@@ -419,7 +419,7 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
           <button
             type="submit"
             disabled={!canSubmit}
-            className="w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-200 mt-4"
+            className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition duration-200 mt-4"
           >
             {isUpdateLoading ? "Updating..." : "Update Assignment"}
           </button>

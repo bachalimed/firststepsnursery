@@ -275,7 +275,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
             <label className="block text-sm font-medium text-gray-700">
               Section Label{" "}
               {!validity.validSectionLabel && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <input
@@ -289,7 +289,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
               className={`mt-1 block w-full border ${
                 validity.validSectionLabel
                   ? "border-gray-300"
-                  : "border-red-500"
+                  : "border-red-600"
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
             />
           </div>
@@ -298,7 +298,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
             <label className="block text-sm font-medium text-gray-700">
               Section Color{" "}
               {!validity.validSectionColor && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <input
@@ -316,7 +316,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
             <label className="block text-sm font-medium text-gray-700">
               Section Type{" "}
               {!validity.validSectionType && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <select
@@ -324,7 +324,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
               value={formData.sectionType}
               onChange={handleInputChange}
               className={`mt-1 block w-full border ${
-                validity.validSectionType ? "border-gray-300" : "border-red-500"
+                validity.validSectionType ? "border-gray-300" : "border-red-600"
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
               required
             >
@@ -341,7 +341,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
             <label className="block text-sm font-medium text-gray-700">
               Animator{" "}
               {!validity.validSectionAnimator && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <select
@@ -356,7 +356,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
               className={`mt-1 block w-full border ${
                 validity.validSectionAnimator
                   ? "border-gray-300"
-                  : "border-red-500"
+                  : "border-red-600"
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
             >
               <option>Select Animator</option>
@@ -374,7 +374,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
             <label className="block text-sm font-medium text-gray-700">
               Classroom{" "}
               {!validity.validSectionLocation && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <select
@@ -389,7 +389,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
               className={`mt-1 block w-full border ${
                 validity.validSectionLocation
                   ? "border-gray-300"
-                  : "border-red-500"
+                  : "border-red-600"
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
             >
               <option>Select Classroom</option>
@@ -406,7 +406,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
             <label className="block text-sm font-medium text-gray-700">
               Section From{" "}
               {!validity.validSectionFrom && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <input
@@ -415,7 +415,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
               value={formData.sectionFrom}
               onChange={handleInputChange}
               className={`mt-1 block w-full border ${
-                validity.validSectionFrom ? "border-gray-300" : "border-red-500"
+                validity.validSectionFrom ? "border-gray-300" : "border-red-600"
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
               required
             />
@@ -467,7 +467,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                   <li
                     key={studentId}
                     onClick={() => handleRemoveStudent(studentId)}
-                    className="cursor-pointer hover:text-red-500 hover:line-through"
+                    className="cursor-pointer hover:text-red-600 hover:line-through"
                   >
                    {index + 1}.{"  "}
                     {student?.studentName.firstName}{" "}

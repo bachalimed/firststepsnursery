@@ -469,7 +469,7 @@ const handleCloseModal = () => {
             >
               Student{" "}
               {!primaryValidity.validStudent && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <select
@@ -504,7 +504,7 @@ const handleCloseModal = () => {
             >
               Admission Year{" "}
               {!primaryValidity.validAdmissionYear && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <select
@@ -543,7 +543,7 @@ const handleCloseModal = () => {
             >
               Admission Starting Date{" "}
               {!primaryValidity.validAdmissionDate && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
               (effective starting in the nursery)
             </label>
@@ -575,7 +575,7 @@ const handleCloseModal = () => {
                 >
                   Service{" "}
                   {!admissionValidity[index]?.validService && (
-                    <span className="text-red-500">*</span>
+                    <span className="text-red-600">*</span>
                   )}
                   {index === 0 && "(Default: Admission)"}
                 </label>
@@ -609,7 +609,7 @@ const handleCloseModal = () => {
                   >
                     Fee Period{" "}
                     {!admissionValidity[index]?.validFeePeriod && (
-                      <span className="text-red-500">*</span>
+                      <span className="text-red-600">*</span>
                     )}
                   </label>
                   <select
@@ -650,7 +650,7 @@ const handleCloseModal = () => {
                   >
                     Fee Value{" "}
                     {!admissionValidity[index]?.validFeeValue && (
-                      <span className="text-red-500">*</span>
+                      <span className="text-red-600">*</span>
                     )}
                   </label>
                   <input
@@ -674,7 +674,7 @@ const handleCloseModal = () => {
                   >
                     Fee Start Date{" "}
                     {!admissionValidity[index]?.validFeeStartDate && (
-                      <span className="text-red-500">*</span>
+                      <span className="text-red-600">*</span>
                     )}
                     (agreed billing start)
                   </label>
@@ -745,7 +745,7 @@ const handleCloseModal = () => {
 
                 <div>
                   {service.isFlagged && (
-                    <div className="text-red-500">
+                    <div className="text-red-600">
                       The agreed fee value is below the minimum required fee for
                       this service, please add comment for management
                       authorisation processing.

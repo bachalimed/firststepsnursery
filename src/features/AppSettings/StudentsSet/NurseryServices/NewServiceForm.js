@@ -144,20 +144,20 @@ const handleConfirmSave = async () => {
         <h2 className="text-2xl font-bold mb-4">
           Add New Service: {`${formData.servicePeriodicity} ${formData.serviceType} ${formData.serviceYear}`}
         </h2>
-        {isError && <p className="text-red-500">Error: {error?.data?.message}</p>}
+        {isError && <p className="text-red-600">Error: {error?.data?.message}</p>}
         
         <form onSubmit={onSaveServiceClicked} className="space-y-6">
           {/* Service Type */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Service Type {validity.validServiceType ? "" : <span className="text-red-500">*</span>}
+              Service Type {validity.validServiceType ? "" : <span className="text-red-600">*</span>}
             </label>
             <select
               name="serviceType"
               value={formData.serviceType}
               onChange={handleInputChange}
               className={`mt-1 block w-full border ${
-                validity.validServiceType ? "border-gray-300" : "border-red-500"
+                validity.validServiceType ? "border-gray-300" : "border-red-600"
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
               required
             >
@@ -173,14 +173,14 @@ const handleConfirmSave = async () => {
           {/* Service Year */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Service Year {validity.validServiceYear ? "" : <span className="text-red-500">*</span>}
+              Service Year {validity.validServiceYear ? "" : <span className="text-red-600">*</span>}
             </label>
             <select
               name="serviceYear"
               value={formData.serviceYear}
               onChange={handleInputChange}
               className={`mt-1 block w-full border ${
-                validity.validServiceYear ? "border-gray-300" : "border-red-500"
+                validity.validServiceYear ? "border-gray-300" : "border-red-600"
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
               required
             >
@@ -198,7 +198,7 @@ const handleConfirmSave = async () => {
           {/* Monthly Service anchor */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Monthly Service Anchor {validity.validMonthlyAnchor ? "" : <span className="text-red-500">*</span>}
+              Monthly Service Anchor {validity.validMonthlyAnchor ? "" : <span className="text-red-600">*</span>}
             </label>
             <input
               type="number"
@@ -206,7 +206,7 @@ const handleConfirmSave = async () => {
               value={formData.monthlyAnchor}
               onChange={handleInputChange}
               className={`mt-1 block w-full border ${
-                validity.validMonthlyAnchor ? "border-gray-300" : "border-red-500"
+                validity.validMonthlyAnchor ? "border-gray-300" : "border-red-600"
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
               placeholder="Enter Monthly Service Anchor"
               
@@ -216,7 +216,7 @@ const handleConfirmSave = async () => {
           {/* Weekly Service anchor */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Weekly Service Anchor {validity.validWeeklyAnchor ? "" : <span className="text-red-500">*</span>}
+              Weekly Service Anchor {validity.validWeeklyAnchor ? "" : <span className="text-red-600">*</span>}
             </label>
             <input
               type="number"
@@ -224,7 +224,7 @@ const handleConfirmSave = async () => {
               value={formData.weeklyAnchor}
               onChange={handleInputChange}
               className={`mt-1 block w-full border ${
-                validity.validWeeklyAnchor ? "border-gray-300" : "border-red-500"
+                validity.validWeeklyAnchor ? "border-gray-300" : "border-red-600"
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
               placeholder="Enter Weekly Service Anchor"
               
@@ -233,7 +233,7 @@ const handleConfirmSave = async () => {
           {/* Weekly Service anchor */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              One-time Off Service Anchor {validity.validOneTimeOffAnchor ? "" : <span className="text-red-500">*</span>}
+              One-time Off Service Anchor {validity.validOneTimeOffAnchor ? "" : <span className="text-red-600">*</span>}
             </label>
             <input
               type="number"
@@ -241,7 +241,7 @@ const handleConfirmSave = async () => {
               value={formData.oneTimeOffAnchor}
               onChange={handleInputChange}
               className={`mt-1 block w-full border ${
-                validity.validOneTimeOffAnchor ? "border-gray-300" : "border-red-500"
+                validity.validOneTimeOffAnchor ? "border-gray-300" : "border-red-600"
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
               placeholder="Enter One-time off  Service Anchor"
               

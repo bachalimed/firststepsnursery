@@ -236,7 +236,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                   <label className="block text-sm font-medium text-gray-700">
                     UserName
                     {!validity.validUsername && (
-                      <span className="text-red-500">*</span>
+                      <span className="text-red-600">*</span>
                     )}
                   </label>
                   <input
@@ -252,7 +252,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                     className={`mt-1 block w-full border ${
                       validity.validUsername
                         ? "border-gray-300"
-                        : "border-red-500"
+                        : "border-red-600"
                     } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                     placeholder="Enter username"
                     required
@@ -262,7 +262,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                   <label className="block text-sm font-medium text-gray-700">
                     Password
                     {!validity.validPassword && (
-                      <span className="text-red-500">*</span>
+                      <span className="text-red-600">*</span>
                     )}
                   </label>
                   <input
@@ -278,7 +278,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                     className={`mt-1 block w-full border ${
                       validity.validFirstName
                         ? "border-gray-300"
-                        : "border-red-500"
+                        : "border-red-600"
                     } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                     placeholder="Enter password"
                     required
@@ -289,7 +289,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                 <label className="block text-sm font-medium text-gray-700">
                   First Name
                   {!validity.validFirstName && (
-                    <span className="text-red-500">*</span>
+                    <span className="text-red-600">*</span>
                   )}
                 </label>
                 <input
@@ -308,7 +308,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                   className={`mt-1 block w-full border ${
                     validity.validFirstName
                       ? "border-gray-300"
-                      : "border-red-500"
+                      : "border-red-600"
                   } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                   placeholder="Enter First Name"
                   required
@@ -342,7 +342,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                 <label className="block text-sm font-medium text-gray-700">
                   Last Name{" "}
                   {!validity.validLastName && (
-                    <span className="text-red-500">*</span>
+                    <span className="text-red-600">*</span>
                   )}
                 </label>
                 <input
@@ -361,7 +361,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                   className={`mt-1 block w-full border ${
                     validity.validLastName
                       ? "border-gray-300"
-                      : "border-red-500"
+                      : "border-red-600"
                   } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                   placeholder="Enter Last Name"
                   required
@@ -376,7 +376,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                 >
                   Date of Birth{" "}
                   {!validity.validUserDob && (
-                    <span className="text-red-500">*</span>
+                    <span className="text-red-600">*</span>
                   )}
                 </label>
                 <input
@@ -385,7 +385,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                   value={formData.userDob}
                   onChange={handleInputChange}
                   className={`mt-1 block w-full border ${
-                    validity.validUserDob ? "border-gray-300" : "border-red-500"
+                    validity.validUserDob ? "border-gray-300" : "border-red-600"
                   } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                   required
                 />
@@ -397,7 +397,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                 <label className="block text-sm font-medium text-gray-700">
                   Sex{" "}
                   {!validity.validUserSex && (
-                    <span className="text-red-500">*</span>
+                    <span className="text-red-600">*</span>
                   )}
                 </label>
                 <div className="flex items-center space-x-4 mt-1">
@@ -420,7 +420,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                       className={`h-4 w-4 ${
                         validity.validUserSex
                           ? "border-gray-300 rounded"
-                          : "border-red-500 rounded"
+                          : "border-red-600 rounded"
                       } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                     />
                     <label className="ml-2 text-sm text-gray-700">Male</label>
@@ -458,7 +458,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                 <label className="block text-sm font-medium text-gray-700">
                   Primary Phone{" "}
                   {!validity.validPrimaryPhone && (
-                    <span className="text-red-500">*</span>
+                    <span className="text-red-600">*</span>
                   )}
                 </label>
                 <input
@@ -477,7 +477,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                   className={`mt-1 block w-full border ${
                     validity.validPrimaryPhone
                       ? "border-gray-300"
-                      : "border-red-500"
+                      : "border-red-600"
                   } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                   placeholder="Enter Primary Phone"
                   required
@@ -534,7 +534,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                 <label className="block text-sm font-medium text-gray-700">
                   House{" "}
                   {!validity.validHouse && (
-                    <span className="text-red-500">*</span>
+                    <span className="text-red-600">*</span>
                   )}
                 </label>
                 <input
@@ -551,7 +551,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                     }))
                   }
                   className={`mt-1 block w-full border ${
-                    validity.validHouse ? "border-gray-300" : "border-red-500"
+                    validity.validHouse ? "border-gray-300" : "border-red-600"
                   } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                   placeholder="Enter House"
                 />
@@ -561,7 +561,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                 <label className="block text-sm font-medium text-gray-700">
                   Street{" "}
                   {!validity.validStreet && (
-                    <span className="text-red-500">*</span>
+                    <span className="text-red-600">*</span>
                   )}
                 </label>
                 <input
@@ -578,7 +578,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                     }))
                   }
                   className={`mt-1 block w-full border ${
-                    validity.validStreet ? "border-gray-300" : "border-red-500"
+                    validity.validStreet ? "border-gray-300" : "border-red-600"
                   } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                   placeholder="Enter Street"
                 />
@@ -632,7 +632,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                 <label className="block text-sm font-medium text-gray-700">
                   City{" "}
                   {!validity.validCity && (
-                    <span className="text-red-500">*</span>
+                    <span className="text-red-600">*</span>
                   )}
                 </label>
                 <input
@@ -649,7 +649,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                     }))
                   }
                   className={`mt-1 block w-full border ${
-                    validity.validCity ? "border-gray-300" : "border-red-500"
+                    validity.validCity ? "border-gray-300" : "border-red-600"
                   } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                   placeholder="Enter City"
                 />
@@ -755,7 +755,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
               Cancel
             </button>
             <button
-              className=" px-4 py-2 bg-green-500 text-white rounded"
+              className=" px-4 py-2 bg-green-600 text-white rounded"
               type="submit"
               title="Save"
               onClick={onSaveUserClicked}

@@ -299,7 +299,7 @@ const NewEnrolmentForm = () => {
             className="block text-sm font-medium text-gray-700"
           >
             Student{" "}
-            {!validity.validStudent && <span className="text-red-500">*</span>}
+            {!validity.validStudent && <span className="text-red-600">*</span>}
           </label>
           <select
             id="student"
@@ -338,7 +338,7 @@ const NewEnrolmentForm = () => {
           >
             Enrolment Year{" "}
             {!validity.validEnrolmentYear && (
-              <span className="text-red-500">*</span>
+              <span className="text-red-600">*</span>
             )}
           </label>
           <select
@@ -375,7 +375,7 @@ const NewEnrolmentForm = () => {
           >
             Enrolment Month{" "}
             {!validity.validEnrolmentMonth && (
-              <span className="text-red-500">*</span>
+              <span className="text-red-600">*</span>
             )}
           </label>
           <select
@@ -485,7 +485,7 @@ const NewEnrolmentForm = () => {
 
         {/* Error message display */}
         {isEnrolmentError && (
-          <div className="mt-4 text-red-500">
+          <div className="mt-4 text-red-600">
             <p>
               {enrolmentError?.data?.message ||
                 "Failed to save the enrolment. Please try again."}

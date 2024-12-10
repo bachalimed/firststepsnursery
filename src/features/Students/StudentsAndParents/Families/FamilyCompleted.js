@@ -6,13 +6,13 @@ const FamilyCompleted = () => {
   return (
     <div className="container md:mt-10">
       <div className="flex flex-col items-center">
-        <IoCheckbox className="text-green-400 w-24 h-24" />
+        <IoCheckbox className="text-green-700 w-24 h-24" />
       </div>
-      <div className="mt-3 text-xl font-semibold uppercase text-green-500">
+      <div className="mt-3 text-xl font-semibold uppercase text-green-700">
         Family Details Saved
       </div>
       <Link to="/students/studentsParents/families/">
-        <button className="h-10 px-5 text-green-700 transition-colors duration-150 border border-gray-300 rounded-lg focus:shadow-outline hover:bg-green-500 hover:Text-green-100">
+        <button className="h-10 px-5 text-green-700 transition-colors duration-150 border border-gray-300 rounded-lg focus:shadow-outline hover:bg-green-600 hover:Text-green-100">
           Close
         </button>
       </Link>

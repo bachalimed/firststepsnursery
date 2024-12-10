@@ -287,7 +287,7 @@ const EnrolmentsList = () => {
           {row.student.studentIsActive ? (
             <IoShieldCheckmarkOutline className="text-green-500 text-2xl" />
           ) : (
-            <IoShieldOutline className="text-yellow-400 text-2xl" />
+            <IoShieldOutline className="text-amber-300 text-2xl" />
           )}
         </span>
       ),
@@ -300,9 +300,9 @@ const EnrolmentsList = () => {
       cell: (row) => (
         <span>
           {row?.student?.studentSex == "Female" ? (
-            <LiaFemaleSolid className="text-rose-500 text-2xl" />
+            <LiaFemaleSolid className="text-red-600 text-2xl" />
           ) : (
-            <LiaMaleSolid className="text-blue-500 text-2xl" />
+            <LiaMaleSolid className="text-sky-700 text-2xl" />
           )}
         </span>
       ),
@@ -498,7 +498,7 @@ const EnrolmentsList = () => {
             <IoMdAddCircleOutline className="text-2xl" />
           </button> */}
           <button
-            className="text-blue-500"
+            className="text-sky-700"
             fontSize={20}
             onClick={() =>
               navigate(`/students/enrolments/enrolmentDetails/${row.id}`)
@@ -508,7 +508,7 @@ const EnrolmentsList = () => {
           </button>
           {canEdit ? (
             <button
-              className="text-yellow-400"
+              className="text-amber-300"
               onClick={() =>
                 navigate(`/students/enrolments/editEnrolment/${row.id}`)
               }
@@ -519,7 +519,7 @@ const EnrolmentsList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
-              className="text-red-500"
+              className="text-red-600"
               onClick={() => onDeleteEnrolmentClicked(row.id)}
             >
               <RiDeleteBin6Line className="text-2xl" />
@@ -669,7 +669,7 @@ const EnrolmentsList = () => {
               New Enrolment
             </button>
             <button
-              className="px-3 py-2 bg-teal-500 text-white rounded"
+              className="add-button"
               onClick={handleGenerateInvoice}
               hidden={!canCreate}
               disabled={selectedRows?.length > 20}

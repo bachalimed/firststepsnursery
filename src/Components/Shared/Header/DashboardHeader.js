@@ -35,7 +35,7 @@ const DashboardHeader = () => {
   });
 
   const content = (
-    <header className="bg-blue-500 text-white py-1 px-4 md:px-8 flex  md:flex-row md:justify-between items-center shadow-md">
+    <header className="bg-sky-700 text-white py-1 px-4 md:px-8 flex  md:flex-row md:justify-between items-center shadow-md">
       <div
         className={` "w-56" p-3 flex  text-white  relative`}
       >

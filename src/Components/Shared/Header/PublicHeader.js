@@ -110,7 +110,7 @@ const PublicHeader = () => {
      
       {/* Banner Section */}
       {isBannerVisible && (
-        <div className="relative bg-blue-600 text-white">
+        <div className="relative bg-sky-600 text-white">
           <div className="max-w-7xl mx-auto p-4 text-center relative">
             <p className="text-sm sm:text-base">
               🌟 *Enroll now for our upcoming term! Special discounts for early

@@ -191,7 +191,7 @@ const EditLeaveForm = ({ leave }) => {
           {leave?.leaveEmployeeName?.userLastName}{" "} 
         </h2>
         {isUpdateError && (
-          <p className="text-red-500">Error: {updateError?.data?.message}</p>
+          <p className="text-red-600">Error: {updateError?.data?.message}</p>
         )}
         <form onSubmit={onSaveLeaveClicked} className="space-y-6">
          
@@ -243,7 +243,7 @@ const EditLeaveForm = ({ leave }) => {
             <label className="block text-sm font-medium text-gray-700">
               Start Date{" "}
               {!validity.validLeaveStartDate && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <input
@@ -260,7 +260,7 @@ const EditLeaveForm = ({ leave }) => {
             <label className="block text-sm font-medium text-gray-700">
               End Date{" "}
               {!validity.validLeaveEndDate && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <input

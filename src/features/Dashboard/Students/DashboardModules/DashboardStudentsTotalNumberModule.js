@@ -35,7 +35,7 @@ const DashboardStudentsTotalNumberModule = () => {
             {" "}
             {studentsMatchingAcademicYear}
           </strong>
-          <span className="pl-2 text-sm text-red-500">
+          <span className="pl-2 text-sm text-red-600">
             {inactiveStudentsCount} inactive{" "}
           </span>
         </div>

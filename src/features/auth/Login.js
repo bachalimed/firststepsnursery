@@ -74,7 +74,7 @@ const Login = () => {
 
         <p
           ref={errRef}
-          className={`${errClass} text-red-500 text-center mb-4`}
+          className={`${errClass} text-red-600 text-center mb-4`}
           aria-live="assertive"
         >
           {errMsg}
@@ -148,7 +148,7 @@ const Login = () => {
 
           <div className="flex items-center justify-between mt-6">
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+              className="bg-sky-700 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
               type="submit"
             >
               Sign In
@@ -160,7 +160,7 @@ const Login = () => {
         <div className="mt-4 text-center">
           <Link
             to="/forgot-password"
-            className="text-blue-500 hover:text-blue-700 text-sm"
+            className="text-sky-700 hover:text-sky-700 text-sm"
           >
             Forgot Password?
           </Link>
@@ -168,7 +168,7 @@ const Login = () => {
       </div>
 
       <footer className="text-gray-500">
-        <Link to="/" className="hover:text-blue-500">
+        <Link to="/" className="hover:text-sky-700">
           Back to Home
         </Link>
       </footer>

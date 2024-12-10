@@ -280,7 +280,7 @@ const PayslipsList = () => {
           {row?.payslipIsApproved ? (
             <IoShieldCheckmarkOutline className="text-green-500 text-2xl" />
           ) : (
-            <IoShieldOutline className="text-yellow-400 text-2xl" />
+            <IoShieldOutline className="text-amber-300 text-2xl" />
           )}
         </span>
       ),
@@ -410,7 +410,7 @@ const PayslipsList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
-            className="text-blue-500"
+            className="text-sky-700"
             fontSize={20}
             onClick={() => navigate(`/hr/payslips/payslipDetails/${row.id}`)}
           >
@@ -418,7 +418,7 @@ const PayslipsList = () => {
           </button>
           {canEdit ? (
             <button
-              className="text-yellow-400"
+              className="text-amber-300"
               onClick={() => navigate(`/hr/payslips/editPayslip/${row.id}`)}
             >
               <FiEdit className="text-2xl" />
@@ -426,7 +426,7 @@ const PayslipsList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
-              className="text-red-500"
+              className="text-red-600"
               onClick={() => onDeletePayslipClicked(row.id)}
             >
               <RiDeleteBin6Line className="text-2xl" />

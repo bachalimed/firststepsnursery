@@ -351,7 +351,7 @@ const EmployeeDocuments = () => {
         <div className="space-x-1">
           {canView && row.documentUploaded && (
             <button
-              className="text-blue-500"
+              className="text-sky-700"
               fontSize={20}
               onClick={() => handleViewDocument(row.employeeDocumentId)}
             >
@@ -361,7 +361,7 @@ const EmployeeDocuments = () => {
 
           {canEdit && !row.documentUploaded && (
             <button
-              className="text-yellow-400"
+              className="text-amber-300"
               onClick={() =>
                 handleUploadClick(row.documentTitle, row.documentReference)
               }
@@ -371,7 +371,7 @@ const EmployeeDocuments = () => {
           )}
           {canDelete && row.documentUploaded && !isDelLoading && (
             <button
-              className="text-red-500"
+              className="text-red-600"
               onClick={() =>
                 onDeleteEmployeeDocumentClicked(row.employeeDocumentId)
               }
@@ -422,7 +422,7 @@ const EmployeeDocuments = () => {
               Back to List
             </button>
             <button
-              className=" px-4 py-2 bg-blue-500 text-white rounded"
+              className=" px-4 py-2 bg-sky-700 text-white rounded"
               onClick={() =>
                 Navigate(`/hr/employees/employeeDetails/${userId}`)
               }

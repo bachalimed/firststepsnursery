@@ -310,7 +310,7 @@ const PaymentsList = () => {
       cell: (row) => (
         <div className="space-x-1">
           {/* <button
-            className="text-blue-500"
+            className="text-sky-700"
             fontSize={20}
             onClick={() =>
               navigate(`/finances/payments/paymentDetails/${row.id}`)
@@ -320,7 +320,7 @@ const PaymentsList = () => {
           </button> */}
           {/* {canEdit ? (
             <button
-              className="text-yellow-400"
+              className="text-amber-300"
               onClick={() =>
                 navigate(`/finances/payments/editPayment/${row.id}`)
               }
@@ -330,7 +330,7 @@ const PaymentsList = () => {
           ) : null} */}
           {canDelete && !isDelLoading && (
             <button
-              className="text-red-500"
+              className="text-red-600"
               onClick={() => onDeletePaymentClicked(row.id)}
             >
               <RiDeleteBin6Line className="text-2xl" />

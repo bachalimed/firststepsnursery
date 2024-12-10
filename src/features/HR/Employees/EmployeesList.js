@@ -265,7 +265,7 @@ const EmployeesList = () => {
           {row.employeeData?.employeeIsActive ? (
             <IoShieldCheckmarkOutline className="text-green-500 text-2xl" />
           ) : (
-            <IoShieldOutline className="text-yellow-400 text-2xl" />
+            <IoShieldOutline className="text-amber-300 text-2xl" />
           )}
         </span>
       ),
@@ -293,9 +293,9 @@ const EmployeesList = () => {
       cell: (row) => (
         <span>
           {row.userSex === "Male" ? (
-            <LiaMaleSolid className="text-blue-500 text-3xl" />
+            <LiaMaleSolid className="text-sky-700 text-3xl" />
           ) : (
-            <LiaFemaleSolid className="text-rose-500 text-3xl" />
+            <LiaFemaleSolid className="text-red-600 text-3xl" />
           )}
         </span>
       ),
@@ -391,7 +391,7 @@ const EmployeesList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
-            className="text-blue-500"
+            className="text-sky-700"
             fontSize={20}
             onClick={() => navigate(`/hr/employees/employeeDetails/${row.id}`)}
           >
@@ -399,7 +399,7 @@ const EmployeesList = () => {
           </button>
           {canEdit ? (
             <button
-              className="text-yellow-400"
+              className="text-amber-300"
               onClick={() => navigate(`/hr/employees/editEmployee/${row.id}`)}
             >
               <FiEdit className="text-2xl" />
@@ -407,7 +407,7 @@ const EmployeesList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
-              className="text-red-500"
+              className="text-red-600"
               onClick={() => onDeleteEmployeeClicked(row.id)}
             >
               <RiDeleteBin6Line className="text-2xl" />

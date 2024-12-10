@@ -119,10 +119,10 @@ const handleCloseModal = () => {
               value={formData.schoolName}
               onChange={handleChange}
               placeholder="Enter school name"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
             />
             {!validity.validSchoolName && formData.schoolName && (
-              <p className="text-red-500 text-sm">Invalid school name.</p>
+              <p className="text-red-600 text-sm">Invalid school name.</p>
             )}
           </div>
 
@@ -134,10 +134,10 @@ const handleCloseModal = () => {
               value={formData.schoolCity}
               onChange={handleChange}
               placeholder="Enter school city"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
             />
             {!validity.validSchoolCity && formData.schoolCity && (
-              <p className="text-red-500 text-sm">Invalid school city.</p>
+              <p className="text-red-600 text-sm">Invalid school city.</p>
             )}
           </div>
 
@@ -147,7 +147,7 @@ const handleCloseModal = () => {
               name="schoolType"
               value={formData.schoolType}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
             >
               <option value="">Select School Type</option>
               <option value="Public">Public</option>
@@ -156,13 +156,13 @@ const handleCloseModal = () => {
               <option value="Other">Other</option>
             </select>
             {!validity.validSchoolType && formData.schoolType && (
-              <p className="text-red-500 text-sm">Please select a school type.</p>
+              <p className="text-red-600 text-sm">Please select a school type.</p>
             )}
           </div>
 
-          {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+          {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
           {isError && (
-            <p className="text-red-500 text-sm mt-2">
+            <p className="text-red-600 text-sm mt-2">
               {apiError?.data?.message || "Error adding the school."}
             </p>
           )}
@@ -170,7 +170,7 @@ const handleCloseModal = () => {
           <button
             type="submit"
             disabled={!canSubmit}
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200"
+            className="w-full bg-sky-700 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200"
           >
             {isLoading ? "Adding..." : "Add School"}
           </button>

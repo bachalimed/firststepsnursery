@@ -205,7 +205,7 @@ const StudentDocumentsListsList = () => {
         <div className="space-x-1">
           {canEdit ? (
             <button
-              className="text-yellow-400"
+              className="text-amber-300"
               onClick={() =>
                 Navigate(
                   `/settings/studentsSet/studentDocumentsList/edit/${row.id}`
@@ -218,7 +218,7 @@ const StudentDocumentsListsList = () => {
           ) : null}
 
           <button
-            className="text-red-500"
+            className="text-red-600"
             onClick={() => onDeleteStudentDocumentsListClicked(row.id)}
             hidden={!canDelete}
           >

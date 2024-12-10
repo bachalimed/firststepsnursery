@@ -168,7 +168,7 @@ const EditPayeeForm = ({payee}) => {
           Add New Payee: {`${formData?.payeeLabel} `}
         </h2>
         {isError && (
-          <p className="text-red-500">Error: {error?.data?.message}</p>
+          <p className="text-red-600">Error: {error?.data?.message}</p>
         )}
         <form onSubmit={onSavePayeeClicked} className="space-y-6">
           {/* Payee Label */}
@@ -176,7 +176,7 @@ const EditPayeeForm = ({payee}) => {
             <label className="block text-sm font-medium text-gray-700">
               Payee Label{" "}
               {!validity.validPayeeLabel && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <input
@@ -185,7 +185,7 @@ const EditPayeeForm = ({payee}) => {
               value={formData.payeeLabel}
               onChange={handleInputChange}
               className={`mt-1 block w-full border ${
-                validity.validPayeeLabel ? "border-gray-300" : "border-red-500"
+                validity.validPayeeLabel ? "border-gray-300" : "border-red-600"
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
               placeholder="Enter Payee Label"
               required
@@ -206,7 +206,7 @@ const EditPayeeForm = ({payee}) => {
                   payeeIsActive: e.target.checked,
                 }))
               }
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
             />
           </div>
 
@@ -215,7 +215,7 @@ const EditPayeeForm = ({payee}) => {
             <label className="block text-sm font-medium text-gray-700">
               Payee Years{" "}
               {!validity.validPayeeYears && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <div className="space-y-2">
@@ -226,7 +226,7 @@ const EditPayeeForm = ({payee}) => {
                     id={`year-${year.id}`}
                     checked={formData.payeeYears.includes(year.title)}
                     onChange={() => handleYearChange(year.title)}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
                   />
                   <label
                     htmlFor={`year-${year.id}`}
@@ -244,7 +244,7 @@ const EditPayeeForm = ({payee}) => {
             <label className="block text-sm font-medium text-gray-700">
               Payee Categories{" "}
               {!validity.validPayeeCategories && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <div className="space-y-2">
@@ -255,7 +255,7 @@ const EditPayeeForm = ({payee}) => {
                     id={category}
                     checked={formData.payeeCategories.includes(category)}
                     onChange={() => handleCategoryChange(category)}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
                   />
                   <label
                     htmlFor={category}
@@ -274,7 +274,7 @@ const EditPayeeForm = ({payee}) => {
               <label className="block text-sm font-medium text-gray-700">
                 Payee Phone{" "}
                 {!validity.validPayeePhone && (
-                  <span className="text-red-500">*</span>
+                  <span className="text-red-600">*</span>
                 )}
               </label>
               <input
@@ -285,7 +285,7 @@ const EditPayeeForm = ({payee}) => {
                 className={`mt-1 block w-full border ${
                   validity.validPayeePhone
                     ? "border-gray-300"
-                    : "border-red-500"
+                    : "border-red-600"
                 } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                 placeholder="Enter Payee Phone"
                 
@@ -295,7 +295,7 @@ const EditPayeeForm = ({payee}) => {
               <label className="block text-sm font-medium text-gray-700">
                 Payee Address{" "}
                 {!validity.validPayeeAddress && (
-                  <span className="text-red-500">*</span>
+                  <span className="text-red-600">*</span>
                 )}
               </label>
               <input
@@ -306,7 +306,7 @@ const EditPayeeForm = ({payee}) => {
                 className={`mt-1 block w-full border ${
                   validity.validPayeeAddress
                     ? "border-gray-300"
-                    : "border-red-500"
+                    : "border-red-600"
                 } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                 placeholder="Enter Payee Address"
            
@@ -319,7 +319,7 @@ const EditPayeeForm = ({payee}) => {
             <label className="block text-sm font-medium text-gray-700">
               Payee Notes{" "}
               {!validity.validPayeeNotes && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <textarea
@@ -327,7 +327,7 @@ const EditPayeeForm = ({payee}) => {
               value={formData.payeeNotes}
               onChange={handleInputChange}
               className={`mt-1 block w-full border ${
-                validity.validPayeeNotes ? "border-gray-300" : "border-red-500"
+                validity.validPayeeNotes ? "border-gray-300" : "border-red-600"
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
               placeholder="Enter Payee Notes"
            

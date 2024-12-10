@@ -276,7 +276,7 @@ const StudentsList = () => {
           {row.studentIsActive ? (
             <IoShieldCheckmark className="text-green-500 text-2xl" />
           ) : (
-            <IoShieldCheckmarkOutline className="text-red-500 text-2xl" />
+            <IoShieldCheckmarkOutline className="text-red-600 text-2xl" />
           )}
         </span>
       ),
@@ -321,9 +321,9 @@ const StudentsList = () => {
       cell: (row) => (
         <span>
           {row.studentSex === "Male" ? (
-            <LiaMaleSolid className="text-blue-500 text-3xl" />
+            <LiaMaleSolid className="text-sky-700 text-3xl" />
           ) : (
-            <LiaFemaleSolid className="text-rose-500 text-3xl" />
+            <LiaFemaleSolid className="text-red-600 text-3xl" />
           )}
         </span>
       ),
@@ -400,7 +400,7 @@ const StudentsList = () => {
       selector: (row) => (
         <Link to={`/students/studentsParents/studentDocumentsList/${row.id}`}>
           {" "}
-          <IoDocumentAttachOutline className="text-slate-800 text-2xl" />
+          <IoDocumentAttachOutline className="text-fuchsia-500 text-2xl" />
         </Link>
       ),
       sortable: true,
@@ -413,7 +413,7 @@ const StudentsList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
-            className="text-blue-500"
+            className="text-sky-700"
             fontSize={20}
             onClick={() =>
               navigate(`/students/studentsParents/studentDetails/${row.id}`)
@@ -423,7 +423,7 @@ const StudentsList = () => {
           </button>
           {canEdit ? (
             <button
-              className="text-yellow-400"
+              className="text-amber-300"
               onClick={() =>
                 navigate(`/students/studentsParents/editStudent/${row.id}`)
               }
@@ -433,7 +433,7 @@ const StudentsList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
-              className="text-red-500"
+              className="text-red-600"
               onClick={() => onDeleteStudentClicked(row.id)}
             >
               <RiDeleteBin6Line className="text-2xl" />
@@ -561,7 +561,7 @@ const StudentsList = () => {
             </button>
             <button
               className={`px-4 py-2 ${
-                selectedRows?.length === 1 ? "bg-teal-500" : "bg-gray-300"
+                selectedRows?.length === 1 ? "bg-green-500" : "bg-gray-300"
               } text-white rounded`}
               onClick={handleRegisterSelected}
               disabled={selectedRows?.length !== 1} // Disable if no rows are selected

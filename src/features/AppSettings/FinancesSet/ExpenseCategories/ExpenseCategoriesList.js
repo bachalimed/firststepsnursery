@@ -182,7 +182,7 @@ const ExpenseCategoriesList = () => {
           {row?.expenseCategoryIsActive ? (
             <IoShieldCheckmarkOutline className="text-green-500 text-2xl" />
           ) : (
-            <IoShieldOutline className="text-yellow-400 text-2xl" />
+            <IoShieldOutline className="text-amber-300 text-2xl" />
           )}
         </span>
       ),
@@ -238,7 +238,7 @@ const ExpenseCategoriesList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
-            className="text-blue-500"
+            className="text-sky-700"
             fontSize={20}
             onClick={() =>
               navigate(`/settings/financesSet/expenseCategoryDetails/${row.id}`)
@@ -248,7 +248,7 @@ const ExpenseCategoriesList = () => {
           </button>
           {canEdit ? (
             <button
-              className="text-yellow-400"
+              className="text-amber-300"
               onClick={() =>
                 navigate(`/settings/financesSet/editExpenseCategory/${row.id}`)
               }
@@ -258,7 +258,7 @@ const ExpenseCategoriesList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
-              className="text-red-500"
+              className="text-red-600"
               onClick={() => onDeleteExpenseCategoryClicked(row.id)}
             >
               <RiDeleteBin6Line className="text-2xl" />

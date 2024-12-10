@@ -131,7 +131,7 @@ export default function EditFamilyAddChildrenForm() {
               <select
                 value={selectedChild?._id}
                 onChange={(e) => handleChildChange(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-700"
               >
                 <option value="">Select a child</option>
 
@@ -158,7 +158,7 @@ export default function EditFamilyAddChildrenForm() {
                 <button
                   type="button"
                   onClick={() => removeChildDropdown(selectedChild._id)}
-                  className="px-3 py-2 text-white bg-red-500 hover:bg-red-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="px-3 py-2 text-white bg-red-600 hover:bg-red-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-600"
                 >
                   Remove
                 </button>
@@ -171,7 +171,7 @@ export default function EditFamilyAddChildrenForm() {
           <button
             type="button"
             onClick={addChildDropdown}
-            className="w-full px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 bg-sky-700 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-sky-700"
           >
             Add Child
           </button>

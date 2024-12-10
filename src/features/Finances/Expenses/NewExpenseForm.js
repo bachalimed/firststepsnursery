@@ -280,7 +280,7 @@ const NewExpenseForm = () => {
             <label className="block text-gray-700 font-bold mb-2">
               Expense Year{" "}
               {!validity.validExpenseYear && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <select
@@ -289,7 +289,7 @@ const NewExpenseForm = () => {
               value={formData.expenseYear}
               // onChange={handleChange}
               placeholder="Enter Year"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
               required
              
             >
@@ -307,7 +307,7 @@ const NewExpenseForm = () => {
             >
               Expense Month{" "}
               {!validity.validExpenseMonth && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <select
@@ -317,7 +317,7 @@ const NewExpenseForm = () => {
                 setFormData({ ...formData, expenseMonth: e.target.value })
               }
               required
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
             >
               <option value="">Select a month</option>
               {MONTHS.map((month) => (
@@ -336,7 +336,7 @@ const NewExpenseForm = () => {
             >
               Expense Service{" "}
               {!validity.validExpenseService && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <select
@@ -345,7 +345,7 @@ const NewExpenseForm = () => {
               onChange={(e) =>
                 setFormData({ ...formData, expenseService: e.target.value })
               }
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
               required
             >
               <option value="">Select a service</option>
@@ -365,7 +365,7 @@ const NewExpenseForm = () => {
             >
               Expense Payee{" "}
               {!validity.validExpensePayee && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <select
@@ -374,7 +374,7 @@ const NewExpenseForm = () => {
               onChange={(e) =>
                 setFormData({ ...formData, expensePayee: e.target.value })
               }
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
               required
             >
               <option value="">Select a payee</option>
@@ -394,7 +394,7 @@ const NewExpenseForm = () => {
             >
               Expense Categroy{" "}
               {!validity.validExpenseCategory && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <select
@@ -403,7 +403,7 @@ const NewExpenseForm = () => {
               onChange={(e) =>
                 setFormData({ ...formData, expenseCategory: e.target.value })
               }
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
               required
             >
               <option value="">Select a Category</option>
@@ -460,7 +460,7 @@ const NewExpenseForm = () => {
             >
               Expense Amount{" "}
               {!validity.validExpenseAmount && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}{" "}
               ({CurrencySymbol})
             </label>
@@ -471,7 +471,7 @@ const NewExpenseForm = () => {
               onChange={(e) =>
                 setFormData({ ...formData, expenseAmount: e.target.value })
               }
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
               required
             />
           </div>
@@ -483,7 +483,7 @@ const NewExpenseForm = () => {
             >
               Payment Method{" "}
               {!validity.validExpenseMethod && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <select
@@ -492,7 +492,7 @@ const NewExpenseForm = () => {
               onChange={(e) =>
                 setFormData({ ...formData, expenseMethod: e.target.value })
               }
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
               required
             >
               <option value="">Select a method</option>
@@ -518,7 +518,7 @@ const NewExpenseForm = () => {
             >
               Expense Date{" "}
               {!validity.validExpenseDate && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <input
@@ -528,7 +528,7 @@ const NewExpenseForm = () => {
               onChange={(e) =>
                 setFormData({ ...formData, expenseDate: e.target.value })
               }
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
               required
             />
           </div>
@@ -551,7 +551,7 @@ const NewExpenseForm = () => {
                     expensePaymentDate: e.target.value,
                   })
                 }
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
               />
             </div>
           )}
@@ -571,7 +571,7 @@ const NewExpenseForm = () => {
                 setFormData({ ...formData, expenseNote: e.target.value })
               }
               rows="4"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
             />
           </div>
 

@@ -276,13 +276,13 @@ const NewPaymentForm = () => {
             <label className="block text-gray-700 font-bold mb-2">
               Select Student{" "}
               {!validity.validPaymentStudent && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <select
               value={selectedStudent?.id || ""}
               onChange={handleStudentChange}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
             >
               <option value="">Select a Student</option>
               {studentsEnrolmentsList.map((student) => (
@@ -299,7 +299,7 @@ const NewPaymentForm = () => {
               <h3 className="text-gray-700 font-bold mb-2">
                 Select Invoices{" "}
                 {!validity.validPaymentInvoices && (
-                  <span className="text-red-500">*</span>
+                  <span className="text-red-600">*</span>
                 )}
               </h3>
               <ul className="border rounded-md p-2 max-h-80 overflow-y-auto">
@@ -364,7 +364,7 @@ const NewPaymentForm = () => {
             <label className="block text-gray-700 font-bold mb-2">
               Payment Amount{" "}
               {!validity.validPaymentAmount && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}{" "}
               ({CurrencySymbol})
             </label>
@@ -375,13 +375,13 @@ const NewPaymentForm = () => {
               onChange={handleInputChange}
               className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
                 validity.validPaymentAmount
-                  ? "focus:ring-blue-500"
-                  : "focus:ring-red-500"
+                  ? "focus:ring-sky-700"
+                  : "focus:ring-red-600"
               }`}
               required
             />
             {!validity.validPaymentAmount && (
-              <p className="text-red-500 text-sm">
+              <p className="text-red-600 text-sm">
                 Amount must be a valid number and equal to the total invoice
                 amount.
               </p>
@@ -392,7 +392,7 @@ const NewPaymentForm = () => {
             <label className="block text-gray-700 font-bold mb-2">
               Payment Date{" "}
               {!validity.validPaymentDate && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <input
@@ -400,7 +400,7 @@ const NewPaymentForm = () => {
               name="paymentDate"
               value={formData.paymentDate}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
               required
             />
           </div>
@@ -410,14 +410,14 @@ const NewPaymentForm = () => {
             <label className="block text-gray-700 font-bold mb-2">
               Payment Type{" "}
               {!validity.validPaymentType && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <select
               name="paymentType"
               value={formData.paymentType}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
               required
             >
               <option value="" disabled>
@@ -443,8 +443,8 @@ const NewPaymentForm = () => {
               onChange={handleInputChange}
               className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
                 validity.validPaymentReference
-                  ? "focus:ring-blue-500"
-                  : "focus:ring-red-500"
+                  ? "focus:ring-sky-700"
+                  : "focus:ring-red-600"
               }`}
             />
           </div>
@@ -460,8 +460,8 @@ const NewPaymentForm = () => {
               onChange={handleInputChange}
               className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
                 validity.validPaymentNote
-                  ? "focus:ring-blue-500"
-                  : "focus:ring-red-500"
+                  ? "focus:ring-sky-700"
+                  : "focus:ring-red-600"
               }`}
               rows="3"
             ></textarea>
@@ -478,7 +478,7 @@ const NewPaymentForm = () => {
             </button>
             <button
               type="submit"
-              className={` bg-blue-500 text-white font-bold py-2 px-4 rounded ${
+              className={` bg-sky-700 text-white font-bold py-2 px-4 rounded ${
                 canSubmit
                   ? "hover:bg-blue-600"
                   : "opacity-50 cursor-not-allowed"

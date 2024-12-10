@@ -276,7 +276,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
           {`${formData.userFullName.userFirstName} ${formData.userFullName.userMiddleName} ${formData.userFullName.userLastName}`}
         </h2>
         {isError && (
-          <p className="text-red-500">Error: {error?.data?.message}</p>
+          <p className="text-red-600">Error: {error?.data?.message}</p>
         )}
         <form onSubmit={onSaveSessionClicked} className="space-y-6">
           {/* username and password should be visible for admin isAdmin&& */}
@@ -290,7 +290,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
             value={formData.userFirstName}
             onChange={handleInputChange}
             className={`mt-1 block w-full border ${
-              validity.validFirstName ? "border-gray-300" : "border-red-500"
+              validity.validFirstName ? "border-gray-300" : "border-red-600"
             } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
             placeholder="Enter First Name"
             required
@@ -306,7 +306,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
             value={formData.userFirstName}
             onChange={handleInputChange}
             className={`mt-1 block w-full border ${
-              validity.validFirstName ? "border-gray-300" : "border-red-500"
+              validity.validFirstName ? "border-gray-300" : "border-red-600"
             } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
             placeholder="Enter First Name"
             required
@@ -316,7 +316,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
             <label className="block text-sm font-medium text-gray-700">
               First Name{" "}
               {!validity.validFirstName && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <input
@@ -333,7 +333,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
                 }))
               }
               className={`mt-1 block w-full border ${
-                validity.validFirstName ? "border-gray-300" : "border-red-500"
+                validity.validFirstName ? "border-gray-300" : "border-red-600"
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
               placeholder="Enter First Name"
               required
@@ -367,7 +367,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
             <label className="block text-sm font-medium text-gray-700">
               Last Name{" "}
               {!validity.validLastName && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <input
@@ -384,7 +384,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
                 }))
               }
               className={`mt-1 block w-full border ${
-                validity.validLastName ? "border-gray-300" : "border-red-500"
+                validity.validLastName ? "border-gray-300" : "border-red-600"
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
               placeholder="Enter Last Name"
               required
@@ -398,7 +398,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
               htmlFor="userDob"
             >
               Date of Birth{" "}
-              {!validity.validDob && <span className="text-red-500">*</span>}
+              {!validity.validDob && <span className="text-red-600">*</span>}
             </label>
             <input
               type="date"
@@ -406,7 +406,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
               value={formData.userDob}
               onChange={handleInputChange}
               className={`mt-1 block w-full border ${
-                validity.validDob ? "border-gray-300" : "border-red-500"
+                validity.validDob ? "border-gray-300" : "border-red-600"
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
               required
             />
@@ -418,7 +418,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
             <label className="block text-sm font-medium text-gray-700">
               Sex{" "}
               {!validity.validUserSex && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <div className="flex items-center space-x-4 mt-1">
@@ -441,7 +441,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
                   className={`h-4 w-4 ${
                     validity.validUserSex
                       ? "border-gray-300 rounded"
-                      : "border-red-500 rounded"
+                      : "border-red-600 rounded"
                   } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                 />
                 <label className="ml-2 text-sm text-gray-700">Male</label>
@@ -478,7 +478,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
                 value={year.academicYear}
                 checked={year.academicYear === selectedAcademicYear?.title}
                 onChange={(e) => onAcademicYearChanged(e, index)}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
               />
               <label
                 htmlFor={`sessionYear-${index}`}
@@ -486,7 +486,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
               >
                 Academic Year{" "}
                 {!validity.validSessionYear && (
-                  <span className="text-red-500">*</span>
+                  <span className="text-red-600">*</span>
                 )}{" "}
                 : {selectedAcademicYear?.title}
               </label>
@@ -505,7 +505,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
                   sessionIsActive: e.target.checked,
                 }));
               }}
-              className='h-4 w-4  "text-blue-600"  focus:ring-blue-500 border-gray-300 rounded'
+              className='h-4 w-4  "text-blue-600"  focus:ring-sky-700 border-gray-300 rounded'
             />
 
             <label
@@ -522,7 +522,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
               <label className="block text-sm font-medium text-gray-700">
                 Primary Phone{" "}
                 {!validity.validPrimaryPhone && (
-                  <span className="text-red-500">*</span>
+                  <span className="text-red-600">*</span>
                 )}
               </label>
               <input
@@ -541,7 +541,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
                 className={`mt-1 block w-full border ${
                   validity.validPrimaryPhone
                     ? "border-gray-300"
-                    : "border-red-500"
+                    : "border-red-600"
                 } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                 placeholder="Enter Primary Phone"
                 required
@@ -577,7 +577,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
               <label className="block text-sm font-medium text-gray-700">
                 House{" "}
                 {!validity.validHouse && (
-                  <span className="text-red-500">*</span>
+                  <span className="text-red-600">*</span>
                 )}
               </label>
               <input
@@ -594,7 +594,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
                   }))
                 }
                 className={`mt-1 block w-full border ${
-                  validity.validHouse ? "border-gray-300" : "border-red-500"
+                  validity.validHouse ? "border-gray-300" : "border-red-600"
                 } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                 placeholder="Enter House"
               />
@@ -604,7 +604,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
               <label className="block text-sm font-medium text-gray-700">
                 Street{" "}
                 {!validity.validStreet && (
-                  <span className="text-red-500">*</span>
+                  <span className="text-red-600">*</span>
                 )}
               </label>
               <input
@@ -621,7 +621,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
                   }))
                 }
                 className={`mt-1 block w-full border ${
-                  validity.validStreet ? "border-gray-300" : "border-red-500"
+                  validity.validStreet ? "border-gray-300" : "border-red-600"
                 } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                 placeholder="Enter Street"
               />
@@ -652,7 +652,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 City{" "}
-                {!validity.validCity && <span className="text-red-500">*</span>}
+                {!validity.validCity && <span className="text-red-600">*</span>}
               </label>
               <input
                 type="text"
@@ -668,7 +668,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
                   }))
                 }
                 className={`mt-1 block w-full border ${
-                  validity.validCity ? "border-gray-300" : "border-red-500"
+                  validity.validCity ? "border-gray-300" : "border-red-600"
                 } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                 placeholder="Enter City"
               />
@@ -726,7 +726,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
               <label className="block text-sm font-medium text-gray-700">
                 Current Position{" "}
                 {!validity.validCurrentPosition && (
-                  <span className="text-red-500">*</span>
+                  <span className="text-red-600">*</span>
                 )}
               </label>
               <input
@@ -745,7 +745,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
                 className={`mt-1 block w-full border ${
                   validity.validCurrentPosition
                     ? "border-gray-300"
-                    : "border-red-500"
+                    : "border-red-600"
                 } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                 placeholder="Enter Position"
                 required
@@ -756,7 +756,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
               <label className="block text-sm font-medium text-gray-700">
                 Join Date{" "}
                 {!validity.validJoinDate && (
-                  <span className="text-red-500">*</span>
+                  <span className="text-red-600">*</span>
                 )}
               </label>
               <input
@@ -773,7 +773,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
                   }))
                 }
                 className={`mt-1 block w-full border ${
-                  validity.validJoinDate ? "border-gray-300" : "border-red-500"
+                  validity.validJoinDate ? "border-gray-300" : "border-red-600"
                 } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                 required
               />
@@ -783,7 +783,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
               <label className="block text-sm font-medium text-gray-700">
                 Contract Type{" "}
                 {!validity.validContractType && (
-                  <span className="text-red-500">*</span>
+                  <span className="text-red-600">*</span>
                 )}
               </label>
               <input
@@ -802,7 +802,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
                 className={`mt-1 block w-full border ${
                   validity.validContractType
                     ? "border-gray-300"
-                    : "border-red-500"
+                    : "border-red-600"
                 } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                 placeholder="Enter Contract Type"
                 required
@@ -818,7 +818,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
                   <label className="block text-sm font-medium text-gray-700">
                     Basic{" "}
                     {!validity.validBasic && (
-                      <span className="text-red-500">*</span>
+                      <span className="text-red-600">*</span>
                     )}
                   </label>
                   <input
@@ -840,7 +840,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
                       }))
                     }
                     className={`mt-1 block w-full border ${
-                      validity.validCity ? "border-gray-300" : "border-red-500"
+                      validity.validCity ? "border-gray-300" : "border-red-600"
                     } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                     placeholder="Enter Basic Salary"
                   />
@@ -849,7 +849,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
                   <label className="block text-sm font-medium text-gray-700">
                     Payment{" "}
                     {!validity.validPayment && (
-                      <span className="text-red-500">*</span>
+                      <span className="text-red-600">*</span>
                     )}
                   </label>
                   <input
@@ -873,7 +873,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
                     className={`mt-1 block w-full border ${
                       validity.validPayment
                         ? "border-gray-300"
-                        : "border-red-500"
+                        : "border-red-600"
                     } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                     placeholder="Enter Salary payment period"
                   />
@@ -948,7 +948,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
                   <label className="block text-sm font-medium text-gray-700">
                     Institution{" "}
                     {!work.institution && (
-                      <span className="text-red-500">*</span>
+                      <span className="text-red-600">*</span>
                     )}
                   </label>
                   <input
@@ -971,7 +971,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     From Date{" "}
-                    {!work.fromDate && <span className="text-red-500">*</span>}
+                    {!work.fromDate && <span className="text-red-600">*</span>}
                   </label>
                   <input
                     type="date"
@@ -988,7 +988,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     To Date{" "}
-                    {!work.toDate && <span className="text-red-500">*</span>}
+                    {!work.toDate && <span className="text-red-600">*</span>}
                   </label>
                   <input
                     type="date"
@@ -1005,7 +1005,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Position{" "}
-                    {!work.position && <span className="text-red-500">*</span>}
+                    {!work.position && <span className="text-red-600">*</span>}
                   </label>
                   <input
                     type="text"
@@ -1024,7 +1024,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
                   <label className="block text-sm font-medium text-gray-700">
                     Contract Type{" "}
                     {!work.contractType && (
-                      <span className="text-red-500">*</span>
+                      <span className="text-red-600">*</span>
                     )}
                   </label>
                   <input

@@ -361,7 +361,7 @@ const InvoicesList = () => {
           </button>} */}
           {canEdit ? (
             <button
-              className="text-yellow-400"
+              className="text-amber-300"
               onClick={() =>
                 navigate(`/finances/invoices/editInvoice/${row.id}`)
               }
@@ -371,7 +371,7 @@ const InvoicesList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
-              className="text-red-500"
+              className="text-red-600"
               onClick={() => onDeleteInvoiceClicked(row.id)}
             >
               <RiDeleteBin6Line className="text-2xl" />
@@ -517,7 +517,7 @@ const InvoicesList = () => {
         <div className="flex justify-end items-center space-x-4">
           <div className="flex justify-end items-center space-x-4">
             <button
-              className="px-3 py-2 bg-teal-500 text-white rounded"
+              className="add-button"
               onClick={() => navigate("/students/enrolments/enrolments/")}
               hidden={!canCreate}
             >

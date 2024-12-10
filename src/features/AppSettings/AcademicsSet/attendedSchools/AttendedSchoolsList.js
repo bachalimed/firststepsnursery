@@ -166,10 +166,10 @@ width:"160px"
   cell: row => (
     <div className="space-x-1">
       
-      {canEdit?(<button  className="text-yellow-400" onClick={() => Navigate(`/settings/academicsSet/editAttendedSchool/${row.id}`)}  > 
+      {canEdit?(<button  className="text-amber-300" onClick={() => Navigate(`/settings/academicsSet/editAttendedSchool/${row.id}`)}  > 
       <FiEdit fontSize={20}/> 
       </button>):null}
-      {canDelete?(<button className="text-red-500"  onClick={() => onDeleteAttendedSchoolClicked(row.id)}>
+      {canDelete?(<button className="text-red-600"  onClick={() => onDeleteAttendedSchoolClicked(row.id)}>
         <RiDeleteBin6Line fontSize={20}/>
       </button>):null}
     </div>

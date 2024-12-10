@@ -239,16 +239,16 @@ const ServicesList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button onClick={() => navigate(`/settings/studentsSet/services/serviceDetails/${row.id}`)}>
-            <ImProfile className="text-2xl text-blue-500" />
+            <ImProfile className="text-2xl text-sky-700" />
           </button>
           {canEdit && (
             <button onClick={() => navigate(`/settings/studentsSet/services/editService/${row.id}`)}>
-              <FiEdit className="text-2xl text-yellow-400" />
+              <FiEdit className="text-2xl text-amber-300" />
             </button>
           )}
           {canDelete && (
             <button onClick={() => onDeleteServiceClicked(row.id)}>
-              <RiDeleteBin6Line className="text-2xl text-red-500" />
+              <RiDeleteBin6Line className="text-2xl text-red-600" />
             </button>
           )}
         </div>
@@ -285,7 +285,7 @@ const ServicesList = () => {
           <div className="flex justify-end space-x-4">
             {canCreate && (
               <button
-                className="px-4 py-2 bg-green-500 text-white rounded"
+                className="px-4 py-2 bg-green-600 text-white rounded"
                 onClick={() => navigate("/settings/studentsSet/newService")}
                 // disabled={selectedRows.length !== 1}
               >

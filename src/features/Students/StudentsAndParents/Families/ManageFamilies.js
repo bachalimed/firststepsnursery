@@ -194,11 +194,11 @@
 //   name: "Manage",
 //   cell: row => (
 //     <div className="space-x-1">
-//      <button className="text-blue-500" fontSize={20}  onClick={() => Navigate(`/students/studentsParents/parentDetails/${row.id}`)}  >
+//      <button className="text-sky-700" fontSize={20}  onClick={() => Navigate(`/students/studentsParents/parentDetails/${row.id}`)}  >
 //       <ImProfile fontSize={20}/>
 //       </button>
 //       {/* /////////////////////condition is canEdit and not ! of it */}
-//       {canEdit?(<button className="text-yellow-400"  onClick={() => Navigate(`/students/studentsParents/editParent/${row.id}`)} >
+//       {canEdit?(<button className="text-amber-300"  onClick={() => Navigate(`/students/studentsParents/editParent/${row.id}`)} >
 //       <FiEdit fontSize={20}/>
 //       </button>):null}
 
@@ -245,7 +245,7 @@
 //    </DataTable>
 //    <div className="flex justify-end items-center space-x-4">
 //           <button
-//                className="px-3 py-2 bg-yellow-400 text-white rounded"
+//                className="px-3 py-2 bg-amber-300 text-white rounded"
 //                onClick={handleAssignChild}
 //               disabled={selectedRows.length !== 1} // Disable if no rows are selected
 //                 >

@@ -171,7 +171,7 @@ const UsersList = () => {
           {row.userIsActive ? (
             <IoShieldCheckmarkOutline className="text-green-500 text-2xl" />
           ) : (
-            <IoShieldOutline className="text-yellow-400 text-2xl" />
+            <IoShieldOutline className="text-amber-300 text-2xl" />
           )}
         </span>
       ),
@@ -184,9 +184,9 @@ const UsersList = () => {
       cell: (row) => (
         <span>
           {row.userSex === "Male" ? (
-            <LiaMaleSolid className="text-blue-500 text-2xl" />
+            <LiaMaleSolid className="text-sky-700 text-2xl" />
           ) : (
-            <LiaFemaleSolid className="text-red-500 text-2xl" />
+            <LiaFemaleSolid className="text-red-600 text-2xl" />
           )}
         </span>
       ),
@@ -320,7 +320,7 @@ const UsersList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
-            className="text-blue-500"
+            className="text-sky-700"
             fontSize={20}
             onClick={() =>
               navigate(`/admin/usersManagement/userDetails/${row._id}`)
@@ -332,7 +332,7 @@ const UsersList = () => {
           {/* /////////////////////condition is canEdit and not ! of it */}
 
           <button
-            className="text-yellow-400"
+            className="text-amber-300"
             onClick={() => navigate(`/admin/usersManagement/${row._id}/`)}
             hidden={!canEdit}
           >
@@ -340,7 +340,7 @@ const UsersList = () => {
           </button>
 
           <button
-            className="text-red-500"
+            className="text-red-600"
             onClick={() => onDeleteUserClicked(row._id)}
             hidden={!canDelete}
           >
@@ -468,7 +468,7 @@ const UsersList = () => {
             </button>
 
             {/* <button
-              className="px-3 py-2 bg-yellow-400 text-white rounded"
+              className="px-3 py-2 bg-amber-300 text-white rounded"
               onClick={handleDuplicateSelected}
               disabled={selectedRows.length !== 1} // Disable if no rows are selected
               hidden={!canCreate}

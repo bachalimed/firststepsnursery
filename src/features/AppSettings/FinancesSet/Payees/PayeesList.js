@@ -203,7 +203,7 @@ const PayeesList = () => {
           {row?.payeeIsActive ? (
             <IoShieldCheckmarkOutline className="text-green-500 text-2xl" />
           ) : (
-            <IoShieldOutline className="text-yellow-400 text-2xl" />
+            <IoShieldOutline className="text-amber-300 text-2xl" />
           )}
         </span>
       ),
@@ -253,7 +253,7 @@ const PayeesList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
-            className="text-blue-500"
+            className="text-sky-700"
             fontSize={20}
             onClick={() => navigate(`/settings/financesSet/payeeDetails/${row.id}`)}
           >
@@ -261,7 +261,7 @@ const PayeesList = () => {
           </button>
           {canEdit ? (
             <button
-              className="text-yellow-400"
+              className="text-amber300"
               onClick={() => navigate(`/settings/financesSet/editPayee/${row.id}`)}
             >
               <FiEdit className="text-2xl" />
@@ -269,7 +269,7 @@ const PayeesList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
-              className="text-red-500"
+              className="text-red-600"
               onClick={() => onDeletePayeeClicked(row.id)}
             >
               <RiDeleteBin6Line className="text-2xl" />

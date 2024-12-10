@@ -199,7 +199,7 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
           Add New ExpenseCategory: {`${formData?.expenseCategoryLabel} `}
         </h2>
         {isError && (
-          <p className="text-red-500">Error: {error?.data?.message}</p>
+          <p className="text-red-600">Error: {error?.data?.message}</p>
         )}
         <form onSubmit={onSaveExpenseCategoryClicked} className="space-y-6">
           {/* ExpenseCategory Label */}
@@ -207,7 +207,7 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
             <label className="block text-sm font-medium text-gray-700">
               ExpenseCategory Label{" "}
               {!validity.validExpenseCategoryLabel && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <input
@@ -218,7 +218,7 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
               className={`mt-1 block w-full border ${
                 validity.validExpenseCategoryLabel
                   ? "border-gray-300"
-                  : "border-red-500"
+                  : "border-red-600"
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
               placeholder="Enter ExpenseCategory Label"
               required
@@ -230,7 +230,7 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
             <label className="block text-sm font-medium text-gray-700">
               Select Service Type{" "}
               {!validity.validExpenseCategoryService && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <select
@@ -238,7 +238,7 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
               value={formData.expenseCategoryService}
               onChange={handleServiceChange}
               className={`mt-1 block w-full border ${
-                validity.validExpenseCategoryService ? "border-gray-300" : "border-red-500"
+                validity.validExpenseCategoryService ? "border-gray-300" : "border-red-600"
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
               required
             >
@@ -266,7 +266,7 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
                   expenseCategoryIsActive: e.target.checked,
                 }))
               }
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
             />
           </div>
 
@@ -275,7 +275,7 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
             <label className="block text-sm font-medium text-gray-700">
               ExpenseCategory Years{" "}
               {!validity.validExpenseCategoryYears && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <div className="space-y-2">
@@ -286,7 +286,7 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
                     id={`year-${year.id}`}
                     checked={formData.expenseCategoryYears?.includes(year.title)}
                     onChange={() => handleYearChange(year.title)}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
                   />
                   <label
                     htmlFor={`year-${year.id}`}
@@ -304,7 +304,7 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
             <label className="block text-sm font-medium text-gray-700">
               ExpenseCategory Items{" "}
               {!validity.validExpenseCategoryItems && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <div className="flex items-center space-x-2">
@@ -319,7 +319,7 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
               <button
                 type="button"
                 onClick={handleAddItem}
-                className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-sky-700"
               >
                 <FontAwesomeIcon icon={faPlus} className="mr-1" />
                 Add
@@ -337,7 +337,7 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
                   <button
                     type="button"
                     onClick={() => handleRemoveItem(item)}
-                    className="text-red-500 hover:text-red-700"
+                    className="text-red-600 hover:text-red-700"
                   >
                     <FontAwesomeIcon icon={faTrash} />
                   </button>

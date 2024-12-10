@@ -36,7 +36,7 @@ const navigate=useNavigate()
 
       <button
         onClick={() => handleClick("Next")}
-        className={`bg-green-500 text-white uppercase py-2 px-4 rounded-xl font-semibold cursor-pointer  hover:bg-slate-700 hover:text-white
+        className={`bg-green-600 text-white uppercase py-2 px-4 rounded-xl font-semibold cursor-pointer  hover:bg-slate-700 hover:text-white
         transition duration-200 ease-in-out `}
         disabled={
           (!canSaveFather && currentStep === 1) ||

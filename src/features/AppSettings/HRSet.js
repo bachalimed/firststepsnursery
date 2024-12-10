@@ -44,8 +44,8 @@ const HRSet = () => {
           <li
             className={`list-none cursor-pointer px-4 py-2 border border-gray-400 rounded-md ${
               isActive(tab.path)
-                ? "text-blue-500 border-blue-500 bg-blue-100"
-                : "text-gray-800 hover:text-blue-500"
+                ? "text-sky-700 border-sky-500 bg-blue-100"
+                : "text-gray-800 hover:text-fuchsia-500 hover:border-fuchsia-500"
             }`}
           >
             {tab.title}

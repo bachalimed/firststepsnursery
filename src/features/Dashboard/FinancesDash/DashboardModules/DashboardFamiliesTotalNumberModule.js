@@ -36,10 +36,10 @@ console.log(familiesStats,'familiesStats')
             {" "}
             {familiesWithStudentsInYear}
           </strong>
-          <span className="pl-2 text-sm text-red-500">
+          <span className="pl-2 text-sm text-red-600">
             {familySituationCount?.Separated} separated{" "}
           </span>
-          <span className="pl-2 text-sm text-red-500">
+          <span className="pl-2 text-sm text-red-600">
             {familySituationCount?.Joint} Joint{" "}
           </span>
         </div>

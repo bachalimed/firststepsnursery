@@ -458,7 +458,7 @@ const LeavesList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
-            className="text-blue-500"
+            className="text-sky-700"
             fontSize={20}
             onClick={() => navigate(`/hr/leaves/leaveDetails/${row.id}`)}
           >
@@ -466,7 +466,7 @@ const LeavesList = () => {
           </button>
           {canEdit ? (
             <button
-              className="text-yellow-400"
+              className="text-amber-300"
               onClick={() => navigate(`/hr/leaves/editLeave/${row.id}`)}
             >
               <FiEdit className="text-2xl" />
@@ -474,7 +474,7 @@ const LeavesList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
-              className="text-red-500"
+              className="text-red-600"
               onClick={() => onDeleteLeaveClicked(row.id)}
             >
               <RiDeleteBin6Line className="text-2xl" />

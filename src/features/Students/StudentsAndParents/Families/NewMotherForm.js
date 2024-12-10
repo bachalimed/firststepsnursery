@@ -224,12 +224,12 @@ export default function NewMotherForm() {
               htmlFor="userFirstName"
             >
               Mother First Name{" "}{!validUserFirstName && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
               <span className="text-sm text-gray-500">[3-20 letters]</span>
             </label>
             <input
-              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-sky-700 focus:border-sky-700"
               id="userFirstName"
               name="userFirstName"
               type="text"
@@ -248,7 +248,7 @@ export default function NewMotherForm() {
               Mother Middle Name
             </label>
             <input
-              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-sky-700 focus:border-sky-700"
               id="userMiddleName"
               name="userMiddleName"
               type="text"
@@ -264,12 +264,12 @@ export default function NewMotherForm() {
               htmlFor="userLastName"
             >
               Mother Last Name{" "}{!validUserLastName && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
               <span className="text-sm text-gray-500">[3-20 letters]</span>
             </label>
             <input
-              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-sky-700 focus:border-sky-700"
               id="userLastName"
               name="userLastName"
               type="text"
@@ -283,12 +283,12 @@ export default function NewMotherForm() {
           <div>
             <label className="text-gray-700 font-semibold" htmlFor="userDob">
               Date of Birth{" "}{!validUserDob && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
               <span className="text-sm text-gray-500">[dd/mm/yyyy]</span>
             </label>
             <input
-              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-sky-700 focus:border-sky-700"
               id="userDob"
               name="userDob"
               type="date"
@@ -303,12 +303,12 @@ export default function NewMotherForm() {
           <div>
             <label className="text-gray-700 font-semibold" htmlFor="house">
               House{" "}{!validHouse && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
               <span className="text-sm text-gray-500">[3-20 letters]</span>
             </label>
             <input
-              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-sky-700 focus:border-sky-700"
               id="house"
               name="house"
               type="text"
@@ -322,12 +322,12 @@ export default function NewMotherForm() {
           <div>
             <label className="text-gray-700 font-semibold" htmlFor="street">
               Street{" "}{!validStreet && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
               <span className="text-sm text-gray-500">[3-20 letters]</span>
             </label>
             <input
-              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-sky-700 focus:border-sky-700"
               id="street"
               name="street"
               type="text"
@@ -343,7 +343,7 @@ export default function NewMotherForm() {
               Area
             </label>
             <input
-              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-sky-700 focus:border-sky-700"
               id="area"
               name="area"
               type="text"
@@ -356,12 +356,12 @@ export default function NewMotherForm() {
           <div>
             <label className="text-gray-700 font-semibold" htmlFor="city">
               City{" "}{!validCity && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
               <span className="text-sm text-gray-500">[3-20 letters]</span>
             </label>
             <input
-              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-sky-700 focus:border-sky-700"
               id="city"
               name="city"
               type="text"
@@ -377,7 +377,7 @@ export default function NewMotherForm() {
               Post Code
             </label>
             <input
-              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-sky-700 focus:border-sky-700"
               id="postCode"
               name="postCode"
               type="text"
@@ -393,12 +393,12 @@ export default function NewMotherForm() {
               htmlFor="primaryPhone"
             >
               Primary Phone{" "}{!validPrimaryPhone && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
               <span className="text-sm text-gray-500">[6 to 15 digits]</span>
             </label>
             <input
-              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-sky-700 focus:border-sky-700"
               id="primaryPhone"
               name="primaryPhone"
               type="tel"
@@ -417,7 +417,7 @@ export default function NewMotherForm() {
               Secondary Phone
             </label>
             <input
-              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-sky-700 focus:border-sky-700"
               id="secondaryPhone"
               name="secondaryPhone"
               type="tel"
@@ -432,7 +432,7 @@ export default function NewMotherForm() {
               Email
             </label>
             <input
-              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-sky-700 focus:border-sky-700"
               id="email"
               name="email"
               type="email"
@@ -446,7 +446,7 @@ export default function NewMotherForm() {
         {/* Button Section */}
         {/* <div className="flex justify-end space-x-4">
             <button
-              className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
               type="submit"
               onClick={onSaveMotherClicked}
               disabled={!canSave}
@@ -454,7 +454,7 @@ export default function NewMotherForm() {
               Save Mother
             </button>
             <button
-              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600"
               onClick={handleCancel}
             >
               Cancel

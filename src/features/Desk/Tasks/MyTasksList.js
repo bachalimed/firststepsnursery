@@ -166,10 +166,10 @@ sortable:true
       {canEdit?(<button   onClick={() => handleClose(row._id)} className="" > 
       <FiCheckSquare className="text-green-500" fontSize={20}/> 
       </button>):null}
-      {canEdit?(<button className="text-yellow-400"  onClick={() => handleEdit(row._id)}  > 
+      {canEdit?(<button className="text-amber-300"  onClick={() => handleEdit(row._id)}  > 
       <FiEdit fontSize={20}/> 
       </button>):null}
-      {canEdit?(<button className="text-red-500" onClick={() => handleDelete(row._id)} >
+      {canEdit?(<button className="text-red-600" onClick={() => handleDelete(row._id)} >
         <RiDeleteBin6Line fontSize={20}/>
       </button>):null}
     </div>
@@ -203,7 +203,7 @@ let content
 	</DataTable>
 	<div className="flex justify-end items-center space-x-4">
         <button 
-            className=" px-4 py-2 bg-green-500 text-white rounded"
+            className=" px-4 py-2 bg-green-600 text-white rounded"
             onClick={handleDetailsSelected}
             disabled={selectedRows.length !== 1} // Disable if no rows are selected
           	>
@@ -211,7 +211,7 @@ let content
           </button>
        
         <button 
-			className="px-3 py-2 bg-yellow-400 text-white rounded"
+			className="px-3 py-2 bg-amber-300 text-white rounded"
 			onClick={handleDuplicateSelected}
 			disabled={selectedRows.length !== 1} // Disable if no rows are selected
       hidden={!canCreate}

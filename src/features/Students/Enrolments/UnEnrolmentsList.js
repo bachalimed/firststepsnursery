@@ -201,7 +201,7 @@ const UnenrolmentsList = () => {
           {row?.student?.studentIsActive ? (
             <IoShieldCheckmarkOutline className="text-green-500 text-2xl" />
           ) : (
-            <IoShieldOutline className="text-yellow-400 text-2xl" />
+            <IoShieldOutline className="text-amber-300 text-2xl" />
           )}
         </span>
       ),
@@ -269,7 +269,7 @@ const UnenrolmentsList = () => {
 
           {canCreate ? (
             <button
-              className="text-yellow-400"
+              className="text-amber-300"
               onClick={() => navigate("/students/enrolments/newEnrolment/")}
             >
               <IoAddCircleOutline className="text-2xl" />
@@ -361,7 +361,7 @@ const UnenrolmentsList = () => {
         ></DataTable>
         <div className="flex justify-end items-center space-x-4">
           <button
-            className=" px-4 py-2 bg-green-500 text-white rounded"
+            className=" px-4 py-2 bg-green-600 text-white rounded"
             disabled={selectedRows.length !== 1} // Disable if no rows are selected
             hidden={!canCreate}
           >
@@ -369,7 +369,7 @@ const UnenrolmentsList = () => {
           </button>
 
           <button
-            className="px-3 py-2 bg-yellow-400 text-white rounded"
+            className="px-3 py-2 bg-amber-300 text-white rounded"
             onClick={handleDuplicateSelected}
             disabled={selectedRows.length !== 1} // Disable if no rows are selected
             hidden={!canCreate}

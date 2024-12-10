@@ -223,7 +223,7 @@ const handleCloseModal = () => {
             <label className="block text-gray-700 font-bold mb-2">
               Invoice Year{" "}
               {!validity.validInvoiceYear && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <input
@@ -231,14 +231,14 @@ const handleCloseModal = () => {
               name="invoiceYear"
               value={formData.invoiceYear}
               readOnly
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
             />
           </div>
           <div className="mb-4">
           <select
             value={formData.invoiceMonth}
             onChange={handleInputChange}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
           >
             {/* Default option is the current month */}
             <option value={getCurrentMonth()}>{getCurrentMonth()}</option>

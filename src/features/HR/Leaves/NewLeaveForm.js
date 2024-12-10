@@ -184,7 +184,7 @@ const NewLeaveForm = () => {
       <section className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold mb-4">Add New Leave: </h2>
         {isAddError && (
-          <p className="text-red-500">Error: {addError?.data?.message}</p>
+          <p className="text-red-600">Error: {addError?.data?.message}</p>
         )}
         <form onSubmit={onSaveLeaveClicked} className="space-y-6">
           <div>
@@ -194,7 +194,7 @@ const NewLeaveForm = () => {
             >
               Leave Month{" "}
               {!validity.validLeaveMonth && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <select
@@ -222,7 +222,7 @@ const NewLeaveForm = () => {
             >
               Leave Employee{" "}
               {!validity.validLeaveEmployee && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <select
@@ -293,7 +293,7 @@ const NewLeaveForm = () => {
             <label className="block text-sm font-medium text-gray-700">
               Start Date{" "}
               {!validity.validLeaveStartDate && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <input
@@ -310,7 +310,7 @@ const NewLeaveForm = () => {
             <label className="block text-sm font-medium text-gray-700">
               End Date{" "}
               {!validity.validLeaveEndDate && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <input

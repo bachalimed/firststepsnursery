@@ -189,7 +189,7 @@ const ResetPasswordForm = ({ user }) => {
                 </button>
               </div>
               {!field.valid && field.value !== "" && (
-                <p className="text-xs text-red-500 mt-1">{field.errorMessage}</p>
+                <p className="text-xs text-red-600 mt-1">{field.errorMessage}</p>
               )}
             </div>
           ))}

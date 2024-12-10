@@ -184,11 +184,11 @@ const handleCloseModal = () => {
               placeholder="e.g., 2023"
               maxLength="4"
               className={`w-full px-3 py-2 border rounded-md ${
-                titleError ? "border-red-500" : ""
-              } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                titleError ? "border-red-600" : ""
+              } focus:outline-none focus:ring-2 focus:ring-sky-700`}
             />
             {titleError && (
-              <p className="text-red-500 text-sm mt-2">{titleError}</p>
+              <p className="text-red-600 text-sm mt-2">{titleError}</p>
             )}
           </div>
 
@@ -228,18 +228,18 @@ const handleCloseModal = () => {
             />
           </div>
 
-          {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+          {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
 
           <button
             type="submit"
             disabled={!canSubmit}
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200"
+            className="w-full bg-sky-700 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200"
           >
             {isNewYearLoading ? "Creating..." : "Create Academic Year"}
           </button>
 
           {isNewYearError && (
-            <p className="text-red-500 text-sm mt-2">
+            <p className="text-red-600 text-sm mt-2">
               {newYearError?.data?.message || "Error creating academic year."}
             </p>
           )}

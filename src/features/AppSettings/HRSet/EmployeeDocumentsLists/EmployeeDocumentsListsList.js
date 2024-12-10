@@ -196,7 +196,7 @@ const EmployeeDocumentsListsList = () => {
         <div className="space-x-1">
           {canEdit ? (
             <button
-              className="text-yellow-400"
+              className="text-amber-300"
               onClick={() =>
                 Navigate(
                   `/settings/hrSet/employeeDocumentsList/edit/${row.id}`
@@ -208,7 +208,7 @@ const EmployeeDocumentsListsList = () => {
           ) : null}
           {canDelete ? (
             <button
-              className="text-red-500"
+              className="text-red-600"
               onClick={() => onDeleteEmployeeDocumentsListClicked(row.id)}
               hidden={!canDelete}
             >

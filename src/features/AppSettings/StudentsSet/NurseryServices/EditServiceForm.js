@@ -303,7 +303,7 @@ const EditServiceForm = ({ service }) => {
                 <label className="block text-sm font-medium text-gray-700">
                   First Name{" "}
                   {!validity.validFirstName && (
-                    <span className="text-red-500">*</span>
+                    <span className="text-red-600">*</span>
                   )}
                 </label>
                 <input
@@ -314,7 +314,7 @@ const EditServiceForm = ({ service }) => {
                   className={`mt-1 block w-full border ${
                     validity.validFirstName
                       ? "border-gray-300"
-                      : "border-red-500"
+                      : "border-red-600"
                   } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                   placeholder="Enter First Name"
                   required
@@ -335,7 +335,7 @@ const EditServiceForm = ({ service }) => {
                 <label className="block text-sm font-medium text-gray-700">
                   Last Name{" "}
                   {!validity.validLastName && (
-                    <span className="text-red-500">*</span>
+                    <span className="text-red-600">*</span>
                   )}
                 </label>
                 <input
@@ -355,7 +355,7 @@ const EditServiceForm = ({ service }) => {
                   >
                     Date of Birth{" "}
                     {!validity.validDob && (
-                      <span className="text-red-500">*</span>
+                      <span className="text-red-600">*</span>
                     )}
                   </label>
                   <input
@@ -364,7 +364,7 @@ const EditServiceForm = ({ service }) => {
                     value={formData.userDob}
                     onChange={handleInputChange}
                     className={`mt-1 block w-full border ${
-                      validity.validDob ? "border-gray-300" : "border-red-500"
+                      validity.validDob ? "border-gray-300" : "border-red-600"
                     } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                     required
                   />
@@ -374,7 +374,7 @@ const EditServiceForm = ({ service }) => {
                   <label className="block text-sm font-medium text-gray-700">
                     Sex{" "}
                     {!validity.validUserSex && (
-                      <span className="text-red-500">*</span>
+                      <span className="text-red-600">*</span>
                     )}
                   </label>
                   <div className="flex items-center space-x-4 mt-1">
@@ -397,7 +397,7 @@ const EditServiceForm = ({ service }) => {
                         className={`h-4 w-4 ${
                           validity.validUserSex
                             ? "border-gray-300 rounded"
-                            : "border-red-500 rounded"
+                            : "border-red-600 rounded"
                         } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                       />
                       <label className="ml-2 text-sm text-gray-700">Male</label>
@@ -491,7 +491,7 @@ const EditServiceForm = ({ service }) => {
                 <label className="block text-sm font-medium text-gray-700">
                   Current Position{" "}
                   {!validity.validCurrentPosition && (
-                    <span className="text-red-500">*</span>
+                    <span className="text-red-600">*</span>
                   )}
                 </label>
                 <input
@@ -510,7 +510,7 @@ const EditServiceForm = ({ service }) => {
                   className={`mt-1 block w-full border ${
                     validity.validCurrentPosition
                       ? "border-gray-300"
-                      : "border-red-500"
+                      : "border-red-600"
                   } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                   placeholder="Enter Position"
                   required
@@ -521,7 +521,7 @@ const EditServiceForm = ({ service }) => {
                 <label className="block text-sm font-medium text-gray-700">
                   Join Date{" "}
                   {!validity.validJoinDate && (
-                    <span className="text-red-500">*</span>
+                    <span className="text-red-600">*</span>
                   )}
                 </label>
                 <input
@@ -542,7 +542,7 @@ const EditServiceForm = ({ service }) => {
                   className={`mt-1 block w-full border ${
                     validity.validJoinDate
                       ? "border-gray-300"
-                      : "border-red-500"
+                      : "border-red-600"
                   } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                   required
                 />
@@ -552,7 +552,7 @@ const EditServiceForm = ({ service }) => {
                 <label className="block text-sm font-medium text-gray-700">
                   Contract Type{" "}
                   {!validity.validContractType && (
-                    <span className="text-red-500">*</span>
+                    <span className="text-red-600">*</span>
                   )}
                 </label>
                 <input
@@ -571,7 +571,7 @@ const EditServiceForm = ({ service }) => {
                   className={`mt-1 block w-full border ${
                     validity.validContractType
                       ? "border-gray-300"
-                      : "border-red-500"
+                      : "border-red-600"
                   } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                   placeholder="Enter Contract Type"
                   required
@@ -587,7 +587,7 @@ const EditServiceForm = ({ service }) => {
                     <label className="block text-sm font-medium text-gray-700">
                       Basic{" "}
                       {!validity.validBasic && (
-                        <span className="text-red-500">*</span>
+                        <span className="text-red-600">*</span>
                       )}
                     </label>
                     <input
@@ -611,7 +611,7 @@ const EditServiceForm = ({ service }) => {
                       className={`mt-1 block w-full border ${
                         validity.validCity
                           ? "border-gray-300"
-                          : "border-red-500"
+                          : "border-red-600"
                       } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                       placeholder="Enter Basic Salary"
                     />
@@ -620,7 +620,7 @@ const EditServiceForm = ({ service }) => {
                     <label className="block text-sm font-medium text-gray-700">
                       Payment{" "}
                       {!validity.validPayment && (
-                        <span className="text-red-500">*</span>
+                        <span className="text-red-600">*</span>
                       )}
                     </label>
                     <input
@@ -644,7 +644,7 @@ const EditServiceForm = ({ service }) => {
                       className={`mt-1 block w-full border ${
                         validity.validPayment
                           ? "border-gray-300"
-                          : "border-red-500"
+                          : "border-red-600"
                       } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                       placeholder="Enter Salary payment period"
                     />
@@ -749,7 +749,7 @@ const EditServiceForm = ({ service }) => {
                   <label className="block text-sm font-medium text-gray-700">
                     Institution{" "}
                     {!work.institution && (
-                      <span className="text-red-500">*</span>
+                      <span className="text-red-600">*</span>
                     )}
                   </label>
                   <input
@@ -772,7 +772,7 @@ const EditServiceForm = ({ service }) => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     From Date{" "}
-                    {!work.fromDate && <span className="text-red-500">*</span>}
+                    {!work.fromDate && <span className="text-red-600">*</span>}
                   </label>
                   <input
                     type="date"
@@ -789,7 +789,7 @@ const EditServiceForm = ({ service }) => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     To Date{" "}
-                    {!work.toDate && <span className="text-red-500">*</span>}
+                    {!work.toDate && <span className="text-red-600">*</span>}
                   </label>
                   <input
                     type="date"
@@ -806,7 +806,7 @@ const EditServiceForm = ({ service }) => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Position{" "}
-                    {!work.position && <span className="text-red-500">*</span>}
+                    {!work.position && <span className="text-red-600">*</span>}
                   </label>
                   <input
                     type="text"
@@ -825,7 +825,7 @@ const EditServiceForm = ({ service }) => {
                   <label className="block text-sm font-medium text-gray-700">
                     Contract Type{" "}
                     {!work.contractType && (
-                      <span className="text-red-500">*</span>
+                      <span className="text-red-600">*</span>
                     )}
                   </label>
                   <input

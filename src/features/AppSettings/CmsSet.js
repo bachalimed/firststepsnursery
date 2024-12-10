@@ -26,17 +26,17 @@ const CmsSet = () => {
     <div className="flex bg-gray-300 p-1 px-4 md:px-8  items-center justify-start space-x-4">
       <AcademicYearsSelection />
       <Link to={"/settings/cmsSet"}>
-        <li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">
+        <li className="list-none text-gray-800 hover:text-sky-700 cursor-pointer">
           page
         </li>
       </Link>
       <Link to={"/settings/cmsSet"}>
-        <li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">
+        <li className="list-none text-gray-800 hover:text-sky-700 cursor-pointer">
           new post
         </li>
       </Link>
       <Link to={"/settings/cmsSet"}>
-        <li className="list-none text-gray-800 hover:text-blue-500 cursor-pointer">
+        <li className="list-none text-gray-800 hover:text-sky-700 cursor-pointer">
           New Student
         </li>
       </Link>

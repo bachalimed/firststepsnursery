@@ -160,7 +160,7 @@ const AcademicYearsList = () => {
         <div className="space-x-1">
           {canEdit ? (
             <button
-              className="text-yellow-400"
+              className="text-amber-300"
               onClick={() =>
                 Navigate(`/settings/academicsSet/editAcademicYear/${row.id}`)
               }
@@ -170,7 +170,7 @@ const AcademicYearsList = () => {
           ) : null}
           {canDelete ? (
             <button
-              className="text-red-500"
+              className="text-red-600"
               onClick={() => handleDelete(row.id)}
             >
               <RiDeleteBin6Line fontSize={20} />

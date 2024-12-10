@@ -53,7 +53,7 @@ const UploadDocumentFormModal = ({
             type="text"
             value={documentTitle}
             disabled
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm bg-gray-100"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm bg-gray-100"
           />
         </div>
 
@@ -69,7 +69,7 @@ const UploadDocumentFormModal = ({
             type="text"
             value={employeeDocumentLabel}
             onChange={(e) => setEmployeeDocumentLabel(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
           />
         </div>
 
@@ -97,7 +97,7 @@ const UploadDocumentFormModal = ({
           </button>
           <button
             onClick={handleUpload}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-700"
           >
             Upload
           </button>

@@ -424,7 +424,7 @@ const EditAdmissionForm = ({ admission }) => {
           >
             Student{" "}
             {!primaryValidity.validStudent && (
-              <span className="text-red-500">*</span>
+              <span className="text-red-600">*</span>
             )}
           </label>
           <select
@@ -456,7 +456,7 @@ const EditAdmissionForm = ({ admission }) => {
           >
             Admission Year{" "}
             {!primaryValidity.validAdmissionYear && (
-              <span className="text-red-500">*</span>
+              <span className="text-red-600">*</span>
             )}
           </label>
           <select
@@ -487,7 +487,7 @@ const EditAdmissionForm = ({ admission }) => {
           >
             Admission Starting Date{" "}
             {!primaryValidity.validAdmissionDate && (
-              <span className="text-red-500">*</span>
+              <span className="text-red-600">*</span>
             )}
           </label>
           <input
@@ -518,7 +518,7 @@ const EditAdmissionForm = ({ admission }) => {
               >
                 Service{" "}
                 {!admissionValidity[index]?.validService && (
-                  <span className="text-red-500">*</span>
+                  <span className="text-red-600">*</span>
                 )}
                 {index === 0 && "(Default: Admission)"}
               </label>
@@ -551,7 +551,7 @@ const EditAdmissionForm = ({ admission }) => {
                 >
                   Fee Period{" "}
                   {!admissionValidity[index]?.validFeePeriod && (
-                    <span className="text-red-500">*</span>
+                    <span className="text-red-600">*</span>
                   )}
                 </label>
                 <select
@@ -591,7 +591,7 @@ const EditAdmissionForm = ({ admission }) => {
                 >
                   Fee Value{" "}
                   {!admissionValidity[index]?.validFeeValue && (
-                    <span className="text-red-500">*</span>
+                    <span className="text-red-600">*</span>
                   )}
                 </label>
                 <input
@@ -615,7 +615,7 @@ const EditAdmissionForm = ({ admission }) => {
                 >
                   Fee Start Date{" "}
                   {!admissionValidity[index]?.validFeeStartDate && (
-                    <span className="text-red-500">*</span>
+                    <span className="text-red-600">*</span>
                   )}
                 </label>
                 <input
@@ -665,7 +665,7 @@ const EditAdmissionForm = ({ admission }) => {
 
               <div>
                 {service.isFlagged && (
-                  <div className="text-red-500">
+                  <div className="text-red-600">
                     The agreed fee value is below the minimum required fee for
                     this service, please add comment for management
                     authorisation processing.

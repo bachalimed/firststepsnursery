@@ -362,7 +362,7 @@ const NewStudentForm = () => {
        {/* {showMessage && (
         <p
           className={`mt-4 text-center ${
-            statusType === "success" ? "text-green-500" : "text-red-500"
+            statusType === "success" ? "text-green-500" : "text-red-600"
           }`}
         >
           {statusMessage}
@@ -385,11 +385,11 @@ const NewStudentForm = () => {
               htmlFor="firstName"
             >
               First Name{" "}
-              {!validFirstName && <span className="text-red-500">*</span>}
+              {!validFirstName && <span className="text-red-600">*</span>}
               <span className="text-gray-500 text-xs"> [3-20 letters]</span>
             </label>
             <input
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
               id="firstName"
               name="firstName"
               type="text"
@@ -408,7 +408,7 @@ const NewStudentForm = () => {
               Middle Name
             </label>
             <input
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
               id="middleName"
               name="middleName"
               type="text"
@@ -424,11 +424,11 @@ const NewStudentForm = () => {
               htmlFor="lastName"
             >
               Last Name{" "}
-              {!validLastName && <span className="text-red-500">*</span>}
+              {!validLastName && <span className="text-red-600">*</span>}
               <span className="text-gray-500 text-xs"> [3-20 letters]</span>
             </label>
             <input
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
               id="lastName"
               name="lastName"
               type="text"
@@ -445,11 +445,11 @@ const NewStudentForm = () => {
               htmlFor="studentDob"
             >
               Date Of Birth{" "}
-              {!validStudentDob && <span className="text-red-500">*</span>}
+              {!validStudentDob && <span className="text-red-600">*</span>}
               <span className="text-gray-500 text-xs"> [dd/mm/yyyy]</span>
             </label>
             <input
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
               id="studentDob"
               name="studentDob"
               type="date"
@@ -469,7 +469,7 @@ const NewStudentForm = () => {
               value="Male"
               checked={studentSex === "Male"}
               onChange={onStudentSexChanged}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
             />
             <label
               htmlFor="male"
@@ -484,7 +484,7 @@ const NewStudentForm = () => {
               value="Female"
               checked={studentSex === "Female"}
               onChange={onStudentSexChanged}
-              className="ml-6 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              className="ml-6 h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
             />
             <label
               htmlFor="female"
@@ -501,7 +501,7 @@ const NewStudentForm = () => {
               value={studentIsActive}
               checked={studentIsActive}
               onChange={onStudentIsActiveChanged}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
             />
             <label
               htmlFor="active"
@@ -520,7 +520,7 @@ const NewStudentForm = () => {
                 (year) => year.academicYear === selectedAcademicYear.title
               )}
               onChange={onAcademicYearChanged}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
               required
             />
 
@@ -529,7 +529,7 @@ const NewStudentForm = () => {
               className="ml-2 text-sm font-medium text-gray-700"
             >
               Student Year{" "}
-              {!studentYears[0] && <span className="text-red-500">*</span>} :{" "}
+              {!studentYears[0] && <span className="text-red-600">*</span>} :{" "}
               {selectedAcademicYear.title}
             </label>
           </div>
@@ -544,7 +544,7 @@ const NewStudentForm = () => {
                 >
                   Grade{" "}
                   {!studentYears[0].grade && (
-                    <span className="text-red-500">*</span>
+                    <span className="text-red-600">*</span>
                   )}
                 </label>
                 <select
@@ -598,7 +598,7 @@ const NewStudentForm = () => {
                           e.target.value
                         )
                       }
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
                     />
                   </div>
                   <div className="mb-2">
@@ -619,7 +619,7 @@ const NewStudentForm = () => {
                           e.target.value
                         )
                       }
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
                     />
                   </div>
                   <div className="mb-2">
@@ -640,7 +640,7 @@ const NewStudentForm = () => {
                           e.target.value
                         )
                       }
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
                     />
                   </div>
                   <div className="mb-2">
@@ -661,7 +661,7 @@ const NewStudentForm = () => {
                           e.target.value
                         )
                       }
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
                     >
                       <option value="">Select Year</option>
                       {academicYears.map(
@@ -693,7 +693,7 @@ const NewStudentForm = () => {
                           e.target.value
                         )
                       }
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
                     />
                   </div>
                   <div className="mb-2">
@@ -714,14 +714,14 @@ const NewStudentForm = () => {
                           e.target.value
                         )
                       }
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
                     />
                   </div>
 
                   <button
                     type="button"
                     onClick={() => handleRemoveGardienEntry(index)}
-                    className="text-red-500 hover:text-red-700"
+                    className="text-red-600 hover:text-red-700"
                   >
                     Remove Entry
                   </button>
@@ -730,7 +730,7 @@ const NewStudentForm = () => {
             ))}
           <button
             type="button"
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            className="px-4 py-2 bg-sky-700 text-white rounded-md hover:bg-blue-600"
             onClick={handleAddGardienEntry}
           >
             Add Student Gardien
@@ -740,7 +740,7 @@ const NewStudentForm = () => {
         <div className="mb-6">
           <h3 className="text-xl font-semibold mb-2">
             Student Education{" "}
-            {!validCurrentEducation && <span className="text-red-500">*</span>}
+            {!validCurrentEducation && <span className="text-red-600">*</span>}
           </h3>
           {Array.isArray(studentEducation) &&
             studentEducation.length > 0 &&
@@ -763,7 +763,7 @@ const NewStudentForm = () => {
                       onChange={(e) =>
                         handleFieldChange(index, "schoolYear", e.target.value)
                       }
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
                     >
                       <option value="">Select Year</option>
                       {academicYears.map(
@@ -793,7 +793,7 @@ const NewStudentForm = () => {
                           e.target.value
                         )
                       }
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
                     >
                       <option value="">Select School</option>
                       {schoolIsSuccess &&
@@ -822,14 +822,14 @@ const NewStudentForm = () => {
                       onChange={(e) =>
                         handleFieldChange(index, "note", e.target.value)
                       }
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
                     />
                   </div>
 
                   <button
                     type="button"
                     onClick={() => handleRemoveEntry(index)}
-                    className="text-red-500 hover:text-red-700"
+                    className="text-red-600 hover:text-red-700"
                   >
                     Remove Entry
                   </button>
@@ -838,7 +838,7 @@ const NewStudentForm = () => {
             ))}
           <button
             type="button"
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            className="px-4 py-2 bg-sky-700 text-white rounded-md hover:bg-blue-600"
             onClick={handleAddEntry}
           >
             Add Student Education
@@ -856,7 +856,7 @@ const NewStudentForm = () => {
           </button>
           <button
             type="submit"
-            className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
             title="Save"
             onClick={onSaveStudentClicked}
             disabled={!canSave||isLoading}

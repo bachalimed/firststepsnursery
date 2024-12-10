@@ -291,7 +291,7 @@ const AnimatorsAssignmentsList = () => {
         <div className="space-x-1">
           {canEdit ? (
             <button
-              className="text-yellow-400"
+              className="text-amber-300"
               onClick={() =>
                 navigate(
                   `/academics/plannings/editAnimatorsAssignment/${row.id}`
@@ -304,7 +304,7 @@ const AnimatorsAssignmentsList = () => {
           ) : null}
           {isAdmin && (
             <button
-              className="text-red-500"
+              className="text-red-600"
               onClick={() => onDeleteAttendedSchoolClicked(row.id)}
               hidden ={!canDelete}
             >

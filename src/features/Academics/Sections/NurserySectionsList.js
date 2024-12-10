@@ -408,7 +408,7 @@ const handleCloseDeleteModal = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
-            className="text-blue-500"
+            className="text-sky-700"
             fontSize={20}
             onClick={() =>
               navigate(`/academics/sections/SectionDetails/${row.id}`)
@@ -418,7 +418,7 @@ const handleCloseDeleteModal = () => {
           </button>
           {!row.sectionTo && canEdit ? (
             <button
-              className="text-yellow-400"
+              className="text-amber300"
               onClick={() =>
                 navigate(`/academics/sections/editSection/${row.id}`)
               }
@@ -430,7 +430,7 @@ const handleCloseDeleteModal = () => {
           
           {canDelete && (
               <button
-                className="text-red-500"
+                className="text-red-600"
                 onClick={() => onDeleteStudentClicked(row.id)}
                 hidden ={!canDelete}
               >

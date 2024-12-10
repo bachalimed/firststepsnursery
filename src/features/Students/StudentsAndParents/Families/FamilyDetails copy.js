@@ -235,7 +235,7 @@ const FamilyDetails = () => {
             onClick={() =>
               navigate(`/students/studentsParents/editFamily/${id}`)
             }
-            className="px-4 py-2 bg-yellow-400 text-white rounded"
+            className="px-4 py-2 bg-amber-300 text-white rounded"
           >
             Edit Family{" "}
           </button>

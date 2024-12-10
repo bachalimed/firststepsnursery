@@ -404,7 +404,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
           >
             Student{" "}
             {!primaryValidity.validStudent && (
-              <span className="text-red-500">*</span>
+              <span className="text-red-600">*</span>
             )}
           </label>
           <select
@@ -436,7 +436,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
           >
             Enrolment Year{" "}
             {!primaryValidity.validEnrolmentYear && (
-              <span className="text-red-500">*</span>
+              <span className="text-red-600">*</span>
             )}
           </label>
           <select
@@ -467,7 +467,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
           >
             Enrolment Starting Date{" "}
             {!primaryValidity.validEnrolmentDate && (
-              <span className="text-red-500">*</span>
+              <span className="text-red-600">*</span>
             )}
           </label>
           <input
@@ -498,7 +498,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
               >
                 Service{" "}
                 {!enrolmentValidity[index]?.validService && (
-                  <span className="text-red-500">*</span>
+                  <span className="text-red-600">*</span>
                 )}
                 {index === 0 && "(Default: Enrolment)"}
               </label>
@@ -531,7 +531,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
                 >
                   Fee Period{" "}
                   {!enrolmentValidity[index]?.validFeePeriod && (
-                    <span className="text-red-500">*</span>
+                    <span className="text-red-600">*</span>
                   )}
                 </label>
                 <select
@@ -571,7 +571,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
                 >
                   Fee Value{" "}
                   {!enrolmentValidity[index]?.validFeeValue && (
-                    <span className="text-red-500">*</span>
+                    <span className="text-red-600">*</span>
                   )}
                 </label>
                 <input
@@ -595,7 +595,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
                 >
                   Fee Start Date{" "}
                   {!enrolmentValidity[index]?.validFeeStartDate && (
-                    <span className="text-red-500">*</span>
+                    <span className="text-red-600">*</span>
                   )}
                 </label>
                 <input
@@ -632,7 +632,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
 
               <div>
                 {service.isFlagged && (
-                  <div className="text-red-500">
+                  <div className="text-red-600">
                     The agreed fee value is below the minimum required fee for
                     this service, please add comment for management
                     authorisation processing.

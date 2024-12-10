@@ -269,10 +269,10 @@ console.log(formData,'formData')
         <h2 className="text-2xl font-bold mb-4">
           Add New Payslip:{" "}
          
-        </h2>{isEmployeesError && <p className="text-red-500">Error fetching employees: {employeesError?.data?.message}</p>}
-        {isLeavesError && <p className="text-red-500">Error fetching leaves: {leavesError?.data?.message}</p>}
+        </h2>{isEmployeesError && <p className="text-red-600">Error fetching employees: {employeesError?.data?.message}</p>}
+        {isLeavesError && <p className="text-red-600">Error fetching leaves: {leavesError?.data?.message}</p>}
         {isAddError && (
-          <p className="text-red-500">Error: {addError?.data?.message}</p>
+          <p className="text-red-600">Error: {addError?.data?.message}</p>
         )}
         <form onSubmit={onSavePayslipClicked} className="space-y-6">
           
@@ -283,7 +283,7 @@ console.log(formData,'formData')
             >
               Month{" "}
               {!validity.validPayslipMonth && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <select
@@ -311,7 +311,7 @@ console.log(formData,'formData')
             >
               Employee{" "}
               {!validity.validPayslipEmployee && (
-                <span className="text-red-500">*</span>
+                <span className="text-red-600">*</span>
               )}
             </label>
             <select
@@ -357,7 +357,7 @@ console.log(formData,'formData')
     >
       Payment Date{" "}
       {!validity.validPayslipPaymentDate && (
-        <span className="text-red-500">*</span>
+        <span className="text-red-600">*</span>
       )}
     </label>
     <input

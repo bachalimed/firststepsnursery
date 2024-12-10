@@ -216,7 +216,7 @@ console.log(validity)
               value={formData.invoiceAuthorisedAmount}
               onChange={handleChange}
               disabled
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
             /> */}
           </div>
           <div className="mb-4">
@@ -228,7 +228,7 @@ console.log(validity)
               name="invoiceAmount"
               value={formData.invoiceAmount}
               disabled
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
             /> */}
           </div>
 
@@ -240,7 +240,7 @@ console.log(validity)
               name="invoiceDiscountType"
               value={formData.invoiceDiscountType}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
             >
               <option value="">No additional discount</option>
               {DiscountTypes.map((type, index) => (
@@ -262,7 +262,7 @@ console.log(validity)
                 value={formData.invoiceDiscountAmount}
                 onChange={handleChange}
                 placeholder="Enter discount amount"
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
               />
             </div>
           )}
@@ -278,7 +278,7 @@ console.log(validity)
                 value={formData.invoiceDiscountNote}
                 onChange={handleChange}
                 placeholder="Optional note"
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
                 required={formData.invoiceDiscountAmount}
               />
             </div>
@@ -287,14 +287,14 @@ console.log(validity)
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               Due Date{" "}
-              {!validity.validInvoiceDueDate && <span className="text-red-500">*</span>}
+              {!validity.validInvoiceDueDate && <span className="text-red-600">*</span>}
             </label>
             <input
               type="date"
               name="invoiceDueDate"
               value={formData.invoiceDueDate}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
             />
           </div>
 
@@ -328,7 +328,7 @@ console.log(validity)
               disabled={!canSubmit||isUpdateLoading}
               className={` py-2 px-4 font-bold text-white rounded-md focus:outline-none ${
                 canSubmit
-                  ? "bg-blue-500 hover:bg-blue-700"
+                  ? "bg-sky-700 hover:bg-blue-700"
                   : "bg-gray-400 cursor-not-allowed"
               }`}
             >
@@ -337,7 +337,7 @@ console.log(validity)
           </div>
 
           {isUpdateError && (
-            <p className="text-red-500 text-center mt-4">
+            <p className="text-red-600 text-center mt-4">
               {updateError?.data?.message || "Error updating the invoice"}
             </p>
           )}

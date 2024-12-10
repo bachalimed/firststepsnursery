@@ -216,7 +216,7 @@ const handleCloseModal = () => {
               value={formData.paymentAuthorisedAmount}
               onChange={handleChange}
               disabled
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
             /> */}
           </div>
           <div className="mb-4">
@@ -228,7 +228,7 @@ const handleCloseModal = () => {
               name="paymentAmount"
               value={formData.paymentAmount}
               disabled
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
             /> */}
           </div>
 
@@ -240,7 +240,7 @@ const handleCloseModal = () => {
               name="paymentDiscountType"
               value={formData.paymentDiscountType}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
             >
               <option value="">No additional discount</option>
               {DiscountTypes.map((type, index) => (
@@ -262,7 +262,7 @@ const handleCloseModal = () => {
                 value={formData.paymentDiscountAmount}
                 onChange={handleChange}
                 placeholder="Enter discount amount"
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
               />
             </div>
           )}
@@ -278,7 +278,7 @@ const handleCloseModal = () => {
                 value={formData.paymentDiscountNote}
                 onChange={handleChange}
                 placeholder="Optional note"
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
                 required={formData.paymentDiscountAmount}
               />
             </div>
@@ -287,14 +287,14 @@ const handleCloseModal = () => {
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               Due Date{" "}
-              {!validity.validPaymentDueDate && <span className="text-red-500">*</span>}
+              {!validity.validPaymentDueDate && <span className="text-red-600">*</span>}
             </label>
             <input
               type="date"
               name="paymentDueDate"
               value={formData.paymentDueDate}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
             />
           </div>
 
@@ -325,7 +325,7 @@ const handleCloseModal = () => {
               disabled={!canSubmit||isUpdateLoading}
               className={`w-full py-2 px-4 font-bold text-white rounded-md focus:outline-none ${
                 canSubmit
-                  ? "bg-blue-500 hover:bg-blue-700"
+                  ? "bg-sky-700 hover:bg-blue-700"
                   : "bg-gray-400 cursor-not-allowed"
               }`}
             >
@@ -334,7 +334,7 @@ const handleCloseModal = () => {
           </div>
 
           {isUpdateError && (
-            <p className="text-red-500 text-center mt-4">
+            <p className="text-red-600 text-center mt-4">
               {updateError?.data?.message || "Error updating the payment"}
             </p>
           )}

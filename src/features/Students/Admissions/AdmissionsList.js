@@ -396,7 +396,7 @@ const AdmissionsList = () => {
             const feeValue = feeObj?.feeValue;
 
             // Determine the text color based on the comparison
-            let textColorClass = "text-red-500"; // Default is black
+            let textColorClass = "text-red-600"; // Default is black
             if (feeObj.isAuthorised || feeValue >= anchorValue) {
               textColorClass = "text-green-800"; // Green if greater than anchor
             }
@@ -448,7 +448,7 @@ const AdmissionsList = () => {
               <button
                 key={index}
                 className={`${
-                  feeObj?.isAuthorised ? "text-green-200" : "text-red-500"
+                  feeObj?.isAuthorised ? "text-green-200" : "text-red-600"
                 }`}
                 fontSize={20}
                 onClick={() => handleUpdateAdmission(row, index, feeObj)} // Open the modal with the selected admission
@@ -468,7 +468,7 @@ const AdmissionsList = () => {
       // cell: (row) => (
       //   <div className="space-x-1">
       //     <button
-      //       className={`${row?.agreedServices.every(service => service?.isAuthorised) ? 'text-gray-400' : 'text-red-500'}`}
+      //       className={`${row?.agreedServices.every(service => service?.isAuthorised) ? 'text-gray-400' : 'text-red-600'}`}
       //       fontSize={20}
       //       onClick={() => handleUpdateAdmission(row)} // Open the modal with the selected admission
       //       disabled={row?.agreedServices.every(service => service?.isAuthorised)} // Disable if all services are authorised
@@ -487,7 +487,7 @@ const AdmissionsList = () => {
     //   cell: (row) => (
     //     <div className="space-x-1">
     //       <button
-    //         className={`${row?.agreedServices.every(service => service?.isAuthorised) ? 'text-gray-400' : 'text-red-500'}`}
+    //         className={`${row?.agreedServices.every(service => service?.isAuthorised) ? 'text-gray-400' : 'text-red-600'}`}
     //         fontSize={20}
     //         onClick={() => handleUpdateAdmission(row)} // Open the modal with the selected admission
     //         disabled={row?.agreedServices.every(service => service?.isAuthorised)} // Disable if all services are authorised
@@ -549,7 +549,7 @@ const AdmissionsList = () => {
             <IoMdAddCircleOutline className="text-2xl" />
           </button> */}
           <button
-            className="text-blue-500"
+            className="text-sky-700"
             fontSize={20}
             onClick={() =>
               navigate(`/students/admissions/admissionDetails/${row.id}`)
@@ -559,7 +559,7 @@ const AdmissionsList = () => {
           </button>
           {canEdit ? (
             <button
-              className="text-yellow-400"
+              className="text-amber-300"
               onClick={() =>
                 navigate(`/students/admissions/editAdmission/${row.id}`)
               }
@@ -569,7 +569,7 @@ const AdmissionsList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
-              className="text-red-500"
+              className="text-red-600"
               onClick={() => onDeleteAdmissionClicked(row.id)}
             >
               <RiDeleteBin6Line className="text-2xl" />
