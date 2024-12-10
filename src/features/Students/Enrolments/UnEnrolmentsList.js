@@ -261,7 +261,7 @@ const UnenrolmentsList = () => {
 
           {canCreate ? (
             <button
-              className="text-amber-300"
+              className="text-green-500"
               onClick={() => navigate("/students/enrolments/newEnrolment/")}
             >
               <IoAddCircleOutline className="text-2xl" />
@@ -274,7 +274,7 @@ const UnenrolmentsList = () => {
       button: true,
       width: "120px",
     },
-  ];
+  ].filter(Boolean); // Filter out falsy values like `false` or `undefined`
   let content;
   if (isAdmissionsLoading || isServicesLoading)
     content = (
@@ -362,14 +362,7 @@ const UnenrolmentsList = () => {
               tobechanged
             </button>
 
-            <button
-              className="px-3 py-2 bg-amber-300 text-white rounded"
-              onClick={handleDuplicateSelected}
-              disabled={selectedRows.length !== 1} // Disable if no rows are selected
-              hidden={!canCreate}
-            >
-              Re-hhh
-            </button>
+            
 
             {isAdmin && (
               <button

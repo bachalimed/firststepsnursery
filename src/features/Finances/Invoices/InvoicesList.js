@@ -384,7 +384,7 @@ const InvoicesList = () => {
       button: true,
       width: "120px",
     },
-  ];
+  ].filter(Boolean); // Filter out falsy values like `false` or `undefined`
 
   // Custom header to include the row count
   const tableHeader = (

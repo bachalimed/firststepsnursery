@@ -4,31 +4,15 @@ import useAuth from "../../hooks/useAuth";
 import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
 const Finances = () => {
   const location = useLocation();
-  const FinancesTabs = {
-    title: "finances",
-    icon: <MdOutlineBusinessCenter />,
-    path: "/finances/expenses",
-    allowedRoles: [
-      "Parent",
-      "ContentManager",
-      "Animator",
-      "Academic",
-      "Director",
-      "Finance",
-      "HR",
-      "Desk",
-      "Manager",
-      "Admin",
-    ],
-  };
-
+ 
+  const { isEmployee ,isParent,isContentManager,isAnimator,isAcademic,isFinance,isHR,isDesk , isDirector ,isManager , isAdmin  } = useAuth();
 
   // Define the tab data with paths and labels
   const tabs = [
     //{ label: 'New Assignment', path: '/academics/expenses/NewAnimatorsAssignmentForm' },
-    { label: 'Invoices', path: '/finances/invoices/invoicesList/' },
-    { label: 'Payments', path: '/finances/payments/paymentsList/' },
-    { label: 'Expenses', path: '/finances/expenses/expensesList/' },
+    ( isFinance ||isDirector||isManager || isAdmin) &&{ label: 'Invoices', path: '/finances/invoices/invoicesList/' },
+    ( isFinance ||isDirector||isManager || isAdmin) &&{ label: 'Payments', path: '/finances/payments/paymentsList/' },
+    ( isFinance ||isDirector||isManager || isAdmin) &&{ label: 'Expenses', path: '/finances/expenses/expensesList/' },
     
     
    
@@ -39,8 +23,9 @@ const Finances = () => {
  // Render the component content
  return (
    <div className="flex bg-gray-300 p-3 px-4 md:px-4 items-center justify-start space-x-4">
-     <AcademicYearsSelection />
-       {tabs.map((tab) => (
+     {(isDirector ||isManager || isAdmin)&&<AcademicYearsSelection />}
+       {tabs.filter(Boolean) // Filter out null or undefined tabs
+       .map((tab) => (
        <Link key={tab.path} to={tab.path}>
            <li
           className={`list-none cursor-pointer px-3 py-2 border border-gray-400  ${

@@ -354,7 +354,7 @@ const UsersList = () => {
 
       button: true,
     },
-  ];
+  ].filter(Boolean); // Filter out falsy values like `false` or `undefined`
 
   // Custom header to include the row count
   const tableHeader = (

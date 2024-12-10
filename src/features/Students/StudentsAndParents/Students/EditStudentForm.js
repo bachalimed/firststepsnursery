@@ -3,22 +3,21 @@ import Students from "../../Students";
 import { useState, useEffect } from "react";
 import { useUpdateStudentMutation } from "./studentsApiSlice";
 import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
-import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate ,useOutletContext} from "react-router-dom";
+
 import { ROLES } from "../../../../config/UserRoles";
 import { ACTIONS } from "../../../../config/UserActions";
 import useAuth from "../../../../hooks/useAuth";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 import { useSelector } from "react-redux";
 import { selectAllAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import { useGetAcademicYearsQuery } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
+
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { NAME_REGEX, DATE_REGEX } from "../../../../config/REGEX";
-import { useOutletContext } from "react-router-dom";
+
 const EditStudentForm = ({ student }) => {
   //initialising state variables and hooks
   const navigate = useNavigate();
@@ -63,7 +62,7 @@ const EditStudentForm = ({ student }) => {
     //console.log(attendedSchools)
   }
 
-  //prepare the permission variables
+
 
   //initialisation of states for each input
   const [studentName, setStudentName] = useState(student.studentName);
@@ -99,12 +98,10 @@ const EditStudentForm = ({ student }) => {
   const [gardienRelation, setGardienRelation] = useState(
     student.studentGardien.gardienRelation
   );
-  //console.log('studddds',student)
-  //console.log(student.studentGardien)
-
+ 
   const [studentEducation, setStudentEducation] = useState(
     student.studentEducation
-  ); //an array
+  ); 
   const [schoolYear, setSchoolYear] = useState(student.schoolYear);
   const [attendedSchool, setAttendedSchool] = useState(student.attendedSchool);
   const [note, setNote] = useState(student.note);
@@ -195,18 +192,9 @@ const EditStudentForm = ({ student }) => {
     });
   }, [firstName, middleName, lastName]);
 
-  // //adds to the previous entries in arrays for gardien, schools...
-  // const onStudentYearsChanged = (e, selectedAcademicYear) => {
-  //   if (e.target.checked) {
-  //     // Add the selectedAcademicYear to studentYears if it's checked
-  //     setStudentYears([...studentYears, selectedAcademicYear]);
-  //   } else {
-  //     // Remove the selectedAcademicYear from studentYears if it's unchecked
-  //     setStudentYears(studentYears.filter(year => year !== selectedAcademicYear))
-  //   }
-  // }
 
-  // to deal with student gardien entries:
+
+ 
   // Handler to update an entry field
   const handleGardienFieldChange = (index, field, value) => {
     // Create a deep copy of the studentGardien array
@@ -292,9 +280,6 @@ const EditStudentForm = ({ student }) => {
       studentSex,
     ].every(Boolean) && !isUpdateLoading;
 
-
-
-
     const { triggerBanner } = useOutletContext(); // Access banner trigger
 
 
@@ -357,23 +342,13 @@ try{
     navigate("/students/studentsParents/students/");
   };
 
-  //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
-  const errClass = isUpdateError ? "errmsg" : "offscreen";
-  //const validStudentClass = !validStudentName ? 'form__input--incomplete' : ''
-  //const validPwdClass = !validPassword ? 'form__input--incomplete' : ''
-  //const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
-
+  
   let content;
 
   content = schoolIsSuccess && (
     <>
       <Students />
-      <p className={`text-red-600 ${errClass}`}>
-        {updateError?.data?.message}
-      </p>{" "}
-      {/* Display error messages */}
-      <p className={errClass}>{updateError?.data?.message}</p>{" "}
-      {/*will display if there is an error message, some of the error messagees are defined in the back end responses*/}
+      
       <form className="form" onSubmit={(e) => e.preventDefault()}>
         <div className="form__title-row">
           <h2 className="text-2xl font-semibold">

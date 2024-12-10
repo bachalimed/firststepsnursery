@@ -31,7 +31,7 @@ import { CiViewList } from "react-icons/ci";
 
 const MenuButtons = () => {
   const { username } = useAuth();
-
+  const { isEmployee ,isParent,isContentManager,isAnimator,isAcademic,isFinance,isHR,isDesk , isDirector ,isManager , isAdmin  } = useAuth();
   //to set the open close of side bar
   const [studentsOpen, setStudentsOpen] = useState(false);
   const [academicsOpen, setAcademicsOpen] = useState(false);
@@ -49,7 +49,7 @@ const MenuButtons = () => {
     <div className="relative">
       <header className="flex items-center md:px-1 bg-sky-700">
        
-        <Link to="/dashboard/">
+      {(isDirector|| isManager || isAdmin ||isAcademic || isFinance || isHR) &&  <Link to="/dashboard/">
           <li
            className={`text-grey-300 text-sm flex text-white items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 ${
             location.pathname.startsWith("/dashboard/") ? "bg-gray-300 text-gray-950" : ""
@@ -58,9 +58,9 @@ const MenuButtons = () => {
             <VscDashboard className="text-2xl" />
             <span className="flex-1 hidden md:block">Dashboard</span>
           </li>
-        </Link>
+        </Link>}
        
-        <div className="relative">
+        {(isAcademic|| isDesk ||isDirector||isManager || isAdmin) && <div className="relative">
           <Link to="/students/studentsParents/students/" >
             <li
               className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
@@ -73,8 +73,8 @@ const MenuButtons = () => {
               <span className="flex-1 hidden md:block">Students</span>
             </li>
           </Link>
-        </div>
-        <div className="relative">
+        </div>}
+        {(  isAnimator ||isAcademic || isDirector||isManager || isAdmin)&&<div className="relative">
           <Link to="/academics/sections/nurserySectionsList/">
             <li
               className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
@@ -87,8 +87,8 @@ const MenuButtons = () => {
               <span className="flex-1 hidden md:block">Academics</span>
             </li>
           </Link>
-        </div>
-        <div className="relative">
+        </div>}
+        { ( isFinance ||isDirector||isManager || isAdmin)&&<div className="relative">
           <Link to="/finances/invoices/invoicesList/">
             <li
               className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
@@ -101,8 +101,8 @@ const MenuButtons = () => {
               <span className="flex-1 hidden md:block">Finances</span>
             </li>
           </Link>
-        </div>
-        <div className="relative">
+        </div>}
+        {( isHR ||isDirector||isManager || isAdmin)&&<div className="relative">
           <Link to="/hr/employees/employeesList/">
             <li
               className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
@@ -115,8 +115,8 @@ const MenuButtons = () => {
               <span className="flex-1 hidden md:block">HR</span>
             </li>
           </Link>
-        </div>
-        <div className="relative">
+        </div>}
+        {isAdmin&&<div className="relative">
           <Link to="/admin/usersManagement/users/">
             <li
               className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
@@ -129,12 +129,13 @@ const MenuButtons = () => {
               <span className="flex-1 hidden md:block">Admin</span>
             </li>
           </Link>
-        </div>
-        <div
+        </div>}
+       <div
           className="relative"
           onMouseEnter={() => setSettingsOpen(true)}
           onMouseLeave={() => setSettingsOpen(false)}
-        >
+          >
+          {(isFinance||isHR|| isDirector ||isManager || isAdmin )&& 
           <Link to="/settings/studentsSet/">
             <li
               className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
@@ -146,10 +147,10 @@ const MenuButtons = () => {
               <SlSettings className="text-2xl" />
               <span className="flex-1 hidden md:block">Settings</span>
             </li>
-          </Link>
+          </Link>}
           {settingsOpen && (
             <ul className="absolute top-full left-0 bg-sky-700 text-white    shadow-md transition-all duration-300">
-              <Link
+              {( isFinance|| isDirector||isManager || isAdmin)&&<Link
                 to="/settings/studentsSet/"
                 className={
                   location.pathname.startsWith("/settings/")
@@ -162,8 +163,8 @@ const MenuButtons = () => {
                 >
                   Students
                 </li>
-              </Link>
-              <Link
+              </Link>}
+              {(  isDirector||isManager || isAdmin)&&<Link
                 to="/settings/academicsSet/"
                 className={
                   location.pathname.startsWith("/settings/")
@@ -176,8 +177,8 @@ const MenuButtons = () => {
                 >
                   Academics
                 </li>
-              </Link>
-              <Link
+              </Link>}
+              { (  isFinance||isDirector||isManager || isAdmin) &&<Link
                 to="/settings/financesSet/"
                 className={
                   location.pathname.startsWith("/settings/")
@@ -190,8 +191,8 @@ const MenuButtons = () => {
                 >
                   Finances
                 </li>
-              </Link>
-              <Link
+              </Link>}
+              {( isHR|| isDirector||isManager || isAdmin)&& <Link
                 to="/settings/HRSet/"
                 className={
                   location.pathname.startsWith("/settings/")
@@ -204,7 +205,7 @@ const MenuButtons = () => {
                 >
                   HR
                 </li>
-              </Link>
+              </Link>}
             </ul>
           )}
         </div>

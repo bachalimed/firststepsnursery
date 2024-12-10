@@ -1,4 +1,4 @@
-import { IoFileTrayStackedOutline } from "react-icons/io5";
+
 import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
 import useAuth from "../../hooks/useAuth";
 import { useLocation, Link } from "react-router-dom";
@@ -6,33 +6,16 @@ import { useLocation, Link } from "react-router-dom";
 
 const Students = () => {
   const location = useLocation();
-  const { isAdmin, isManager } = useAuth();
-  const admissionsTabs = {
-    title: "Admissions",
-    path: "/students/admissions",
-    allowedRoles: [
-      "Parent",
-      "Animator",
-      "Academic",
-      "Director",
-      "Finance",
-      "HR",
-      "Desk",
-      "Manager",
-      "Admin",
-    ],
-  };
+  const { isEmployee ,isParent,isContentManager,isAnimator,isAcademic,isFinance,isHR,isDesk , isDirector ,isManager , isAdmin  } = useAuth();
+
 
   // Define the tab data with paths and labels
   const tabs = [
-    { label: "Students", path: "/students/studentsParents/students/" },
-    { label: "Families", path: "/students/studentsParents/families/" },
-    { label: "Admissions", path: "/students/admissions/admissions/" },
-    { label: "Enrolments", path: "/students/enrolments/enrolments/" },
-    (isAdmin || isManager) && {
-      label: "Unenrolled Students",
-      path: "/students/enrolments/unenrolments/",
-    },
+   (isAcademic|| isDesk ||isDirector||isManager || isAdmin) &&{ label: "Students", path: "/students/studentsParents/students/" },
+   (isAcademic|| isDesk ||isDirector||isManager || isAdmin) &&{ label: "Families", path: "/students/studentsParents/families/" },
+   (isAcademic|| isDesk ||isDirector||isManager || isAdmin) &&{ label: "Admissions", path: "/students/admissions/admissions/" },
+   (isAcademic|| isDesk ||isDirector||isManager || isAdmin) &&{ label: "Enrolments", path: "/students/enrolments/enrolments/" },
+   (isAcademic|| isDesk ||isDirector||isManager || isAdmin) &&{ label: "Unenrolled Students", path: "/students/enrolments/unenrolments/"},
     //{ label: "New Admission", path: "/students/admissions/newAdmission/" },
   ];
 
@@ -43,8 +26,10 @@ const Students = () => {
   // Render the component content
   return (
     <div className="flex bg-gray-300 p-3  px-4 md:px-4 items-center justify-start space-x-4">
-      <AcademicYearsSelection />
-      {tabs.map((tab) => (
+      {(isDirector ||isManager || isAdmin)&&<AcademicYearsSelection />}
+      {tabs
+      .filter(Boolean) // Filter out null or undefined tabs
+      .map((tab) => (
         <Link key={tab.path} to={tab.path}>
           <li
             className={`list-none cursor-pointer px-3 py-2 border border-gray-400  ${

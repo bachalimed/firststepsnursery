@@ -6,22 +6,7 @@ import { useLocation, Link } from "react-router-dom";
 
 const MyProfile = () => {
   const location = useLocation();
-  const { isAdmin, isManager } = useAuth();
-  const admissionsTabs = {
-    title: "Admissions",
-    path: "/myProfile/admissions",
-    allowedRoles: [
-      "Parent",
-      "Animator",
-      "Academic",
-      "Director",
-      "Finance",
-      "HR",
-      "Desk",
-      "Manager",
-      "Admin",
-    ],
-  };
+  const { isEmployee ,isParent,isContentManager,isAnimator,isAcademic,isFinance,isHR,isDesk , isDirector ,isManager , isAdmin  } = useAuth();
 
   // Define the tab data with paths and labels
   const tabs = [
@@ -42,7 +27,7 @@ const MyProfile = () => {
   // Render the component content
   return (
     <div className="flex bg-gray-300 p-3 px-4 md:px-4 items-center justify-start space-x-4">
-      <AcademicYearsSelection />
+      {(isDirector ||isManager || isAdmin)&&<AcademicYearsSelection />}
       {tabs.map((tab) => (
         <Link key={tab.path} to={tab.path}>
           <li

@@ -1,5 +1,5 @@
 import React from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext,useNavigate } from "react-router-dom";
 import Students from "../../Students";
 import {
   selectCurrentAcademicYearId,
@@ -8,16 +8,11 @@ import {
 import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
 import { useState, useEffect } from "react";
 import { useAddNewStudentMutation } from "./studentsApiSlice";
-import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../../../config/UserRoles";
 import { ACTIONS } from "../../../../config/UserActions";
 import useAuth from "../../../../hooks/useAuth";
-
 import { useSelector } from "react-redux";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
-import { useGetAcademicYearsQuery } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
 import { selectAllAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { NAME_REGEX, DATE_REGEX } from "../../../../config/REGEX";
 
@@ -62,7 +57,7 @@ const NewStudentForm = () => {
   if (schoolIsSuccess) {
     const { entities } = attendedSchoolsList;
     attendedSchools = Object.values(entities);
-    //console.log(attendedSchools)
+  
   }
   //confirmation Modal states
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -126,7 +121,6 @@ const NewStudentForm = () => {
       setStudentName({ firstName: "", middleName: "", lastName: "" });
       setStudentDob("");
       setValidStudentDob("");
-
       setStudentSex("");
       setStudentIsActive(false);
       setStudentYears(""); //will be true when the username is validated
@@ -156,11 +150,7 @@ const NewStudentForm = () => {
   const onStudentDobChanged = (e) => setStudentDob(e.target.value);
   const onStudentSexChanged = (e) => setStudentSex(e.target.value);
   const onStudentIsActiveChanged = (e) => setStudentIsActive((prev) => !prev);
-  //const onAcademicYearChanged = e => setAcademicYear(e.target.value)
-
-  //const onStudentJointFamilyChanged = e => setStudentJointFamily((prev)=>!prev)
-
-  const onGardienFirstNameChanged = (e) => setGardienFirstName(e.target.value);
+   const onGardienFirstNameChanged = (e) => setGardienFirstName(e.target.value);
   const onGardienMiddleNameChanged = (e) =>
     setgardienMiddleName(e.target.value);
   const onGardienLastNameChanged = (e) => setGardienLastName(e.target.value);
@@ -170,9 +160,7 @@ const NewStudentForm = () => {
   const onAttendedSchoolChanged = (e) => setAttendedSchool(e.target.value);
   const onNoteChanged = (e) => setNote(e.target.value);
   const onStudentEducationChanged = (e) => setStudentEducation(e.target.value);
-  //const onDateChanged = e => setDate(e.target.value)
-  //   const onOperatorChanged = e => setOperator(e.target.value)//it is imopprted from usAuth already
-
+ 
   //adds to the previous entries in arrays for gardien, schools...
   const onAcademicYearChanged = (e) => {
     const { value, checked } = e.target;
@@ -270,13 +258,6 @@ const NewStudentForm = () => {
   }, [studentEducation, selectedAcademicYear.title]);
 
 
-
-
-
- // console.log(validCurrentEducation, "education");
- // console.log(studentEducation, "studentEducation");
- // console.log(selectedAcademicYear.title, "selectedAcademicYear.title");
-
   //to check if we can save before onsave, if every one is true, and also if we are not loading status
   const canSave =
     [
@@ -288,10 +269,7 @@ const NewStudentForm = () => {
       studentSex,
     ].every(Boolean) && !isLoading;
 
-
-
    const { triggerBanner } = useOutletContext(); // Access banner trigger
-
 
   const onSaveStudentClicked = async (e) => {
     e.preventDefault();
@@ -301,7 +279,6 @@ const NewStudentForm = () => {
       setShowConfirmation(true);
     }
   };
-
 
   // This function handles the confirmed save action
   const handleConfirmSave = async () => {
@@ -338,7 +315,6 @@ const NewStudentForm = () => {
       console.error("Error saving:", error);
     }
   };
-
 
   // Close the modal without saving
   const handleCloseModal = () => {

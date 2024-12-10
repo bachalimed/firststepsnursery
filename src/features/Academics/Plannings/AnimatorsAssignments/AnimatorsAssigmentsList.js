@@ -1,10 +1,10 @@
-import { HiOutlineSearch } from "react-icons/hi";
+
 import { useGetEmployeesByYearQuery } from "../../../HR/Employees/employeesApiSlice";
 import DataTable from "react-data-table-component";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import {  useState } from "react";
+
 import { useNavigate } from "react-router-dom";
-import { ImProfile } from "react-icons/im";
+
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
@@ -22,12 +22,11 @@ import {
 import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
 import { useOutletContext } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-
 import Academics from "../../Academics";
 import { MONTHS } from "../../../../config/Months";
 const AnimatorsAssignmentsList = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+ 
   //get several things from the query
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
@@ -173,7 +172,7 @@ const AnimatorsAssignmentsList = () => {
     });
   }
 
-  const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
+  const { isEmployee ,isParent,isContentManager,isAnimator,isAcademic,isFinance,isHR,isDesk , isDirector ,isManager , isAdmin  ,canEdit,  canDelete, canView ,canCreate } = useAuth();
 
   //define the content to be conditionally rendered
   const column = [
@@ -206,34 +205,7 @@ const AnimatorsAssignmentsList = () => {
       sortable: true,
       width: "100px",
     },
-    // {
-    //   name: "Animator",
-    //   selector: (row) => (
-    //     <div>
-    //       {row?.assignments.map((assignment, index) => {
-    //         const animator = employeesList.find(
-    //           (employee) => employee.id === assignment.animator
-    //         );
-
-    //         const animatorName = animator
-    //           ? `${animator.userFullName.userFirstName} ${animator.userFullName.userMiddleName || ""} ${animator.userFullName.userLastName || ""}`.trim()
-    //           : "Unknown";
-
-    //         return (
-    //           <div key={index} style={{ marginBottom: "4px" }}>
-    //       {animatorName}
-    //       {index < row.assignments.length - 1 && (
-    //         <hr style={{ border: "0.5px solid #ccc", margin: "4px 0" }} />
-    //       )}
-    //     </div>
-    //         );
-    //       })}
-    //     </div>
-    //   ),
-
-    //   sortable: true,
-    //   width: "160px",
-    // },
+   
     {
       name: "Assignments",
       selector: (row) => (
@@ -285,11 +257,11 @@ const AnimatorsAssignmentsList = () => {
       width: "180px",
     },
 
-    isAdmin && {
+    (isDirector||isAcademic||isManager||isAdmin)&& {
       name: "Actions",
       cell: (row) => (
         <div className="space-x-1">
-          {canEdit ? (
+          
             <button
               className="text-amber-300"
               onClick={() =>
@@ -301,8 +273,8 @@ const AnimatorsAssignmentsList = () => {
             >
               <FiEdit fontSize={20} />
             </button>
-          ) : null}
-          {isAdmin && (
+          
+          
             <button
               className="text-red-600"
               onClick={() => onDeleteAttendedSchoolClicked(row.id)}
@@ -310,14 +282,14 @@ const AnimatorsAssignmentsList = () => {
             >
               <RiDeleteBin6Line fontSize={20} />
             </button>
-          )}
+          
         </div>
       ),
       ignoreRowClick: true,
 
       button: true,
     },
-  ];
+  ].filter(Boolean); // Filter out falsy values like `false` or `undefined`
 
   // Custom header to include the row count
   const tableHeader = (
@@ -332,18 +304,15 @@ const AnimatorsAssignmentsList = () => {
 
   if (isSchoolsLoading)
     content = (
-      <>
-      
+      <>   
         <Academics />
-        <LoadingStateIcon />
-       
+        <LoadingStateIcon />       
       </>
     );
 
   if (isSchoolsError || isEmployeesError || isAssignmentsError) {
     content = (
-      <>
-       
+      <>       
         <Academics />
         <div className="error-bar">
           {schoolsError?.data?.message}
@@ -358,11 +327,9 @@ const AnimatorsAssignmentsList = () => {
     return (
       <>
         <Academics />
-
         <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
           <div className="flex space-x-2 items-center">
             {/* Months Filter Dropdown */}
-
             <select
               value={monthFilter}
               onChange={(e) => setMonthFilter(e.target.value)}
@@ -407,7 +374,7 @@ const AnimatorsAssignmentsList = () => {
               // },
             }}
           ></DataTable>
-          <div className="flex justify-end items-center  space-x-4">
+          {(isAdmin||isDirector||isManager||isAcademic)&&<div className="flex justify-end items-center  space-x-4">
             <button
               className="add-button"
               onClick={() =>
@@ -418,7 +385,7 @@ const AnimatorsAssignmentsList = () => {
             >
               New Assignment
             </button>
-          </div>
+          </div>}
         </div>
         <DeletionConfirmModal
           isOpen={isDeleteModalOpen}

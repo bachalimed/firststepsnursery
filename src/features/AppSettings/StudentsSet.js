@@ -1,33 +1,17 @@
 import { Link, useLocation } from "react-router-dom";
 import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
-
+import useAuth from "../../hooks/useAuth";
 const StudentsSet = () => {
   const location = useLocation();
-
-  const studentsSetTabs = {
-    title: "Students",
-    path: "/settings/studentsSet",
-    allowedRoles: [
-      "Employee",
-      "Parent",
-      "ContentManager",
-      "Animator",
-      "Academic",
-      "Director",
-      "Finance",
-      "HR",
-      "Desk",
-      "Manager",
-      "Admin",
-    ],
-  };
+  const { isEmployee ,isParent,isContentManager,isAnimator,isAcademic,isFinance,isHR,isDesk , isDirector ,isManager , isAdmin  } = useAuth();
+ 
   // Define the tabs with their titles and paths
   const tabs = [
-    {
+    (  isDirector||isManager || isAdmin) &&{
       title: "Student Documents List",
       path: "/settings/studentsSet/studentDocumentsListsList/",
     },
-    { title: "Services", path: "/settings/studentsSet/services" },
+    ( isFinance|| isDirector||isManager || isAdmin) &&{ title: "Services", path: "/settings/studentsSet/services" },
    // { title: "Otherkjhhj", path: "/settings/studentsSet/" },
   ];
 
@@ -37,8 +21,9 @@ const StudentsSet = () => {
 
   return (
     <div className="flex bg-gray-300 p-3 px-4 md:px-4 items-center justify-start space-x-4">
-      <AcademicYearsSelection />
-      {tabs.map((tab) => (
+      {(isDirector ||isManager || isAdmin)&&<AcademicYearsSelection />}
+      {tabs.filter(Boolean) // Filter out null or undefined tabs
+      .map((tab) => (
         <Link key={tab.path} to={tab.path}>
           <li
             className={`list-none cursor-pointer px-3 py-2 border border-gray-400  ${

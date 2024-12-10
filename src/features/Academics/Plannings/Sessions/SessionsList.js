@@ -433,7 +433,7 @@ const SessionsList = () => {
 
       button: true,
     },
-  ];
+  ].filter(Boolean); // Filter out falsy values like `false` or `undefined`
   let content;
   if (isSessionsLoading)
     content = (

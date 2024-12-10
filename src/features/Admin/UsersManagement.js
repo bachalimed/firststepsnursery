@@ -3,18 +3,8 @@ import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
 import useAuth from "../../hooks/useAuth";
 const UsersManagement = () => {
   const location = useLocation();
-const{isAdmin}=useAuth()
-  const usersManagementTabs = {
-    title: "Users Management",
-    path: "/admin/usersManagement/",
-    allowedRoles: ["Admin"],
-    spaced: false,
-    sectionTabs: [
-      { title: "All Users", path: "/admin/usersManagement/users/" },
 
-      { title: "New User", path: "/admin/usersManagement/newUser/" },
-    ],
-  };
+  const { isEmployee ,isParent,isContentManager,isAnimator,isAcademic,isFinance,isHR,isDesk , isDirector ,isManager , isAdmin  } = useAuth();
 
   // Define the tabs for Users Management
   const tabs = [
@@ -29,8 +19,9 @@ const{isAdmin}=useAuth()
   // Render the component content
   return (
     <div className="flex bg-gray-300 p-3 px-4 md:px-4  items-center justify-start space-x-4">
-      <AcademicYearsSelection />
-      {tabs.map((tab) => (
+      {(isDirector ||isManager || isAdmin)&&<AcademicYearsSelection />}
+      {tabs.filter(Boolean) // Filter out null or undefined tabs
+      .map((tab) => (
         <Link key={tab.path} to={tab.path}>
           <li
             className={`list-none cursor-pointer px-3 py-2 border border-gray-400  ${

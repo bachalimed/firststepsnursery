@@ -228,7 +228,7 @@ const StudentDocumentsListsList = () => {
 
       button: true,
     },
-  ];
+  ].filter(Boolean); // Filter out falsy values like `false` or `undefined`
   let content;
 
   if (isDocumentsListsLoading) content = ( <>

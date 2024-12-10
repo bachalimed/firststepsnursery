@@ -1,68 +1,22 @@
 import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
 import { Link, useLocation } from "react-router-dom";
-
+import useAuth from "../../hooks/useAuth";
 //we will  find the object corresponding to the page and extract the section tabs
 const AcademicsSet = () => {
   const location = useLocation();
-  const academicsSetTabs = {
-    title: "Academics",
-    path: "/settings/academicsSet",
-    allowedRoles: [
-      "Employee",
-      "Parent",
-      "ContentManager",
-      "Animator",
-      "Academic",
-      "Director",
-      "Finance",
-      "HR",
-      "Desk",
-      "Manager",
-      "Admin",
-    ],
-    sectionTabs: [
-      {
-        title: "Academic Years",
-        path: "academicYears/",
-        allowedRoles: ["Academic", "Director", "Manager", "Admin"],
-      },
-
-      {
-        title: "Schools",
-        path: "attendedSchools/",
-        allowedRoles: ["Academic", "Director", "Manager", "Admin"],
-      },
-
-      {
-        title: "bloblo",
-        path: "/settings/bloblo/",
-        allowedRoles: [
-          "Employee",
-          "Parent",
-          "ContentManager",
-          "Animator",
-          "Academic",
-          "Director",
-          "Finance",
-          "HR",
-          "Desk",
-          "Manager",
-          "Admin",
-        ],
-      },
-    ],
-  };
+  const { isEmployee ,isParent,isContentManager,isAnimator,isAcademic,isFinance,isHR,isDesk , isDirector ,isManager , isAdmin  } = useAuth();
+   
   // Define the tabs with their titles and paths
   const tabs = [
-    {
+    (  isDirector||isManager || isAdmin) && {
       title: "Academic Years",
       path: "/settings/academicsSet/academicYears/",
     },
-    {
+    (  isDirector||isManager || isAdmin) &&  {
       title: "attendedSchools",
       path: "/settings/academicsSet/attendedSchools/",
     },
-    { title: "Classrooms", path: "/settings/academicsSet/classrooms/" },
+    (  isDirector||isManager || isAdmin) && { title: "Classrooms", path: "/settings/academicsSet/classrooms/" },
    // { title: "Otherkjhhj", path: "/settings/academicsSet/blaother" },
   ];
 
@@ -71,8 +25,9 @@ const AcademicsSet = () => {
 
   return (
     <div className="flex bg-gray-300 p-3 px-4 md:px-4  items-center justify-start space-x-4">
-      <AcademicYearsSelection />
-      {tabs.map((tab) => (
+      {(isDirector ||isManager || isAdmin)&&<AcademicYearsSelection />}
+      {tabs.filter(Boolean) // Filter out null or undefined tabs
+      .map((tab) => (
         <Link key={tab.path} to={tab.path}>
           <li
             className={`list-none cursor-pointer px-3 py-2 border border-gray-400  ${

@@ -4,7 +4,7 @@ import {
   useDeleteStudentMutation,
 } from "./studentsApiSlice";
 import { HiOutlineSearch } from "react-icons/hi";
-import { IoShieldCheckmark, IoShieldCheckmarkOutline } from "react-icons/io5";
+import { IoShieldCheckmark, IoShieldCheckmarkOutline,IoDocumentAttachOutline } from "react-icons/io5";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
@@ -13,31 +13,21 @@ import {
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 import RegisterModal from "./RegisterModal";
 import Students from "../../Students";
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import DataTable from "react-data-table-component";
-import { useGetStudentDocumentsByYearByIdQuery } from "../../../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice";
-import { useSelector } from "react-redux";
-import { selectAllStudentsByYear, selectAllStudents } from "./studentsApiSlice"; //use the memoized selector
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
 //import RegisterModal from "./RegisterModal";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext, Link } from "react-router-dom";
 import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { setAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
 import useAuth from "../../../../hooks/useAuth";
 import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
-import {
-  setSomeStudents,
-  setStudents,
-  currentStudentsList,
-} from "./studentsSlice";
-import { IoDocumentAttachOutline } from "react-icons/io5";
+import { setStudents } from "./studentsSlice";
+
 import { gradeOptions } from "../../../../config/Constants";
-import { useOutletContext } from "react-router-dom";
 
 
 const StudentsList = () => {
@@ -45,7 +35,8 @@ const StudentsList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   //variables to be used for authorisation
-  const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
+  const { canEdit, canView, canDelete, canCreate,isEmployee ,isParent,isContentManager,isAnimator,isAcademic,isFinance,isHR,isDesk , isDirector ,isManager , isAdmin  } = useAuth();
+  
   //filter states
   const [selectedGrade, setSelectedGrade] = useState("");
   const [selectedSchoolName, setSelectedSchoolName] = useState("");
@@ -57,11 +48,10 @@ const StudentsList = () => {
   const academicYears = useSelector(selectAllAcademicYears);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idStudentToDelete, setIdStudentToDelete] = useState(null); // State to track which document to delete
-
   //query the students
   const {
     data: students, //the data is renamed students
-    isLoading: isStudentsLoading, 
+    isLoading: isStudentsLoading,
     isSuccess: isStudentsSuccess,
     isError: isStudentsError,
     error: studentsError,
@@ -108,26 +98,29 @@ const StudentsList = () => {
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
     try {
-      const response =  await deleteStudent({ id: idStudentToDelete });
-    setIsDeleteModalOpen(false); // Close the modal
-    //console.log(response,'response')
-   
-    if (response.data && response.data.message) {
-      // Success response
-      triggerBanner(response.data.message, "success");
+      const response = await deleteStudent({ id: idStudentToDelete });
+      setIsDeleteModalOpen(false); // Close the modal
+      //console.log(response,'response')
 
-    } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
-      // Error response
-      triggerBanner(response.error.data.message, "error");
-    } else {
-      // In case of unexpected response format
-      triggerBanner("Unexpected response from server.", "error");
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner("Failed to delete student. Please try again.", "error");
+
+      console.error("Error deleting:", error);
     }
-  } catch (error) {
-    triggerBanner("Failed to delete student. Please try again.", "error");
-
-    console.error("Error deleting:", error);
-  }
   };
 
   // Function to close the modal without deleting
@@ -136,12 +129,6 @@ const StudentsList = () => {
     setIdStudentToDelete(null);
   };
 
-  // const myStu = useSelector(state=> state.student)
-  // console.log(myStu, 'mystu')
-
-  //const allStudents = useSelector(selectAllStudents)// not the same cache list we re looking for this is from getstudents query and not getstudentbyyear wuery
-
-  //console.log('allStudents from the state by year',allStudents)
   // State to hold selected rows
   const [selectedRows, setSelectedRows] = useState([]);
   //state to hold the search query
@@ -228,8 +215,6 @@ const StudentsList = () => {
     //setSelectedRows([]); // Clear selection after process
   };
 
-
- 
   // This is called when saving the updated student years from the modal
   const onUpdateStudentClicked = async (updatedYears) => {
     const updatedStudentObject = {
@@ -238,14 +223,17 @@ const StudentsList = () => {
     };
 
     try {
-      const response= await updateStudent(updatedStudentObject); // Save updated student to backend
+      const response = await updateStudent(updatedStudentObject); // Save updated student to backend
       //console.log(response,'response')
-     // console.log(updateError,'updateError')
+      // console.log(updateError,'updateError')
       if (response.data && response.data.message) {
         // Success response
         triggerBanner(response.data.message, "success");
-
-      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
         // Error response
         triggerBanner(response.error.data.message, "error");
       } else {
@@ -395,7 +383,7 @@ const StudentsList = () => {
       removableRows: true,
       width: "110px",
     },
-    {
+    (isAcademic|| isDesk ||isDirector||isManager || isAdmin) &&{
       name: "Documents",
       selector: (row) => (
         <Link to={`/students/studentsParents/studentDocumentsList/${row.id}`}>
@@ -408,7 +396,7 @@ const StudentsList = () => {
       width: "120px",
     },
 
-    {
+    (isAcademic|| isDesk ||isDirector||isManager || isAdmin) &&{
       name: "Actions",
       cell: (row) => (
         <div className="space-x-1">
@@ -418,23 +406,26 @@ const StudentsList = () => {
             onClick={() =>
               navigate(`/students/studentsParents/studentDetails/${row.id}`)
             }
+            hidden={!canView}
           >
             <ImProfile className="text-2xl" />
           </button>
-          {canEdit ? (
+         
             <button
               className="text-amber-300"
               onClick={() =>
                 navigate(`/students/studentsParents/editStudent/${row.id}`)
               }
+              hidden={!canEdit}
             >
               <FiEdit className="text-2xl" />
             </button>
-          ) : null}
-          {canDelete && !isDelLoading && (
+         
+          {!isDelLoading && (
             <button
               className="text-red-600"
               onClick={() => onDeleteStudentClicked(row.id)}
+              hidden={!canDelete}
             >
               <RiDeleteBin6Line className="text-2xl" />
             </button>
@@ -442,10 +433,9 @@ const StudentsList = () => {
         </div>
       ),
       ignoreRowClick: true,
-
       button: true,
     },
-  ];
+  ].filter(Boolean); // Filter out falsy values like `false` or `undefined`
 
   // Custom header to include the row count
   const tableHeader = (
@@ -466,21 +456,17 @@ const StudentsList = () => {
         <LoadingStateIcon />
       </>
     );
-    if (isStudentsError || isSchoolsError) {
-      content = (
-        <>
-          <Students />
-          <div className="error-bar">
-            {studentsError?.data?.message && (
-              <p>{studentsError.data.message}</p>
-            )}
-            {schoolsError?.data?.message && (
-              <p>{schoolsError.data.message}</p>
-            )}
-          </div>
-        </>
-      );
-    }
+  if (isStudentsError || isSchoolsError) {
+    content = (
+      <>
+        <Students />
+        <div className="error-bar">
+          {studentsError?.data?.message && <p>{studentsError.data.message}</p>}
+          {schoolsError?.data?.message && <p>{schoolsError.data.message}</p>}
+        </div>
+      </>
+    );
+  }
   if (isStudentsSuccess || filteredStudents?.length > 0) {
     content = (
       <>
@@ -529,7 +515,7 @@ const StudentsList = () => {
             )}
           </select>
         </div>
-       
+
         <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
           <DataTable
             title={tableHeader}
@@ -557,7 +543,7 @@ const StudentsList = () => {
               // },
             }}
           ></DataTable>
-          <div className="flex justify-end items-center space-x-4">
+          {(isAcademic|| isDesk ||isDirector||isManager || isAdmin) &&<div className="flex justify-end items-center space-x-4">
             <button
               className="add-button"
               onClick={() => navigate("/students/studentsParents/newStudent/")}
@@ -576,7 +562,7 @@ const StudentsList = () => {
             >
               Register
             </button>
-          </div>
+          </div>}
         </div>
         <DeletionConfirmModal
           isOpen={isDeleteModalOpen}
