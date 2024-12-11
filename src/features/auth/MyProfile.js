@@ -27,7 +27,7 @@ const MyProfile = () => {
   // Render the component content
   return (
     <div className="flex bg-gray-300 p-3 px-4 md:px-4 items-center justify-start space-x-4">
-      {(isDirector ||isManager || isAdmin)&&<AcademicYearsSelection />}
+      <AcademicYearsSelection style={{ display: isDirector || isManager || isAdmin ? 'block' : 'none' }} />
       {tabs.map((tab) => (
         <Link key={tab.path} to={tab.path}>
           <li

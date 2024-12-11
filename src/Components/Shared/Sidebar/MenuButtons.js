@@ -52,7 +52,7 @@ const MenuButtons = () => {
       {(isDirector|| isManager || isAdmin ||isAcademic || isFinance || isHR) &&  <Link to="/dashboard/">
           <li
            className={`text-grey-300 text-sm flex text-white items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 ${
-            location.pathname.startsWith("/dashboard/") ? "bg-gray-300 text-gray-950" : ""
+            location.pathname.startsWith("/dashboard/") ? "bg-gray-300 text-gray-900" : ""
           } `}
           >
             <VscDashboard className="text-2xl" />
@@ -65,7 +65,7 @@ const MenuButtons = () => {
             <li
               className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
                 location.pathname.startsWith("/students/")
-                  ? "bg-gray-300 text-gray-950"
+                  ? "bg-gray-300 text-gray-900"
                   : ""
               } `}
             >
@@ -79,7 +79,7 @@ const MenuButtons = () => {
             <li
               className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
                 location.pathname.startsWith("/academics/")
-                  ? "bg-gray-300 text-gray-950"
+                  ? "bg-gray-300 text-gray-900"
                   : ""
               }`}
             >
@@ -93,7 +93,7 @@ const MenuButtons = () => {
             <li
               className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
                 location.pathname.startsWith("/finances/")
-                  ? "bg-gray-300 text-gray-950"
+                  ? "bg-gray-300 text-gray-900"
                   : ""
               }`}
             >
@@ -107,7 +107,7 @@ const MenuButtons = () => {
             <li
               className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
                 location.pathname.startsWith("/hr/")
-                  ? "bg-gray-300 text-gray-950"
+                  ? "bg-gray-300 text-gray-900"
                   : ""
               }`}
             >
@@ -121,7 +121,7 @@ const MenuButtons = () => {
             <li
               className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
                 location.pathname.startsWith("/admin/")
-                  ? "bg-gray-300 text-gray-950"
+                  ? "bg-gray-300 text-gray-900"
                   : ""
               }`}
             >
@@ -140,7 +140,7 @@ const MenuButtons = () => {
             <li
               className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
                 location.pathname.startsWith("/settings/")
-                  ? "bg-gray-300 text-gray-950"
+                  ? "bg-gray-300 text-gray-900"
                   : ""
               }`}
             >

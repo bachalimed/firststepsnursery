@@ -38,7 +38,7 @@ const PublicHeader = () => {
     </button>
   );
 
-  const onGoDashClicked = () => navigate("/dashboard");
+  const onGoDashClicked = () => navigate("/dashboard/");
   const goDashButton =
     pathname !== "/dashboard/" ? (
       <button
