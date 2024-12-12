@@ -10,7 +10,8 @@ import { useSendLogoutMutation } from "../../../features/auth/authApiSlice";
 import useAuth from "../../../hooks/useAuth";
 import { PiUserSquare } from "react-icons/pi";
 import { LuKeyRound } from "react-icons/lu";
-
+import { PiUserCircleLight } from "react-icons/pi";
+import { FaRegUser } from "react-icons/fa";
 const HeaderUserProfile = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -22,9 +23,9 @@ const HeaderUserProfile = () => {
     if (isSuccess) {navigate("/")};
   }, [isSuccess, navigate]);
 
-  if (isLoading) return <p>Logging Out...</p>;
+  if (isLoading) return <>Logging Out...</>;
 
-  if (isError) return <p>Error: {error.data?.message}</p>;
+  if (isError) return <>Error: {error.data?.message}</>;
 
   // let dashClass = null
   // if (!DASH_REGEX.test(pathname) && !TASKS_REGEX.test(pathname) && !USERS_REGEX.test(pathname)) {
@@ -37,21 +38,22 @@ const HeaderUserProfile = () => {
       title="Logout"
       onClick={sendLogout}
     >
-      <TbLogout className=" text-2xl right" />
+      <TbLogout aria-label="Logout" className=" text-2xl right" />
       Logout
     </button>
   );
 
   const content = (
     <Menu>
-      <MenuButton className=" ">
-        <LuUserCircle2 fontSize={24} className="text-4xl text-white-500" />
+      <MenuButton >
+        <PiUserCircleLight aria-label="manage profile"  fontSize={24} className="text-4xl text-white-500" />
       </MenuButton>
 
       <MenuItems
         transition
         anchor="bottom end"
-        className=" origin-top-right  border  w-40 bg-sky-100 p-1 text-sm/6 text-gray-800 transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
+        aria-label="manage profile"
+        className=" origin-top-right  border  w-42 bg-sky-100 p-1 text-sm/6 text-gray-800 transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
       >
         <strong>Manage profile</strong>
         {/* <MenuItem>
@@ -72,9 +74,9 @@ const HeaderUserProfile = () => {
               navigate(`/myProfile/myDetails/${userId}`)
             }
             className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
-            href="/target 1"
+            aria-label="user details"
           >
-            <LuUserCircle2 className="size-4 fill-white/30  "/>
+            <FaRegUser aria-label="user details" className="size-4 "/>
             My Profile
           </button>
         </MenuItem>
@@ -82,10 +84,10 @@ const HeaderUserProfile = () => {
           <button
             onClick={() => navigate("/MyProfile/ResetPassword/")}
             className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
-            href="/target 1"
+           aria-label="reset password"
           >
            
-            <LuKeyRound className="size-4 fill-white/30  "/>
+            <LuKeyRound aria-label="user details" className="size-4 fill-white/30  "/>
             Reset Password
           </button>
         </MenuItem>

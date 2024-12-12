@@ -18,18 +18,16 @@ const DashboardLayout = () => {
       setBanner({ message: "", type: "" }); // Clear banner after 3 seconds
     }, 3000);
   };
+
   return (
     <div className="flex bg-neutral-100 min-h-screen w-full">
       <div className="overflow-hidden lg:overflow-visible h-screen ">
         {/* <DashboardSidebar /> */}
       </div>
-      <div className="flex-1 flex flex-col">
-
-        {/* Result Banner */}
-        {banner.message && (
-          <ResultBanner message={banner.message} type={banner.type} />
-        )}
-        <DashboardHeader />
+     <div className="flex-1 flex flex-col relative">
+  {/* Result Banner */}
+  {banner.message && <ResultBanner message={banner.message} type={banner.type} />}
+  <DashboardHeader />
 <MenuButtons className="flex-1 flex flex-col"/>
 
 

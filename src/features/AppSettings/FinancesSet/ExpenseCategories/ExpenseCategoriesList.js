@@ -274,12 +274,12 @@ const ExpenseCategoriesList = () => {
 
   // Custom header to include the row count
   const tableHeader = (
-    <div>
+    
       <h2>
         ExpenseCategories List:{" "}
         <span> {filteredExpenseCategories.length} expenseCategories</span>
       </h2>
-    </div>
+   
   );
   let content;
   if (isExpenseCategoriesLoading)
@@ -335,12 +335,12 @@ const ExpenseCategoriesList = () => {
                   textAlign: "center", // Center header text
                 },
               },
-              // cells: {
-              //   style: {
-              //     justifyContent: 'center', // Center cell content
-              //     textAlign: 'center',
-              //   },
-              // },
+              cells: {
+                style: {
+                  justifyContent: 'center', // Center cell content
+                  textAlign: 'center',
+                },
+              },
             }}
           ></DataTable>
           <div className="flex justify-end items-center space-x-4">

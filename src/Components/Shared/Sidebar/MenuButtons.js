@@ -46,16 +46,16 @@ const MenuButtons = () => {
 
   let content;
   content = (
-    <div className="relative">
+    
       <header className="flex items-center md:px-1 bg-sky-700">
        
       {(isDirector|| isManager || isAdmin ||isAcademic || isFinance || isHR) &&  <Link to="/dashboard/">
           <li
            className={`text-grey-300 text-sm flex text-white items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 ${
-            location.pathname.startsWith("/dashboard/") ? "bg-gray-300 text-gray-900" : ""
+            location.pathname.startsWith("/dashboard/") ? "bg-gray-300 text-red-900" : ""
           } `}
           >
-            <VscDashboard className="text-2xl" />
+            <VscDashboard className="text-2xl" aria-label="dashboard tab"/>
             <span className="flex-1 hidden md:block">Dashboard</span>
           </li>
         </Link>}
@@ -63,13 +63,13 @@ const MenuButtons = () => {
         {(isAcademic|| isDesk ||isDirector||isManager || isAdmin) && <div className="relative">
           <Link to="/students/studentsParents/students/" >
             <li
-              className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
+              className={`text-grey-300 text-sm flex    items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
                 location.pathname.startsWith("/students/")
-                  ? "bg-gray-300 text-gray-900"
-                  : ""
+                  ? "bg-gray-300 text-black"
+                  : "text-white"
               } `}
             >
-              <PiStudent className="text-2xl" />
+              <PiStudent className="text-2xl" aria-label="students tab" />
               <span className="flex-1 hidden md:block">Students</span>
             </li>
           </Link>
@@ -77,13 +77,13 @@ const MenuButtons = () => {
         {(  isAnimator ||isAcademic || isDirector||isManager || isAdmin)&&<div className="relative">
           <Link to="/academics/sections/nurserySectionsList/">
             <li
-              className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
+              className={`text-grey-300 text-sm flex    items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
                 location.pathname.startsWith("/academics/")
-                  ? "bg-gray-300 text-gray-900"
-                  : ""
+                  ? "bg-gray-300 text-black"
+                  : "text-white"
               }`}
             >
-              <IoSchoolOutline className="text-2xl " />
+              <IoSchoolOutline className="text-2xl " aria-label="academics tab"/>
               <span className="flex-1 hidden md:block">Academics</span>
             </li>
           </Link>
@@ -91,13 +91,13 @@ const MenuButtons = () => {
         { ( isFinance ||isDirector||isManager || isAdmin)&&<div className="relative">
           <Link to="/finances/invoices/invoicesList/">
             <li
-              className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
+              className={`text-grey-300 text-sm flex    items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
                 location.pathname.startsWith("/finances/")
-                  ? "bg-gray-300 text-gray-900"
-                  : ""
+                  ? "bg-gray-300 text-black"
+                  : "text-white"
               }`}
             >
-              <LuCircleDollarSign className="text-2xl " />
+              <LuCircleDollarSign className="text-2xl " aria-label="finances tab"/>
               <span className="flex-1 hidden md:block">Finances</span>
             </li>
           </Link>
@@ -105,13 +105,13 @@ const MenuButtons = () => {
         {( isHR ||isDirector||isManager || isAdmin)&&<div className="relative">
           <Link to="/hr/employees/employeesList/">
             <li
-              className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
+              className={`text-grey-300 text-sm flex    items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
                 location.pathname.startsWith("/hr/")
-                  ? "bg-gray-300 text-gray-900"
-                  : ""
+                  ? "bg-gray-300 text-black"
+                  : "text-white"
               }`}
             >
-              <GiHumanPyramid className="text-2xl " />
+              <GiHumanPyramid className="text-2xl " aria-label="hr tab" />
               <span className="flex-1 hidden md:block">HR</span>
             </li>
           </Link>
@@ -119,13 +119,13 @@ const MenuButtons = () => {
         {isAdmin&&<div className="relative">
           <Link to="/admin/usersManagement/users/">
             <li
-              className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
+              className={`text-grey-300 text-sm flex   items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
                 location.pathname.startsWith("/admin/")
-                  ? "bg-gray-300 text-gray-900"
-                  : ""
+                  ? "bg-gray-300 text-black"
+                  : "text-white "
               }`}
             >
-              <GrUserAdmin className="text-2xl " />
+              <GrUserAdmin className="text-2xl " aria-label="admin tab"/>
               <span className="flex-1 hidden md:block">Admin</span>
             </li>
           </Link>
@@ -138,13 +138,13 @@ const MenuButtons = () => {
           {(isFinance||isHR|| isDirector ||isManager || isAdmin )&& 
           <Link to="/settings/studentsSet/">
             <li
-              className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
+              className={`text-grey-300 text-sm flex    items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
                 location.pathname.startsWith("/settings/")
-                  ? "bg-gray-300 text-gray-900"
-                  : ""
+                  ? "bg-gray-300 text-black"
+                  : "text-white"
               }`}
             >
-              <SlSettings className="text-2xl" />
+              <SlSettings className="text-2xl" aria-label="settings tab"/>
               <span className="flex-1 hidden md:block">Settings</span>
             </li>
           </Link>}
@@ -210,7 +210,7 @@ const MenuButtons = () => {
           )}
         </div>
       </header>
-    </div>
+  
   );
   return content;
 };

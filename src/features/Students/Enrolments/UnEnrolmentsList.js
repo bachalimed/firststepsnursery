@@ -176,14 +176,14 @@ const UnenrolmentsList = () => {
     //show this column only if user is a parent and not employee
 
     isAdmin
-      ? {
+      && {
           name: "student ID",
           selector: (row) => row?.student?._id,
 
           sortable: true,
           width: "200px",
         }
-      : null,
+      ,
 
     {
       name: " Active Student",

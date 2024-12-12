@@ -543,12 +543,12 @@ const EnrolmentsList = () => {
   ].filter(Boolean); // Filter out falsy values like `false` or `undefined`
   // Custom header to include the row count
   const tableHeader = (
-    <div>
+   
       <h2>
         Enrolments List:
         <span> {filteredEnrolments.length} enrolments</span>
       </h2>
-    </div>
+   
   );
 
   let content;
@@ -660,12 +660,12 @@ const EnrolmentsList = () => {
                   textAlign: "center", // Center header text
                 },
               },
-              // cells: {
-              //   style: {
-              //     justifyContent: 'center', // Center cell content
-              //     textAlign: 'center',
-              //   },
-              // },
+              cells: {
+                style: {
+                  justifyContent: 'center', // Center cell content
+                  textAlign: 'center',
+                },
+              },
             }}
           ></DataTable>
 

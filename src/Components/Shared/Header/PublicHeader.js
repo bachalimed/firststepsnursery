@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { VscDashboard } from "react-icons/vsc";
-import { LuUserCircle2 } from "react-icons/lu";
+import { TbLogout } from "react-icons/tb";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import logo from "../../../Data/logo.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,10 +8,15 @@ import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSendLogoutMutation } from "../../../features/auth/authApiSlice";
 import useAuth from "../../../hooks/useAuth";
+import { LuKeyRound } from "react-icons/lu";
 import { Link } from "react-router-dom";
-
+import { PiUserCircleLight } from "react-icons/pi";
+import AnimatedColorText from '../../lib/Utils/AnimatedColorText'
+import { RiLoginBoxLine } from "react-icons/ri";
+import GenerateCircles from '../../lib/Utils/GenerateCircles'
 const PublicHeader = () => {
   const { username } = useAuth();
+  const company = { label: "First Steps", type: "Nursery" };
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [isBannerVisible, setIsBannerVisible] = useState(true);
@@ -29,12 +34,12 @@ const PublicHeader = () => {
 
   const logoutButton = (
     <button
-      className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 hover:bg-gray-200"
+      className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
       title="Logout"
       onClick={sendLogout}
     >
+      <TbLogout aria-label="Logout"  className=" text-2xl right" />
       Logout
-      <FontAwesomeIcon icon={faRightFromBracket} className="ml-2" />
     </button>
   );
 
@@ -44,61 +49,37 @@ const PublicHeader = () => {
       <button
         className={`${
           username ? "" : "hidden"
-        } text-gray-600 hover:text-gray-800`}
+        } text-white hover:text-gray-800`}
         title="Dashboard"
         onClick={onGoDashClicked}
+        aria-label="dashboard"
       >
-        <VscDashboard className="text-2xl" />
+        <VscDashboard aria-label="Dashboard" className="text-3xl" />
       </button>
     ) : null;
 
-//random circles
-const generateCircles = (count) => {
-  const colors = ['bg-red-600', 'bg-green-500', 'bg-sky-500', 'bg-amber-300', 'bg-fuchsia-500'];
-  const circles = Array.from({ length: count }).map((_, index) => {
-    const size = Math.random() * 50 + 10; // Random size between 10px and 60px
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    const top = Math.random() * 100; // Random position
-    const left = Math.random() * 100;
-    return (
-      <div
-        key={index}
-        className={`absolute ${color} rounded-full opacity-50`}
-        style={{
-          width: `${size}px`,
-          height: `${size}px`,
-          top: `${top}%`,
-          left: `${left}%`,
-        }}
-      />
-    );
-  });
 
-  return circles;
-};
-    const circles = generateCircles(10); // Generate 10 random circles
+    const circles = GenerateCircles(7); // Generate  random circles
 
 
-    // <header className="bg-sky-700 text-white py-1 px-3 md:px-1 flex md:flex-row md:justify-between items-center shadow-md relative overflow-hidden">
-    //   {/* Background circles */}
-    //   <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-    //     {circles}
-    //   </div>
+   
   return (
-    <header className="bg-gray-100 shadow-lg">
+    <header  className= "bg-sky-700 text-white py-1 px-3 md:px-1 flex md:flex-row md:justify-between items-center shadow-md relative overflow-hidden">
+      {/* Background circles */}
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+        {circles}
+      </div>
+      <div className={` "w-56" p-2 flex text-white  relative`}>
+        <Link to="/"><img src={logo} className="h-12 w-12 rounded " alt="first steps nursery logo" /></Link>
+       
+  <div className="flex items-center">
+      <AnimatedColorText company={company} />
+     
+    </div>
+      </div>
       {/* Top Navigation */}
-      <div className="flex items-center justify-between px-4 py-3 md:px-8">
-        {/* Logo */}
-        <div className="flex items-center">
-        <Link to="/"> <img
-            src={logo}
-            className="h-12 w-12 rounded-md object-cover"
-            alt="Logo"
-          /></Link>
-          <h1 className="ml-3 text-lg font-semibold text-gray-700">
-            First Steps Nursery  -  حضانة الخطوات الأولى
-          </h1>
-        </div>
+      <div className="flex flex-col md:flex-row items-center md:space-x-6 mb-2 md:mb-0">
+       
 
         {/* Dashboard Button */}
         <div>{goDashButton}</div>
@@ -107,41 +88,45 @@ const generateCircles = (count) => {
         <Menu>
         
           <MenuButton className="focus:outline-none">
-            <LuUserCircle2 className="text-3xl text-gray-600 hover:text-gray-800" />
+            <PiUserCircleLight aria-label="manage profile" className="text-4xl text-white-500" />
           </MenuButton>
-          <MenuItems
-            className="absolute right-4 top-16 mt-2 w-40 rounded-md border bg-white shadow-lg"
-          >
-            <div className="p-2">
-              <strong className="block mb-2 text-sm text-gray-600">
-                User Profile
-              </strong>
+         <MenuItems
+                 transition
+                 aria-label="manage profile"
+                 anchor="bottom end"
+                 className=" origin-top-right  border  w-40 bg-sky-100 p-1 text-sm/6 text-gray-800 transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
+               >
+                 <strong>Manage profile</strong>
               <MenuItem>
                 <button
                   onClick={() => navigate("/login/")}
-                  className="block w-full px-3 py-2 text-left text-gray-700 hover:bg-gray-100"
+                  aria-label="login"
+                 className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
                 >
+                   <RiLoginBoxLine aria-label="user details" className="size-4 "/>
                   Login
                 </button>
               </MenuItem>
               <MenuItem>
                 <button
                   onClick={() => navigate("/users/ForgotPassword/")}
-                  className="block w-full px-3 py-2 text-left text-gray-700 hover:bg-gray-100"
+                  aria-label="forgot password"
+                 className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
                 >
-                  Forgot Password
+                  <LuKeyRound aria-label="user details" className="size-4 fill-white/30  "/>
+                  Reset Password
                 </button>
               </MenuItem>
-              <hr className="my-2 border-gray-300" />
+              <div className="my-1 h-px bg-gray-500 "></div>
               <MenuItem>{logoutButton}</MenuItem>
-            </div>
+           
           </MenuItems>
         </Menu>
       </div>
 
      
       {/* Banner Section */}
-      {isBannerVisible && (
+      {/* {isBannerVisible && (
         <div className="relative bg-sky-600 text-white">
           <div className="max-w-7xl mx-auto p-4 text-center relative">
             <p className="text-sm sm:text-base">
@@ -157,7 +142,7 @@ const generateCircles = (count) => {
             </button>
           </div>
         </div>
-      )}
+      )} */}
     </header>
   );
 };

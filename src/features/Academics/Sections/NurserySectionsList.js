@@ -452,12 +452,12 @@ const NurserySectionsList = () => {
   ].filter(Boolean); // Filter out falsy values like `false` or `undefined`
   // Custom header to include the row count
   const tableHeader = (
-    <div>
+   
       <h2>
         Sections List:
         <span> {filteredSections.length} sections</span>
       </h2>
-    </div>
+  
   );
 
   let content;
@@ -516,12 +516,12 @@ const NurserySectionsList = () => {
                   textAlign: "center", // Center header text
                 },
               },
-              // cells: {
-              //   style: {
-              //     justifyContent: 'center', // Center cell content
-              //     textAlign: 'center',
-              //   },
-              // },
+              cells: {
+                style: {
+                  justifyContent: 'center', // Center cell content
+                  textAlign: 'center',
+                },
+              },
             }}
           ></DataTable>
           <div className="flex justify-end items-center space-x-4">

@@ -495,11 +495,11 @@ const LeavesList = () => {
 
   // Custom header to include the row count
   const tableHeader = (
-    <div>
+  
       <h2>
         Leaves List: <span> {filteredLeaves.length} leaves</span>
       </h2>
-    </div>
+  
   );
   let content;
   if (isLeavesLoading)
@@ -575,12 +575,12 @@ const LeavesList = () => {
                   textAlign: "center", // Center header text
                 },
               },
-              // cells: {
-              //   style: {
-              //     justifyContent: 'center', // Center cell content
-              //     textAlign: 'center',
-              //   },
-              // },
+              cells: {
+                style: {
+                  justifyContent: 'center', // Center cell content
+                  textAlign: 'center',
+                },
+              },
             }}
           ></DataTable>
           <div className="flex justify-end items-center space-x-4">

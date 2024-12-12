@@ -104,7 +104,7 @@ const AcademicYearsList = () => {
 
   //define the content to be conditionally rendered
   const column = [
-    {
+    isAdmin&&{
       name: "ID",
       selector: (row) => row.id,
       sortable: true,

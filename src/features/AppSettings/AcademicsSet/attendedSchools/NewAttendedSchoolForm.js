@@ -1,12 +1,12 @@
+import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate ,useOutletContext} from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useAddNewAttendedSchoolMutation } from "./attendedSchoolsApiSlice"; // Redux API action
-import { attendedSchoolAdded } from "./attendedSchoolsSlice"; // Redux action for state update
+//import { attendedSchoolAdded } from "./attendedSchoolsSlice"; // Redux action for state update
 import AcademicsSet from "../../AcademicsSet";
-import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 import { NAME_REGEX } from "../../../../config/REGEX";
-import { useOutletContext } from "react-router-dom";
+
 
 const NewAttendedSchoolForm = () => {
   const [formData, setFormData] = useState({
@@ -83,8 +83,8 @@ const NewAttendedSchoolForm = () => {
 
     try {
       const newAttendedSchool = await addNewAttendedSchool(formData).unwrap();
-      dispatch(attendedSchoolAdded(newAttendedSchool)); // Optionally update Redux state
-      console.log(newAttendedSchool,'newAttendedSchool')
+      //dispatch(attendedSchoolAdded(newAttendedSchool)); // Optionally update Redux state
+      //console.log(newAttendedSchool,'newAttendedSchool')
       if (newAttendedSchool.data && newAttendedSchool.data.message) {
         // Success response
         triggerBanner(newAttendedSchool.data.message, "success");

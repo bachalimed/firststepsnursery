@@ -19,7 +19,7 @@ const Public = () => {
 			  </p>
 			  <img
 				src={buildingface}
-				alt="Happy children playing"
+				alt="two mascots "
 				className="public__hero-image"
 			  />
 			</section>
@@ -42,6 +42,29 @@ const Public = () => {
 				  className="public__media-image"
 				/>
 			  </div>
+			</section>
+			{/* our vision */}
+			<section className="public__about">
+			  <h2>Our Vision</h2>
+			  <p>
+			  “using in state-of-the-art facilities, 
+			  we provide a safe and healthy environment for our students to achieve academic 
+			  excellence and become a confident responsible citizen”
+			  </p>
+			 
+			</section>
+			{/* our goals */}
+			<section className="public__about">
+			  <h2>Our Goals</h2>
+			  <p>
+			  	Foster academic curiosity through encouraging high-level thinking and intellectually rigorous activity</p>
+				<p>Provide bespoke support to assist learning and remove barriers to progression</p>
+				<p>Promote extracurricular life</p>
+				<p>Emphasize the importance of civic engagement and of cultivating positive relationships within the community</p>
+				<p>Optimize the financial efficiency of the nursery.</p>
+				<p>Make use of recent technology tools and methods to accomplish the nursery mission</p>
+			 
+			 
 			</section>
 	
 			{/* Services Section */}

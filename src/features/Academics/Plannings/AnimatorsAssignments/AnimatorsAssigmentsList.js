@@ -293,12 +293,12 @@ const AnimatorsAssignmentsList = () => {
 
   // Custom header to include the row count
   const tableHeader = (
-    <div>
+    
       <h2>
         Assignments List:
         <span> {filteredAssignments.length} assignments</span>
       </h2>
-    </div>
+   
   );
   let content;
 
@@ -366,12 +366,12 @@ const AnimatorsAssignmentsList = () => {
                   textAlign: "center", // Center header text
                 },
               },
-              // cells: {
-              //   style: {
-              //     justifyContent: 'center', // Center cell content
-              //     textAlign: 'center',
-              //   },
-              // },
+              cells: {
+                style: {
+                  justifyContent: 'center', // Center cell content
+                  textAlign: 'center',
+                },
+              },
             }}
           ></DataTable>
           {(isAdmin||isDirector||isManager||isAcademic)&&<div className="flex justify-end items-center  space-x-4">

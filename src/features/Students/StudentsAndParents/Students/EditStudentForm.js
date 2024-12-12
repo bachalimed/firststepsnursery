@@ -359,15 +359,17 @@ try{
         <div className="grid gap-6 mb-6 md:grid-cols-2">
           <div>
             <label
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-800"
               htmlFor="firstName"
             >
               First Name{" "}
-              {!validFirstName && <span className="text-red-600">*</span>}
-              <span className="text-gray-500 text-xs">[3-20 letters]</span>
+              {!validFirstName && <span className="text-red-600 ">*</span>}
+             
             </label>
             <input
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+            aria-invalid={!validFirstName}
+            placeholder="[3-20 letters]"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-800 sm:text-sm"
               id="firstName"
               name="firstName"
               type="text"
@@ -380,13 +382,15 @@ try{
 
           <div>
             <label
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-800"
               htmlFor="middleName"
             >
               Middle Name
             </label>
             <input
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+           
+            placeholder="[3-20 letters]"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-800 sm:text-sm"
               id="middleName"
               name="middleName"
               type="text"
@@ -398,15 +402,17 @@ try{
 
           <div>
             <label
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-800"
               htmlFor="lastName"
             >
               Last Name{" "}
               {!validLastName && <span className="text-red-600">*</span>}
-              <span className="text-gray-500 text-xs">[3-20 letters]</span>
+             
             </label>
             <input
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+            aria-invalid={!validLastName}
+            placeholder="[3-20 letters]"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-800 sm:text-sm"
               id="lastName"
               name="lastName"
               type="text"
@@ -419,15 +425,17 @@ try{
 
           <div>
             <label
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-800"
               htmlFor="studentDob"
             >
               Date Of Birth{" "}
               {!validStudentDob && <span className="text-red-600">*</span>}
-              <span className="text-gray-500 text-xs">[dd/mm/yyyy]</span>
+              <span className="text-gray-500 text-xs"></span>
             </label>
             <input
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+            aria-invalid={!validStudentDob}
+            placeholder="[dd/mm/yyyy]"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-800 sm:text-sm"
               id="studentDob"
               name="studentDob"
               type="date"
@@ -447,11 +455,11 @@ try{
               value="Male"
               checked={studentSex === "Male"}
               onChange={onStudentSexChanged}
-              className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
+              className="h-4 w-4 text-blue-600 focus:ring-sky-800 border-gray-300 rounded"
             />
             <label
               htmlFor="male"
-              className="ml-2 text-sm font-medium text-gray-700"
+              className="ml-2 text-sm font-medium text-gray-800"
             >
               Male
             </label>
@@ -462,11 +470,11 @@ try{
               value="Female"
               checked={studentSex === "Female"}
               onChange={onStudentSexChanged}
-              className="ml-6 h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
+              className="ml-6 h-4 w-4 text-blue-600 focus:ring-sky-800 border-gray-300 rounded"
             />
             <label
               htmlFor="female"
-              className="ml-2 text-sm font-medium text-gray-700"
+              className="ml-2 text-sm font-medium text-gray-800"
             >
               Female
             </label>
@@ -479,11 +487,11 @@ try{
               value={studentIsActive}
               checked={studentIsActive}
               onChange={onStudentIsActiveChanged}
-              className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
+              className="h-4 w-4 text-blue-600 focus:ring-sky-800 border-gray-300 rounded"
             />
             <label
               htmlFor="active"
-              className="ml-2 text-sm font-medium text-gray-700"
+              className="ml-2 text-sm font-medium text-gray-800"
             >
               Student Is Active
             </label>
@@ -495,7 +503,7 @@ try{
               <div className="mb-6">
                 <label
                   htmlFor="studentGrade"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-800"
                 >
                   Grade{" "}
                   {!validStudentGrade && (
@@ -503,6 +511,8 @@ try{
                   )}
                 </label>
                 <select
+                 aria-invalid={!validStudentGrade}
+           
                   id="studentGrade"
                   value={
                     studentYears.find(
@@ -548,7 +558,7 @@ try{
               >
                 <div className="mb-2">
                   <label
-                    className="block text-sm font-medium text-gray-700"
+                    className="block text-sm font-medium text-gray-800"
                     htmlFor={`gardienFirstName-${index}`}
                   >
                     First Name:
@@ -569,7 +579,7 @@ try{
                 </div>
                 <div className="mb-2">
                   <label
-                    className="block text-sm font-medium text-gray-700"
+                    className="block text-sm font-medium text-gray-800"
                     htmlFor={`gardienMiddleName-${index}`}
                   >
                     Middle Name:
@@ -590,7 +600,7 @@ try{
                 </div>
                 <div className="mb-2">
                   <label
-                    className="block text-sm font-medium text-gray-700"
+                    className="block text-sm font-medium text-gray-800"
                     htmlFor={`gardienLastName-${index}`}
                   >
                     Last Name:
@@ -682,16 +692,18 @@ try{
 
                 <button
                   type="button"
+                  aria-label="delete student gardien"
                   onClick={() => handleRemoveGardienEntry(index)}
-                  className="text-red-600 hover:text-red-700"
+                  className="delete-button"
                 >
                   Remove Entry
                 </button>
               </div>
             ))}
           <button
-            type="button"
-            className="px-4 py-2 bg-sky-700 text-white rounded-md hover:bg-blue-600"
+            type="add-button"
+            aria-label="add student gardien"
+            className="add-button"
             onClick={handleAddGardienEntry}
           >
             Add Student Gardien
@@ -738,6 +750,7 @@ try{
                     Attended School:
                   </label>
                   <select
+                  
                     id={`attendedSchool-${index}`}
                     value={entry.attendedSchool}
                     onChange={(e) =>
@@ -774,8 +787,9 @@ try{
 
                 <button
                   type="button"
+                  aria-label="remove student education"
                   onClick={() => handleRemoveEntry(index)}
-                  className="text-red-600 hover:text-red-700"
+                 className="delete-button"
                 >
                   Remove Entry
                 </button>
@@ -783,8 +797,9 @@ try{
             ))}
           <button
             type="button"
-            className="px-4 py-2 bg-sky-700 text-white rounded-md hover:bg-blue-600"
+            className="add-button"
             onClick={handleAddEntry}
+            aria-label="add student education"
           >
             Add Student Education
           </button>
@@ -795,12 +810,14 @@ try{
             type="button"
             className="cancel-button"
             onClick={handleCancel}
+            aria-label="cancel editing"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+            className="save-button"
+            aria-label="save changes"
             title="Save"
             onClick={onUpdateStudentClicked}
             disabled={!canSave || isUpdateLoading}

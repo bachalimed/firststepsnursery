@@ -435,11 +435,11 @@ const PayslipsList = () => {
 
   // Custom header to include the row count
   const tableHeader = (
-    <div>
+   
       <h2>
         Payslips List: <span> {filteredPayslips.length} payslips</span>
       </h2>
-    </div>
+    
   );
   let content;
   if (isPayslipsLoading)
@@ -515,12 +515,12 @@ const PayslipsList = () => {
                   textAlign: "center", // Center header text
                 },
               },
-              // cells: {
-              //   style: {
-              //     justifyContent: 'center', // Center cell content
-              //     textAlign: 'center',
-              //   },
-              // },
+              cells: {
+                style: {
+                  justifyContent: 'center', // Center cell content
+                  textAlign: 'center',
+                },
+              },
             }}
           ></DataTable>
           <div className="flex justify-end items-center space-x-4">

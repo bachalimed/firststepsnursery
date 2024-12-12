@@ -8,7 +8,7 @@ const PublicFooter = () => {
       <div className="footer-container">
         {/* Help Links Section */}
         <div className="footer-section">
-          <h4>Help & Support</h4>
+          <h2>Help & Support</h2>
           <ul className="footer-links">
             <li><a href="/faq">FAQs</a></li>
             <li><a href="/support">Support</a></li>
@@ -19,7 +19,7 @@ const PublicFooter = () => {
 
         {/* Contact Section */}
         <div className="footer-section">
-          <h4>Contact Us</h4>
+          <h2>Contact Us</h2>
           <p>Email: <a href="mailto:support@example.com">support@example.com</a></p>
           <p>Phone: <a href="tel:+1234567890">+1 234 567 890</a></p>
           <p>Address: 123 Example Street, City, Country</p>
@@ -27,7 +27,7 @@ const PublicFooter = () => {
 
         {/* Query Text Field */}
         <div className="footer-section">
-          <h4>Have a Query?</h4>
+          <h2>Have a Query?</h2>
           <form className="query-form">
             <input
               type="text"

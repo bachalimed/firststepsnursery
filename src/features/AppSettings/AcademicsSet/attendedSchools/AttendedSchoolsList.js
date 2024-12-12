@@ -127,7 +127,7 @@ const AttendedSchoolsList = () => {
 
   //define the content to be conditionally rendered
   const column = [
-    {
+    isAdmin &&  {
       name: "ID",
       selector: (row) => row.id,
       sortable: true,
@@ -199,12 +199,10 @@ const AttendedSchoolsList = () => {
   ].filter(Boolean); // Filter out falsy values like `false` or `undefined`
   // Custom header to include the row count
   const tableHeader = (
-    <div>
-      <h2>
+    <h2>
         Schools List:
         <span> {attendedSchools.length} users</span>
       </h2>
-    </div>
   );
 
   let content;
@@ -252,12 +250,12 @@ const AttendedSchoolsList = () => {
                   textAlign: "center", // Center header text
                 },
               },
-              // cells: {
-              //   style: {
-              //     justifyContent: 'center', // Center cell content
-              //     textAlign: 'center',
-              //   },
-              // },
+              cells: {
+                style: {
+                  justifyContent: 'center', // Center cell content
+                  textAlign: 'center',
+                },
+              },
             }}
           ></DataTable>
           <div className="flex justify-end items-center space-x-4">

@@ -1,7 +1,7 @@
 //import { Link } from "react-router-dom"
 
-import HeaderChat from "./HeaderChat";
-import HeaderNotifications from "./HeaderNotifications";
+// import HeaderChat from "./HeaderChat";
+// import HeaderNotifications from "./HeaderNotifications";
 import HeaderUserProfile from "./HeaderUserProfile";
 
 const NavbarHeader = () => {

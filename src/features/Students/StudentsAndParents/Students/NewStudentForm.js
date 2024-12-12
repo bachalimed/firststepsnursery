@@ -251,11 +251,11 @@ const NewStudentForm = () => {
     setValidCurrentEducation(
       studentEducation.some(
         (year) =>
-          year.schoolYear === selectedAcademicYear.title &&
+          year.schoolYear === selectedAcademicYear?.title &&
           year.attendedSchool !== ""
       )
     );
-  }, [studentEducation, selectedAcademicYear.title]);
+  }, [studentEducation, selectedAcademicYear?.title]);
 
 
   //to check if we can save before onsave, if every one is true, and also if we are not loading status
@@ -357,9 +357,11 @@ const NewStudentForm = () => {
             >
               First Name{" "}
               {!validFirstName && <span className="text-red-600">*</span>}
-              <span className="text-gray-500 text-xs"> [3-20 letters]</span>
+              
             </label>
             <input
+             aria-invalid={!validFirstName}
+            placeholder="[3-20 letters]"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
               id="firstName"
               name="firstName"
@@ -379,6 +381,7 @@ const NewStudentForm = () => {
               Middle Name
             </label>
             <input
+             placeholder="[3-20 letters]"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
               id="middleName"
               name="middleName"
@@ -396,9 +399,11 @@ const NewStudentForm = () => {
             >
               Last Name{" "}
               {!validLastName && <span className="text-red-600">*</span>}
-              <span className="text-gray-500 text-xs"> [3-20 letters]</span>
+             
             </label>
             <input
+             aria-invalid={!validLastName}
+            placeholder="[3-20 letters]"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
               id="lastName"
               name="lastName"
@@ -420,6 +425,8 @@ const NewStudentForm = () => {
               <span className="text-gray-500 text-xs"> [dd/mm/yyyy]</span>
             </label>
             <input
+             aria-invalid={!validStudentDob}
+            placeholder="[dd/mm/yyyy]"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
               id="studentDob"
               name="studentDob"
@@ -519,6 +526,7 @@ const NewStudentForm = () => {
                   )}
                 </label>
                 <select
+                 
                   id="studentGrade"
                   value={
                     studentYears.find(
@@ -691,8 +699,9 @@ const NewStudentForm = () => {
 
                   <button
                     type="button"
+                    aria-label="delete student gardien"
                     onClick={() => handleRemoveGardienEntry(index)}
-                    className="text-red-600 hover:text-red-700"
+                    className="delete-button"
                   >
                     Remove Entry
                   </button>
@@ -701,7 +710,8 @@ const NewStudentForm = () => {
             ))}
           <button
             type="button"
-            className="px-4 py-2 bg-sky-700 text-white rounded-md hover:bg-blue-600"
+            aria-label="add student gardien"
+            className="add-button"
             onClick={handleAddGardienEntry}
           >
             Add Student Gardien
@@ -800,7 +810,7 @@ const NewStudentForm = () => {
                   <button
                     type="button"
                     onClick={() => handleRemoveEntry(index)}
-                    className="text-red-600 hover:text-red-700"
+                    className="delete-button"
                   >
                     Remove Entry
                   </button>
@@ -809,7 +819,7 @@ const NewStudentForm = () => {
             ))}
           <button
             type="button"
-            className="px-4 py-2 bg-sky-700 text-white rounded-md hover:bg-blue-600"
+            className="add-button"
             onClick={handleAddEntry}
           >
             Add Student Education
@@ -827,7 +837,7 @@ const NewStudentForm = () => {
           </button>
           <button
             type="submit"
-            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+            className="save-button"
             title="Save"
             onClick={onSaveStudentClicked}
             disabled={!canSave||isLoading}

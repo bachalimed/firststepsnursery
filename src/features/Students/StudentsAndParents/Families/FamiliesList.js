@@ -221,7 +221,7 @@ const FamiliesList = () => {
       sortable: false,
       width: "50px",
     },
-    {
+    isAdmin && {
       name: "Family ID",
       selector: (row) => row.id,
       sortable: true,
@@ -405,12 +405,12 @@ const FamiliesList = () => {
 
   // Custom header to include the row count
   const tableHeader = (
-    <div>
+   
       <h2>
         Families List:
         <span> {filteredFamilies.length} families</span>
       </h2>
-    </div>
+  
   );
 
   let content;
@@ -471,12 +471,12 @@ const FamiliesList = () => {
                   textAlign: "center", // Center header text
                 },
               },
-              // cells: {
-              //   style: {
-              //     justifyContent: 'center', // Center cell content
-              //     textAlign: 'center',
-              //   },
-              // },
+              cells: {
+                style: {
+                  justifyContent: 'center', // Center cell content
+                  textAlign: 'center',
+                },
+              },
             }}
           ></DataTable>
           <div className="flex justify-end items-center space-x-4">

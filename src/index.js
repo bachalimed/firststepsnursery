@@ -8,6 +8,7 @@ import { store } from './app/store'
 import { Provider } from 'react-redux'//provide global state to the app, we will wrap the app in the provider so that the global state is available within the app
 
 
+
 // Registering Syncfusion license key
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NDaF5cWWtCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWH9eeXVRQ2ZfUUd0XUA=');
 
@@ -18,7 +19,9 @@ root.render(
     <Provider store={store}>
       <BrowserRouter>
         <Routes>
+          
           <Route path="/*" element={<App />} />
+          
         </Routes>
       </BrowserRouter>
     </Provider>

@@ -277,12 +277,12 @@ const SchoolSectionsList = () => {
   ].filter(Boolean); // Filter out falsy values like `false` or `undefined`
   // Custom header to include the row count
   const tableHeader = (
-    <div>
+   
       <h2>
         Users List:
         <span> {filteredSchoolSections.length} users</span>
       </h2>
-    </div>
+  
   );
   let content;
   if (isSectionsLoading)

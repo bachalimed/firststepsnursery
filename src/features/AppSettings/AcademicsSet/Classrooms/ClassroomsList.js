@@ -120,7 +120,7 @@ const{canEdit, isAdmin, canDelete, canCreate, status2}=useAuth()
 
 //define the content to be conditionally rendered
 const column =[
-  { 
+ isAdmin&& { 
 name: "ID",
 selector:row=>row.id,
 sortable:true,

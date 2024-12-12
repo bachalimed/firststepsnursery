@@ -285,11 +285,11 @@ const PayeesList = () => {
 
   // Custom header to include the row count
   const tableHeader = (
-    <div>
+    
       <h2>
         Payees List: <span> {filteredPayees.length} payees</span>
       </h2>
-    </div>
+   
   );
   let content;
   if (isPayeesLoading)
@@ -345,12 +345,12 @@ const PayeesList = () => {
                   textAlign: "center", // Center header text
                 },
               },
-              // cells: {
-              //   style: {
-              //     justifyContent: 'center', // Center cell content
-              //     textAlign: 'center',
-              //   },
-              // },
+              cells: {
+                style: {
+                  justifyContent: 'center', // Center cell content
+                  textAlign: 'center',
+                },
+              },
             }}
           ></DataTable>
           <div className="flex justify-end items-center space-x-4">

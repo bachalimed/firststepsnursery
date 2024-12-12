@@ -128,6 +128,7 @@ const StudentsList = () => {
     setIsDeleteModalOpen(false);
     setIdStudentToDelete(null);
   };
+  //console.log(students,'stduents')
 
   // State to hold selected rows
   const [selectedRows, setSelectedRows] = useState([]);
@@ -254,8 +255,8 @@ const StudentsList = () => {
       cell: (row, index) => index + 1, // Display the index + 1 (for 1-based numbering)
       sortable: false,
       width: "50px",
+      
     },
-
     {
       name: "Active",
       selector: (row) => row.studentIsActive,
@@ -274,11 +275,7 @@ const StudentsList = () => {
     },
     isAdmin && {
       name: "ID",
-      selector: (row) => (
-        <Link to={`/students/studentsParents/studentDetails/${row.id}`}>
-          {row.id}{" "}
-        </Link>
-      ),
+      selector: (row) =>    row.id,
       sortable: true,
       width: "210px",
     },
@@ -386,7 +383,7 @@ const StudentsList = () => {
     (isAcademic|| isDesk ||isDirector||isManager || isAdmin) &&{
       name: "Documents",
       selector: (row) => (
-        <Link to={`/students/studentsParents/studentDocumentsList/${row.id}`}>
+        <Link to={`/students/studentsParents/studentDocumentsList/${row.id}`} aria-label="students documents">
           {" "}
           <IoDocumentAttachOutline className="text-fuchsia-500 text-2xl" />
         </Link>
@@ -402,6 +399,7 @@ const StudentsList = () => {
         <div className="space-x-1">
           <button
             className="text-sky-700"
+            aria-label="student Details"
             fontSize={20}
             onClick={() =>
               navigate(`/students/studentsParents/studentDetails/${row.id}`)
@@ -413,6 +411,7 @@ const StudentsList = () => {
          
             <button
               className="text-amber-300"
+              aria-label="edit student"
               onClick={() =>
                 navigate(`/students/studentsParents/editStudent/${row.id}`)
               }
@@ -424,6 +423,7 @@ const StudentsList = () => {
           {!isDelLoading && (
             <button
               className="text-red-600"
+              aria-label="delete student"
               onClick={() => onDeleteStudentClicked(row.id)}
               hidden={!canDelete}
             >
@@ -437,14 +437,15 @@ const StudentsList = () => {
     },
   ].filter(Boolean); // Filter out falsy values like `false` or `undefined`
 
+  
   // Custom header to include the row count
   const tableHeader = (
-    <div>
+    
       <h2>
         Students List:
         <span> {filteredStudents.length} students</span>
       </h2>
-    </div>
+    
   );
 
   //console.log(filteredStudents, "filteredStudents");
@@ -477,8 +478,10 @@ const StudentsList = () => {
             <HiOutlineSearch
               fontSize={20}
               className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+              aria-label="search students"
             />
             <input
+            aria-label="search students"
               type="text"
               value={searchQuery}
               onChange={handleSearch}
@@ -490,6 +493,7 @@ const StudentsList = () => {
             value={selectedGrade}
             onChange={handleGradeChange}
             className="text-sm h-8 border border-gray-300  px-4"
+            aria-label="filter by grade"
           >
             <option value="">All Grades</option>
             {gradeOptions.map((grade) => (
@@ -503,6 +507,7 @@ const StudentsList = () => {
             value={selectedSchoolName}
             onChange={handleSchoolChange}
             className="text-sm h-8 border border-gray-300  px-4"
+            aria-label="filter by school"
           >
             <option value="">All Schools</option>
             {attendedSchools?.map(
@@ -518,6 +523,7 @@ const StudentsList = () => {
 
         <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
           <DataTable
+          
             title={tableHeader}
             columns={column}
             data={filteredStudents}
@@ -533,14 +539,17 @@ const StudentsList = () => {
                   // Apply Tailwind style via a class-like syntax
                   justifyContent: "center", // Align headers to the center
                   textAlign: "center", // Center header text
+                  color:'black'
                 },
               },
-              // cells: {
-              //   style: {
-              //     justifyContent: 'center', // Center cell content
-              //     textAlign: 'center',
-              //   },
-              // },
+             
+              cells: {
+                style: {
+                  justifyContent: 'center', // Center cell content
+                  textAlign: 'center',
+                  color:'black',
+                },
+              },
             }}
           ></DataTable>
           {(isAcademic|| isDesk ||isDirector||isManager || isAdmin) &&<div className="flex justify-end items-center space-x-4">
@@ -549,6 +558,7 @@ const StudentsList = () => {
               onClick={() => navigate("/students/studentsParents/newStudent/")}
               // disabled={selectedRows.length !== 1} // Disable if no rows are selected
               hidden={!canCreate}
+              aria-label="add student"
             >
               New Student
             </button>
@@ -559,6 +569,7 @@ const StudentsList = () => {
               onClick={handleRegisterSelected}
               disabled={selectedRows?.length !== 1} // Disable if no rows are selected
               hidden={!canCreate}
+               aria-label="register student"
             >
               Register
             </button>

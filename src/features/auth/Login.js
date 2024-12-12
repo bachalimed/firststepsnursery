@@ -6,7 +6,8 @@ import { setCredentials } from "./authSlice";
 import { useLoginMutation } from "./authApiSlice";
 import { PiEyeClosedThin,PiEyeLight  } from "react-icons/pi";
 import usePersist from "../../hooks/usePersist";
-
+import PublicHeader from "../../Components/Shared/Header/PublicHeader";
+import PublicFooter from "../../Components/Shared/Footer/PublicFooter";
 const Login = () => {
   const userRef = useRef(); //to set the focus on user input
   const errRef = useRef(); //to set the focus if there is an error
@@ -68,6 +69,7 @@ const Login = () => {
   if (isLoading) return <LoadingStateIcon />;
 
   const content = (
+    <><PublicHeader/>
     <section className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-sm">
         <h1 className="text-2xl font-semibold text-center mb-6">User Login</h1>
@@ -83,6 +85,7 @@ const Login = () => {
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
+            aria-label="username"
               htmlFor="username"
               className="block text-gray-700 text-sm font-bold mb-2"
             >
@@ -104,6 +107,7 @@ const Login = () => {
             <label
               htmlFor="password"
               className="block text-gray-700 text-sm font-bold mb-2"
+              aria-label="password"
             >
               Password:
             </label>
@@ -123,9 +127,9 @@ const Login = () => {
                 aria-label="Toggle Password Visibility"
               >
                 {passwordVisibility ? (
-                  < PiEyeClosedThin className="text-gray-500" />
+                  < PiEyeClosedThin className="text-gray-500" aria-label="hide password"/>
                 ) : (
-                  < PiEyeLight className="text-gray-500" />
+                  < PiEyeLight className="text-gray-500" aria-label="show password"/>
                 )}
               </button>
           </div>
@@ -169,10 +173,16 @@ const Login = () => {
 
       <footer className="text-gray-500">
         <Link to="/" className="hover:text-sky-700">
+        <button className="cancel-button">
+
+       
           Back to Home
+        </button>
         </Link>
       </footer>
     </section>
+    <PublicFooter/>
+    </>
   );
   return content;
 };

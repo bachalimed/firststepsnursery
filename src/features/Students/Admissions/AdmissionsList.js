@@ -587,10 +587,10 @@ const AdmissionsList = () => {
 
    // Custom header to include the row count
    const tableHeader = (
-    <div>
+   
       <h2>Admissions List: 
       <span> {filteredAdmissions.length} admissions</span></h2>
-    </div>
+    
   );
   
   
@@ -708,12 +708,12 @@ const AdmissionsList = () => {
                   textAlign: "center", // Center header text
                 },
               },
-              // cells: {
-              //   style: {
-              //     justifyContent: 'center', // Center cell content
-              //     textAlign: 'center',
-              //   },
-              // },
+              cells: {
+                style: {
+                  justifyContent: 'center', // Center cell content
+                  textAlign: 'center',
+                },
+              },
             }}
           ></DataTable>
 
