@@ -68,7 +68,7 @@ const NewAdmissionForm = () => {
   });
   const {
     data: students, //the data is renamed students
-    isLoading: isStudentsLoading, 
+    isLoading: isStudentsLoading,
     isSuccess: isStudentsSuccess,
     isError: isStudentsError,
     error: studentsError,
@@ -268,10 +268,7 @@ const NewAdmissionForm = () => {
   return (
     <>
       <Students />
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-6 bg-white p-6 shadow rounded-md"
-      >
+      <form onSubmit={handleSubmit} className="form-container">
         <h2 className="text-xl font-bold">New Admission</h2>
 
         {/* Student Dropdown */}

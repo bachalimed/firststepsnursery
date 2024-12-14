@@ -26,8 +26,7 @@ import ConfirmationModal from "../../../../Components/Shared/Modals/Confirmation
 import { EXPENSE_CATEGORIES } from "../../../../config/ExpenseCategories";
 import { useOutletContext } from "react-router-dom";
 
-
-const EditPayeeForm = ({payee}) => {
+const EditPayeeForm = ({ payee }) => {
   const navigate = useNavigate();
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -43,7 +42,7 @@ const EditPayeeForm = ({payee}) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   // Consolidated form state
   const [formData, setFormData] = useState({
-    id:payee?._id,
+    id: payee?._id,
     payeeLabel: payee?.payeeLabel,
     payeePhone: payee?.payeePhone,
     payeeAddress: payee?.payeeAddress,
@@ -91,7 +90,6 @@ const EditPayeeForm = ({payee}) => {
         payeeYears: [],
         //payeeCategories: [],
         payeeOperator: "",
-
       });
       navigate("/settings/financesSet/payeesList/");
     }
@@ -134,13 +132,16 @@ const EditPayeeForm = ({payee}) => {
     setShowConfirmation(false);
 
     try {
-      const response =  await updatePayee(formData);
-      console.log(response,'response')
+      const response = await updatePayee(formData);
+      console.log(response, "response");
       if (response.data && response.data.message) {
         // Success response
         triggerBanner(response.data.message, "success");
-
-      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
         // Error response
         triggerBanner(response.error.data.message, "error");
       } else {
@@ -164,26 +165,22 @@ const EditPayeeForm = ({payee}) => {
   const content = (
     <>
       <FinancesSet />
-      <section className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
+
+      <form onSubmit={onSavePayeeClicked} className="form-container">
         <h2 className="text-2xl font-bold mb-4">
           Add New Payee: {`${formData?.payeeLabel} `}
         </h2>
-        {isError && (
-          <p className="text-red-600">Error: {error?.data?.message}</p>
-        )}
-        <form onSubmit={onSavePayeeClicked} className="space-y-6">
-          {/* Payee Label */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Payee Label{" "}
-              {!validity.validPayeeLabel && (
-                <span className="text-red-600">*</span>
-              )}
-           
+        {/* Payee Label */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Payee Label{" "}
+            {!validity.validPayeeLabel && (
+              <span className="text-red-600">*</span>
+            )}
             <input
-             aria-label="payee label"
-             aria-invalid={!validity.validPayeeLabel}
-             placeholder=" [3-20 characters]"
+              aria-label="payee label"
+              aria-invalid={!validity.validPayeeLabel}
+              placeholder=" [3-20 characters]"
               type="text"
               name="payeeLabel"
               value={formData.payeeLabel}
@@ -191,15 +188,14 @@ const EditPayeeForm = ({payee}) => {
               className={`mt-1 block w-full border ${
                 validity.validPayeeLabel ? "border-gray-300" : "border-red-600"
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-              
               required
-            /> </label>
-          </div>
-          {/* Payee Active Status */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Payee Is Active
-            
+            />{" "}
+          </label>
+        </div>
+        {/* Payee Active Status */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Payee Is Active
             <input
               aria-label="payee is active"
               type="checkbox"
@@ -212,17 +208,17 @@ const EditPayeeForm = ({payee}) => {
                 }))
               }
               className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
-            /></label>
-          </div>
+            />
+          </label>
+        </div>
 
-          {/* Payee Years Selection - Using Checkboxes */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Payee Years{" "}
-              {!validity.validPayeeYears && (
-                <span className="text-red-600">*</span>
-              )}
-            
+        {/* Payee Years Selection - Using Checkboxes */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Payee Years{" "}
+            {!validity.validPayeeYears && (
+              <span className="text-red-600">*</span>
+            )}
             <div className="space-y-2">
               {academicYears.map((year) => (
                 <div key={year.id} className="flex items-center">
@@ -242,11 +238,12 @@ const EditPayeeForm = ({payee}) => {
                   </label>
                 </div>
               ))}
-            </div></label>
-          </div>
+            </div>
+          </label>
+        </div>
 
-          {/* Payee Categories Selection */}
-          {/* <div>
+        {/* Payee Categories Selection */}
+        {/* <div>
             <label className="block text-sm font-medium text-gray-700">
               Payee Categories{" "}
               {!validity.validPayeeCategories && (
@@ -274,15 +271,14 @@ const EditPayeeForm = ({payee}) => {
             </div>
           </div> */}
 
-          {/* Contact Information */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Payee Phone{" "}
-                {!validity.validPayeePhone && (
-                  <span className="text-red-600">*</span>
-                )}
-              
+        {/* Contact Information */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Payee Phone{" "}
+              {!validity.validPayeePhone && (
+                <span className="text-red-600">*</span>
+              )}
               <input
                 aria-label="payee phone"
                 aria-invalid={!validity.validPayeePhone}
@@ -296,21 +292,19 @@ const EditPayeeForm = ({payee}) => {
                     ? "border-gray-300"
                     : "border-red-600"
                 } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-               
-                
-              /></label>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Payee Address{" "}
-                {!validity.validPayeeAddress && (
-                  <span className="text-red-600">*</span>
-                )}
-              
+              />
+            </label>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Payee Address{" "}
+              {!validity.validPayeeAddress && (
+                <span className="text-red-600">*</span>
+              )}
               <input
-               aria-label="payee address"
-               aria-invalid={!validity.validPayeeAddress}
-               placeholder=" [3-20 characters]"
+                aria-label="payee address"
+                aria-invalid={!validity.validPayeeAddress}
+                placeholder=" [3-20 characters]"
                 type="text"
                 name="payeeAddress"
                 value={formData.payeeAddress}
@@ -320,20 +314,18 @@ const EditPayeeForm = ({payee}) => {
                     ? "border-gray-300"
                     : "border-red-600"
                 } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                
-           
-              /></label>
-            </div>
+              />
+            </label>
           </div>
+        </div>
 
-          {/* Payee Notes */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Payee Notes{" "}
-              {!validity.validPayeeNotes && (
-                <span className="text-red-600">*</span>
-              )}
-           
+        {/* Payee Notes */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Payee Notes{" "}
+            {!validity.validPayeeNotes && (
+              <span className="text-red-600">*</span>
+            )}
             <textarea
               aria-label="payee notes"
               aria-invalid={!validity.validPayeeNotes}
@@ -344,42 +336,40 @@ const EditPayeeForm = ({payee}) => {
               className={`mt-1 block w-full border ${
                 validity.validPayeeNotes ? "border-gray-300" : "border-red-600"
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-             
-           
-            ></textarea> </label>
-          </div>
+            ></textarea>{" "}
+          </label>
+        </div>
 
-          {/* Save Button */}
-          <div className="flex justify-end space-x-4">
-            <button
-             aria-label="cancel add payee"
-              type="button"
-              className="cancel-button"
-              onClick={() => navigate("/settings/financesSet/payeesList/")}
-            >
-              Cancel
-            </button>
-            <button
-             aria-label="submit payee"
-              type="submit"
-              className="save-button"
-              disabled={!canSave || isLoading}
-            >
-              <span className="ml-2">Save Payee</span>
-            </button>
-          </div>
-        </form>
+        {/* Save Button */}
+        <div className="flex justify-end space-x-4">
+          <button
+            aria-label="cancel add payee"
+            type="button"
+            className="cancel-button"
+            onClick={() => navigate("/settings/financesSet/payeesList/")}
+          >
+            Cancel
+          </button>
+          <button
+            aria-label="submit payee"
+            type="submit"
+            className="save-button"
+            disabled={!canSave || isLoading}
+          >
+            <span className="ml-2">Save Payee</span>
+          </button>
+        </div>
+      </form>
 
-        {/* Confirmation Modal */}
+      {/* Confirmation Modal */}
 
-        <ConfirmationModal
-          show={showConfirmation}
-          onClose={handleCloseModal}
-          onConfirm={handleConfirmSave}
-          title="Confirm Save"
-          message="Are you sure you want to save?"
-        />
-      </section>
+      <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save?"
+      />
     </>
   );
 

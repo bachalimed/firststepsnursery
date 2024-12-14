@@ -208,7 +208,8 @@ const NewNotificationForm = () => {
 
   const onUserDobChanged = (e) => setUserDob(e.target.value);
   const onUserSexChanged = (e) => setUserSex(e.target.value);
-  const onNotificationIsActiveChanged = (e) => setNotificationIsActive((prev) => !prev); //will invert the previous state
+  const onNotificationIsActiveChanged = (e) =>
+    setNotificationIsActive((prev) => !prev); //will invert the previous state
 
   const onHouseChanged = (e) => setHouse(e.target.value);
   const onStreetChanged = (e) => setStreet(e.target.value);
@@ -313,7 +314,9 @@ const NewNotificationForm = () => {
 
   // Handler to remove an education entry
   const handleRemoveNotificationHistoryEntry = (index) => {
-    const updatedEntries = notificationWorkHistory.filter((_, i) => i !== index);
+    const updatedEntries = notificationWorkHistory.filter(
+      (_, i) => i !== index
+    );
     setNotificationWorkHistory(updatedEntries);
   };
 
@@ -368,7 +371,6 @@ const NewNotificationForm = () => {
       }
     }
   };
- 
 
   //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
   // const errClass = isNotificationError ? "errmsg" : "offscreen"
@@ -380,7 +382,7 @@ const NewNotificationForm = () => {
     <>
       <Notifications />
 
-      <form className="form" onSubmit={onSaveNotificationClicked}>
+      <form className="form-container" onSubmit={onSaveNotificationClicked}>
         <div className="form__title-row">
           <h2>New Notification</h2>
         </div>
@@ -618,7 +620,7 @@ const NewNotificationForm = () => {
                     ))}
                     </div> */}
 
-<div className="flex justify-end gap-4">
+        <div className="flex justify-end gap-4">
           <button
             className="cancel-button"
             onClick={() => navigate("/admin/usersManagement/users/")}
@@ -630,7 +632,7 @@ const NewNotificationForm = () => {
             type="submit"
             title="Save"
             onClick={onSaveNotificationClicked}
-            disabled={!canSave||isNotificationLoading}
+            disabled={!canSave || isNotificationLoading}
           >
             Save Notification
           </button>

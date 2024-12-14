@@ -234,13 +234,13 @@ const NewUserForm = () => {
   const content = (
     <>
       <UsersManagement />
-      <section className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
+      
+
+        <form onSubmit={onSaveUserClicked} className="form-container">
         <h2 className="text-2xl font-bold mb-4">
           Create New User{" "}
           {`${formData.userFullName.userFirstName} ${formData.userFullName.userMiddleName} ${formData.userFullName.userLastName}`}
         </h2>
-
-        <form onSubmit={onSaveUserClicked} className="space-y-6">
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">User Information</h3>
             <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
@@ -815,7 +815,7 @@ aria-label="user is active"
             </button>
           </div>
         </form>
-      </section>
+      
       {/* Confirmation Modal */}
       <ConfirmationModal
         show={showConfirmation}

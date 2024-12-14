@@ -290,12 +290,12 @@ const NewAnimatorsAssignmentForm = () => {
   return (
     <>
       <Academics />
-      <div className="p-6 bg-white rounded-lg shadow-md max-w-md mx-auto">
+      
+
+        <form onSubmit={handleSubmit} className="form-container">
         <h2 className="text-2xl font-bold mb-6 text-center">
           Add New Assignment
         </h2>
-
-        <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               Assignment Year{" "}
@@ -449,7 +449,7 @@ const NewAnimatorsAssignmentForm = () => {
           title="Confirm Save"
           message="Are you sure you want to save?"
         />
-      </div>
+      
     </>
   );
 };

@@ -345,7 +345,7 @@ const EditStudentForm = ({ student }) => {
     <>
       <Students />
 
-      <form className="form" onSubmit={(e) => e.preventDefault()}>
+      <form className="form-container" onSubmit={(e) => e.preventDefault()}>
         <div className="form__title-row">
           <h2 className="text-2xl font-semibold">
             Editing {firstName} {middleName} {lastName} Profile

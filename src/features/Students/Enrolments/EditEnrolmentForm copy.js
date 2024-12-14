@@ -392,10 +392,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
   const content = (
     <>
       <Students />
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-6 bg-white p-6 shadow rounded-md"
-      >
+      <form onSubmit={handleSubmit} className="form-container">
         <h2 className="text-xl font-bold">Edit Enrolment</h2>
         <div>
           <label
@@ -681,7 +678,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
         <div className="mt-6">
           <button
             type="submit"
-            disabled={!canSave||isEnrolmentLoading}
+            disabled={!canSave || isEnrolmentLoading}
             className={`inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
               canSave
                 ? "bg-blue-600 hover:bg-blue-700"

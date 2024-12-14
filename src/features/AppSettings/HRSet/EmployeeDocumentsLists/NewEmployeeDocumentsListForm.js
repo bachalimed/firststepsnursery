@@ -185,7 +185,7 @@ const NewEmployeeDocumentsListForm = () => {
       <EmployeesSet />
 
       <form
-        lassName="form bg-gray-100 p-6 rounded shadow-lg max-w-md mx-auto"
+        className="form-container"
         onSubmit={onSaveEmployeeDocumentsListClicked}
       >
         <div className="form__title-row mb-4">
@@ -193,11 +193,11 @@ const NewEmployeeDocumentsListForm = () => {
             New EmployeeDocumentsList Form
           </h2>
         </div>
-          <label
-            htmlFor="documentsAcademicYear"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-        <div className="mb-4">
+        <label
+          htmlFor="documentsAcademicYear"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
+          <div className="mb-4">
             Select Year
             <select
               aria-label="document academic year"
@@ -212,8 +212,8 @@ const NewEmployeeDocumentsListForm = () => {
                 </option>
               ))}
             </select>{" "}
-        </div>
-          </label>
+          </div>
+        </label>
         <h1 className="text-lg font-semibold mb-4">Employee Documents</h1>
         {employeeDocumentsList.map((entry, index) => (
           <div key={index} className="mb-4 p-4 bg-white rounded shadow">

@@ -220,14 +220,14 @@ const EditUserForm = ({ user }) => {
   const content = (
     <>
       <UsersManagement />
-      <section className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
-        {isError && <p className="text-red-600">{error?.data?.message}</p>}
+      
+       
+
+        <form onSubmit={onSaveUserClicked} className="form-container">
         <h2 className="text-2xl font-bold mb-4">
           Edit User{" "}
           {`${formData.userFullName.userFirstName} ${formData.userFullName.userMiddleName} ${formData.userFullName.userLastName}`}
         </h2>
-
-        <form onSubmit={onSaveUserClicked} className="space-y-6">
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">User Information</h3>
             <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
@@ -746,6 +746,7 @@ const EditUserForm = ({ user }) => {
                     <div key={role} className="mr-4">
                       <label className="flex items-center">
                         <input
+                        aria-label="user roles"
                           type="checkbox"
                           name="userRoles"
                           value={role}
@@ -770,6 +771,7 @@ const EditUserForm = ({ user }) => {
                     <div key={action} className="mr-4">
                       <label className="flex items-center">
                         <input
+                          aria-label="allowed actions"
                           type="checkbox"
                           name="userAllowedActions"
                           value={action}
@@ -786,10 +788,11 @@ const EditUserForm = ({ user }) => {
             </div>
           </div>
           <div className="flex justify-end gap-4">
-            <button className="cancel-button" onClick={handleCancel}>
+            <button  aria-label="cancel edit profile" className="cancel-button" onClick={handleCancel}>
               Cancel
             </button>
             <button
+             aria-label="submit edited profile"
               className="save-button"
               type="submit"
               title="Save"
@@ -800,7 +803,7 @@ const EditUserForm = ({ user }) => {
             </button>
           </div>
         </form>
-      </section>
+    
       {/* Confirmation Modal */}
       <ConfirmationModal
         show={showConfirmation}

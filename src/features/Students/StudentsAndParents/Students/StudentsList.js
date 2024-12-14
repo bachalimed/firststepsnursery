@@ -29,7 +29,6 @@ import { setStudents } from "./studentsSlice";
 
 import { gradeOptions } from "../../../../config/Constants";
 
-
 const StudentsList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
@@ -542,7 +541,11 @@ const StudentsList = () => {
                   color:'black'
                 },
               },
-             
+              header: {
+                icon: {
+                  color: 'red', // Set sorting indicator color to black
+                },
+              },
               cells: {
                 style: {
                   justifyContent: 'center', // Center cell content

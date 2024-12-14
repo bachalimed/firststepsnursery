@@ -73,7 +73,7 @@ const NewFamilyAddChildrenForm = () => {
     console.log(children, "children array");
     content = (
       <>
-        <form className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg">
+        <form className="form-container">
           <div className="mb-6 text-center">
             <h2 className="text-2xl font-bold text-gray-800">Add Children</h2>
           </div>

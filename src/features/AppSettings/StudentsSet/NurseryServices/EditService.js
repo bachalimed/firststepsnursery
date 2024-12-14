@@ -33,14 +33,14 @@ const EditService = () => {
   let content;
 
 
-  if (isServiceLoading) {
-    content = 
-    <>
-       <StudentsSet />
-       <LoadingStateIcons />
-     </>
+//   if (isServiceLoading) {
+//     content = 
+//     <>
+//        <StudentsSet />
+//        <LoadingStateIcons />
+//      </>
   
-} 
+// } 
   if (isServiceSuccess) {
     content = 
     <>

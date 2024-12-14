@@ -141,8 +141,8 @@ const [showConfirmation, setShowConfirmation] = useState(false);
   const content = (
     <>
       <HRSet />
-      <p className={errClass}>{documentsError?.data?.message}</p>
-      <form className="form" onSubmit={onSaveEmployeeDocumentsListClicked}>
+     
+      <form className="form-container" onSubmit={onSaveEmployeeDocumentsListClicked}>
         <div className="form__title-row">
           <h2>Edit Employee Documents List for {documentsAcademicYear}</h2>
         </div>

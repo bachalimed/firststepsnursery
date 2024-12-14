@@ -12,6 +12,8 @@ import { PiUserSquare } from "react-icons/pi";
 import { LuKeyRound } from "react-icons/lu";
 import { PiUserCircleLight } from "react-icons/pi";
 import { FaRegUser } from "react-icons/fa";
+import { FiSettings } from "react-icons/fi";
+
 const HeaderUserProfile = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -20,7 +22,9 @@ const HeaderUserProfile = () => {
     useSendLogoutMutation();
 
   useEffect(() => {
-    if (isSuccess) {navigate("/")};
+    if (isSuccess) {
+      navigate("/");
+    }
   }, [isSuccess, navigate]);
 
   if (isLoading) return <>Logging Out...</>;
@@ -45,8 +49,12 @@ const HeaderUserProfile = () => {
 
   const content = (
     <Menu>
-      <MenuButton >
-        <PiUserCircleLight aria-label="manage profile"  fontSize={24} className="text-4xl text-white-500" />
+      <MenuButton>
+        <PiUserCircleLight
+          aria-label="manage profile"
+          fontSize={24}
+          className="text-4xl text-white-500"
+        />
       </MenuButton>
 
       <MenuItems
@@ -70,24 +78,34 @@ const HeaderUserProfile = () => {
           </MenuItem> */}
         <MenuItem>
           <button
-            onClick={() =>
-              navigate(`/myProfile/myDetails/${userId}`)
-            }
+            onClick={() => navigate(`/myProfile/myDetails/${userId}`)}
             className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
             aria-label="user details"
           >
-            <FaRegUser aria-label="user details" className="size-4 "/>
+            <FaRegUser aria-label="user details" className="size-4 " />
             My Profile
+          </button>
+        </MenuItem>
+        <MenuItem>
+          <button
+            onClick={() => navigate(`/myProfile/editMyProfile/${userId}`)}
+            className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
+            aria-label="edit my details"
+          >
+            <FiSettings aria-label="edit my details" className="size-4 " />
+            Edit Profile
           </button>
         </MenuItem>
         <MenuItem>
           <button
             onClick={() => navigate("/MyProfile/ResetPassword/")}
             className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
-           aria-label="reset password"
+            aria-label="reset password"
           >
-           
-            <LuKeyRound aria-label="user details" className="size-4 fill-white/30  "/>
+            <LuKeyRound
+              aria-label="user details"
+              className="size-4 fill-white/30  "
+            />
             Reset Password
           </button>
         </MenuItem>

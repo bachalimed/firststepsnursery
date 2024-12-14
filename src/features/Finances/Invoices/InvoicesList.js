@@ -361,6 +361,7 @@ const InvoicesList = () => {
           </button>} */}
           {canEdit ? (
             <button
+            aria-label="edit invoice"
               className="text-amber-300"
               onClick={() =>
                 navigate(`/finances/invoices/editInvoice/${row.id}`)
@@ -371,6 +372,7 @@ const InvoicesList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
+            aria-label="delete invoice"
               className="text-red-600"
               onClick={() => onDeleteInvoiceClicked(row.id)}
             >

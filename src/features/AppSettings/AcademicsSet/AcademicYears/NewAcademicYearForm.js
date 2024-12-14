@@ -170,12 +170,12 @@ const NewAcademicYearForm = () => {
   return (
     <>
       <AcademicsSet />
-      <div className="p-6 bg-white rounded-lg shadow-md max-w-md mx-auto">
+     
+
+        <form onSubmit={handleSubmit} className="form-container">
         <h2 className="text-2xl font-bold mb-6 text-center">
           New Academic Year
         </h2>
-
-        <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               Starting Year (Format: yyyy)
@@ -260,7 +260,7 @@ const NewAcademicYearForm = () => {
             </p>
           )} */}
         </form>
-      </div>
+     
       {/* Confirmation Modal */}
       <ConfirmationModal
         show={showConfirmation}

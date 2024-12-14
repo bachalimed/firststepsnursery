@@ -52,7 +52,7 @@ const NewEnrolmentForm = () => {
   //the list of studetns with their admissions was filtered inteh backend and removed the months that are already enrolled for
   const {
     data: admissions, //the data is renamed admissions
-    isLoading: isAdmissionLoading, 
+    isLoading: isAdmissionLoading,
     isSuccess: isAdmissionSuccess,
     isError: isAdmissionError,
     error: admissionError,
@@ -277,7 +277,6 @@ const NewEnrolmentForm = () => {
     }));
   };
 
-
   const { triggerBanner } = useOutletContext(); // Access banner trigger
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -296,8 +295,11 @@ const NewEnrolmentForm = () => {
       if (response.data && response.data.message) {
         // Success response
         triggerBanner(response.data.message, "success");
-
-      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
         // Error response
         triggerBanner(response.error.data.message, "error");
       } else {
@@ -321,10 +323,7 @@ const NewEnrolmentForm = () => {
   const content = (
     <>
       <Students />
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-6 bg-white p-6 shadow rounded-md"
-      >
+      <form onSubmit={handleSubmit} className="form-container">
         <h2 className="text-xl font-bold">New Enrolment</h2>
         {/* Enrolment Year*/}
         Enrolment Year
@@ -517,7 +516,7 @@ const NewEnrolmentForm = () => {
           </button>
           <button
             type="submit"
-            disabled={!canSave||isEnrolmentLoading}
+            disabled={!canSave || isEnrolmentLoading}
             className={`flex items-center px-4 py-2 text-white rounded-md ${
               canSave ? "bg-blue-600" : "bg-gray-400 cursor-not-allowed"
             }`}

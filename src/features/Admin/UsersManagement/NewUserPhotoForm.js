@@ -59,9 +59,9 @@ const NewUserPhotoForm = () => {
 
   const content = (
     <>
-      <p className={errClass}>{error?.data?.message}</p>{" "}
-      {/*will display if there is an error message, some of the error messagees are defined in the back end responses*/}
-      <form className="form" onSubmit={onSavePhotoClicked}>
+      
+    
+      <form className="form-container" onSubmit={onSavePhotoClicked}>
         <label className="form__label" htmlFor="location">
           Photo : <span className="nowrap"></span>
         </label>

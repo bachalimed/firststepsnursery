@@ -3,8 +3,13 @@ import { ROLES } from "../../../../config/UserRoles";
 import { ACTIONS } from "../../../../config/UserActions";
 import { useContext } from "react";
 import { StepperContext } from "../../../../contexts/StepperContext";
-import {USER_REGEX,PWD_REGEX,NAME_REGEX,PHONE_REGEX,DATE_REGEX} from '../../../../config/REGEX'
-
+import {
+  USER_REGEX,
+  PWD_REGEX,
+  NAME_REGEX,
+  PHONE_REGEX,
+  DATE_REGEX,
+} from "../../../../config/REGEX";
 
 export default function EditFatherForm() {
   //an add parent function that can be called inside the component
@@ -146,7 +151,7 @@ export default function EditFatherForm() {
       {/* Error message placeholder */}
       {/* <p className={errClass}>{addFamilyError?.data?.message}</p> */}
 
-      <form className="w-full flex flex-col space-y-6">
+      <form className="form-container">
         <div className="mb-4">
           <h2 className="text-2xl font-bold text-gray-800">Father Details</h2>
         </div>
@@ -157,9 +162,8 @@ export default function EditFatherForm() {
               className="text-gray-700 font-semibold"
               htmlFor="userFirstName"
             >
-              Father First Name{" "}{!validUserFirstName && (
-                <span className="text-red-600">*</span>
-              )}
+              Father First Name{" "}
+              {!validUserFirstName && <span className="text-red-600">*</span>}
               <span className="text-sm text-gray-500">[3-20 letters]</span>
             </label>
             <input
@@ -197,9 +201,8 @@ export default function EditFatherForm() {
               className="text-gray-700 font-semibold"
               htmlFor="userLastName"
             >
-              Father Last Name{" "}{!validUserLastName && (
-                <span className="text-red-600">*</span>
-              )}
+              Father Last Name{" "}
+              {!validUserLastName && <span className="text-red-600">*</span>}
               <span className="text-sm text-gray-500">[3-20 letters]</span>
             </label>
             <input
@@ -216,9 +219,8 @@ export default function EditFatherForm() {
 
           <div>
             <label className="text-gray-700 font-semibold" htmlFor="userDob">
-              Date of Birth{" "}{!validUserDob && (
-                <span className="text-red-600">*</span>
-              )}
+              Date of Birth{" "}
+              {!validUserDob && <span className="text-red-600">*</span>}
               <span className="text-sm text-gray-500">[dd/mm/yyyy]</span>
             </label>
             <input
@@ -264,9 +266,7 @@ export default function EditFatherForm() {
           {/* Address Section */}
           <div>
             <label className="text-gray-700 font-semibold" htmlFor="house">
-              House{" "}{!validHouse && (
-                <span className="text-red-600">*</span>
-              )}
+              House {!validHouse && <span className="text-red-600">*</span>}
               <span className="text-sm text-gray-500">[3-20 letters]</span>
             </label>
             <input
@@ -283,9 +283,7 @@ export default function EditFatherForm() {
 
           <div>
             <label className="text-gray-700 font-semibold" htmlFor="street">
-              Street{" "}{!validStreet && (
-                <span className="text-red-600">*</span>
-              )}
+              Street {!validStreet && <span className="text-red-600">*</span>}
               <span className="text-sm text-gray-500">[3-20 letters]</span>
             </label>
             <input
@@ -317,9 +315,7 @@ export default function EditFatherForm() {
 
           <div>
             <label className="text-gray-700 font-semibold" htmlFor="city">
-              City{" "}{!validCity && (
-                <span className="text-red-600">*</span>
-              )}
+              City {!validCity && <span className="text-red-600">*</span>}
               <span className="text-sm text-gray-500">[3-20 letters]</span>
             </label>
             <input
@@ -354,9 +350,8 @@ export default function EditFatherForm() {
               className="text-gray-700 font-semibold"
               htmlFor="primaryPhone"
             >
-              Primary Phone{" "}{!validPrimaryPhone && (
-                <span className="text-red-600">*</span>
-              )}
+              Primary Phone{" "}
+              {!validPrimaryPhone && <span className="text-red-600">*</span>}
               <span className="text-sm text-gray-500">[6 to 15 digits]</span>
             </label>
             <input

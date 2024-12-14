@@ -14,16 +14,14 @@ import { Puff } from "react-loading-icons";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 //constrains on inputs when creating new user
-
+import { useOutletContext } from "react-router-dom";
 const TITLE_REGEX = /^[A-z/ 0-9]{8,20}$/;
 
 const EditStudentDocumentsListForm = ({ listToEdit }) => {
   //console.log(listToEdit.documentsAcademicYear,'lllllyear')
   const Navigate = useNavigate();
-  const {_id} = listToEdit;
- 
+  const { _id } = listToEdit;
 
-  
   const [documentsAcademicYear, setDocumentsAcademicYear] = useState(
     listToEdit.documentsAcademicYear
   );
@@ -32,11 +30,11 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
   );
   const [documentTitle, setDocumentTitle] = useState("");
   const [validDocumentTitle, setValidDocumentTitle] = useState(false);
-
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   const { userId, canEdit, canDelete, canAdd, canCreate, isParent, status2 } =
     useAuth();
- // Confirmation Modal states
- const [showConfirmation, setShowConfirmation] = useState(false);
+  // Confirmation Modal states
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const [
     updateStudentDocumentsList,
     {
@@ -56,15 +54,13 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
     if (isSuccess) {
       setStudentDocumentsList([]);
       setDocumentsAcademicYear("");
-      setDocumentTitle("")
+      setDocumentTitle("");
       Navigate("/settings/studentsSet/studentDocumentsListsList"); //will navigate here after saving
     }
   }, [isSuccess, Navigate]); //even if no success it will navigate and not show any warning if failed or success
 
-
-   // Ensure that the first three documents cannot be removed
-   const isRemovable = (index) => index >= 1;
-
+  // Ensure that the first three documents cannot be removed
+  const isRemovable = (index) => index >= 1;
 
   const handleFieldChange = (index, field, value) => {
     setStudentDocumentsList((prevState) =>
@@ -81,7 +77,7 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
     ]);
   };
 
- const handleRemoveEntry = (index) => {
+  const handleRemoveEntry = (index) => {
     if (isRemovable(index)) {
       setStudentDocumentsList(
         studentDocumentsList.filter((_, i) => i !== index)
@@ -103,15 +99,32 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
     }
   };
 
-     const handleConfirmSave = async () => {
+  const handleConfirmSave = async () => {
     setShowConfirmation(false);
+    try {
+      const response = await updateStudentDocumentsList({
+        id: _id,
+        documentsList: studentDocumentsList,
+        documentsAcademicYear,
+      });
+      console.log(response, "response");
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner("Failed to update classroom. Please try again.", "error");
 
-    await updateStudentDocumentsList({
-      id: _id,
-      documentsList: studentDocumentsList,
-      documentsAcademicYear,
-    });
-    if (isError) {
       console.error("Error saving:", error);
     }
   };
@@ -122,28 +135,24 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
     Navigate("/settings/studentsSet/studentDocumentsListsList/");
   };
 
-  
-
-  //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
-  const errClass = isError ? "errmsg" : "offscreen";
-  //const validStudentDocumentsListClass = !validStudentDocumentsListName ? 'form__input--incomplete' : ''
-  //const validPwdClass = !validPassword ? 'form__input--incomplete' : ''
-  //const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
-
   const content = (
     <>
       <StudentsSet />
-      <p className={errClass}>{error?.data?.message}</p>
-      <form className="form" onSubmit={onSaveStudentDocumentsListClicked}>
+
+      <form
+        className="form-container"
+        onSubmit={onSaveStudentDocumentsListClicked}
+      >
         <div className="form__title-row">
-          <h2>Editing Student Documents List for {documentsAcademicYear}</h2>
+          <h2>Edit Student Documents List for {documentsAcademicYear}</h2>
         </div>
         <h1>Student Documents</h1>
         {studentDocumentsList.map((entry, index) => (
           <div key={index}>
             <input
+              aria-label="document title"
+              placeholder="[3-20 characters]"
               type="text"
-              placeholder="Document Title"
               value={entry.documentTitle}
               onChange={(e) =>
                 handleFieldChange(index, "documentTitle", e.target.value)
@@ -152,6 +161,7 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
             />
             <label>
               <input
+                aria-label="id required"
                 type="checkbox"
                 checked={entry.isRequired}
                 onChange={(e) =>
@@ -162,6 +172,7 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
             </label>
             <label>
               <input
+                aria-label="id legalised"
                 type="checkbox"
                 checked={entry.isLegalised}
                 onChange={(e) =>
@@ -170,35 +181,48 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
               />
               Is Legalised?
             </label>
-            {isRemovable(index) && ( <button type="button" onClick={() => handleRemoveEntry(index)}>
-              Remove
-            </button>)}
+            {isRemovable(index) && (
+              <button
+                className="delete-button"
+                aria-label="remove document"
+                type="button"
+                onClick={() => handleRemoveEntry(index)}
+              >
+                Remove
+              </button>
+            )}
           </div>
         ))}
-        <button type="button" onClick={handleAddEntry}>
+        <button
+          type="button"
+          className="add-button"
+          aria-label="add document"
+          onClick={handleAddEntry}
+        >
           Add Document
         </button>
         <div className="flex justify-end gap-4">
-        <button
+          <button
+            aria-label="cancel new list"
             className="cancel-button"
             onClick={handleCancel}
           >
             Cancel
           </button>
           <button
-            className="px-4 py-2 bg-green-600 text-white rounded"
+            aria-label="submit  list"
+            className="save-button"
             type="submit"
             title="Save"
             onClick={onSaveStudentDocumentsListClicked}
-            disabled={!canSave||isLoading}
+            disabled={!canSave || isLoading}
           >
             Save Changes
           </button>
-          
         </div>
       </form>
-       {/* Confirmation Modal */}
-       <ConfirmationModal
+      {/* Confirmation Modal */}
+      <ConfirmationModal
         show={showConfirmation}
         onClose={handleCloseModal}
         onConfirm={handleConfirmSave}

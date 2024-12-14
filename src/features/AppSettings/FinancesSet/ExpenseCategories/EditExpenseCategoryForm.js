@@ -189,14 +189,12 @@ const EditExpenseCategoryForm = ({ expenseCategory }) => {
   const content = (
     <>
       <FinancesSet />
-      <section className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
+      
+      
+        <form onSubmit={onSaveExpenseCategoryClicked} className="form-container">
         <h2 className="text-2xl font-bold mb-4">
           Add New ExpenseCategory: {`${formData?.expenseCategoryLabel} `}
         </h2>
-        {isError && (
-          <p className="text-red-600">Error: {error?.data?.message}</p>
-        )}
-        <form onSubmit={onSaveExpenseCategoryClicked} className="space-y-6">
           {/* ExpenseCategory Label */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -377,7 +375,7 @@ const EditExpenseCategoryForm = ({ expenseCategory }) => {
           title="Confirm Save"
           message="Are you sure you want to save?"
         />
-      </section>
+     
     </>
   );
 

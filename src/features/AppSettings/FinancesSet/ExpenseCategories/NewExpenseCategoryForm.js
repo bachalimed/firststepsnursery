@@ -9,12 +9,8 @@ import FinancesSet from "../../FinancesSet";
 import useAuth from "../../../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import { useGetServicesByYearQuery } from "../../StudentsSet/NurseryServices/servicesApiSlice";
-import {  faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { RiAddLargeLine } from "react-icons/ri";
-
-
-
-
 
 import {
   selectAllAcademicYears,
@@ -189,41 +185,38 @@ const NewExpenseCategoryForm = () => {
   const content = (
     <>
       <FinancesSet />
-      <section className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
+
+      <form onSubmit={onSaveExpenseCategoryClicked} className="form-container">
         <h2 className="text-2xl font-bold mb-4">
           Add New ExpenseCategory: {`${formData?.expenseCategoryLabel} `}
         </h2>
-        {isError && (
-          <p className="text-red-600">Error: {error?.data?.message}</p>
-        )}
-        <form onSubmit={onSaveExpenseCategoryClicked} className="space-y-6">
-          {/* ExpenseCategory Label */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              ExpenseCategory Label{" "}
-              {!validity.validExpenseCategoryLabel && (
-                <span className="text-red-600">*</span>
-              )}
-              <input
-                aria-label="expense category"
-                aria-invalid={!validity.validExpenseCategoryLabel}
-                placeholder="[3 - 20 letters]"
-                type="text"
-                name="expenseCategoryLabel"
-                value={formData.expenseCategoryLabel}
-                onChange={handleInputChange}
-                className={`mt-1 block w-full h-10 border ${
-                  validity.validExpenseCategoryLabel
-                    ? "border-gray-300"
-                    : "border-red-600"
-                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 `}
-                required
-              />{" "}
-            </label>
-          </div>
+        {/* ExpenseCategory Label */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            ExpenseCategory Label{" "}
+            {!validity.validExpenseCategoryLabel && (
+              <span className="text-red-600">*</span>
+            )}
+            <input
+              aria-label="expense category"
+              aria-invalid={!validity.validExpenseCategoryLabel}
+              placeholder="[3 - 20 letters]"
+              type="text"
+              name="expenseCategoryLabel"
+              value={formData.expenseCategoryLabel}
+              onChange={handleInputChange}
+              className={`mt-1 block w-full h-10 border ${
+                validity.validExpenseCategoryLabel
+                  ? "border-gray-300"
+                  : "border-red-600"
+              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 `}
+              required
+            />{" "}
+          </label>
+        </div>
 
-          {/* Service Selection Dropdown */}
-          {/* <div>
+        {/* Service Selection Dropdown */}
+        {/* <div>
             <label className="block text-sm font-medium text-gray-700">
               Select Service Type{" "}
               {!validity.validExpenseCategoryService && (
@@ -248,142 +241,138 @@ const NewExpenseCategoryForm = () => {
             </select>
           </div> */}
 
-          {/* ExpenseCategory Active Status */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
+        {/* ExpenseCategory Active Status */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            <input
+              aria-label="expense category active"
+              type="checkbox"
+              name="expenseCategoryIsActive"
+              checked={formData.expenseCategoryIsActive}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  expenseCategoryIsActive: e.target.checked,
+                }))
+              }
+              className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
+            />{" "}
+            Expense Category Is Active
+          </label>
+        </div>
+
+        {/* ExpenseCategory Years Selection - Using Checkboxes */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            ExpenseCategory Years{" "}
+            {!validity.validExpenseCategoryYears && (
+              <span className="text-red-600">*</span>
+            )}
+            <div className="space-y-2">
+              {academicYears.map((year) => (
+                <div key={year.id} className="flex items-center">
+                  <input
+                    aria-label="expense category years"
+                    type="checkbox"
+                    id={`year-${year.id}`}
+                    checked={formData.expenseCategoryYears.includes(year.title)}
+                    onChange={() => handleYearChange(year.title)}
+                    className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
+                  />
+                  <label
+                    htmlFor={`year-${year.id}`}
+                    className="ml-2 text-sm font-medium text-gray-700"
+                  >
+                    {year.title}
+                  </label>
+                </div>
+              ))}
+            </div>{" "}
+          </label>
+        </div>
+
+        {/* ExpenseCategory Items Selection - Using Input to Add Items */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            ExpenseCategory Items{" "}
+            {!validity.validExpenseCategoryItems && (
+              <span className="text-red-600">*</span>
+            )}
+            <div className="flex items-center space-x-2">
               <input
-                aria-label="expense category active"
-                type="checkbox"
-                name="expenseCategoryIsActive"
-                checked={formData.expenseCategoryIsActive}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    expenseCategoryIsActive: e.target.checked,
-                  }))
-                }
-                className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
-              />{" "}
-              Expense Category Is Active
-            </label>
-          </div>
+                aria-label="new expense item"
+                type="text"
+                name="newItemInput"
+                value={formData.newItemInput}
+                onChange={handleInputChange}
+                className="mt-1 block w-full h-10 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 "
+                placeholder="Enter new item"
+              />
+              <button
+                aria-label="new expense item"
+                type="button"
+                onClick={handleAddItem}
+                className="add-button"
+              >
+                <RiAddLargeLine className="h-6 w-4" />
+              </button>
+            </div>{" "}
+          </label>
 
-          {/* ExpenseCategory Years Selection - Using Checkboxes */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              ExpenseCategory Years{" "}
-              {!validity.validExpenseCategoryYears && (
-                <span className="text-red-600">*</span>
-              )}
-              <div className="space-y-2">
-                {academicYears.map((year) => (
-                  <div key={year.id} className="flex items-center">
-                    <input
-                      aria-label="expense category years"
-                      type="checkbox"
-                      id={`year-${year.id}`}
-                      checked={formData.expenseCategoryYears.includes(
-                        year.title
-                      )}
-                      onChange={() => handleYearChange(year.title)}
-                      className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
-                    />
-                    <label
-                      htmlFor={`year-${year.id}`}
-                      className="ml-2 text-sm font-medium text-gray-700"
-                    >
-                      {year.title}
-                    </label>
-                  </div>
-                ))}
-              </div>{" "}
-            </label>
-          </div>
-
-          {/* ExpenseCategory Items Selection - Using Input to Add Items */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              ExpenseCategory Items{" "}
-              {!validity.validExpenseCategoryItems && (
-                <span className="text-red-600">*</span>
-              )}
+          {/* Display Added Items with Remove Option */}
+          <div className="mt-4 space-y-2">
+            {formData.expenseCategoryItems.map((item) => (
               <div className="flex items-center space-x-2">
-                <input
-                 aria-label="new expense item"
-                  type="text"
-                  name="newItemInput"
-                  value={formData.newItemInput}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full h-10 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 "
-                  placeholder="Enter new item"
-                />
-                <button
-                 aria-label="new expense item"
-                  type="button"
-                  onClick={handleAddItem}
-                  className="add-button"
-                >
-                  <RiAddLargeLine  className="h-6 w-4"/>
-                </button>
-              </div>{" "}
-            </label>
-
-            {/* Display Added Items with Remove Option */}
-            <div className="mt-4 space-y-2">
-              {formData.expenseCategoryItems.map((item) => (
-                <div className="flex items-center space-x-2">
                 <div
                   key={item}
                   className="flex flex-1 items-center justify-between border border-gray-300 p-2 rounded-md"
                 >
                   <span>{item}</span>
-                  </div>
-                  <button
-                   aria-label="remove expense item"
-                    type="button"
-                    onClick={() => handleRemoveItem(item)}
-                    className="delete-button"
-                  >
-                    <FontAwesomeIcon icon={faTrash} />
-                  </button>
-                  
                 </div>
-              ))}
-            </div>
+                <button
+                  aria-label="remove expense item"
+                  type="button"
+                  onClick={() => handleRemoveItem(item)}
+                  className="delete-button"
+                >
+                  <FontAwesomeIcon icon={faTrash} />
+                </button>
+              </div>
+            ))}
           </div>
-          {/* Save Button */}
-          <div className="flex justify-end space-x-4">
-            <button
-             aria-label="cancel new expense category"
-              type="button"
-              className="cancel-button"
-              onClick={() =>
-                navigate("/settings/financesSet/expenseCategoriesList/")
-              }
-            >
-              Cancel
-            </button>
-            <button
-             aria-label="submit expense category"
-              type="submit"
-              className="save-button"
-              disabled={!canSave || isLoading}
-            >
-              <span className="ml-2">Save ExpenseCategory</span>
-            </button>
-          </div>
-        </form>
+        </div>
+        {/* Save Button */}
+        <div className="flex justify-end space-x-4">
+          <button
+            aria-label="cancel new expense category"
+            type="button"
+            className="cancel-button"
+            onClick={() =>
+              navigate("/settings/financesSet/expenseCategoriesList/")
+            }
+          >
+            Cancel
+          </button>
+          <button
+            aria-label="submit expense category"
+            type="submit"
+            className="save-button"
+            disabled={!canSave || isLoading}
+          >
+            <span className="ml-2">Save ExpenseCategory</span>
+          </button>
+        </div>
+      </form>
 
-        {/* Confirmation Modal */}
+      {/* Confirmation Modal */}
 
-        <ConfirmationModal
-          show={showConfirmation}
-          onClose={handleCloseModal}
-          onConfirm={handleConfirmSave}
-          title="Confirm Save"
-          message="Are you sure you want to save?"
-        />
-      </section>
+      <ConfirmationModal
+        show={showConfirmation}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save?"
+      />
     </>
   );
 

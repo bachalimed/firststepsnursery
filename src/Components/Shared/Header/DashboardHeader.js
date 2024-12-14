@@ -6,8 +6,8 @@ import AcademicYearsSelection from "../../AcademicYearsSelection";
 import { useState, useEffect } from "react";
 import logo from "./../../../Data/logo.jpg";
 import { IoMenuOutline } from "react-icons/io5";
-import AnimatedColorText from '../../lib/Utils/AnimatedColorText'
-import GenerateCircles from '../../lib/Utils/GenerateCircles'
+import AnimatedColorText from "../../lib/Utils/AnimatedColorText";
+import GenerateCircles from "../../lib/Utils/GenerateCircles";
 const DashboardHeader = () => {
   const { username } = useAuth();
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -35,23 +35,32 @@ const DashboardHeader = () => {
     minute: "2-digit",
     second: "2-digit",
   });
-  
-
 
   //const circles = GenerateCircles(8); // Generate 10 random circles
   const content = (
-     <header  className= "bg-sky-700 text-white py-1 px-3 md:px-1 flex md:flex-row md:justify-between items-center shadow-md relative overflow-hidden">
+    <header className="bg-sky-700 text-white py-1 px-3 md:px-1 flex md:flex-row md:justify-between items-center  relative overflow-hidden">
       {/* Background circles */}
       {/* <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
         {circles}
       </div> */}
       <div className={` "w-56" p-2 flex text-white  relative`}>
-        <Link to="/"><img src={logo} className="h-12 w-12 rounded " alt="2 mascots" /></Link>
-       
-  <div className="flex items-center">
-      <AnimatedColorText company={company} />
-     
-    </div>
+        <Link to="/">
+          <img src={logo} className="h-12 w-12 rounded " alt="2 mascots" />
+        </Link>
+
+  {/* Fallback for non-JavaScript environments */}
+  <noscript>
+    <a href="/">
+      <img
+        src={logo}
+        className="h-12 w-12 rounded"
+        alt="2 mascots"
+      />
+    </a>
+  </noscript>
+        <div className="flex items-center">
+          <AnimatedColorText company={company} />
+        </div>
       </div>
       <div className="flex flex-col md:flex-row items-center md:space-x-6 mb-2 md:mb-0">
         <h1 className="text-lg font-semibold text-center md:text-left">
@@ -67,9 +76,9 @@ const DashboardHeader = () => {
   );
 
   return content;
-}
+};
 
-export default DashboardHeader
+export default DashboardHeader;
 // const DashboardHeader = () => {
 //   const { userId, username, userRoles, canEdit, canDelete, canAdd, canCreate } =
 //     useAuth();

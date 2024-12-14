@@ -244,7 +244,7 @@ export default function NewFatherForm() {
       {/* Error message placeholder */}
       {/* <p className={errClass}>{addFamilyError?.data?.message}</p> */}
 
-      <form className="w-full flex flex-col space-y-6">
+      <form className="form-container">
         <div className="mb-4">
           <h2 className="text-2xl font-bold text-gray-800">Father Details</h2>
         </div>

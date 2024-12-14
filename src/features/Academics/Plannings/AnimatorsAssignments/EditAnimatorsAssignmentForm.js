@@ -27,7 +27,6 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
 
-
   const {
     data: employees, //the data is renamed employees
     isLoading: isEmployeesLoading,
@@ -290,154 +289,151 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
   return (
     <>
       <Academics />
-      <div className="p-6 bg-white rounded-lg shadow-md max-w-md mx-auto">
+
+      <form onSubmit={handleSubmit} className="form-container">
         <h2 className="text-2xl font-bold mb-6 text-center">Edit Assignment</h2>
+        <div className="mb-4">
+          <label className="block text-gray-700 font-bold mb-2">
+            Assignment Year{" "}
+            {!validity.validAssignmentYear && (
+              <span className="text-red-600">*</span>
+            )}
+          </label>
+          <input
+            aria-invalid={!validity.validAssignmentYear}
+            required
+            type="text"
+            name="assignmentYear"
+            value={formData.assignmentYear}
+            onChange={handleChange}
+            placeholder="Enter Year"
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
+          />
+        </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
+        <div className="mb-4">
+          <label className="block text-gray-700 font-bold mb-2">
+            From{" "}
+            {(!validity.validAssignedFrom || !validity.noOverlap) && (
+              <span className="text-red-600">*</span>
+            )}
+          </label>
+          <input
+            aria-invalid={!validity.validAssignedFrom}
+            required
+            placeholder="[dd/mm/yyyy]"
+            type="date"
+            name="assignedFrom"
+            value={formData.assignedFrom}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700 font-bold mb-2">
+            To{" "}
+            {(!validity.validAssignedTo || !validity.noOverlap) && (
+              <span className="text-red-600">*</span>
+            )}
+          </label>
+          <input
+            aria-invalid={!validity.validAssignedTo}
+            required
+            placeholder="[dd/mm/yyyy]"
+            type="date"
+            name="assignedTo"
+            value={formData.assignedTo}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
+          />
+        </div>
+
+        <h3 className="text-xl font-bold mb-4">Assignments</h3>
+        {formData.assignments.map((assignment, index) => (
+          <div key={index} className="mb-4 p-4 border rounded-md">
             <label className="block text-gray-700 font-bold mb-2">
-              Assignment Year{" "}
-              {!validity.validAssignmentYear && (
-                <span className="text-red-600">*</span>
-              )}
+              Animator
             </label>
-            <input
-              aria-invalid={!validity.validAssignmentYear}
-              required
-              type="text"
-              name="assignmentYear"
-              value={formData.assignmentYear}
-              onChange={handleChange}
-              placeholder="Enter Year"
+            <select
+              value={assignment.animator}
+              onChange={(e) =>
+                handleAssignmentChange(index, "animator", e.target.value)
+              }
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-            />
-          </div>
+            >
+              <option value="">Select Animator</option>
+              {getAvailableAnimators(index).map((employee) => (
+                <option key={employee.id} value={employee.id}>
+                  {employee.userFullName.userFirstName}{" "}
+                  {employee.userFullName.userMiddleName}{" "}
+                  {employee.userFullName.userLastName}
+                </option>
+              ))}
+            </select>
 
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
-              From{" "}
-              {(!validity.validAssignedFrom || !validity.noOverlap) && (
-                <span className="text-red-600">*</span>
-              )}
+            <label className="block text-gray-700 font-bold mt-4 mb-2">
+              Schools
             </label>
-            <input
-              aria-invalid={!validity.validAssignedFrom}
-              required
-              placeholder="[dd/mm/yyyy]"
-              type="date"
-              name="assignedFrom"
-              value={formData.assignedFrom}
-              onChange={handleChange}
-             
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
-              To{" "}
-              {(!validity.validAssignedTo || !validity.noOverlap) && (
-                <span className="text-red-600">*</span>
-              )}
-            </label>
-            <input
-             aria-invalid={!validity.validAssignedTo}
-             required
-             placeholder="[dd/mm/yyyy]"
-              type="date"
-              name="assignedTo"
-              value={formData.assignedTo}
-              onChange={handleChange}
-             
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-            />
-          </div>
-
-          <h3 className="text-xl font-bold mb-4">Assignments</h3>
-          {formData.assignments.map((assignment, index) => (
-            <div key={index} className="mb-4 p-4 border rounded-md">
-              <label className="block text-gray-700 font-bold mb-2">
-                Animator
-              </label>
-              <select
-                value={assignment.animator}
-                onChange={(e) =>
-                  handleAssignmentChange(index, "animator", e.target.value)
-                }
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-              >
-                <option value="">Select Animator</option>
-                {getAvailableAnimators(index).map((employee) => (
-                  <option key={employee.id} value={employee.id}>
-                    {employee.userFullName.userFirstName}{" "}
-                    {employee.userFullName.userMiddleName}{" "}
-                    {employee.userFullName.userLastName}
-                  </option>
-                ))}
-              </select>
-
-              <label className="block text-gray-700 font-bold mt-4 mb-2">
-                Schools
-              </label>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {getAvailableSchools(index).map((school) => (
-                  <button
-                    key={school.id}
-                    type="button"
-                    onClick={() => toggleSchoolSelection(index, school.id)}
-                    className={`px-3 py-1 rounded-md ${
-                      assignment.schools.includes(school.id)
-                        ? "bg-sky-700 text-white"
-                        : "bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    {school.schoolName}
-                  </button>
-                ))}
-              </div>
-
-              <div className="mt-2 text-gray-600">
-                Selected Schools:{" "}
-                {assignment.schools
-                  .map(
-                    (schoolId) =>
-                      schoolsList.find((school) => school.id === schoolId)
-                        ?.schoolName
-                  )
-                  .join(", ")}
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              {getAvailableSchools(index).map((school) => (
+                <button
+                  key={school.id}
+                  type="button"
+                  onClick={() => toggleSchoolSelection(index, school.id)}
+                  className={`px-3 py-1 rounded-md ${
+                    assignment.schools.includes(school.id)
+                      ? "bg-sky-700 text-white"
+                      : "bg-gray-200 text-gray-700"
+                  }`}
+                >
+                  {school.schoolName}
+                </button>
+              ))}
             </div>
-          ))}
 
+            <div className="mt-2 text-gray-600">
+              Selected Schools:{" "}
+              {assignment.schools
+                .map(
+                  (schoolId) =>
+                    schoolsList.find((school) => school.id === schoolId)
+                      ?.schoolName
+                )
+                .join(", ")}
+            </div>
+          </div>
+        ))}
+
+        <button
+          type="button"
+          aria-label="add assigment"
+          onClick={addAssignment}
+          className="w-full add-button mb-2"
+        >
+          Add Assignment
+        </button>
+        <div className="flex justify-end gap-4">
           <button
             type="button"
-            aria-label="add assigment"
-            onClick={addAssignment}
-            className="w-full add-button mb-2"
+            aria-label="cancel assignments"
+            className="cancel-button"
+            onClick={() =>
+              navigate("/academics/plannings/animatorsAssignments/")
+            }
           >
-            Add Assignment
+            Cancel
           </button>
-          <div className="flex justify-end gap-4">
-            <button
-              type="button"
-               aria-label="cancel assignments"
-              className="cancel-button"
-              onClick={() =>
-                navigate("/academics/plannings/animatorsAssignments/")
-              }
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              aria-label="submit form"
-              disabled={!canSubmit}
-              className="save-button"
-            >
-              {isUpdateLoading ? "Updating..." : "Update Assignment"}
-            </button>
-          </div>
-        </form>
-      </div>
+          <button
+            type="submit"
+            aria-label="submit form"
+            disabled={!canSubmit}
+            className="save-button"
+          >
+            {isUpdateLoading ? "Updating..." : "Update Assignment"}
+          </button>
+        </div>
+      </form>
+
       {/* Confirmation Modal */}
       <ConfirmationModal
         show={showConfirmation}

@@ -270,15 +270,11 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
     <>
       <Academics />
 
-      <section className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
+        <form onSubmit={onSaveSessionClicked} className="form-container">
         <h2 className="text-2xl font-bold mb-4">
           Add New Session:{" "}
           {`${formData.userFullName.userFirstName} ${formData.userFullName.userMiddleName} ${formData.userFullName.userLastName}`}
         </h2>
-        {isError && (
-          <p className="text-red-600">Error: {error?.data?.message}</p>
-        )}
-        <form onSubmit={onSaveSessionClicked} className="space-y-6">
           {/* username and password should be visible for admin isAdmin&& */}
           {/* <div>
           <label className="block text-sm font-medium text-gray-700">
@@ -1106,7 +1102,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
             </button>
           </div>
         </form>
-      </section>
+      
     </>
   );
   return content;

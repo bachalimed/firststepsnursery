@@ -9,10 +9,7 @@ import {
 
 import { ACTIONS } from "../../../config/UserActions";
 import HR from "../HR";
-import {
-  useGetEmployeesByYearQuery,
-
-} from "../Employees/employeesApiSlice";
+import { useGetEmployeesByYearQuery } from "../Employees/employeesApiSlice";
 import { useSelector } from "react-redux";
 import {
   selectAllAcademicYears,
@@ -52,7 +49,7 @@ const NewPayslipForm = () => {
 
   const {
     data: employees, //the data is renamed employees
-    isLoading: isEmployeesLoading, 
+    isLoading: isEmployeesLoading,
     isSuccess: isEmployeesSuccess,
     isError: isEmployeesError,
     error: employeesError,
@@ -67,10 +64,9 @@ const NewPayslipForm = () => {
     }
   );
 
-
   const {
     data: leaves, //the data is renamed leaves
-    isLoading: isLeavesLoading, 
+    isLoading: isLeavesLoading,
     isSuccess: isLeavesSuccess,
     isError: isLeavesError,
     error: leavesError,
@@ -85,9 +81,7 @@ const NewPayslipForm = () => {
     }
   );
 
-  const leavesList = isLeavesSuccess
-    ? Object.values(leaves.entities)
-    : [];
+  const leavesList = isLeavesSuccess ? Object.values(leaves.entities) : [];
   //confirmation Modal states
   const [showConfirmation, setShowConfirmation] = useState(false);
   // Consolidated form state
@@ -98,14 +92,13 @@ const NewPayslipForm = () => {
     payslipIsApproved: false,
     payslipPaymentDate: "",
     payslipLeaveDays: [],
-    payslipSalaryComponents: 
-      {
-        component: "",
-        amount: "",
-        periodicity: "",
-        reduction: "",
-      },
-    
+    payslipSalaryComponents: {
+      component: "",
+      amount: "",
+      periodicity: "",
+      reduction: "",
+    },
+
     payslipOperator: userId,
     payslipCreator: userId,
   });
@@ -129,9 +122,10 @@ const NewPayslipForm = () => {
       validPayslipMonth: NAME_REGEX.test(formData?.payslipMonth),
       validPayslipEmployee: OBJECTID_REGEX.test(formData?.payslipEmployee),
       validPayslipPaymentDate: DATE_REGEX.test(formData?.payslipPaymentDate),
-      validPayslipLeaveDays: formData?.payslipLeaveDays?.length>0,
-      validPayslipSalaryComponents: formData?.payslipSalaryComponents?.length>0,
-    }))
+      validPayslipLeaveDays: formData?.payslipLeaveDays?.length > 0,
+      validPayslipSalaryComponents:
+        formData?.payslipSalaryComponents?.length > 0,
+    }));
   }, [formData]);
 
   useEffect(() => {
@@ -143,7 +137,7 @@ const NewPayslipForm = () => {
         payslipIsApproved: "",
         payslipPaymentDate: "",
         payslipLeaveDays: [],
-        payslipSalaryComponents:{},
+        payslipSalaryComponents: {},
         payslipOperator: "",
         payslipCreator: "",
       });
@@ -154,90 +148,101 @@ const NewPayslipForm = () => {
   const employeesList = isEmployeesSuccess
     ? Object.values(employees.entities)
     : [];
-    const handleInputChange = (e) => {
-      const { name, value, type, checked } = e.target;
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  //to retrive the leave days of teh employee selected
+  useEffect(() => {
+    if (
+      formData?.payslipEmployee !== "" &&
+      formData?.payslipMonth !== "" &&
+      isLeavesSuccess
+    ) {
+      // Filter the leavesList for the specific employee and get only the 'id' values
+      const leaveDays = leavesList
+        .filter(
+          (day) =>
+            day?.leaveEmployee._id === formData?.payslipEmployee &&
+            day?.leaveMonth === formData?.payslipMonth
+        ) // Also filter by leaveMonth
+        .map((day) => day?.id); // Extract only the ids of matching leave days
+
+      // Update the formData with the filtered leave day ids
       setFormData((prev) => ({
         ...prev,
-        [name]: type === "checkbox" ? checked : value,
+        payslipLeaveDays: leaveDays, // Directly assign the array of ids
       }));
-    };
+    }
+  }, [formData?.payslipEmployee, formData?.payslipMonth]);
+  // to compute the salary of the emolyee selcted
+  useEffect(() => {
+    if (
+      formData?.payslipEmployee !== "" &&
+      formData?.payslipMonth !== "" &&
+      isLeavesSuccess &&
+      isEmployeesSuccess
+    ) {
+      // Helper function to generate an array of dates between two dates
+      const getDateRange = (startDate, endDate) => {
+        const dateArray = [];
+        let currentDate = new Date(startDate);
+        while (currentDate <= new Date(endDate)) {
+          dateArray.push(new Date(currentDate)); // Add the current date
+          currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
+        }
+        return dateArray;
+      };
 
- //to retrive the leave days of teh employee selected
-    useEffect(() => {
-      if (formData?.payslipEmployee !== "" &&formData?.payslipMonth !== ""&& isLeavesSuccess) {
-        // Filter the leavesList for the specific employee and get only the 'id' values
-        const leaveDays = leavesList
-          .filter((day) => 
+      // Filter leavesList for unpaid leave days matching the employee and month
+      const unpaidLeaveDays = leavesList
+        .filter(
+          (day) =>
             day?.leaveEmployee._id === formData?.payslipEmployee &&
-        day?.leaveMonth === formData?.payslipMonth) // Also filter by leaveMonth
-          .map((day) => day?.id); // Extract only the ids of matching leave days
-        
-         
+            day?.leaveMonth === formData?.payslipMonth &&
+            day?.leaveIsPaidLeave === false
+        )
+        .flatMap((day) => getDateRange(day.leaveStartDate, day.leaveEndDate)); // Generate all dates in the leave range
 
-        // Update the formData with the filtered leave day ids
-        setFormData((prev) => ({
-          ...prev,
-          payslipLeaveDays: leaveDays, // Directly assign the array of ids
-        }));
-      }
-    }, [ formData?.payslipEmployee,formData?.payslipMonth]);
- // to compute the salary of the emolyee selcted
-    useEffect(() => {
-      if (
-        formData?.payslipEmployee !== "" &&
-        formData?.payslipMonth !== "" &&
-        isLeavesSuccess &&
-        isEmployeesSuccess
-      ) {
-        // Helper function to generate an array of dates between two dates
-        const getDateRange = (startDate, endDate) => {
-          const dateArray = [];
-          let currentDate = new Date(startDate);
-          while (currentDate <= new Date(endDate)) {
-            dateArray.push(new Date(currentDate)); // Add the current date
-            currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
-          }
-          return dateArray;
-        };
-      
-        // Filter leavesList for unpaid leave days matching the employee and month
-        const unpaidLeaveDays = leavesList
-          .filter(
-            (day) =>
-              day?.leaveEmployee._id === formData?.payslipEmployee &&
-              day?.leaveMonth === formData?.payslipMonth &&
-              day?.leaveIsPaidLeave === false
-          )
-          .flatMap((day) =>
-            getDateRange(day.leaveStartDate, day.leaveEndDate)
-          ); // Generate all dates in the leave range
-      
-        // Find the selected employee
-        const selectedEmpl = employeesList?.find(
-          (employee) => employee.employeeId === formData?.payslipEmployee
-        );
-          const result = calculateSalary(formData?.payslipYear, formData?.payslipMonth, unpaidLeaveDays, selectedEmpl?.employeeData?.employeeCurretnEmployment?.salaryPackage?.basic);
-const employeePeriodicity = selectedEmpl?.employeeData?.employeeCurretnEmployment?.salaryPackage?.payment
-        console.log(result,'result',employeePeriodicity,'employeePeriodicity')
+      // Find the selected employee
+      const selectedEmpl = employeesList?.find(
+        (employee) => employee.employeeId === formData?.payslipEmployee
+      );
+      const result = calculateSalary(
+        formData?.payslipYear,
+        formData?.payslipMonth,
+        unpaidLeaveDays,
+        selectedEmpl?.employeeData?.employeeCurretnEmployment?.salaryPackage
+          ?.basic
+      );
+      const employeePeriodicity =
+        selectedEmpl?.employeeData?.employeeCurretnEmployment?.salaryPackage
+          ?.payment;
+      console.log(result, "result", employeePeriodicity, "employeePeriodicity");
 
-        setFormData((prev) => ({
-          ...prev,
-          payslipSalaryComponents: {amount:result?.salary, periodicity:employeePeriodicity, basic:selectedEmpl?.employeeData?.employeeCurretnEmployment?.salaryPackage?.basic} // Directly assign the array of ids
-        }));
-      }
-    }, [ formData?.payslipEmployee,formData?.payslipMonth]);
-    
-
-
-
-
+      setFormData((prev) => ({
+        ...prev,
+        payslipSalaryComponents: {
+          amount: result?.salary,
+          periodicity: employeePeriodicity,
+          basic:
+            selectedEmpl?.employeeData?.employeeCurretnEmployment?.salaryPackage
+              ?.basic,
+        }, // Directly assign the array of ids
+      }));
+    }
+  }, [formData?.payslipEmployee, formData?.payslipMonth]);
 
   const canSave =
     Object.values(validity).every(Boolean) &&
     // ((formData.payslipYears[0].academicYear)!=='') &&
 
     !isAddLoading;
- 
+
   const onSavePayslipClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
@@ -260,178 +265,176 @@ const employeePeriodicity = selectedEmpl?.employeeData?.employeeCurretnEmploymen
   const handleCloseModal = () => {
     setShowConfirmation(false);
   };
-console.log(formData,'formData')
-  const content =isLeavesSuccess? (
+  console.log(formData, "formData");
+  const content = isLeavesSuccess ? (
     <>
       <HR />
 
-      <section className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold mb-4">
-          Add New Payslip:{" "}
-         
-        </h2>{isEmployeesError && <p className="text-red-600">Error fetching employees: {employeesError?.data?.message}</p>}
-        {isLeavesError && <p className="text-red-600">Error fetching leaves: {leavesError?.data?.message}</p>}
-        {isAddError && (
-          <p className="text-red-600">Error: {addError?.data?.message}</p>
-        )}
-        <form onSubmit={onSavePayslipClicked} className="space-y-6">
-          
+      <form onSubmit={onSavePayslipClicked} className="form-container">
+        <h2 className="text-2xl font-bold mb-4">Add New Payslip: </h2>
+
         <div>
-            <label
-              htmlFor="payslipMonth"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Month{" "}
-              {!validity.validPayslipMonth && (
-                <span className="text-red-600">*</span>
-              )}
-            </label>
-            <select
-              id="payslipMonth"
-              name="payslipMonth"
-              value={formData.payslipMonth}
-              onChange={(e) =>
-                setFormData({ ...formData, payslipMonth: e.target.value })
-              }
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              required
-            >
-              <option value="">Select Month</option>
-              {MONTHS.map((month, index) => (
-                <option key={index} value={month}>
-                  {month}
-                </option>
-              ))}
-            </select>
-          </div>
+          <label
+            htmlFor="payslipMonth"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Month{" "}
+            {!validity.validPayslipMonth && (
+              <span className="text-red-600">*</span>
+            )}
+          </label>
+          <select
+            id="payslipMonth"
+            name="payslipMonth"
+            value={formData.payslipMonth}
+            onChange={(e) =>
+              setFormData({ ...formData, payslipMonth: e.target.value })
+            }
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+            required
+          >
+            <option value="">Select Month</option>
+            {MONTHS.map((month, index) => (
+              <option key={index} value={month}>
+                {month}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label
+            htmlFor="payslipEmployee"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Employee{" "}
+            {!validity.validPayslipEmployee && (
+              <span className="text-red-600">*</span>
+            )}
+          </label>
+          <select
+            id="payslipEmployee"
+            name="payslipEmployee"
+            value={formData.payslipEmployee}
+            onChange={(e) =>
+              setFormData({ ...formData, payslipEmployee: e.target.value })
+            }
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+            required
+          >
+            <option value="">Select Employee</option>
+            {employeesList?.map((employee) => (
+              <option key={employee?.employeeId} value={employee?.employeeId}>
+                {employee?.userFullName?.userFirstName}{" "}
+                {employee?.userFullName?.userMiddleName}{" "}
+                {employee?.userFullName?.userLastName}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* payslip Is Approved  beeter only done inediting for the manger to approve after creation*/}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            payslip is Approved ? (leave for edit form or to approve nin the
+            list)
+          </label>
+          <input
+            type="checkbox"
+            name="payslipIsApproved"
+            checked={formData.payslipIsApproved}
+            onChange={handleInputChange}
+            className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+          />
+        </div>
+
+        {/* Payslip Payment Date */}
+        <div>
+          <label
+            htmlFor="payslipPaymentDate"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Payment Date{" "}
+            {!validity.validPayslipPaymentDate && (
+              <span className="text-red-600">*</span>
+            )}
+          </label>
+          <input
+            type="date"
+            id="payslipPaymentDate"
+            name="payslipPaymentDate"
+            value={formData.payslipPaymentDate}
+            onChange={handleInputChange}
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+            required
+          />
+        </div>
+
+        {/* Payslip Leave Days */}
+        {formData?.payslipLeaveDays?.length > 0 && (
           <div>
             <label
-              htmlFor="payslipEmployee"
+              htmlFor="payslipLeaveDays"
               className="block text-sm font-medium text-gray-700"
             >
-              Employee{" "}
-              {!validity.validPayslipEmployee && (
-                <span className="text-red-600">*</span>
-              )}
+              Leave days
             </label>
             <select
-              id="payslipEmployee"
-              name="payslipEmployee"
-              value={formData.payslipEmployee}
+              multiple
+              id="payslipLeaveDays"
+              name="payslipLeaveDays"
+              value={formData.payslipLeaveDays}
               onChange={(e) =>
-                setFormData({ ...formData, payslipEmployee: e.target.value })
+                setFormData({
+                  ...formData,
+                  payslipLeaveDays: Array.from(
+                    e.target.selectedOptions,
+                    (option) => option.value
+                  ),
+                })
               }
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              required
             >
-              <option value="">Select Employee</option>
-              {employeesList?.map((employee) => (
-                <option key={employee?.employeeId} value={employee?.employeeId}>
-                  {employee?.userFullName?.userFirstName}{" "}
-                  {employee?.userFullName?.userMiddleName}{" "}
-                  {employee?.userFullName?.userLastName}
-                </option>
-              ))}
+              {leavesList.map(
+                (leave) =>
+                  leave?.leaveEmployee?._id === formData?.payslipEmployee &&
+                  leave?.leaveMonth === formData?.payslipMonth && (
+                    <option key={leave.id} value={leave.id}>
+                      From: {leave?.leaveStartDate} to: {leave?.leaveEndDate}{" "}
+                      {leave?.leaveIsPaidLeave ? "Paid" : "Unpaid"},{" "}
+                      {leave?.leaveIsApproved ? "Approved" : "Not approved"},{" "}
+                      {leave?.leaveIsSickLeave ? "Sick Leave" : "Sick Leave"}
+                    </option>
+                  )
+              )}
             </select>
           </div>
+        )}
 
-         {/* payslip Is Approved  beeter only done inediting for the manger to approve after creation*/}
-         <div>
-            <label className="block text-sm font-medium text-gray-700">
-              payslip is Approved ? (leave for edit form or to approve nin the list)
-            </label>
-            <input
-              type="checkbox"
-              name="payslipIsApproved"
-              checked={formData.payslipIsApproved}
-              onChange={handleInputChange}
-              className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-            />
-          </div>
+        {/* Payslip Salary Components */}
 
-  {/* Payslip Payment Date */}
-  <div>
-    <label
-      htmlFor="payslipPaymentDate"
-      className="block text-sm font-medium text-gray-700"
-    >
-      Payment Date{" "}
-      {!validity.validPayslipPaymentDate && (
-        <span className="text-red-600">*</span>
-      )}
-    </label>
-    <input
-      type="date"
-      id="payslipPaymentDate"
-      name="payslipPaymentDate"
-      value={formData.payslipPaymentDate}
-      onChange={handleInputChange}
-      className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-      required
-    />
-  </div>
+        {/* Submit Button */}
+        <div className="flex justify-end gap-4">
+          <button
+            type="button"
+            onClick={() => navigate("/hr/payslips/payslipsList/")}
+            className="cancel-button"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={!canSave || isAddLoading}
+            className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
+              canSave
+                ? "bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500"
+                : "bg-gray-400 cursor-not-allowed"
+            } focus:outline-none focus:ring-2 focus:ring-offset-2`}
+          >
+            Save
+          </button>
+        </div>
+      </form>
 
-  {/* Payslip Leave Days */}
-  {(formData?.payslipLeaveDays?.length>0)&&<div>
-  <label
-      htmlFor="payslipLeaveDays"
-      className="block text-sm font-medium text-gray-700"
-    >
-      Leave days
-    </label>
-  <select
-  multiple
-  id="payslipLeaveDays"
-  name="payslipLeaveDays"
-  value={formData.payslipLeaveDays}
-  onChange={(e) =>
-    setFormData({ ...formData, payslipLeaveDays: Array.from(e.target.selectedOptions, option => option.value) })
-  }
-  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
->
-  {leavesList.map((leave) => (
-    leave?.leaveEmployee?._id === formData?.payslipEmployee && leave?.leaveMonth === formData?.payslipMonth&&(
-      <option key={leave.id} value={leave.id}>
-        From: {leave?.leaveStartDate} to: {leave?.leaveEndDate} {leave?.leaveIsPaidLeave ? "Paid" : "Unpaid"}, {leave?.leaveIsApproved ? "Approved" : "Not approved"}, {leave?.leaveIsSickLeave ? "Sick Leave" : "Sick Leave"}
-      </option>
-    )
-  ))}
-</select>
-  </div>}
-
-  {/* Payslip Salary Components */}
- 
-   
- 
-
-           
-
-          
-
-
-          {/* Submit Button */}
-          <div className="flex justify-end gap-4">
-            <button
-              type="button"
-              onClick={() => navigate("/hr/payslips/payslipsList/")}
-              className="cancel-button"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={!canSave || isAddLoading}
-              className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
-                canSave
-                  ? "bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500"
-                  : "bg-gray-400 cursor-not-allowed"
-              } focus:outline-none focus:ring-2 focus:ring-offset-2`}
-            >
-              Save
-            </button>
-          </div>
-        </form>
-      </section>
       {/* Confirmation Modal */}
       <ConfirmationModal
         show={showConfirmation}
@@ -441,7 +444,11 @@ console.log(formData,'formData')
         message="Are you sure you want to save?"
       />
     </>
-  ):<><HR/></>
+  ) : (
+    <>
+      <HR />
+    </>
+  );
   return content;
 };
 

@@ -30,7 +30,6 @@ import {
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 import { useOutletContext } from "react-router-dom";
 
-
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
@@ -367,7 +366,7 @@ const EditAdmissionForm = ({ admission }) => {
     ) &&
     Object.values(primaryValidity).every(Boolean) &&
     !isAdmissionLoading;
-    const { triggerBanner } = useOutletContext(); // Access banner trigger
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   // Submit the form
 
   const handleSubmit = async (e) => {
@@ -383,12 +382,15 @@ const EditAdmissionForm = ({ admission }) => {
     try {
       const response = await updateAdmission(formData).unwrap();
       // navigate("/students/admissions/admissions");
-      console.log(response,'response')
+      console.log(response, "response");
       if (response.data && response.data.message) {
         // Success response
         triggerBanner(response.data.message, "success");
-
-      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
         // Error response
         triggerBanner(response.error.data.message, "error");
       } else {
@@ -412,10 +414,7 @@ const EditAdmissionForm = ({ admission }) => {
   const content = (
     <>
       <Students />
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-6 bg-white p-6 shadow rounded-md"
-      >
+      <form onSubmit={handleSubmit} className="form-container">
         <h2 className="text-xl font-bold">Edit Admission</h2>
         <div>
           <label
@@ -712,7 +711,7 @@ const EditAdmissionForm = ({ admission }) => {
 
         {/* Submit Button */}
         <div className="flex justify-end space-x-4">
-        <button
+          <button
             type="button"
             className="cancel-button"
             onClick={handleCancel}
@@ -721,7 +720,7 @@ const EditAdmissionForm = ({ admission }) => {
           </button>
           <button
             type="submit"
-            disabled={!canSave||isAdmissionLoading}
+            disabled={!canSave || isAdmissionLoading}
             className={`inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
               canSave
                 ? "bg-blue-600 hover:bg-blue-700"
@@ -731,7 +730,6 @@ const EditAdmissionForm = ({ admission }) => {
             <FontAwesomeIcon icon={faSave} className="mr-2" />
             {isAdmissionLoading ? "Saving..." : "Save Admission"}
           </button>
-          
         </div>
       </form>
 

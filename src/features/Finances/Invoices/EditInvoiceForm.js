@@ -6,10 +6,9 @@ import {
   useUpdateInvoiceMutation,
   useGetInvoicesQuery,
 } from "./invoicesApiSlice"; // Redux API action
-
+import { useOutletContext } from "react-router-dom";
 import Finances from "../Finances";
 import useAuth from "../../../hooks/useAuth";
-
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
@@ -22,7 +21,7 @@ import {
   YEAR_REGEX,
   NUMBER_REGEX,
   COMMENT_REGEX,
-} from "../../../config/REGEX"
+} from "../../../config/REGEX";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 const EditInvoiceForm = ({ invoice }) => {
   const { userId, isManager } = useAuth();
@@ -44,9 +43,9 @@ const EditInvoiceForm = ({ invoice }) => {
   ] = useUpdateInvoiceMutation();
 
   const DiscountTypes = ["second Sibling", "Third Sibling", "Other"];
-  
+
   //confirmation Modal states
-const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const [formData, setFormData] = useState({
     id: invoice?._id,
     invoiceYear: invoice?.invoiceYear,
@@ -64,16 +63,13 @@ const [showConfirmation, setShowConfirmation] = useState(false);
   });
 
   const [validity, setValidity] = useState({
-    
-    
     validInvoiceDueDate: false,
-    
+
     validInvoiceAmount: false,
     validInvoiceAuthorisedAmount: false,
     validInvoiceDiscountAmount: false,
     validInvoiceDiscountType: false,
     validInvoiceDiscountNote: false,
-    
   });
 
   const navigate = useNavigate();
@@ -83,10 +79,9 @@ const [showConfirmation, setShowConfirmation] = useState(false);
   useEffect(() => {
     setValidity((prev) => ({
       ...prev,
-     
-     
+
       validInvoiceDueDate: DATE_REGEX.test(formData.invoiceDueDate),
-   
+
       validInvoiceAmount: NUMBER_REGEX.test(formData.invoiceAmount),
       validInvoiceAuthorisedAmount: NUMBER_REGEX.test(
         formData.invoiceAuthorisedAmount
@@ -95,18 +90,16 @@ const [showConfirmation, setShowConfirmation] = useState(false);
         formData.invoiceDiscountAmount
       ),
       validInvoiceDiscountType:
-        NAME_REGEX.test(formData.invoiceDiscountType) ||(
-        formData.invoiceDiscountAmount &&
-        (formData.invoiceDiscountAmount !== "" ||
-          formData.invoiceDiscountAmount !== "0")), // no type saved without an actual amount
+        NAME_REGEX.test(formData.invoiceDiscountType) ||
+        (formData.invoiceDiscountAmount &&
+          (formData.invoiceDiscountAmount !== "" ||
+            formData.invoiceDiscountAmount !== "0")), // no type saved without an actual amount
       validInvoiceDiscountNote: COMMENT_REGEX.test(
         formData.invoiceDiscountNote
       ),
-      
     }));
   }, [formData]);
-console.log(validity)
-
+  console.log(validity);
 
   // Update invoiceAmount dynamically based on authorised and discount amounts
   useEffect(() => {
@@ -138,7 +131,7 @@ console.log(validity)
       navigate("/finances/invoices/invoicesList");
     }
   }, [isUpdateSuccess, navigate]);
-
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   // Check if all fields are valid and enable the submit button
   const canSubmit = Object.values(validity).every(Boolean) && !isUpdateLoading;
 
@@ -156,15 +149,32 @@ console.log(validity)
     // Close the confirmation modal
     setShowConfirmation(false);
     try {
-      const updatedInvoice = await updateInvoice(formData).unwrap();
-    } catch (err) {
-      //setError("Failed to add the attended school.");
+      const response = await updateInvoice(formData).unwrap();
+      console.log(response, "response");
+      if ((response.data && response.data.message) || response?.message) {
+        // Success response
+        triggerBanner(response?.data?.message || response?.message, "success");
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner("Failed to update classroom. Please try again.", "error");
+
+      console.error("Error saving:", error);
     }
   };
- // Close the modal without saving
- const handleCloseModal = () => {
-  setShowConfirmation(false);
-};
+  // Close the modal without saving
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
+  };
   // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -188,7 +198,8 @@ console.log(validity)
   return (
     <>
       <Finances />
-      <div className="p-6 bg-white rounded-lg shadow-md max-w-md mx-auto">
+
+      <form onSubmit={handleSubmit} className="form-container">
         <h2 className="text-2xl font-bold mb-6 text-center">
           Edit Invoice:{" "}
           <div>
@@ -204,39 +215,44 @@ console.log(validity)
             {formData.invoiceMonth}-{formData.invoiceYear}{" "}
           </div>
         </h2>
-
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
-              Authorised Amount: {formData.invoiceAuthorisedAmount}
-            </label>
-            {/* <input
-              type="number"
-              name="invoiceAuthorisedAmount"
+        <div className="mb-4">
+          <label
+            htmlFor="authorisedAmount"
+            aria-label="authorised amount"
+            className="block text-gray-700"
+          >
+            Authorised Amount:
+            <input
+              id="authorisedAmount"
+              name="authorisedAmount"
+              type="text"
               value={formData.invoiceAuthorisedAmount}
-              onChange={handleChange}
-              disabled
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-            /> */}
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
-              Invoice Amount : {formData.invoiceAmount}
-            </label>
-            {/* <input
-              type="number"
-              name="invoiceAmount"
-              value={formData.invoiceAmount}
-              disabled
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-            /> */}
-          </div>
+              readOnly
+              className="block w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
+            />
+          </label>
+        </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
-              Discount Type
-            </label>
+        <div className="mb-4">
+          <label className="block text-gray-700  mb-4">
+            Invoice Amount :
+            <input
+              id="invoiceAmount"
+              name="invoiceAmount"
+              type="text"
+              value={formData.invoiceAmount}
+              readOnly
+              className="block w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
+            />
+          </label>
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700 font-bold mb-2">
+            Discount Type
             <select
+              aria-label="classroom capacity"
+              aria-invalid={!validity.validClassroomCapacity}
+              placeholder="[1-2 digits]"
               name="invoiceDiscountType"
               value={formData.invoiceDiscountType}
               onChange={handleChange}
@@ -248,14 +264,14 @@ console.log(validity)
                   {type}
                 </option>
               ))}
-            </select>
-          </div>
+            </select>{" "}
+          </label>
+        </div>
 
-          {formData?.invoiceDiscountType && (
-            <div className="mb-4">
-              <label className="block text-gray-700 font-bold mb-2">
-                Discount Amount
-              </label>
+        {formData?.invoiceDiscountType && (
+          <div className="mb-4">
+            <label className="block text-gray-700 font-bold mb-2">
+              Discount Amount
               <input
                 type="number"
                 name="invoiceDiscountAmount"
@@ -263,15 +279,15 @@ console.log(validity)
                 onChange={handleChange}
                 placeholder="Enter discount amount"
                 className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-              />
-            </div>
-          )}
+              />{" "}
+            </label>
+          </div>
+        )}
 
-          {formData.invoiceDiscountAmount !== "0" && (
-            <div className="mb-4">
-              <label className="block text-gray-700 font-bold mb-2">
-                Discount Note
-              </label>
+        {formData.invoiceDiscountAmount !== "0" && (
+          <div className="mb-4">
+            <label className="block text-gray-700 font-bold mb-2">
+              Discount Note
               <input
                 type="text"
                 name="invoiceDiscountNote"
@@ -281,27 +297,29 @@ console.log(validity)
                 className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
                 required={formData.invoiceDiscountAmount}
               />
-            </div>
-          )}
-
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
-              Due Date{" "}
-              {!validity.validInvoiceDueDate && <span className="text-red-600">*</span>}
             </label>
+          </div>
+        )}
+
+        <div className="mb-4">
+          <label className="block text-gray-700 font-bold mb-2">
+            Due Date{" "}
+            {!validity.validInvoiceDueDate && (
+              <span className="text-red-600">*</span>
+            )}
             <input
               type="date"
               name="invoiceDueDate"
               value={formData.invoiceDueDate}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-            />
-          </div>
+            />{" "}
+          </label>
+        </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
-              Is Fully Paid
-            </label>
+        <div className="mb-4">
+          <label className="block text-gray-700 font-bold mb-2">
+            Is Fully Paid
             <input
               type="checkbox"
               name="invoiceIsFullyPaid"
@@ -309,42 +327,38 @@ console.log(validity)
               onChange={handleCheckboxChange}
               className="form-checkbox"
               disabled={!isManager}
-            />
-          </div>
+            />{" "}
+          </label>
+        </div>
 
-          <div className="flex justify-end gap-4">
+        <div className="flex justify-end gap-4">
           <button
             type="button"
-            
+            aria-label="cancel edit invoice"
             className="cancel-button"
-            onClick={() =>
-              navigate("/academics/plannings/animatorsAssignments/")
-            }
+            onClick={() => navigate("/finances/invoices/invoicesList/")}
           >
             Cancel
           </button>
-            <button
-              type="submit"
-              disabled={!canSubmit||isUpdateLoading}
-              className={` py-2 px-4 font-bold text-white rounded-md focus:outline-none ${
-                canSubmit
-                  ? "bg-sky-700 hover:bg-blue-700"
-                  : "bg-gray-400 cursor-not-allowed"
-              }`}
-            >
-              {isUpdateLoading ? "Saving..." : "Update Invoice"}
-            </button>
-          </div>
+          <button
+            aria-label="sumbit invoice"
+            type="submit"
+            disabled={!canSubmit || isUpdateLoading}
+            className={`save-button `}
+          >
+            {isUpdateLoading ? "Saving..." : "Update Invoice"}
+          </button>
+        </div>
 
-          {isUpdateError && (
-            <p className="text-red-600 text-center mt-4">
-              {updateError?.data?.message || "Error updating the invoice"}
-            </p>
-          )}
-        </form>
-      </div>
-        {/* Confirmation Modal */}
-        <ConfirmationModal
+        {isUpdateError && (
+          <p className="text-red-600 text-center mt-4">
+            {updateError?.data?.message || "Error updating the invoice"}
+          </p>
+        )}
+      </form>
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
         show={showConfirmation}
         onClose={handleCloseModal}
         onConfirm={handleConfirmSave}

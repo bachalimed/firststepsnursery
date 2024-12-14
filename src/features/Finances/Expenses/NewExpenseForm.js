@@ -28,6 +28,8 @@ import {
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 import { MONTHS } from "../../../config/Months";
 import { CurrencySymbol } from "../../../config/Currency";
+import { useOutletContext } from "react-router-dom";
+
 const NewExpenseForm = () => {
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -38,7 +40,7 @@ const NewExpenseForm = () => {
 
   const {
     data: expenseCategories, //the data is renamed expenseCategories
-    isLoading: isExpenseCategoriesLoading, 
+    isLoading: isExpenseCategoriesLoading,
     isSuccess: isExpenseCategoriesSuccess,
     isError: isExpenseCategoriesError,
     error: expenseCategoriesError,
@@ -54,7 +56,7 @@ const NewExpenseForm = () => {
   );
   const {
     data: payees, //the data is renamed payees
-    isLoading: isPayeesLoading, 
+    isLoading: isPayeesLoading,
     isSuccess: isPayeesSuccess,
     isError: isPayeesError,
     error: payeesError,
@@ -71,7 +73,7 @@ const NewExpenseForm = () => {
 
   const {
     data: services, //the data is renamed services
-    isLoading: isServicesLoading, 
+    isLoading: isServicesLoading,
     isSuccess: isServicesSuccess,
     isError: isServicesError,
     error: servicesError,
@@ -97,6 +99,7 @@ const NewExpenseForm = () => {
     },
   ] = useAddNewExpenseMutation();
 
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   let servicesList = isServicesSuccess ? Object.values(services.entities) : [];
   let payeesList = isPayeesSuccess ? Object.values(payees.entities) : [];
   let expenseCategoriesList = isExpenseCategoriesSuccess
@@ -123,7 +126,6 @@ const NewExpenseForm = () => {
 
   const [selectedItems, setSelectedItems] = useState([]);
 
-  
   //confirmation Modal states
   const [showConfirmation, setShowConfirmation] = useState(false);
 
@@ -215,9 +217,25 @@ const NewExpenseForm = () => {
     setShowConfirmation(false);
 
     try {
-      const newExpense = await addNewExpense(formData).unwrap();
-    } catch (err) {
-      console.error("Error saving student:", err);
+      const response = await addNewExpense(formData).unwrap();
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner("Failed to update classroom. Please try again.", "error");
+
+      console.error("Error saving:", error);
     }
   };
   // Close the modal without saving
@@ -270,13 +288,12 @@ const NewExpenseForm = () => {
   return (
     <>
       <Finances />
-      <div className="p-6 bg-white rounded-lg shadow-md max-w-md mx-auto">
+
+      <form onSubmit={handleSubmit} className="form-container">
         <h2 className="text-2xl font-bold mb-6 text-center">
           Add New Expense {selectedAcademicYear?.title}
         </h2>
-
-        <form onSubmit={handleSubmit}>
-          {/* <div className="mb-4">
+        {/* <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               Expense Year{" "}
               {!validity.validExpenseYear && (
@@ -299,18 +316,19 @@ const NewExpenseForm = () => {
             </select>
           </div> */}
 
-          {/* Expense Month */}
-          <div className="mb-4">
-            <label
-              htmlFor="expenseMonth"
-              className="block text-gray-700 font-bold mb-2"
-            >
-              Expense Month{" "}
-              {!validity.validExpenseMonth && (
-                <span className="text-red-600">*</span>
-              )}
-            </label>
+        {/* Expense Month */}
+        <div className="mb-4">
+          <label
+            htmlFor="expenseMonth"
+            className="block text-gray-700 font-bold mb-2"
+          >
+            Expense Month{" "}
+            {!validity.validExpenseMonth && (
+              <span className="text-red-600">*</span>
+            )}
             <select
+              aria-label="expense month"
+              aria-invalid={!validity.validExpenseMonth}
               id="expenseMonth"
               value={formData.expenseMonth || ""}
               onChange={(e) =>
@@ -325,21 +343,23 @@ const NewExpenseForm = () => {
                   {month}
                 </option>
               ))}
-            </select>
-          </div>
+            </select>{" "}
+          </label>
+        </div>
 
-          {/* Expense Service */}
-          <div style={{ marginBottom: "16px" }}>
-            <label
-              htmlFor="expenseService"
-              className="block text-gray-700 font-bold mb-2"
-            >
-              Expense Service{" "}
-              {!validity.validExpenseService && (
-                <span className="text-red-600">*</span>
-              )}
-            </label>
+        {/* Expense Service */}
+        <div style={{ marginBottom: "16px" }}>
+          <label
+            htmlFor="expenseService"
+            className="block text-gray-700 font-bold mb-2"
+          >
+            Expense Service{" "}
+            {!validity.validExpenseService && (
+              <span className="text-red-600">*</span>
+            )}
             <select
+              aria-label="expense service"
+              aria-invalid={!validity.validExpenseService}
               id="expenseService"
               value={formData?.expenseService}
               onChange={(e) =>
@@ -355,20 +375,22 @@ const NewExpenseForm = () => {
                 </option>
               ))}
             </select>
-          </div>
+          </label>
+        </div>
 
-          {/* Expense Payee */}
-          <div style={{ marginBottom: "16px" }}>
-            <label
-              htmlFor="expensePayee"
-              className="block text-gray-700 font-bold mb-2"
-            >
-              Expense Payee{" "}
-              {!validity.validExpensePayee && (
-                <span className="text-red-600">*</span>
-              )}
-            </label>
+        {/* Expense Payee */}
+        <div style={{ marginBottom: "16px" }}>
+          <label
+            htmlFor="expensePayee"
+            className="block text-gray-700 font-bold mb-2"
+          >
+            Expense Payee{" "}
+            {!validity.validExpensePayee && (
+              <span className="text-red-600">*</span>
+            )}
             <select
+              aria-label="expense payee"
+              aria-invalid={!validity.validExpensePayee}
               id="expensePayee"
               value={formData?.expensePayee}
               onChange={(e) =>
@@ -384,20 +406,22 @@ const NewExpenseForm = () => {
                 </option>
               ))}
             </select>
-          </div>
+          </label>
+        </div>
 
-          {/* Expense Category */}
-          <div style={{ marginBottom: "16px" }}>
-            <label
-              htmlFor="expenseCategory"
-              className="block text-gray-700 font-bold mb-2"
-            >
-              Expense Categroy{" "}
-              {!validity.validExpenseCategory && (
-                <span className="text-red-600">*</span>
-              )}
-            </label>
+        {/* Expense Category */}
+        <div style={{ marginBottom: "16px" }}>
+          <label
+            htmlFor="expenseCategory"
+            className="block text-gray-700 font-bold mb-2"
+          >
+            Expense Categroy{" "}
+            {!validity.validExpenseCategory && (
+              <span className="text-red-600">*</span>
+            )}
             <select
+              aria-label="expense category"
+              aria-invalid={!validity.validExpenseCategory}
               id="expenseCategory"
               value={formData?.expenseCategory}
               onChange={(e) =>
@@ -412,33 +436,35 @@ const NewExpenseForm = () => {
                   {cat?.expenseCategoryLabel}
                 </option>
               ))}
-            </select>
-          </div>
-          {/* Expense Category items*/}
+            </select>{" "}
+          </label>
+        </div>
+        {/* Expense Category items*/}
 
-          <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-            <h3>{selectedCategory?.categoryName || "Select a Category"}</h3>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-              {selectedCategory?.expenseCategoryItems?.map((item, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleItemClick(item)}
-                  style={{
-                    padding: "10px 15px",
-                    border: "1px solid #007bff",
-                    borderRadius: "5px",
-                    backgroundColor: selectedItems.includes(item)
-                      ? "#007bff"
-                      : "#ffffff",
-                    color: selectedItems.includes(item) ? "#ffffff" : "#007bff",
-                    cursor: "pointer",
-                  }}
-                >
-                  {item}
-                </button>
-              ))}
-            </div>
-            <div style={{ marginTop: "20px" }}>
+        <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+          <h3>{selectedCategory?.categoryName || "Select items"}</h3>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+            {selectedCategory?.expenseCategoryItems?.map((item, index) => (
+              <button
+                aria-label="select items"
+                key={index}
+                onClick={() => handleItemClick(item)}
+                style={{
+                  padding: "10px 15px",
+                  border: "1px solid #007bff",
+                  borderRadius: "5px",
+                  backgroundColor: selectedItems.includes(item)
+                    ? "#007bff"
+                    : "#ffffff",
+                  color: selectedItems.includes(item) ? "#ffffff" : "#007bff",
+                  cursor: "pointer",
+                }}
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+          {/* <div style={{ marginTop: "20px" }}>
               <h4>Selected Items:</h4>
               {selectedItems.length > 0 ? (
                 <ul>
@@ -449,22 +475,24 @@ const NewExpenseForm = () => {
               ) : (
                 <p>No items selected</p>
               )}
-            </div>
-          </div>
+            </div> */}
+        </div>
 
-          {/* Expense Amount */}
-          <div style={{ marginBottom: "16px" }}>
-            <label
-              htmlFor="expenseAmount"
-              className="block text-gray-700 font-bold mb-2"
-            >
-              Expense Amount{" "}
-              {!validity.validExpenseAmount && (
-                <span className="text-red-600">*</span>
-              )}{" "}
-              ({CurrencySymbol})
-            </label>
+        {/* Expense Amount */}
+        <div style={{ marginBottom: "16px" }}>
+          <label
+            htmlFor="expenseAmount"
+            className="block text-gray-700 font-bold mb-2"
+          >
+            Expense Amount{" "}
+            {!validity.validExpenseAmount && (
+              <span className="text-red-600">*</span>
+            )}{" "}
+            ({CurrencySymbol})
             <input
+              aria-label="expense amount"
+              aria-invalid={!validity.validExpenseAmount}
+              placeholder="[999.99]"
               type="number"
               id="expenseAmount"
               value={formData.expenseAmount || ""}
@@ -474,19 +502,21 @@ const NewExpenseForm = () => {
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
               required
             />
-          </div>
-          {/* Expense Method */}
-          <div style={{ marginBottom: "16px" }}>
-            <label
-              htmlFor="paymentMethod"
-              className="block text-gray-700 font-bold mb-2"
-            >
-              Payment Method{" "}
-              {!validity.validExpenseMethod && (
-                <span className="text-red-600">*</span>
-              )}
-            </label>
+          </label>
+        </div>
+        {/* Expense Method */}
+        <div style={{ marginBottom: "16px" }}>
+          <label
+            htmlFor="paymentMethod"
+            className="block text-gray-700 font-bold mb-2"
+          >
+            Payment Method{" "}
+            {!validity.validExpenseMethod && (
+              <span className="text-red-600">*</span>
+            )}
             <select
+              aria-label="expense method"
+              aria-invalid={!validity.validExpenseMethod}
               id="expenseMethod"
               value={formData.expenseMethod || ""}
               onChange={(e) =>
@@ -507,21 +537,23 @@ const NewExpenseForm = () => {
                   {method}
                 </option>
               ))}
-            </select>
-          </div>
+            </select>{" "}
+          </label>
+        </div>
 
-          {/* Expense Date */}
-          <div style={{ marginBottom: "16px" }}>
-            <label
-              htmlFor="expenseDate"
-              className="block text-gray-700 font-bold mb-2"
-            >
-              Expense Date{" "}
-              {!validity.validExpenseDate && (
-                <span className="text-red-600">*</span>
-              )}
-            </label>
+        {/* Expense Date */}
+        <div style={{ marginBottom: "16px" }}>
+          <label
+            htmlFor="expenseDate"
+            className="block text-gray-700 font-bold mb-2"
+          >
+            Expense Date{" "}
+            {!validity.validExpenseDate && (
+              <span className="text-red-600">*</span>
+            )}
             <input
+              aria-label="expense date"
+              aria-invalid={!validity.validExpenseDate}
               type="date"
               id="expenseDate"
               value={formData.expenseDate || ""}
@@ -530,18 +562,19 @@ const NewExpenseForm = () => {
               }
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
               required
-            />
-          </div>
-          {/* Expense Payment Date */}
-          {formData?.expenseMethod === "Credit" && (
-            <div style={{ marginBottom: "16px" }}>
-              <label
-                htmlFor="expensePaymentDate"
-                className="block text-gray-700 font-bold mb-2"
-              >
-                Expense Payment Date
-              </label>
+            />{" "}
+          </label>
+        </div>
+        {/* Expense Payment Date */}
+        {formData?.expenseMethod === "Credit" && (
+          <div style={{ marginBottom: "16px" }}>
+            <label
+              htmlFor="expensePaymentDate"
+              className="block text-gray-700 font-bold mb-2"
+            >
+              Expense Payment Date
               <input
+                aria-label="expense payment date"
                 type="date"
                 id="expensePaymentDate"
                 value={formData.expensePaymentDate || ""}
@@ -552,19 +585,20 @@ const NewExpenseForm = () => {
                   })
                 }
                 className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-              />
-            </div>
-          )}
-
-          {/* Expense Note */}
-          <div style={{ marginBottom: "16px" }}>
-            <label
-              htmlFor="expenseNote"
-              className="block text-gray-700 font-bold mb-2"
-            >
-              Expense Note
+              />{" "}
             </label>
+          </div>
+        )}
+
+        {/* Expense Note */}
+        <div style={{ marginBottom: "16px" }}>
+          <label
+            htmlFor="expenseNote"
+            className="block text-gray-700 font-bold mb-2"
+          >
+            Expense Note
             <textarea
+              aria-label="expense note"
               id="expenseNote"
               value={formData.expenseNote || ""}
               onChange={(e) =>
@@ -572,28 +606,31 @@ const NewExpenseForm = () => {
               }
               rows="4"
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-            />
-          </div>
+            />{" "}
+          </label>
+        </div>
 
-          <div className="flex justify-end space-x-4">
-            <button
-              type="button"
-              //disabled={!canSubmit}
-              className="cancel-button"
-              onClick={() => navigate("/finances/expenses/expensesList/")}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={!canSubmit || isAddLoading}
-              className="save-button"
-            >
-              {isAddLoading ? "Adding..." : "Add Expense"}
-            </button>
-          </div>
-        </form>
-      </div>
+        <div className="flex justify-end space-x-4">
+          <button
+            aria-label="cancel expense"
+            type="button"
+            //disabled={!canSubmit}
+            className="cancel-button"
+            onClick={() => navigate("/finances/expenses/expensesList/")}
+          >
+            Cancel
+          </button>
+          <button
+            aria-label="submit expense"
+            type="submit"
+            disabled={!canSubmit || isAddLoading}
+            className="save-button"
+          >
+            {isAddLoading ? "Adding..." : "Add Expense"}
+          </button>
+        </div>
+      </form>
+
       {/* Confirmation Modal */}
       <ConfirmationModal
         show={showConfirmation}

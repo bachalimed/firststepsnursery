@@ -368,19 +368,12 @@ const NewEmployeeForm = () => {
       }
     }
   };
- 
-
-  //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
-  // const errClass = isEmployeeError ? "errmsg" : "offscreen"
-  // const validUserClass = !validUsername ? 'form__input--incomplete' : ''
-  // const validPwdClass = !validPassword ? 'form__input--incomplete' : ''
-  // const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
 
   const content = (
     <>
       <HR />
 
-      <form className="form" onSubmit={onSaveEmployeeClicked}>
+      <form className="form-container" onSubmit={onSaveEmployeeClicked}>
         <div className="form__title-row">
           <h2>New Employee</h2>
         </div>
@@ -618,7 +611,7 @@ const NewEmployeeForm = () => {
                     ))}
                     </div> */}
 
-<div className="flex justify-end gap-4">
+        <div className="flex justify-end gap-4">
           <button
             className="cancel-button"
             onClick={() => navigate("/admin/usersManagement/users/")}
@@ -630,7 +623,7 @@ const NewEmployeeForm = () => {
             type="submit"
             title="Save"
             onClick={onSaveEmployeeClicked}
-            disabled={!canSave||isEmployeeLoading}
+            disabled={!canSave || isEmployeeLoading}
           >
             Save Employee
           </button>

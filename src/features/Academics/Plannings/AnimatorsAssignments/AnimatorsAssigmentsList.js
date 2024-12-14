@@ -1,8 +1,7 @@
-
 import { useGetEmployeesByYearQuery } from "../../../HR/Employees/employeesApiSlice";
 import DataTable from "react-data-table-component";
-import {  useState } from "react";
-
+import { useState } from "react";
+import { HiOutlineSearch } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 
 import { FiEdit } from "react-icons/fi";
@@ -26,14 +25,15 @@ import Academics from "../../Academics";
 import { MONTHS } from "../../../../config/Months";
 const AnimatorsAssignmentsList = () => {
   const navigate = useNavigate();
- 
+
   //get several things from the query
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-
+  //state to hold the search query
+  const [searchQuery, setSearchQuery] = useState("");
   //function to return curent month for month selection
   const getCurrentMonth = () => {
     const currentMonthIndex = new Date().getMonth(); // Get current month (0-11)
@@ -87,8 +87,6 @@ const AnimatorsAssignmentsList = () => {
   //   const { entities } = schools;
   //   schoolsList = Object.values(entities);
   // }
-  //we do not want to import from state but from DB
-  const [selectedRows, setSelectedRows] = useState([]);
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idAttendedSchoolToDelete, setIdAttendedSchoolToDelete] =
@@ -142,11 +140,6 @@ const AnimatorsAssignmentsList = () => {
     setIdAttendedSchoolToDelete(null);
   };
 
-  // Handler for selecting rows
-  const handleRowSelected = (state) => {
-    setSelectedRows(state.selectedRows);
-    //console.log('selectedRows', selectedRows)
-  };
   const [monthFilter, setMonthFilter] = useState(getCurrentMonth()); // Initialize with empty string (for "All Months")
   let filteredAssignments = [];
   let assignmentsList = [];
@@ -156,23 +149,57 @@ const AnimatorsAssignmentsList = () => {
 
     // Filter assignments based on the selected month
     filteredAssignments = assignmentsList.filter((assignment) => {
-      const startMonth = getCurrentMonth(assignment.startTime);
-      const endMonth = getCurrentMonth(assignment.endTime);
-      const assignedFromMonth = getCurrentMonth(assignment.assignedFrom);
-      const assignedToMonth = getCurrentMonth(assignment.assignedTo);
-
+      const startMonth = getCurrentMonth(assignment?.startTime);
+      const endMonth = getCurrentMonth(assignment?.endTime);
+      const assignedFromMonth = getCurrentMonth(assignment?.assignedFrom);
+      const assignedToMonth = getCurrentMonth(assignment?.assignedTo);
+      console.log("Processing assignment:", assignment); // Debugging: Check assignment data
+      const matchesSearch =
+        assignment?.userFullName?.userFirstName
+          ?.toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        assignment?.userFullName?.userMiddleName
+          ?.toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        assignment?.userFullName?.userLastName
+          ?.toLowerCase()
+          .includes(searchQuery.toLowerCase());
+          console.log("Search Match:", matchesSearch); // Debugging: Check search match result
       // If a month is selected, filter by matching month names
-      return (
-        monthFilter === "" || // Show all if no month is selected
-        startMonth === monthFilter ||
-        endMonth === monthFilter ||
-        assignedFromMonth === monthFilter ||
-        assignedToMonth === monthFilter
-      );
+  const matchesMonth =
+  monthFilter === "" || // Show all if no month is selected
+  startMonth === monthFilter ||
+  endMonth === monthFilter ||
+  assignedFromMonth === monthFilter ||
+  assignedToMonth === monthFilter;
+     
+  console.log("Month Match:", matchesMonth); // Debugging: Check month match result
+
+  const result = matchesSearch && matchesMonth;
+  console.log("Assignment included:", result); // Debugging: Check if the assignment passes the filter
+
+  return result;
+     
     });
   }
-
-  const { isEmployee ,isParent,isContentManager,isAnimator,isAcademic,isFinance,isHR,isDesk , isDirector ,isManager , isAdmin  ,canEdit,  canDelete, canView ,canCreate } = useAuth();
+  const handleSearch = (e) => setSearchQuery(e.target.value);
+  const {
+    isEmployee,
+    isParent,
+    isContentManager,
+    isAnimator,
+    isAcademic,
+    isFinance,
+    isHR,
+    isDesk,
+    isDirector,
+    isManager,
+    isAdmin,
+    canEdit,
+    canDelete,
+    canView,
+    canCreate,
+  } = useAuth();
 
   //define the content to be conditionally rendered
   const column = [
@@ -205,7 +232,7 @@ const AnimatorsAssignmentsList = () => {
       sortable: true,
       width: "100px",
     },
-   
+
     {
       name: "Assignments",
       selector: (row) => (
@@ -257,32 +284,27 @@ const AnimatorsAssignmentsList = () => {
       width: "180px",
     },
 
-    (isDirector||isAcademic||isManager||isAdmin)&& {
+    (isDirector || isAcademic || isManager || isAdmin) && {
       name: "Actions",
       cell: (row) => (
         <div className="space-x-1">
-          
-            <button
-              className="text-amber-300"
-              onClick={() =>
-                navigate(
-                  `/academics/plannings/editAnimatorsAssignment/${row.id}`
-                )
-              }
-              hidden={!canEdit}
-            >
-              <FiEdit fontSize={20} />
-            </button>
-          
-          
-            <button
-              className="text-red-600"
-              onClick={() => onDeleteAttendedSchoolClicked(row.id)}
-              hidden={!canDelete}
-            >
-              <RiDeleteBin6Line fontSize={20} />
-            </button>
-          
+          <button
+            className="text-amber-300"
+            onClick={() =>
+              navigate(`/academics/plannings/editAnimatorsAssignment/${row.id}`)
+            }
+            hidden={!canEdit}
+          >
+            <FiEdit fontSize={20} />
+          </button>
+
+          <button
+            className="text-red-600"
+            onClick={() => onDeleteAttendedSchoolClicked(row.id)}
+            hidden={!canDelete}
+          >
+            <RiDeleteBin6Line fontSize={20} />
+          </button>
         </div>
       ),
       ignoreRowClick: true,
@@ -293,26 +315,24 @@ const AnimatorsAssignmentsList = () => {
 
   // Custom header to include the row count
   const tableHeader = (
-    
-      <h2>
-        Assignments List:
-        <span> {filteredAssignments.length} assignments</span>
-      </h2>
-   
+    <h2>
+      Assignments List:
+      <span> {filteredAssignments.length} assignments</span>
+    </h2>
   );
   let content;
 
   if (isSchoolsLoading)
     content = (
-      <>   
+      <>
         <Academics />
-        <LoadingStateIcon />       
+        <LoadingStateIcon />
       </>
     );
 
   if (isSchoolsError || isEmployeesError || isAssignmentsError) {
     content = (
-      <>       
+      <>
         <Academics />
         <div className="error-bar">
           {schoolsError?.data?.message}
@@ -320,36 +340,52 @@ const AnimatorsAssignmentsList = () => {
           {employeesError?.data?.message}
         </div>
       </>
-    ); 
+    );
   }
 
   if (isSchoolsSuccess) {
     return (
       <>
         <Academics />
-        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-          <div className="flex space-x-2 items-center">
-            {/* Months Filter Dropdown */}
-            <select
-              value={monthFilter}
-              onChange={(e) => setMonthFilter(e.target.value)}
-              className="text-sm h-8 border border-gray-300  px-4"
-            >
-              {/* Default option is the current month */}
-              <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
 
-              {/* Render the rest of the months, excluding the current month */}
-              {MONTHS.map(
-                (month, index) =>
-                  month !== getCurrentMonth() && (
-                    <option key={index} value={month}>
-                      {month}
-                    </option>
-                  )
-              )}
-            </select>
+        <div className="flex space-x-2 items-center">
+          {/* Search Bar */}
+          <div className="relative h-10 mr-2 ">
+            <HiOutlineSearch
+              fontSize={20}
+              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+              aria-label="search students"
+            />
+            <input
+              aria-label="search students"
+              type="text"
+              value={searchQuery}
+              onChange={handleSearch}
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+            />
           </div>
 
+          {/* Months Filter Dropdown */}
+          <select
+            value={monthFilter}
+            onChange={(e) => setMonthFilter(e.target.value)}
+            className="text-sm h-8 border  border-gray-300  px-4"
+          >
+            {/* Default option is the current month */}
+            <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
+
+            {/* Render the rest of the months, excluding the current month */}
+            {MONTHS.map(
+              (month, index) =>
+                month !== getCurrentMonth() && (
+                  <option key={index} value={month}>
+                    {month}
+                  </option>
+                )
+            )}
+          </select>
+        </div>
+        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
           <DataTable
             title={tableHeader}
             columns={column}
@@ -368,24 +404,25 @@ const AnimatorsAssignmentsList = () => {
               },
               cells: {
                 style: {
-                  justifyContent: 'center', // Center cell content
-                  textAlign: 'center',
+                  justifyContent: "center", // Center cell content
+                  textAlign: "center",
                 },
               },
             }}
           ></DataTable>
-          {(isAdmin||isDirector||isManager||isAcademic)&&<div className="flex justify-end items-center  space-x-4">
-            <button
-              className="add-button"
-              onClick={() =>
-                navigate("/academics/plannings/NewAnimatorsAssignmentForm/")
-              }
-              disabled={selectedRows.length !== 0} // Disable if no rows are selected
-              hidden={!canCreate}
-            >
-              New Assignment
-            </button>
-          </div>}
+          {(isAdmin || isDirector || isManager || isAcademic) && (
+            <div className="flex justify-end items-center  space-x-4">
+              <button
+                className="add-button"
+                onClick={() =>
+                  navigate("/academics/plannings/NewAnimatorsAssignmentForm/")
+                }
+                hidden={!canCreate}
+              >
+                New Assignment
+              </button>
+            </div>
+          )}
         </div>
         <DeletionConfirmModal
           isOpen={isDeleteModalOpen}

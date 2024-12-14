@@ -203,6 +203,7 @@ const StudentDocumentsListsList = () => {
         <div className="space-x-1">
           {canEdit ? (
             <button
+            aria-label="edit list"
               className="text-amber-300"
               onClick={() =>
                 Navigate(
@@ -216,6 +217,7 @@ const StudentDocumentsListsList = () => {
           ) : null}
 
           <button
+           aria-label="delete list"
             className="text-red-600"
             onClick={() => onDeleteStudentDocumentsListClicked(row.id)}
             hidden={!canDelete}
@@ -273,6 +275,7 @@ if(isDocumentsListsSuccess){
         />
         <div className="flex justify-end items-center space-x-4">
           <button
+          aria-label="add new list"
             className="add-button"
             onClick={() =>
               Navigate("/settings/studentsSet/newStudentDocumentsList")

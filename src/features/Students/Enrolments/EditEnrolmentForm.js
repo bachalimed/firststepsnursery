@@ -31,8 +31,6 @@ import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationMod
 import { CurrencySymbol } from "../../../config/Currency";
 import { useOutletContext } from "react-router-dom";
 
-
-
 const EditEnrolmentForm = ({ enrolment }) => {
   console.log(enrolment, "enrolment");
   // initialising states
@@ -68,10 +66,11 @@ const EditEnrolmentForm = ({ enrolment }) => {
     serviceAuthorisedFee: enrolment?.serviceAuthorisedFee,
     serviceFinalFee: enrolment?.serviceFinalFee,
     enrolmentNote: enrolment?.enrolmentNote,
-    enrolmentSuspension:{ 
-      enrolmentSuspensionDate: enrolment?.enrolmentSuspension?.enrolmentSuspensionDate?.split("T")[0],
-      suspensionOperator: enrolment?.enrolmentSuspension?.enrolmentSuspensionOperator,
-
+    enrolmentSuspension: {
+      enrolmentSuspensionDate:
+        enrolment?.enrolmentSuspension?.enrolmentSuspensionDate?.split("T")[0],
+      suspensionOperator:
+        enrolment?.enrolmentSuspension?.enrolmentSuspensionOperator,
     },
     enrolmentInvoice: enrolment?.enrolmentInvoice,
     enrolmentOperator: userId, // Set to the operator id
@@ -85,17 +84,14 @@ const EditEnrolmentForm = ({ enrolment }) => {
   const [validity, setValidity] = useState({
     validServiceFinalFee: false,
     validEnrolmentNote: false,
-    
   });
 
   useEffect(() => {
     setValidity({
       validEnrolmentNote: COMMENT_REGEX.test(formData?.enrolmentNote),
       validServiceFinalFee: FEE_REGEX.test(formData?.serviceFinalFee),
-      
     });
   }, [formData]);
-
 
   useEffect(() => {
     if (isEnrolmentSuccess) {
@@ -123,12 +119,9 @@ const EditEnrolmentForm = ({ enrolment }) => {
 
   // For checking whether the form is valid
   const canSave =
-    
-     validity && Object.values(validity).every(Boolean)&&  
-    !isEnrolmentLoading;
+    validity && Object.values(validity).every(Boolean) && !isEnrolmentLoading;
 
   // Submit the form
-
 
   const { triggerBanner } = useOutletContext(); // Access banner trigger
 
@@ -143,13 +136,16 @@ const EditEnrolmentForm = ({ enrolment }) => {
     // Close the confirmation modal
     setShowConfirmation(false);
     try {
-      const response= await updateEnrolment(formData).unwrap();
+      const response = await updateEnrolment(formData).unwrap();
       // navigate("/students/enrolments/enrolments");
       if (response.data && response.data.message) {
         // Success response
         triggerBanner(response.data.message, "success");
-
-      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
         // Error response
         triggerBanner(response.error.data.message, "error");
       } else {
@@ -170,10 +166,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
   const content = (
     <>
       <Students />
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-6 bg-white p-6 shadow rounded-md"
-      >
+      <form onSubmit={handleSubmit} className="form-container">
         <h2 className="text-xl font-bold">Edit Enrolment</h2>
         <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
           <div>
@@ -299,11 +292,11 @@ const EditEnrolmentForm = ({ enrolment }) => {
             <label htmlFor={formData?.service}> </label>
             <span className="ml-4">
               Authorized Fee: {formData?.serviceAuthorisedFee}{" "}
-              {`${CurrencySymbol}.`} Final Fee:{" "}{!validity?.validServiceFinalFee && (
+              {`${CurrencySymbol}.`} Final Fee:{" "}
+              {!validity?.validServiceFinalFee && (
                 <span className="text-red-600">*</span>
               )}
             </span>
-           
 
             <input
               type="number"
@@ -347,7 +340,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
               Enrolment Suspension
             </label>
             <input
-            type='date'
+              type="date"
               id="suspensionEffectiveDate"
               name="suspensionEffectiveDate"
               value={formData.enrolmentSuspension.enrolmentSuspensionDate}
@@ -361,23 +354,21 @@ const EditEnrolmentForm = ({ enrolment }) => {
                 })
               }
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              
             />
-              
           </div>
         </div>
         {/* Submit Button */}
         <div className="flex justify-end space-x-4">
-        <button
+          <button
             type="button"
             className="cancel-button"
-            onClick={()=>navigate("/students/enrolments/enrolments")}
+            onClick={() => navigate("/students/enrolments/enrolments")}
           >
             Cancel
           </button>
           <button
             type="submit"
-            disabled={!canSave||isEnrolmentLoading}
+            disabled={!canSave || isEnrolmentLoading}
             className={`inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
               canSave
                 ? "bg-blue-600 hover:bg-blue-700"
@@ -389,8 +380,8 @@ const EditEnrolmentForm = ({ enrolment }) => {
           </button>
         </div>
       </form>
-       {/* Confirmation Modal */}
-       <ConfirmationModal
+      {/* Confirmation Modal */}
+      <ConfirmationModal
         show={showConfirmation}
         onClose={handleCloseModal}
         onConfirm={handleConfirmSave}

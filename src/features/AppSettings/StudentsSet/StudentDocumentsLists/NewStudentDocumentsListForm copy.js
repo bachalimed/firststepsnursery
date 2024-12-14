@@ -20,7 +20,7 @@ import { TITLE_REGEX } from "../../../../config/REGEX";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 
 const NewStudentDocumentsListForm = () => {
-  const  = useNavigate();
+  const navigate = useNavigate();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
@@ -41,8 +41,8 @@ const NewStudentDocumentsListForm = () => {
   //prepare the permission variables
   const { userId, canEdit, canDelete, canAdd, canCreate, isParent, status2 } =
     useAuth();
-//confirmation Modal states
-const [showConfirmation, setShowConfirmation] = useState(false);
+  //confirmation Modal states
+  const [showConfirmation, setShowConfirmation] = useState(false);
   //initialisation of states for each input
   const [studentDocumentsList, setStudentDocumentsList] = useState([]);
   //const [documentReference, setDocumentReference] = useState('')
@@ -74,7 +74,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
       setValidDocumentsAcademicYear(false);
       ("/settings/studentsSet/studentDocumentsListsList"); //will  here after saving
     }
-  }, [isAddSuccess, ]); //even if no success it will  and not show any warning if failed or success
+  }, [isAddSuccess]); //even if no success it will  and not show any warning if failed or success
 
   //handlers to get the individual states from the input
 
@@ -115,17 +115,16 @@ const [showConfirmation, setShowConfirmation] = useState(false);
   const onSaveStudentDocumentsListClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
- // Show the confirmation modal before saving
- setShowConfirmation(true);
-}
-};
-// This function handles the confirmed save action
-const handleConfirmSave = async () => {
-  // Close the confirmation modal
-  setShowConfirmation(false);
+      // Show the confirmation modal before saving
+      setShowConfirmation(true);
+    }
+  };
+  // This function handles the confirmed save action
+  const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
 
-  try {
-
+    try {
       await addNewStudentDocumentsList({
         documentsList: studentDocumentsList,
         documentsAcademicYear,
@@ -137,27 +136,17 @@ const handleConfirmSave = async () => {
       console.error("Error saving student:", addError);
     }
   };
- // Close the modal without saving
- const handleCloseModal = () => {
-  setShowConfirmation(false);
-};
-
-  
-
-  //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
-  const errClass = isAddError ? "errmsg" : "offscreen";
-  //const validStudentDocumentsListClass = !validStudentDocumentsListName ? 'form__input--incomplete' : ''
-  //const validPwdClass = !validPassword ? 'form__input--incomplete' : ''
-  //const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
+  // Close the modal without saving
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
+  };
 
   const content = (
     <>
       <StudentsSet />
-      <p className={isAddError ? "errmsg" : "offscreen"}>
-        {addError?.data?.message}
-      </p>
+
       <form
-        lassName="form bg-gray-100 p-6 rounded shadow-lg max-w-md mx-auto"
+        className="form-container"
         onSubmit={onSaveStudentDocumentsListClicked}
       >
         <div className="form__title-row mb-4">
@@ -235,9 +224,11 @@ const handleConfirmSave = async () => {
           Add Document
         </button>
         <div className="flex justify-end gap-4">
-        <button
-           className="cancel-button"
-            onClick={() => navigate("/settings/studentsSet/studentDocumentsListsList")}
+          <button
+            className="cancel-button"
+            onClick={() =>
+              navigate("/settings/studentsSet/studentDocumentsListsList")
+            }
           >
             Cancel
           </button>
@@ -245,15 +236,14 @@ const handleConfirmSave = async () => {
             className="mb-4 px-4 py-2 bg-sky-700 text-white rounded hover:bg-blue-600"
             type="submit"
             onClick={onSaveStudentDocumentsListClicked}
-            disabled={!canSave||isAddLoading}
+            disabled={!canSave || isAddLoading}
           >
             Save Changes
           </button>
-          
         </div>
       </form>
-       {/* Confirmation Modal */}
-       <ConfirmationModal
+      {/* Confirmation Modal */}
+      <ConfirmationModal
         show={showConfirmation}
         onClose={handleCloseModal}
         onConfirm={handleConfirmSave}

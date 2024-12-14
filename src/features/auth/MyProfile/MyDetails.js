@@ -131,12 +131,14 @@ console.log(user,'user')
 
       <div className="flex justify-end items-center space-x-4 mt-6">
         <button
-          onClick={()=>navigate("/")}
+        aria-label="dashboard page"
+          onClick={()=>navigate("/dashboard/")}
          className="cancel-button"
         >
-          Home
+          Dashboard
         </button>
        {isAdmin&& <button
+       aria-label="edit profile"
           onClick={() => navigate(`/MyProfile/editMyProfile/${id}/`)}
           className="edit-button"
           hidden={!canEdit}

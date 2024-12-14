@@ -336,10 +336,10 @@ const NewStudentForm = () => {
         </p>
       )} */}
       <form
-        className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md"
+        className="form-container"
         onSubmit={onSaveStudentClicked}
       >
-        <div className="mb-6">
+        <div className="mb-4">
           <h2 className="text-2xl font-semibold">
             New student for the academic year {selectedAcademicYear?.title}
           </h2>

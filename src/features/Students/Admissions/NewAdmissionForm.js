@@ -26,7 +26,7 @@ import {
   DATE_REGEX,
   COMMENT_REGEX,
   OBJECTID_REGEX,
-} from "../../../config/REGEX"
+} from "../../../config/REGEX";
 import { useOutletContext } from "react-router-dom";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 const useDebounce = (value, delay) => {
@@ -78,15 +78,14 @@ const NewAdmissionForm = () => {
       endpointName: "NewAdmissionForm",
     } || {},
     {
-     
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
 
   const {
     data: admissions, //the data is renamed admissions
-    isLoading: isAdmissionGetLoading, 
+    isLoading: isAdmissionGetLoading,
     isSuccess: isAdmissionGetSuccess,
     isError: isAdmissionGetError,
     error: admissionGetError,
@@ -96,10 +95,9 @@ const NewAdmissionForm = () => {
       endpointName: "NewAdmissionForm",
     } || {},
     {
-    
-      pollingInterval: 60000, 
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
+      pollingInterval: 60000,
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
 
@@ -118,14 +116,13 @@ const NewAdmissionForm = () => {
       endpointName: "NewAdmissionForm",
     } || {},
     {
-      
-      refetchOnFocus: true, 
+      refetchOnFocus: true,
       refetchOnMountOrArgChange: true,
     }
   );
 
-   //confirmation Modal states
-   const [showConfirmation, setShowConfirmation] = useState(false);
+  //confirmation Modal states
+  const [showConfirmation, setShowConfirmation] = useState(false);
   // Local state for form data
   const [formData, setFormData] = useState({
     student: "",
@@ -309,24 +306,27 @@ const NewAdmissionForm = () => {
     }));
   };
 
-
   const { triggerBanner } = useOutletContext(); // Access banner trigger
   // Submit the form
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setShowConfirmation(true);}
+    setShowConfirmation(true);
+  };
 
-const handleConfirmSave = async () => {
+  const handleConfirmSave = async () => {
     // Close the confirmation modal
     setShowConfirmation(false);
     try {
-      const response=await addNewAdmission(formData).unwrap();
+      const response = await addNewAdmission(formData).unwrap();
       // navigate("/students/admissions/admissions");
       if (response.data && response.data.message) {
         // Success response
         triggerBanner(response.data.message, "success");
-
-      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
         // Error response
         triggerBanner(response.error.data.message, "error");
       } else {
@@ -339,10 +339,10 @@ const handleConfirmSave = async () => {
       console.error("Error saving:", error);
     }
   };
-// Close the modal without saving
-const handleCloseModal = () => {
-  setShowConfirmation(false);
-};
+  // Close the modal without saving
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
+  };
   useEffect(() => {
     if (isAdmissionSuccess) {
       //if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
@@ -457,10 +457,7 @@ const handleCloseModal = () => {
       <Students />
 
       {noAdmissionStudents?.length !== 0 ? (
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-6 bg-white p-6 shadow rounded-md"
-        >
+        <form onSubmit={handleSubmit} className="form-container">
           <h2 className="text-xl font-bold">New Admission </h2>
           <div>
             <label
@@ -792,16 +789,16 @@ const handleCloseModal = () => {
 
           {/* Submit Button */}
           <div className="flex justify-end gap-4">
-          <button
+            <button
               type="button"
-              className={ 'cancel-button'}
+              className={"cancel-button"}
               onClick={handleCancel}
             >
               Cancel
             </button>
             <button
               type="submit"
-              disabled={!canSave||isAdmissionLoading}
+              disabled={!canSave || isAdmissionLoading}
               className={`inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
                 canSave
                   ? "bg-blue-600 hover:bg-blue-700"
@@ -811,14 +808,13 @@ const handleCloseModal = () => {
               <FontAwesomeIcon icon={faSave} className="mr-2" />
               {isAdmissionLoading ? "Saving..." : "Save Admission"}
             </button>
-           
           </div>
         </form>
       ) : (
         "No new Students for admission available"
       )}
-       {/* Confirmation Modal */}
-       <ConfirmationModal
+      {/* Confirmation Modal */}
+      <ConfirmationModal
         show={showConfirmation}
         onClose={handleCloseModal}
         onConfirm={handleConfirmSave}

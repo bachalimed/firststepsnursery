@@ -31,14 +31,13 @@
   @apply px-4 py-2 border border-sky-700 text-white rounded bg-sky-700 hover:bg-sky-500;
 }
 .edit-button {
-  @apply px-4 py-2 border border-sky-300 text-sky-700 rounded bg-transparent hover:bg-sky-500  hover:text-white;
+  @apply px-4 py-2 border border-amber-500 text-amber-700 rounded bg-transparent hover:bg-amber-500  hover:text-white;
 }
 .delete-button {
   @apply px-4 py-2 border  border-red-700 text-red-700 rounded bg-white hover:text-white hover:bg-red-600       
 }
 
-
-
+/* this applies to plannings??*/
 .form {
     display: flex;
     flex-flow: column nowrap;
@@ -548,3 +547,24 @@ header .bg-blue-600 p {
   text-align: center;
 }
 /* /////////////////////////////error in list end  */
+
+/*//////////////standard forms style begin*/
+/* Form container styles used for all forms */
+.form-container {
+  background-color: white; /* White background */
+  border-radius: 8px; /* Rounded borders */
+  padding: 16px; /* Inner padding */
+  max-width: 768px; /* Limit form width */
+  margin: 0 auto; /* Center form horizontally */
+  width: 100%; /* Make it responsive */
+  box-sizing: border-box; /* Ensure padding doesn't increase the element size */
+}
+
+/* Responsive form adjustments */
+@media (min-width: 768px) {
+  .form-container {
+    padding: 24px; /* Larger padding on bigger screens */
+  }
+}
+
+

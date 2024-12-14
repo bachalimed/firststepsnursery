@@ -13,22 +13,21 @@ import {
   NAME_REGEX,
   PHONE_REGEX,
   OBJECTID_REGEX,
-} from "../../../config/REGEX"
+} from "../../../config/REGEX";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
-
+import useAuth from "../../../hooks/useAuth";
 import { useOutletContext } from "react-router-dom";
 
 const EditMyProfileForm = ({ user }) => {
   //user was passed as prop in editUser
   const navigate = useNavigate();
-
+  const { isAdmin } = useAuth();
   //initialise the mutation to be used later
   const [updateUser, { isLoading, isSuccess, isError, error }] =
     useUpdateUserMutation();
 
-
-    //confirmation Modal states
-const [showConfirmation, setShowConfirmation] = useState(false);
+  //confirmation Modal states
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   //initialise the parameters with the user details
   // Consolidated form state
@@ -36,7 +35,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
     id: user.id,
     username: user.username,
     password: "",
-    
+
     userFullName: {
       userFirstName: user.userFullName.userFirstName,
       userMiddleName: user.userFullName?.userMiddleName || "",
@@ -44,8 +43,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
     },
     userDob: user.userDob.split("T")[0],
     userSex: user.userSex,
-   
-   
+
     userAddress: {
       house: user.userAddress.house,
       street: user.userAddress.street,
@@ -58,7 +56,6 @@ const [showConfirmation, setShowConfirmation] = useState(false);
       secondaryPhone: user.userContact?.secondaryPhone || "",
       email: user.email || "",
     },
-   
   });
   const [validity, setValidity] = useState({
     validUsername: false,
@@ -71,7 +68,6 @@ const [showConfirmation, setShowConfirmation] = useState(false);
     validStreet: false,
     validCity: false,
     validPrimaryPhone: false,
-   
   });
   // Validate inputs using regex patterns
   useEffect(() => {
@@ -89,7 +85,6 @@ const [showConfirmation, setShowConfirmation] = useState(false);
       validStreet: NAME_REGEX.test(formData.userAddress.street),
       validCity: NAME_REGEX.test(formData.userAddress.city),
       validPrimaryPhone: PHONE_REGEX.test(formData.userContact.primaryPhone),
-     
     }));
   }, [formData]);
 
@@ -98,8 +93,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
       setFormData({
         username: "",
         password: undefined,
-       
-       
+
         userFullName: {
           userFirstName: "",
           userMiddleName: "",
@@ -107,8 +101,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
         },
         userDob: "",
         userSex: "",
-       
-      
+
         userAddress: {
           house: "",
           street: "",
@@ -121,7 +114,6 @@ const [showConfirmation, setShowConfirmation] = useState(false);
           secondaryPhone: "",
           email: "",
         },
-      
       });
       navigate(`/myProfile/myDetails/${user?.id}`);
     }
@@ -174,15 +166,17 @@ const [showConfirmation, setShowConfirmation] = useState(false);
     // Close the confirmation modal
     setShowConfirmation(false);
 
-
-      try {
-      const response =await updateUser({ formData });
-      console.log(response,'response')
+    try {
+      const response = await updateUser({ formData });
+      console.log(response, "response");
       if (response.data && response.data.message) {
         // Success response
         triggerBanner(response.data.message, "success");
-
-      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
         // Error response
         triggerBanner(response.error.data.message, "error");
       } else {
@@ -194,41 +188,40 @@ const [showConfirmation, setShowConfirmation] = useState(false);
 
       console.error("Error saving:", error);
     }
-    }
- 
- // Close the modal without saving
- const handleCloseModal = () => {
-  setShowConfirmation(false);
-};
+  };
+
+  // Close the modal without saving
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
+  };
   const handleCancel = () => {
     navigate(`/myProfile/myDetails/${user.id}`);
   };
   console.log(formData, "formData");
 
-
   const content = (
     <>
       <MyProfile />
-      <section className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
-        {isError && <p className="text-red-600">{error?.data?.message}</p>}
+
+      <form onSubmit={onSaveUserClicked} className="form-container">
         <h2 className="text-2xl font-bold mb-4">
           Edit User{" "}
           {`${formData.userFullName.userFirstName} ${formData.userFullName.userMiddleName} ${formData.userFullName.userLastName}`}
         </h2>
-
-        <form onSubmit={onSaveUserClicked} className="space-y-6">
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">User Information</h3>
-            <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    UserName
-                    {!validity.validUsername && (
-                      <span className="text-red-600">*</span>
-                    )}
-                  </label>
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">User Information</h3>
+          <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  UserName
+                  {!validity.validUsername && (
+                    <span className="text-red-600">*</span>
+                  )}
                   <input
+                    aria-invalid={!validity.validUsername}
+                    aria-label="username"
+                    placeholder="[6-20 characters]"
                     type="text"
                     name="username"
                     value={formData.username}
@@ -243,18 +236,20 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                         ? "border-gray-300"
                         : "border-red-600"
                     } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                    placeholder="Enter username"
                     required
                   />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Password
-                    {!validity.validPassword && (
-                      <span className="text-red-600">*</span>
-                    )}
-                  </label>
+                </label>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Password
+                  {!validity.validPassword && (
+                    <span className="text-red-600">*</span>
+                  )}
                   <input
+                    aria-invalid={!validity.validPassword}
+                    aria-label="password"
+                    placeholder="[8-20 characters]"
                     type="password"
                     name="password"
                     value={formData.password}
@@ -269,19 +264,21 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                         ? "border-gray-300"
                         : "border-red-600"
                     } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                    placeholder="Enter password"
                     required
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  First Name
-                  {!validity.validFirstName && (
-                    <span className="text-red-600">*</span>
-                  )}
+                  />{" "}
                 </label>
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                First Name
+                {!validity.validFirstName && (
+                  <span className="text-red-600">*</span>
+                )}
                 <input
+                  aria-invalid={!validity.validFirstName}
+                  placeholder="[3-20 letters]"
+                  aria-label="first name"
                   type="text"
                   name="userFirstName"
                   value={formData.userFullName.userFirstName}
@@ -299,16 +296,17 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                       ? "border-gray-300"
                       : "border-red-600"
                   } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                  placeholder="Enter First Name"
                   required
-                />
-              </div>
-              {/* Middle Name */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Middle Name
-                </label>
+                />{" "}
+              </label>
+            </div>
+            {/* Middle Name */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Middle Name
                 <input
+                  placeholder="[3-20 letters]"
+                  aria-label="middle name"
                   type="text"
                   name="userMiddleName"
                   value={formData.userFullName.userMiddleName}
@@ -322,19 +320,21 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                     }))
                   }
                   className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  placeholder="Enter Middle Name"
-                />
-              </div>
+                />{" "}
+              </label>
+            </div>
 
-              {/* Last Name */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Last Name{" "}
-                  {!validity.validLastName && (
-                    <span className="text-red-600">*</span>
-                  )}
-                </label>
+            {/* Last Name */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Last Name{" "}
+                {!validity.validLastName && (
+                  <span className="text-red-600">*</span>
+                )}
                 <input
+                  aria-invalid={!validity.validLastName}
+                  aria-label="last name"
+                  placeholder="[3-20 letters]"
                   type="text"
                   name="userLastName"
                   value={formData.userFullName.userLastName}
@@ -352,23 +352,25 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                       ? "border-gray-300"
                       : "border-red-600"
                   } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                  placeholder="Enter Last Name"
                   required
-                />
-              </div>
+                />{" "}
+              </label>
+            </div>
 
-              {/* Date of Birth */}
-              <div>
-                <label
-                  className="block text-sm font-medium text-gray-700"
-                  htmlFor="userDob"
-                >
-                  Date of Birth{" "}
-                  {!validity.validUserDob && (
-                    <span className="text-red-600">*</span>
-                  )}
-                </label>
+            {/* Date of Birth */}
+            <div>
+              <label
+                className="block text-sm font-medium text-gray-700"
+                htmlFor="userDob"
+              >
+                Date of Birth{" "}
+                {!validity.validUserDob && (
+                  <span className="text-red-600">*</span>
+                )}
                 <input
+                  aria-invalid={!validity.validUserDob}
+                  placeholder="[dd/mm/yyyy]"
+                  aria-label="userDob"
                   type="date"
                   name="userDob"
                   value={formData.userDob}
@@ -378,79 +380,86 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                   } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                   required
                 />
-              </div>
+              </label>
+            </div>
 
-              {/* Sex Selection */}
+            {/* Sex Selection */}
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Sex{" "}
-                  {!validity.validUserSex && (
-                    <span className="text-red-600">*</span>
-                  )}
-                </label>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Sex{" "}
+                {!validity.validUserSex && (
+                  <span className="text-red-600">*</span>
+                )}
                 <div className="flex items-center space-x-4 mt-1">
                   <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      name="userSex"
-                      value="Male"
-                      checked={formData.userSex === "Male"}
-                      onChange={(e) => {
-                        setFormData((prev) => ({
-                          ...prev,
-                          userSex: e.target.checked
-                            ? "Male"
-                            : formData.userSex === "Male"
-                            ? ""
-                            : formData.userSex,
-                        }));
-                      }}
-                      className={`h-4 w-4 ${
-                        validity.validUserSex
-                          ? "border-gray-300 rounded"
-                          : "border-red-600 rounded"
-                      } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                    />
-                    <label className="ml-2 text-sm text-gray-700">Male</label>
+                    <label className="ml-2 text-sm text-gray-700">
+                      <input
+                        type="checkbox"
+                        name="userSex"
+                        value="Male"
+                        checked={formData.userSex === "Male"}
+                        onChange={(e) => {
+                          setFormData((prev) => ({
+                            ...prev,
+                            userSex: e.target.checked
+                              ? "Male"
+                              : formData.userSex === "Male"
+                              ? ""
+                              : formData.userSex,
+                          }));
+                        }}
+                        className={`h-4 w-4 ${
+                          validity.validUserSex
+                            ? "border-gray-300 rounded"
+                            : "border-red-600 rounded"
+                        } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                      />
+                      Male
+                    </label>
                   </div>
 
                   <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      name="userSex"
-                      value="Female"
-                      checked={formData.userSex === "Female"}
-                      onChange={(e) => {
-                        setFormData((prev) => ({
-                          ...prev,
-                          userSex: e.target.checked
-                            ? "Female"
-                            : formData.userSex === "Female"
-                            ? ""
-                            : formData.userSex,
-                        }));
-                      }}
-                      className="h-4 w-4 border-gray-300 rounded focus:ring-indigo-500"
-                    />
-                    <label className="ml-2 text-sm text-gray-700">Female</label>
+                    <label className="ml-2 text-sm text-gray-700">
+                      <input
+                        type="checkbox"
+                        name="userSex"
+                        value="Female"
+                        checked={formData.userSex === "Female"}
+                        onChange={(e) => {
+                          setFormData((prev) => ({
+                            ...prev,
+                            userSex: e.target.checked
+                              ? "Female"
+                              : formData.userSex === "Female"
+                              ? ""
+                              : formData.userSex,
+                          }));
+                        }}
+                        className="h-4 w-4 border-gray-300 rounded focus:ring-indigo-500"
+                      />
+                      Female
+                    </label>
                   </div>
-                </div>
-              </div>
+                </div>{" "}
+              </label>
             </div>
           </div>
-          <h3 className="text-lg font-semibold">User Contact</h3>
-          <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
-            {/* Contact Information */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Primary Phone{" "}
-                  {!validity.validPrimaryPhone && (
-                    <span className="text-red-600">*</span>
-                  )}
-                </label>
+        </div>
+        <h3 className="text-lg font-semibold">User Contact</h3>
+        <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
+          {/* Contact Information */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Primary Phone{" "}
+                {!validity.validPrimaryPhone && (
+                  <span className="text-red-600">*</span>
+                )}
                 <input
+                  aria-invalid={!validity.validPrimaryPhone}
+                  placeholder="[6-15 digits]"
+                  aria-label="primary phone number"
                   type="text"
                   name="primaryPhone"
                   value={formData.userContact.primaryPhone}
@@ -468,16 +477,17 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                       ? "border-gray-300"
                       : "border-red-600"
                   } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                  placeholder="Enter Primary Phone"
                   required
                 />
-              </div>
+              </label>
+            </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Secondary Phone
-                </label>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Secondary Phone
                 <input
+                  placeholder="[6-15 digits]"
+                  aria-label="secondary phone number"
                   type="text"
                   name="secondaryPhone"
                   value={formData.userContact.secondaryPhone}
@@ -491,16 +501,17 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                     }))
                   }
                   className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  placeholder="Enter Secondary Phone"
-                />
-              </div>
-            </div>
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Email
+                />{" "}
               </label>
+            </div>
+          </div>
+          {/* Email */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Email
               <input
+                placeholder="[email@address.com]"
+                aria-label="email"
                 type="email"
                 name="email"
                 value={formData.userContact.email}
@@ -514,19 +525,21 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                   }))
                 }
                 className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                placeholder="Enter Email Address"
-              />
-            </div>
-         
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  House{" "}
-                  {!validity.validHouse && (
-                    <span className="text-red-600">*</span>
-                  )}
-                </label>
+              />{" "}
+            </label>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                House{" "}
+                {!validity.validHouse && (
+                  <span className="text-red-600">*</span>
+                )}
                 <input
+                  aria-invalid={!validity.validHouse}
+                  placeholder="[3-20 letters]"
+                  aria-label="house number"
                   type="text"
                   name="house"
                   value={formData.userAddress.house}
@@ -542,18 +555,20 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                   className={`mt-1 block w-full border ${
                     validity.validHouse ? "border-gray-300" : "border-red-600"
                   } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                  placeholder="Enter House"
-                />
-              </div>
+                />{" "}
+              </label>
+            </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Street{" "}
-                  {!validity.validStreet && (
-                    <span className="text-red-600">*</span>
-                  )}
-                </label>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Street{" "}
+                {!validity.validStreet && (
+                  <span className="text-red-600">*</span>
+                )}
                 <input
+                  aria-invalid={!validity.validStreet}
+                  aria-label="street name"
+                  placeholder="[3-20 letters]"
                   type="text"
                   name="street"
                   value={formData.userAddress.street}
@@ -569,15 +584,16 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                   className={`mt-1 block w-full border ${
                     validity.validStreet ? "border-gray-300" : "border-red-600"
                   } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                  placeholder="Enter Street"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Area
-                  </label>
+                />{" "}
+              </label>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Area
                   <input
+                    placeholder="[3-20 letters]"
+                    aria-label="area"
                     type="text"
                     name="area"
                     value={formData.userAddress.area}
@@ -591,14 +607,15 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                       }))
                     }
                     className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Enter Area"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Post Code
-                  </label>
+                  />{" "}
+                </label>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Post Code
                   <input
+                    placeholder="[3-20 letters]"
+                    aria-label="post code"
                     type="text"
                     name="postCode"
                     value={formData.userAddress.postCode}
@@ -612,19 +629,18 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                       }))
                     }
                     className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Enter Post Code"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  City{" "}
-                  {!validity.validCity && (
-                    <span className="text-red-600">*</span>
-                  )}
+                  />{" "}
                 </label>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                City{" "}
+                {!validity.validCity && <span className="text-red-600">*</span>}
                 <input
+                  aria-invalid={!validity.validCity}
+                  placeholder="[3-20 letters]"
                   type="text"
                   name="city"
                   value={formData.userAddress.city}
@@ -640,124 +656,136 @@ const [showConfirmation, setShowConfirmation] = useState(false);
                   className={`mt-1 block w-full border ${
                     validity.validCity ? "border-gray-300" : "border-red-600"
                   } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                  placeholder="Enter City"
-                />
-              </div>
+                />{" "}
+              </label>
             </div>
           </div>
-          <h3 className="text-lg font-semibold">User Roles and Permissions</h3>
+        </div>
+
+        {isAdmin && (
           <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
             {/* Family ID Input */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Family ID
+                <input
+                  aria-label="family id"
+                  placeholder="[24 characters]"
+                  type="text"
+                  name="familyId"
+                  value={formData.familyId}
+                  onChange={handleInputChange}
+                  className="form-input mt-1 block w-full"
+                />{" "}
               </label>
-              <input
-                type="text"
-                name="familyId"
-                value={formData.familyId}
-                onChange={handleInputChange}
-                className="form-input mt-1 block w-full"
-              />
             </div>
 
             {/* Employee ID Input */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Employee ID
+                <input
+                  aria-label="employee id"
+                  placeholder="[24 characters]"
+                  type="text"
+                  name="employeeId"
+                  value={formData.employeeId}
+                  onChange={handleInputChange}
+                  className="form-input mt-1 block w-full"
+                />{" "}
               </label>
-              <input
-                type="text"
-                name="employeeId"
-                value={formData.employeeId}
-                onChange={handleInputChange}
-                className="form-input mt-1 block w-full"
-              />
             </div>
 
             {/* User Is Active Checkbox */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 User Is Active
+                <input
+                  aria-label="user is active"
+                  type="checkbox"
+                  name="userIsActive"
+                  checked={formData.userIsActive}
+                  onChange={handleInputChange}
+                  className="h-4 w-4"
+                />
               </label>
-              <input
-                type="checkbox"
-                name="userIsActive"
-                checked={formData.userIsActive}
-                onChange={handleInputChange}
-                className="h-4 w-4"
-              />
             </div>
             {/* User role selection */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 User Roles
+                <div className="flex flex-wrap">
+                  {Object.keys(ROLES).map((role) => (
+                    <div key={role} className="mr-4">
+                      <label className="flex items-center">
+                        <input
+                          aria-label="user roles"
+                          type="checkbox"
+                          name="userRoles"
+                          value={role}
+                          checked={formData.userRoles?.includes(role)}
+                          onChange={handleRoleChange}
+                          className="h-4 w-4"
+                        />
+                        <span className="ml-2">{role}</span>
+                      </label>
+                    </div>
+                  ))}
+                </div>{" "}
               </label>
-              <div className="flex flex-wrap">
-                {Object.keys(ROLES).map((role) => (
-                  <div key={role} className="mr-4">
-                    <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        name="userRoles"
-                        value={role}
-                        checked={formData.userRoles.includes(role)}
-                        onChange={handleRoleChange}
-                        className="h-4 w-4"
-                      />
-                      <span className="ml-2">{role}</span>
-                    </label>
-                  </div>
-                ))}
-              </div>
             </div>
 
             {/* User action selection */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Allowed Actions
+                <div className="flex flex-wrap">
+                  {Object.keys(ACTIONS).map((action) => (
+                    <div key={action} className="mr-4">
+                      <label className="flex items-center">
+                        <input
+                          aria-label="allowed actions"
+                          type="checkbox"
+                          name="userAllowedActions"
+                          value={action}
+                          checked={formData.userAllowedActions?.includes(
+                            action
+                          )}
+                          onChange={handleActionChange}
+                          className="h-4 w-4"
+                        />
+                        <span className="ml-2">{action}</span>
+                      </label>
+                    </div>
+                  ))}
+                </div>{" "}
               </label>
-              <div className="flex flex-wrap">
-                {Object.keys(ACTIONS).map((action) => (
-                  <div key={action} className="mr-4">
-                    <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        name="userAllowedActions"
-                        value={action}
-                        checked={formData.userAllowedActions.includes(action)}
-                        onChange={handleActionChange}
-                        className="h-4 w-4"
-                      />
-                      <span className="ml-2">{action}</span>
-                    </label>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
-          <div className="flex justify-end gap-4">
+        )}
+        <div className="flex justify-end gap-4">
           <button
-              className="cancel-button"
-              onClick={handleCancel}
-            >
-              Cancel
-            </button>
-            <button
-              className=" px-4 py-2 bg-green-600 text-white rounded"
-              type="submit"
-              title="Save"
-              onClick={onSaveUserClicked}
-              disabled={!canSave||isLoading}
-            >
-              Save Changes
-            </button>
-           
-          </div>
-        </form>
-      </section>
-       {/* Confirmation Modal */}
-       <ConfirmationModal
+            aria-label="cancel edit my profile"
+            className="cancel-button"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+          <button
+            aria-label="submit edit my profile"
+            className="save-button"
+            type="submit"
+            title="Save"
+            onClick={onSaveUserClicked}
+            disabled={!canSave || isLoading}
+          >
+            Save Changes
+          </button>
+        </div>
+      </form>
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
         show={showConfirmation}
         onClose={handleCloseModal}
         onConfirm={handleConfirmSave}

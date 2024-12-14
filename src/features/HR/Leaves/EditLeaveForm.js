@@ -184,174 +184,170 @@ const EditLeaveForm = ({ leave }) => {
     <>
       <HR />
 
-      <section className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
+      <form onSubmit={onSaveLeaveClicked} className="form-container">
         <h2 className="text-2xl font-bold mb-4">
-          Update {formData?.leaveMonth} Leave for {leave?.leaveEmployeeName?.userFirstName}{" "}
+          Update {formData?.leaveMonth} Leave for{" "}
+          {leave?.leaveEmployeeName?.userFirstName}{" "}
           {leave?.leaveEmployeeName?.userMiddleName}{" "}
-          {leave?.leaveEmployeeName?.userLastName}{" "} 
+          {leave?.leaveEmployeeName?.userLastName}{" "}
         </h2>
-        {isUpdateError && (
-          <p className="text-red-600">Error: {updateError?.data?.message}</p>
+
+        {/* Leave Is Approved */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Leave is Approved ?
+          </label>
+          <input
+            type="checkbox"
+            name="leaveIsApproved"
+            checked={formData.leaveIsApproved}
+            onChange={handleInputChange}
+            className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+          />
+        </div>
+
+        {/* Leave Is Paid Leave */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Leave is Paid ?
+          </label>
+          <input
+            type="checkbox"
+            name="leaveIsPaidLeave"
+            checked={formData.leaveIsPaidLeave}
+            onChange={handleInputChange}
+            className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+          />
+        </div>
+
+        {/* Leave Is Sick Leave */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Leave is Sick Leave ?
+          </label>
+          <input
+            type="checkbox"
+            name="leaveIsSickLeave"
+            checked={formData.leaveIsSickLeave}
+            onChange={handleInputChange}
+            className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+          />
+        </div>
+
+        {/* Leave Start Date */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Start Date{" "}
+            {!validity.validLeaveStartDate && (
+              <span className="text-red-600">*</span>
+            )}
+          </label>
+          <input
+            type="date"
+            name="leaveStartDate"
+            value={formData.leaveStartDate}
+            onChange={handleInputChange}
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+          />
+        </div>
+
+        {/* Leave End Date */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            End Date{" "}
+            {!validity.validLeaveEndDate && (
+              <span className="text-red-600">*</span>
+            )}
+          </label>
+          <input
+            type="date"
+            name="leaveEndDate"
+            value={formData.leaveEndDate}
+            onChange={handleInputChange}
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+          />
+        </div>
+        {/* Leave Is Part Day */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Leave is Part Day ?
+          </label>
+          <input
+            type="checkbox"
+            name="leaveIsPartDay"
+            checked={formData.leaveIsPartDay}
+            onChange={handleInputChange}
+            className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+          />
+        </div>
+
+        {formData.leaveIsPartDay && (
+          <>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Start Time
+              </label>
+              <input
+                type="time"
+                name="leaveStartTime"
+                value={formData.leaveStartTime}
+                onChange={handleInputChange}
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                End Time
+              </label>
+              <input
+                type="time"
+                name="leaveEndTime"
+                value={formData.leaveEndTime}
+                onChange={handleInputChange}
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                required
+              />
+            </div>
+          </>
         )}
-        <form onSubmit={onSaveLeaveClicked} className="space-y-6">
-         
 
-          {/* Leave Is Approved */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Leave is Approved ?
-            </label>
-            <input
-              type="checkbox"
-              name="leaveIsApproved"
-              checked={formData.leaveIsApproved}
-              onChange={handleInputChange}
-              className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-            />
-          </div>
+        {/* Leave Comment */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Comment
+          </label>
+          <textarea
+            name="leaveComment"
+            value={formData.leaveComment}
+            onChange={handleInputChange}
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+          />
+        </div>
 
-          {/* Leave Is Paid Leave */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Leave is Paid ?
-            </label>
-            <input
-              type="checkbox"
-              name="leaveIsPaidLeave"
-              checked={formData.leaveIsPaidLeave}
-              onChange={handleInputChange}
-              className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-            />
-          </div>
+        {/* Submit Button */}
+        <div className="flex justify-end gap-4">
+          <button
+            type="button"
+            onClick={() => navigate("/hr/leaves/leavesList/")}
+            className="cancel-button"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={!canSave || isUpdateLoading}
+            className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
+              canSave
+                ? "bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500"
+                : "bg-gray-400 cursor-not-allowed"
+            } focus:outline-none focus:ring-2 focus:ring-offset-2`}
+          >
+            Save
+          </button>
+        </div>
+      </form>
 
-          {/* Leave Is Sick Leave */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Leave is Sick Leave ?
-            </label>
-            <input
-              type="checkbox"
-              name="leaveIsSickLeave"
-              checked={formData.leaveIsSickLeave}
-              onChange={handleInputChange}
-              className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-            />
-          </div>
-
-          {/* Leave Start Date */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Start Date{" "}
-              {!validity.validLeaveStartDate && (
-                <span className="text-red-600">*</span>
-              )}
-            </label>
-            <input
-              type="date"
-              name="leaveStartDate"
-              value={formData.leaveStartDate}
-              onChange={handleInputChange}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            />
-          </div>
-
-          {/* Leave End Date */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              End Date{" "}
-              {!validity.validLeaveEndDate && (
-                <span className="text-red-600">*</span>
-              )}
-            </label>
-            <input
-              type="date"
-              name="leaveEndDate"
-              value={formData.leaveEndDate}
-              onChange={handleInputChange}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            />
-          </div>
-          {/* Leave Is Part Day */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Leave is Part Day ?
-            </label>
-            <input
-              type="checkbox"
-              name="leaveIsPartDay"
-              checked={formData.leaveIsPartDay}
-              onChange={handleInputChange}
-              className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-            />
-          </div>
-
-          {formData.leaveIsPartDay && (
-            <>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Start Time
-                </label>
-                <input
-                  type="time"
-                  name="leaveStartTime"
-                  value={formData.leaveStartTime}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  End Time
-                </label>
-                <input
-                  type="time"
-                  name="leaveEndTime"
-                  value={formData.leaveEndTime}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  required
-                />
-              </div>
-            </>
-          )}
-
-          {/* Leave Comment */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Comment
-            </label>
-            <textarea
-              name="leaveComment"
-              value={formData.leaveComment}
-              onChange={handleInputChange}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            />
-          </div>
-
-          {/* Submit Button */}
-          <div className="flex justify-end gap-4">
-            <button
-              type="button"
-              onClick={() => navigate("/hr/leaves/leavesList/")}
-              className="cancel-button"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={!canSave || isUpdateLoading}
-              className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
-                canSave
-                  ? "bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500"
-                  : "bg-gray-400 cursor-not-allowed"
-              } focus:outline-none focus:ring-2 focus:ring-offset-2`}
-            >
-              Save
-            </button>
-          </div>
-        </form>
-      </section>
       {/* Confirmation Modal */}
       <ConfirmationModal
         show={showConfirmation}
