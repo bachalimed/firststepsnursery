@@ -1,43 +1,48 @@
+import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useAddNewClassroomMutation } from "./classroomsApiSlice"; // Redux API action
-import { classroomAdded } from "./classroomsSlice"; // Redux action for state update
-import AcademicsSet from "../../AcademicsSet"
-import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
-import { NAME_REGEX } from "../../../../config/REGEX";
-import { useOutletContext } from "react-router-dom";
+//import { classroomAdded } from "./classroomsSlice"; // Redux action for state update
+import AcademicsSet from "../../AcademicsSet";
+import { NAME_REGEX, PHONE_REGEX,SMALLNUMBER_REGEX } from "../../../../config/REGEX";
 
 const NewClassroomForm = () => {
   const [formData, setFormData] = useState({
-    schoolName: "",
-    schoolCity: "",
-    schoolType: "",
+    classroomNumber: "",
+    classroomLabel: "",
+    classroomCapacity: "",
+    classroomMaxCapacity: "",
+    classroomColor: "#FF5733", // Default color
   });
 
   const [error, setError] = useState("");
   const [validity, setValidity] = useState({
-    validSchoolName: false,
-    validSchoolCity: false,
-    validSchoolType: false,
+    validClassroomNumber: false,
+    validClassroomLabel: false,
+    validClassroomCapacity: false,
+    validClassroomMaxCapacity: false,
   });
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-//confirmation Modal states
-const [showConfirmation, setShowConfirmation] = useState(false);
 
-  // Redux mutation for adding the attended school
+  // Redux mutation for adding the attended classroom
   const [addNewClassroom, { isLoading, isError, error: apiError, isSuccess }] =
     useAddNewClassroomMutation();
-
+  //confirmation Modal states
+  const [showConfirmation, setShowConfirmation] = useState(false);
   // Validate inputs using regex patterns
   useEffect(() => {
     setValidity((prev) => ({
       ...prev,
-      validSchoolName: NAME_REGEX.test(formData.schoolName),
-      validSchoolCity: NAME_REGEX.test(formData.schoolCity),
-      validSchoolType: !!formData.schoolType, // Ensure schoolType is selected
+      validClassroomLabel: NAME_REGEX.test(formData.classroomLabel),
+      validClassroomNumber: SMALLNUMBER_REGEX.test(formData.classroomNumber),
+     
+      validClassroomCapacity: SMALLNUMBER_REGEX.test(formData.classroomCapacity),
+      validClassroomMaxCapacity: SMALLNUMBER_REGEX.test(
+        formData.classroomMaxCapacity
+      ),
     }));
   }, [formData]);
 
@@ -45,9 +50,12 @@ const [showConfirmation, setShowConfirmation] = useState(false);
   useEffect(() => {
     if (isSuccess) {
       setFormData({
-        schoolName: "",
-        schoolCity: "",
-        schoolType: "",
+        classroomNumber: "",
+        classroomLabel: "",
+        classroomCapacity: "",
+        classroomMaxCapacity: "",
+
+        classroomColor: "#FF5733", // Reset to default color
       });
       setError("");
       navigate("/settings/academicsSet/classrooms/");
@@ -56,7 +64,9 @@ const [showConfirmation, setShowConfirmation] = useState(false);
 
   // Check if all fields are valid and enable the submit button
   const canSubmit = Object.values(validity).every(Boolean) && !isLoading;
+
   const { triggerBanner } = useOutletContext(); // Access banner trigger
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -66,25 +76,29 @@ const [showConfirmation, setShowConfirmation] = useState(false);
       setError("Please fill in all fields correctly.");
       return;
     }
- // Show the confirmation modal before saving
- setShowConfirmation(true);
-}
+    // Show the confirmation modal before saving
+    setShowConfirmation(true);
+  };
 
-// This function handles the confirmed save action
-const handleConfirmSave = async () => {
-  // Close the confirmation modal
-  setShowConfirmation(false);
+  // This function handles the confirmed save action
+  const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
+
     try {
-      const newClassroom = await addNewClassroom(formData).unwrap();
-      dispatch(classroomAdded(newClassroom)); // Optionally update Redux state
+      const response = await addNewClassroom(formData)//.unwrap();
+      //dispatch(classroomAdded(newClassroom)); // Optionally update Redux state
       console.log(response,'response')
-      if (newClassroom.data && newClassroom.data.message) {
+      if (response.data && response.data.message) {
         // Success response
         triggerBanner(response.data.message, "success");
-
-      } else if (newClassroom?.error && respnewClassroomonse?.error?.data && newClassroom?.error?.data?.message) {
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
         // Error response
-        triggerBanner(newClassroom.error.data.message, "error");
+        triggerBanner(response.error.data.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
@@ -92,11 +106,9 @@ const handleConfirmSave = async () => {
     } catch (error) {
       triggerBanner("Failed to add classroom. Please try again.", "error");
 
-      console.error("Error saving:", error);
+      console.error("Error saving classroom:", error);
     }
   };
-
-
   // Close the modal without saving
   const handleCloseModal = () => {
     setShowConfirmation(false);
@@ -109,96 +121,146 @@ const handleConfirmSave = async () => {
       [name]: value,
     }));
   };
-console.log(formData,'formdata')
+
+  console.log(formData, "formdata");
+
+
   return (
-	<>
-	<AcademicsSet/>
-    <div className="p-6 bg-white rounded-lg shadow-md max-w-md mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center">
-        Add New Attended School
-      </h2>
+    <>
+      <AcademicsSet />
+      <div className="p-6 bg-white rounded-lg shadow-md max-w-md mx-auto">
+        <h2 className="text-2xl font-bold mb-6 text-center">
+          Add Classroom
+        </h2>
 
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
-            School Name
-          </label>
-          <input
-            type="text"
-            name="schoolName"
-            value={formData.schoolName}
-            onChange={handleChange}
-            placeholder="Enter school name"
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-          />
-          {!validity.validSchoolName && formData.schoolName && (
-            <p className="text-red-600 text-sm">Invalid school name.</p>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-gray-700 font-bold mb-2">
+              Classroom Number
+              <input
+                aria-label="classroom number"
+                aria-invalid={!validity.validClassroomNumber}
+                placeholder="[1-4 digits]"
+                type="text"
+                name="classroomNumber"
+                value={formData.classroomNumber}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
+              />
+              {!validity.validClassroomNumber && formData.classroomNumber && (
+                <p className="text-red-600 text-sm">Invalid classroom number.</p>
+              )}
+            </label>
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 font-bold mb-2">
+              Classroom Label
+              <input
+                aria-label="classroom label"
+                aria-invalid={!validity.validClassroomLabel}
+                placeholder="[3-20 letters]"
+                type="text"
+                name="classroomLabel"
+                value={formData.classroomLabel}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
+              />
+              {!validity.validClassroomLabel && formData.classroomLabel && (
+                <p className="text-red-600 text-sm">Invalid classroom label.</p>
+              )}
+            </label>
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700 font-bold mb-2">
+              Classroom Capacity
+              <input
+                aria-label="classroom capacity"
+                aria-invalid={!validity.validClassroomCapacity}
+                placeholder="[1-2 digits]"
+                type="text"
+                name="classroomCapacity"
+                value={formData.classroomCapacity}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
+              />
+              {!validity.validClassroomCapacity && formData.classroomCapacity && (
+                <p className="text-red-600 text-sm">Invalid classroom capacity.</p>
+              )}
+            </label>
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 font-bold mb-2">
+              Classroom Max Capacity
+              <input
+                aria-label="classroom max capacity"
+                aria-invalid={!validity.validClassroomMaxCapacity}
+                placeholder="[1-2 digits]"
+                type="text"
+                name="classroomMaxCapacity"
+                value={formData.classroomMaxCapacity}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
+              />
+              {!validity.validClassroomMaxCapacity && formData.classroomMaxCapacity && (
+                <p className="text-red-600 text-sm">Invalid classroom max capacity.</p>
+              )}
+            </label>
+          </div>
+
+        
+
+          <div className="mb-4">
+            <label className="block text-gray-700 font-bold mb-2">
+              Classroom Color
+              <input
+                type="color"
+                name="classroomColor"
+                value={formData.classroomColor}
+                onChange={handleChange}
+                className="w-full"
+              />{" "}
+            </label>
+          </div>
+
+          {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
+          {isError && (
+            <p className="text-red-600 text-sm mt-2">
+              {apiError?.data?.message || "Error adding the classroom."}
+            </p>
           )}
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
-            School City
-          </label>
-          <input
-            type="text"
-            name="schoolCity"
-            value={formData.schoolCity}
-            onChange={handleChange}
-            placeholder="Enter school city"
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-          />
-          {!validity.validSchoolCity && formData.schoolCity && (
-            <p className="text-red-600 text-sm">Invalid school city.</p>
-          )}
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
-            School Type
-          </label>
-          <select
-            name="schoolType"
-            value={formData.schoolType}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-          >
-            <option value="">Select School Type</option>
-            <option value="Public">Public</option>
-            <option value="Private">Private</option>
-            <option value="Charter">Charter</option>
-            <option value="Other">Other</option>
-          </select>
-          {!validity.validSchoolType && formData.schoolType && (
-            <p className="text-red-600 text-sm">Please select a school type.</p>
-          )}
-        </div>
-
-        {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
-        {isError && (
-          <p className="text-red-600 text-sm mt-2">
-            {apiError?.data?.message || "Error adding the school."}
-          </p>
-        )}
-
-        <button
-          type="submit"
-          disabled={!canSubmit}
-          className="w-full bg-sky-700 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200"
-        >
-          {isLoading ? "Adding..." : "Add School"}
-        </button>
-      </form>
-    </div>
-    {/* Confirmation Modal */}
-    <ConfirmationModal
+          <div className="flex justify-end gap-4">
+            <button
+              aria-label="cancel new classroom"
+              type="button"
+              onClick={() => navigate("/settings/academicsSet/classrooms/")}
+              className="cancel-button"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={!canSubmit}
+              className="w-full bg-sky-700 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200"
+            >
+              {isLoading ? "Adding..." : "Add Classroom"}
+            </button>
+          </div>
+        </form>
+      </div>
+      {/* Confirmation Modal */}
+      <ConfirmationModal
         show={showConfirmation}
         onClose={handleCloseModal}
         onConfirm={handleConfirmSave}
         title="Confirm Save"
         message="Are you sure you want to save?"
       />
-	</>
+    </>
   );
 };
 

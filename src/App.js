@@ -32,6 +32,7 @@ import NewStudentDocumentsListForm from "./features/AppSettings/StudentsSet/Stud
 import EditStudentDocumentsList from "./features/AppSettings/StudentsSet/StudentDocumentsLists/EditStudentDocumentsList";
 import ServicesList from "./features/AppSettings/StudentsSet/NurseryServices/ServicesList";
 import NewServiceForm from "./features/AppSettings/StudentsSet/NurseryServices/NewServiceForm";
+import EditService from "./features/AppSettings/StudentsSet/NurseryServices/EditService";
 
 import NewFamily from "./features/Students/StudentsAndParents/Families/NewFamily";
 import FamilyDetails from "./features/Students/StudentsAndParents/Families/FamilyDetails";
@@ -153,6 +154,8 @@ import EditAttendedSchool from "./features/AppSettings/AcademicsSet/attendedScho
 import NewAcademicYearForm from "./features/AppSettings/AcademicsSet/AcademicYears/NewAcademicYearForm";
 import EditAcademicYear from "./features/AppSettings/AcademicsSet/AcademicYears/EditAcademicYear";
 import ClassroomsList from "./features/AppSettings/AcademicsSet/Classrooms/ClassroomsList";
+import NewClassroomForm from "./features/AppSettings/AcademicsSet/Classrooms/NewClassroomForm";
+import EditClassroom from "./features/AppSettings/AcademicsSet/Classrooms/EditClassroom";
 import MyPlanning from "./features/Academics/Plannings/MyPlanning/MyPlanning";
 
 // import Parents from './features/Students/Parents'
@@ -480,6 +483,7 @@ const App = () => {
 
                   <Route path="services/" element={<ServicesList />} />
                   <Route path="newService/" element={<NewServiceForm />} />
+                  <Route path="editService/:id" element={<EditService />} />
                 </Route>{" "}
                 {/* end of studentsSet route */}
                 <Route path="academicsSet">
@@ -510,6 +514,14 @@ const App = () => {
                     element={<EditAttendedSchool />}
                   />
                   <Route path="classrooms/" element={<ClassroomsList />} />
+                  <Route
+                    path="newClassroom/"
+                    element={<NewClassroomForm />}
+                  />
+                  <Route
+                    path="editClassroom/:id/"
+                    element={<EditClassroom />}
+                  />
                 </Route>{" "}
                 {/* end of academicsSet route */}
 

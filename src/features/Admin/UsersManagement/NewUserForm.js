@@ -17,7 +17,6 @@ import {
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 import { useOutletContext } from "react-router-dom";
 
-
 const NewUserForm = () => {
   //an add user function that can be called inside the component
   const [
@@ -201,14 +200,17 @@ const NewUserForm = () => {
     setShowConfirmation(false);
 
     try {
-      const response =  await addNewUser({ formData }); //we call the add new user mutation and set the arguments to be saved
+      const response = await addNewUser({ formData }); //we call the add new user mutation and set the arguments to be saved
       //added this to confirm save
-      console.log(response,'response')
+      console.log(response, "response");
       if (response.data && response.data.message) {
         // Success response
         triggerBanner(response.data.message, "success");
-
-      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
         // Error response
         triggerBanner(response.error.data.message, "error");
       } else {
@@ -237,7 +239,6 @@ const NewUserForm = () => {
           Create New User{" "}
           {`${formData.userFullName.userFirstName} ${formData.userFullName.userMiddleName} ${formData.userFullName.userLastName}`}
         </h2>
-       
 
         <form onSubmit={onSaveUserClicked} className="space-y-6">
           <div className="space-y-4">
@@ -252,6 +253,9 @@ const NewUserForm = () => {
                     )}
                   </label>
                   <input
+                    aria-invalid={!validity.validUsername}
+                    aria-label="username"
+                    placeholder="[6-20 characters]"
                     type="text"
                     name="username"
                     value={formData.username}
@@ -266,7 +270,6 @@ const NewUserForm = () => {
                         ? "border-gray-300"
                         : "border-red-600"
                     } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                    placeholder="Enter username"
                     required
                   />
                 </div>
@@ -278,6 +281,9 @@ const NewUserForm = () => {
                     )}
                   </label>
                   <input
+                    aria-invalid={!validity.validPassword}
+                    aria-label="password"
+                    placeholder="[8-20 characters]"
                     type="password"
                     name="password"
                     value={formData.password}
@@ -292,7 +298,6 @@ const NewUserForm = () => {
                         ? "border-gray-300"
                         : "border-red-600"
                     } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                    placeholder="Enter password"
                     required
                   />
                 </div>
@@ -303,50 +308,53 @@ const NewUserForm = () => {
                   {!validity.validFirstName && (
                     <span className="text-red-600">*</span>
                   )}
+                  <input
+                    aria-invalid={!validity.validFirstName}
+                    placeholder="[3-20 letters]"
+                    aria-label="first name"
+                    type="text"
+                    name="userFirstName"
+                    value={formData.userFullName.userFirstName}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        userFullName: {
+                          ...prev.userFullName,
+                          userFirstName: e.target.value,
+                        },
+                      }))
+                    }
+                    className={`mt-1 block w-full border ${
+                      validity.validFirstName
+                        ? "border-gray-300"
+                        : "border-red-600"
+                    } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                    required
+                  />{" "}
                 </label>
-                <input
-                  type="text"
-                  name="userFirstName"
-                  value={formData.userFullName.userFirstName}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      userFullName: {
-                        ...prev.userFullName,
-                        userFirstName: e.target.value,
-                      },
-                    }))
-                  }
-                  className={`mt-1 block w-full border ${
-                    validity.validFirstName
-                      ? "border-gray-300"
-                      : "border-red-600"
-                  } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                  placeholder="Enter First Name"
-                  required
-                />
               </div>
               {/* Middle Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Middle Name
+                  <input
+                    placeholder="[3-20 letters]"
+                    aria-label="middle name"
+                    type="text"
+                    name="userMiddleName"
+                    value={formData.userFullName.userMiddleName}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        userFullName: {
+                          ...prev.userFullName,
+                          userMiddleName: e.target.value,
+                        },
+                      }))
+                    }
+                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  />
                 </label>
-                <input
-                  type="text"
-                  name="userMiddleName"
-                  value={formData.userFullName.userMiddleName}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      userFullName: {
-                        ...prev.userFullName,
-                        userMiddleName: e.target.value,
-                      },
-                    }))
-                  }
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  placeholder="Enter Middle Name"
-                />
               </div>
 
               {/* Last Name */}
@@ -356,28 +364,30 @@ const NewUserForm = () => {
                   {!validity.validLastName && (
                     <span className="text-red-600">*</span>
                   )}
+                  <input
+                    aria-invalid={!validity.validLastName}
+                    placeholder="[3-20 letters]"
+                    aria-label="last name"
+                    type="text"
+                    name="userLastName"
+                    value={formData.userFullName.userLastName}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        userFullName: {
+                          ...prev.userFullName,
+                          userLastName: e.target.value,
+                        },
+                      }))
+                    }
+                    className={`mt-1 block w-full border ${
+                      validity.validLastName
+                        ? "border-gray-300"
+                        : "border-red-600"
+                    } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                    required
+                  />{" "}
                 </label>
-                <input
-                  type="text"
-                  name="userLastName"
-                  value={formData.userFullName.userLastName}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      userFullName: {
-                        ...prev.userFullName,
-                        userLastName: e.target.value,
-                      },
-                    }))
-                  }
-                  className={`mt-1 block w-full border ${
-                    validity.validLastName
-                      ? "border-gray-300"
-                      : "border-red-600"
-                  } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                  placeholder="Enter Last Name"
-                  required
-                />
               </div>
 
               {/* Date of Birth */}
@@ -392,6 +402,9 @@ const NewUserForm = () => {
                   )}
                 </label>
                 <input
+                 aria-invalid={!validity.validDob}
+                placeholder="[dd/mm/yyyy]"
+                 aria-label="userDob"
                   type="date"
                   name="userDob"
                   value={formData.userDob}
@@ -472,8 +485,11 @@ const NewUserForm = () => {
                   {!validity.validPrimaryPhone && (
                     <span className="text-red-600">*</span>
                   )}
-                </label>
+                
                 <input
+                 aria-invalid={!validity.validPrimaryPhone}
+                 placeholder="[6-15 digits]"
+                 aria-label="primary phone number"
                   type="text"
                   name="primaryPhone"
                   value={formData.userContact.primaryPhone}
@@ -491,16 +507,18 @@ const NewUserForm = () => {
                       ? "border-gray-300"
                       : "border-red-600"
                   } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                  placeholder="Enter Primary Phone"
+                 
                   required
-                />
+                /></label>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Secondary Phone
-                </label>
+               
                 <input
+                  placeholder="[6-15 digits]"
+                    aria-label="secondary phone number"
                   type="text"
                   name="secondaryPhone"
                   value={formData.userContact.secondaryPhone}
@@ -514,16 +532,18 @@ const NewUserForm = () => {
                     }))
                   }
                   className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  placeholder="Enter Secondary Phone"
-                />
+                 
+                /> </label>
               </div>
             </div>
             {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Email
-              </label>
+             
               <input
+               placeholder="[email@address.com]"
+                  aria-label="email"
                 type="email"
                 name="email"
                 value={formData.userContact.email}
@@ -537,8 +557,8 @@ const NewUserForm = () => {
                   }))
                 }
                 className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                placeholder="Enter Email Address"
-              />
+               
+              /> </label>
             </div>
           </div>
           {/* Address Information */}
@@ -551,8 +571,11 @@ const NewUserForm = () => {
                   {!validity.validHouse && (
                     <span className="text-red-600">*</span>
                   )}
-                </label>
+               
                 <input
+                 aria-invalid={!validity.validHouse}
+                 placeholder="[3-20 letters]"
+                 aria-label="house number"
                   type="text"
                   name="house"
                   value={formData.userAddress.house}
@@ -568,8 +591,8 @@ const NewUserForm = () => {
                   className={`mt-1 block w-full border ${
                     validity.validHouse ? "border-gray-300" : "border-red-600"
                   } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                  placeholder="Enter House"
-                />
+                  
+                /> </label>
               </div>
 
               <div>
@@ -578,8 +601,11 @@ const NewUserForm = () => {
                   {!validity.validStreet && (
                     <span className="text-red-600">*</span>
                   )}
-                </label>
+               
                 <input
+                 aria-invalid={!validity.validStreet}
+                 aria-label="street name"
+                 placeholder="[3-20 letters]"
                   type="text"
                   name="street"
                   value={formData.street}
@@ -595,15 +621,17 @@ const NewUserForm = () => {
                   className={`mt-1 block w-full border ${
                     validity.validStreet ? "border-gray-300" : "border-red-600"
                   } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                  placeholder="Enter Street"
-                />
+                 
+                /> </label>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
                   <label className="block text-sm font-medium text-gray-700">
                     Area
-                  </label>
+                 
                   <input
+                     placeholder="[3-20 letters]"
+                      aria-label="area"
                     type="text"
                     name="area"
                     value={formData.userAddress.area}
@@ -617,14 +645,16 @@ const NewUserForm = () => {
                       }))
                     }
                     className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Enter Area"
-                  />
+                   
+                  /> </label>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Post Code
-                  </label>
+                
                   <input
+                   placeholder="[3-20 letters]"
+                      aria-label="post code"
                     type="text"
                     name="postCode"
                     value={formData.userAddress.postCode}
@@ -638,8 +668,8 @@ const NewUserForm = () => {
                       }))
                     }
                     className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Enter Post Code"
-                  />
+                    
+                  />  </label>
                 </div>
               </div>
 
@@ -649,8 +679,11 @@ const NewUserForm = () => {
                   {!validity.validCity && (
                     <span className="text-red-600">*</span>
                   )}
-                </label>
+               
                 <input
+                  aria-invalid={!validity.validCity}
+                  placeholder="[3-20 letters]"
+                  aria-label="city"
                   type="text"
                   name="city"
                   value={formData.userAddress.city}
@@ -666,8 +699,8 @@ const NewUserForm = () => {
                   className={`mt-1 block w-full border ${
                     validity.validCity ? "border-gray-300" : "border-red-600"
                   } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                  placeholder="Enter City"
-                />
+                 
+                /> </label>
               </div>
             </div>
           </div>
@@ -677,48 +710,53 @@ const NewUserForm = () => {
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Family ID
-              </label>
+            
               <input
+               aria-label="family id"
+                  placeholder="[24 characters]"
                 type="text"
                 name="familyId"
                 value={formData.familyId}
                 onChange={handleInputChange}
                 className="form-input mt-1 block w-full"
-              />
+              />  </label>
             </div>
 
             {/* Employee ID Input */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Employee ID
-              </label>
+             
               <input
+                 aria-label="employee id"
+                  placeholder="[24 characters]"
                 type="text"
                 name="employeeId"
                 value={formData.employeeId}
                 onChange={handleInputChange}
                 className="form-input mt-1 block w-full"
-              />
+              /> </label>
             </div>
 
             {/* User Is Active Checkbox */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 User Is Active
-              </label>
+              
               <input
+aria-label="user is active"
                 type="checkbox"
                 name="userIsActive"
                 checked={formData.userIsActive}
                 onChange={handleInputChange}
                 className="h-4 w-4"
-              />
+              /></label>
             </div>
             {/* User role selection */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
+            
+              <div className="block text-sm font-medium text-gray-700">
                 User Roles
-              </label>
+              
               <div className="flex flex-wrap">
                 {Object.keys(ROLES).map((role) => (
                   <div key={role} className="mr-4">
@@ -763,10 +801,7 @@ const NewUserForm = () => {
             </div>
           </div>
           <div className="flex justify-end gap-4">
-          <button
-              className="cancel-button"
-              onClick={handleCancel}
-            >
+            <button className="cancel-button" onClick={handleCancel}>
               Cancel
             </button>
             <button
@@ -774,11 +809,10 @@ const NewUserForm = () => {
               type="submit"
               title="Save"
               onClick={onSaveUserClicked}
-              disabled={!canSave||isLoading}
+              disabled={!canSave || isLoading}
             >
               Save Changes
             </button>
-           
           </div>
         </form>
       </section>

@@ -177,8 +177,11 @@ const NewPayeeForm = () => {
               {!validity.validPayeeLabel && (
                 <span className="text-red-600">*</span>
               )}
-            </label>
+            
             <input
+             aria-label="payee label"
+             aria-invalid={!validity.validPayeeLabel}
+             placeholder="[3-20 characters]"
               type="text"
               name="payeeLabel"
               value={formData.payeeLabel}
@@ -186,16 +189,18 @@ const NewPayeeForm = () => {
               className={`mt-1 block w-full border ${
                 validity.validPayeeLabel ? "border-gray-300" : "border-red-600"
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-              placeholder="Enter Payee Label"
+              
               required
-            />
+            /></label>
           </div>
           {/* Payee Active Status */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Payee Is Active
-            </label>
+            
             <input
+             aria-label="payee is active"
+             
               type="checkbox"
               name="payeeIsActive"
               checked={formData.payeeIsActive}
@@ -206,7 +211,7 @@ const NewPayeeForm = () => {
                 }))
               }
               className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
-            />
+            /></label>
           </div>
 
           {/* Payee Years Selection - Using Checkboxes */}
@@ -216,11 +221,12 @@ const NewPayeeForm = () => {
               {!validity.validPayeeYears && (
                 <span className="text-red-600">*</span>
               )}
-            </label>
+            
             <div className="space-y-2">
               {academicYears.map((year) => (
                 <div key={year.id} className="flex items-center">
                   <input
+                   aria-label="payee year"
                     type="checkbox"
                     id={`year-${year.id}`}
                     checked={formData.payeeYears.includes(year.title)}
@@ -235,7 +241,7 @@ const NewPayeeForm = () => {
                   </label>
                 </div>
               ))}
-            </div>
+            </div></label>
           </div>
 
           {/* Payee Categories Selection */}
@@ -275,8 +281,11 @@ const NewPayeeForm = () => {
                 {!validity.validPayeePhone && (
                   <span className="text-red-600">*</span>
                 )}
-              </label>
+              
               <input
+               aria-label="payee phone"
+               aria-invalid={!validity.validPayeePhone}
+               placeholder="[6-15 digits]"
                 type="text"
                 name="payeePhone"
                 value={formData.payeePhone}
@@ -286,9 +295,9 @@ const NewPayeeForm = () => {
                     ? "border-gray-300"
                     : "border-red-600"
                 } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                placeholder="Enter Payee Phone"
+               
                 
-              />
+              /></label>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -296,8 +305,11 @@ const NewPayeeForm = () => {
                 {!validity.validPayeeAddress && (
                   <span className="text-red-600">*</span>
                 )}
-              </label>
+             
               <input
+               aria-label="payee address"
+               aria-invalid={!validity.validPayeeAddress}
+               placeholder=" [3-20 characters]"
                 type="text"
                 name="payeeAddress"
                 value={formData.payeeAddress}
@@ -307,9 +319,9 @@ const NewPayeeForm = () => {
                     ? "border-gray-300"
                     : "border-red-600"
                 } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                placeholder="Enter Payee Address"
+                
            
-              />
+              /> </label>
             </div>
           </div>
 
@@ -320,22 +332,26 @@ const NewPayeeForm = () => {
               {!validity.validPayeeNotes && (
                 <span className="text-red-600">*</span>
               )}
-            </label>
+            
             <textarea
+            aria-label="payee notes"
+            aria-invalid={!validity.validPayeeNotes}
+            placeholder=" [1-150 characters]"
               name="payeeNotes"
               value={formData.payeeNotes}
               onChange={handleInputChange}
               className={`mt-1 block w-full border ${
                 validity.validPayeeNotes ? "border-gray-300" : "border-red-600"
               } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-              placeholder="Enter Payee Notes"
+              
            
-            ></textarea>
+            ></textarea></label>
           </div>
 
           {/* Save Button */}
           <div className="flex justify-end space-x-4">
             <button
+             aria-label="cancel add payee"
               type="button"
               className="cancel-button"
               onClick={() => navigate("/settings/financesSet/payeesList/")}
@@ -343,6 +359,7 @@ const NewPayeeForm = () => {
               Cancel
             </button>
             <button
+             aria-label="submit payee"
               type="submit"
               className="save-button"
               disabled={!canSave || isLoading}

@@ -3,7 +3,7 @@ import Students from "../../Students";
 import { useState, useEffect } from "react";
 import { useUpdateStudentMutation } from "./studentsApiSlice";
 import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
-import { useNavigate ,useOutletContext} from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 import { ROLES } from "../../../../config/UserRoles";
 import { ACTIONS } from "../../../../config/UserActions";
@@ -62,8 +62,6 @@ const EditStudentForm = ({ student }) => {
     //console.log(attendedSchools)
   }
 
-
-
   //initialisation of states for each input
   const [studentName, setStudentName] = useState(student.studentName);
   const [firstName, setFirstName] = useState(student.studentName.firstName);
@@ -98,10 +96,10 @@ const EditStudentForm = ({ student }) => {
   const [gardienRelation, setGardienRelation] = useState(
     student.studentGardien.gardienRelation
   );
- 
+
   const [studentEducation, setStudentEducation] = useState(
     student.studentEducation
-  ); 
+  );
   const [schoolYear, setSchoolYear] = useState(student.schoolYear);
   const [attendedSchool, setAttendedSchool] = useState(student.attendedSchool);
   const [note, setNote] = useState(student.note);
@@ -192,9 +190,6 @@ const EditStudentForm = ({ student }) => {
     });
   }, [firstName, middleName, lastName]);
 
-
-
- 
   // Handler to update an entry field
   const handleGardienFieldChange = (index, field, value) => {
     // Create a deep copy of the studentGardien array
@@ -280,8 +275,7 @@ const EditStudentForm = ({ student }) => {
       studentSex,
     ].every(Boolean) && !isUpdateLoading;
 
-    const { triggerBanner } = useOutletContext(); // Access banner trigger
-
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
 
   const onUpdateStudentClicked = async (e) => {
     e.preventDefault();
@@ -303,25 +297,28 @@ const EditStudentForm = ({ student }) => {
       studentGardien,
       operator,
     };
-try{
-   const response = await updateStudent({
-      id,
-      studentName,
-      studentDob,
-      studentSex,
-      studentIsActive,
-      studentYears,
-      studentEducation,
-      studentGardien,
-      operator,
-    }); //we call the add new user mutation and set the arguments to be saved
-    //added this to confirm save
-    console.log(response,'response')
+    try {
+      const response = await updateStudent({
+        id,
+        studentName,
+        studentDob,
+        studentSex,
+        studentIsActive,
+        studentYears,
+        studentEducation,
+        studentGardien,
+        operator,
+      }); //we call the add new user mutation and set the arguments to be saved
+      //added this to confirm save
+      console.log(response, "response");
       if (response.data && response.data.message) {
         // Success response
         triggerBanner(response.data.message, "success");
-
-      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
         // Error response
         triggerBanner(response.error.data.message, "error");
       } else {
@@ -342,13 +339,12 @@ try{
     navigate("/students/studentsParents/students/");
   };
 
-  
   let content;
 
   content = schoolIsSuccess && (
     <>
       <Students />
-      
+
       <form className="form" onSubmit={(e) => e.preventDefault()}>
         <div className="form__title-row">
           <h2 className="text-2xl font-semibold">
@@ -364,20 +360,19 @@ try{
             >
               First Name{" "}
               {!validFirstName && <span className="text-red-600 ">*</span>}
-             
+              <input
+                aria-invalid={!validFirstName}
+                placeholder="[3-20 letters]"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-800 sm:text-sm"
+                id="firstName"
+                name="firstName"
+                type="text"
+                autoComplete="off"
+                value={firstName}
+                onChange={onFirstNameChanged}
+                required
+              />{" "}
             </label>
-            <input
-            aria-invalid={!validFirstName}
-            placeholder="[3-20 letters]"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-800 sm:text-sm"
-              id="firstName"
-              name="firstName"
-              type="text"
-              autoComplete="off"
-              value={firstName}
-              onChange={onFirstNameChanged}
-              required
-            />
           </div>
 
           <div>
@@ -386,18 +381,17 @@ try{
               htmlFor="middleName"
             >
               Middle Name
+              <input
+                placeholder="[3-20 letters]"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-800 sm:text-sm"
+                id="middleName"
+                name="middleName"
+                type="text"
+                autoComplete="off"
+                value={middleName}
+                onChange={onMiddleNameChanged}
+              />{" "}
             </label>
-            <input
-           
-            placeholder="[3-20 letters]"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-800 sm:text-sm"
-              id="middleName"
-              name="middleName"
-              type="text"
-              autoComplete="off"
-              value={middleName}
-              onChange={onMiddleNameChanged}
-            />
           </div>
 
           <div>
@@ -407,20 +401,19 @@ try{
             >
               Last Name{" "}
               {!validLastName && <span className="text-red-600">*</span>}
-             
+              <input
+                aria-invalid={!validLastName}
+                placeholder="[3-20 letters]"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-800 sm:text-sm"
+                id="lastName"
+                name="lastName"
+                type="text"
+                autoComplete="off"
+                value={lastName}
+                onChange={onLastNameChanged}
+                required
+              />
             </label>
-            <input
-            aria-invalid={!validLastName}
-            placeholder="[3-20 letters]"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-800 sm:text-sm"
-              id="lastName"
-              name="lastName"
-              type="text"
-              autoComplete="off"
-              value={lastName}
-              onChange={onLastNameChanged}
-              required
-            />
           </div>
 
           <div>
@@ -431,24 +424,29 @@ try{
               Date Of Birth{" "}
               {!validStudentDob && <span className="text-red-600">*</span>}
               <span className="text-gray-500 text-xs"></span>
+              <input
+                aria-invalid={!validStudentDob}
+                placeholder="[dd/mm/yyyy]"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-800 sm:text-sm"
+                id="studentDob"
+                name="studentDob"
+                type="date"
+                autoComplete="off"
+                value={studentDob}
+                onChange={onStudentDobChanged}
+                required
+              />
             </label>
-            <input
-            aria-invalid={!validStudentDob}
-            placeholder="[dd/mm/yyyy]"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-800 sm:text-sm"
-              id="studentDob"
-              name="studentDob"
-              type="date"
-              autoComplete="off"
-              value={studentDob}
-              onChange={onStudentDobChanged}
-              required
-            />
           </div>
         </div>
 
         <div className="mb-6">
           <div className="flex items-center mb-2">
+          <label
+              htmlFor="male"
+              className="ml-2 text-sm font-medium text-gray-800"
+            >
+              Male
             <input
               type="checkbox"
               id="male"
@@ -457,13 +455,13 @@ try{
               onChange={onStudentSexChanged}
               className="h-4 w-4 text-blue-600 focus:ring-sky-800 border-gray-300 rounded"
             />
+            
+            </label>
             <label
-              htmlFor="male"
+              htmlFor="female"
               className="ml-2 text-sm font-medium text-gray-800"
             >
-              Male
-            </label>
-
+              Female
             <input
               type="checkbox"
               id="female"
@@ -472,28 +470,24 @@ try{
               onChange={onStudentSexChanged}
               className="ml-6 h-4 w-4 text-blue-600 focus:ring-sky-800 border-gray-300 rounded"
             />
-            <label
-              htmlFor="female"
-              className="ml-2 text-sm font-medium text-gray-800"
-            >
-              Female
+            
             </label>
           </div>
 
           <div className="flex items-center mb-2">
-            <input
-              type="checkbox"
-              id="active"
-              value={studentIsActive}
-              checked={studentIsActive}
-              onChange={onStudentIsActiveChanged}
-              className="h-4 w-4 text-blue-600 focus:ring-sky-800 border-gray-300 rounded"
-            />
             <label
               htmlFor="active"
               className="ml-2 text-sm font-medium text-gray-800"
             >
               Student Is Active
+              <input
+                type="checkbox"
+                id="active"
+                value={studentIsActive}
+                checked={studentIsActive}
+                onChange={onStudentIsActiveChanged}
+                className="h-4 w-4 text-blue-600 focus:ring-sky-800 border-gray-300 rounded"
+              />
             </label>
           </div>
           <div className="flex items-center mb-2">
@@ -509,27 +503,26 @@ try{
                   {!validStudentGrade && (
                     <span className="text-red-600">*</span>
                   )}
+                  <select
+                    aria-invalid={!validStudentGrade}
+                    id="studentGrade"
+                    value={
+                      studentYears.find(
+                        (year) =>
+                          year.academicYear === selectedAcademicYear?.title
+                      )?.grade || ""
+                    }
+                    onChange={onStudentGradeChanged}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                  >
+                    <option value="">Select Grade</option>
+                    {[0, 1, 2, 3, 4, 5, 6, 7].map((grade) => (
+                      <option key={grade} value={grade}>
+                        Grade {grade}
+                      </option>
+                    ))}
+                  </select>{" "}
                 </label>
-                <select
-                 aria-invalid={!validStudentGrade}
-           
-                  id="studentGrade"
-                  value={
-                    studentYears.find(
-                      (year) =>
-                        year.academicYear === selectedAcademicYear?.title
-                    )?.grade || ""
-                  }
-                  onChange={onStudentGradeChanged}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-                >
-                  <option value="">Select Grade</option>
-                  {[0, 1, 2, 3, 4, 5, 6, 7].map((grade) => (
-                    <option key={grade} value={grade}>
-                      Grade {grade}
-                    </option>
-                  ))}
-                </select>
               </div>
             )}
           </div>
@@ -562,20 +555,20 @@ try{
                     htmlFor={`gardienFirstName-${index}`}
                   >
                     First Name:
+                    <input
+                      id={`gardienFirstName-${index}`}
+                      type="text"
+                      value={entry.gardienFirstName}
+                      onChange={(e) =>
+                        handleGardienFieldChange(
+                          index,
+                          "gardienFirstName",
+                          e.target.value
+                        )
+                      }
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                    />
                   </label>
-                  <input
-                    id={`gardienFirstName-${index}`}
-                    type="text"
-                    value={entry.gardienFirstName}
-                    onChange={(e) =>
-                      handleGardienFieldChange(
-                        index,
-                        "gardienFirstName",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-                  />
                 </div>
                 <div className="mb-2">
                   <label
@@ -583,20 +576,20 @@ try{
                     htmlFor={`gardienMiddleName-${index}`}
                   >
                     Middle Name:
+                    <input
+                      id={`gardienMiddleName-${index}`}
+                      type="text"
+                      value={entry.gardienMiddleName}
+                      onChange={(e) =>
+                        handleGardienFieldChange(
+                          index,
+                          "gardienMiddleName",
+                          e.target.value
+                        )
+                      }
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                    />{" "}
                   </label>
-                  <input
-                    id={`gardienMiddleName-${index}`}
-                    type="text"
-                    value={entry.gardienMiddleName}
-                    onChange={(e) =>
-                      handleGardienFieldChange(
-                        index,
-                        "gardienMiddleName",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-                  />
                 </div>
                 <div className="mb-2">
                   <label
@@ -604,20 +597,20 @@ try{
                     htmlFor={`gardienLastName-${index}`}
                   >
                     Last Name:
+                    <input
+                      id={`gardienLastName-${index}`}
+                      type="text"
+                      value={entry.gardienLastName}
+                      onChange={(e) =>
+                        handleGardienFieldChange(
+                          index,
+                          "gardienLastName",
+                          e.target.value
+                        )
+                      }
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                    />{" "}
                   </label>
-                  <input
-                    id={`gardienLastName-${index}`}
-                    type="text"
-                    value={entry.gardienLastName}
-                    onChange={(e) =>
-                      handleGardienFieldChange(
-                        index,
-                        "gardienLastName",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-                  />
                 </div>
                 <div className="mb-2">
                   <label
@@ -625,26 +618,25 @@ try{
                     htmlFor={`gardienYear-${index}`}
                   >
                     gardienYear:
+                    <select
+                      id={`gardienYear-${index}`}
+                      value={entry.gardienYear}
+                      onChange={(e) =>
+                        handleGardienFieldChange(
+                          index,
+                          "gardienYear",
+                          e.target.value
+                        )
+                      }
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                    >
+                      {academicYears.map((year, i) => (
+                        <option key={year.id} value={year.title}>
+                          {year.title}
+                        </option>
+                      ))}
+                    </select>{" "}
                   </label>
-
-                  <select
-                    id={`gardienYear-${index}`}
-                    value={entry.gardienYear}
-                    onChange={(e) =>
-                      handleGardienFieldChange(
-                        index,
-                        "gardienYear",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-                  >
-                    {academicYears.map((year, i) => (
-                      <option key={year.id} value={year.title}>
-                        {year.title}
-                      </option>
-                    ))}
-                  </select>
                 </div>
 
                 <div className="mb-2">
@@ -653,20 +645,20 @@ try{
                     htmlFor={`gardienRelation-${index}`}
                   >
                     Relation To Student :
+                    <input
+                      id={`gardienRelation-${index}`}
+                      type="text"
+                      value={entry.gardienRelation}
+                      onChange={(e) =>
+                        handleGardienFieldChange(
+                          index,
+                          "gardienRelation",
+                          e.target.value
+                        )
+                      }
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                    />{" "}
                   </label>
-                  <input
-                    id={`gardienRelation-${index}`}
-                    type="text"
-                    value={entry.gardienRelation}
-                    onChange={(e) =>
-                      handleGardienFieldChange(
-                        index,
-                        "gardienRelation",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-                  />
                 </div>
                 <div className="mb-2">
                   <label
@@ -674,20 +666,20 @@ try{
                     htmlFor={`gardienPhone-${index}`}
                   >
                     Phone Number:
+                    <input
+                      id={`gardienPhone-${index}`}
+                      type="text"
+                      value={entry.gardienPhone}
+                      onChange={(e) =>
+                        handleGardienFieldChange(
+                          index,
+                          "gardienPhone",
+                          e.target.value
+                        )
+                      }
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                    />{" "}
                   </label>
-                  <input
-                    id={`gardienPhone-${index}`}
-                    type="text"
-                    value={entry.gardienPhone}
-                    onChange={(e) =>
-                      handleGardienFieldChange(
-                        index,
-                        "gardienPhone",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-                  />
                 </div>
 
                 <button
@@ -725,22 +717,22 @@ try{
                     htmlFor={`schoolYear-${index}`}
                   >
                     School Year:
+                    <select
+                      id={`schoolYear-${index}`}
+                      value={entry.schoolYear}
+                      onChange={(e) =>
+                        handleFieldChange(index, "schoolYear", e.target.value)
+                      }
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                    >
+                      <option value="">Select Year</option>
+                      {academicYears.map((year, i) => (
+                        <option key={year.id} value={year.title}>
+                          {year.title}
+                        </option>
+                      ))}
+                    </select>{" "}
                   </label>
-                  <select
-                    id={`schoolYear-${index}`}
-                    value={entry.schoolYear}
-                    onChange={(e) =>
-                      handleFieldChange(index, "schoolYear", e.target.value)
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-                  >
-                    <option value="">Select Year</option>
-                    {academicYears.map((year, i) => (
-                      <option key={year.id} value={year.title}>
-                        {year.title}
-                      </option>
-                    ))}
-                  </select>
                 </div>
                 <div className="mb-2">
                   <label
@@ -748,24 +740,27 @@ try{
                     htmlFor={`attendedSchool-${index}`}
                   >
                     Attended School:
+                    <select
+                      id={`attendedSchool-${index}`}
+                      value={entry.attendedSchool}
+                      onChange={(e) =>
+                        handleFieldChange(
+                          index,
+                          "attendedSchool",
+                          e.target.value
+                        )
+                      }
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                    >
+                      <option value="">Select School</option>
+                      {schoolIsSuccess &&
+                        attendedSchools.map((school) => (
+                          <option key={school.id} value={school.id}>
+                            {school.schoolName}
+                          </option>
+                        ))}
+                    </select>{" "}
                   </label>
-                  <select
-                  
-                    id={`attendedSchool-${index}`}
-                    value={entry.attendedSchool}
-                    onChange={(e) =>
-                      handleFieldChange(index, "attendedSchool", e.target.value)
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-                  >
-                    <option value="">Select School</option>
-                    {schoolIsSuccess &&
-                      attendedSchools.map((school) => (
-                        <option key={school.id} value={school.id}>
-                          {school.schoolName}
-                        </option>
-                      ))}
-                  </select>
                 </div>
                 <div className="mb-2">
                   <label
@@ -773,23 +768,23 @@ try{
                     htmlFor={`note-${index}`}
                   >
                     Note:
+                    <input
+                      id={`note-${index}`}
+                      type="text"
+                      value={entry.note}
+                      onChange={(e) =>
+                        handleFieldChange(index, "note", e.target.value)
+                      }
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                    />
                   </label>
-                  <input
-                    id={`note-${index}`}
-                    type="text"
-                    value={entry.note}
-                    onChange={(e) =>
-                      handleFieldChange(index, "note", e.target.value)
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-                  />
                 </div>
 
                 <button
                   type="button"
                   aria-label="remove student education"
                   onClick={() => handleRemoveEntry(index)}
-                 className="delete-button"
+                  className="delete-button"
                 >
                   Remove Entry
                 </button>

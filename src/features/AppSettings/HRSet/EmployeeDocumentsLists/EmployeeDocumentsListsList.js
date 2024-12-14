@@ -193,6 +193,7 @@ const EmployeeDocumentsListsList = () => {
         <div className="space-x-1">
           {canEdit ? (
             <button
+            aria-label="edit list"
               className="text-amber-300"
               onClick={() =>
                 Navigate(`/settings/hrSet/employeeDocumentsList/edit/${row.id}`)
@@ -203,6 +204,7 @@ const EmployeeDocumentsListsList = () => {
           ) : null}
           {canDelete ? (
             <button
+            aria-label="delete list"
               className="text-red-600"
               onClick={() => onDeleteEmployeeDocumentsListClicked(row.id)}
               hidden={!canDelete}

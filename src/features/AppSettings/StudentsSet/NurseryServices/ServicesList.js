@@ -5,7 +5,7 @@ import {
 } from "./servicesApiSlice";
 import { HiOutlineSearch } from "react-icons/hi";
 
-import { useDispatch } from "react-redux";
+
 import DataTable from "react-data-table-component";
 
 import { useSelector } from "react-redux";
@@ -37,7 +37,7 @@ import StudentsSet from "../../StudentsSet";
 const ServicesList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+ 
 
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
 
@@ -114,7 +114,7 @@ const ServicesList = () => {
     //we need to change into array to be read??
     servicesList = Object.values(entities); //we are using entity adapter in this query
     //console.log(servicesList,'servicesList')
-    dispatch(setServices(servicesList)); //timing issue to update the state and use it the same time
+   
 
     //the serach result data
     filteredServices = servicesList?.filter((item) => {
@@ -139,7 +139,7 @@ const ServicesList = () => {
   // Handler for duplicating selected rows,
   const handleDuplicateSelected = () => {
     //console.log('Selected Rows to duplicate:', selectedRows);
-    // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
+  
     //ensure only one can be selected: the last one
     const toDuplicate = selectedRows[-1];
 
@@ -238,16 +238,18 @@ const ServicesList = () => {
       name: "Actions",
       cell: (row) => (
         <div className="space-x-1">
-          <button onClick={() => navigate(`/settings/studentsSet/services/serviceDetails/${row.id}`)}>
-            <ImProfile className="text-2xl text-sky-700" />
-          </button>
+         
           {canEdit && (
-            <button onClick={() => navigate(`/settings/studentsSet/services/editService/${row.id}`)}>
+            <button 
+            aria-label="edit service"
+            onClick={() => navigate(`/settings/studentsSet/editService/${row.id}`)}>
               <FiEdit className="text-2xl text-amber-300" />
             </button>
           )}
           {canDelete && (
-            <button onClick={() => onDeleteServiceClicked(row.id)}>
+            <button 
+             aria-label="delete service"
+            onClick={() => onDeleteServiceClicked(row.id)}>
               <RiDeleteBin6Line className="text-2xl text-red-600" />
             </button>
           )}

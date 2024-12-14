@@ -13,13 +13,13 @@ import AcademicsSet from "../../AcademicsSet";
 const EditClassroom = () => {
   const { id } = useParams(); //pull the id from use params from the url
   //console.log(id,'id')
-  const [school, setSchool] = useState("");
+  const [classroom, setClassroom] = useState("");
   const {
-    data: schoolToEdit, //the data is renamed families
-    isLoading: isSchoolLoading, //monitor several situations
-    isSuccess: isSchoolSuccess,
-    isError: isSchoolError,
-    error: schoolError,
+    data: classroomToEdit, //the data is renamed families
+    isLoading: isClassroomLoading, //monitor several situations
+    isSuccess: isClassroomSuccess,
+    isError: isClassroomError,
+    error: classroomError,
   } = useGetClassroomByIdQuery(
     { id: id, endpointName: "EditClassroom" } || {},
     {
@@ -30,19 +30,19 @@ const EditClassroom = () => {
   );
   //console.log('hiiiiiiiiiiii')
   useEffect(() => {
-    if (isSchoolSuccess) {
-      //console.log('helllllow',schoolToEdit, 'mystu')
-      //const schoolInit = Object.values(entities)
-      setSchool(schoolToEdit); // Set school state to the first object
-      //console.log('helllllow',school, 'mystu')
+    if (isClassroomSuccess) {
+      //console.log('helllllow',classroomToEdit, 'mystu')
+      //const classroomInit = Object.values(entities)
+      setClassroom(classroomToEdit); // Set classroom state to the first object
+      //console.log('helllllow',classroom, 'mystu')
     }
-  }, [isSchoolSuccess, schoolToEdit]);
+  }, [isClassroomSuccess, classroomToEdit]);
 
   let content;
 
-  content = schoolToEdit ? (
+  content = classroomToEdit ? (
     <>
-      <EditClassroomForm classroom={schoolToEdit} />
+      <EditClassroomForm classroom={classroomToEdit} />
     </>
   ) : (
     <>

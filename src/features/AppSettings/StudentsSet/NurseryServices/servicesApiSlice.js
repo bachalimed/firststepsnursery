@@ -45,6 +45,19 @@ export const servicesApiSlice = apiSlice.injectEndpoints({
       },
       providesTags: ["service"],
     }),
+    getServicesById: builder.query({
+      query: (params) => {
+        const queryString = new URLSearchParams(params).toString();
+        return `/settings/studentsSet/services?${queryString}`;
+      },
+
+      validateStatus: (response, result) => {
+        return response.status === 200 && !result.isError;
+      },
+
+    
+      providesTags: ["service"],
+    }),
     addNewService: builder.mutation({
       query: (initialServiceData) => ({
         url: "/settings/studentsSet/services",
@@ -82,6 +95,7 @@ export const servicesApiSlice = apiSlice.injectEndpoints({
 export const {
   useGetServicesQuery,
   useGetServicesByYearQuery,
+  useGetServicesByIdQuery,
   useAddNewServiceMutation,
   useUpdateServiceMutation,
   useDeleteServiceMutation,

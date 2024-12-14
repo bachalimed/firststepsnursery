@@ -1,34 +1,70 @@
 import { useParams } from "react-router-dom"; //because we will get the userId from the url
-import { useSelector } from "react-redux";
-import { selectServiceById, useGetServiceByIdQuery } from "./servicesApiSlice"; //we will pull the user  data from the state and not use query
+
 import EditServiceForm from "./EditServiceForm";
-import useAuth from "../../../hooks/useAuth";
-import { currentServicesList } from "./servicesSlice";
+import {
+  useGetServicesByIdQuery,
+
+} from "./servicesApiSlice";
 import LoadingStateIcons from "react-loading-icons";
 import StudentsSet from "../../StudentsSet";
 const EditService = () => {
   const { id } = useParams(); //pull the id from use params from the url
+  console.log("id", id)
 
-  //will get hte student from the state
-  const serviceToEdit = useSelector((state) => state.service?.entities[id]);
-  //console.log('helllllow',serviceToEdit.userFullName.userFirstName, 'mystu', id)
+  const {
+    data: service, //the data is renamed services
+    isLoading: isServiceLoading, 
+    isSuccess: isServiceSuccess,
+    isError: isServiceError,
+    error: serviceError,
+  } = useGetServicesByIdQuery(
+    {
+      id: id,
+      endpointName: "EditService",
+    } ,
+  );
+  let serviceToEdit
+  if (isServiceSuccess) {
+   
+    serviceToEdit = service[0];
+  }
+  console.log('helllllow',serviceToEdit, 'mystu', id)
 
   let content;
 
-  content = serviceToEdit ? (
+
+  if (isServiceLoading) {
+    content = 
     <>
-      
+       <StudentsSet />
+       <LoadingStateIcons />
+     </>
+  
+} 
+  if (isServiceSuccess) {
+    content = 
+    <>
       <EditServiceForm service={serviceToEdit} />
     </>
-  ) : (
-    <>
-      <StudentsSet />
-      <LoadingStateIcons />
-    </>
-  );
+  
+} 
 
-  //}
-  //if(isError){<h1>is error</h1>}
+
+
+  // content = serviceToEdit ? (
+  //   <>
+      
+  //     <EditServiceForm service={serviceToEdit} />
+  //   </>
+  // ) : (
+  //   <>
+  //     <StudentsSet />
+  //     <LoadingStateIcons />
+  //   </>
+  // );
+
+ 
+  
   return content;
 };
 export default EditService;

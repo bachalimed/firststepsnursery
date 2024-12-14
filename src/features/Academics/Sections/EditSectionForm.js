@@ -21,11 +21,7 @@ import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import {
-  OBJECTID_REGEX,
-  DATE_REGEX,
-  NAME_REGEX,
-} from "../../../config/REGEX"
+import { OBJECTID_REGEX, DATE_REGEX, NAME_REGEX } from "../../../config/REGEX";
 //constrains on inputs when creating new user
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 import { useOutletContext } from "react-router-dom";
@@ -50,7 +46,7 @@ const EditSectionForm = ({ section }) => {
   ] = useUpdateSectionMutation();
   const {
     data: employees, //the data is renamed employees
-    isLoading: isEmployeesLoading, 
+    isLoading: isEmployeesLoading,
     isSuccess: isEmployeesSuccess,
     isError: isEmployeesError,
     error: employeesError,
@@ -61,15 +57,14 @@ const EditSectionForm = ({ section }) => {
       endpointName: "EditSectionForm",
     } || {},
     {
-     
       //pollingInterval: 60000,
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
   const {
     data: classrooms, //the data is renamed sessions
-    isLoading: isClassroomsLoading, 
+    isLoading: isClassroomsLoading,
     isSuccess: isClassroomsSuccess,
     isError: isClassroomsError,
     error: classroomsError,
@@ -79,13 +74,13 @@ const EditSectionForm = ({ section }) => {
     } || {},
     {
       //pollingInterval: 60000,
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
   const {
     data: students, //the data is renamed students
-    isLoading: isStudentLoading, 
+    isLoading: isStudentLoading,
     isSuccess: isStudentSuccess,
     isError: isStudentError,
     error: studentError,
@@ -95,26 +90,24 @@ const EditSectionForm = ({ section }) => {
       endpointName: "EditSectionForm",
     } || {},
     {
-   
       // pollingInterval: 60000,
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
 
-//confirmation Modal states
-const [showConfirmation, setShowConfirmation] = useState(false);
-
+  //confirmation Modal states
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   // Consolidated form state
   const [formData, setFormData] = useState({
-    id:section?.id,
+    id: section?.id,
     sectionLabel: section?.sectionLabel,
     sectionYear: section?.sectionYear,
     students: section?.students?.map((student) => student._id) || [], // Keep only _id
     sectionColor: section?.sectionColor,
     sectionType: section?.sectionType,
-    sectionFrom: section?.sectionFrom?.split("T")[0] ,
+    sectionFrom: section?.sectionFrom?.split("T")[0],
     sectionTo: section?.sectionTo?.split("T")[0],
     sectionAnimator: section?.sectionAnimator,
     sectionLocation: section?.sectionLocation,
@@ -170,7 +163,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
   useEffect(() => {
     if (isUpdateSectionSuccess) {
       setFormData({
-        id:"",
+        id: "",
         sectionLabel: "",
         sectionYear: "",
         students: [],
@@ -222,25 +215,28 @@ const [showConfirmation, setShowConfirmation] = useState(false);
   const canSave =
     Object.values(validity).every(Boolean) && !isUpdateSectionLoading;
 
-    const onSaveSectionClicked = async (e) => {
-      e.preventDefault();
-      if (canSave) {
-        setShowConfirmation(true);
-      }
-    };
-    const { triggerBanner } = useOutletContext(); // Access banner trigger
-    const handleConfirmSave = async () => {
-      // Close the confirmation modal
-      setShowConfirmation(false);
+  const onSaveSectionClicked = async (e) => {
+    e.preventDefault();
+    if (canSave) {
+      setShowConfirmation(true);
+    }
+  };
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
+  const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
 
-      try {
-        const response = await updateSection(formData);
-        console.log(response,'response')
+    try {
+      const response = await updateSection(formData);
+      console.log(response, "response");
       if (response.data && response.data.message) {
         // Success response
         triggerBanner(response.data.message, "success");
-
-      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
         // Error response
         triggerBanner(response.error.data.message, "error");
       } else {
@@ -252,13 +248,13 @@ const [showConfirmation, setShowConfirmation] = useState(false);
 
       console.error("Error saving section:", error);
     }
-      }
- 
-    // Close the modal without saving
+  };
+
+  // Close the modal without saving
   const handleCloseModal = () => {
     setShowConfirmation(false);
   };
-  
+
   console.log(formData, "formData");
   const content = (
     <>
@@ -266,9 +262,9 @@ const [showConfirmation, setShowConfirmation] = useState(false);
 
       <section className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold mb-4">
-         Edit Section: {`${formData.sectionLabel}`}
+          Edit Section: {`${formData.sectionLabel}`}
         </h2>
-       
+
         <form onSubmit={onSaveSectionClicked} className="space-y-6">
           {/* Section Label */}
           <div>
@@ -277,21 +273,23 @@ const [showConfirmation, setShowConfirmation] = useState(false);
               {!validity.validSectionLabel && (
                 <span className="text-red-600">*</span>
               )}
+              <input
+                aria-label="section label"
+                aria-invalid={!validity.validSectionLabel}
+                type="text"
+                name="sectionLabel"
+                value={formData.sectionLabel}
+                onChange={handleInputChange}
+                // className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                placeholder="Enter Section Label"
+                required
+                className={`mt-1 block w-full border ${
+                  validity.validSectionLabel
+                    ? "border-gray-300"
+                    : "border-red-600"
+                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+              />
             </label>
-            <input
-              type="text"
-              name="sectionLabel"
-              value={formData.sectionLabel}
-              onChange={handleInputChange}
-              // className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              placeholder="Enter Section Label"
-              required
-              className={`mt-1 block w-full border ${
-                validity.validSectionLabel
-                  ? "border-gray-300"
-                  : "border-red-600"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-            />
           </div>
           {/* Section Color */}
           <div>
@@ -300,15 +298,16 @@ const [showConfirmation, setShowConfirmation] = useState(false);
               {!validity.validSectionColor && (
                 <span className="text-red-600">*</span>
               )}
+              <input
+                aria-label="section color"
+                type="color"
+                name="sectionColor"
+                value={formData.sectionColor}
+                onChange={handleInputChange}
+                className="mt-1 block w-full rounded-md"
+                required
+              />{" "}
             </label>
-            <input
-              type="color"
-              name="sectionColor"
-              value={formData.sectionColor}
-              onChange={handleInputChange}
-              className="mt-1 block w-full rounded-md"
-              required
-            />
           </div>
 
           {/* Section Type */}
@@ -343,31 +342,33 @@ const [showConfirmation, setShowConfirmation] = useState(false);
               {!validity.validSectionAnimator && (
                 <span className="text-red-600">*</span>
               )}
+              <select
+                aria-invalid={!validity.validSectionAnimator}
+                aria-label="section animator"
+                name="sectionAnimator"
+                value={formData.sectionAnimator}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    sectionAnimator: e.target.value,
+                  }))
+                }
+                className={`mt-1 block w-full border ${
+                  validity.validSectionAnimator
+                    ? "border-gray-300"
+                    : "border-red-600"
+                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+              >
+                <option>Select Animator</option>
+                {activeEmployeesList.map((animator) => (
+                  <option key={animator.employeeId} value={animator.employeeId}>
+                    {animator?.userFullName.userFirstName}{" "}
+                    {animator?.userFullName.userMiddleName}{" "}
+                    {animator.userFullName.userLastName}
+                  </option>
+                ))}
+              </select>
             </label>
-            <select
-              name="sectionAnimator"
-              value={formData.sectionAnimator}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  sectionAnimator: e.target.value,
-                }))
-              }
-              className={`mt-1 block w-full border ${
-                validity.validSectionAnimator
-                  ? "border-gray-300"
-                  : "border-red-600"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-            >
-              <option>Select Animator</option>
-              {activeEmployeesList.map((animator) => (
-                <option key={animator.employeeId} value={animator.employeeId}>
-                  {animator?.userFullName.userFirstName}{" "}
-                  {animator?.userFullName.userMiddleName}{" "}
-                  {animator.userFullName.userLastName}
-                </option>
-              ))}
-            </select>
           </div>
           {/* Classroom Selection */}
           <div>
@@ -376,29 +377,31 @@ const [showConfirmation, setShowConfirmation] = useState(false);
               {!validity.validSectionLocation && (
                 <span className="text-red-600">*</span>
               )}
+              <select
+                aria-label="section location"
+                aria-invalid={!validity.validSectionLocation}
+                name="sectionLocation"
+                value={formData.sectionLocation}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    sectionLocation: e.target.value,
+                  }))
+                }
+                className={`mt-1 block w-full border ${
+                  validity.validSectionLocation
+                    ? "border-gray-300"
+                    : "border-red-600"
+                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+              >
+                <option>Select Classroom</option>
+                {classroomsList.map((classroom) => (
+                  <option key={classroom.id} value={classroom.id}>
+                    {classroom.classroomNumber}-{classroom.classroomLabel}
+                  </option>
+                ))}
+              </select>{" "}
             </label>
-            <select
-              name="sectionLocation"
-              value={formData.sectionLocation}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  sectionLocation: e.target.value,
-                }))
-              }
-              className={`mt-1 block w-full border ${
-                validity.validSectionLocation
-                  ? "border-gray-300"
-                  : "border-red-600"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-            >
-              <option>Select Classroom</option>
-              {classroomsList.map((classroom) => (
-                <option key={classroom.id} value={classroom.id}>
-                  {classroom.classroomNumber}-{classroom.classroomLabel}
-                </option>
-              ))}
-            </select>
           </div>
 
           {/* Section From */}
@@ -408,45 +411,51 @@ const [showConfirmation, setShowConfirmation] = useState(false);
               {!validity.validSectionFrom && (
                 <span className="text-red-600">*</span>
               )}
+              <input
+                aria-label="section from"
+                aria-invalid={!validity.validSectionFrom}
+                placeholder="[dd/mm/yyyy]"
+                type="date"
+                name="sectionFrom"
+                value={formData.sectionFrom}
+                onChange={handleInputChange}
+                className={`mt-1 block w-full border ${
+                  validity.validSectionFrom
+                    ? "border-gray-300"
+                    : "border-red-600"
+                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                required
+              />
             </label>
-            <input
-              type="date"
-              name="sectionFrom"
-              value={formData.sectionFrom}
-              onChange={handleInputChange}
-              className={`mt-1 block w-full border ${
-                validity.validSectionFrom ? "border-gray-300" : "border-red-600"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-              required
-            />
           </div>
 
           {/* Students Selection */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Select Students
+              <select
+                aria-label="section students"
+                name="students"
+                size="8"
+                multiple
+                onChange={handleStudentSelection}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm"
+              >
+                {unselectedStudents.map((student) => {
+                  const grade =
+                    student.studentYears.find(
+                      (year) => year.academicYear === selectedAcademicYear.title
+                    )?.grade || "N/A";
+                  return (
+                    <option key={student.id} value={student.id}>
+                      Grade: {grade} - {student?.studentName?.firstName}{" "}
+                      {student?.studentName?.middleName}{" "}
+                      {student?.studentName?.lastName}
+                    </option>
+                  );
+                })}
+              </select>
             </label>
-            <select
-              name="students"
-              size="8"
-              multiple
-              onChange={handleStudentSelection}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm"
-            >
-              {unselectedStudents.map((student) => {
-                const grade =
-                  student.studentYears.find(
-                    (year) => year.academicYear === selectedAcademicYear.title
-                  )?.grade || "N/A";
-                return (
-                  <option key={student.id} value={student.id}>
-                    Grade: {grade} - {student?.studentName?.firstName}{" "}
-                    {student?.studentName?.middleName}{" "}
-                    {student?.studentName?.lastName}
-                  </option>
-                );
-              })}
-            </select>
           </div>
 
           {/* Selected Students */}
@@ -454,34 +463,35 @@ const [showConfirmation, setShowConfirmation] = useState(false);
             <label className="block text-lg font-medium  text-gray-700">
               {formData.sectionLabel} section Students:{" "}
               {formData?.students.length}
-            </label>
-            <ul className="selected-students-list">
-              {formData.students.map((studentId, index) => {
-                const student = studentsList.find((s) => s.id === studentId);
-                const grade =
-                  student?.studentYears.find(
-                    (year) => year.academicYear === selectedAcademicYear.title
-                  )?.grade || "N/A";
+              <ul className="selected-students-list">
+                {formData.students.map((studentId, index) => {
+                  const student = studentsList.find((s) => s.id === studentId);
+                  const grade =
+                    student?.studentYears.find(
+                      (year) => year.academicYear === selectedAcademicYear.title
+                    )?.grade || "N/A";
 
-                return (
-                  <li
-                    key={studentId}
-                    onClick={() => handleRemoveStudent(studentId)}
-                    className="cursor-pointer hover:text-red-600 hover:line-through"
-                  >
-                   {index + 1}.{"  "}
-                    {student?.studentName.firstName}{" "}
-                    {student?.studentName.middleName}{" "}
-                    {student?.studentName.lastName} - Grade: {grade}
-                  </li>
-                );
-              })}
-            </ul>
+                  return (
+                    <li
+                      key={studentId}
+                      onClick={() => handleRemoveStudent(studentId)}
+                      className="cursor-pointer hover:text-red-600 hover:line-through"
+                    >
+                      {index + 1}.{"  "}
+                      {student?.studentName.firstName}{" "}
+                      {student?.studentName.middleName}{" "}
+                      {student?.studentName.lastName} - Grade: {grade}
+                    </li>
+                  );
+                })}
+              </ul>{" "}
+            </label>
           </div>
 
           {/* Submit Button */}
           <div className="flex justify-end gap-4">
             <button
+              aria-label="cancel edit section"
               type="button"
               onClick={() =>
                 navigate("/academics/sections/nurserySectionsList/")
@@ -492,7 +502,8 @@ const [showConfirmation, setShowConfirmation] = useState(false);
             </button>
             <button
               type="submit"
-              disabled={!canSave||isUpdateSectionLoading}
+              aria-label="submit form"
+              disabled={!canSave || isUpdateSectionLoading}
               className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
                 canSave
                   ? "bg-green-600 hover:bg-green-700 focus:ring-green-500"

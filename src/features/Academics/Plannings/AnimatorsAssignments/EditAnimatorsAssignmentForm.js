@@ -27,9 +27,10 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
 
+
   const {
     data: employees, //the data is renamed employees
-    isLoading: isEmployeesLoading, 
+    isLoading: isEmployeesLoading,
     isSuccess: isEmployeesSuccess,
     isError: isEmployeesError,
     error: employeesError,
@@ -46,7 +47,7 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
   );
   const {
     data: schools, //the data is renamed schools
-    isLoading: isSchoolLoading, 
+    isLoading: isSchoolLoading,
     isSuccess: isSchoolSuccess,
     isError: isSchoolError,
     error: schoolError,
@@ -56,7 +57,7 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
 
   const {
     data: assignments, //the data is renamed schools
-    isLoading: isAssignmentsLoading, 
+    isLoading: isAssignmentsLoading,
     isSuccess: isAssignmentsSuccess,
     isError: isAssignmentsError,
     error: assignmentsError,
@@ -191,15 +192,16 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
     // Close the confirmation modal
     setShowConfirmation(false);
     try {
-      const response = await updateAnimatorsAssignment(
-        formData
-      ).unwrap();
-      console.log(response,'response')
+      const response = await updateAnimatorsAssignment(formData).unwrap();
+      console.log(response, "response");
       if (response.data && response.data.message) {
         // Success response
         triggerBanner(response.data.message, "success");
-
-      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
         // Error response
         triggerBanner(response.error.data.message, "error");
       } else {
@@ -300,6 +302,8 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
               )}
             </label>
             <input
+              aria-invalid={!validity.validAssignmentYear}
+              required
               type="text"
               name="assignmentYear"
               value={formData.assignmentYear}
@@ -312,16 +316,19 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               From{" "}
-              {(!validity.validAssignedTo || !validity.noOverlap) && (
+              {(!validity.validAssignedFrom || !validity.noOverlap) && (
                 <span className="text-red-600">*</span>
               )}
             </label>
             <input
+              aria-invalid={!validity.validAssignedFrom}
+              required
+              placeholder="[dd/mm/yyyy]"
               type="date"
               name="assignedFrom"
               value={formData.assignedFrom}
               onChange={handleChange}
-              placeholder="Enter Date"
+             
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
             />
           </div>
@@ -333,11 +340,14 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
               )}
             </label>
             <input
+             aria-invalid={!validity.validAssignedTo}
+             required
+             placeholder="[dd/mm/yyyy]"
               type="date"
               name="assignedTo"
               value={formData.assignedTo}
               onChange={handleChange}
-              placeholder="Enter Date"
+             
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
             />
           </div>
@@ -400,30 +410,32 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
 
           <button
             type="button"
+            aria-label="add assigment"
             onClick={addAssignment}
-            className="w-full bg-blue-200 text-gray-700 py-2 px-4 rounded-md mt-2 hover:bg-blue-300 transition duration-200"
+            className="w-full add-button mb-2"
           >
-            Add Animator
+            Add Assignment
           </button>
           <div className="flex justify-end gap-4">
-          <button
-            type="button"
-            
-            className="cancel-button"
-            onClick={() =>
-              navigate("/academics/plannings/animatorsAssignments/")
-            }
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={!canSubmit}
-            className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition duration-200 mt-4"
-          >
-            {isUpdateLoading ? "Updating..." : "Update Assignment"}
-          </button>
-         </div>
+            <button
+              type="button"
+               aria-label="cancel assignments"
+              className="cancel-button"
+              onClick={() =>
+                navigate("/academics/plannings/animatorsAssignments/")
+              }
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              aria-label="submit form"
+              disabled={!canSubmit}
+              className="save-button"
+            >
+              {isUpdateLoading ? "Updating..." : "Update Assignment"}
+            </button>
+          </div>
         </form>
       </div>
       {/* Confirmation Modal */}

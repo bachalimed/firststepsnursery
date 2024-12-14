@@ -38,13 +38,13 @@ const DashboardHeader = () => {
   
 
 
-  const circles = GenerateCircles(8); // Generate 10 random circles
+  //const circles = GenerateCircles(8); // Generate 10 random circles
   const content = (
      <header  className= "bg-sky-700 text-white py-1 px-3 md:px-1 flex md:flex-row md:justify-between items-center shadow-md relative overflow-hidden">
       {/* Background circles */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+      {/* <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
         {circles}
-      </div>
+      </div> */}
       <div className={` "w-56" p-2 flex text-white  relative`}>
         <Link to="/"><img src={logo} className="h-12 w-12 rounded " alt="2 mascots" /></Link>
        

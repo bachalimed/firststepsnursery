@@ -1,5 +1,5 @@
 import React from "react";
-import { useOutletContext,useNavigate } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import Students from "../../Students";
 import {
   selectCurrentAcademicYearId,
@@ -33,10 +33,6 @@ const NewStudentForm = () => {
       error,
     },
   ] = useAddNewStudentMutation(); //it will not execute the mutation nownow but when called
-  
- 
-
-
 
   //prepare the permission variables
   const { userId, canEdit, canDelete, canAdd, canCreate, isParent, status2 } =
@@ -57,7 +53,6 @@ const NewStudentForm = () => {
   if (schoolIsSuccess) {
     const { entities } = attendedSchoolsList;
     attendedSchools = Object.values(entities);
-  
   }
   //confirmation Modal states
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -150,7 +145,7 @@ const NewStudentForm = () => {
   const onStudentDobChanged = (e) => setStudentDob(e.target.value);
   const onStudentSexChanged = (e) => setStudentSex(e.target.value);
   const onStudentIsActiveChanged = (e) => setStudentIsActive((prev) => !prev);
-   const onGardienFirstNameChanged = (e) => setGardienFirstName(e.target.value);
+  const onGardienFirstNameChanged = (e) => setGardienFirstName(e.target.value);
   const onGardienMiddleNameChanged = (e) =>
     setgardienMiddleName(e.target.value);
   const onGardienLastNameChanged = (e) => setGardienLastName(e.target.value);
@@ -160,7 +155,7 @@ const NewStudentForm = () => {
   const onAttendedSchoolChanged = (e) => setAttendedSchool(e.target.value);
   const onNoteChanged = (e) => setNote(e.target.value);
   const onStudentEducationChanged = (e) => setStudentEducation(e.target.value);
- 
+
   //adds to the previous entries in arrays for gardien, schools...
   const onAcademicYearChanged = (e) => {
     const { value, checked } = e.target;
@@ -257,7 +252,6 @@ const NewStudentForm = () => {
     );
   }, [studentEducation, selectedAcademicYear?.title]);
 
-
   //to check if we can save before onsave, if every one is true, and also if we are not loading status
   const canSave =
     [
@@ -269,7 +263,7 @@ const NewStudentForm = () => {
       studentSex,
     ].every(Boolean) && !isLoading;
 
-   const { triggerBanner } = useOutletContext(); // Access banner trigger
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
 
   const onSaveStudentClicked = async (e) => {
     e.preventDefault();
@@ -297,12 +291,15 @@ const NewStudentForm = () => {
         studentGardien,
         operator,
       });
-      console.log(response,'response')
+      console.log(response, "response");
       if (response.data && response.data.message) {
         // Success response
         triggerBanner(response.data.message, "success");
-
-      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
         // Error response
         triggerBanner(response.error.data.message, "error");
       } else {
@@ -325,12 +322,11 @@ const NewStudentForm = () => {
     naviagte("/students/studentsParents/students/");
   };
 
-  
   const content = (
     <>
       <Students />
-       {/* Display status message */}
-       {/* {showMessage && (
+      {/* Display status message */}
+      {/* {showMessage && (
         <p
           className={`mt-4 text-center ${
             statusType === "success" ? "text-green-500" : "text-red-600"
@@ -357,20 +353,19 @@ const NewStudentForm = () => {
             >
               First Name{" "}
               {!validFirstName && <span className="text-red-600">*</span>}
-              
+              <input
+                aria-invalid={!validFirstName}
+                placeholder="[3-20 letters]"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                id="firstName"
+                name="firstName"
+                type="text"
+                autoComplete="off"
+                value={firstName}
+                onChange={onFirstNameChanged}
+                required
+              />{" "}
             </label>
-            <input
-             aria-invalid={!validFirstName}
-            placeholder="[3-20 letters]"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-              id="firstName"
-              name="firstName"
-              type="text"
-              autoComplete="off"
-              value={firstName}
-              onChange={onFirstNameChanged}
-              required
-            />
           </div>
 
           <div>
@@ -379,17 +374,17 @@ const NewStudentForm = () => {
               htmlFor="middleName"
             >
               Middle Name
+              <input
+                placeholder="[3-20 letters]"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                id="middleName"
+                name="middleName"
+                type="text"
+                autoComplete="off"
+                value={middleName}
+                onChange={onMiddleNameChanged}
+              />{" "}
             </label>
-            <input
-             placeholder="[3-20 letters]"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-              id="middleName"
-              name="middleName"
-              type="text"
-              autoComplete="off"
-              value={middleName}
-              onChange={onMiddleNameChanged}
-            />
           </div>
 
           <div>
@@ -399,20 +394,19 @@ const NewStudentForm = () => {
             >
               Last Name{" "}
               {!validLastName && <span className="text-red-600">*</span>}
-             
+              <input
+                aria-invalid={!validLastName}
+                placeholder="[3-20 letters]"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                id="lastName"
+                name="lastName"
+                type="text"
+                autoComplete="off"
+                value={lastName}
+                onChange={onLastNameChanged}
+                required
+              />
             </label>
-            <input
-             aria-invalid={!validLastName}
-            placeholder="[3-20 letters]"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-              id="lastName"
-              name="lastName"
-              type="text"
-              autoComplete="off"
-              value={lastName}
-              onChange={onLastNameChanged}
-              required
-            />
           </div>
 
           <div>
@@ -422,93 +416,90 @@ const NewStudentForm = () => {
             >
               Date Of Birth{" "}
               {!validStudentDob && <span className="text-red-600">*</span>}
-              <span className="text-gray-500 text-xs"> [dd/mm/yyyy]</span>
+              <input
+                aria-invalid={!validStudentDob}
+                placeholder="[dd/mm/yyyy]"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                id="studentDob"
+                name="studentDob"
+                type="date"
+                autoComplete="off"
+                value={studentDob}
+                onChange={onStudentDobChanged}
+                required
+              />{" "}
             </label>
-            <input
-             aria-invalid={!validStudentDob}
-            placeholder="[dd/mm/yyyy]"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-              id="studentDob"
-              name="studentDob"
-              type="date"
-              autoComplete="off"
-              value={studentDob}
-              onChange={onStudentDobChanged}
-              required
-            />
           </div>
         </div>
 
         <div className="mb-6">
           <div className="flex items-center mb-2">
-            <input
-              type="checkbox"
-              id="male"
-              value="Male"
-              checked={studentSex === "Male"}
-              onChange={onStudentSexChanged}
-              className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
-            />
             <label
               htmlFor="male"
               className="ml-2 text-sm font-medium text-gray-700"
             >
               Male
+              <input
+                type="checkbox"
+                id="male"
+                value="Male"
+                checked={studentSex === "Male"}
+                onChange={onStudentSexChanged}
+                className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
+              />
             </label>
-
-            <input
-              type="checkbox"
-              id="female"
-              value="Female"
-              checked={studentSex === "Female"}
-              onChange={onStudentSexChanged}
-              className="ml-6 h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
-            />
             <label
               htmlFor="female"
               className="ml-2 text-sm font-medium text-gray-700"
             >
               Female
+              <input
+                type="checkbox"
+                id="female"
+                value="Female"
+                checked={studentSex === "Female"}
+                onChange={onStudentSexChanged}
+                className="ml-6 h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
+              />
             </label>
           </div>
 
           <div className="flex items-center mb-2">
-            <input
-              type="checkbox"
-              id="active"
-              value={studentIsActive}
-              checked={studentIsActive}
-              onChange={onStudentIsActiveChanged}
-              className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
-            />
             <label
               htmlFor="active"
               className="ml-2 text-sm font-medium text-gray-700"
             >
               Student Is Active
+              <input
+                type="checkbox"
+                id="active"
+                value={studentIsActive}
+                checked={studentIsActive}
+                onChange={onStudentIsActiveChanged}
+                className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
+              />
             </label>
           </div>
 
           <div className="flex items-center mb-2">
-            <input
-              type="checkbox"
-              id="studentYears"
-              value={selectedAcademicYear?.title}
-              checked={studentYears.some(
-                (year) => year.academicYear === selectedAcademicYear.title
-              )}
-              onChange={onAcademicYearChanged}
-              className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
-              required
-            />
-
             <label
               htmlFor="studentYears"
               className="ml-2 text-sm font-medium text-gray-700"
             >
               Student Year{" "}
               {!studentYears[0] && <span className="text-red-600">*</span>} :{" "}
-              {selectedAcademicYear.title}
+              {selectedAcademicYear?.title}
+              <input
+                type="checkbox"
+                id="studentYears"
+                value={selectedAcademicYear?.title}
+                checked={studentYears.some(
+                  (year) => year.academicYear === selectedAcademicYear.title
+                )}
+                onChange={onAcademicYearChanged}
+                className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
+                required
+              />
             </label>
           </div>
           <div className="flex items-center mb-2">
@@ -524,26 +515,25 @@ const NewStudentForm = () => {
                   {!studentYears[0].grade && (
                     <span className="text-red-600">*</span>
                   )}
+                  <select
+                    id="studentGrade"
+                    value={
+                      studentYears.find(
+                        (year) =>
+                          year.academicYear === selectedAcademicYear?.title
+                      )?.grade || ""
+                    }
+                    onChange={onStudentGradeChanged}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                  >
+                    <option value="">Select Grade</option>
+                    {["0", "1", "2", "3", "4", "5", "6", "7"].map((grade) => (
+                      <option key={grade} value={grade}>
+                        Grade {grade}
+                      </option>
+                    ))}
+                  </select>
                 </label>
-                <select
-                 
-                  id="studentGrade"
-                  value={
-                    studentYears.find(
-                      (year) =>
-                        year.academicYear === selectedAcademicYear?.title
-                    )?.grade || ""
-                  }
-                  onChange={onStudentGradeChanged}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-                >
-                  <option value="">Select Grade</option>
-                  {["0", "1", "2", "3", "4", "5", "6", "7"].map((grade) => (
-                    <option key={grade} value={grade}>
-                      Grade {grade}
-                    </option>
-                  ))}
-                </select>
               </div>
             )}
           </div>
@@ -565,20 +555,20 @@ const NewStudentForm = () => {
                       htmlFor={`gardienFirstName-${index}`}
                     >
                       First Name:
+                      <input
+                        id={`gardienFirstName-${index}`}
+                        type="text"
+                        value={entry.gardienFirstName}
+                        onChange={(e) =>
+                          handleGardienFieldChange(
+                            index,
+                            "gardienFirstName",
+                            e.target.value
+                          )
+                        }
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                      />
                     </label>
-                    <input
-                      id={`gardienFirstName-${index}`}
-                      type="text"
-                      value={entry.gardienFirstName}
-                      onChange={(e) =>
-                        handleGardienFieldChange(
-                          index,
-                          "gardienFirstName",
-                          e.target.value
-                        )
-                      }
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-                    />
                   </div>
                   <div className="mb-2">
                     <label
@@ -586,20 +576,20 @@ const NewStudentForm = () => {
                       htmlFor={`gardienMiddleName-${index}`}
                     >
                       Middle Name:
+                      <input
+                        id={`gardienMiddleName-${index}`}
+                        type="text"
+                        value={entry.gardienMiddleName}
+                        onChange={(e) =>
+                          handleGardienFieldChange(
+                            index,
+                            "gardienMiddleName",
+                            e.target.value
+                          )
+                        }
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                      />{" "}
                     </label>
-                    <input
-                      id={`gardienMiddleName-${index}`}
-                      type="text"
-                      value={entry.gardienMiddleName}
-                      onChange={(e) =>
-                        handleGardienFieldChange(
-                          index,
-                          "gardienMiddleName",
-                          e.target.value
-                        )
-                      }
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-                    />
                   </div>
                   <div className="mb-2">
                     <label
@@ -607,20 +597,20 @@ const NewStudentForm = () => {
                       htmlFor={`gardienLastName-${index}`}
                     >
                       Last Name:
+                      <input
+                        id={`gardienLastName-${index}`}
+                        type="text"
+                        value={entry.gardienLastName}
+                        onChange={(e) =>
+                          handleGardienFieldChange(
+                            index,
+                            "gardienLastName",
+                            e.target.value
+                          )
+                        }
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                      />
                     </label>
-                    <input
-                      id={`gardienLastName-${index}`}
-                      type="text"
-                      value={entry.gardienLastName}
-                      onChange={(e) =>
-                        handleGardienFieldChange(
-                          index,
-                          "gardienLastName",
-                          e.target.value
-                        )
-                      }
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-                    />
                   </div>
                   <div className="mb-2">
                     <label
@@ -628,30 +618,29 @@ const NewStudentForm = () => {
                       htmlFor={`gardienYear-${index}`}
                     >
                       gardienYear:
-                    </label>
-
-                    <select
-                      id={`gardienYear-${index}`}
-                      value={entry.gardienYear}
-                      onChange={(e) =>
-                        handleGardienFieldChange(
-                          index,
-                          "gardienYear",
-                          e.target.value
-                        )
-                      }
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-                    >
-                      <option value="">Select Year</option>
-                      {academicYears.map(
-                        (year) =>
-                          year.title !== "1000" && (
-                            <option key={year.id} value={year.title}>
-                              {year.title}
-                            </option>
+                      <select
+                        id={`gardienYear-${index}`}
+                        value={entry.gardienYear}
+                        onChange={(e) =>
+                          handleGardienFieldChange(
+                            index,
+                            "gardienYear",
+                            e.target.value
                           )
-                      )}
-                    </select>
+                        }
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                      >
+                        <option value="">Select Year</option>
+                        {academicYears.map(
+                          (year) =>
+                            year.title !== "1000" && (
+                              <option key={year.id} value={year.title}>
+                                {year.title}
+                              </option>
+                            )
+                        )}
+                      </select>{" "}
+                    </label>
                   </div>
 
                   <div className="mb-2">
@@ -660,20 +649,20 @@ const NewStudentForm = () => {
                       htmlFor={`gardienRelation-${index}`}
                     >
                       Relation To Student :
+                      <input
+                        id={`gardienRelation-${index}`}
+                        type="text"
+                        value={entry.gardienRelation}
+                        onChange={(e) =>
+                          handleGardienFieldChange(
+                            index,
+                            "gardienRelation",
+                            e.target.value
+                          )
+                        }
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                      />
                     </label>
-                    <input
-                      id={`gardienRelation-${index}`}
-                      type="text"
-                      value={entry.gardienRelation}
-                      onChange={(e) =>
-                        handleGardienFieldChange(
-                          index,
-                          "gardienRelation",
-                          e.target.value
-                        )
-                      }
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-                    />
                   </div>
                   <div className="mb-2">
                     <label
@@ -681,20 +670,20 @@ const NewStudentForm = () => {
                       htmlFor={`gardienPhone-${index}`}
                     >
                       Phone Number:
+                      <input
+                        id={`gardienPhone-${index}`}
+                        type="text"
+                        value={entry.gardienPhone}
+                        onChange={(e) =>
+                          handleGardienFieldChange(
+                            index,
+                            "gardienPhone",
+                            e.target.value
+                          )
+                        }
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                      />{" "}
                     </label>
-                    <input
-                      id={`gardienPhone-${index}`}
-                      type="text"
-                      value={entry.gardienPhone}
-                      onChange={(e) =>
-                        handleGardienFieldChange(
-                          index,
-                          "gardienPhone",
-                          e.target.value
-                        )
-                      }
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-                    />
                   </div>
 
                   <button
@@ -737,25 +726,25 @@ const NewStudentForm = () => {
                       htmlFor={`schoolYear-${index}`}
                     >
                       School Year:
+                      <select
+                        id={`schoolYear-${index}`}
+                        value={entry.schoolYear}
+                        onChange={(e) =>
+                          handleFieldChange(index, "schoolYear", e.target.value)
+                        }
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                      >
+                        <option value="">Select Year</option>
+                        {academicYears.map(
+                          (year) =>
+                            year.title !== "1000" && (
+                              <option key={year.id} value={year.title}>
+                                {year.title}
+                              </option>
+                            )
+                        )}
+                      </select>{" "}
                     </label>
-                    <select
-                      id={`schoolYear-${index}`}
-                      value={entry.schoolYear}
-                      onChange={(e) =>
-                        handleFieldChange(index, "schoolYear", e.target.value)
-                      }
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-                    >
-                      <option value="">Select Year</option>
-                      {academicYears.map(
-                        (year) =>
-                          year.title !== "1000" && (
-                            <option key={year.id} value={year.title}>
-                              {year.title}
-                            </option>
-                          )
-                      )}
-                    </select>
                   </div>
                   <div className="mb-2">
                     <label
@@ -763,31 +752,31 @@ const NewStudentForm = () => {
                       htmlFor={`attendedSchool-${index}`}
                     >
                       Attended School:
-                    </label>
-                    <select
-                      id={`attendedSchool-${index}`}
-                      value={entry.attendedSchool}
-                      onChange={(e) =>
-                        handleFieldChange(
-                          index,
-                          "attendedSchool",
-                          e.target.value
-                        )
-                      }
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-                    >
-                      <option value="">Select School</option>
-                      {schoolIsSuccess &&
-                        attendedSchools
-                          .filter(
-                            (school) => school.schoolName !== "First Steps"
+                      <select
+                        id={`attendedSchool-${index}`}
+                        value={entry.attendedSchool}
+                        onChange={(e) =>
+                          handleFieldChange(
+                            index,
+                            "attendedSchool",
+                            e.target.value
                           )
-                          .map((school) => (
-                            <option key={school.id} value={school.id}>
-                              {school.schoolName}
-                            </option>
-                          ))}
-                    </select>
+                        }
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                      >
+                        <option value="">Select School</option>
+                        {schoolIsSuccess &&
+                          attendedSchools
+                            .filter(
+                              (school) => school.schoolName !== "First Steps"
+                            )
+                            .map((school) => (
+                              <option key={school.id} value={school.id}>
+                                {school.schoolName}
+                              </option>
+                            ))}
+                      </select>{" "}
+                    </label>
                   </div>
                   <div className="mb-2">
                     <label
@@ -795,16 +784,16 @@ const NewStudentForm = () => {
                       htmlFor={`note-${index}`}
                     >
                       Note:
+                      <input
+                        id={`note-${index}`}
+                        type="text"
+                        value={entry.note}
+                        onChange={(e) =>
+                          handleFieldChange(index, "note", e.target.value)
+                        }
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                      />
                     </label>
-                    <input
-                      id={`note-${index}`}
-                      type="text"
-                      value={entry.note}
-                      onChange={(e) =>
-                        handleFieldChange(index, "note", e.target.value)
-                      }
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-                    />
                   </div>
 
                   <button
@@ -817,17 +806,12 @@ const NewStudentForm = () => {
                 </div>
               </div>
             ))}
-          <button
-            type="button"
-            className="add-button"
-            onClick={handleAddEntry}
-          >
+          <button type="button" className="add-button" onClick={handleAddEntry}>
             Add Student Education
           </button>
         </div>
 
         <div className="flex justify-end space-x-4">
-          
           <button
             type="button"
             className="cancel-button"
@@ -840,14 +824,14 @@ const NewStudentForm = () => {
             className="save-button"
             title="Save"
             onClick={onSaveStudentClicked}
-            disabled={!canSave||isLoading}
+            disabled={!canSave || isLoading}
           >
             Save Changes
           </button>
         </div>
       </form>
-       {/* Confirmation Modal */}
-       <ConfirmationModal
+      {/* Confirmation Modal */}
+      <ConfirmationModal
         show={showConfirmation}
         onClose={handleCloseModal}
         onConfirm={handleConfirmSave}

@@ -238,6 +238,7 @@ const ExpenseCategoriesList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
+          aria-label="expense category details"
             className="text-sky-700"
             fontSize={20}
             onClick={() =>
@@ -248,6 +249,7 @@ const ExpenseCategoriesList = () => {
           </button>
           {canEdit ? (
             <button
+            aria-label="edit expense category"
               className="text-amber-300"
               onClick={() =>
                 navigate(`/settings/financesSet/editExpenseCategory/${row.id}`)
@@ -258,6 +260,7 @@ const ExpenseCategoriesList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
+            aria-label="delete expense category"
               className="text-red-600"
               onClick={() => onDeleteExpenseCategoryClicked(row.id)}
             >

@@ -15,8 +15,6 @@ import useAuth from '../../../../hooks/useAuth'
 import { useOutletContext } from "react-router-dom";
 
 import { useGetClassroomsQuery,  useDeleteClassroomMutation,} from "./classroomsApiSlice"
-
-
 import { useSelector, useDispatch } from 'react-redux'
 
 import AcademicsSet from "../../AcademicsSet"
@@ -126,6 +124,22 @@ selector:row=>row.id,
 sortable:true,
 width:"210px"
  }, 
+ {
+  name: "Color",
+  selector: (row) => (
+    <div
+      style={{
+        width: "20px",
+        height: "20px",
+        backgroundColor: row.classroomColor,
+        borderRadius: "4px",
+        border: "1px solid #ccc",
+      }}
+    ></div>
+  ),
+  sortable: true,
+  width: "90px",
+},
   { 
 name: "Number",
 selector:row=>row.classroomNumber,
@@ -155,10 +169,10 @@ width:"100px"
   cell: row => (
     <div className="space-x-1">
       
-      {canEdit?(<button  className="text-amber-300" onClick={() => Navigate(`/settings/academicsSet/editClassroom/${row.id}`)}  > 
+      {canEdit?(<button   aria-label="edit classroom" className="text-amber-300" onClick={() => Navigate(`/settings/academicsSet/editClassroom/${row.id}`)}  > 
       <FiEdit fontSize={20}/> 
       </button>):null}
-      {canDelete?(<button className="text-red-600"  onClick={() => onDeleteClassroomClicked(row.id)}>
+      {canDelete?(<button aria-label="delete classroom" className="text-red-600"  onClick={() => onDeleteClassroomClicked(row.id)}>
         <RiDeleteBin6Line fontSize={20}/>
       </button>):null}
     </div>
@@ -234,7 +248,7 @@ return (
 		
         <button 
 			className="add-button"
-			onClick={() => Navigate('/settings/academicsSet/newSchool')}
+			onClick={() => Navigate('/settings/academicsSet/newClassroom')}
 			disabled={selectedRows.length !== 0} // Disable if no rows are selected
       hidden={!canCreate}
 			>

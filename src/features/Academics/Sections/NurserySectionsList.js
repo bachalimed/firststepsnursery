@@ -424,7 +424,7 @@ const NurserySectionsList = () => {
           </button>
           {!row.sectionTo && canEdit ? (
             <button
-              className="text-amber300"
+              className="text-amber-300"
               onClick={() =>
                 navigate(`/academics/sections/editSection/${row.id}`)
               }

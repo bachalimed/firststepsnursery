@@ -29,9 +29,8 @@ const EditAcademicYearForm = ({ academicYear }) => {
   // State to determine if the form can be submitted
   const [canSubmit, setCanSubmit] = useState(false);
 
-
   //confirmation Modal states
-const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const handleYearStartChange = (e) => {
     const startYear = e.target.value;
 
@@ -54,7 +53,9 @@ const [showConfirmation, setShowConfirmation] = useState(false);
           setTitle(academicYearTitle);
 
           // Set yearStart and yearEnd as Date objects
-          const generatedYearStart = new Date(`${startYear}-08-31T00:00:00.000Z`);
+          const generatedYearStart = new Date(
+            `${startYear}-08-31T00:00:00.000Z`
+          );
           const generatedYearEnd = new Date(`${endYear}-09-01T00:00:00.000Z`);
 
           setYearStart(generatedYearStart);
@@ -85,7 +86,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
       return;
     }
     setShowConfirmation(true);
-  }
+  };
   const { triggerBanner } = useOutletContext(); // Access banner trigger
 
   const handleConfirmSave = async () => {
@@ -101,12 +102,15 @@ const [showConfirmation, setShowConfirmation] = useState(false);
       }).unwrap();
 
       navigate("/settings/academicsSet/academicYears/");
-      console.log(response,'response')
+      console.log(response, "response");
       if (response.data && response.data.message) {
         // Success response
         triggerBanner(response.data.message, "success");
-
-      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
         // Error response
         triggerBanner(response.error.data.message, "error");
       } else {
@@ -114,19 +118,26 @@ const [showConfirmation, setShowConfirmation] = useState(false);
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to update academic Year. Please try again.", "error");
+      triggerBanner(
+        "Failed to update academic Year. Please try again.",
+        "error"
+      );
 
       console.error("Error saving:", error);
     }
   };
- // Close the modal without saving
- const handleCloseModal = () => {
-  setShowConfirmation(false);
-};
+  // Close the modal without saving
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
+  };
   // Update canSubmit state
   useEffect(() => {
     setCanSubmit(
-      !!title && !!yearStart && !!yearEnd && !!academicYearCreator && !titleError
+      !!title &&
+        !!yearStart &&
+        !!yearEnd &&
+        !!academicYearCreator &&
+        !titleError
     );
   }, [title, yearStart, yearEnd, academicYearCreator, titleError]);
 
@@ -134,82 +145,101 @@ const [showConfirmation, setShowConfirmation] = useState(false);
     <>
       <AcademicsSet />
       <div className="p-6 bg-white rounded-lg shadow-md max-w-md mx-auto">
-        <h2 className="text-2xl font-bold mb-6 text-center"> {`Edit Academic Year ${academicYear.title}`}</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">
+          {" "}
+          {`Edit Academic Year ${academicYear.title}`}
+        </h2>
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               Starting Year (Format: yyyy)
+              <input
+               aria-label="starting year"
+               
+               placeholder="[yyyy]"
+                type="text"
+                value={title.split("/")[0] || ""}
+                onChange={handleYearStartChange}
+                
+                maxLength="4"
+                className={`w-full px-3 py-2 border rounded-md ${
+                  titleError ? "border-red-600" : ""
+                } focus:outline-none focus:ring-2 focus:ring-sky-700`}
+              />
+              {titleError && (
+                <p className="text-red-600 text-sm mt-2">{titleError}</p>
+              )}
             </label>
-            <input
-              type="text"
-              value={title.split("/")[0] || ""}
-              onChange={handleYearStartChange}
-              placeholder="e.g., 2023"
-              maxLength="4"
-              className={`w-full px-3 py-2 border rounded-md ${
-                titleError ? "border-red-600" : ""
-              } focus:outline-none focus:ring-2 focus:ring-sky-700`}
-            />
-            {titleError && (
-              <p className="text-red-600 text-sm mt-2">{titleError}</p>
-            )}
           </div>
 
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               Academic Year Title
-            </label>
-            <input
-              type="text"
-              value={title}
-              readOnly
-              className="w-full px-3 py-2 border rounded-md bg-gray-100"
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">Year Start</label>
-            <input
-              type="text"
-              value={yearStart}
-              onChange={(e)=>setYearStart(e.target.value)
-
-              }
-            
-              className="w-full px-3 py-2 border rounded-md bg-gray-100"
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">Year End</label>
-            <input
-              type="text"
-              value={new Date(yearEnd).toLocaleDateString()}
+              <input
+               aria-label="year title"
+               
              
-              className="w-full px-3 py-2 border rounded-md bg-gray-100"
-            />
+                type="text"
+                value={title}
+                readOnly
+                className="w-full px-3 py-2 border rounded-md bg-gray-100"
+              />
+            </label>
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700 font-bold mb-2">
+              Year Start
+              <input
+                type="text"
+                value={yearStart}
+                onChange={(e) => setYearStart(e.target.value)}
+                className="w-full px-3 py-2 border rounded-md bg-gray-100"
+              />
+            </label>
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700 font-bold mb-2">
+              Year End
+              <input
+                type="text"
+                value={new Date(yearEnd).toLocaleDateString()}
+                className="w-full px-3 py-2 border rounded-md bg-gray-100"
+              />
+            </label>
           </div>
 
           {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
-
-          <button
-            type="submit"
-            disabled={!canSubmit}
-            className="w-full bg-sky-700 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200"
-          >
-            {isUpdating ? "Updating..." : "Update Academic Year"}
-          </button>
-
-          {isUpdateError && (
+          <div className="flex justify-end gap-4">
+            <button
+              aria-label="cancel edit"
+              type="button"
+              onClick={() =>
+                navigate("/settings/academicsSet/academicYears/")
+              }
+              className="cancel-button"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={!canSubmit || isUpdating}
+              className="save-button"
+            >
+              {isUpdating ? "Updating..." : "Update Academic Year"}
+            </button>
+          </div>
+          {/* {isUpdateError && (
             <p className="text-red-600 text-sm mt-2">
               {updateError?.data?.message || "Error updating academic year."}
             </p>
-          )}
+          )} */}
         </form>
       </div>
-       {/* Confirmation Modal */}
-       <ConfirmationModal
+      {/* Confirmation Modal */}
+      <ConfirmationModal
         show={showConfirmation}
         onClose={handleCloseModal}
         onConfirm={handleConfirmSave}

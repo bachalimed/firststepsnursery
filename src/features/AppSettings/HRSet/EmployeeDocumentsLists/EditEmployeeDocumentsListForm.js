@@ -16,7 +16,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TITLE_REGEX } from "../../../../config/REGEX";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 
-
 const EditEmployeeDocumentsListForm = ({ listToEdit }) => {
   //console.log(listToEdit.documentsAcademicYear,'lllllyear')
   const Navigate = useNavigate();
@@ -145,14 +144,17 @@ const [showConfirmation, setShowConfirmation] = useState(false);
       <p className={errClass}>{documentsError?.data?.message}</p>
       <form className="form" onSubmit={onSaveEmployeeDocumentsListClicked}>
         <div className="form__title-row">
-          <h2>Editing Employee Documents List for {documentsAcademicYear}</h2>
+          <h2>Edit Employee Documents List for {documentsAcademicYear}</h2>
         </div>
         <h1>Employee Documents</h1>
         {employeeDocumentsList.map((entry, index) => (
           <div key={index}>
             <input
+             aria-label="document title"
+             
+             placeholder="[3-20 characters]"
               type="text"
-              placeholder="Document Title"
+             
               value={entry.documentTitle}
               onChange={(e) =>
                 handleFieldChange(index, "documentTitle", e.target.value)
@@ -161,6 +163,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
             />
             <label>
               <input
+                aria-label="is required"
                 type="checkbox"
                 checked={entry.isRequired}
                 onChange={(e) =>
@@ -171,6 +174,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
             </label>
             <label>
               <input
+               aria-label="is legalised"
                 type="checkbox"
                 checked={entry.isLegalised}
                 onChange={(e) =>
@@ -179,24 +183,26 @@ const [showConfirmation, setShowConfirmation] = useState(false);
               />
               Is Legalised?
             </label>
-            {isRemovable(index) && (  <button type="button" onClick={() => handleRemoveEntry(index)}>
+            {isRemovable(index) && (  <button  className="delete-button" aria-label="remove document" type="button" onClick={() => handleRemoveEntry(index)}>
               Remove
             </button>)}
           </div>
         ))}
-        <button type="button" onClick={handleAddEntry}>
+        <button aria-label="add document" className="add-button" type="button" onClick={handleAddEntry}>
           Add Document
         </button>
-        <div className="flex justify-end items-center space-x-4">
+        <div className="flex justify-end gap-4">
          
           <button
+          aria-label="cancel new document list"
             className="cancel-button"
             onClick={handleCancel}
           >
             Cancel
           </button>
           <button
-            className="px-4 py-2 bg-green-600 text-white rounded"
+          aria-label="submit edit document list"
+           className="save-button"
             type="submit"
             title="Save"
             onClick={onSaveEmployeeDocumentsListClicked}

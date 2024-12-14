@@ -54,7 +54,7 @@ const StudentDetails = () => {
   } = useGetStudentDocumentsByYearByIdQuery(
     {
       studentId: id,
-      year: selectedAcademicYear.title,
+      year: selectedAcademicYear?.title,
       endpointName: "StudentDetails",
     },
     {

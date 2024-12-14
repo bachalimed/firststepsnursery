@@ -30,8 +30,8 @@ const NewAcademicYearForm = () => {
 
   // State to determine if the form can be submitted
   const [canSubmit, setCanSubmit] = useState(false);
-//confirmation Modal states
-const [showConfirmation, setShowConfirmation] = useState(false);
+  //confirmation Modal states
+  const [showConfirmation, setShowConfirmation] = useState(false);
   // Helper function to format date
   const formatDate = (day, month, year, hour, minute) => {
     return `${day}/${month}/${year} ${hour}:${minute}`;
@@ -105,11 +105,11 @@ const [showConfirmation, setShowConfirmation] = useState(false);
       return;
     }
     setShowConfirmation(true);
-  }
- // This function handles the confirmed save action
- const handleConfirmSave = async () => {
-  // Close the confirmation modal
-  setShowConfirmation(false);
+  };
+  // This function handles the confirmed save action
+  const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
     try {
       // Ensure yearStart and yearEnd are Date objects when creating the new academic year
       const newAcademicYear = await addNewAcademicYear({
@@ -120,14 +120,17 @@ const [showConfirmation, setShowConfirmation] = useState(false);
       }).unwrap();
 
       // Dispatch action to update the state in the slice
-      dispatch(academicYearAdded(newAcademicYear));//maybe no need to dispatch because it will update when querying again
+      dispatch(academicYearAdded(newAcademicYear)); //maybe no need to dispatch because it will update when querying again
 
       navigate("/settings/academicsSet/academicYears/"); // Redirect after successful creation
-    if (newAcademicYear.data && newAcademicYear.data.message) {
+      if (newAcademicYear.data && newAcademicYear.data.message) {
         // Success response
         triggerBanner(newAcademicYear.data.message, "success");
-
-      } else if (newAcademicYear?.error && newAcademicYear?.error?.data && newAcademicYear?.error?.data?.message) {
+      } else if (
+        newAcademicYear?.error &&
+        newAcademicYear?.error?.data &&
+        newAcademicYear?.error?.data?.message
+      ) {
         // Error response
         triggerBanner(newAcademicYear.error.data.message, "error");
       } else {
@@ -140,10 +143,10 @@ const [showConfirmation, setShowConfirmation] = useState(false);
       console.error("Error saving:", error);
     }
   };
-// Close the modal without saving
-const handleCloseModal = () => {
-  setShowConfirmation(false);
-};
+  // Close the modal without saving
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
+  };
   // Update canSubmit state whenever relevant variables change
   useEffect(() => {
     setCanSubmit(
@@ -176,73 +179,86 @@ const handleCloseModal = () => {
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               Starting Year (Format: yyyy)
+              <input
+               aria-label="starting year"
+               
+               placeholder="[yyyy]"
+                type="text"
+                value={title.split("/")[0] || ""} // Show only the first year in input
+                onChange={handleYearStartChange}
+              
+                maxLength="4"
+                className={`w-full px-3 py-2 border rounded-md ${
+                  titleError ? "border-red-600" : ""
+                } focus:outline-none focus:ring-2 focus:ring-sky-700`}
+              />
+              {titleError && (
+                <p className="text-red-600 text-sm mt-2">{titleError}</p>
+              )}{" "}
             </label>
-            <input
-              type="text"
-              value={title.split("/")[0] || ""} // Show only the first year in input
-              onChange={handleYearStartChange}
-              placeholder="e.g., 2023"
-              maxLength="4"
-              className={`w-full px-3 py-2 border rounded-md ${
-                titleError ? "border-red-600" : ""
-              } focus:outline-none focus:ring-2 focus:ring-sky-700`}
-            />
-            {titleError && (
-              <p className="text-red-600 text-sm mt-2">{titleError}</p>
-            )}
           </div>
 
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               Academic Year Title
+              <input
+              aria-label="year title"
+                type="text"
+                value={title}
+                readOnly
+                className="w-full px-3 py-2 border rounded-md bg-gray-100"
+              />
             </label>
-            <input
-              type="text"
-              value={title}
-              readOnly
-              className="w-full px-3 py-2 border rounded-md bg-gray-100"
-            />
           </div>
 
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               Year Start
+              <input
+                type="text"
+                value={yearStart}
+                readOnly
+                className="w-full px-3 py-2 border rounded-md bg-gray-100"
+              />{" "}
             </label>
-            <input
-              type="text"
-              value={yearStart}
-              readOnly
-              className="w-full px-3 py-2 border rounded-md bg-gray-100"
-            />
           </div>
 
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">
               Year End
+              <input
+                type="text"
+                value={yearEnd}
+                readOnly
+                className="w-full px-3 py-2 border rounded-md bg-gray-100"
+              />
             </label>
-            <input
-              type="text"
-              value={yearEnd}
-              readOnly
-              className="w-full px-3 py-2 border rounded-md bg-gray-100"
-            />
           </div>
 
           {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
+          <div className="flex justify-end gap-4">
+            <button
+              aria-label="cancel new"
+              type="button"
+              onClick={() => navigate("/settings/academicsSet/academicYears/")}
+              className="cancel-button"
+            >
+              Cancel
+            </button>
+            <button
 
-          <button
-            type="submit"
-            disabled={!canSubmit}
-            className="w-full bg-sky-700 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200"
-          >
-            {isNewYearLoading ? "Creating..." : "Create Academic Year"}
-          </button>
-
-          {isNewYearError && (
+              type="submit"
+              disabled={!canSubmit}
+              className="w-full bg-sky-700 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200"
+            >
+              {isNewYearLoading ? "Creating..." : "Create Academic Year"}
+            </button>
+          </div>
+          {/* {isNewYearError && (
             <p className="text-red-600 text-sm mt-2">
               {newYearError?.data?.message || "Error creating academic year."}
             </p>
-          )}
+          )} */}
         </form>
       </div>
       {/* Confirmation Modal */}

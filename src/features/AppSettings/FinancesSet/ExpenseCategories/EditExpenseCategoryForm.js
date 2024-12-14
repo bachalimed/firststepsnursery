@@ -8,27 +8,21 @@ import { ACTIONS } from "../../../../config/UserActions";
 import FinancesSet from "../../FinancesSet";
 import useAuth from "../../../../hooks/useAuth";
 import { useSelector } from "react-redux";
-import {
-  useGetServicesByYearQuery,
- 
-} from "../../StudentsSet/NurseryServices/servicesApiSlice";
-import {  faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { useGetServicesByYearQuery } from "../../StudentsSet/NurseryServices/servicesApiSlice";
+import {  faTrash } from "@fortawesome/free-solid-svg-icons";
+import { RiAddLargeLine } from "react-icons/ri";
+
 import {
   selectAllAcademicYears,
   selectCurrentAcademicYearId,
   selectAcademicYearById,
 } from "../../AcademicsSet/AcademicYears/academicYearsSlice";
-import {
-  OBJECTID_REGEX,
-  NAME_REGEX,
-} from "../../../../config/REGEX";
+import { OBJECTID_REGEX, NAME_REGEX } from "../../../../config/REGEX";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 import { EXPENSE_CATEGORIES } from "../../../../config/ExpenseCategories";
 import { useOutletContext } from "react-router-dom";
 
-const EditExpenseCategoryForm = ({expenseCategory}) => {
-
-
+const EditExpenseCategoryForm = ({ expenseCategory }) => {
   const navigate = useNavigate();
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -37,50 +31,45 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
   const [updateExpenseCategory, { isLoading, isSuccess, isError, error }] =
-  useUpdateExpenseCategoryMutation();
+    useUpdateExpenseCategoryMutation();
 
-    const {
-      data: services, //the data is renamed services
-      isLoading: isServicesLoading, 
-      isSuccess: isServicesSuccess,
-      isError: isServicesError,
-      error: servicesError,
-    } = useGetServicesByYearQuery(
-      {
-        selectedYear: selectedAcademicYear?.title,
-        endpointName: "EditExpenseCategoryForm",
-      } || {},
-      {
-       
-        refetchOnFocus: true,
-        refetchOnMountOrArgChange: true,
-      }
-    );
+  const {
+    data: services, //the data is renamed services
+    isLoading: isServicesLoading,
+    isSuccess: isServicesSuccess,
+    isError: isServicesError,
+    error: servicesError,
+  } = useGetServicesByYearQuery(
+    {
+      selectedYear: selectedAcademicYear?.title,
+      endpointName: "EditExpenseCategoryForm",
+    } || {},
+    {
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
+    }
+  );
 
-    let servicesList = isServicesSuccess
-    ? Object.values(services.entities)
-    : [];
-
+  let servicesList = isServicesSuccess ? Object.values(services.entities) : [];
 
   //confirmation Modal states
   const [showConfirmation, setShowConfirmation] = useState(false);
   // Consolidated form state
   const [formData, setFormData] = useState({
-    id:expenseCategory?._id,
+    id: expenseCategory?._id,
     expenseCategoryLabel: expenseCategory?.expenseCategoryLabel,
     expenseCategoryYears: expenseCategory?.expenseCategoryYears,
     expenseCategoryItems: expenseCategory?.expenseCategoryItems,
-   // expenseCategoryService:expenseCategory?.expenseCategoryService?._id,
-    expenseCategoryIsActive:expenseCategory?.expenseCategoryIsActive,
+    // expenseCategoryService:expenseCategory?.expenseCategoryService?._id,
+    expenseCategoryIsActive: expenseCategory?.expenseCategoryIsActive,
     expenseCategoryOperator: userId,
-   
   });
 
   const [validity, setValidity] = useState({
     validExpenseCategoryLabel: false,
     validExpenseCategoryYears: false,
     validExpenseCategoryItems: false,
-   // validExpenseCategoryService: false,
+    // validExpenseCategoryService: false,
   });
 
   // Validate inputs using regex patterns
@@ -90,19 +79,19 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
       validExpenseCategoryLabel: NAME_REGEX.test(formData.expenseCategoryLabel),
       validExpenseCategoryYears: formData?.expenseCategoryYears?.length > 0,
       validExpenseCategoryItems: formData?.expenseCategoryItems?.length > 0,
-     // validExpenseCategoryService: OBJECTID_REGEX.test(formData.expenseCategoryService)
+      // validExpenseCategoryService: OBJECTID_REGEX.test(formData.expenseCategoryService)
     }));
   }, [formData]);
 
   useEffect(() => {
     if (isSuccess) {
       setFormData({
-        id:"",
+        id: "",
         expenseCategoryLabel: "",
         expenseCategoryYears: [],
         expenseCategoryItems: [],
-        expenseCategoryIsActive:"",
-       // expenseCategoryService:"",
+        expenseCategoryIsActive: "",
+        // expenseCategoryService:"",
         expenseCategoryOperator: "",
         expenseCategoryCreator: "",
       });
@@ -136,7 +125,10 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
   };
   const handleServiceChange = (e) => {
     const selectedServiceId = e.target.value;
-    setFormData((prev) => ({ ...prev, expenseCategoryService: selectedServiceId }));
+    setFormData((prev) => ({
+      ...prev,
+      expenseCategoryService: selectedServiceId,
+    }));
   };
 
   const handleRemoveItem = (itemToRemove) => {
@@ -164,13 +156,16 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
     setShowConfirmation(false);
 
     try {
-      const response =  await updateExpenseCategory(formData);
-      console.log(response,'response')
+      const response = await updateExpenseCategory(formData);
+      console.log(response, "response");
       if (response.data && response.data.message) {
         // Success response
         triggerBanner(response.data.message, "success");
-
-      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
         // Error response
         triggerBanner(response.error.data.message, "error");
       } else {
@@ -188,9 +183,9 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
   const handleCloseModal = () => {
     setShowConfirmation(false);
   };
-  console.log(validity, "valisty");
+  //console.log(validity, "valisty");
 
-  console.log(formData, "formData");
+  //console.log(formData, "formData");
   const content = (
     <>
       <FinancesSet />
@@ -209,20 +204,19 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
               {!validity.validExpenseCategoryLabel && (
                 <span className="text-red-600">*</span>
               )}
+              <input
+                type="text"
+                name="expenseCategoryLabel"
+                value={formData.expenseCategoryLabel}
+                onChange={handleInputChange}
+                className={`mt-1 block w-full border ${
+                  validity.validExpenseCategoryLabel
+                    ? "border-gray-300"
+                    : "border-red-600"
+                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                required
+              />{" "}
             </label>
-            <input
-              type="text"
-              name="expenseCategoryLabel"
-              value={formData.expenseCategoryLabel}
-              onChange={handleInputChange}
-              className={`mt-1 block w-full border ${
-                validity.validExpenseCategoryLabel
-                  ? "border-gray-300"
-                  : "border-red-600"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-              placeholder="Enter ExpenseCategory Label"
-              required
-            />
           </div>
 
           {/* Service Selection Dropdown */}
@@ -251,23 +245,24 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
             </select>
           </div> */}
 
-           {/* ExpenseCategory Active Status */}
-           <div>
+          {/* ExpenseCategory Active Status */}
+          <div>
             <label className="block text-sm font-medium text-gray-700">
+              <input
+                aria-label="expense category active"
+                type="checkbox"
+                name="expenseCategoryIsActive"
+                checked={formData.expenseCategoryIsActive}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    expenseCategoryIsActive: e.target.checked,
+                  }))
+                }
+                className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
+              />{" "}
               Expense Category Is Active
             </label>
-            <input
-              type="checkbox"
-              name="expenseCategoryIsActive"
-              checked={formData.expenseCategoryIsActive}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  expenseCategoryIsActive: e.target.checked,
-                }))
-              }
-              className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
-            />
           </div>
 
           {/* ExpenseCategory Years Selection - Using Checkboxes */}
@@ -277,26 +272,29 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
               {!validity.validExpenseCategoryYears && (
                 <span className="text-red-600">*</span>
               )}
+              <div className="space-y-2">
+                {academicYears.map((year) => (
+                  <div key={year.id} className="flex items-center">
+                    <input
+                      aria-label="expense category years"
+                      type="checkbox"
+                      id={`year-${year.id}`}
+                      checked={formData.expenseCategoryYears?.includes(
+                        year.title
+                      )}
+                      onChange={() => handleYearChange(year.title)}
+                      className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
+                    />
+                    <label
+                      htmlFor={`year-${year.id}`}
+                      className="ml-2 text-sm font-medium text-gray-700"
+                    >
+                      {year.title}
+                    </label>
+                  </div>
+                ))}
+              </div>
             </label>
-            <div className="space-y-2">
-              {academicYears.map((year) => (
-                <div key={year.id} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id={`year-${year.id}`}
-                    checked={formData.expenseCategoryYears?.includes(year.title)}
-                    onChange={() => handleYearChange(year.title)}
-                    className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
-                  />
-                  <label
-                    htmlFor={`year-${year.id}`}
-                    className="ml-2 text-sm font-medium text-gray-700"
-                  >
-                    {year.title}
-                  </label>
-                </div>
-              ))}
-            </div>
           </div>
 
           {/* ExpenseCategory Items Selection - Using Input to Add Items */}
@@ -306,25 +304,26 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
               {!validity.validExpenseCategoryItems && (
                 <span className="text-red-600">*</span>
               )}
+              <div className="flex items-center space-x-2">
+                <input
+                  aria-label="new expense item"
+                  type="text"
+                  name="newItemInput"
+                  value={formData.newItemInput}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Enter new item"
+                />
+                <button
+                  aria-label="remove expense item"
+                  type="button"
+                  onClick={handleAddItem}
+                  className="add-button"
+                >
+                  <RiAddLargeLine className="h-6 w-4"/>
+                </button>
+              </div>{" "}
             </label>
-            <div className="flex items-center space-x-2">
-              <input
-                type="text"
-                name="newItemInput"
-                value={formData.newItemInput}
-                onChange={handleInputChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                placeholder="Enter new item"
-              />
-              <button
-                type="button"
-                onClick={handleAddItem}
-                className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-sky-700"
-              >
-                <FontAwesomeIcon icon={faPlus} className="mr-1" />
-                Add
-              </button>
-            </div>
 
             {/* Display Added Items with Remove Option */}
             <div className="mt-4 space-y-2">
@@ -335,6 +334,7 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
                 >
                   <span>{item}</span>
                   <button
+                    aria-label="remove expense item"
                     type="button"
                     onClick={() => handleRemoveItem(item)}
                     className="text-red-600 hover:text-red-700"
@@ -348,6 +348,7 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
           {/* Save Button */}
           <div className="flex justify-end space-x-4">
             <button
+            aria-label="cancel new expense category"
               type="button"
               className="cancel-button"
               onClick={() =>
@@ -357,6 +358,7 @@ const EditExpenseCategoryForm = ({expenseCategory}) => {
               Cancel
             </button>
             <button
+            aria-label="submit expense category"
               type="submit"
               className="save-button"
               disabled={!canSave || isLoading}

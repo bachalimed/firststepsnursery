@@ -304,6 +304,8 @@ const NewAnimatorsAssignmentForm = () => {
               )}
             </label>
             <input
+              aria-invalid={!validity.validAssignmentYear}
+              required
               type="text"
               name="assignmentYear"
               value={formData.assignmentYear}
@@ -321,11 +323,14 @@ const NewAnimatorsAssignmentForm = () => {
               )}
             </label>
             <input
+             aria-invalid={!validity.validAssignedFrom}
+             required
+             placeholder="[dd/mm/yyyy]"
               type="date"
               name="assignedFrom"
               value={formData.assignedFrom}
               onChange={handleChange}
-              placeholder="Enter Date"
+             
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
             />
           </div>
@@ -337,11 +342,14 @@ const NewAnimatorsAssignmentForm = () => {
               )}
             </label>
             <input
+            aria-invalid={!validity.validAssignedTo}
+            required
+            placeholder="[dd/mm/yyyy]"
               type="date"
               name="assignedTo"
               value={formData.assignedTo}
               onChange={handleChange}
-              placeholder="Enter Date"
+              
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
             />
           </div>
@@ -404,10 +412,11 @@ const NewAnimatorsAssignmentForm = () => {
 
           <button
             type="button"
+             aria-label="add assigment"
             onClick={addAssignment}
-            className="w-full mb-4 bg-blue-200 text-gray-700 py-2 px-4 rounded-md mt-2 hover:bg-blue-300 transition duration-200"
+            className="w-full add-button mb-2"
           >
-            Add Another Assignment
+            Add Assignment
           </button>
           <div className="flex justify-end gap-4">
            
@@ -415,6 +424,7 @@ const NewAnimatorsAssignmentForm = () => {
               type="button"
               //disabled={!canSubmit}
               className="cancel-button"
+              aria-label="cancel assignments"
               onClick={() =>
                 navigate("/academics/plannings/animatorsAssignments/")
               }
@@ -423,8 +433,9 @@ const NewAnimatorsAssignmentForm = () => {
             </button>
             <button
               type="submit"
+              aria-label="submit form"
               disabled={!canSubmit || isAddLoading}
-              className=" bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition duration-200 mt-4"
+              className="save-button"
             >
               {isAddLoading ? "Adding..." : "Add Assignment"}
             </button>

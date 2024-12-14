@@ -9,10 +9,7 @@ import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../../../config/UserRoles";
 import { ACTIONS } from "../../../../config/UserActions";
 import useAuth from "../../../../hooks/useAuth";
-import {
-  useGetEmployeeDocumentsListsQuery,
-  
-} from "./employeeDocumentsListsApiSlice";
+import { useGetEmployeeDocumentsListsQuery } from "./employeeDocumentsListsApiSlice";
 import { useSelector } from "react-redux";
 import {
   selectAllAcademicYears,
@@ -48,19 +45,17 @@ const NewEmployeeDocumentsListForm = () => {
   const academicYears = useSelector(selectAllAcademicYears);
   const {
     data: employeeDocumentsListsData,
-    isLoading:isEmpDocsLoading,
-    isSuccess:isEmpDocsSuccess,
-    isError:isEmpDocsError,
-    error:empDocsError,
+    isLoading: isEmpDocsLoading,
+    isSuccess: isEmpDocsSuccess,
+    isError: isEmpDocsError,
+    error: empDocsError,
   } = useGetEmployeeDocumentsListsQuery(
     {
-     
       endpointName: "NewEmployeeDocumentsListForm",
     } || {},
     {
-     
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
   let filteredAcademicYearsList = [];
@@ -68,18 +63,18 @@ const NewEmployeeDocumentsListForm = () => {
     // Extract entities and convert to an array
     const { entities } = employeeDocumentsListsData;
     const employeeDocumentsListsArray = Object.values(entities);
-  
+
     // Filter the academicYears based on documentsAcademicYear
-    filteredAcademicYearsList = academicYears.filter((academicYear) =>
-      !employeeDocumentsListsArray.some(
-        (doc) => doc.documentsAcademicYear === academicYear.title
-      )
+    filteredAcademicYearsList = academicYears.filter(
+      (academicYear) =>
+        !employeeDocumentsListsArray.some(
+          (doc) => doc.documentsAcademicYear === academicYear.title
+        )
     );
   }
   //initialisation of states for each input
   const [employeeDocumentsList, setEmployeeDocumentsList] = useState([
     { documentTitle: "Employee Photo", isRequired: false, isLegalised: false },
-
   ]);
   //const [documentReference, setDocumentReference] = useState('')
   const [documentTitle, setDocumentTitle] = useState("");
@@ -106,7 +101,13 @@ const NewEmployeeDocumentsListForm = () => {
     if (isAddSuccess) {
       //if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
 
-      setEmployeeDocumentsList([{ documentTitle: "Employee Photo", isRequired: false, isLegalised: false },]);
+      setEmployeeDocumentsList([
+        {
+          documentTitle: "Employee Photo",
+          isRequired: false,
+          isLegalised: false,
+        },
+      ]);
       setDocumentsAcademicYear("");
       setValidDocumentsAcademicYear(false);
       Navigate("/settings/hrSet/employeeDocumentsListsList"); //will navigate here after saving
@@ -179,11 +180,10 @@ const NewEmployeeDocumentsListForm = () => {
     Navigate("/settings/hrSet/employeeDocumentsListsList");
   };
 
- 
   const content = (
     <>
       <EmployeesSet />
-     
+
       <form
         lassName="form bg-gray-100 p-6 rounded shadow-lg max-w-md mx-auto"
         onSubmit={onSaveEmployeeDocumentsListClicked}
@@ -193,91 +193,109 @@ const NewEmployeeDocumentsListForm = () => {
             New EmployeeDocumentsList Form
           </h2>
         </div>
-        <div className="mb-4">
           <label
             htmlFor="documentsAcademicYear"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
+        <div className="mb-4">
             Select Year
-          </label>
-          <select
-            value={documentsAcademicYear}
-            onChange={onDocumentsAcademicYearChanged}
-            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-700 focus:border-sky-700 sm:text-sm"
-          >
-            <option value="">Select Year</option>
-            {filteredAcademicYearsList.map((year) => (
-              <option key={year.id} value={year.title}>
-                {year.title}
-              </option>
-            ))}
-          </select>
+            <select
+              aria-label="document academic year"
+              value={documentsAcademicYear}
+              onChange={onDocumentsAcademicYearChanged}
+              className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-700 focus:border-sky-700 sm:text-sm"
+            >
+              <option value="">Select Year</option>
+              {filteredAcademicYearsList.map((year) => (
+                <option key={year.id} value={year.title}>
+                  {year.title}
+                </option>
+              ))}
+            </select>{" "}
         </div>
+          </label>
         <h1 className="text-lg font-semibold mb-4">Employee Documents</h1>
         {employeeDocumentsList.map((entry, index) => (
           <div key={index} className="mb-4 p-4 bg-white rounded shadow">
-            <div className="mb-2">
-              <input
-                type="text"
-                placeholder="Document Title"
-                value={entry.documentTitle}
-                onChange={(e) =>
-                  handleFieldChange(index, "documentTitle", e.target.value)
-                }
-                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-700 focus:border-sky-700 sm:text-sm"
-              />
+            <label className="text-sm text-gray-700">
+              <div className="mb-2">
+                <input
+                  aria-label="document title"
+                  placeholder="[3-20 characters]"
+                  type="text"
+                  value={entry.documentTitle}
+                  onChange={(e) =>
+                    handleFieldChange(index, "documentTitle", e.target.value)
+                  }
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-700 focus:border-sky-700 sm:text-sm"
+                />
+              </div>
+            </label>
+            <div className="flex items-center mb-2">
+              <label className="text-sm text-gray-700">
+                <input
+                  aria-label="is required"
+                  type="checkbox"
+                  checked={entry.isRequired}
+                  onChange={(e) =>
+                    handleFieldChange(index, "isRequired", e.target.checked)
+                  }
+                  className="mr-2"
+                />
+                Is Required?
+              </label>
             </div>
             <div className="flex items-center mb-2">
-              <input
-                type="checkbox"
-                checked={entry.isRequired}
-                onChange={(e) =>
-                  handleFieldChange(index, "isRequired", e.target.checked)
-                }
-                className="mr-2"
-              />
-
-              <label className="text-sm text-gray-700">Is Required?</label>
+              <label className="text-sm text-gray-700">
+                <input
+                  aria-label="is legalised"
+                  type="checkbox"
+                  checked={entry.isLegalised}
+                  onChange={(e) =>
+                    handleFieldChange(index, "isLegalised", e.target.checked)
+                  }
+                  className="mr-2"
+                />
+                Is Legalised?
+              </label>
             </div>
-            <div className="flex items-center mb-2">
-              <input
-                type="checkbox"
-                checked={entry.isLegalised}
-                onChange={(e) =>
-                  handleFieldChange(index, "isLegalised", e.target.checked)
-                }
-                className="mr-2"
-              />
-              <label className="text-sm text-gray-700">Is Legalised?</label>
-            </div>
-            {index >= 1 && (<button
-              type="button"
-              onClick={() => handleRemoveEntry(index)}
-              className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
-            >
-              Remove
-            </button>)}
+            {index >= 1 && (
+              <button
+                aria-label="remove document"
+                type="button"
+                onClick={() => handleRemoveEntry(index)}
+                className="delete-button"
+              >
+                Remove
+              </button>
+            )}
           </div>
         ))}
-        <button type="button" onClick={handleAddEntry}>
+        <button
+          aria-label="add document"
+          type="button"
+          className="add-button"
+          onClick={handleAddEntry}
+        >
           Add Document
         </button>
         <div className="flex justify-end gap-4">
-        <button
+          <button
+            aria-label="cancel new document list"
             className="cancel-button"
             onClick={handleCancel}
           >
             Cancel
           </button>
           <button
-            className="mb-4 px-4 py-2 bg-sky-700 text-white rounded hover:bg-blue-600"
+            aria-label="submit new document list"
+            className="save-button"
             type="submit"
             onClick={onSaveEmployeeDocumentsListClicked}
-            disabled={!canSave||isAddLoading}
+            disabled={!canSave || isAddLoading}
           >
             Save Changes
           </button>
-          
         </div>
       </form>
       {/* Confirmation Modal */}

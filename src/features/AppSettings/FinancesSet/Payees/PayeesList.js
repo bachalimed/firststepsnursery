@@ -253,6 +253,7 @@ const PayeesList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
+          aria-label="payee details"
             className="text-sky-700"
             fontSize={20}
             onClick={() => navigate(`/settings/financesSet/payeeDetails/${row.id}`)}
@@ -261,6 +262,7 @@ const PayeesList = () => {
           </button>
           {canEdit ? (
             <button
+            aria-label="edit payee"
               className="text-amber300"
               onClick={() => navigate(`/settings/financesSet/editPayee/${row.id}`)}
             >
@@ -269,6 +271,7 @@ const PayeesList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
+            aria-label="delete payee"
               className="text-red-600"
               onClick={() => onDeletePayeeClicked(row.id)}
             >
