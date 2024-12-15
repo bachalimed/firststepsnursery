@@ -261,12 +261,12 @@ const EditSectionForm = ({ section }) => {
       <Academics />
 
       <form onSubmit={onSaveSectionClicked} className="form-container">
-        <h2 className="text-2xl font-bold mb-4">
+        <h2 className="formTitle ">
           Edit Section: {`${formData.sectionLabel}`}
         </h2>
         {/* Section Label */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Section Label{" "}
             {!validity.validSectionLabel && (
               <span className="text-red-600">*</span>
@@ -278,7 +278,7 @@ const EditSectionForm = ({ section }) => {
               name="sectionLabel"
               value={formData.sectionLabel}
               onChange={handleInputChange}
-              // className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              // className="mt-1 block w-full border className="formInputLabel"-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               placeholder="Enter Section Label"
               required
               className={`mt-1 block w-full border ${
@@ -291,7 +291,7 @@ const EditSectionForm = ({ section }) => {
         </div>
         {/* Section Color */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Section Color{" "}
             {!validity.validSectionColor && (
               <span className="text-red-600">*</span>
@@ -310,7 +310,7 @@ const EditSectionForm = ({ section }) => {
 
         {/* Section Type */}
         {/* <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label htmlFor=""  className="formInputLabel">
               Section Type{" "}
               {!validity.validSectionType && (
                 <span className="text-red-600">*</span>
@@ -335,7 +335,7 @@ const EditSectionForm = ({ section }) => {
           </div> */}
         {/* Animator Selection */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Animator{" "}
             {!validity.validSectionAnimator && (
               <span className="text-red-600">*</span>
@@ -370,7 +370,7 @@ const EditSectionForm = ({ section }) => {
         </div>
         {/* Classroom Selection */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Classroom{" "}
             {!validity.validSectionLocation && (
               <span className="text-red-600">*</span>
@@ -404,7 +404,7 @@ const EditSectionForm = ({ section }) => {
 
         {/* Section From */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Section From{" "}
             {!validity.validSectionFrom && (
               <span className="text-red-600">*</span>
@@ -427,7 +427,7 @@ const EditSectionForm = ({ section }) => {
 
         {/* Students Selection */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Select Students
             <select
               aria-label="section students"
@@ -456,7 +456,7 @@ const EditSectionForm = ({ section }) => {
 
         {/* Selected Students */}
         <div className="selected-students mt-4">
-          <label className="block text-lg font-medium  text-gray-700">
+           <label htmlFor="" formInputLabel>
             {formData.sectionLabel} section Students:{" "}
             {formData?.students.length}
             <ul className="selected-students-list">

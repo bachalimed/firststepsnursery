@@ -157,7 +157,7 @@ const ResetPasswordForm = ({ user }) => {
             },
           ].map((field, index) => (
             <div key={index}>
-              <label className="block text-sm font-medium text-gray-600">
+              <label htmlFor="" className="block text-sm font-medium text-gray-600">
                 {field.label}
                 <div className="relative">
                   <input

@@ -154,13 +154,13 @@ const EditServiceForm = ({ service }) => {
       <StudentsSet />
 
       <form onSubmit={onSaveServiceClicked} className="form-container">
-        <h2 className="text-2xl font-bold mb-4">
+        <h2  className="formTitle ">
           Add New Service:{" "}
           {`${formData.servicePeriodicity} ${formData.serviceType} ${formData.serviceYear}`}
         </h2>
         {/* Service Type */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Service Type{" "}
             {validity.validServiceType ? (
               ""
@@ -190,7 +190,7 @@ const EditServiceForm = ({ service }) => {
 
         {/* Service Year */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Service Year{" "}
             {validity.validServiceYear ? (
               ""
@@ -220,7 +220,7 @@ const EditServiceForm = ({ service }) => {
 
         {/* Monthly Service anchor */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Monthly Service Anchor{" "}
             {validity.validMonthlyAnchor ? (
               ""
@@ -246,7 +246,7 @@ const EditServiceForm = ({ service }) => {
 
         {/* Weekly Service anchor */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Weekly Service Anchor{" "}
             {validity.validWeeklyAnchor ? (
               ""
@@ -271,7 +271,7 @@ const EditServiceForm = ({ service }) => {
         </div>
         {/* Weekly Service anchor */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             One-time Off Service Anchor{" "}
             {validity.validOneTimeOffAnchor ? (
               ""

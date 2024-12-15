@@ -193,7 +193,7 @@ const NewEmployeeDocumentsListForm = () => {
             New EmployeeDocumentsList Form
           </h2>
         </div>
-        <label
+        <label htmlFor=""
           htmlFor="documentsAcademicYear"
           className="block text-sm font-medium text-gray-700 mb-1"
         >
@@ -217,7 +217,7 @@ const NewEmployeeDocumentsListForm = () => {
         <h1 className="text-lg font-semibold mb-4">Employee Documents</h1>
         {employeeDocumentsList.map((entry, index) => (
           <div key={index} className="mb-4 p-4 bg-white rounded shadow">
-            <label className="text-sm text-gray-700">
+            <label htmlFor="" className="text-sm text-gray-700">
               <div className="mb-2">
                 <input
                   aria-label="document title"
@@ -232,7 +232,7 @@ const NewEmployeeDocumentsListForm = () => {
               </div>
             </label>
             <div className="flex items-center mb-2">
-              <label className="text-sm text-gray-700">
+              <label htmlFor="" className="text-sm text-gray-700">
                 <input
                   aria-label="is required"
                   type="checkbox"
@@ -246,7 +246,7 @@ const NewEmployeeDocumentsListForm = () => {
               </label>
             </div>
             <div className="flex items-center mb-2">
-              <label className="text-sm text-gray-700">
+              <label htmlFor="" className="text-sm text-gray-700">
                 <input
                   aria-label="is legalised"
                   type="checkbox"

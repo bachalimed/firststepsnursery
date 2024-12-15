@@ -330,7 +330,7 @@ const NewEnrolmentForm = () => {
         <div>
           <label
             htmlFor="enrolmentYear"
-            className="block text-sm font-medium text-gray-700"
+             className="formInputLabel"
           >
             Enrolment Year{" "}
             {!validity.validEnrolmentYear && (
@@ -357,7 +357,7 @@ const NewEnrolmentForm = () => {
         <div>
           <label
             htmlFor="enrolmentMonth"
-            className="block text-sm font-medium text-gray-700"
+             className="formInputLabel"
           >
             Enrolment Month{" "}
             {!validity.validEnrolmentMonth && (
@@ -389,7 +389,7 @@ const NewEnrolmentForm = () => {
             <div>
               <label
                 htmlFor="student"
-                className="block text-sm font-medium text-gray-700"
+                 className="formInputLabel"
               >
                 Student{" "}
                 {!validity.validStudent && (
@@ -433,7 +433,7 @@ const NewEnrolmentForm = () => {
             <div>
               <label
                 htmlFor="enrolmentNote"
-                className="block text-sm font-medium text-gray-700"
+                 className="formInputLabel"
               >
                 Enrolment Note
               </label>
@@ -451,7 +451,7 @@ const NewEnrolmentForm = () => {
             </div>
             {/* Services Section */}
             <fieldset>
-              <legend className="block text-sm font-medium text-gray-700">
+              <legend  className="formInputLabel">
                 Services
               </legend>
               <div className="mt-4 space-y-4">

@@ -216,7 +216,7 @@ const EditInvoiceForm = ({ invoice }) => {
           </div>
         </h2>
         <div className="mb-4">
-          <label
+          <label htmlFor=""
             htmlFor="authorisedAmount"
             aria-label="authorised amount"
             className="block text-gray-700"
@@ -234,7 +234,7 @@ const EditInvoiceForm = ({ invoice }) => {
         </div>
 
         <div className="mb-4">
-          <label className="block text-gray-700  mb-4">
+          <label htmlFor="" className="block text-gray-700  mb-4">
             Invoice Amount :
             <input
               id="invoiceAmount"
@@ -247,7 +247,7 @@ const EditInvoiceForm = ({ invoice }) => {
           </label>
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
+          <label htmlFor=""  className="formInputLabel">
             Discount Type
             <select
               aria-label="classroom capacity"
@@ -270,7 +270,7 @@ const EditInvoiceForm = ({ invoice }) => {
 
         {formData?.invoiceDiscountType && (
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
+            <label htmlFor=""  className="formInputLabel">
               Discount Amount
               <input
                 type="number"
@@ -286,7 +286,7 @@ const EditInvoiceForm = ({ invoice }) => {
 
         {formData.invoiceDiscountAmount !== "0" && (
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
+            <label htmlFor=""  className="formInputLabel">
               Discount Note
               <input
                 type="text"
@@ -302,7 +302,7 @@ const EditInvoiceForm = ({ invoice }) => {
         )}
 
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
+          <label htmlFor=""  className="formInputLabel">
             Due Date{" "}
             {!validity.validInvoiceDueDate && (
               <span className="text-red-600">*</span>
@@ -318,7 +318,7 @@ const EditInvoiceForm = ({ invoice }) => {
         </div>
 
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
+          <label htmlFor=""  className="formInputLabel">
             Is Fully Paid
             <input
               type="checkbox"

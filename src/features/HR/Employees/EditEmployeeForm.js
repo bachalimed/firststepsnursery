@@ -304,7 +304,7 @@ const EditEmployeeForm = ({ employee }) => {
       <HR />
 
       <form onSubmit={onSaveEmployeeClicked} className="form-container">
-        <h2 className="text-2xl font-bold mb-4">
+        <h2  className="formTitle ">
           Edit Employee :{" "}
           {`${formData?.userFullName?.userFirstName} ${formData?.userFullName?.userMiddleName} ${formData?.userFullName?.userLastName}`}
         </h2>
@@ -312,7 +312,7 @@ const EditEmployeeForm = ({ employee }) => {
           <h3 className="text-lg font-semibold">Employee Information</h3>
           <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 First Name{" "}
                 {!validity.validFirstName && (
                   <span className="text-red-600">*</span>
@@ -331,7 +331,7 @@ const EditEmployeeForm = ({ employee }) => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 Middle Name
               </label>
               <input
@@ -342,7 +342,7 @@ const EditEmployeeForm = ({ employee }) => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 Last Name{" "}
                 {!validity.validLastName && (
                   <span className="text-red-600">*</span>
@@ -359,8 +359,8 @@ const EditEmployeeForm = ({ employee }) => {
             {/* DOB and Sex */}
             <div className="space-y-4">
               <div>
-                <label
-                  className="block text-sm font-medium text-gray-700"
+                <label htmlFor=""
+                   className="formInputLabel"
                   htmlFor="userDob"
                 >
                   Date of Birth{" "}
@@ -381,7 +381,7 @@ const EditEmployeeForm = ({ employee }) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   Sex{" "}
                   {!validity.validUserSex && (
                     <span className="text-red-600">*</span>
@@ -410,7 +410,7 @@ const EditEmployeeForm = ({ employee }) => {
                           : "border-red-600 rounded"
                       } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                     />
-                    <label className="ml-2 text-sm text-gray-700">Male</label>
+                    <label htmlFor="" className="ml-2 text-sm text-gray-700">Male</label>
                   </div>
 
                   <div className="flex items-center">
@@ -431,7 +431,7 @@ const EditEmployeeForm = ({ employee }) => {
                       }}
                       className="h-4 w-4 border-gray-300 rounded focus:ring-indigo-500"
                     />
-                    <label className="ml-2 text-sm text-gray-700">Female</label>
+                    <label htmlFor="" className="ml-2 text-sm text-gray-700">Female</label>
                   </div>
                 </div>
 
@@ -454,7 +454,7 @@ const EditEmployeeForm = ({ employee }) => {
                             }
                             className="mr-2"
                           />
-                          <label className="text-gray-700">{year.title}</label>
+                          <label htmlFor="" className="text-gray-700">{year.title}</label>
                         </div>
                       );
                     })
@@ -486,7 +486,7 @@ const EditEmployeeForm = ({ employee }) => {
                 }}
                 className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
               />
-              <label
+              <label htmlFor=""
                 htmlFor="employeeIsActive"
                 className="text-sm font-medium text-gray-700"
               >
@@ -494,7 +494,7 @@ const EditEmployeeForm = ({ employee }) => {
               </label>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 Current Position{" "}
                 {!validity.validCurrentPosition && (
                   <span className="text-red-600">*</span>
@@ -529,7 +529,7 @@ const EditEmployeeForm = ({ employee }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 Join Date{" "}
                 {!validity.validJoinDate && (
                   <span className="text-red-600">*</span>
@@ -558,7 +558,7 @@ const EditEmployeeForm = ({ employee }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 Contract Type{" "}
                 {!validity.validContractType && (
                   <span className="text-red-600">*</span>
@@ -593,12 +593,12 @@ const EditEmployeeForm = ({ employee }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 Salary Package
               </label>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label htmlFor=""  className="formInputLabel">
                     Basic{" "}
                     {!validity.validBasic && (
                       <span className="text-red-600">*</span>
@@ -629,7 +629,7 @@ const EditEmployeeForm = ({ employee }) => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label htmlFor=""  className="formInputLabel">
                     Payment{" "}
                     {!validity.validPayment && (
                       <span className="text-red-600">*</span>
@@ -669,7 +669,7 @@ const EditEmployeeForm = ({ employee }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label htmlFor=""  className="formInputLabel">
                     CNSS
                   </label>
                   <input
@@ -696,7 +696,7 @@ const EditEmployeeForm = ({ employee }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label htmlFor=""  className="formInputLabel">
                     Other
                   </label>
                   <input
@@ -740,7 +740,7 @@ const EditEmployeeForm = ({ employee }) => {
                           onChange={(e) => onUserRolesChanged(e, role)}
                           className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                         />
-                        <label
+                        <label htmlFor=""
                           htmlFor={`role-${role}`}
                           className="text-sm font-medium text-gray-700"
                         >
@@ -764,7 +764,7 @@ const EditEmployeeForm = ({ employee }) => {
             >
               {/* Institution */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   Institution{" "}
                   {!work.institution && <span className="text-red-600">*</span>}
                 </label>
@@ -786,7 +786,7 @@ const EditEmployeeForm = ({ employee }) => {
 
               {/* From Date */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   From Date{" "}
                   {!work.fromDate && <span className="text-red-600">*</span>}
                 </label>
@@ -803,7 +803,7 @@ const EditEmployeeForm = ({ employee }) => {
 
               {/* To Date */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   To Date{" "}
                   {!work.toDate && <span className="text-red-600">*</span>}
                 </label>
@@ -820,7 +820,7 @@ const EditEmployeeForm = ({ employee }) => {
 
               {/* Position */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   Position{" "}
                   {!work.position && <span className="text-red-600">*</span>}
                 </label>
@@ -838,7 +838,7 @@ const EditEmployeeForm = ({ employee }) => {
 
               {/* Contract Type */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   Contract Type{" "}
                   {!work.contractType && (
                     <span className="text-red-600">*</span>
@@ -862,7 +862,7 @@ const EditEmployeeForm = ({ employee }) => {
 
               {/* Salary Package */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   Salary Package
                 </label>
                 <input

@@ -167,12 +167,12 @@ const EditPayeeForm = ({ payee }) => {
       <FinancesSet />
 
       <form onSubmit={onSavePayeeClicked} className="form-container">
-        <h2 className="text-2xl font-bold mb-4">
+        <h2  className="formTitle ">
           Add New Payee: {`${formData?.payeeLabel} `}
         </h2>
         {/* Payee Label */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Payee Label{" "}
             {!validity.validPayeeLabel && (
               <span className="text-red-600">*</span>
@@ -194,7 +194,7 @@ const EditPayeeForm = ({ payee }) => {
         </div>
         {/* Payee Active Status */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Payee Is Active
             <input
               aria-label="payee is active"
@@ -214,7 +214,7 @@ const EditPayeeForm = ({ payee }) => {
 
         {/* Payee Years Selection - Using Checkboxes */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Payee Years{" "}
             {!validity.validPayeeYears && (
               <span className="text-red-600">*</span>
@@ -230,7 +230,7 @@ const EditPayeeForm = ({ payee }) => {
                     onChange={() => handleYearChange(year.title)}
                     className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
                   />
-                  <label
+                  <label htmlFor=""
                     htmlFor={`year-${year.id}`}
                     className="ml-2 text-sm font-medium text-gray-700"
                   >
@@ -244,7 +244,7 @@ const EditPayeeForm = ({ payee }) => {
 
         {/* Payee Categories Selection */}
         {/* <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label htmlFor=""  className="formInputLabel">
               Payee Categories{" "}
               {!validity.validPayeeCategories && (
                 <span className="text-red-600">*</span>
@@ -260,7 +260,7 @@ const EditPayeeForm = ({ payee }) => {
                     onChange={() => handleCategoryChange(category)}
                     className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
                   />
-                  <label
+                  <label htmlFor=""
                     htmlFor={category}
                     className="ml-2 text-sm font-medium text-gray-700"
                   >
@@ -274,7 +274,7 @@ const EditPayeeForm = ({ payee }) => {
         {/* Contact Information */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label htmlFor=""  className="formInputLabel">
               Payee Phone{" "}
               {!validity.validPayeePhone && (
                 <span className="text-red-600">*</span>
@@ -296,7 +296,7 @@ const EditPayeeForm = ({ payee }) => {
             </label>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label htmlFor=""  className="formInputLabel">
               Payee Address{" "}
               {!validity.validPayeeAddress && (
                 <span className="text-red-600">*</span>
@@ -321,7 +321,7 @@ const EditPayeeForm = ({ payee }) => {
 
         {/* Payee Notes */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Payee Notes{" "}
             {!validity.validPayeeNotes && (
               <span className="text-red-600">*</span>

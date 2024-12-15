@@ -551,20 +551,62 @@ header .bg-blue-600 p {
 /*//////////////standard forms style begin*/
 /* Form container styles used for all forms */
 .form-container {
-  background-color: white; /* White background */
-  border-radius: 8px; /* Rounded borders */
-  padding: 16px; /* Inner padding */
-  max-width: 768px; /* Limit form width */
-  margin: 0 auto; /* Center form horizontally */
-  width: 100%; /* Make it responsive */
-  box-sizing: border-box; /* Ensure padding doesn't increase the element size */
+  @apply bg-white border-2 border-gray-300 rounded-lg p-4  max-w-2xl my-2 mx-auto w-full box-border md:p-6;
 }
 
-/* Responsive form adjustments */
-@media (min-width: 768px) {
-  .form-container {
-    padding: 24px; /* Larger padding on bigger screens */
-  }
+/* Form title forms */
+.formTitle {
+  @apply text-2xl font-semibold mb-6 text-center;
+}
+
+.formSectionContainer {
+  @apply space-y-4;
+}
+
+/*section title h3 in a form */
+.formSectionTitle {
+  @apply text-lg font-semibold mt-4 mb-1 ;
+}
+
+/*section with border in a form */
+.formSection {
+  @apply border border-gray-300 p-4 rounded-md shadow-sm space-y-2;
+}
+
+
+/*div in section with two inputs in a form for a single full line use div with no style for two put this and under a div with no style*/
+.formLineDiv {
+  @apply grid grid-cols-2 gap-4;
+}
+
+/*input label  in a form */
+.formInputLabel {
+  @apply block text-base font-medium text-gray-700;
+}
+
+/*input label  in a form */
+.formInputText {
+  @apply  w-full px-3 py-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700;
+}
+
+/*checkbox div  in a form */
+.formCheckboxItemsDiv {
+  @apply flex items-center space-x-4 mt-1 flex-wrap;
+}
+
+/*checkbox choice label  in a form */
+.formCheckboxChoiceDiv {
+  @apply flex items-center;
+}
+
+/*checkbox square  in a form */
+.formCheckbox {
+  @apply h-4 w-4 border-gray-300 rounded focus:ring-sky-500;
+}
+
+/*checkbox square  in a form */
+.formCheckboxChoice {
+  @apply ml-2 text-sm text-gray-700;
 }
 
 

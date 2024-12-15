@@ -200,7 +200,7 @@ const EditPaymentForm = ({ payment }) => {
           </div>
         </h2>
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
+          <label htmlFor=""  className="formInputLabel">
             Authorised Amount: {formData.paymentAuthorisedAmount}
           </label>
           {/* <input
@@ -213,7 +213,7 @@ const EditPaymentForm = ({ payment }) => {
             /> */}
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
+          <label htmlFor=""  className="formInputLabel">
             Payment Amount : {formData.paymentAmount}
           </label>
           {/* <input
@@ -226,7 +226,7 @@ const EditPaymentForm = ({ payment }) => {
         </div>
 
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
+          <label htmlFor=""  className="formInputLabel">
             Discount Type
           </label>
           <select
@@ -246,7 +246,7 @@ const EditPaymentForm = ({ payment }) => {
 
         {formData?.paymentDiscountType && (
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
+            <label htmlFor=""  className="formInputLabel">
               Discount Amount
             </label>
             <input
@@ -262,7 +262,7 @@ const EditPaymentForm = ({ payment }) => {
 
         {formData.paymentDiscountAmount !== "0" && (
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
+            <label htmlFor=""  className="formInputLabel">
               Discount Note
             </label>
             <input
@@ -278,7 +278,7 @@ const EditPaymentForm = ({ payment }) => {
         )}
 
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
+          <label htmlFor=""  className="formInputLabel">
             Due Date{" "}
             {!validity.validPaymentDueDate && (
               <span className="text-red-600">*</span>
@@ -294,7 +294,7 @@ const EditPaymentForm = ({ payment }) => {
         </div>
 
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
+          <label htmlFor=""  className="formInputLabel">
             Is Fully Paid
           </label>
           <input

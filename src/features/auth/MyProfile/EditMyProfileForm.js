@@ -204,7 +204,7 @@ const EditMyProfileForm = ({ user }) => {
       <MyProfile />
 
       <form onSubmit={onSaveUserClicked} className="form-container">
-        <h2 className="text-2xl font-bold mb-4">
+        <h2  className="formTitle ">
           Edit User{" "}
           {`${formData.userFullName.userFirstName} ${formData.userFullName.userMiddleName} ${formData.userFullName.userLastName}`}
         </h2>
@@ -213,7 +213,7 @@ const EditMyProfileForm = ({ user }) => {
           <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   UserName
                   {!validity.validUsername && (
                     <span className="text-red-600">*</span>
@@ -241,7 +241,7 @@ const EditMyProfileForm = ({ user }) => {
                 </label>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   Password
                   {!validity.validPassword && (
                     <span className="text-red-600">*</span>
@@ -270,7 +270,7 @@ const EditMyProfileForm = ({ user }) => {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 First Name
                 {!validity.validFirstName && (
                   <span className="text-red-600">*</span>
@@ -302,7 +302,7 @@ const EditMyProfileForm = ({ user }) => {
             </div>
             {/* Middle Name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 Middle Name
                 <input
                   placeholder="[3-20 letters]"
@@ -326,7 +326,7 @@ const EditMyProfileForm = ({ user }) => {
 
             {/* Last Name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 Last Name{" "}
                 {!validity.validLastName && (
                   <span className="text-red-600">*</span>
@@ -359,8 +359,8 @@ const EditMyProfileForm = ({ user }) => {
 
             {/* Date of Birth */}
             <div>
-              <label
-                className="block text-sm font-medium text-gray-700"
+              <label htmlFor=""
+                 className="formInputLabel"
                 htmlFor="userDob"
               >
                 Date of Birth{" "}
@@ -386,14 +386,14 @@ const EditMyProfileForm = ({ user }) => {
             {/* Sex Selection */}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 Sex{" "}
                 {!validity.validUserSex && (
                   <span className="text-red-600">*</span>
                 )}
                 <div className="flex items-center space-x-4 mt-1">
                   <div className="flex items-center">
-                    <label className="ml-2 text-sm text-gray-700">
+                    <label htmlFor="" className="ml-2 text-sm text-gray-700">
                       <input
                         type="checkbox"
                         name="userSex"
@@ -420,7 +420,7 @@ const EditMyProfileForm = ({ user }) => {
                   </div>
 
                   <div className="flex items-center">
-                    <label className="ml-2 text-sm text-gray-700">
+                    <label htmlFor="" className="ml-2 text-sm text-gray-700">
                       <input
                         type="checkbox"
                         name="userSex"
@@ -451,7 +451,7 @@ const EditMyProfileForm = ({ user }) => {
           {/* Contact Information */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 Primary Phone{" "}
                 {!validity.validPrimaryPhone && (
                   <span className="text-red-600">*</span>
@@ -483,7 +483,7 @@ const EditMyProfileForm = ({ user }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 Secondary Phone
                 <input
                   placeholder="[6-15 digits]"
@@ -507,7 +507,7 @@ const EditMyProfileForm = ({ user }) => {
           </div>
           {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label htmlFor=""  className="formInputLabel">
               Email
               <input
                 placeholder="[email@address.com]"
@@ -531,7 +531,7 @@ const EditMyProfileForm = ({ user }) => {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 House{" "}
                 {!validity.validHouse && (
                   <span className="text-red-600">*</span>
@@ -560,7 +560,7 @@ const EditMyProfileForm = ({ user }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 Street{" "}
                 {!validity.validStreet && (
                   <span className="text-red-600">*</span>
@@ -589,7 +589,7 @@ const EditMyProfileForm = ({ user }) => {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2">
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   Area
                   <input
                     placeholder="[3-20 letters]"
@@ -611,7 +611,7 @@ const EditMyProfileForm = ({ user }) => {
                 </label>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   Post Code
                   <input
                     placeholder="[3-20 letters]"
@@ -635,7 +635,7 @@ const EditMyProfileForm = ({ user }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 City{" "}
                 {!validity.validCity && <span className="text-red-600">*</span>}
                 <input
@@ -666,7 +666,7 @@ const EditMyProfileForm = ({ user }) => {
           <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
             {/* Family ID Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 Family ID
                 <input
                   aria-label="family id"
@@ -682,7 +682,7 @@ const EditMyProfileForm = ({ user }) => {
 
             {/* Employee ID Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 Employee ID
                 <input
                   aria-label="employee id"
@@ -698,7 +698,7 @@ const EditMyProfileForm = ({ user }) => {
 
             {/* User Is Active Checkbox */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 User Is Active
                 <input
                   aria-label="user is active"
@@ -712,12 +712,12 @@ const EditMyProfileForm = ({ user }) => {
             </div>
             {/* User role selection */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 User Roles
                 <div className="flex flex-wrap">
                   {Object.keys(ROLES).map((role) => (
                     <div key={role} className="mr-4">
-                      <label className="flex items-center">
+                      <label htmlFor="" className="flex items-center">
                         <input
                           aria-label="user roles"
                           type="checkbox"
@@ -737,12 +737,12 @@ const EditMyProfileForm = ({ user }) => {
 
             {/* User action selection */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 Allowed Actions
                 <div className="flex flex-wrap">
                   {Object.keys(ACTIONS).map((action) => (
                     <div key={action} className="mr-4">
-                      <label className="flex items-center">
+                      <label htmlFor="" className="flex items-center">
                         <input
                           aria-label="allowed actions"
                           type="checkbox"

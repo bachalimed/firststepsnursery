@@ -172,7 +172,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
           <div>
             <label
               htmlFor="student"
-              className="block text-sm font-medium text-gray-700"
+               className="formInputLabel"
             >
               Student
             </label>
@@ -201,7 +201,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
           <div>
             <label
               htmlFor="enrolmentYear"
-              className="block text-sm font-medium text-gray-700"
+               className="formInputLabel"
             >
               Enrolment Year
             </label>
@@ -231,7 +231,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
           <div>
             <label
               htmlFor="enrolmentDate"
-              className="block text-sm font-medium text-gray-700"
+               className="formInputLabel"
             >
               Enrolment Month
             </label>
@@ -261,7 +261,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
           <div>
             <label
               htmlFor="service"
-              className="block text-sm font-medium text-gray-700"
+               className="formInputLabel"
             >
               Service
             </label>
@@ -313,7 +313,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
           <div>
             <label
               htmlFor="enrolmentNote"
-              className="block text-sm font-medium text-gray-700"
+               className="formInputLabel"
             >
               Enrolment Note
             </label>
@@ -335,7 +335,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
           <div>
             <label
               htmlFor="enrolmentYear"
-              className="block text-sm font-medium text-gray-700"
+               className="formInputLabel"
             >
               Enrolment Suspension
             </label>

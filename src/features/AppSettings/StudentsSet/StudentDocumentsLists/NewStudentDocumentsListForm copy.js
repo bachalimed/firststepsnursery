@@ -155,7 +155,7 @@ const NewStudentDocumentsListForm = () => {
           </h2>
         </div>
         <div className="mb-4">
-          <label
+          <label htmlFor=""
             htmlFor="documentsAcademicYear"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
@@ -198,7 +198,7 @@ const NewStudentDocumentsListForm = () => {
                 className="mr-2"
               />
 
-              <label className="text-sm text-gray-700">Is Required?</label>
+              <label htmlFor="" className="text-sm text-gray-700">Is Required?</label>
             </div>
             <div className="flex items-center mb-2">
               <input
@@ -209,7 +209,7 @@ const NewStudentDocumentsListForm = () => {
                 }
                 className="mr-2"
               />
-              <label className="text-sm text-gray-700">Is Legalised?</label>
+              <label htmlFor="" className="text-sm text-gray-700">Is Legalised?</label>
             </div>
             <button
               type="button"

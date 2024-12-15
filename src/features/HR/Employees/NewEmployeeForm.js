@@ -34,7 +34,7 @@ const NewEmployeeForm = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-  console.log(selectedAcademicYear.title, "selectedAcademicYear");
+  //console.log(selectedAcademicYear?.title, "selectedAcademicYear");
   const [addNewEmployee, { isLoading, isSuccess, isError, error }] =
     useAddNewEmployeeMutation();
 
@@ -289,13 +289,13 @@ const NewEmployeeForm = () => {
       <HR />
 
       <form onSubmit={onSaveEmployeeClicked} className="form-container">
-        <h2 className="text-2xl font-bold mb-4">
+        <h2  className="formTitle ">
           Add New Employee:{" "}
           {`${formData.userFullName.userFirstName} ${formData.userFullName.userMiddleName} ${formData.userFullName.userLastName}`}
         </h2>
         {/* username and password should be visible for admin isAdmin&& */}
         {/* <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label  className="formInputLabel">
             username*
           </label>
           <input
@@ -311,7 +311,7 @@ const NewEmployeeForm = () => {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label  className="formInputLabel">
             Password*
           </label>
           <input
@@ -327,13 +327,15 @@ const NewEmployeeForm = () => {
           />
         </div> */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor="userFirstName"  className="formInputLabel">
             First Name{" "}
             {!validity.validFirstName && (
               <span className="text-red-600">*</span>
             )}
           </label>
           <input
+          id="userFirstName"
+          
             type="text"
             name="userFirstName"
             value={formData.userFullName.userFirstName}
@@ -355,7 +357,7 @@ const NewEmployeeForm = () => {
         </div>
         {/* Middle Name */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label  className="formInputLabel">
             Middle Name
           </label>
           <input
@@ -378,7 +380,7 @@ const NewEmployeeForm = () => {
 
         {/* Last Name */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label  className="formInputLabel">
             Last Name{" "}
             {!validity.validLastName && <span className="text-red-600">*</span>}
           </label>
@@ -406,7 +408,7 @@ const NewEmployeeForm = () => {
         {/* Date of Birth */}
         <div>
           <label
-            className="block text-sm font-medium text-gray-700"
+             className="formInputLabel"
             htmlFor="userDob"
           >
             Date of Birth{" "}
@@ -427,7 +429,7 @@ const NewEmployeeForm = () => {
         {/* Sex Selection */}
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label  className="formInputLabel">
             Sex{" "}
             {!validity.validUserSex && <span className="text-red-600">*</span>}
           </label>
@@ -529,7 +531,7 @@ const NewEmployeeForm = () => {
         {/* Contact Information */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label  className="formInputLabel">
               Primary Phone{" "}
               {!validity.validPrimaryPhone && (
                 <span className="text-red-600">*</span>
@@ -559,7 +561,7 @@ const NewEmployeeForm = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label  className="formInputLabel">
               Secondary Phone
             </label>
             <input
@@ -584,7 +586,7 @@ const NewEmployeeForm = () => {
         {/* Address Information */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label  className="formInputLabel">
               House{" "}
               {!validity.validHouse && <span className="text-red-600">*</span>}
             </label>
@@ -609,7 +611,7 @@ const NewEmployeeForm = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label  className="formInputLabel">
               Street{" "}
               {!validity.validStreet && <span className="text-red-600">*</span>}
             </label>
@@ -634,7 +636,7 @@ const NewEmployeeForm = () => {
           </div>
 
           <div className="col-span-2">
-            <label className="block text-sm font-medium text-gray-700">
+            <label  className="formInputLabel">
               Area
             </label>
             <input
@@ -656,7 +658,7 @@ const NewEmployeeForm = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label  className="formInputLabel">
               City{" "}
               {!validity.validCity && <span className="text-red-600">*</span>}
             </label>
@@ -681,7 +683,7 @@ const NewEmployeeForm = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label  className="formInputLabel">
               Post Code
             </label>
             <input
@@ -705,7 +707,7 @@ const NewEmployeeForm = () => {
 
         {/* Email */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label  className="formInputLabel">
             Email
           </label>
           <input
@@ -729,7 +731,7 @@ const NewEmployeeForm = () => {
         {/* Current Employment */}
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label  className="formInputLabel">
               Current Position{" "}
               {!validity.validCurrentPosition && (
                 <span className="text-red-600">*</span>
@@ -764,7 +766,7 @@ const NewEmployeeForm = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label  className="formInputLabel">
               Join Date{" "}
               {!validity.validJoinDate && (
                 <span className="text-red-600">*</span>
@@ -791,7 +793,7 @@ const NewEmployeeForm = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label  className="formInputLabel">
               Contract Type{" "}
               {!validity.validContractType && (
                 <span className="text-red-600">*</span>
@@ -826,12 +828,12 @@ const NewEmployeeForm = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label  className="formInputLabel">
               Salary Package
             </label>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label  className="formInputLabel">
                   Basic{" "}
                   {!validity.validBasic && (
                     <span className="text-red-600">*</span>
@@ -860,7 +862,7 @@ const NewEmployeeForm = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label  className="formInputLabel">
                   Payment{" "}
                   {!validity.validPayment && (
                     <span className="text-red-600">*</span>
@@ -898,7 +900,7 @@ const NewEmployeeForm = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label  className="formInputLabel">
                   CNSS
                 </label>
                 <input
@@ -923,7 +925,7 @@ const NewEmployeeForm = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label  className="formInputLabel">
                   Other
                 </label>
                 <input
@@ -959,7 +961,7 @@ const NewEmployeeForm = () => {
             >
               {/* Institution */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label  className="formInputLabel">
                   Institution{" "}
                   {!work.institution && <span className="text-red-600">*</span>}
                 </label>
@@ -981,7 +983,7 @@ const NewEmployeeForm = () => {
 
               {/* From Date */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label  className="formInputLabel">
                   From Date{" "}
                   {!work.fromDate && <span className="text-red-600">*</span>}
                 </label>
@@ -998,7 +1000,7 @@ const NewEmployeeForm = () => {
 
               {/* To Date */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label  className="formInputLabel">
                   To Date{" "}
                   {!work.toDate && <span className="text-red-600">*</span>}
                 </label>
@@ -1015,7 +1017,7 @@ const NewEmployeeForm = () => {
 
               {/* Position */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label  className="formInputLabel">
                   Position{" "}
                   {!work.position && <span className="text-red-600">*</span>}
                 </label>
@@ -1033,7 +1035,7 @@ const NewEmployeeForm = () => {
 
               {/* Contract Type */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label  className="formInputLabel">
                   Contract Type{" "}
                   {!work.contractType && (
                     <span className="text-red-600">*</span>
@@ -1057,7 +1059,7 @@ const NewEmployeeForm = () => {
 
               {/* Salary Package */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label  className="formInputLabel">
                   Salary Package
                 </label>
                 <input

@@ -177,7 +177,7 @@ const NewAcademicYearForm = () => {
           New Academic Year
         </h2>
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
+            <label htmlFor=""  className="formInputLabel">
               Starting Year (Format: yyyy)
               <input
                aria-label="starting year"
@@ -199,7 +199,7 @@ const NewAcademicYearForm = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
+            <label htmlFor=""  className="formInputLabel">
               Academic Year Title
               <input
               aria-label="year title"
@@ -212,7 +212,7 @@ const NewAcademicYearForm = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
+            <label htmlFor=""  className="formInputLabel">
               Year Start
               <input
                 type="text"
@@ -224,7 +224,7 @@ const NewAcademicYearForm = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
+            <label htmlFor=""  className="formInputLabel">
               Year End
               <input
                 type="text"

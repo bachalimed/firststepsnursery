@@ -161,7 +161,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
               }
               disabled={index < 1} // Disable editing for the first three elements if needed
             />
-            <label>
+            <label htmlFor="">
               <input
                 aria-label="is required"
                 type="checkbox"
@@ -172,7 +172,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
               />
               Is Required?
             </label>
-            <label>
+            <label htmlFor="">
               <input
                aria-label="is legalised"
                 type="checkbox"

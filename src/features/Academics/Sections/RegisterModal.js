@@ -65,7 +65,7 @@ const RegisterModal = ({
       overlayClassName="modal-overlay"
     >
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
-        <h2 className="text-xl font-semibold mb-4">Select New Register Year</h2>
+        <h2  className="formTitle ">Select New Register Year</h2>
         <div className="space-y-4">
           {modifiedYears.map((year, index) => (
             <div key={index} className="flex items-center">

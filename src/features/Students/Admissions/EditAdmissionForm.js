@@ -419,7 +419,7 @@ const EditAdmissionForm = ({ admission }) => {
         <div>
           <label
             htmlFor="student"
-            className="block text-sm font-medium text-gray-700"
+             className="formInputLabel"
           >
             Student{" "}
             {!primaryValidity.validStudent && (
@@ -451,7 +451,7 @@ const EditAdmissionForm = ({ admission }) => {
         <div>
           <label
             htmlFor="admissionYear"
-            className="block text-sm font-medium text-gray-700"
+             className="formInputLabel"
           >
             Admission Year{" "}
             {!primaryValidity.validAdmissionYear && (
@@ -482,7 +482,7 @@ const EditAdmissionForm = ({ admission }) => {
         <div>
           <label
             htmlFor="admissionDate"
-            className="block text-sm font-medium text-gray-700"
+             className="formInputLabel"
           >
             Admission Starting Date{" "}
             {!primaryValidity.validAdmissionDate && (
@@ -513,7 +513,7 @@ const EditAdmissionForm = ({ admission }) => {
             <div key={index} className="space-y-4">
               <label
                 htmlFor={`service-${index}`}
-                className="block text-sm font-medium text-gray-700"
+                 className="formInputLabel"
               >
                 Service{" "}
                 {!admissionValidity[index]?.validService && (
@@ -546,7 +546,7 @@ const EditAdmissionForm = ({ admission }) => {
               <div>
                 <label
                   htmlFor={`feePeriod-${index}`}
-                  className="block text-sm font-medium text-gray-700"
+                   className="formInputLabel"
                 >
                   Fee Period{" "}
                   {!admissionValidity[index]?.validFeePeriod && (
@@ -586,7 +586,7 @@ const EditAdmissionForm = ({ admission }) => {
               <div>
                 <label
                   htmlFor={`feeValue-${index}`}
-                  className="block text-sm font-medium text-gray-700"
+                   className="formInputLabel"
                 >
                   Fee Value{" "}
                   {!admissionValidity[index]?.validFeeValue && (
@@ -610,7 +610,7 @@ const EditAdmissionForm = ({ admission }) => {
               <div>
                 <label
                   htmlFor={`feeStartDate-${index}`}
-                  className="block text-sm font-medium text-gray-700"
+                   className="formInputLabel"
                 >
                   Fee Start Date{" "}
                   {!admissionValidity[index]?.validFeeStartDate && (
@@ -634,7 +634,7 @@ const EditAdmissionForm = ({ admission }) => {
               >
                 <label
                   htmlFor={`feeMonths-${index}`}
-                  className="block text-sm font-medium text-gray-700"
+                   className="formInputLabel"
                 >
                   Fee Months (Select multiple if needed)
                 </label>
@@ -672,7 +672,7 @@ const EditAdmissionForm = ({ admission }) => {
                 )}
                 <label
                   htmlFor={`comment-${index}`}
-                  className="block text-sm font-medium text-gray-700"
+                   className="formInputLabel"
                 >
                   Comment
                 </label>

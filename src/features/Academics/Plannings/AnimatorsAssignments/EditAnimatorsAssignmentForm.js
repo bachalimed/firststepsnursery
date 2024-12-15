@@ -285,93 +285,102 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
   };
 
   console.log(formData, "formdata");
-
   return (
     <>
       <Academics />
 
       <form onSubmit={handleSubmit} className="form-container">
-        <h2 className="text-2xl font-bold mb-6 text-center">Edit Assignment</h2>
-        <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
-            Assignment Year{" "}
-            {!validity.validAssignmentYear && (
-              <span className="text-red-600">*</span>
-            )}
-          </label>
-          <input
-            aria-invalid={!validity.validAssignmentYear}
-            required
-            type="text"
-            name="assignmentYear"
-            value={formData.assignmentYear}
-            onChange={handleChange}
-            placeholder="Enter Year"
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-          />
-        </div>
+        <h2 className="formTitle">Edit Assignment</h2>
+        <div className="formSectionContainer">
+          <h3 className="formSectionTitle">Assignments Dates</h3>
+          <div className="formSection">
+            <div >
+              <label htmlFor="assignmentYear" className="formInputLabel">
+                Assignment Year{" "}
+                {!validity.validAssignmentYear && (
+                  <span className="text-red-600">*</span>
+                )}
+                <input
+                  aria-invalid={!validity.validAssignmentYear}
+                  required
+                  type="text"
+                  id="assignmentYear"
+                  name="assignmentYear"
+                  value={formData.assignmentYear}
+                  onChange={handleChange}
+                  placeholder="Enter Year"
+                  className="formInputText"
+                />
+              </label>
+            </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
-            From{" "}
-            {(!validity.validAssignedFrom || !validity.noOverlap) && (
-              <span className="text-red-600">*</span>
-            )}
-          </label>
-          <input
-            aria-invalid={!validity.validAssignedFrom}
-            required
-            placeholder="[dd/mm/yyyy]"
-            type="date"
-            name="assignedFrom"
-            value={formData.assignedFrom}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-          />
+            <div className="formLineDiv">
+              <div>
+                <label htmlFor="assignedFrom" className="formInputLabel">
+                  From{" "}
+                  {(!validity.validAssignedFrom || !validity.noOverlap) && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <input
+                    aria-invalid={!validity.validAssignedFrom}
+                    required
+                    placeholder="[dd/mm/yyyy]"
+                    type="date"
+                    id="assignedFrom"
+                    name="assignedFrom"
+                    value={formData.assignedFrom}
+                    onChange={handleChange}
+                    className="formInputText"
+                  />
+                </label>
+              </div>
+              <div className="mb-4">
+                <label htmlFor="assignedTo" className="formInputLabel">
+                  To{" "}
+                  {(!validity.validAssignedTo || !validity.noOverlap) && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <input
+                    aria-invalid={!validity.validAssignedTo}
+                    required
+                    placeholder="[dd/mm/yyyy]"
+                    type="date"
+                    id="assignedTo"
+                    name="assignedTo"
+                    value={formData.assignedTo}
+                    onChange={handleChange}
+                    className="formInputText"
+                  />{" "}
+                </label>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
-            To{" "}
-            {(!validity.validAssignedTo || !validity.noOverlap) && (
-              <span className="text-red-600">*</span>
-            )}
-          </label>
-          <input
-            aria-invalid={!validity.validAssignedTo}
-            required
-            placeholder="[dd/mm/yyyy]"
-            type="date"
-            name="assignedTo"
-            value={formData.assignedTo}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-          />
-        </div>
-
         <h3 className="text-xl font-bold mb-4">Assignments</h3>
         {formData.assignments.map((assignment, index) => (
           <div key={index} className="mb-4 p-4 border rounded-md">
-            <label className="block text-gray-700 font-bold mb-2">
+            <label htmlFor="assignmentAnimator" className="formInputLabel">
               Animator
+              <select
+                id="assignmentAnimator"
+                value={assignment.animator}
+                onChange={(e) =>
+                  handleAssignmentChange(index, "animator", e.target.value)
+                }
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
+              >
+                <option value="">Select Animator</option>
+                {getAvailableAnimators(index).map((employee) => (
+                  <option key={employee.id} value={employee.id}>
+                    {employee.userFullName.userFirstName}{" "}
+                    {employee.userFullName.userMiddleName}{" "}
+                    {employee.userFullName.userLastName}
+                  </option>
+                ))}
+              </select>{" "}
             </label>
-            <select
-              value={assignment.animator}
-              onChange={(e) =>
-                handleAssignmentChange(index, "animator", e.target.value)
-              }
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-            >
-              <option value="">Select Animator</option>
-              {getAvailableAnimators(index).map((employee) => (
-                <option key={employee.id} value={employee.id}>
-                  {employee.userFullName.userFirstName}{" "}
-                  {employee.userFullName.userMiddleName}{" "}
-                  {employee.userFullName.userLastName}
-                </option>
-              ))}
-            </select>
 
-            <label className="block text-gray-700 font-bold mt-4 mb-2">
+            <label formInputLabel>
               Schools
             </label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">

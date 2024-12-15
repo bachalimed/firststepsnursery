@@ -234,7 +234,7 @@
 
 //         <form onSubmit={handleSubmit}>
 //           <div className="mb-4">
-//             <label className="block text-gray-700 font-bold mb-2">
+//             <label htmlFor=""  className="formInputLabel">
 //               Invoice Year{" "}
 //               {!validity.validInvoiceYear && (
 //                 <span className="text-red-600">*</span>
@@ -270,7 +270,7 @@
 //           </div>
 
 //           <div className="mb-4">
-//             <label>Invoice Issue Date:</label>
+//             <label htmlFor="">Invoice Issue Date:</label>
 //             <input
 //               type="date"
 //               name="invoiceIssueDate"
@@ -284,7 +284,7 @@
 //               <h3>Invoice Enrolment {index + 1}</h3>
 
 //               <div>
-//                 <label>Invoice Due Date:</label>
+//                 <label htmlFor="">Invoice Due Date:</label>
 //                 <input
 //                   type="date"
 //                   name="invoiceDueDate"
@@ -294,7 +294,7 @@
 //               </div>
 
 //               <div>
-//                 <label>Invoice Amount:</label>
+//                 <label htmlFor="">Invoice Amount:</label>
 //                 <input
 //                   type="number"
 //                   name="invoiceAmount"
@@ -304,7 +304,7 @@
 //               </div>
 
 //               <div>
-//                 <label>Invoice Discount Amount:</label>
+//                 <label htmlFor="">Invoice Discount Amount:</label>
 //                 <input
 //                   type="number"
 //                   name="invoiceDiscountAmount"
@@ -314,7 +314,7 @@
 //               </div>
 
 //               <div>
-//                 <label>Invoice Student:</label>
+//                 <label htmlFor="">Invoice Student:</label>
 //                 <input
 //                   type="text"
 //                   name="invoiceStudent"

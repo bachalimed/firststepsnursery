@@ -159,7 +159,7 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
               }
               disabled={index < 3} // Disable editing for the first three elements if needed
             />
-            <label>
+            <label htmlFor="">
               <input
                 aria-label="id required"
                 type="checkbox"
@@ -170,7 +170,7 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
               />
               Is Required?
             </label>
-            <label>
+            <label htmlFor="">
               <input
                 aria-label="id legalised"
                 type="checkbox"

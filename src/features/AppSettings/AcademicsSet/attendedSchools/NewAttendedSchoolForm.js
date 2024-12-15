@@ -128,7 +128,7 @@ const NewAttendedSchoolForm = () => {
           Add New Attended School
         </h2>
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
+            <label htmlFor=""  className="formInputLabel">
               School Name
               <input
                 aria-label="school name"
@@ -148,7 +148,7 @@ const NewAttendedSchoolForm = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
+            <label htmlFor=""  className="formInputLabel">
               School City
               <input
                 aria-label="school city"
@@ -168,7 +168,7 @@ const NewAttendedSchoolForm = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
+            <label htmlFor=""  className="formInputLabel">
               School Type
               <select
                 aria-label="school type"
@@ -194,7 +194,7 @@ const NewAttendedSchoolForm = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
+            <label htmlFor=""  className="formInputLabel">
               School Color
               <input
                 type="color"

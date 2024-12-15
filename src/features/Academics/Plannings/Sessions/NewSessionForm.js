@@ -271,7 +271,7 @@ console.log(selectedAcademicYear.title,'selectedAcademicYear')
       <Academics />
 
         <form onSubmit={onSaveSessionClicked} className="form-container">
-        <h2 className="text-2xl font-bold mb-4">
+        <h2 className="formTitle ">
           Add New Session:{" "}
           {`${formData.userFullName.userFirstName} ${formData.userFullName.userMiddleName} ${formData.userFullName.userLastName}`}
         </h2>

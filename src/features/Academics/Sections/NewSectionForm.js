@@ -259,12 +259,12 @@ const NewSectionForm = () => {
       <Academics />
 
       <form onSubmit={onSaveSectionClicked} className="form-container">
-        <h2 className="text-2xl font-bold mb-4">
+        <h2 className="formTitle ">
           Add New Section: {`${formData.sectionLabel}`}
         </h2>
         {/* Section Label */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Section Label{" "}
             {!validity.validSectionLabel && (
               <span className="text-red-600">*</span>
@@ -289,7 +289,7 @@ const NewSectionForm = () => {
         </div>
         {/* Section Color */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Section Color{" "}
             {!validity.validSectionColor && (
               <span className="text-red-600">*</span>
@@ -308,7 +308,7 @@ const NewSectionForm = () => {
 
         {/* Section Type */}
         {/* <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label htmlFor=""  className="formInputLabel">
               Section Type{" "}
               {!validity.validSectionType && (
                 <span className="text-red-600">*</span>
@@ -333,7 +333,7 @@ const NewSectionForm = () => {
           </div> */}
         {/* Animator Selection */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Animator{" "}
             {!validity.validSectionAnimator && (
               <span className="text-red-600">*</span>
@@ -368,7 +368,7 @@ const NewSectionForm = () => {
         </div>
         {/* Classroom Selection */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Classroom{" "}
             {!validity.validSectionLocation && (
               <span className="text-red-600">*</span>
@@ -402,7 +402,7 @@ const NewSectionForm = () => {
 
         {/* Section From */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Section From{" "}
             {!validity.validSectionFrom && (
               <span className="text-red-600">*</span>
@@ -425,7 +425,7 @@ const NewSectionForm = () => {
 
         {/* Students Selection */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Select Students
             <select
               aria-label="section students"
@@ -454,7 +454,7 @@ const NewSectionForm = () => {
 
         {/* Selected Students */}
         <div className="selected-students mt-4">
-          <label className="block text-lg font-medium  text-gray-700">
+          <label htmlFor="" formInputLabel>
             {formData.sectionLabel} section Students:{" "}
             {formData?.students.length}
             <ul className="selected-students-list">

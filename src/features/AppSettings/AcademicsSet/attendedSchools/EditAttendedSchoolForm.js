@@ -114,7 +114,7 @@ const EditAttendedSchoolForm = ({ attendedSchool }) => {
           Edit Attended School
         </h2>
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
+            <label htmlFor=""  className="formInputLabel">
               School Name
               <input
                 aria-label="school name"
@@ -134,7 +134,7 @@ const EditAttendedSchoolForm = ({ attendedSchool }) => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
+            <label htmlFor=""  className="formInputLabel">
               School City
               <input
                 aria-label="school city"
@@ -154,7 +154,7 @@ const EditAttendedSchoolForm = ({ attendedSchool }) => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
+            <label htmlFor=""  className="formInputLabel">
               School Type
               <select
                 required
@@ -180,7 +180,7 @@ const EditAttendedSchoolForm = ({ attendedSchool }) => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
+            <label htmlFor=""  className="formInputLabel">
               School Color
               <div className="flex items-center">
                 {/* Square displaying the selected color */}

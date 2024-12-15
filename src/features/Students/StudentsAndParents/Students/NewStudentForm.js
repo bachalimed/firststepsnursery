@@ -340,7 +340,7 @@ const NewStudentForm = () => {
         onSubmit={onSaveStudentClicked}
       >
         <div className="mb-4">
-          <h2 className="text-2xl font-semibold">
+          <h2 className="formTitle">
             New student for the academic year {selectedAcademicYear?.title}
           </h2>
         </div>
@@ -348,7 +348,7 @@ const NewStudentForm = () => {
         <div className="grid gap-6 mb-6 md:grid-cols-2">
           <div>
             <label
-              className="block text-sm font-medium text-gray-700"
+               className="formInputLabel"
               htmlFor="firstName"
             >
               First Name{" "}
@@ -370,7 +370,7 @@ const NewStudentForm = () => {
 
           <div>
             <label
-              className="block text-sm font-medium text-gray-700"
+               className="formInputLabel"
               htmlFor="middleName"
             >
               Middle Name
@@ -389,7 +389,7 @@ const NewStudentForm = () => {
 
           <div>
             <label
-              className="block text-sm font-medium text-gray-700"
+               className="formInputLabel"
               htmlFor="lastName"
             >
               Last Name{" "}
@@ -411,7 +411,7 @@ const NewStudentForm = () => {
 
           <div>
             <label
-              className="block text-sm font-medium text-gray-700"
+               className="formInputLabel"
               htmlFor="studentDob"
             >
               Date Of Birth{" "}
@@ -509,7 +509,7 @@ const NewStudentForm = () => {
               <div className="mb-6">
                 <label
                   htmlFor="studentGrade"
-                  className="block text-sm font-medium text-gray-700"
+                   className="formInputLabel"
                 >
                   Grade{" "}
                   {!studentYears[0].grade && (
@@ -551,7 +551,7 @@ const NewStudentForm = () => {
                 >
                   <div className="mb-2">
                     <label
-                      className="block text-sm font-medium text-gray-700"
+                       className="formInputLabel"
                       htmlFor={`gardienFirstName-${index}`}
                     >
                       First Name:
@@ -572,7 +572,7 @@ const NewStudentForm = () => {
                   </div>
                   <div className="mb-2">
                     <label
-                      className="block text-sm font-medium text-gray-700"
+                       className="formInputLabel"
                       htmlFor={`gardienMiddleName-${index}`}
                     >
                       Middle Name:
@@ -593,7 +593,7 @@ const NewStudentForm = () => {
                   </div>
                   <div className="mb-2">
                     <label
-                      className="block text-sm font-medium text-gray-700"
+                       className="formInputLabel"
                       htmlFor={`gardienLastName-${index}`}
                     >
                       Last Name:
@@ -614,7 +614,7 @@ const NewStudentForm = () => {
                   </div>
                   <div className="mb-2">
                     <label
-                      className="block text-sm font-medium text-gray-700"
+                       className="formInputLabel"
                       htmlFor={`gardienYear-${index}`}
                     >
                       gardienYear:
@@ -645,7 +645,7 @@ const NewStudentForm = () => {
 
                   <div className="mb-2">
                     <label
-                      className="block text-sm font-medium text-gray-700"
+                       className="formInputLabel"
                       htmlFor={`gardienRelation-${index}`}
                     >
                       Relation To Student :
@@ -666,7 +666,7 @@ const NewStudentForm = () => {
                   </div>
                   <div className="mb-2">
                     <label
-                      className="block text-sm font-medium text-gray-700"
+                       className="formInputLabel"
                       htmlFor={`gardienPhone-${index}`}
                     >
                       Phone Number:
@@ -722,7 +722,7 @@ const NewStudentForm = () => {
                 >
                   <div className="mb-2">
                     <label
-                      className="block text-sm font-medium text-gray-700"
+                       className="formInputLabel"
                       htmlFor={`schoolYear-${index}`}
                     >
                       School Year:
@@ -748,7 +748,7 @@ const NewStudentForm = () => {
                   </div>
                   <div className="mb-2">
                     <label
-                      className="block text-sm font-medium text-gray-700"
+                       className="formInputLabel"
                       htmlFor={`attendedSchool-${index}`}
                     >
                       Attended School:
@@ -780,7 +780,7 @@ const NewStudentForm = () => {
                   </div>
                   <div className="mb-2">
                     <label
-                      className="block text-sm font-medium text-gray-700"
+                       className="formInputLabel"
                       htmlFor={`note-${index}`}
                     >
                       Note:

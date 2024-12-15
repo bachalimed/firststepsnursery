@@ -128,7 +128,7 @@ const EditClassroomForm = ({ classroom }) => {
       <form onSubmit={handleSubmit} className="form-container">
         <h2 className="text-2xl font-bold mb-6 text-center">Edit Classroom</h2>
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
+          <label htmlFor=""  className="formInputLabel">
             Classroom Number
             <input
               aria-label="classroom number"
@@ -147,7 +147,7 @@ const EditClassroomForm = ({ classroom }) => {
           </label>
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
+          <label htmlFor=""  className="formInputLabel">
             Classroom Label
             <input
               aria-label="classroom label"
@@ -167,7 +167,7 @@ const EditClassroomForm = ({ classroom }) => {
         </div>
 
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
+          <label htmlFor=""  className="formInputLabel">
             Classroom Capacity
             <input
               aria-label="classroom capacity"
@@ -188,7 +188,7 @@ const EditClassroomForm = ({ classroom }) => {
           </label>
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
+          <label htmlFor=""  className="formInputLabel">
             Classroom Max Capacity
             <input
               aria-label="classroom max capacity"
@@ -211,7 +211,7 @@ const EditClassroomForm = ({ classroom }) => {
         </div>
 
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
+          <label htmlFor=""  className="formInputLabel">
             Classroom Color
             <input
               type="color"

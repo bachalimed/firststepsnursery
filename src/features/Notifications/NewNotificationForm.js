@@ -274,13 +274,13 @@ const NewNotificationForm = () => {
       <Notifications />
 
       <form onSubmit={onSaveNotificationClicked} className="form-container">
-        <h2 className="text-2xl font-bold mb-4">
+        <h2  className="formTitle ">
           Add New Notification:{" "}
           {`${formData.userFullName.userFirstName} ${formData.userFullName.userMiddleName} ${formData.userFullName.userLastName}`}
         </h2>
         {/* username and password should be visible for admin isAdmin&& */}
         {/* <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             username*
           </label>
           <input
@@ -296,7 +296,7 @@ const NewNotificationForm = () => {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Password*
           </label>
           <input
@@ -312,7 +312,7 @@ const NewNotificationForm = () => {
           />
         </div> */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             First Name{" "}
             {!validity.validFirstName && (
               <span className="text-red-600">*</span>
@@ -340,7 +340,7 @@ const NewNotificationForm = () => {
         </div>
         {/* Middle Name */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Middle Name
           </label>
           <input
@@ -363,7 +363,7 @@ const NewNotificationForm = () => {
 
         {/* Last Name */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Last Name{" "}
             {!validity.validLastName && <span className="text-red-600">*</span>}
           </label>
@@ -390,8 +390,8 @@ const NewNotificationForm = () => {
 
         {/* Date of Birth */}
         <div>
-          <label
-            className="block text-sm font-medium text-gray-700"
+          <label htmlFor=""
+             className="formInputLabel"
             htmlFor="userDob"
           >
             Date of Birth{" "}
@@ -412,7 +412,7 @@ const NewNotificationForm = () => {
         {/* Sex Selection */}
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Sex{" "}
             {!validity.validUserSex && <span className="text-red-600">*</span>}
           </label>
@@ -439,7 +439,7 @@ const NewNotificationForm = () => {
                     : "border-red-600 rounded"
                 } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
               />
-              <label className="ml-2 text-sm text-gray-700">Male</label>
+              <label htmlFor="" className="ml-2 text-sm text-gray-700">Male</label>
             </div>
 
             <div className="flex items-center">
@@ -460,7 +460,7 @@ const NewNotificationForm = () => {
                 }}
                 className="h-4 w-4 border-gray-300 rounded focus:ring-indigo-500"
               />
-              <label className="ml-2 text-sm text-gray-700">Female</label>
+              <label htmlFor="" className="ml-2 text-sm text-gray-700">Female</label>
             </div>
           </div>
         </div>
@@ -475,7 +475,7 @@ const NewNotificationForm = () => {
               onChange={(e) => onAcademicYearChanged(e, index)}
               className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
             />
-            <label
+            <label htmlFor=""
               htmlFor={`notificationYear-${index}`}
               className="ml-2 text-sm font-medium text-gray-700"
             >
@@ -503,7 +503,7 @@ const NewNotificationForm = () => {
             className='h-4 w-4  "text-blue-600"  focus:ring-sky-700 border-gray-300 rounded'
           />
 
-          <label
+          <label htmlFor=""
             htmlFor="notificationIsActive"
             className="ml-2 text-sm font-medium text-gray-700"
           >
@@ -514,7 +514,7 @@ const NewNotificationForm = () => {
         {/* Contact Information */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label htmlFor=""  className="formInputLabel">
               Primary Phone{" "}
               {!validity.validPrimaryPhone && (
                 <span className="text-red-600">*</span>
@@ -544,7 +544,7 @@ const NewNotificationForm = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label htmlFor=""  className="formInputLabel">
               Secondary Phone
             </label>
             <input
@@ -569,7 +569,7 @@ const NewNotificationForm = () => {
         {/* Address Information */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label htmlFor=""  className="formInputLabel">
               House{" "}
               {!validity.validHouse && <span className="text-red-600">*</span>}
             </label>
@@ -594,7 +594,7 @@ const NewNotificationForm = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label htmlFor=""  className="formInputLabel">
               Street{" "}
               {!validity.validStreet && <span className="text-red-600">*</span>}
             </label>
@@ -619,7 +619,7 @@ const NewNotificationForm = () => {
           </div>
 
           <div className="col-span-2">
-            <label className="block text-sm font-medium text-gray-700">
+            <label htmlFor=""  className="formInputLabel">
               Area
             </label>
             <input
@@ -641,7 +641,7 @@ const NewNotificationForm = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label htmlFor=""  className="formInputLabel">
               City{" "}
               {!validity.validCity && <span className="text-red-600">*</span>}
             </label>
@@ -666,7 +666,7 @@ const NewNotificationForm = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label htmlFor=""  className="formInputLabel">
               Post Code
             </label>
             <input
@@ -690,7 +690,7 @@ const NewNotificationForm = () => {
 
         {/* Email */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Email
           </label>
           <input
@@ -714,7 +714,7 @@ const NewNotificationForm = () => {
         {/* Current Employment */}
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label htmlFor=""  className="formInputLabel">
               Current Position{" "}
               {!validity.validCurrentPosition && (
                 <span className="text-red-600">*</span>
@@ -744,7 +744,7 @@ const NewNotificationForm = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label htmlFor=""  className="formInputLabel">
               Join Date{" "}
               {!validity.validJoinDate && (
                 <span className="text-red-600">*</span>
@@ -771,7 +771,7 @@ const NewNotificationForm = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label htmlFor=""  className="formInputLabel">
               Contract Type{" "}
               {!validity.validContractType && (
                 <span className="text-red-600">*</span>
@@ -801,12 +801,12 @@ const NewNotificationForm = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label htmlFor=""  className="formInputLabel">
               Salary Package
             </label>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   Basic{" "}
                   {!validity.validBasic && (
                     <span className="text-red-600">*</span>
@@ -837,7 +837,7 @@ const NewNotificationForm = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   Payment{" "}
                   {!validity.validPayment && (
                     <span className="text-red-600">*</span>
@@ -869,7 +869,7 @@ const NewNotificationForm = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   CNSS
                 </label>
                 <input
@@ -896,7 +896,7 @@ const NewNotificationForm = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   Other
                 </label>
                 <input
@@ -934,7 +934,7 @@ const NewNotificationForm = () => {
             >
               {/* Institution */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   Institution{" "}
                   {!work.institution && <span className="text-red-600">*</span>}
                 </label>
@@ -956,7 +956,7 @@ const NewNotificationForm = () => {
 
               {/* From Date */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   From Date{" "}
                   {!work.fromDate && <span className="text-red-600">*</span>}
                 </label>
@@ -973,7 +973,7 @@ const NewNotificationForm = () => {
 
               {/* To Date */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   To Date{" "}
                   {!work.toDate && <span className="text-red-600">*</span>}
                 </label>
@@ -990,7 +990,7 @@ const NewNotificationForm = () => {
 
               {/* Position */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   Position{" "}
                   {!work.position && <span className="text-red-600">*</span>}
                 </label>
@@ -1008,7 +1008,7 @@ const NewNotificationForm = () => {
 
               {/* Contract Type */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   Contract Type{" "}
                   {!work.contractType && (
                     <span className="text-red-600">*</span>
@@ -1032,7 +1032,7 @@ const NewNotificationForm = () => {
 
               {/* Salary Package */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   Salary Package
                 </label>
                 <input

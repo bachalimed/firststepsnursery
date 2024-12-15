@@ -272,7 +272,7 @@ const NewPaymentForm = () => {
         <h2 className="text-2xl font-bold mb-6 text-center">Add Payment</h2>
         {/* Student Selection */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
+          <label htmlFor=""  className="formInputLabel">
             Select Student{" "}
             {!validity.validPaymentStudent && (
               <span className="text-red-600">*</span>
@@ -358,7 +358,7 @@ const NewPaymentForm = () => {
 
         {/* Payment Amount */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
+          <label htmlFor=""  className="formInputLabel">
             Payment Amount{" "}
             {!validity.validPaymentAmount && (
               <span className="text-red-600">*</span>
@@ -386,7 +386,7 @@ const NewPaymentForm = () => {
         </div>
         {/* Payment Date */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
+          <label htmlFor=""  className="formInputLabel">
             Payment Date{" "}
             {!validity.validPaymentDate && (
               <span className="text-red-600">*</span>
@@ -404,7 +404,7 @@ const NewPaymentForm = () => {
 
         {/* Payment Type */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
+          <label htmlFor=""  className="formInputLabel">
             Payment Type{" "}
             {!validity.validPaymentType && (
               <span className="text-red-600">*</span>
@@ -430,7 +430,7 @@ const NewPaymentForm = () => {
 
         {/* Payment Type Reference */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
+          <label htmlFor=""  className="formInputLabel">
             Payment Reference
           </label>
           <input
@@ -448,7 +448,7 @@ const NewPaymentForm = () => {
 
         {/* Payment Note */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">
+          <label htmlFor=""  className="formInputLabel">
             Payment Note
           </label>
           <textarea

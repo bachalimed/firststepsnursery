@@ -15,7 +15,7 @@ import {
   selectAllAcademicYears,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import {
-  useGetAnimatorsAssignmentsQuery,
+  useGetAnimatorsAssignmentsByYearQuery,
   useDeleteAnimatorsAssignmentMutation,
 } from "./animatorsAssignmentsApiSlice";
 import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
@@ -39,6 +39,24 @@ const AnimatorsAssignmentsList = () => {
     const currentMonthIndex = new Date().getMonth(); // Get current month (0-11)
     return MONTHS[currentMonthIndex]; // Return the month name with the first letter capitalized
   };
+
+  const {
+    data: assignments, //the data is renamed schools
+    isLoading: isAssignmentsLoading,
+    isSuccess: isAssignmentsSuccess,
+    isError: isAssignmentsError,
+    error: assignmentsError,
+  } = useGetAnimatorsAssignmentsByYearQuery(
+    {
+      selectedYear: selectedAcademicYear?.title,
+      endpointName: "AnimatorsAssignmentList",
+    } || {},
+    {
+      //pollingInterval: 60000,//will refetch data every 60seconds
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
+    }
+  );
   const {
     data: employees, //the data is renamed employees
     isLoading: isEmployeesLoading,
@@ -65,15 +83,6 @@ const AnimatorsAssignmentsList = () => {
   } = useGetAttendedSchoolsQuery({ endpointName: "AnimatorsAssignmentList" }) ||
   {}; //this should match the endpoint defined in your API slice.!! what does it mean?
 
-  const {
-    data: assignments, //the data is renamed schools
-    isLoading: isAssignmentsLoading,
-    isSuccess: isAssignmentsSuccess,
-    isError: isAssignmentsError,
-    error: assignmentsError,
-  } = useGetAnimatorsAssignmentsQuery({
-    endpointName: "AnimatorsAssignmentList",
-  }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
   const [
     deleteAssignment,
     {
@@ -140,6 +149,7 @@ const AnimatorsAssignmentsList = () => {
     setIdAttendedSchoolToDelete(null);
   };
 
+  const [dateFilter, setDateFilter] = useState(""); // Initialize with empty string (for "All Months")
   const [monthFilter, setMonthFilter] = useState(getCurrentMonth()); // Initialize with empty string (for "All Months")
   let filteredAssignments = [];
   let assignmentsList = [];
@@ -147,41 +157,45 @@ const AnimatorsAssignmentsList = () => {
     const { entities } = assignments;
     assignmentsList = Object.values(entities); //we are using entity adapter in this query
 
-    // Filter assignments based on the selected month
+    // Filter assignments based on the selected month, date, and search query
     filteredAssignments = assignmentsList.filter((assignment) => {
       const startMonth = getCurrentMonth(assignment?.startTime);
       const endMonth = getCurrentMonth(assignment?.endTime);
       const assignedFromMonth = getCurrentMonth(assignment?.assignedFrom);
       const assignedToMonth = getCurrentMonth(assignment?.assignedTo);
-      console.log("Processing assignment:", assignment); // Debugging: Check assignment data
+
+      // Month Filter: Matches month names
+      const matchesMonth =
+        monthFilter === "" || // Show all if no month is selected
+        startMonth === monthFilter ||
+        endMonth === monthFilter ||
+        assignedFromMonth === monthFilter ||
+        assignedToMonth === monthFilter;
+
+      // Date Filter: Selected date falls between startTime and endTime
+      const matchesDate =
+        !dateFilter || // Show all if no date is selected
+        (new Date(assignment?.assignedFrom).setHours(0, 0, 0, 0) <=
+          new Date(dateFilter).setHours(0, 0, 0, 0) &&
+          new Date(dateFilter).setHours(0, 0, 0, 0) <=
+            new Date(assignment?.assignedTo).setHours(0, 0, 0, 0));
+
+      // Search Filter: Match animator name or school name (case-insensitive)
       const matchesSearch =
-        assignment?.userFullName?.userFirstName
-          ?.toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
-        assignment?.userFullName?.userMiddleName
-          ?.toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
-        assignment?.userFullName?.userLastName
-          ?.toLowerCase()
-          .includes(searchQuery.toLowerCase());
-          console.log("Search Match:", matchesSearch); // Debugging: Check search match result
-      // If a month is selected, filter by matching month names
-  const matchesMonth =
-  monthFilter === "" || // Show all if no month is selected
-  startMonth === monthFilter ||
-  endMonth === monthFilter ||
-  assignedFromMonth === monthFilter ||
-  assignedToMonth === monthFilter;
-     
-  console.log("Month Match:", matchesMonth); // Debugging: Check month match result
+        searchQuery === "" ||
+        assignment?.assignments?.some((assig) =>
+          assig?.schools?.some((school) =>
+            school?.schoolName
+              ?.toLowerCase()
+              .includes(searchQuery.toLowerCase())
+          )
+        ); // Match school name in schools array
 
-  const result = matchesSearch && matchesMonth;
-  console.log("Assignment included:", result); // Debugging: Check if the assignment passes the filter
-
-  return result;
-     
+      // Return true if the assignment passes all active filters
+      return matchesMonth && matchesDate && matchesSearch;
     });
   }
+
   const handleSearch = (e) => setSearchQuery(e.target.value);
   const {
     isEmployee,
@@ -255,18 +269,12 @@ const AnimatorsAssignmentsList = () => {
                   <hr style={{ border: "0.5px solid #ddd", margin: "4px 1" }} />
                 </div>
 
-                {assignment.schools.map((schoolId, schoolIndex) => {
-                  const schoolName =
-                    schoolsList.find((school) => school.id === schoolId)
-                      ?.schoolName || "Unknown";
+                {assignment.schools.map((school) => {
+                  const schoolName = school?.schoolName;
 
                   return (
-                    <div key={schoolId} style={{ marginBottom: "4px" }}>
+                    <div key={school?._id} style={{ marginBottom: "4px" }}>
                       {schoolName}
-                      {
-                        schoolIndex < assignment.schools.length - 1
-                        // && ( <hr style={{ border: "0.5px solid #ddd", margin: "4px 0" }} />  )
-                      }
                     </div>
                   );
                 })}
@@ -384,6 +392,23 @@ const AnimatorsAssignmentsList = () => {
                 )
             )}
           </select>
+          {/* date Filter  */}
+          <input
+            type="date"
+            value={dateFilter || ""}
+            onChange={(e) => setDateFilter(e.target.value)}
+            className="text-sm h-8 border border-gray-300 px-4 rounded"
+            placeholder="Select a date"
+          />
+          {/* Clear Button */}
+          {dateFilter && (
+            <button
+              onClick={() => setDateFilter("")}
+              className="text-sm text-gray-600 hover:text-red-600 focus:outline-none"
+            >
+              Clear
+            </button>
+          )}
         </div>
         <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
           <DataTable

@@ -251,7 +251,7 @@ export default function NewFatherForm() {
 
         <div className="space-y-4">
           <div>
-            <label
+            <label htmlFor=""
               className="text-gray-700 font-semibold"
               htmlFor="userFirstName"
             >
@@ -273,7 +273,7 @@ export default function NewFatherForm() {
           </div>
 
           <div>
-            <label
+            <label htmlFor=""
               className="text-gray-700 font-semibold"
               htmlFor="userMiddleName"
             >
@@ -291,7 +291,7 @@ export default function NewFatherForm() {
           </div>
 
           <div>
-            <label
+            <label htmlFor=""
               className="text-gray-700 font-semibold"
               htmlFor="userLastName"
             >
@@ -313,7 +313,7 @@ export default function NewFatherForm() {
           </div>
 
           <div>
-            <label className="text-gray-700 font-semibold" htmlFor="userDob">
+            <label htmlFor="" className="text-gray-700 font-semibold" htmlFor="userDob">
               Date of Birth{" "}{!validUserDob && (
                 <span className="text-red-600">*</span>
               )}
@@ -332,11 +332,11 @@ export default function NewFatherForm() {
           </div>
 
           <div className="mt-4">
-            <label className="text-gray-700 font-semibold">
+            <label htmlFor="" className="text-gray-700 font-semibold">
               Family Situation
             </label>
             <div className="flex items-center space-x-4">
-              <label className="inline-flex items-center">
+              <label htmlFor="" className="inline-flex items-center">
                 <input
                   type="radio"
                   value="Joint"
@@ -346,7 +346,7 @@ export default function NewFatherForm() {
                 />
                 <span className="ml-2">Joint</span>
               </label>
-              <label className="inline-flex items-center">
+              <label htmlFor="" className="inline-flex items-center">
                 <input
                   type="radio"
                   value="Separated"
@@ -361,7 +361,7 @@ export default function NewFatherForm() {
 
           {/* Address Section */}
           <div>
-            <label className="text-gray-700 font-semibold" htmlFor="house">
+            <label htmlFor="" className="text-gray-700 font-semibold" htmlFor="house">
               House{" "}{!validHouse && (
                 <span className="text-red-600">*</span>
               )}
@@ -380,7 +380,7 @@ export default function NewFatherForm() {
           </div>
 
           <div>
-            <label className="text-gray-700 font-semibold" htmlFor="street">
+            <label htmlFor="" className="text-gray-700 font-semibold" htmlFor="street">
               Street{" "}{!validStreet && (
                 <span className="text-red-600">*</span>
               )}
@@ -399,7 +399,7 @@ export default function NewFatherForm() {
           </div>
 
           <div>
-            <label className="text-gray-700 font-semibold" htmlFor="area">
+            <label htmlFor="" className="text-gray-700 font-semibold" htmlFor="area">
               Area
             </label>
             <input
@@ -414,7 +414,7 @@ export default function NewFatherForm() {
           </div>
 
           <div>
-            <label className="text-gray-700 font-semibold" htmlFor="city">
+            <label htmlFor="" className="text-gray-700 font-semibold" htmlFor="city">
               City{" "}{!validCity && (
                 <span className="text-red-600">*</span>
               )}
@@ -433,7 +433,7 @@ export default function NewFatherForm() {
           </div>
 
           <div>
-            <label className="text-gray-700 font-semibold" htmlFor="postCode">
+            <label htmlFor="" className="text-gray-700 font-semibold" htmlFor="postCode">
               Post Code
             </label>
             <input
@@ -448,7 +448,7 @@ export default function NewFatherForm() {
           </div>
 
           <div>
-            <label
+            <label htmlFor=""
               className="text-gray-700 font-semibold"
               htmlFor="primaryPhone"
             >
@@ -470,7 +470,7 @@ export default function NewFatherForm() {
           </div>
 
           <div>
-            <label
+            <label htmlFor=""
               className="text-gray-700 font-semibold"
               htmlFor="secondaryPhone"
             >
@@ -488,7 +488,7 @@ export default function NewFatherForm() {
           </div>
 
           <div>
-            <label className="text-gray-700 font-semibold" htmlFor="email">
+            <label htmlFor="" className="text-gray-700 font-semibold" htmlFor="email">
               Email
             </label>
             <input

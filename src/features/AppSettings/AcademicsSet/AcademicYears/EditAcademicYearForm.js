@@ -147,12 +147,12 @@ const EditAcademicYearForm = ({ academicYear }) => {
       
 
         <form onSubmit={handleSubmit} className="form-container">
-        <h2 className="text-2xl font-bold mb-6 text-center">
+        <h2 className="formTitle">
           {" "}
           {`Edit Academic Year ${academicYear.title}`}
         </h2>
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
+            <label htmlFor="" formInputLabel>
               Starting Year (Format: yyyy)
               <input
                aria-label="starting year"
@@ -174,7 +174,7 @@ const EditAcademicYearForm = ({ academicYear }) => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
+            <label htmlFor="" formInputLabel>
               Academic Year Title
               <input
                aria-label="year title"
@@ -189,7 +189,7 @@ const EditAcademicYearForm = ({ academicYear }) => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
+            <label htmlFor=""  className="formInputLabel">
               Year Start
               <input
                 type="text"
@@ -201,7 +201,7 @@ const EditAcademicYearForm = ({ academicYear }) => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
+            <label htmlFor=""  className="formInputLabel">
               Year End
               <input
                 type="text"

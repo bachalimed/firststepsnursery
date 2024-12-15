@@ -397,7 +397,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
         <div>
           <label
             htmlFor="student"
-            className="block text-sm font-medium text-gray-700"
+             className="formInputLabel"
           >
             Student{" "}
             {!primaryValidity.validStudent && (
@@ -429,7 +429,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
         <div>
           <label
             htmlFor="enrolmentYear"
-            className="block text-sm font-medium text-gray-700"
+             className="formInputLabel"
           >
             Enrolment Year{" "}
             {!primaryValidity.validEnrolmentYear && (
@@ -460,7 +460,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
         <div>
           <label
             htmlFor="enrolmentDate"
-            className="block text-sm font-medium text-gray-700"
+             className="formInputLabel"
           >
             Enrolment Starting Date{" "}
             {!primaryValidity.validEnrolmentDate && (
@@ -491,7 +491,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
             <div key={index} className="space-y-4">
               <label
                 htmlFor={`service-${index}`}
-                className="block text-sm font-medium text-gray-700"
+                 className="formInputLabel"
               >
                 Service{" "}
                 {!enrolmentValidity[index]?.validService && (
@@ -524,7 +524,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
               <div>
                 <label
                   htmlFor={`feePeriod-${index}`}
-                  className="block text-sm font-medium text-gray-700"
+                   className="formInputLabel"
                 >
                   Fee Period{" "}
                   {!enrolmentValidity[index]?.validFeePeriod && (
@@ -564,7 +564,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
               <div>
                 <label
                   htmlFor={`feeValue-${index}`}
-                  className="block text-sm font-medium text-gray-700"
+                   className="formInputLabel"
                 >
                   Fee Value{" "}
                   {!enrolmentValidity[index]?.validFeeValue && (
@@ -588,7 +588,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
               <div>
                 <label
                   htmlFor={`feeStartDate-${index}`}
-                  className="block text-sm font-medium text-gray-700"
+                   className="formInputLabel"
                 >
                   Fee Start Date{" "}
                   {!enrolmentValidity[index]?.validFeeStartDate && (
@@ -611,7 +611,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
                 <div>
                   <label
                     htmlFor={`feeEndDate-${index}`}
-                    className="block text-sm font-medium text-gray-700"
+                     className="formInputLabel"
                   >
                     Fee End Date
                   </label>
@@ -637,7 +637,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
                 )}
                 <label
                   htmlFor={`comment-${index}`}
-                  className="block text-sm font-medium text-gray-700"
+                   className="formInputLabel"
                 >
                   Comment
                 </label>

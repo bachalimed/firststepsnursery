@@ -224,7 +224,7 @@ const EditUserForm = ({ user }) => {
        
 
         <form onSubmit={onSaveUserClicked} className="form-container">
-        <h2 className="text-2xl font-bold mb-4">
+        <h2  className="formTitle ">
           Edit User{" "}
           {`${formData.userFullName.userFirstName} ${formData.userFullName.userMiddleName} ${formData.userFullName.userLastName}`}
         </h2>
@@ -233,7 +233,7 @@ const EditUserForm = ({ user }) => {
             <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label htmlFor=""  className="formInputLabel">
                     UserName
                     {!validity.validUsername && (
                       <span className="text-red-600">*</span>
@@ -261,7 +261,7 @@ const EditUserForm = ({ user }) => {
                   </label>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label htmlFor=""  className="formInputLabel">
                     Password
                     {!validity.validPassword && (
                       <span className="text-red-600">*</span>
@@ -290,7 +290,7 @@ const EditUserForm = ({ user }) => {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   First Name
                   {!validity.validFirstName && (
                     <span className="text-red-600">*</span>
@@ -322,7 +322,7 @@ const EditUserForm = ({ user }) => {
               </div>
               {/* Middle Name */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   Middle Name
                   <input
                     placeholder="[3-20 letters]"
@@ -346,7 +346,7 @@ const EditUserForm = ({ user }) => {
 
               {/* Last Name */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   Last Name{" "}
                   {!validity.validLastName && (
                     <span className="text-red-600">*</span>
@@ -379,8 +379,8 @@ const EditUserForm = ({ user }) => {
 
               {/* Date of Birth */}
               <div>
-                <label
-                  className="block text-sm font-medium text-gray-700"
+                <label htmlFor=""
+                   className="formInputLabel"
                   htmlFor="userDob"
                 >
                   Date of Birth{" "}
@@ -409,7 +409,7 @@ const EditUserForm = ({ user }) => {
 
               
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   Sex{" "}
                   {!validity.validUserSex && (
                     <span className="text-red-600">*</span>
@@ -438,7 +438,7 @@ const EditUserForm = ({ user }) => {
                               : "border-red-600 rounded"
                           } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
                         />
-                      <label className="ml-2 text-sm text-gray-700">Male</label>
+                      <label htmlFor="" className="ml-2 text-sm text-gray-700">Male</label>
                       </div>
 
                     <div className="flex items-center">
@@ -460,7 +460,7 @@ const EditUserForm = ({ user }) => {
                           }}
                           className="h-4 w-4 border-gray-300 rounded focus:ring-indigo-500"
                         />
-                     <label className="ml-2 text-sm text-gray-700">Female</label>
+                     <label htmlFor="" className="ml-2 text-sm text-gray-700">Female</label>
                     </div>
                   </div>
                 
@@ -472,7 +472,7 @@ const EditUserForm = ({ user }) => {
             {/* Contact Information */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   Primary Phone{" "}
                   {!validity.validPrimaryPhone && (
                     <span className="text-red-600">*</span>
@@ -504,7 +504,7 @@ const EditUserForm = ({ user }) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   Secondary Phone
                   <input
                     placeholder="[6-15 digits]"
@@ -528,7 +528,7 @@ const EditUserForm = ({ user }) => {
             </div>
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 Email
                 <input
                   placeholder="[email@address.com]"
@@ -552,7 +552,7 @@ const EditUserForm = ({ user }) => {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   House{" "}
                   {!validity.validHouse && (
                     <span className="text-red-600">*</span>
@@ -582,7 +582,7 @@ const EditUserForm = ({ user }) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   Street{" "}
                   {!validity.validStreet && (
                     <span className="text-red-600">*</span>
@@ -613,7 +613,7 @@ const EditUserForm = ({ user }) => {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label htmlFor=""  className="formInputLabel">
                     Area
                     <input
                       placeholder="[3-20 letters]"
@@ -635,7 +635,7 @@ const EditUserForm = ({ user }) => {
                   </label>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label htmlFor=""  className="formInputLabel">
                     Post Code
                     <input
                       placeholder="[3-20 letters]"
@@ -659,7 +659,7 @@ const EditUserForm = ({ user }) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor=""  className="formInputLabel">
                   City{" "}
                   {!validity.validCity && (
                     <span className="text-red-600">*</span>
@@ -692,7 +692,7 @@ const EditUserForm = ({ user }) => {
           <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
             {/* Family ID Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 Family ID
                 <input
                   type="text"
@@ -708,7 +708,7 @@ const EditUserForm = ({ user }) => {
 
             {/* Employee ID Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 Employee ID
                 <input
                   aria-label="employee id"
@@ -724,7 +724,7 @@ const EditUserForm = ({ user }) => {
 
             {/* User Is Active Checkbox */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 User Is Active
                 <input
                 aria-label="user is active"
@@ -739,12 +739,12 @@ const EditUserForm = ({ user }) => {
             </div>
             {/* User role selection */}
             
-              <div className="block text-sm font-medium text-gray-700">
+              <div  className="formInputLabel">
                 User Roles
                 <div className="flex flex-wrap">
                   {Object.keys(ROLES).map((role) => (
                     <div key={role} className="mr-4">
-                      <label className="flex items-center">
+                      <label htmlFor="" className="flex items-center">
                         <input
                         aria-label="user roles"
                           type="checkbox"
@@ -764,12 +764,12 @@ const EditUserForm = ({ user }) => {
 
             {/* User action selection */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 Allowed Actions
                 <div className="flex flex-wrap">
                   {Object.keys(ACTIONS).map((action) => (
                     <div key={action} className="mr-4">
-                      <label className="flex items-center">
+                      <label htmlFor="" className="flex items-center">
                         <input
                           aria-label="allowed actions"
                           type="checkbox"

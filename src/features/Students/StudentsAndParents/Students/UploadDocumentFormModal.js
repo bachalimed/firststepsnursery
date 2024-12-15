@@ -43,7 +43,7 @@ const UploadDocumentFormModal = ({
 
         <div className="mb-4">
           <label
-            className="block text-sm font-medium text-gray-700"
+             className="formInputLabel"
             htmlFor="documentTitle"
           >
             Document Title
@@ -59,7 +59,7 @@ const UploadDocumentFormModal = ({
 
         <div className="mb-4">
           <label
-            className="block text-sm font-medium text-gray-700"
+             className="formInputLabel"
             htmlFor="studentDocumentLabel"
           >
             Document Label
@@ -75,7 +75,7 @@ const UploadDocumentFormModal = ({
 
         <div className="mb-4">
           <label
-            className="block text-sm font-medium text-gray-700"
+             className="formInputLabel"
             htmlFor="file"
           >
             Choose File

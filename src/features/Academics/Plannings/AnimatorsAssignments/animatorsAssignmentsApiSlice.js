@@ -33,6 +33,28 @@ export const animatorsAssignmentsApiSlice = apiSlice.injectEndpoints({
       },
       providesTags: ["animatorsAssignment"],
     }),
+    getAnimatorsAssignmentsByYear: builder.query({
+      query: (params) => {
+        const queryString = new URLSearchParams(params).toString();
+        return `/academics/animatorsAssignments?${queryString}`;
+      },
+
+      validateStatus: (response, result) => {
+        return response.status === 200 && !result.isError;
+      },
+
+      transformResponse: (responseData) => {
+        //console.log('  in the APIslice',responseData)
+
+        const newLoadedAnimatorsAssignments = responseData.map((animatorsAssignment) => {
+          animatorsAssignment.id = animatorsAssignment._id; //changed the _id from mongoDB to id
+          delete animatorsAssignment._id; //added to delete the extra original _id from mongo but careful when planning to save to db again
+          return animatorsAssignment;
+        });
+        return animatorsAssignmentsAdapter.setAll(initialState, newLoadedAnimatorsAssignments);
+      },
+      providesTags: ["animatorsAssignment"],
+    }),
     getAnimatorsAssignmentById: builder.query({
       query: (params) => {
         const queryString = new URLSearchParams(params).toString();
@@ -77,6 +99,7 @@ export const animatorsAssignmentsApiSlice = apiSlice.injectEndpoints({
 export const {
   //hooks created automatically from endpoint
   useGetAnimatorsAssignmentsQuery, //this can be used whereven we want to fetch the data
+  useGetAnimatorsAssignmentsByYearQuery,
   useGetAnimatorsAssignmentByIdQuery,
   useAddNewAnimatorsAssignmentMutation,
   useUpdateAnimatorsAssignmentMutation,

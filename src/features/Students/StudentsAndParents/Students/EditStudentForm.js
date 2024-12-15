@@ -614,7 +614,7 @@ const EditStudentForm = ({ student }) => {
                 </div>
                 <div className="mb-2">
                   <label
-                    className="block text-sm font-medium text-gray-700"
+                     className="formInputLabel"
                     htmlFor={`gardienYear-${index}`}
                   >
                     gardienYear:
@@ -641,7 +641,7 @@ const EditStudentForm = ({ student }) => {
 
                 <div className="mb-2">
                   <label
-                    className="block text-sm font-medium text-gray-700"
+                     className="formInputLabel"
                     htmlFor={`gardienRelation-${index}`}
                   >
                     Relation To Student :
@@ -662,7 +662,7 @@ const EditStudentForm = ({ student }) => {
                 </div>
                 <div className="mb-2">
                   <label
-                    className="block text-sm font-medium text-gray-700"
+                     className="formInputLabel"
                     htmlFor={`gardienPhone-${index}`}
                   >
                     Phone Number:
@@ -713,7 +713,7 @@ const EditStudentForm = ({ student }) => {
               >
                 <div className="mb-2">
                   <label
-                    className="block text-sm font-medium text-gray-700"
+                     className="formInputLabel"
                     htmlFor={`schoolYear-${index}`}
                   >
                     School Year:
@@ -736,7 +736,7 @@ const EditStudentForm = ({ student }) => {
                 </div>
                 <div className="mb-2">
                   <label
-                    className="block text-sm font-medium text-gray-700"
+                     className="formInputLabel"
                     htmlFor={`attendedSchool-${index}`}
                   >
                     Attended School:
@@ -764,7 +764,7 @@ const EditStudentForm = ({ student }) => {
                 </div>
                 <div className="mb-2">
                   <label
-                    className="block text-sm font-medium text-gray-700"
+                     className="formInputLabel"
                     htmlFor={`note-${index}`}
                   >
                     Note:

@@ -191,11 +191,11 @@ const NewLeaveForm = () => {
       <HR />
 
       <form onSubmit={onSaveLeaveClicked} className="space-y-6">
-        <h2 className="text-2xl font-bold mb-4">Add New Leave: </h2>
+        <h2  className="formTitle ">Add New Leave: </h2>
         <div>
-          <label
+          <label htmlFor=""
             htmlFor="leaveMonth"
-            className="block text-sm font-medium text-gray-700"
+             className="formInputLabel"
           >
             Leave Month{" "}
             {!validity.validLeaveMonth && (
@@ -221,9 +221,9 @@ const NewLeaveForm = () => {
           </select>
         </div>
         <div>
-          <label
+          <label htmlFor=""
             htmlFor="leaveEmployee"
-            className="block text-sm font-medium text-gray-700"
+             className="formInputLabel"
           >
             Leave Employee{" "}
             {!validity.validLeaveEmployee && (
@@ -253,7 +253,7 @@ const NewLeaveForm = () => {
 
         {/* Leave Is Approved */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Leave is Approved ?
           </label>
           <input
@@ -267,7 +267,7 @@ const NewLeaveForm = () => {
 
         {/* Leave Is Paid Leave */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Leave is Paid ?
           </label>
           <input
@@ -281,7 +281,7 @@ const NewLeaveForm = () => {
 
         {/* Leave Is Sick Leave */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Leave is Sick Leave ?
           </label>
           <input
@@ -295,7 +295,7 @@ const NewLeaveForm = () => {
 
         {/* Leave Start Date */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Start Date{" "}
             {!validity.validLeaveStartDate && (
               <span className="text-red-600">*</span>
@@ -312,7 +312,7 @@ const NewLeaveForm = () => {
 
         {/* Leave End Date */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             End Date{" "}
             {!validity.validLeaveEndDate && (
               <span className="text-red-600">*</span>
@@ -328,7 +328,7 @@ const NewLeaveForm = () => {
         </div>
         {/* Leave Is Part Day */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Leave is Part Day ?
           </label>
           <input
@@ -343,7 +343,7 @@ const NewLeaveForm = () => {
         {formData.leaveIsPartDay && (
           <>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 Start Time
               </label>
               <input
@@ -356,7 +356,7 @@ const NewLeaveForm = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor=""  className="formInputLabel">
                 End Time
               </label>
               <input
@@ -373,7 +373,7 @@ const NewLeaveForm = () => {
 
         {/* Leave Comment */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             Comment
           </label>
           <textarea

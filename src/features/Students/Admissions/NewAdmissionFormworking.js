@@ -275,7 +275,7 @@ const NewAdmissionForm = () => {
         <div>
           <label
             htmlFor="student"
-            className="block text-sm font-medium text-gray-700"
+             className="formInputLabel"
           >
             Student
           </label>
@@ -302,7 +302,7 @@ const NewAdmissionForm = () => {
         <div>
           <label
             htmlFor="admissionYear"
-            className="block text-sm font-medium text-gray-700"
+             className="formInputLabel"
           >
             Admission Year
           </label>
@@ -329,7 +329,7 @@ const NewAdmissionForm = () => {
         <div>
           <label
             htmlFor="admissionDate"
-            className="block text-sm font-medium text-gray-700"
+             className="formInputLabel"
           >
             Admission Date
           </label>
@@ -357,7 +357,7 @@ const NewAdmissionForm = () => {
               <div>
                 <label
                   htmlFor={`service-${index}`}
-                  className="block text-sm font-medium text-gray-700"
+                   className="formInputLabel"
                 >
                   Service
                 </label>
@@ -384,7 +384,7 @@ const NewAdmissionForm = () => {
               <div>
                 <label
                   htmlFor={`feePeriod-${index}`}
-                  className="block text-sm font-medium text-gray-700"
+                   className="formInputLabel"
                 >
                   Periodicity
                 </label>
@@ -422,7 +422,7 @@ const NewAdmissionForm = () => {
               <div>
                 <label
                   htmlFor={`feeValue-${index}`}
-                  className="block text-sm font-medium text-gray-700"
+                   className="formInputLabel"
                 >
                   Fee Value
                 </label>
@@ -442,7 +442,7 @@ const NewAdmissionForm = () => {
               <div>
                 <label
                   htmlFor={`comment-${index}`}
-                  className="block text-sm font-medium text-gray-700"
+                   className="formInputLabel"
                 >
                   Comment
                 </label>
@@ -460,7 +460,7 @@ const NewAdmissionForm = () => {
               <div>
                 <label
                   htmlFor={`feeStartDate-${index}`}
-                  className="block text-sm font-medium text-gray-700"
+                   className="formInputLabel"
                 >
                   Fee Start Date
                 </label>
@@ -479,7 +479,7 @@ const NewAdmissionForm = () => {
               <div>
                 <label
                   htmlFor={`feeEndDate-${index}`}
-                  className="block text-sm font-medium text-gray-700"
+                   className="formInputLabel"
                 >
                   Fee End Date
                 </label>

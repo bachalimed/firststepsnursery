@@ -294,7 +294,7 @@ const NewExpenseForm = () => {
           Add New Expense {selectedAcademicYear?.title}
         </h2>
         {/* <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
+            <label  className="formInputLabel">
               Expense Year{" "}
               {!validity.validExpenseYear && (
                 <span className="text-red-600">*</span>
@@ -320,7 +320,7 @@ const NewExpenseForm = () => {
         <div className="mb-4">
           <label
             htmlFor="expenseMonth"
-            className="block text-gray-700 font-bold mb-2"
+             className="formInputLabel"
           >
             Expense Month{" "}
             {!validity.validExpenseMonth && (
@@ -351,7 +351,7 @@ const NewExpenseForm = () => {
         <div style={{ marginBottom: "16px" }}>
           <label
             htmlFor="expenseService"
-            className="block text-gray-700 font-bold mb-2"
+             className="formInputLabel"
           >
             Expense Service{" "}
             {!validity.validExpenseService && (
@@ -382,7 +382,7 @@ const NewExpenseForm = () => {
         <div style={{ marginBottom: "16px" }}>
           <label
             htmlFor="expensePayee"
-            className="block text-gray-700 font-bold mb-2"
+             className="formInputLabel"
           >
             Expense Payee{" "}
             {!validity.validExpensePayee && (
@@ -413,7 +413,7 @@ const NewExpenseForm = () => {
         <div style={{ marginBottom: "16px" }}>
           <label
             htmlFor="expenseCategory"
-            className="block text-gray-700 font-bold mb-2"
+             className="formInputLabel"
           >
             Expense Categroy{" "}
             {!validity.validExpenseCategory && (
@@ -482,7 +482,7 @@ const NewExpenseForm = () => {
         <div style={{ marginBottom: "16px" }}>
           <label
             htmlFor="expenseAmount"
-            className="block text-gray-700 font-bold mb-2"
+             className="formInputLabel"
           >
             Expense Amount{" "}
             {!validity.validExpenseAmount && (
@@ -508,7 +508,7 @@ const NewExpenseForm = () => {
         <div style={{ marginBottom: "16px" }}>
           <label
             htmlFor="paymentMethod"
-            className="block text-gray-700 font-bold mb-2"
+             className="formInputLabel"
           >
             Payment Method{" "}
             {!validity.validExpenseMethod && (
@@ -545,7 +545,7 @@ const NewExpenseForm = () => {
         <div style={{ marginBottom: "16px" }}>
           <label
             htmlFor="expenseDate"
-            className="block text-gray-700 font-bold mb-2"
+             className="formInputLabel"
           >
             Expense Date{" "}
             {!validity.validExpenseDate && (
@@ -570,7 +570,7 @@ const NewExpenseForm = () => {
           <div style={{ marginBottom: "16px" }}>
             <label
               htmlFor="expensePaymentDate"
-              className="block text-gray-700 font-bold mb-2"
+               className="formInputLabel"
             >
               Expense Payment Date
               <input
@@ -594,7 +594,7 @@ const NewExpenseForm = () => {
         <div style={{ marginBottom: "16px" }}>
           <label
             htmlFor="expenseNote"
-            className="block text-gray-700 font-bold mb-2"
+             className="formInputLabel"
           >
             Expense Note
             <textarea

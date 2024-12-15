@@ -271,12 +271,12 @@ const NewPayslipForm = () => {
       <HR />
 
       <form onSubmit={onSavePayslipClicked} className="form-container">
-        <h2 className="text-2xl font-bold mb-4">Add New Payslip: </h2>
+        <h2  className="formTitle ">Add New Payslip: </h2>
 
         <div>
           <label
             htmlFor="payslipMonth"
-            className="block text-sm font-medium text-gray-700"
+             className="formInputLabel"
           >
             Month{" "}
             {!validity.validPayslipMonth && (
@@ -304,7 +304,7 @@ const NewPayslipForm = () => {
         <div>
           <label
             htmlFor="payslipEmployee"
-            className="block text-sm font-medium text-gray-700"
+             className="formInputLabel"
           >
             Employee{" "}
             {!validity.validPayslipEmployee && (
@@ -334,7 +334,7 @@ const NewPayslipForm = () => {
 
         {/* payslip Is Approved  beeter only done inediting for the manger to approve after creation*/}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label  className="formInputLabel">
             payslip is Approved ? (leave for edit form or to approve nin the
             list)
           </label>
@@ -351,7 +351,7 @@ const NewPayslipForm = () => {
         <div>
           <label
             htmlFor="payslipPaymentDate"
-            className="block text-sm font-medium text-gray-700"
+             className="formInputLabel"
           >
             Payment Date{" "}
             {!validity.validPayslipPaymentDate && (
@@ -374,7 +374,7 @@ const NewPayslipForm = () => {
           <div>
             <label
               htmlFor="payslipLeaveDays"
-              className="block text-sm font-medium text-gray-700"
+               className="formInputLabel"
             >
               Leave days
             </label>

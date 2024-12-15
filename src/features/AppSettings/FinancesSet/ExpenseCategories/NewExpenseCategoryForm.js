@@ -187,12 +187,12 @@ const NewExpenseCategoryForm = () => {
       <FinancesSet />
 
       <form onSubmit={onSaveExpenseCategoryClicked} className="form-container">
-        <h2 className="text-2xl font-bold mb-4">
+        <h2  className="formTitle ">
           Add New ExpenseCategory: {`${formData?.expenseCategoryLabel} `}
         </h2>
         {/* ExpenseCategory Label */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             ExpenseCategory Label{" "}
             {!validity.validExpenseCategoryLabel && (
               <span className="text-red-600">*</span>
@@ -217,7 +217,7 @@ const NewExpenseCategoryForm = () => {
 
         {/* Service Selection Dropdown */}
         {/* <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label htmlFor=""  className="formInputLabel">
               Select Service Type{" "}
               {!validity.validExpenseCategoryService && (
                 <span className="text-red-600">*</span>
@@ -243,7 +243,7 @@ const NewExpenseCategoryForm = () => {
 
         {/* ExpenseCategory Active Status */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             <input
               aria-label="expense category active"
               type="checkbox"
@@ -263,7 +263,7 @@ const NewExpenseCategoryForm = () => {
 
         {/* ExpenseCategory Years Selection - Using Checkboxes */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             ExpenseCategory Years{" "}
             {!validity.validExpenseCategoryYears && (
               <span className="text-red-600">*</span>
@@ -279,7 +279,7 @@ const NewExpenseCategoryForm = () => {
                     onChange={() => handleYearChange(year.title)}
                     className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
                   />
-                  <label
+                  <label htmlFor=""
                     htmlFor={`year-${year.id}`}
                     className="ml-2 text-sm font-medium text-gray-700"
                   >
@@ -293,7 +293,7 @@ const NewExpenseCategoryForm = () => {
 
         {/* ExpenseCategory Items Selection - Using Input to Add Items */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor=""  className="formInputLabel">
             ExpenseCategory Items{" "}
             {!validity.validExpenseCategoryItems && (
               <span className="text-red-600">*</span>
