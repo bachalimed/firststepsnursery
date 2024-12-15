@@ -4,19 +4,15 @@ import { useState, useEffect } from "react";
 import { useUpdateStudentMutation } from "./studentsApiSlice";
 import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
 import { useNavigate, useOutletContext } from "react-router-dom";
-
-import { ROLES } from "../../../../config/UserRoles";
-import { ACTIONS } from "../../../../config/UserActions";
 import useAuth from "../../../../hooks/useAuth";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 import { useSelector } from "react-redux";
 import { selectAllAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import { NAME_REGEX, DATE_REGEX } from "../../../../config/REGEX";
+import { NAME_REGEX, DATE_REGEX,COMMENT_REGEX ,YEAR_REGEX, OBJECTID_REGEX, PHONE_REGEX} from "../../../../config/REGEX";
 
 const EditStudentForm = ({ student }) => {
   //initialising state variables and hooks
@@ -67,6 +63,7 @@ const EditStudentForm = ({ student }) => {
   const [firstName, setFirstName] = useState(student.studentName.firstName);
   const [validFirstName, setValidFirstName] = useState(false);
   const [middleName, setMiddleName] = useState(student.studentName.middleName);
+  const [validMiddleName, setValidMiddleName] = useState(false);
   const [lastName, setLastName] = useState(student.studentName.lastName);
   const [validLastName, setValidLastName] = useState(false);
   const [studentDob, setStudentDob] = useState(
@@ -98,14 +95,19 @@ const EditStudentForm = ({ student }) => {
   );
 
   const [studentEducation, setStudentEducation] = useState(
-    student.studentEducation
+    student.studentEducation.map((edu) => ({
+      attendedSchool: edu.attendedSchool?._id,
+      note: edu.note,
+      schoolYear: edu.schoolYear,
+    }))
   );
   const [schoolYear, setSchoolYear] = useState(student.schoolYear);
   const [attendedSchool, setAttendedSchool] = useState(student.attendedSchool);
   const [note, setNote] = useState(student.note);
-
+const [validStudentGardien, setValidStudentGardien] = useState(false);
   const [operator, setOperator] = useState(userId); //id of the user logged in already
-
+  const [validStudentEducation, setValidStudentEducation] = useState(false);
+  const [validCurrentEducation, setValidCurrentEducation] = useState(false);
   //use effect is used to validate the inputs against the defined REGEX above
   //the previous constrains have to be verified on the form for teh user to know
   useEffect(() => {
@@ -123,6 +125,10 @@ const EditStudentForm = ({ student }) => {
   }, [firstName]);
 
   useEffect(() => {
+      setValidMiddleName(middleName==="" || NAME_REGEX.test(middleName));
+    }, [middleName]);
+
+  useEffect(() => {
     setValidLastName(NAME_REGEX.test(lastName));
   }, [lastName]);
 
@@ -138,6 +144,7 @@ const EditStudentForm = ({ student }) => {
       setFirstName("");
       setValidFirstName(false);
       setMiddleName("");
+      setValidMiddleName(false);
       setLastName("");
       setValidLastName(false);
       setStudentName({ firstName: "", middleName: "", lastName: "" });
@@ -147,7 +154,7 @@ const EditStudentForm = ({ student }) => {
       setStudentIsActive(false);
       setStudentYears([]); //will be true when the username is validated
       setValidStudentGrade(false);
-      // setStudentJointFamily('')
+      setValidStudentGardien(false)
       setGardienFirstName("");
       setgardienMiddleName("");
       setGardienLastName("");
@@ -158,6 +165,8 @@ const EditStudentForm = ({ student }) => {
       setAttendedSchool("");
       setNote("");
       setStudentEducation([]);
+      setValidStudentEducation(false)
+      setValidCurrentEducation(false)
       setOperator("");
       navigate("/students/studentsParents/students/"); //will navigate here after saving
     }
@@ -257,46 +266,79 @@ const EditStudentForm = ({ student }) => {
       )
     );
   };
+console.log(studentGardien, 'stduetgardien')
+console.log(studentEducation, 'stdueteducation')
+  useEffect(() => {
+      setValidStudentGardien(
+        studentGardien.every(
+          (gardien) =>
+            gardien?.gardienYear !== "" &&
+            NAME_REGEX.test(gardien?.gardienFirstName) &&
+            (gardien?.gardienMiddleName ==="" ||NAME_REGEX.test(gardien?.gardienMiddleName) )&&
+            NAME_REGEX.test(gardien?.gardienLastName) &&
+            NAME_REGEX.test(gardien?.gardienRelation) &&
+            PHONE_REGEX.test(gardien?.gardienPhone) 
+        )
+      );
+    }, [studentGardien]);
+  useEffect(() => {
+    setValidCurrentEducation(
+          studentEducation.some(
+          (education) =>
+            education.schoolYear === selectedAcademicYear.title && 
+          OBJECTID_REGEX.test(education?.attendedSchool)//retrived populated data
+        ))
+        setValidStudentEducation(studentEducation.every((education) =>
+          YEAR_REGEX.test(education?.schoolYear) &&
+        OBJECTID_REGEX.test(education?.attendedSchool) &&
+        COMMENT_REGEX.test(education?.note)
+        ))
+     
+      
+    }, [studentEducation]);
 
-  const validCurrentEducation = () => {
-    // Check if there is a valid entry for the given academic year
-    return studentEducation.some(
-      (entry) =>
-        entry.schoolYear === selectedAcademicYear.title && entry.attendedSchool
-    );
-  };
   //to check if we can save before onsave, if every one is true, and also if we are not loading status
   const canSave =
-    [
-      validCurrentEducation(),
+    [validStudentEducation,
+      validStudentGardien,
+      validCurrentEducation,
       validFirstName,
+      validMiddleName,
       validLastName,
       validStudentDob,
       studentSex,
     ].every(Boolean) && !isUpdateLoading;
-
+console.log(validStudentEducation,
+  validStudentGardien,
+  validCurrentEducation,
+  validFirstName,
+  validMiddleName,
+  validLastName,
+  validStudentDob,
+  studentSex,canSave, validCurrentEducation,validStudentGardien)
   const { triggerBanner } = useOutletContext(); // Access banner trigger
 
   const onUpdateStudentClicked = async (e) => {
     e.preventDefault();
     setShowConfirmation(true);
   };
-
+  const toSave = {
+    id,
+    studentName,
+    studentDob,
+    studentSex,
+    studentIsActive,
+    studentYears,
+    studentEducation,
+    studentGardien,
+    operator,
+  };
+  console.log(toSave,'toSave')
   const handleConfirmSave = async () => {
     // Close the confirmation modal
     setShowConfirmation(false);
     //generate the objects before saving
-    const toSave = {
-      id,
-      studentName,
-      studentDob,
-      studentSex,
-      studentIsActive,
-      studentYears,
-      studentEducation,
-      studentGardien,
-      operator,
-    };
+    
     try {
       const response = await updateStudent({
         id,
@@ -371,7 +413,7 @@ const EditStudentForm = ({ student }) => {
               </label>
 
               <label className="formInputLabel" htmlFor="middleName">
-                Middle Name
+                Middle Name{" "}{!validMiddleName &&middleName!=="" && <span className="text-red-600 ">[3-20] letters</span>}
                 <input
                   placeholder="[3-20 letters]"
                   className={`formInputText`}
@@ -503,6 +545,7 @@ const EditStudentForm = ({ student }) => {
 
         <div className="formSectionContainer">
           <h3 className="formSectionTitle">Student Gardien</h3>
+          {!validStudentGardien  && <span className="text-red-600 ">Ensure fileds are properly filled</span>}
           <div className="formSection">
             {Array.isArray(studentGardien) &&
               studentGardien.length > 0 &&
@@ -588,10 +631,10 @@ const EditStudentForm = ({ student }) => {
                           )
                         }
                         className={`formInputText`}
-                      >
+                      ><option value="">Select Year</option>
                         {academicYears.map((year, i) => (
-                          <option key={year.id} value={year.title}>
-                            {year.title}
+                          <option key={year?.title} value={year?.title}>
+                            {year?.title}
                           </option>
                         ))}
                       </select>{" "}
@@ -663,7 +706,9 @@ const EditStudentForm = ({ student }) => {
         </div>
 
         <div className="formSectionContainer">
-          <h3 className="formSectionTitle">Student Education</h3>
+          <h3 className="formSectionTitle">Student Education{" "}
+          {(!validCurrentEducation  || !validStudentEducation) && <span className="text-red-600">*</span>}</h3>
+
           <div className="formSection">
             {Array.isArray(studentEducation) &&
               studentEducation.length > 0 &&
@@ -685,7 +730,7 @@ const EditStudentForm = ({ student }) => {
                       >
                         <option value="">Select Year</option>
                         {academicYears.map((year, i) => (
-                           year.title !== "1000" && (<option key={year.id} value={year.title}>
+                           year.title !== "1000" && (<option key={year.title} value={year.title}>
                             {year.title}
                           </option>)
                         ))}
@@ -699,7 +744,7 @@ const EditStudentForm = ({ student }) => {
                       Attended School:
                       <select
                         id={`attendedSchool-${index}`}
-                        value={entry?.attendedSchool?._id}
+                        value={entry?.attendedSchool}
                         onChange={(e) =>
                           handleFieldChange(
                             index,
@@ -748,7 +793,7 @@ const EditStudentForm = ({ student }) => {
               ))}
             <button
               type="button"
-              className="add-button"
+              className="add-button w-full"
               onClick={handleAddEntry}
               aria-label="add student education"
             >

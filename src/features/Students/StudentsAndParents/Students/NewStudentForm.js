@@ -8,13 +8,11 @@ import {
 import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
 import { useState, useEffect } from "react";
 import { useAddNewStudentMutation } from "./studentsApiSlice";
-import { ROLES } from "../../../../config/UserRoles";
-import { ACTIONS } from "../../../../config/UserActions";
 import useAuth from "../../../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 import { selectAllAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import { NAME_REGEX, DATE_REGEX } from "../../../../config/REGEX";
+import { NAME_REGEX, DATE_REGEX,COMMENT_REGEX ,YEAR_REGEX, OBJECTID_REGEX, PHONE_REGEX} from "../../../../config/REGEX";
 
 const NewStudentForm = () => {
   const naviagte = useNavigate();
@@ -62,6 +60,7 @@ const NewStudentForm = () => {
   const [firstName, setFirstName] = useState("");
   const [validFirstName, setValidFirstName] = useState(false);
   const [middleName, setMiddleName] = useState("");
+  const [validMiddleName, setValidMiddleName] = useState(false);
   const [lastName, setLastName] = useState("");
   const [validLastName, setValidLastName] = useState(false);
   const [studentDob, setStudentDob] = useState("");
@@ -81,12 +80,12 @@ const NewStudentForm = () => {
   const [gardienLastName, setGardienLastName] = useState("");
   const [gardienPhone, setGardienPhone] = useState("");
   const [gardienRelation, setGardienRelation] = useState("");
-
   const [schoolYear, setSchoolYear] = useState("");
   const [note, setNote] = useState("");
   const [attendedSchool, setAttendedSchool] = useState("");
   const [studentEducation, setStudentEducation] = useState([]);
-
+  const [validStudentEducation, setValidStudentEducation] = useState(false);
+  const [validStudentGardien, setValidStudentGardien] = useState(false);
   const [operator, setOperator] = useState(userId); //id of the user logged in already
 
   //use effect is used to validate the inputs against the defined REGEX above
@@ -95,6 +94,9 @@ const NewStudentForm = () => {
   useEffect(() => {
     setValidFirstName(NAME_REGEX.test(firstName));
   }, [firstName]);
+  useEffect(() => {
+    setValidMiddleName(middleName==="" || NAME_REGEX.test(middleName));
+  }, [middleName]);
 
   useEffect(() => {
     setValidLastName(NAME_REGEX.test(lastName));
@@ -103,7 +105,7 @@ const NewStudentForm = () => {
   useEffect(() => {
     setValidStudentDob(DATE_REGEX.test(studentDob));
   }, [studentDob]);
-  //ensure studentEducation has no empty array
+  //ensure studentgardien has no empty array
 
   useEffect(() => {
     if (isSuccess) {
@@ -120,7 +122,8 @@ const NewStudentForm = () => {
       setStudentIsActive(false);
       setStudentYears(""); //will be true when the username is validated
       setValidCurrentEducation(false);
-      //setStudentJointFamily(true)
+      setValidStudentGardien(false);
+      setValidStudentEducation(false);
       setGardienFirstName("");
       setgardienMiddleName("");
       setGardienLastName("");
@@ -247,16 +250,44 @@ const NewStudentForm = () => {
       studentEducation.some(
         (year) =>
           year.schoolYear === selectedAcademicYear?.title &&
-          year.attendedSchool !== ""
+         OBJECTID_REGEX.test(year?.attendedSchool)
+
+      )
+    );
+    setValidStudentEducation(
+      studentEducation.every(
+        (year) => year.schoolYear !== "" && 
+        year.attendedSchool !== "" &&
+        YEAR_REGEX.test(year?.schoolYear) &&
+        OBJECTID_REGEX.test(year?.attendedSchool) &&
+        COMMENT_REGEX.test(year?.note)
       )
     );
   }, [studentEducation, selectedAcademicYear?.title]);
+  useEffect(() => {
+    setValidStudentGardien(
+      studentGardien.every(
+        (gardien) =>
+          
+        
+          gardien?.gardienYear !== "" &&
+          NAME_REGEX.test(gardien?.gardienFirstName) &&
+          (gardien?.gardienMiddleName ==="" ||NAME_REGEX.test(gardien?.gardienMiddleName) )&&
+          NAME_REGEX.test(gardien?.gardienLastName) &&
+          NAME_REGEX.test(gardien?.gardienRelation) &&
+          PHONE_REGEX.test(gardien?.gardienPhone) 
+      )
+    );
+  }, [studentGardien]);
 
   //to check if we can save before onsave, if every one is true, and also if we are not loading status
   const canSave =
     [
+      validStudentGardien,
+      validStudentEducation,
       validCurrentEducation,
       validFirstName,
+      validMiddleName,
       validLastName,
       studentYears,
       validStudentDob,
@@ -361,7 +392,8 @@ const NewStudentForm = () => {
               </label>
 
               <label className="formInputLabel" htmlFor="middleName">
-                Middle Name
+                Middle Name{" "}
+                {!validMiddleName &&middleName!=="" && <span className="text-red-600 ">[3-20] letters</span>}
                 <input
                   placeholder="[3-20 letters]"
                   className={`formInputText`}
@@ -508,6 +540,7 @@ const NewStudentForm = () => {
 
         <div className="formSectionContainer">
           <h3 className="formSectionTitle">Student Gardien</h3>
+          {!validStudentGardien  && <span className="text-red-600 ">Ensure fileds are properly filled</span>}
           <div className="formSection">
             {Array.isArray(studentGardien) &&
               studentGardien.length > 0 &&
@@ -679,7 +712,8 @@ const NewStudentForm = () => {
           <h3 className="formSectionTitle">
             Student Education{" "}
             {!validCurrentEducation && <span className="text-red-600">*</span>}
-          </h3>
+          </h3>{(!validCurrentEducation || !validStudentEducation)&& <span className="text-red-600 ">Ensure fileds are properly filled</span>}
+          
           <div className="formSection">
             {Array.isArray(studentEducation) &&
               studentEducation.length > 0 &&
@@ -754,9 +788,7 @@ const NewStudentForm = () => {
                         handleFieldChange(index, "note", e.target.value)
                       }
                       className={`formInputText text-wrap`}
-                    >
-                      </textarea>
-
+                    ></textarea>
                   </label>
 
                   <button
@@ -772,7 +804,7 @@ const NewStudentForm = () => {
               type="button"
               className="add-button w-full"
               onClick={handleAddEntry}
-               aria-label="add student education"
+              aria-label="add student education"
             >
               Add Education
             </button>
@@ -784,7 +816,7 @@ const NewStudentForm = () => {
             type="button"
             className="cancel-button"
             onClick={handleCancel}
-             aria-label="cancel editing"
+            aria-label="cancel editing"
           >
             Cancel
           </button>
