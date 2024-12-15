@@ -52,7 +52,7 @@ const DashboardHeader = () => {
   <noscript>
     <a href="/">
       <img
-        src={logo}
+        src="./../../../Data/logo.jpg"
         className="h-12 w-12 rounded"
         alt="2 mascots"
       />

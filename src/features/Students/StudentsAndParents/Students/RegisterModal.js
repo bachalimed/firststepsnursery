@@ -75,6 +75,10 @@ const RegisterModal = ({
           //.filter((year) => year.title === selectedAcademicYear.title)
           .map((year, index) => (
             <div key={index} className="flex items-center">
+               <label
+                htmlFor={`year-${index}`}
+                className="text-sm text-gray-700"
+              >
               <input
                 type="checkbox"
                 id={`year-${index}`}
@@ -82,10 +86,7 @@ const RegisterModal = ({
                 onChange={() => handleCheckboxChange(index)}
                 className="mr-2 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-sky-700"
               />
-              <label
-                htmlFor={`year-${index}`}
-                className="text-sm text-gray-700"
-              >
+             
                  {year.title}
               </label>
             </div>

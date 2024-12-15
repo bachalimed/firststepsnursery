@@ -298,7 +298,7 @@ const NewUserForm = () => {
               </div>
             </div>
             <div>
-              <label htmlFor=""  className="formInputLabel">
+              <label htmlFor="" className="formInputLabel">
                 First Name
                 {!validity.validFirstName && (
                   <span className="text-red-600">*</span>
@@ -330,7 +330,7 @@ const NewUserForm = () => {
             </div>
             {/* Middle Name */}
             <div>
-              <label htmlFor=""  className="formInputLabel">
+              <label htmlFor="" className="formInputLabel">
                 Middle Name
                 <input
                   placeholder="[3-20 letters]"
@@ -354,7 +354,7 @@ const NewUserForm = () => {
 
             {/* Last Name */}
             <div>
-              <label htmlFor=""  className="formInputLabel">
+              <label htmlFor="" className="formInputLabel">
                 Last Name{" "}
                 {!validity.validLastName && (
                   <span className="text-red-600">*</span>
@@ -387,10 +387,7 @@ const NewUserForm = () => {
 
             {/* Date of Birth */}
             <div>
-              <label htmlFor=""
-                 className="formInputLabel"
-                htmlFor="userDob"
-              >
+              <label htmlFor="" className="formInputLabel" htmlFor="userDob">
                 Date of Birth{" "}
                 {!validity.validDob && <span className="text-red-600">*</span>}
               </label>
@@ -418,51 +415,61 @@ const NewUserForm = () => {
                   <span className="text-red-600">*</span>
                 )}
               </label>
-              <div id="userSex"className="formCheckboxItemsDiv">
+              <div id="userSex" className="formCheckboxItemsDiv">
                 <div className="formCheckboxChoiceDiv">
-                <label htmlFor="" aria-label="male" className="ml-2 text-sm text-gray-700">
-                  <input 
-                  id="userSex"
-                    type="checkbox"
-                    name="userSex"
-                    value="Male"
-                    checked={formData.userSex === "Male"}
-                    onChange={(e) => {
-                      setFormData((prev) => ({
-                        ...prev,
-                        userSex: e.target.checked
-                          ? "Male"
-                          : formData.userSex === "Male"
-                          ? ""
-                          : formData.userSex,
-                      }));
-                    }}
-                    className={`formCheckbox`}
-                  />
-                  Male</label>
+                  <label
+                    htmlFor=""
+                    aria-label="male"
+                    className="ml-2 text-sm text-gray-700"
+                  >
+                    <input
+                      id="userSex"
+                      type="checkbox"
+                      name="userSex"
+                      value="Male"
+                      checked={formData.userSex === "Male"}
+                      onChange={(e) => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          userSex: e.target.checked
+                            ? "Male"
+                            : formData.userSex === "Male"
+                            ? ""
+                            : formData.userSex,
+                        }));
+                      }}
+                      className={`formCheckbox`}
+                    />
+                    Male
+                  </label>
                 </div>
 
                 <div className="formCheckboxChoiceDiv">
-                <label htmlFor=""  aria-label="female" className="ml-2 text-sm text-gray-700">
-                  <input
-                  id="userSex"
-                    type="checkbox"
-                    name="userSex"
-                    value="Female"
-                    checked={formData.userSex === "Female"}
-                    onChange={(e) => {
-                      setFormData((prev) => ({
-                        ...prev,
-                        userSex: e.target.checked
-                          ? "Female"
-                          : formData.userSex === "Female"
-                          ? ""
-                          : formData.userSex,
-                      }));
-                    }}
-                    className="formCheckbox"
-                  />
-                  Female</label>
+                  <label
+                    htmlFor=""
+                    aria-label="female"
+                    className="ml-2 text-sm text-gray-700"
+                  >
+                    <input
+                      id="userSex"
+                      type="checkbox"
+                      name="userSex"
+                      value="Female"
+                      checked={formData.userSex === "Female"}
+                      onChange={(e) => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          userSex: e.target.checked
+                            ? "Female"
+                            : formData.userSex === "Female"
+                            ? ""
+                            : formData.userSex,
+                        }));
+                      }}
+                      className="formCheckbox"
+                    />
+                    Female
+                  </label>
                 </div>
               </div>
             </div>
@@ -473,7 +480,7 @@ const NewUserForm = () => {
           {/* Contact Information */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor=""  className="formInputLabel">
+              <label htmlFor="" className="formInputLabel">
                 Primary Phone{" "}
                 {!validity.validPrimaryPhone && (
                   <span className="text-red-600">*</span>
@@ -505,7 +512,7 @@ const NewUserForm = () => {
             </div>
 
             <div>
-              <label htmlFor=""  className="formInputLabel">
+              <label htmlFor="" className="formInputLabel">
                 Secondary Phone
                 <input
                   placeholder="[6-15 digits]"
@@ -529,7 +536,7 @@ const NewUserForm = () => {
           </div>
           {/* Email */}
           <div>
-            <label htmlFor=""  className="formInputLabel">
+            <label htmlFor="" className="formInputLabel">
               Email
               <input
                 placeholder="[email@address.com]"
@@ -556,7 +563,7 @@ const NewUserForm = () => {
         <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor=""  className="formInputLabel">
+              <label htmlFor="" className="formInputLabel">
                 House{" "}
                 {!validity.validHouse && (
                   <span className="text-red-600">*</span>
@@ -585,7 +592,7 @@ const NewUserForm = () => {
             </div>
 
             <div>
-              <label htmlFor=""  className="formInputLabel">
+              <label htmlFor="" className="formInputLabel">
                 Street{" "}
                 {!validity.validStreet && (
                   <span className="text-red-600">*</span>
@@ -614,7 +621,7 @@ const NewUserForm = () => {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2">
-                <label htmlFor=""  className="formInputLabel">
+                <label htmlFor="" className="formInputLabel">
                   Area
                   <input
                     placeholder="[3-20 letters]"
@@ -636,7 +643,7 @@ const NewUserForm = () => {
                 </label>
               </div>
               <div>
-                <label htmlFor=""  className="formInputLabel">
+                <label htmlFor="" className="formInputLabel">
                   Post Code
                   <input
                     placeholder="[3-20 letters]"
@@ -660,7 +667,7 @@ const NewUserForm = () => {
             </div>
 
             <div>
-              <label htmlFor=""  className="formInputLabel">
+              <label htmlFor="" className="formInputLabel">
                 City{" "}
                 {!validity.validCity && <span className="text-red-600">*</span>}
                 <input
@@ -691,7 +698,7 @@ const NewUserForm = () => {
         <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
           {/* Family ID Input */}
           <div>
-            <label htmlFor=""  className="formInputLabel">
+            <label htmlFor="" className="formInputLabel">
               Family ID
               <input
                 aria-label="family id"
@@ -707,7 +714,7 @@ const NewUserForm = () => {
 
           {/* Employee ID Input */}
           <div>
-            <label htmlFor=""  className="formInputLabel">
+            <label htmlFor="" className="formInputLabel">
               Employee ID
               <input
                 aria-label="employee id"
@@ -723,7 +730,7 @@ const NewUserForm = () => {
 
           {/* User Is Active Checkbox */}
           <div>
-            <label htmlFor=""  className="formInputLabel">
+            <label htmlFor="" className="formInputLabel">
               User Is Active
               <input
                 aria-label="user is active"
@@ -760,7 +767,7 @@ const NewUserForm = () => {
 
           {/* User action selection */}
           <div>
-            <label htmlFor=""  className="formInputLabel">
+            <label htmlFor="" className="formInputLabel">
               Allowed Actions
             </label>
             <div className="flex flex-wrap">

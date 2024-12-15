@@ -234,6 +234,7 @@ const Elements = () => {
                   aria-label="username"
                   placeholder="[6-20 characters]"
                   type="text"
+                  id="username"
                   name="username"
                   value={formData.username}
                   onChange={(e) =>
@@ -258,6 +259,7 @@ const Elements = () => {
                   aria-label="password"
                   placeholder="[8-20 characters]"
                   type="password"
+                  id="password"
                   name="password"
                   value={formData.password}
                   onChange={(e) =>
@@ -321,7 +323,7 @@ const Elements = () => {
               />
             </div>
 
-            {/* Sex Selection */}
+            {/* Sex Selection new student form is ok */}
 
             <div>
               <label htmlFor="userSex" className="formInputLabel">
@@ -330,7 +332,7 @@ const Elements = () => {
                   <span className="text-red-600">*</span>
                 )}
               </label>
-              <div id="userSex"className="formCheckboxItemsDiv">
+              <div id="userSex" className="formCheckboxItemsDiv">
                 <div className="formCheckboxChoiceDiv">
                 <label aria-label="male" className="ml-2 text-sm text-gray-700">
                   <input 

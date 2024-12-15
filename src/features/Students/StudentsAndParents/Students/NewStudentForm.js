@@ -335,182 +335,135 @@ const NewStudentForm = () => {
           {statusMessage}
         </p>
       )} */}
-      <form
-        className="form-container"
-        onSubmit={onSaveStudentClicked}
-      >
-        <div className="mb-4">
-          <h2 className="formTitle">
-            New student for the academic year {selectedAcademicYear?.title}
-          </h2>
+      <form className="form-container" onSubmit={onSaveStudentClicked}>
+        <h2 className="formTitle">
+          New student for {selectedAcademicYear?.title}
+        </h2>
+        <div className="formSectionContainer">
+          <h3 className="formSectionTitle">Personal Information</h3>
+          <div className="formSection">
+            <div className="formLineDiv">
+              <label className="formInputLabel" htmlFor="firstName">
+                First Name{" "}
+                {!validFirstName && <span className="text-red-600 ">*</span>}
+                <input
+                  aria-invalid={!validFirstName}
+                  placeholder="[3-20 letters]"
+                  className={`formInputText`}
+                  id="firstName"
+                  name="firstName"
+                  type="text"
+                  autoComplete="off"
+                  value={firstName}
+                  onChange={onFirstNameChanged}
+                  required
+                />{" "}
+              </label>
+
+              <label className="formInputLabel" htmlFor="middleName">
+                Middle Name
+                <input
+                  placeholder="[3-20 letters]"
+                  className={`formInputText`}
+                  id="middleName"
+                  name="middleName"
+                  type="text"
+                  autoComplete="off"
+                  value={middleName}
+                  onChange={onMiddleNameChanged}
+                />{" "}
+              </label>
+            </div>
+            <div className="formLineDiv">
+              <label className="formInputLabel" htmlFor="lastName">
+                Last Name{" "}
+                {!validLastName && <span className="text-red-600">*</span>}
+                <input
+                  aria-invalid={!validLastName}
+                  placeholder="[3-20 letters]"
+                  className={`formInputText`}
+                  id="lastName"
+                  name="lastName"
+                  type="text"
+                  autoComplete="off"
+                  value={lastName}
+                  onChange={onLastNameChanged}
+                  required
+                />
+              </label>
+
+              <label className="formInputLabel" htmlFor="studentDob">
+                Date Of Birth{" "}
+                {!validStudentDob && <span className="text-red-600">*</span>}
+                <input
+                  aria-invalid={!validStudentDob}
+                  placeholder="[dd/mm/yyyy]"
+                  className={`formInputText`}
+                  id="studentDob"
+                  name="studentDob"
+                  type="date"
+                  autoComplete="off"
+                  value={studentDob}
+                  onChange={onStudentDobChanged}
+                  required
+                />{" "}
+              </label>
+            </div>
+
+            <label className="formInputLabel">
+              Student Sex
+              <div className="formCheckboxItemsDiv">
+                <label htmlFor="male" className="formCheckboxChoice">
+                  <input
+                    type="checkbox"
+                    id="male"
+                    value="Male"
+                    checked={studentSex === "Male"}
+                    onChange={onStudentSexChanged}
+                    className="formCheckbox"
+                  />
+                  Male
+                </label>
+                <label htmlFor="female" className="formCheckboxChoice">
+                  <input
+                    type="checkbox"
+                    id="female"
+                    value="Female"
+                    checked={studentSex === "Female"}
+                    onChange={onStudentSexChanged}
+                    className="formCheckbox"
+                  />{" "}
+                  Female
+                </label>
+              </div>
+            </label>
+          </div>
         </div>
 
-        <div className="grid gap-6 mb-6 md:grid-cols-2">
-          <div>
-            <label
-               className="formInputLabel"
-              htmlFor="firstName"
-            >
-              First Name{" "}
-              {!validFirstName && <span className="text-red-600">*</span>}
-              <input
-                aria-invalid={!validFirstName}
-                placeholder="[3-20 letters]"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-                id="firstName"
-                name="firstName"
-                type="text"
-                autoComplete="off"
-                value={firstName}
-                onChange={onFirstNameChanged}
-                required
-              />{" "}
-            </label>
-          </div>
-
-          <div>
-            <label
-               className="formInputLabel"
-              htmlFor="middleName"
-            >
-              Middle Name
-              <input
-                placeholder="[3-20 letters]"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-                id="middleName"
-                name="middleName"
-                type="text"
-                autoComplete="off"
-                value={middleName}
-                onChange={onMiddleNameChanged}
-              />{" "}
-            </label>
-          </div>
-
-          <div>
-            <label
-               className="formInputLabel"
-              htmlFor="lastName"
-            >
-              Last Name{" "}
-              {!validLastName && <span className="text-red-600">*</span>}
-              <input
-                aria-invalid={!validLastName}
-                placeholder="[3-20 letters]"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-                id="lastName"
-                name="lastName"
-                type="text"
-                autoComplete="off"
-                value={lastName}
-                onChange={onLastNameChanged}
-                required
-              />
-            </label>
-          </div>
-
-          <div>
-            <label
-               className="formInputLabel"
-              htmlFor="studentDob"
-            >
-              Date Of Birth{" "}
-              {!validStudentDob && <span className="text-red-600">*</span>}
-              <input
-                aria-invalid={!validStudentDob}
-                placeholder="[dd/mm/yyyy]"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-                id="studentDob"
-                name="studentDob"
-                type="date"
-                autoComplete="off"
-                value={studentDob}
-                onChange={onStudentDobChanged}
-                required
-              />{" "}
-            </label>
-          </div>
-        </div>
-
-        <div className="mb-6">
-          <div className="flex items-center mb-2">
-            <label
-              htmlFor="male"
-              className="ml-2 text-sm font-medium text-gray-700"
-            >
-              Male
-              <input
-                type="checkbox"
-                id="male"
-                value="Male"
-                checked={studentSex === "Male"}
-                onChange={onStudentSexChanged}
-                className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
-              />
-            </label>
-            <label
-              htmlFor="female"
-              className="ml-2 text-sm font-medium text-gray-700"
-            >
-              Female
-              <input
-                type="checkbox"
-                id="female"
-                value="Female"
-                checked={studentSex === "Female"}
-                onChange={onStudentSexChanged}
-                className="ml-6 h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
-              />
-            </label>
-          </div>
-
-          <div className="flex items-center mb-2">
-            <label
-              htmlFor="active"
-              className="ml-2 text-sm font-medium text-gray-700"
-            >
-              Student Is Active
-              <input
-                type="checkbox"
-                id="active"
-                value={studentIsActive}
-                checked={studentIsActive}
-                onChange={onStudentIsActiveChanged}
-                className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
-              />
-            </label>
-          </div>
-
-          <div className="flex items-center mb-2">
-            <label
-              htmlFor="studentYears"
-              className="ml-2 text-sm font-medium text-gray-700"
-            >
-              Student Year{" "}
-              {!studentYears[0] && <span className="text-red-600">*</span>} :{" "}
-              {selectedAcademicYear?.title}
-              <input
-                type="checkbox"
-                id="studentYears"
-                value={selectedAcademicYear?.title}
-                checked={studentYears.some(
-                  (year) => year.academicYear === selectedAcademicYear.title
-                )}
-                onChange={onAcademicYearChanged}
-                className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
-                required
-              />
-            </label>
-          </div>
-          <div className="flex items-center mb-2">
-            {studentYears.some(
-              (year) => year.academicYear === selectedAcademicYear?.title
-            ) && (
-              <div className="mb-6">
-                <label
-                  htmlFor="studentGrade"
-                   className="formInputLabel"
-                >
+        <div className="formSectionContainer">
+          <h3 className="formSectionTitle">Student situation</h3>
+          <div className="formSection">
+            <div className="formLineDiv">
+              <label htmlFor="studentYears" className="formInputLabel">
+                <input
+                  type="checkbox"
+                  id="studentYears"
+                  value={selectedAcademicYear?.title}
+                  checked={studentYears.some(
+                    (year) => year.academicYear === selectedAcademicYear.title
+                  )}
+                  onChange={onAcademicYearChanged}
+                  className={`formCheckbox`}
+                  required
+                />
+                Student Year{" "}
+                {!studentYears[0] && <span className="text-red-600">*</span>} :{" "}
+                {selectedAcademicYear?.title}
+              </label>
+              {studentYears.some(
+                (year) => year.academicYear === selectedAcademicYear?.title
+              ) && (
+                <label htmlFor="studentGrade" className="formInputLabel">
                   Grade{" "}
                   {!studentYears[0].grade && (
                     <span className="text-red-600">*</span>
@@ -524,7 +477,7 @@ const NewStudentForm = () => {
                       )?.grade || ""
                     }
                     onChange={onStudentGradeChanged}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                    className="formInputText"
                   >
                     <option value="">Select Grade</option>
                     {["0", "1", "2", "3", "4", "5", "6", "7"].map((grade) => (
@@ -534,30 +487,42 @@ const NewStudentForm = () => {
                     ))}
                   </select>
                 </label>
-              </div>
-            )}
+              )}
+            </div>
+
+            <div className="formLineDiv">
+              <label htmlFor="active" className="formInputLabel">
+                <input
+                  type="checkbox"
+                  id="active"
+                  value={studentIsActive}
+                  checked={studentIsActive}
+                  onChange={onStudentIsActiveChanged}
+                  className={`formCheckbox`}
+                />
+                Student Is Active
+              </label>
+            </div>
           </div>
         </div>
 
-        <div className="mb-6">
-          <h3 className="text-xl font-semibold mb-2">Student Gardien</h3>
-          {Array.isArray(studentGardien) &&
-            studentGardien.length > 0 &&
-            studentGardien.map((entry, index) => (
-              <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
-                <div
-                  key={index}
-                  className="bg-gray-50 p-4 rounded-lg shadow-sm mb-4 "
-                >
-                  <div className="mb-2">
+        <div className="formSectionContainer">
+          <h3 className="formSectionTitle">Student Gardien</h3>
+          <div className="formSection">
+            {Array.isArray(studentGardien) &&
+              studentGardien.length > 0 &&
+              studentGardien.map((entry, index) => (
+                <div key={index} className="formSection">
+                  <div className="formLineDiv">
                     <label
-                       className="formInputLabel"
+                      className="formInputLabel"
                       htmlFor={`gardienFirstName-${index}`}
                     >
                       First Name:
                       <input
                         id={`gardienFirstName-${index}`}
                         type="text"
+                        placeholder="[3-20 letters]"
                         value={entry.gardienFirstName}
                         onChange={(e) =>
                           handleGardienFieldChange(
@@ -566,19 +531,19 @@ const NewStudentForm = () => {
                             e.target.value
                           )
                         }
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                        className={`formInputText`}
                       />
                     </label>
-                  </div>
-                  <div className="mb-2">
+
                     <label
-                       className="formInputLabel"
+                      className="formInputLabel"
                       htmlFor={`gardienMiddleName-${index}`}
                     >
                       Middle Name:
                       <input
                         id={`gardienMiddleName-${index}`}
                         type="text"
+                        placeholder="[3-20 letters]"
                         value={entry.gardienMiddleName}
                         onChange={(e) =>
                           handleGardienFieldChange(
@@ -587,19 +552,21 @@ const NewStudentForm = () => {
                             e.target.value
                           )
                         }
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                        className={`formInputText`}
                       />{" "}
                     </label>
                   </div>
-                  <div className="mb-2">
+
+                  <div className="formLineDiv">
                     <label
-                       className="formInputLabel"
+                      className="formInputLabel"
                       htmlFor={`gardienLastName-${index}`}
                     >
                       Last Name:
                       <input
                         id={`gardienLastName-${index}`}
                         type="text"
+                        placeholder="[3-20 letters]"
                         value={entry.gardienLastName}
                         onChange={(e) =>
                           handleGardienFieldChange(
@@ -608,13 +575,12 @@ const NewStudentForm = () => {
                             e.target.value
                           )
                         }
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                        className={`formInputText`}
                       />
                     </label>
-                  </div>
-                  <div className="mb-2">
+
                     <label
-                       className="formInputLabel"
+                      className="formInputLabel"
                       htmlFor={`gardienYear-${index}`}
                     >
                       gardienYear:
@@ -628,12 +594,12 @@ const NewStudentForm = () => {
                             e.target.value
                           )
                         }
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                        className={`formInputText`}
                       >
                         <option value="">Select Year</option>
                         {academicYears.map(
                           (year) =>
-                            year.title !== "1000" && (
+                            year.title === selectedAcademicYear?.title && (
                               <option key={year.id} value={year.title}>
                                 {year.title}
                               </option>
@@ -643,15 +609,16 @@ const NewStudentForm = () => {
                     </label>
                   </div>
 
-                  <div className="mb-2">
+                  <div className="formLineDiv">
                     <label
-                       className="formInputLabel"
+                      className="formInputLabel"
                       htmlFor={`gardienRelation-${index}`}
                     >
-                      Relation To Student :
+                      Relation :
                       <input
                         id={`gardienRelation-${index}`}
                         type="text"
+                        placeholder="[3-20 letters]"
                         value={entry.gardienRelation}
                         onChange={(e) =>
                           handleGardienFieldChange(
@@ -660,19 +627,19 @@ const NewStudentForm = () => {
                             e.target.value
                           )
                         }
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                        className={`formInputText`}
                       />
                     </label>
-                  </div>
-                  <div className="mb-2">
+
                     <label
-                       className="formInputLabel"
+                      className="formInputLabel"
                       htmlFor={`gardienPhone-${index}`}
                     >
                       Phone Number:
                       <input
                         id={`gardienPhone-${index}`}
                         type="text"
+                        placeholder="[6-15 digits]"
                         value={entry.gardienPhone}
                         onChange={(e) =>
                           handleGardienFieldChange(
@@ -681,7 +648,7 @@ const NewStudentForm = () => {
                             e.target.value
                           )
                         }
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                        className={`formInputText`}
                       />{" "}
                     </label>
                   </div>
@@ -690,39 +657,37 @@ const NewStudentForm = () => {
                     type="button"
                     aria-label="delete student gardien"
                     onClick={() => handleRemoveGardienEntry(index)}
-                    className="delete-button"
+                    className="delete-button w-full"
                   >
                     Remove Entry
                   </button>
                 </div>
-              </div>
-            ))}
-          <button
-            type="button"
-            aria-label="add student gardien"
-            className="add-button"
-            onClick={handleAddGardienEntry}
-          >
-            Add Student Gardien
-          </button>
+              ))}
+
+            <button
+              type="button"
+              aria-label="add student gardien"
+              className="add-button w-full"
+              onClick={handleAddGardienEntry}
+            >
+              Add Gardien
+            </button>
+          </div>
         </div>
 
-        <div className="mb-6">
-          <h3 className="text-xl font-semibold mb-2">
+        <div className="formSectionContainer">
+          <h3 className="formSectionTitle">
             Student Education{" "}
             {!validCurrentEducation && <span className="text-red-600">*</span>}
           </h3>
-          {Array.isArray(studentEducation) &&
-            studentEducation.length > 0 &&
-            studentEducation.map((entry, index) => (
-              <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
-                <div
-                  key={index}
-                  className="bg-gray-50 p-4 rounded-lg shadow-sm mb-4"
-                >
-                  <div className="mb-2">
+          <div className="formSection">
+            {Array.isArray(studentEducation) &&
+              studentEducation.length > 0 &&
+              studentEducation.map((entry, index) => (
+                <div key={index} className="formSection">
+                  <div className="formLineDiv">
                     <label
-                       className="formInputLabel"
+                      className="formInputLabel"
                       htmlFor={`schoolYear-${index}`}
                     >
                       School Year:
@@ -732,7 +697,7 @@ const NewStudentForm = () => {
                         onChange={(e) =>
                           handleFieldChange(index, "schoolYear", e.target.value)
                         }
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                        className={`formInputText`}
                       >
                         <option value="">Select Year</option>
                         {academicYears.map(
@@ -745,10 +710,9 @@ const NewStudentForm = () => {
                         )}
                       </select>{" "}
                     </label>
-                  </div>
-                  <div className="mb-2">
+
                     <label
-                       className="formInputLabel"
+                      className="formInputLabel"
                       htmlFor={`attendedSchool-${index}`}
                     >
                       Attended School:
@@ -762,7 +726,7 @@ const NewStudentForm = () => {
                             e.target.value
                           )
                         }
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
+                        className={`formInputText`}
                       >
                         <option value="">Select School</option>
                         {schoolIsSuccess &&
@@ -778,37 +742,41 @@ const NewStudentForm = () => {
                       </select>{" "}
                     </label>
                   </div>
-                  <div className="mb-2">
-                    <label
-                       className="formInputLabel"
-                      htmlFor={`note-${index}`}
+
+                  <label className="formInputLabel" htmlFor={`note-${index}`}>
+                    Note:
+                    <textarea
+                      id={`note-${index}`}
+                      type="textArea"
+                      placeholder="[max 150 characters]"
+                      value={entry.note}
+                      onChange={(e) =>
+                        handleFieldChange(index, "note", e.target.value)
+                      }
+                      className={`formInputText text-wrap`}
                     >
-                      Note:
-                      <input
-                        id={`note-${index}`}
-                        type="text"
-                        value={entry.note}
-                        onChange={(e) =>
-                          handleFieldChange(index, "note", e.target.value)
-                        }
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-sky-700 sm:text-sm"
-                      />
-                    </label>
-                  </div>
+                      </textarea>
+
+                  </label>
 
                   <button
                     type="button"
                     onClick={() => handleRemoveEntry(index)}
-                    className="delete-button"
+                    className="delete-button w-full"
                   >
                     Remove Entry
                   </button>
                 </div>
-              </div>
-            ))}
-          <button type="button" className="add-button" onClick={handleAddEntry}>
-            Add Student Education
-          </button>
+              ))}
+            <button
+              type="button"
+              className="add-button w-full"
+              onClick={handleAddEntry}
+               aria-label="add student education"
+            >
+              Add Education
+            </button>
+          </div>
         </div>
 
         <div className="flex justify-end space-x-4">
@@ -816,6 +784,7 @@ const NewStudentForm = () => {
             type="button"
             className="cancel-button"
             onClick={handleCancel}
+             aria-label="cancel editing"
           >
             Cancel
           </button>
@@ -823,6 +792,7 @@ const NewStudentForm = () => {
             type="submit"
             className="save-button"
             title="Save"
+            aria-label="save changes"
             onClick={onSaveStudentClicked}
             disabled={!canSave || isLoading}
           >

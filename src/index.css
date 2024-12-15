@@ -560,7 +560,7 @@ header .bg-blue-600 p {
 }
 
 .formSectionContainer {
-  @apply space-y-4;
+  @apply space-y-4 mb-2;
 }
 
 /*section title h3 in a form */
@@ -581,12 +581,12 @@ header .bg-blue-600 p {
 
 /*input label  in a form */
 .formInputLabel {
-  @apply block text-base font-medium text-gray-700;
+  @apply  px-1  block text-base font-medium text-gray-700;
 }
 
-/*input label  in a form */
+/*input text in rectangle not checkbox  in a form */
 .formInputText {
-  @apply  w-full px-3 py-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700;
+  @apply  w-full px-3 py-1 border rounded-md focus:outline-none focus:ring-1 focus:ring-sky-600;
 }
 
 /*checkbox div  in a form */
@@ -601,12 +601,12 @@ header .bg-blue-600 p {
 
 /*checkbox square  in a form */
 .formCheckbox {
-  @apply h-4 w-4 border-gray-300 rounded focus:ring-sky-500;
+  @apply h-4 w-4 mr-1  border-gray-300 rounded focus:ring-sky-500;
 }
 
-/*checkbox square  in a form */
+/*checkbox text   in a form */
 .formCheckboxChoice {
-  @apply ml-2 text-sm text-gray-700;
+  @apply ml-3 text-sm text-gray-700;
 }
 
 
