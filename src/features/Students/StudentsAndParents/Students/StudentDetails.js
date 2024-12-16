@@ -44,7 +44,7 @@ const StudentDetails = () => {
   const academicYears = useSelector(selectAllAcademicYears);
 
 //   const [studentDocumentYear, setStudentDocumentYear] = useState(
-//     selectedAcademicYear.title || ""
+//     selectedAcademicYear?.title || ""
 //   );
 
   const {
@@ -97,7 +97,7 @@ const StudentDetails = () => {
 
 //if academic year changed while inthe page, check if studetn years correspond
 const isYearFound = student?.studentYears?.some(
-	(year) => year.academicYear === selectedAcademicYear.title
+	(year) => year.academicYear === selectedAcademicYear?.title
   );
   
 
@@ -127,7 +127,7 @@ const isYearFound = student?.studentYears?.some(
 				${student?.studentName?.lastName}`}
             <br />
             {/* Second Line: Academic Year */}
-            {`for ${selectedAcademicYear.title} Academic Year`}
+            {`for ${selectedAcademicYear?.title} Academic Year`}
           </h2>
           {photoUrl && (
             <div className="flex justify-center mb-6">

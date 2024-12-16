@@ -16,7 +16,7 @@ const StudentDetails = () => {
   //const token = useSelector((state) => state.auth.token);
 
   const [studentDocumentYear, setStudentDocumentYear] = useState(
-    selectedAcademicYear.title || ""
+    selectedAcademicYear?.title || ""
   );
 
   const {

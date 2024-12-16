@@ -164,7 +164,7 @@ const StudentsList = () => {
       const matchesGrade = selectedGrade
         ? student.studentYears.some(
             (year) =>
-              year.academicYear === selectedAcademicYear.title &&
+              year.academicYear === selectedAcademicYear?.title &&
               year.grade === selectedGrade
           )
         : true;
@@ -173,7 +173,7 @@ const StudentsList = () => {
       const matchesSchool = selectedSchoolName
         ? student.studentEducation.some(
             (education) =>
-              education.schoolYear === selectedAcademicYear.title &&
+              education.schoolYear === selectedAcademicYear?.title &&
               education.attendedSchool?.schoolName === selectedSchoolName
           )
         : true;
@@ -320,7 +320,7 @@ const StudentsList = () => {
       selector: (row) => {
         // Find the student year where academicYear matches selectedAcademicYear
         const studentYearForSelectedYear = row.studentYears.find(
-          (year) => year.academicYear === selectedAcademicYear.title
+          (year) => year.academicYear === selectedAcademicYear?.title
         );
 
         // Get the grade from the found student year
@@ -337,7 +337,7 @@ const StudentsList = () => {
       name: "School",
       selector: (row) => {
         const studentYearForSelectedYear = row.studentEducation.find(
-          (year) => year.schoolYear === selectedAcademicYear.title
+          (year) => year.schoolYear === selectedAcademicYear?.title
         );
         const schoolForSelectedYear =
           studentYearForSelectedYear?.attendedSchool.schoolName;

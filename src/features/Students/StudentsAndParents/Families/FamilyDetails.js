@@ -63,7 +63,7 @@ const {canEdit}=useAuth()
   //   useGetStudentDocumentsByYearByIdQuery(
   //     {
   //       studentId: id,
-  //       year: selectedAcademicYear.title,
+  //       year: selectedAcademicYear?.title,
   //       endpointName: "FamilyDetails",
   //     },
   //     {

@@ -114,11 +114,11 @@ const [validStudentGardien, setValidStudentGardien] = useState(false);
     setValidStudentGrade(
       studentYears.some(
         (year) =>
-          year.academicYear === selectedAcademicYear.title &&
+          year.academicYear === selectedAcademicYear?.title &&
           ["0", "1", "2", "3", "4", "5", "6"].includes(year.grade) // Convert to number for comparison
       )
     );
-  }, [studentYears, selectedAcademicYear.title]);
+  }, [studentYears, selectedAcademicYear?.title]);
   //console.log(studentYears);
   useEffect(() => {
     setValidFirstName(NAME_REGEX.test(firstName));
@@ -285,7 +285,7 @@ console.log(studentEducation, 'stdueteducation')
     setValidCurrentEducation(
           studentEducation.some(
           (education) =>
-            education.schoolYear === selectedAcademicYear.title && 
+            education.schoolYear === selectedAcademicYear?.title && 
           OBJECTID_REGEX.test(education?.attendedSchool)//retrived populated data
         ))
         setValidStudentEducation(studentEducation.every((education) =>

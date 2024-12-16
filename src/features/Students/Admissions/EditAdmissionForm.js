@@ -640,62 +640,59 @@ const EditAdmissionForm = ({ admission }) => {
                   />{" "}
                 </label>
               </div>
-            
-                <div key={index} className="formSection">
-                  <div className="formInputLabel" htmlFor="feeMonth">
-                    Select Month(s){" "}
-                    {!service.feeMonths?.length > 0 && (
-                      <span className="text-red-600">*</span>
-                    )}
-                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-2">
-                      {MONTHS?.map((month) => (
-                        <button
-                          aria-label="feeMonth"
-                          id="feeMonth"
-                          key={month}
-                          type="button"
-                          className={`px-4 py-2 border border-sky-700 rounded cursor-pointer transition-colors hover:bg-sky-600 hover:text-white ${
-                            service.feeMonths.includes(month)
-                              ? "bg-sky-700 text-white"
-                              : "bg-white text-sky-700"
-                          }`}
-                          onClick={() => handleMonthSelection(index, month)}
-                        >
-                          {month}
-                        </button>
-                      ))}
-                    </div>
+
+              <div key={index} className="formSection">
+                <div className="formInputLabel" htmlFor="feeMonth">
+                  Select Month(s){" "}
+                  {!service.feeMonths?.length > 0 && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-2">
+                    {MONTHS?.map((month) => (
+                      <button
+                        aria-label="feeMonth"
+                        id="feeMonth"
+                        key={month}
+                        type="button"
+                        className={`px-4 py-2 border border-sky-700 rounded cursor-pointer transition-colors hover:bg-sky-600 hover:text-white ${
+                          service.feeMonths.includes(month)
+                            ? "bg-sky-700 text-white"
+                            : "bg-white text-sky-700"
+                        }`}
+                        onClick={() => handleMonthSelection(index, month)}
+                      >
+                        {month}
+                      </button>
+                    ))}
                   </div>
                 </div>
+              </div>
 
-                <div>
-                  {service.isFlagged && (
-                    <div className="text-red-600">
-                      The entered fee value is below the minimum required fee
-                      for this service, please add note to help with
-                      authorisation processing.
-                    </div>
+              <div>
+                {service.isFlagged && (
+                  <div className="text-red-600">
+                    The entered fee value is below the minimum required fee for
+                    this service, please add note to help with authorisation
+                    processing.
+                  </div>
+                )}
+                <label htmlFor={`comment-${index}`} className="formInputLabel">
+                  Note
+                  {!COMMENT_REGEX.test(service?.comment) && (
+                    <span className="text-red-600"> check your input</span>
                   )}
-                  <label
-                    htmlFor={`comment-${index}`}
-                    className="formInputLabel"
-                  >
-                    Note
-                    {!COMMENT_REGEX.test(service?.comment) && (
-                      <span className="text-red-600"> check your input</span>
-                    )}
-                    <textarea
-                      type="text"
-                      id={`comment-${index}`}
-                      name="comment"
-                      value={service?.comment}
-                      onChange={(e) => handleAgreedServicesChange(index, e)}
-                      className={`formInputText text-wrap`}
-                      maxLength="150"
-                    ></textarea>
-                  </label>
-                </div>
-             
+                  <textarea
+                    type="text"
+                    id={`comment-${index}`}
+                    name="comment"
+                    value={service?.comment}
+                    onChange={(e) => handleAgreedServicesChange(index, e)}
+                    className={`formInputText text-wrap`}
+                    maxLength="150"
+                  ></textarea>
+                </label>
+              </div>
+
               {index !== 0 && (
                 <button
                   aria-label="remove service"
@@ -732,11 +729,11 @@ const EditAdmissionForm = ({ admission }) => {
             </button>
             <button
               type="submit"
+              aria-label="submit admission"
               disabled={!canSave || isAdmissionLoading}
               className={"save-button"}
             >
-              <FontAwesomeIcon icon={faSave} className="mr-2" />
-              {isAdmissionLoading ? "Saving..." : "Save Admission"}
+              save
             </button>
           </div>
         </div>

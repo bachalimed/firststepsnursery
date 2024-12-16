@@ -349,7 +349,7 @@ const NewEnrolmentForm = () => {
           >
             {/* <option value="">Select Enrolment Year</option> */}
             <option value={selectedAcademicYear?.title}>
-              {selectedAcademicYear.title}
+              {selectedAcademicYear?.title}
             </option>
           </select>
         </div>

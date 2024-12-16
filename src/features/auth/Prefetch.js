@@ -17,8 +17,8 @@ const Prefetch = () => {
 
   // useEffect(() => {
   //     if (selectedAcademicYear?.title) {
-  //       setSelectedYear(selectedAcademicYear.title)
-  //       //console.log('Selected year updated:', selectedAcademicYear.title)
+  //       setSelectedYear(selectedAcademicYear?.title)
+  //       //console.log('Selected year updated:', selectedAcademicYear?.title)
   //     }
   //   }, [selectedAcademicYear])
 

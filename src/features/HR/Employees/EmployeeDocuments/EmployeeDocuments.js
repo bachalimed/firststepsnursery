@@ -130,7 +130,7 @@ const EmployeeDocuments = () => {
 
   useEffect(() => {
     if (selectedAcademicYear?.title) {
-      setEmployeeDocumentYear(selectedAcademicYear.title);
+      setEmployeeDocumentYear(selectedAcademicYear?.title);
       //console.log('employeeDocumentYear:', employeeDocumentYear)
     }
   }, [selectedAcademicYear]);

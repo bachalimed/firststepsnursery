@@ -72,7 +72,7 @@ const RegisterModal = ({
         <div className="space-y-4">
           {modifiedYears
            .filter((year) => year.title !== "1000")
-          //.filter((year) => year.title === selectedAcademicYear.title)
+          //.filter((year) => year.title === selectedAcademicYear?.title)
           .map((year, index) => (
             <div key={index} className="flex items-center">
                <label

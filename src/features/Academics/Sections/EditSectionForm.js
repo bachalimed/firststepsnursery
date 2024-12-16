@@ -34,7 +34,7 @@ const EditSectionForm = ({ section }) => {
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-  //console.log(selectedAcademicYear.title, "selectedAcademicYear");
+  //console.log(selectedAcademicYear?.title, "selectedAcademicYear");
   const [
     updateSection,
     {
@@ -440,7 +440,7 @@ const EditSectionForm = ({ section }) => {
               {unselectedStudents.map((student) => {
                 const grade =
                   student.studentYears.find(
-                    (year) => year.academicYear === selectedAcademicYear.title
+                    (year) => year.academicYear === selectedAcademicYear?.title
                   )?.grade || "N/A";
                 return (
                   <option key={student.id} value={student.id}>
@@ -464,7 +464,7 @@ const EditSectionForm = ({ section }) => {
                 const student = studentsList.find((s) => s.id === studentId);
                 const grade =
                   student?.studentYears.find(
-                    (year) => year.academicYear === selectedAcademicYear.title
+                    (year) => year.academicYear === selectedAcademicYear?.title
                   )?.grade || "N/A";
 
                 return (

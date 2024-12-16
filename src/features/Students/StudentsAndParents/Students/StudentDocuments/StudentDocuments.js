@@ -49,7 +49,7 @@ const StudentDocuments = () => {
   const [documents, setDocuments] = useState([]);
 
   const [studentDocumentYear, setStudentDocumentYear] = useState(
-    selectedAcademicYear.title || ""
+    selectedAcademicYear?.title || ""
   );
   const [studentDocumentLabel, setStudentDocumentLabel] = useState("");
   const [validStudentDocumentLabel, setValidStudentDocumentLabel] =
@@ -98,7 +98,7 @@ const StudentDocuments = () => {
 
   useEffect(() => {
     if (selectedAcademicYear?.title) {
-      setStudentDocumentYear(selectedAcademicYear.title);
+      setStudentDocumentYear(selectedAcademicYear?.title);
       //console.log('studentDocumentYear:', studentDocumentYear)
     }
   }, [selectedAcademicYear]);

@@ -30,7 +30,7 @@ const FamilyDetails = () => {
   const token = useSelector((state) => state.auth.token);
 
   const [studentDocumentYear, setStudentDocumentYear] = useState(
-    selectedAcademicYear.title || ""
+    selectedAcademicYear?.title || ""
   );
   const [fatherPhotoUrl, setFatherPhotoUrl] = useState(null);
   const [motherPhotoUrl, setMotherPhotoUrl] = useState(null);

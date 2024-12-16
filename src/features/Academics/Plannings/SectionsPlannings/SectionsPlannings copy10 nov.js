@@ -478,9 +478,9 @@ const SectionsPlannings = () => {
           );
           let schoolOptions = [];
 
-          if (student && selectedAcademicYear.title) {
+          if (student && selectedAcademicYear?.title) {
             const educationRecord = student.studentEducation.find(
-              (edu) => edu.schoolYear === selectedAcademicYear.title
+              (edu) => edu.schoolYear === selectedAcademicYear?.title
             );
 
             if (educationRecord) {

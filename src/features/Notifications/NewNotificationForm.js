@@ -29,7 +29,7 @@ const NewNotificationForm = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-  console.log(selectedAcademicYear.title, "selectedAcademicYear");
+
   const [addNewNotification, { isLoading, isSuccess, isError, error }] =
     useAddNewNotificationMutation();
 

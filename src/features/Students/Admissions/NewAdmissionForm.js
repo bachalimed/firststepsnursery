@@ -166,26 +166,59 @@ const NewAdmissionForm = () => {
     ? Object.values(services.entities)
     : [];
 
-  // Set default admission service
-  useEffect(() => {
-    if (isServicesSuccess && formData.agreedServices[0].service === "") {
-      const admissionService = servicesList.find(
-        (service) => service.serviceType === "Admission"
-      );
-      if (admissionService) {
-        setFormData((prevData) => ({
-          ...prevData,
-          agreedServices: [
-            {
-              ...prevData.agreedServices[0],
-              service: admissionService.id,
-            },
-            ...prevData.agreedServices.slice(1),
-          ],
-        }));
-      }
+  // // Set default admission service
+  // useEffect(() => {
+  //   if (isServicesSuccess && formData.agreedServices[0].service === "") {
+  //     const admissionService = servicesList.find(
+  //       (service) => service.serviceType === "Admission"
+  //     );
+  //     if (admissionService) {
+  //       setFormData((prevData) => ({
+  //         ...prevData,
+  //         agreedServices: [
+  //           {
+  //             ...prevData.agreedServices[0],
+  //             service: admissionService.id,
+  //           },
+  //           ...prevData.agreedServices.slice(1),
+  //         ],
+  //       }));
+  //     }
+  //   }
+  // }, [isServicesSuccess]);
+// Set default admission service
+useEffect(() => {
+  if (isServicesSuccess && formData.agreedServices[0].service === "") {
+    const admissionService = servicesList.find(
+      (service) => service.serviceType === "Admission"
+    );
+
+    if (admissionService) {
+      setFormData((prevData) => ({
+        ...prevData,
+        agreedServices: [
+          {
+            ...prevData.agreedServices[0],
+            service: admissionService.id,
+            feeMonths: [
+              "January",
+              "February",
+              "March",
+              "April",
+              "May",
+              "June",
+              "September",
+              "October",
+              "November",
+              "December",
+            ], // All months except July and August
+          },
+          ...prevData.agreedServices.slice(1),
+        ],
+      }));
     }
-  }, [isServicesSuccess]);
+  }
+}, [isServicesSuccess, formData.agreedServices, servicesList]);
 
   const [admissionValidity, setAdmissionValidity] = useState([]);
 

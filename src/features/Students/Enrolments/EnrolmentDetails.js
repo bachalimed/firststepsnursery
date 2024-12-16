@@ -42,7 +42,7 @@ const EnrolmentDetails = () => {
   const academicYears = useSelector(selectAllAcademicYears);
 
 //   const [enrolmentDocumentYear, setEnrolmentDocumentYear] = useState(
-//     selectedAcademicYear.title || ""
+//     selectedAcademicYear?.title || ""
 //   );
 
   const {
@@ -52,7 +52,7 @@ const EnrolmentDetails = () => {
   } = useGetEnrolmentDocumentsByYearByIdQuery(
     {
       enrolmentId: id,
-      year: selectedAcademicYear.title,
+      year: selectedAcademicYear?.title,
       endpointName: "enrolmentsDocumentsList",
     },
     {
@@ -95,7 +95,7 @@ const EnrolmentDetails = () => {
 
 //if academic year changed while inthe page, check if studetn years correspond
 const isYearFound = enrolment?.enrolmentYears?.some(
-	(year) => year.academicYear === selectedAcademicYear.title
+	(year) => year.academicYear === selectedAcademicYear?.title
   );
   
 
@@ -124,7 +124,7 @@ const isYearFound = enrolment?.enrolmentYears?.some(
 				${enrolment?.enrolmentName?.lastName}`}
             <br />
             {/* Second Line: Academic Year */}
-            {`for ${selectedAcademicYear.title} Academic Year`}
+            {`for ${selectedAcademicYear?.title} Academic Year`}
           </h2>
           {photoUrl && (
             <div className="flex justify-center mb-6">

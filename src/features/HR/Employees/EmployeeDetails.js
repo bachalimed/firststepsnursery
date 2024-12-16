@@ -52,7 +52,7 @@ const EmployeeDetails = () => {
   } = useGetEmployeeDocumentsByYearByIdQuery(
     {
       userId: id,
-      year: selectedAcademicYear.title,
+      year: selectedAcademicYear?.title,
       endpointName: "EmployeeDetails",
     },
     {

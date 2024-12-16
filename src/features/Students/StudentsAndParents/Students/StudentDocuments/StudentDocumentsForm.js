@@ -60,7 +60,7 @@
 
 //  //this to be used to only select current year from check box
 
-//  const [studentDocumentYear, setStudentDocumentYear] = useState(selectedAcademicYear.title)
+//  const [studentDocumentYear, setStudentDocumentYear] = useState(selectedAcademicYear?.title)
 //   const[filteredList, setFilteredList]=useState([])
 
 //   useEffect(() => {

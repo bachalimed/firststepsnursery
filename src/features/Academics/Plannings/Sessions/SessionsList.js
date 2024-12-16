@@ -103,8 +103,8 @@ const SessionsList = () => {
   //this ensures teh selected year is chosen before running hte useeffect it is working perfectly to dispaptch the selected year
   // useEffect(() => {
   //   if (selectedAcademicYear?.title) {
-  //     setSelectedYear(selectedAcademicYear.title);
-  //     //console.log('Selected year updated:', selectedAcademicYear.title)
+  //     setSelectedYear(selectedAcademicYear?.title);
+  //     //console.log('Selected year updated:', selectedAcademicYear?.title)
   //   }
   // }, [selectedAcademicYear]);
   //console.log('selectedAcademicYear',selectedAcademicYear)

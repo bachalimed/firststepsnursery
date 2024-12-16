@@ -42,7 +42,7 @@ const AdmissionDetails = () => {//to be edited
   const academicYears = useSelector(selectAllAcademicYears);
 
 //   const [admissionDocumentYear, setAdmissionDocumentYear] = useState(
-//     selectedAcademicYear.title || ""
+//     selectedAcademicYear?.title || ""
 //   );
 
   const {
@@ -52,7 +52,7 @@ const AdmissionDetails = () => {//to be edited
   } = useGetAdmissionDocumentsByYearByIdQuery(
     {
       admissionId: id,
-      year: selectedAcademicYear.title,
+      year: selectedAcademicYear?.title,
       endpointName: "admissionsDocumentsList",
     },
     {
@@ -95,7 +95,7 @@ const AdmissionDetails = () => {//to be edited
 
 //if academic year changed while inthe page, check if studetn years correspond
 const isYearFound = admission?.admissionYears?.some(
-	(year) => year.academicYear === selectedAcademicYear.title
+	(year) => year.academicYear === selectedAcademicYear?.title
   );
   
 
@@ -124,7 +124,7 @@ const isYearFound = admission?.admissionYears?.some(
 				${admission?.admissionName?.lastName}`}
             <br />
             {/* Second Line: Academic Year */}
-            {`for ${selectedAcademicYear.title} Academic Year`}
+            {`for ${selectedAcademicYear?.title} Academic Year`}
           </h2>
           {photoUrl && (
             <div className="flex justify-center mb-6">
