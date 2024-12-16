@@ -217,6 +217,7 @@ const EditExpenseForm = ({ expense }) => {
     // Close the confirmation modal
     setShowConfirmation(false);
 
+    
     try {
       const response = await updateExpense(formData).unwrap();
       if ((response.data && response.data.message) || response?.message) {

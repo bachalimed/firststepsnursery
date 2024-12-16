@@ -121,9 +121,9 @@ const AnimatorsAssignmentsList = () => {
   const handleConfirmDelete = async () => {
     try {
       const response = await deleteAssignment({ id: idAttendedSchoolToDelete });
-      if (response.data && response.data.message) {
+     if ((response.data && response.data.message) || response?.message) {
         // Success response
-        triggerBanner(response.data.message, "success");
+        triggerBanner(response?.data?.message || response?.message, "success");
       } else if (
         response?.error &&
         response?.error?.data &&

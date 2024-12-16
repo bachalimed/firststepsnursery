@@ -95,9 +95,9 @@ const NewClassroomForm = () => {
       const response = await addNewClassroom(formData); //.unwrap();
       //dispatch(classroomAdded(newClassroom)); // Optionally update Redux state
       console.log(response, "response");
-      if (response.data && response.data.message) {
+     if ((response.data && response.data.message) || response?.message) {
         // Success response
-        triggerBanner(response.data.message, "success");
+        triggerBanner(response?.data?.message || response?.message, "success");
       } else if (
         response?.error &&
         response?.error?.data &&

@@ -94,9 +94,9 @@ const NewFamily = () => {
     }); //we call the add new user mutation and set the arguments to be saved
     //added this to confirm save
     console.log(response,'response')
-      if (response.data && response.data.message) {
+     if ((response.data && response.data.message) || response?.message) {
         // Success response
-        triggerBanner(response.data.message, "success");
+        triggerBanner(response?.data?.message || response?.message, "success");
         setCurrentStep(4)
 
       } else if (response?.error && response?.error?.data && response?.error?.data?.message) {

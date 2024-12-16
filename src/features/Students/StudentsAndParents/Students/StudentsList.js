@@ -101,9 +101,9 @@ const StudentsList = () => {
       setIsDeleteModalOpen(false); // Close the modal
       //console.log(response,'response')
 
-      if (response.data && response.data.message) {
+     if ((response.data && response.data.message) || response?.message) {
         // Success response
-        triggerBanner(response.data.message, "success");
+        triggerBanner(response?.data?.message || response?.message, "success");
       } else if (
         response?.error &&
         response?.error?.data &&
@@ -226,9 +226,9 @@ const StudentsList = () => {
       const response = await updateStudent(updatedStudentObject); // Save updated student to backend
       //console.log(response,'response')
       // console.log(updateError,'updateError')
-      if (response.data && response.data.message) {
+     if ((response.data && response.data.message) || response?.message) {
         // Success response
-        triggerBanner(response.data.message, "success");
+        triggerBanner(response?.data?.message || response?.message, "success");
       } else if (
         response?.error &&
         response?.error?.data &&

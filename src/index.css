@@ -586,7 +586,7 @@ header .bg-blue-600 p {
 
 /*input text in rectangle not checkbox  in a form */
 .formInputText {
-  @apply  w-full px-3 py-1 border rounded-md focus:outline-none focus:ring-1 focus:ring-sky-600;
+  @apply  w-full px-3 py-1 border rounded-md text-gray-700 focus:outline-none focus:ring-1 focus:ring-sky-600;
 }
 
 /*checkbox div  in a form */

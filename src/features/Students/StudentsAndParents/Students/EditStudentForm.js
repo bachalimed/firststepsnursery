@@ -353,9 +353,9 @@ console.log(validStudentEducation,
       }); //we call the add new user mutation and set the arguments to be saved
       //added this to confirm save
       console.log(response, "response");
-      if (response.data && response.data.message) {
+     if ((response.data && response.data.message) || response?.message) {
         // Success response
-        triggerBanner(response.data.message, "success");
+        triggerBanner(response?.data?.message || response?.message, "success");
       } else if (
         response?.error &&
         response?.error?.data &&
@@ -389,7 +389,7 @@ console.log(validStudentEducation,
 
       <form className="form-container" onSubmit={(e) => e.preventDefault()}>
         <h2 className="formTitle">
-          Editing {firstName} {middleName} {lastName} Profile
+          Edit student: {firstName} {middleName} {lastName}
         </h2>
         <div className="formSectionContainer">
           <h3 className="formSectionTitle">Personal Information</h3>

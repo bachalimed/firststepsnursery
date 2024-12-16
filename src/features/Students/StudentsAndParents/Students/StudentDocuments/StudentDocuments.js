@@ -375,7 +375,7 @@ const StudentDocuments = () => {
             columns={column}
             data={studentDocumentsListing}
             pagination
-            selectableRows
+            //selectableRows
             removableRows
             pageSizeControl
           />
