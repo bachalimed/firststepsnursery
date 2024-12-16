@@ -570,7 +570,7 @@ header .bg-blue-600 p {
 
 /*section with border in a form */
 .formSection {
-  @apply border border-gray-300 p-4 rounded-md shadow-sm space-y-2;
+  @apply border border-gray-300 p-4 rounded-md shadow-sm space-y-2 mb-2;
 }
 
 

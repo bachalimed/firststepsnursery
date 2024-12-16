@@ -1,21 +1,13 @@
 import { useState, useEffect } from "react";
 import { useUpdateSectionMutation } from "./sectionsApiSlice";
 import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { ROLES } from "../../../config/UserRoles";
-import { ACTIONS } from "../../../config/UserActions";
+import LoadingStateIcons from "../../../Components/LoadingStateIcon";
 import Academics from "../Academics";
 import useAuth from "../../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import { useGetClassroomsQuery } from "../../AppSettings/AcademicsSet/Classrooms/classroomsApiSlice";
 import { useGetEmployeesByYearQuery } from "../../HR/Employees/employeesApiSlice";
-import {
-  useGetStudentsQuery,
-  useUpdateStudentMutation,
-  useGetStudentsByYearQuery,
-  useDeleteStudentMutation,
-} from "../../Students/StudentsAndParents/Students/studentsApiSlice";
+import { useGetStudentsByYearQuery } from "../../Students/StudentsAndParents/Students/studentsApiSlice";
 import {
   selectAllAcademicYears,
   selectCurrentAcademicYearId,
@@ -229,7 +221,7 @@ const EditSectionForm = ({ section }) => {
     try {
       const response = await updateSection(formData);
       console.log(response, "response");
-     if ((response.data && response.data.message) || response?.message) {
+      if ((response.data && response.data.message) || response?.message) {
         // Success response
         triggerBanner(response?.data?.message || response?.message, "success");
       } else if (
@@ -256,57 +248,245 @@ const EditSectionForm = ({ section }) => {
   };
 
   console.log(formData, "formData");
-  const content = (
-    <>
-      <Academics />
+  let content;
+  if (isStudentLoading || isEmployeesLoading || isClassroomsLoading) {
+    content = (
+      <>
+        <Academics />
+        <LoadingStateIcons />
+      </>
+    );
+  }
+  if (isStudentSuccess && isEmployeesSuccess && isClassroomsSuccess) {
+    content = (
+      <>
+        <Academics />
 
-      <form onSubmit={onSaveSectionClicked} className="form-container">
-        <h2 className="formTitle ">
-          Edit Section: {`${formData.sectionLabel}`}
-        </h2>
-        {/* Section Label */}
-        <div>
-          <label htmlFor=""  className="formInputLabel">
-            Section Label{" "}
-            {!validity.validSectionLabel && (
-              <span className="text-red-600">*</span>
-            )}
-            <input
-              aria-label="section label"
-              aria-invalid={!validity.validSectionLabel}
-              type="text"
-              name="sectionLabel"
-              value={formData.sectionLabel}
-              onChange={handleInputChange}
-              // className="mt-1 block w-full border className="formInputLabel"-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              placeholder="Enter Section Label"
-              required
-              className={`mt-1 block w-full border ${
-                validity.validSectionLabel
-                  ? "border-gray-300"
-                  : "border-red-600"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-            />
-          </label>
-        </div>
-        {/* Section Color */}
-        <div>
-          <label htmlFor=""  className="formInputLabel">
-            Section Color{" "}
-            {!validity.validSectionColor && (
-              <span className="text-red-600">*</span>
-            )}
-            <input
-              aria-label="section color"
-              type="color"
-              name="sectionColor"
-              value={formData.sectionColor}
-              onChange={handleInputChange}
-              className="mt-1 block w-full rounded-md"
-              required
-            />{" "}
-          </label>
-        </div>
+        <form onSubmit={onSaveSectionClicked} className="form-container">
+          <h2 className="formTitle ">
+            Edit Section: {`${formData.sectionLabel}`}
+          </h2>
+          {/* Section Label */}
+          <div className="formSectionContainer">
+            <h3 className="formSectionTitle">Section Details</h3>
+            <div className="formSection">
+              <div className="formLineDiv">
+                {/* Section Label */}
+
+                <label htmlFor="sectionLabel" className="formInputLabel">
+                  Section Label{" "}
+                  {!validity.validSectionLabel && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <input
+                    aria-label="section label"
+                    aria-invalid={!validity.validSectionLabel}
+                    type="text"
+                    id="sectionLabel"
+                    name="sectionLabel"
+                    value={formData.sectionLabel}
+                    onChange={handleInputChange}
+                    // className="mt-1 block w-full border className="formInputLabel"-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    placeholder="[3-20 letters]"
+                    required
+                    className={`formInputText`}
+                  />
+                </label>
+                <label htmlFor="sectionFrom" className="formInputLabel">
+                  Section From{" "}
+                  {!validity.validSectionFrom && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <input
+                    aria-label="section from"
+                    aria-invalid={!validity.validSectionFrom}
+                    placeholder="[dd/mm/yyyy]"
+                    type="date"
+                    id="sectionFrom"
+                    name="sectionFrom"
+                    value={formData.sectionFrom}
+                    onChange={handleInputChange}
+                    className={`formInputText`}
+                    required
+                  />
+                </label>
+              </div>
+              {/* Animator Selection */}
+              <div className="formLineDiv">
+                <label htmlFor="sectionAnimator" className="formInputLabel">
+                  Animator{" "}
+                  {!validity.validSectionAnimator && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <select
+                    aria-invalid={!validity.validSectionAnimator}
+                    aria-label="section animator"
+                    id="sectionAnimator"
+                    name="sectionAnimator"
+                    value={formData.sectionAnimator}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        sectionAnimator: e.target.value,
+                      }))
+                    }
+                    className={`formInputText`}
+                  >
+                    <option>Select Animator</option>
+                    {activeEmployeesList.map((animator) => (
+                      <option
+                        key={animator.employeeId}
+                        value={animator.employeeId}
+                      >
+                        {animator?.userFullName.userFirstName}{" "}
+                        {animator?.userFullName.userMiddleName}{" "}
+                        {animator.userFullName.userLastName}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                {/* Classroom Selection */}
+
+                <label htmlFor="sectionLocation" className="formInputLabel">
+                  Classroom{" "}
+                  {!validity.validSectionLocation && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <select
+                    aria-invalid={!validity.validSectionLocation}
+                    aria-label="section location"
+                    id="sectionLocation"
+                    name="sectionLocation"
+                    value={formData.sectionLocation}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        sectionLocation: e.target.value,
+                      }))
+                    }
+                    className={`formInputText`}
+                  >
+                    <option>Select Classroom</option>
+                    {classroomsList.map((classroom) => (
+                      <option key={classroom.id} value={classroom.id}>
+                        {classroom.classroomNumber}-{classroom.classroomLabel}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+              {/* Section Color */}
+
+              <label htmlFor="sectionColor" className="formInputLabel">
+                Section Color{" "}
+                {!validity.validSectionColor && (
+                  <span className="text-red-600">*</span>
+                )}
+                <input
+                  aria-label="section color"
+                  type="color"
+                  id="sectionColor"
+                  name="sectionColor"
+                  value={formData.sectionColor}
+                  onChange={handleInputChange}
+                  className="block w-full rounded-md"
+                  required
+                />
+              </label>
+            </div>
+          </div>
+
+          {/* Students Selection */}
+          <h3 className="formSectionTitle">Section Details</h3>
+          <div className="formSection">
+            <label htmlFor="students" className="formInputLabel">
+              Select Students
+              <select
+                aria-label="section students"
+                id="students"
+                name="students"
+                size="8"
+                multiple
+                onChange={handleStudentSelection}
+                className={`formInputText`}
+              >
+                {unselectedStudents.map((student) => {
+                  const grade =
+                    student.studentYears.find(
+                      (year) =>
+                        year.academicYear === selectedAcademicYear?.title
+                    )?.grade || "N/A";
+                  return (
+                    <option key={student.id} value={student.id}>
+                      Grade: {grade} - {student.studentName.firstName}{" "}
+                      {student.studentName.middleName}{" "}
+                      {student.studentName.lastName}
+                    </option>
+                  );
+                })}
+              </select>
+            </label>
+          </div>
+
+          {/* Selected Students */}
+          <h3 className="formSectionTitle">
+            {" "}
+            Section {formData.sectionLabel} students:{" "}
+            {formData?.students?.length}
+          </h3>
+          <div className="formSection">
+            <ul className="selected-students-list formLineDiv">
+              {formData.students.map((studentId) => {
+                const student = studentsList.find((s) => s.id === studentId);
+                const grade =
+                  student?.studentYears.find(
+                    (year) => year.academicYear === selectedAcademicYear?.title
+                  )?.grade || "N/A";
+
+                return (
+                  <li
+                    id={studentId}
+                    name={studentId}
+                    key={studentId}
+                    onClick={() => handleRemoveStudent(studentId)}
+                    className="flex flex-col gap-2  hover:bg-gray-50 rounded-md items-center w-full"
+                  >
+                    <div className="flex flex-row w-full">
+                      <span className="flex-1 rounded-md border border-sky-700 px-3 py-1 text-sky-700 hover:bg-sky-700 hover:text-white transition-colors duration-200">
+                        {student?.studentName.firstName}{" "}
+                        {student?.studentName.middleName}{" "}
+                        {student?.studentName.lastName} - Grade: {grade}
+                      </span>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>{" "}
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex justify-end gap-4">
+            <button
+              aria-label="cancel new section"
+              type="button"
+              onClick={() =>
+                navigate("/academics/sections/nurserySectionsList/")
+              }
+              className="cancel-button"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              aria-label="submit form"
+              disabled={!canSave || isUpdateSectionLoading}
+              className={`save-button`}
+            >
+              Save
+            </button>
+          </div>
+        </form>
 
         {/* Section Type */}
         {/* <div>
@@ -334,191 +514,18 @@ const EditSectionForm = ({ section }) => {
             </select>
           </div> */}
         {/* Animator Selection */}
-        <div>
-          <label htmlFor=""  className="formInputLabel">
-            Animator{" "}
-            {!validity.validSectionAnimator && (
-              <span className="text-red-600">*</span>
-            )}
-            <select
-              aria-invalid={!validity.validSectionAnimator}
-              aria-label="section animator"
-              name="sectionAnimator"
-              value={formData.sectionAnimator}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  sectionAnimator: e.target.value,
-                }))
-              }
-              className={`mt-1 block w-full border ${
-                validity.validSectionAnimator
-                  ? "border-gray-300"
-                  : "border-red-600"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-            >
-              <option>Select Animator</option>
-              {activeEmployeesList.map((animator) => (
-                <option key={animator.employeeId} value={animator.employeeId}>
-                  {animator?.userFullName.userFirstName}{" "}
-                  {animator?.userFullName.userMiddleName}{" "}
-                  {animator.userFullName.userLastName}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-        {/* Classroom Selection */}
-        <div>
-          <label htmlFor=""  className="formInputLabel">
-            Classroom{" "}
-            {!validity.validSectionLocation && (
-              <span className="text-red-600">*</span>
-            )}
-            <select
-              aria-label="section location"
-              aria-invalid={!validity.validSectionLocation}
-              name="sectionLocation"
-              value={formData.sectionLocation}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  sectionLocation: e.target.value,
-                }))
-              }
-              className={`mt-1 block w-full border ${
-                validity.validSectionLocation
-                  ? "border-gray-300"
-                  : "border-red-600"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-            >
-              <option>Select Classroom</option>
-              {classroomsList.map((classroom) => (
-                <option key={classroom.id} value={classroom.id}>
-                  {classroom.classroomNumber}-{classroom.classroomLabel}
-                </option>
-              ))}
-            </select>{" "}
-          </label>
-        </div>
 
-        {/* Section From */}
-        <div>
-          <label htmlFor=""  className="formInputLabel">
-            Section From{" "}
-            {!validity.validSectionFrom && (
-              <span className="text-red-600">*</span>
-            )}
-            <input
-              aria-label="section from"
-              aria-invalid={!validity.validSectionFrom}
-              placeholder="[dd/mm/yyyy]"
-              type="date"
-              name="sectionFrom"
-              value={formData.sectionFrom}
-              onChange={handleInputChange}
-              className={`mt-1 block w-full border ${
-                validity.validSectionFrom ? "border-gray-300" : "border-red-600"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-              required
-            />
-          </label>
-        </div>
-
-        {/* Students Selection */}
-        <div>
-          <label htmlFor=""  className="formInputLabel">
-            Select Students
-            <select
-              aria-label="section students"
-              name="students"
-              size="8"
-              multiple
-              onChange={handleStudentSelection}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm"
-            >
-              {unselectedStudents.map((student) => {
-                const grade =
-                  student.studentYears.find(
-                    (year) => year.academicYear === selectedAcademicYear?.title
-                  )?.grade || "N/A";
-                return (
-                  <option key={student.id} value={student.id}>
-                    Grade: {grade} - {student?.studentName?.firstName}{" "}
-                    {student?.studentName?.middleName}{" "}
-                    {student?.studentName?.lastName}
-                  </option>
-                );
-              })}
-            </select>
-          </label>
-        </div>
-
-        {/* Selected Students */}
-        <div className="selected-students mt-4">
-           <label htmlFor="" formInputLabel>
-            {formData.sectionLabel} section Students:{" "}
-            {formData?.students.length}
-            <ul className="selected-students-list">
-              {formData.students.map((studentId, index) => {
-                const student = studentsList.find((s) => s.id === studentId);
-                const grade =
-                  student?.studentYears.find(
-                    (year) => year.academicYear === selectedAcademicYear?.title
-                  )?.grade || "N/A";
-
-                return (
-                  <li
-                    key={studentId}
-                    onClick={() => handleRemoveStudent(studentId)}
-                    className="cursor-pointer hover:text-red-600 hover:line-through"
-                  >
-                    {index + 1}.{"  "}
-                    {student?.studentName.firstName}{" "}
-                    {student?.studentName.middleName}{" "}
-                    {student?.studentName.lastName} - Grade: {grade}
-                  </li>
-                );
-              })}
-            </ul>{" "}
-          </label>
-        </div>
-
-        {/* Submit Button */}
-        <div className="flex justify-end gap-4">
-          <button
-            aria-label="cancel edit section"
-            type="button"
-            onClick={() => navigate("/academics/sections/nurserySectionsList/")}
-            className="cancel-button"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            aria-label="submit form"
-            disabled={!canSave || isUpdateSectionLoading}
-            className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
-              canSave
-                ? "bg-green-600 hover:bg-green-700 focus:ring-green-500"
-                : "bg-gray-400 cursor-not-allowed"
-            } focus:outline-none focus:ring-2 focus:ring-offset-2`}
-          >
-            {isUpdateSectionLoading ? "Saving..." : "Save"}
-          </button>
-        </div>
-      </form>
-
-      {/* Confirmation Modal */}
-      <ConfirmationModal
-        show={showConfirmation}
-        onClose={handleCloseModal}
-        onConfirm={handleConfirmSave}
-        title="Confirm Save"
-        message="Are you sure you want to save?"
-      />
-    </>
-  );
+        {/* Confirmation Modal */}
+        <ConfirmationModal
+          show={showConfirmation}
+          onClose={handleCloseModal}
+          onConfirm={handleConfirmSave}
+          title="Confirm Save"
+          message="Are you sure you want to save?"
+        />
+      </>
+    );
+  }
   return content;
 };
 

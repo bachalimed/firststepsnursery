@@ -12,7 +12,15 @@ import useAuth from "../../../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 import { selectAllAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import { NAME_REGEX, DATE_REGEX,COMMENT_REGEX ,YEAR_REGEX, OBJECTID_REGEX, PHONE_REGEX} from "../../../../config/REGEX";
+import {
+  NAME_REGEX,
+  DATE_REGEX,
+  COMMENT_REGEX,
+  YEAR_REGEX,
+  OBJECTID_REGEX,
+  PHONE_REGEX,
+} from "../../../../config/REGEX";
+import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 
 const NewStudentForm = () => {
   const naviagte = useNavigate();
@@ -38,9 +46,9 @@ const NewStudentForm = () => {
 
   const {
     data: attendedSchoolsList,
-    isLoading: schoolIsLoading,
-    isSuccess: schoolIsSuccess,
-    isError: schoolIsError,
+    isLoading: isSchoolLoading,
+    isSuccess: isSchoolSuccess,
+    isError: isSchoolIsError,
     error: schoolError,
   } = useGetAttendedSchoolsQuery({ endpointName: "NewStudentForm" } || {}, {
     refetchOnFocus: true,
@@ -48,7 +56,7 @@ const NewStudentForm = () => {
   });
 
   let attendedSchools;
-  if (schoolIsSuccess) {
+  if (isSchoolSuccess) {
     const { entities } = attendedSchoolsList;
     attendedSchools = Object.values(entities);
   }
@@ -95,7 +103,7 @@ const NewStudentForm = () => {
     setValidFirstName(NAME_REGEX.test(firstName));
   }, [firstName]);
   useEffect(() => {
-    setValidMiddleName(middleName==="" || NAME_REGEX.test(middleName));
+    setValidMiddleName(middleName === "" || NAME_REGEX.test(middleName));
   }, [middleName]);
 
   useEffect(() => {
@@ -250,17 +258,17 @@ const NewStudentForm = () => {
       studentEducation.some(
         (year) =>
           year.schoolYear === selectedAcademicYear?.title &&
-         OBJECTID_REGEX.test(year?.attendedSchool)
-
+          OBJECTID_REGEX.test(year?.attendedSchool)
       )
     );
     setValidStudentEducation(
       studentEducation.every(
-        (year) => year.schoolYear !== "" && 
-        year.attendedSchool !== "" &&
-        YEAR_REGEX.test(year?.schoolYear) &&
-        OBJECTID_REGEX.test(year?.attendedSchool) &&
-        COMMENT_REGEX.test(year?.note)
+        (year) =>
+          year.schoolYear !== "" &&
+          year.attendedSchool !== "" &&
+          YEAR_REGEX.test(year?.schoolYear) &&
+          OBJECTID_REGEX.test(year?.attendedSchool) &&
+          COMMENT_REGEX.test(year?.note)
       )
     );
   }, [studentEducation, selectedAcademicYear?.title]);
@@ -268,14 +276,13 @@ const NewStudentForm = () => {
     setValidStudentGardien(
       studentGardien.every(
         (gardien) =>
-          
-        
           gardien?.gardienYear !== "" &&
           NAME_REGEX.test(gardien?.gardienFirstName) &&
-          (gardien?.gardienMiddleName ==="" ||NAME_REGEX.test(gardien?.gardienMiddleName) )&&
+          (gardien?.gardienMiddleName === "" ||
+            NAME_REGEX.test(gardien?.gardienMiddleName)) &&
           NAME_REGEX.test(gardien?.gardienLastName) &&
           NAME_REGEX.test(gardien?.gardienRelation) &&
-          PHONE_REGEX.test(gardien?.gardienPhone) 
+          PHONE_REGEX.test(gardien?.gardienPhone)
       )
     );
   }, [studentGardien]);
@@ -323,7 +330,7 @@ const NewStudentForm = () => {
         operator,
       });
       console.log(response, "response");
-     if ((response.data && response.data.message) || response?.message) {
+      if ((response.data && response.data.message) || response?.message) {
         // Success response
         triggerBanner(response?.data?.message || response?.message, "success");
       } else if (
@@ -352,12 +359,22 @@ const NewStudentForm = () => {
   const handleCancel = () => {
     naviagte("/students/studentsParents/students/");
   };
-
-  const content = (
-    <>
-      <Students />
-      {/* Display status message */}
-      {/* {showMessage && (
+  let content;
+  if (isSchoolLoading) {
+    content = (
+      <>
+        {" "}
+        <Students />
+        <LoadingStateIcon />
+      </>
+    );
+  }
+  if (isSchoolSuccess) {
+    content = (
+      <>
+        <Students />
+        {/* Display status message */}
+        {/* {showMessage && (
         <p
           className={`mt-4 text-center ${
             statusType === "success" ? "text-green-500" : "text-red-600"
@@ -366,482 +383,501 @@ const NewStudentForm = () => {
           {statusMessage}
         </p>
       )} */}
-      <form className="form-container" onSubmit={onSaveStudentClicked}>
-        <h2 className="formTitle">
-          New student: {firstName} {middleName} {lastName}
-        </h2>
-        <div className="formSectionContainer">
-          <h3 className="formSectionTitle">Personal Information</h3>
-          <div className="formSection">
-            <div className="formLineDiv">
-              <label className="formInputLabel" htmlFor="firstName">
-                First Name{" "}
-                {!validFirstName && <span className="text-red-600 ">*</span>}
-                <input
-                  aria-invalid={!validFirstName}
-                  placeholder="[3-20 letters]"
-                  className={`formInputText`}
-                  id="firstName"
-                  name="firstName"
-                  type="text"
-                  autoComplete="off"
-                  value={firstName}
-                  onChange={onFirstNameChanged}
-                  required
-                />{" "}
-              </label>
-
-              <label className="formInputLabel" htmlFor="middleName">
-                Middle Name{" "}
-                {!validMiddleName &&middleName!=="" && <span className="text-red-600 ">[3-20] letters</span>}
-                <input
-                  placeholder="[3-20 letters]"
-                  className={`formInputText`}
-                  id="middleName"
-                  name="middleName"
-                  type="text"
-                  autoComplete="off"
-                  value={middleName}
-                  onChange={onMiddleNameChanged}
-                />{" "}
-              </label>
-            </div>
-            <div className="formLineDiv">
-              <label className="formInputLabel" htmlFor="lastName">
-                Last Name{" "}
-                {!validLastName && <span className="text-red-600">*</span>}
-                <input
-                  aria-invalid={!validLastName}
-                  placeholder="[3-20 letters]"
-                  className={`formInputText`}
-                  id="lastName"
-                  name="lastName"
-                  type="text"
-                  autoComplete="off"
-                  value={lastName}
-                  onChange={onLastNameChanged}
-                  required
-                />
-              </label>
-
-              <label className="formInputLabel" htmlFor="studentDob">
-                Date Of Birth{" "}
-                {!validStudentDob && <span className="text-red-600">*</span>}
-                <input
-                  aria-invalid={!validStudentDob}
-                  placeholder="[dd/mm/yyyy]"
-                  className={`formInputText`}
-                  id="studentDob"
-                  name="studentDob"
-                  type="date"
-                  autoComplete="off"
-                  value={studentDob}
-                  onChange={onStudentDobChanged}
-                  required
-                />{" "}
-              </label>
-            </div>
-
-            <label className="formInputLabel">
-              Student Sex
-              <div className="formCheckboxItemsDiv">
-                <label htmlFor="male" className="formCheckboxChoice">
+        <form className="form-container" onSubmit={onSaveStudentClicked}>
+          <h2 className="formTitle">
+            New student: {firstName} {middleName} {lastName}
+          </h2>
+          <div className="formSectionContainer">
+            <h3 className="formSectionTitle">Personal Information</h3>
+            <div className="formSection">
+              <div className="formLineDiv">
+                <label className="formInputLabel" htmlFor="firstName">
+                  First Name{" "}
+                  {!validFirstName && <span className="text-red-600 ">*</span>}
                   <input
-                    type="checkbox"
-                    id="male"
-                    value="Male"
-                    checked={studentSex === "Male"}
-                    onChange={onStudentSexChanged}
-                    className="formCheckbox"
-                  />
-                  Male
-                </label>
-                <label htmlFor="female" className="formCheckboxChoice">
-                  <input
-                    type="checkbox"
-                    id="female"
-                    value="Female"
-                    checked={studentSex === "Female"}
-                    onChange={onStudentSexChanged}
-                    className="formCheckbox"
+                    aria-invalid={!validFirstName}
+                    placeholder="[3-20 letters]"
+                    className={`formInputText`}
+                    id="firstName"
+                    name="firstName"
+                    type="text"
+                    autoComplete="off"
+                    value={firstName}
+                    onChange={onFirstNameChanged}
+                    required
                   />{" "}
-                  Female
+                </label>
+
+                <label className="formInputLabel" htmlFor="middleName">
+                  Middle Name{" "}
+                  {!validMiddleName && middleName !== "" && (
+                    <span className="text-red-600 ">[3-20] letters</span>
+                  )}
+                  <input
+                    placeholder="[3-20 letters]"
+                    className={`formInputText`}
+                    id="middleName"
+                    name="middleName"
+                    type="text"
+                    autoComplete="off"
+                    value={middleName}
+                    onChange={onMiddleNameChanged}
+                  />{" "}
                 </label>
               </div>
-            </label>
-          </div>
-        </div>
-
-        <div className="formSectionContainer">
-          <h3 className="formSectionTitle">Student situation</h3>
-          <div className="formSection">
-            <div className="formLineDiv">
-              <label htmlFor="studentYears" className="formInputLabel">
-                <input
-                  type="checkbox"
-                  id="studentYears"
-                  value={selectedAcademicYear?.title}
-                  checked={studentYears.some(
-                    (year) => year.academicYear === selectedAcademicYear?.title
-                  )}
-                  onChange={onAcademicYearChanged}
-                  className={`formCheckbox`}
-                  required
-                />
-                Student Year{" "}
-                {!studentYears[0] && <span className="text-red-600">*</span>} :{" "}
-                {selectedAcademicYear?.title}
-              </label>
-              {studentYears.some(
-                (year) => year.academicYear === selectedAcademicYear?.title
-              ) && (
-                <label htmlFor="studentGrade" className="formInputLabel">
-                  Grade{" "}
-                  {!studentYears[0].grade && (
-                    <span className="text-red-600">*</span>
-                  )}
-                  <select
-                    id="studentGrade"
-                    value={
-                      studentYears.find(
-                        (year) =>
-                          year.academicYear === selectedAcademicYear?.title
-                      )?.grade || ""
-                    }
-                    onChange={onStudentGradeChanged}
-                    className="formInputText"
-                  >
-                    <option value="">Select Grade</option>
-                    {["0", "1", "2", "3", "4", "5", "6", "7"].map((grade) => (
-                      <option key={grade} value={grade}>
-                        Grade {grade}
-                      </option>
-                    ))}
-                  </select>
+              <div className="formLineDiv">
+                <label className="formInputLabel" htmlFor="lastName">
+                  Last Name{" "}
+                  {!validLastName && <span className="text-red-600">*</span>}
+                  <input
+                    aria-invalid={!validLastName}
+                    placeholder="[3-20 letters]"
+                    className={`formInputText`}
+                    id="lastName"
+                    name="lastName"
+                    type="text"
+                    autoComplete="off"
+                    value={lastName}
+                    onChange={onLastNameChanged}
+                    required
+                  />
                 </label>
-              )}
-            </div>
 
-            <div className="formLineDiv">
-              <label htmlFor="active" className="formInputLabel">
-                <input
-                  type="checkbox"
-                  id="active"
-                  value={studentIsActive}
-                  checked={studentIsActive}
-                  onChange={onStudentIsActiveChanged}
-                  className={`formCheckbox`}
-                />
-                Student Is Active
+                <label className="formInputLabel" htmlFor="studentDob">
+                  Date Of Birth{" "}
+                  {!validStudentDob && <span className="text-red-600">*</span>}
+                  <input
+                    aria-invalid={!validStudentDob}
+                    placeholder="[dd/mm/yyyy]"
+                    className={`formInputText`}
+                    id="studentDob"
+                    name="studentDob"
+                    type="date"
+                    autoComplete="off"
+                    value={studentDob}
+                    onChange={onStudentDobChanged}
+                    required
+                  />{" "}
+                </label>
+              </div>
+
+              <label className="formInputLabel">
+                Student Sex
+                <div className="formCheckboxItemsDiv">
+                  <label htmlFor="male" className="formCheckboxChoice">
+                    <input
+                      type="checkbox"
+                      id="male"
+                      value="Male"
+                      checked={studentSex === "Male"}
+                      onChange={onStudentSexChanged}
+                      className="formCheckbox"
+                    />
+                    Male
+                  </label>
+                  <label htmlFor="female" className="formCheckboxChoice">
+                    <input
+                      type="checkbox"
+                      id="female"
+                      value="Female"
+                      checked={studentSex === "Female"}
+                      onChange={onStudentSexChanged}
+                      className="formCheckbox"
+                    />{" "}
+                    Female
+                  </label>
+                </div>
               </label>
             </div>
           </div>
-        </div>
 
-        <div className="formSectionContainer">
-          <h3 className="formSectionTitle">Student Gardien</h3>
-          {!validStudentGardien  && <span className="text-red-600 ">Ensure fileds are properly filled</span>}
-          <div className="formSection">
-            {Array.isArray(studentGardien) &&
-              studentGardien.length > 0 &&
-              studentGardien.map((entry, index) => (
-                <div key={index} className="formSection">
-                  <div className="formLineDiv">
-                    <label
-                      className="formInputLabel"
-                      htmlFor={`gardienFirstName-${index}`}
-                    >
-                      First Name:
-                      <input
-                        id={`gardienFirstName-${index}`}
-                        type="text"
-                        placeholder="[3-20 letters]"
-                        value={entry.gardienFirstName}
-                        onChange={(e) =>
-                          handleGardienFieldChange(
-                            index,
-                            "gardienFirstName",
-                            e.target.value
-                          )
-                        }
-                        className={`formInputText`}
-                      />
-                    </label>
-
-                    <label
-                      className="formInputLabel"
-                      htmlFor={`gardienMiddleName-${index}`}
-                    >
-                      Middle Name:
-                      <input
-                        id={`gardienMiddleName-${index}`}
-                        type="text"
-                        placeholder="[3-20 letters]"
-                        value={entry.gardienMiddleName}
-                        onChange={(e) =>
-                          handleGardienFieldChange(
-                            index,
-                            "gardienMiddleName",
-                            e.target.value
-                          )
-                        }
-                        className={`formInputText`}
-                      />{" "}
-                    </label>
-                  </div>
-
-                  <div className="formLineDiv">
-                    <label
-                      className="formInputLabel"
-                      htmlFor={`gardienLastName-${index}`}
-                    >
-                      Last Name:
-                      <input
-                        id={`gardienLastName-${index}`}
-                        type="text"
-                        placeholder="[3-20 letters]"
-                        value={entry.gardienLastName}
-                        onChange={(e) =>
-                          handleGardienFieldChange(
-                            index,
-                            "gardienLastName",
-                            e.target.value
-                          )
-                        }
-                        className={`formInputText`}
-                      />
-                    </label>
-
-                    <label
-                      className="formInputLabel"
-                      htmlFor={`gardienYear-${index}`}
-                    >
-                      gardienYear:
-                      <select
-                        id={`gardienYear-${index}`}
-                        value={entry.gardienYear}
-                        onChange={(e) =>
-                          handleGardienFieldChange(
-                            index,
-                            "gardienYear",
-                            e.target.value
-                          )
-                        }
-                        className={`formInputText`}
-                      >
-                        <option value="">Select Year</option>
-                        {academicYears.map(
+          <div className="formSectionContainer">
+            <h3 className="formSectionTitle">Student situation</h3>
+            <div className="formSection">
+              <div className="formLineDiv">
+                <label htmlFor="studentYears" className="formInputLabel">
+                  <input
+                    type="checkbox"
+                    id="studentYears"
+                    value={selectedAcademicYear?.title}
+                    checked={studentYears.some(
+                      (year) =>
+                        year.academicYear === selectedAcademicYear?.title
+                    )}
+                    onChange={onAcademicYearChanged}
+                    className={`formCheckbox`}
+                    required
+                  />
+                  Student Year{" "}
+                  {!studentYears[0] && <span className="text-red-600">*</span>}{" "}
+                  : {selectedAcademicYear?.title}
+                </label>
+                {studentYears.some(
+                  (year) => year.academicYear === selectedAcademicYear?.title
+                ) && (
+                  <label htmlFor="studentGrade" className="formInputLabel">
+                    Grade{" "}
+                    {!studentYears[0].grade && (
+                      <span className="text-red-600">*</span>
+                    )}
+                    <select
+                      id="studentGrade"
+                      value={
+                        studentYears.find(
                           (year) =>
-                            year.title === selectedAcademicYear?.title && (
-                              <option key={year.id} value={year.title}>
-                                {year.title}
-                              </option>
-                            )
-                        )}
-                      </select>{" "}
-                    </label>
-                  </div>
-
-                  <div className="formLineDiv">
-                    <label
-                      className="formInputLabel"
-                      htmlFor={`gardienRelation-${index}`}
-                    >
-                      Relation :
-                      <input
-                        id={`gardienRelation-${index}`}
-                        type="text"
-                        placeholder="[3-20 letters]"
-                        value={entry.gardienRelation}
-                        onChange={(e) =>
-                          handleGardienFieldChange(
-                            index,
-                            "gardienRelation",
-                            e.target.value
-                          )
-                        }
-                        className={`formInputText`}
-                      />
-                    </label>
-
-                    <label
-                      className="formInputLabel"
-                      htmlFor={`gardienPhone-${index}`}
-                    >
-                      Phone Number:
-                      <input
-                        id={`gardienPhone-${index}`}
-                        type="text"
-                        placeholder="[6-15 digits]"
-                        value={entry.gardienPhone}
-                        onChange={(e) =>
-                          handleGardienFieldChange(
-                            index,
-                            "gardienPhone",
-                            e.target.value
-                          )
-                        }
-                        className={`formInputText`}
-                      />{" "}
-                    </label>
-                  </div>
-
-                  <button
-                    type="button"
-                    aria-label="delete student gardien"
-                    onClick={() => handleRemoveGardienEntry(index)}
-                    className="delete-button w-full"
-                  >
-                    Remove Entry
-                  </button>
-                </div>
-              ))}
-
-            <button
-              type="button"
-              aria-label="add student gardien"
-              className="add-button w-full"
-              onClick={handleAddGardienEntry}
-            >
-              Add Gardien
-            </button>
-          </div>
-        </div>
-
-        <div className="formSectionContainer">
-          <h3 className="formSectionTitle">
-            Student Education{" "}
-            {!validCurrentEducation && <span className="text-red-600">*</span>}
-          </h3>{(!validCurrentEducation || !validStudentEducation)&& <span className="text-red-600 ">Ensure fileds are properly filled</span>}
-          
-          <div className="formSection">
-            {Array.isArray(studentEducation) &&
-              studentEducation.length > 0 &&
-              studentEducation.map((entry, index) => (
-                <div key={index} className="formSection">
-                  <div className="formLineDiv">
-                    <label
-                      className="formInputLabel"
-                      htmlFor={`schoolYear-${index}`}
-                    >
-                      School Year:
-                      <select
-                        id={`schoolYear-${index}`}
-                        value={entry.schoolYear}
-                        onChange={(e) =>
-                          handleFieldChange(index, "schoolYear", e.target.value)
-                        }
-                        className={`formInputText`}
-                      >
-                        <option value="">Select Year</option>
-                        {academicYears.map(
-                          (year) =>
-                            year.title !== "1000" && (
-                              <option key={year.id} value={year.title}>
-                                {year.title}
-                              </option>
-                            )
-                        )}
-                      </select>{" "}
-                    </label>
-
-                    <label
-                      className="formInputLabel"
-                      htmlFor={`attendedSchool-${index}`}
-                    >
-                      Attended School:
-                      <select
-                        id={`attendedSchool-${index}`}
-                        value={entry.attendedSchool}
-                        onChange={(e) =>
-                          handleFieldChange(
-                            index,
-                            "attendedSchool",
-                            e.target.value
-                          )
-                        }
-                        className={`formInputText`}
-                      >
-                        <option value="">Select School</option>
-                        {schoolIsSuccess &&
-                          attendedSchools
-                            .filter(
-                              (school) => school.schoolName !== "First Steps"
-                            )
-                            .map((school) => (
-                              <option key={school.id} value={school.id}>
-                                {school.schoolName}
-                              </option>
-                            ))}
-                      </select>{" "}
-                    </label>
-                  </div>
-
-                  <label className="formInputLabel" htmlFor={`note-${index}`}>
-                    Note:
-                    <textarea
-                      id={`note-${index}`}
-                      type="textArea"
-                      placeholder="[max 150 characters]"
-                      value={entry.note}
-                      onChange={(e) =>
-                        handleFieldChange(index, "note", e.target.value)
+                            year.academicYear === selectedAcademicYear?.title
+                        )?.grade || ""
                       }
-                      className={`formInputText text-wrap`}
-                    ></textarea>
+                      onChange={onStudentGradeChanged}
+                      className="formInputText"
+                    >
+                      <option value="">Select Grade</option>
+                      {["0", "1", "2", "3", "4", "5", "6", "7"].map((grade) => (
+                        <option key={grade} value={grade}>
+                          Grade {grade}
+                        </option>
+                      ))}
+                    </select>
                   </label>
+                )}
+              </div>
 
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveEntry(index)}
-                    className="delete-button w-full"
-                  >
-                    Remove Entry
-                  </button>
-                </div>
-              ))}
+              <div className="formLineDiv">
+                <label htmlFor="active" className="formInputLabel">
+                  <input
+                    type="checkbox"
+                    id="active"
+                    value={studentIsActive}
+                    checked={studentIsActive}
+                    onChange={onStudentIsActiveChanged}
+                    className={`formCheckbox`}
+                  />
+                  Student Is Active
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div className="formSectionContainer">
+            <h3 className="formSectionTitle">Student Gardien</h3>
+            {!validStudentGardien && (
+              <span className="text-red-600 ">
+                Ensure fileds are properly filled
+              </span>
+            )}
+            <div className="formSection">
+              {Array.isArray(studentGardien) &&
+                studentGardien.length > 0 &&
+                studentGardien.map((entry, index) => (
+                  <div key={index} className="formSection">
+                    <div className="formLineDiv">
+                      <label
+                        className="formInputLabel"
+                        htmlFor={`gardienFirstName-${index}`}
+                      >
+                        First Name:
+                        <input
+                          id={`gardienFirstName-${index}`}
+                          type="text"
+                          placeholder="[3-20 letters]"
+                          value={entry.gardienFirstName}
+                          onChange={(e) =>
+                            handleGardienFieldChange(
+                              index,
+                              "gardienFirstName",
+                              e.target.value
+                            )
+                          }
+                          className={`formInputText`}
+                        />
+                      </label>
+
+                      <label
+                        className="formInputLabel"
+                        htmlFor={`gardienMiddleName-${index}`}
+                      >
+                        Middle Name:
+                        <input
+                          id={`gardienMiddleName-${index}`}
+                          type="text"
+                          placeholder="[3-20 letters]"
+                          value={entry.gardienMiddleName}
+                          onChange={(e) =>
+                            handleGardienFieldChange(
+                              index,
+                              "gardienMiddleName",
+                              e.target.value
+                            )
+                          }
+                          className={`formInputText`}
+                        />{" "}
+                      </label>
+                    </div>
+
+                    <div className="formLineDiv">
+                      <label
+                        className="formInputLabel"
+                        htmlFor={`gardienLastName-${index}`}
+                      >
+                        Last Name:
+                        <input
+                          id={`gardienLastName-${index}`}
+                          type="text"
+                          placeholder="[3-20 letters]"
+                          value={entry.gardienLastName}
+                          onChange={(e) =>
+                            handleGardienFieldChange(
+                              index,
+                              "gardienLastName",
+                              e.target.value
+                            )
+                          }
+                          className={`formInputText`}
+                        />
+                      </label>
+
+                      <label
+                        className="formInputLabel"
+                        htmlFor={`gardienYear-${index}`}
+                      >
+                        gardienYear:
+                        <select
+                          id={`gardienYear-${index}`}
+                          value={entry.gardienYear}
+                          onChange={(e) =>
+                            handleGardienFieldChange(
+                              index,
+                              "gardienYear",
+                              e.target.value
+                            )
+                          }
+                          className={`formInputText`}
+                        >
+                          <option value="">Select Year</option>
+                          {academicYears.map(
+                            (year) =>
+                              year.title === selectedAcademicYear?.title && (
+                                <option key={year.id} value={year.title}>
+                                  {year.title}
+                                </option>
+                              )
+                          )}
+                        </select>{" "}
+                      </label>
+                    </div>
+
+                    <div className="formLineDiv">
+                      <label
+                        className="formInputLabel"
+                        htmlFor={`gardienRelation-${index}`}
+                      >
+                        Relation :
+                        <input
+                          id={`gardienRelation-${index}`}
+                          type="text"
+                          placeholder="[3-20 letters]"
+                          value={entry.gardienRelation}
+                          onChange={(e) =>
+                            handleGardienFieldChange(
+                              index,
+                              "gardienRelation",
+                              e.target.value
+                            )
+                          }
+                          className={`formInputText`}
+                        />
+                      </label>
+
+                      <label
+                        className="formInputLabel"
+                        htmlFor={`gardienPhone-${index}`}
+                      >
+                        Phone Number:
+                        <input
+                          id={`gardienPhone-${index}`}
+                          type="text"
+                          placeholder="[6-15 digits]"
+                          value={entry.gardienPhone}
+                          onChange={(e) =>
+                            handleGardienFieldChange(
+                              index,
+                              "gardienPhone",
+                              e.target.value
+                            )
+                          }
+                          className={`formInputText`}
+                        />{" "}
+                      </label>
+                    </div>
+
+                    <button
+                      type="button"
+                      aria-label="delete student gardien"
+                      onClick={() => handleRemoveGardienEntry(index)}
+                      className="delete-button w-full"
+                    >
+                      Remove Entry
+                    </button>
+                  </div>
+                ))}
+
+              <button
+                type="button"
+                aria-label="add student gardien"
+                className="add-button w-full"
+                onClick={handleAddGardienEntry}
+              >
+                Add Gardien
+              </button>
+            </div>
+          </div>
+
+          <div className="formSectionContainer">
+            <h3 className="formSectionTitle">
+              Student Education{" "}
+              {!validCurrentEducation && (
+                <span className="text-red-600">*</span>
+              )}
+            </h3>
+            {(!validCurrentEducation || !validStudentEducation) && (
+              <span className="text-red-600 ">
+                Ensure fileds are properly filled
+              </span>
+            )}
+
+            <div className="formSection">
+              {Array.isArray(studentEducation) &&
+                studentEducation.length > 0 &&
+                studentEducation.map((entry, index) => (
+                  <div key={index} className="formSection">
+                    <div className="formLineDiv">
+                      <label
+                        className="formInputLabel"
+                        htmlFor={`schoolYear-${index}`}
+                      >
+                        School Year:
+                        <select
+                          id={`schoolYear-${index}`}
+                          value={entry.schoolYear}
+                          onChange={(e) =>
+                            handleFieldChange(
+                              index,
+                              "schoolYear",
+                              e.target.value
+                            )
+                          }
+                          className={`formInputText`}
+                        >
+                          <option value="">Select Year</option>
+                          {academicYears.map(
+                            (year) =>
+                              year.title !== "1000" && (
+                                <option key={year.id} value={year.title}>
+                                  {year.title}
+                                </option>
+                              )
+                          )}
+                        </select>{" "}
+                      </label>
+
+                      <label
+                        className="formInputLabel"
+                        htmlFor={`attendedSchool-${index}`}
+                      >
+                        Attended School:
+                        <select
+                          id={`attendedSchool-${index}`}
+                          value={entry.attendedSchool}
+                          onChange={(e) =>
+                            handleFieldChange(
+                              index,
+                              "attendedSchool",
+                              e.target.value
+                            )
+                          }
+                          className={`formInputText`}
+                        >
+                          <option value="">Select School</option>
+                          {isSchoolSuccess &&
+                            attendedSchools
+                              .filter(
+                                (school) => school.schoolName !== "First Steps"
+                              )
+                              .map((school) => (
+                                <option key={school.id} value={school.id}>
+                                  {school.schoolName}
+                                </option>
+                              ))}
+                        </select>{" "}
+                      </label>
+                    </div>
+
+                    <label className="formInputLabel" htmlFor={`note-${index}`}>
+                      Note:
+                      <textarea
+                        id={`note-${index}`}
+                        type="textArea"
+                        placeholder="[max 150 characters]"
+                        value={entry.note}
+                        onChange={(e) =>
+                          handleFieldChange(index, "note", e.target.value)
+                        }
+                        className={`formInputText text-wrap`}
+                      ></textarea>
+                    </label>
+
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveEntry(index)}
+                      className="delete-button w-full"
+                    >
+                      Remove Entry
+                    </button>
+                  </div>
+                ))}
+              <button
+                type="button"
+                className="add-button w-full"
+                onClick={handleAddEntry}
+                aria-label="add student education"
+              >
+                Add Education
+              </button>
+            </div>
+          </div>
+
+          <div className="flex justify-end space-x-4">
             <button
               type="button"
-              className="add-button w-full"
-              onClick={handleAddEntry}
-              aria-label="add student education"
+              className="cancel-button"
+              onClick={handleCancel}
+              aria-label="cancel editing"
             >
-              Add Education
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="save-button"
+              title="Save"
+              aria-label="save changes"
+              onClick={onSaveStudentClicked}
+              disabled={!canSave || isLoading}
+            >
+              Save
             </button>
           </div>
-        </div>
-
-        <div className="flex justify-end space-x-4">
-          <button
-            type="button"
-            className="cancel-button"
-            onClick={handleCancel}
-            aria-label="cancel editing"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="save-button"
-            title="Save"
-            aria-label="save changes"
-            onClick={onSaveStudentClicked}
-            disabled={!canSave || isLoading}
-          >
-            Save Changes
-          </button>
-        </div>
-      </form>
-      {/* Confirmation Modal */}
-      <ConfirmationModal
-        show={showConfirmation}
-        onClose={handleCloseModal}
-        onConfirm={handleConfirmSave}
-        title="Confirm Save"
-        message="Are you sure you want to save?"
-      />
-    </>
-  );
+        </form>
+        {/* Confirmation Modal */}
+        <ConfirmationModal
+          show={showConfirmation}
+          onClose={handleCloseModal}
+          onConfirm={handleConfirmSave}
+          title="Confirm Save"
+          message="Are you sure you want to save?"
+        />
+      </>
+    );
+  }
 
   return content;
 };

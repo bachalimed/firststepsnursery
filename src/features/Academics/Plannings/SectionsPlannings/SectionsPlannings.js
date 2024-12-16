@@ -1111,7 +1111,7 @@ useEffect(() => {
   return (
     <>
       <Academics />
-      <div className="flex space-x-2 items-center">
+      <div className="flex space-x-2 items-center ml-3">
         Displayed Students: {filteredStudentsList?.length}
         <select
           value={selectedSchoolId}

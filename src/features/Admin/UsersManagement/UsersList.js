@@ -389,7 +389,7 @@ const UsersList = () => {
     content = (
       <>
         <UsersManagement />
-        <div className="flex space-x-2 items-center">
+        <div className="flex space-x-2 items-center ml-3">
           {/* Search Bar */}
           <div className="relative h-10 mr-2 ">
             <HiOutlineSearch

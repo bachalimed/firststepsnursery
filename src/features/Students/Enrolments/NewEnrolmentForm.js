@@ -9,10 +9,7 @@ import {
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 import { useAddNewEnrolmentMutation } from "./enrolmentsApiSlice";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { ROLES } from "../../../config/UserRoles";
-import { ACTIONS } from "../../../config/UserActions";
+
 import useAuth from "../../../hooks/useAuth";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import { useOutletContext } from "react-router-dom";
@@ -292,7 +289,7 @@ const NewEnrolmentForm = () => {
     try {
       const response = await addNewEnrolment(formData);
       navigate("/students/enrolments/enrolments/");
-     if ((response.data && response.data.message) || response?.message) {
+      if ((response.data && response.data.message) || response?.message) {
         // Success response
         triggerBanner(response?.data?.message || response?.message, "success");
       } else if (
@@ -319,170 +316,204 @@ const NewEnrolmentForm = () => {
   };
   console.log(formData, "formData");
   console.log(noEnrolmentStudentsList[0], "noEnrolmentStudentsList[0]");
-
-  const content = (
-    <>
-      <Students />
-      <form onSubmit={handleSubmit} className="form-container">
-        <h2 className="text-xl font-bold">New Enrolment</h2>
-        {/* Enrolment Year*/}
-        Enrolment Year
-        <div>
-          <label
-            htmlFor="enrolmentYear"
-             className="formInputLabel"
-          >
-            Enrolment Year{" "}
-            {!validity.validEnrolmentYear && (
-              <span className="text-red-600">*</span>
-            )}
-          </label>
-          <select
-            id="enrolmentYear"
-            name="enrolmentYear"
-            value={formData.enrolmentYear}
-            onChange={(e) =>
-              setFormData({ ...formData, enrolmentYear: e.target.value })
-            }
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            required
-          >
-            {/* <option value="">Select Enrolment Year</option> */}
-            <option value={selectedAcademicYear?.title}>
-              {selectedAcademicYear?.title}
-            </option>
-          </select>
-        </div>
-        {/* Enrolment Month */}
-        <div>
-          <label
-            htmlFor="enrolmentMonth"
-             className="formInputLabel"
-          >
-            Enrolment Month{" "}
-            {!validity.validEnrolmentMonth && (
-              <span className="text-red-600">*</span>
-            )}
-          </label>
-          <select
-            id="enrolmentMonth"
-            name="enrolmentMonth"
-            value={formData.enrolmentMonth}
-            onChange={(e) =>
-              setFormData({ ...formData, enrolmentMonth: e.target.value })
-            }
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            required
-            disabled={!formData?.enrolmentYear}
-          >
-            {/* <option value="">Select Enrolment Month</option> */}
-            {MONTHS.map((month, index) => (
-              <option key={index} value={month}>
-                {month}
-              </option>
-            ))}
-          </select>
-        </div>
-        {noEnrolmentMonthStudentsList?.length ? (
-          <div>
-            {/* Student Selection */}
-            <div>
-              <label
-                htmlFor="student"
-                 className="formInputLabel"
-              >
-                Student{" "}
-                {!validity.validStudent && (
-                  <span className="text-red-600">*</span>
-                )}
-              </label>
-              <select
-                id="student"
-                name="student"
-                value={formData.student}
-                onChange={(e) => {
-                  const selectedStudent = noEnrolmentMonthStudentsList.find(
-                    (student) => student.student._id === e.target.value
-                  );
-                  //console.log('hello', selectedStudent)
-                  setFormData({
-                    ...formData,
-                    student: e.target.value,
-                    admission: selectedStudent?.id, //the list is originally admissions so id is for admission
-                  });
-                }}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                required
-                disabled={!formData?.enrolmentMonth}
-              >
-                <option value="">Select Student</option>
-                {isAdmissionSuccess &&
-                  noEnrolmentMonthStudentsList.map((student) => (
-                    <option
-                      key={student.student._id}
-                      value={student.student._id}
-                    >
-                      {`${student.student.studentName?.firstName} ${
-                        student.student.studentName?.middleName || ""
-                      } ${student.student.studentName?.lastName}`}
+  let content;
+  if (isAdmissionLoading) {
+    content = (
+      <>
+        <Students />
+        <LoadingStateIcon />
+      </>
+    );
+  }
+  if (isAdmissionSuccess) {
+    content = (
+      <>
+        <Students />
+        <form onSubmit={handleSubmit} className="form-container">
+          <h2 className="formTitle">New Enrolment</h2>
+          {/* Enrolment Year*/}
+          <div className="formSectionContainer">
+            <h3 className="formSectionTitle"> Enrolment Dates</h3>
+            <div className="formSection">
+              <div className="formLineDiv">
+                <label htmlFor="enrolmentYear" className="formInputLabel">
+                  Enrolment Year{" "}
+                  {!validity.validEnrolmentYear && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <select
+                    aria-invalid={!validity.validEnrolmentYear}
+                    id="enrolmentYear"
+                    name="enrolmentYear"
+                    value={formData.enrolmentYear}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        enrolmentYear: e.target.value,
+                      })
+                    }
+                    className="formInputText"
+                    required
+                    disabled
+                  >
+                    {/* <option value="">Select Enrolment Year</option> */}
+                    <option value={selectedAcademicYear?.title}>
+                      {selectedAcademicYear?.title}
                     </option>
-                  ))}
-              </select>
+                  </select>
+                </label>
+
+                {/* Enrolment Month */}
+
+                <label htmlFor="enrolmentMonth" className="formInputLabel">
+                  Enrolment Month{" "}
+                  {!validity.validEnrolmentMonth && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <select
+                    aria-invalid={!validity.validEnrolmentMonth}
+                    id="enrolmentMonth"
+                    name="enrolmentMonth"
+                    value={formData.enrolmentMonth}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        enrolmentMonth: e.target.value,
+                      })
+                    }
+                    className="formInputText"
+                    required
+                    disabled={!formData?.enrolmentYear}
+                  >
+                    {/* <option value="">Select Enrolment Month</option> */}
+                    {MONTHS.map((month, index) => (
+                      <option key={index} value={month}>
+                        {month}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
             </div>
-            {/* enrolment note */}
-            <div>
-              <label
-                htmlFor="enrolmentNote"
-                 className="formInputLabel"
-              >
-                Enrolment Note
-              </label>
-              <textarea
-                id="enrolmentNote"
-                name="enrolmentNote"
-                value={formData.enrolmentNote}
-                onChange={(e) =>
-                  setFormData({ ...formData, enrolmentNote: e.target.value })
-                }
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                rows="4" // Adjust the number of rows as needed
-                placeholder="Enter any additional notes here..."
-              />
-            </div>
-            {/* Services Section */}
-            <fieldset>
-              <legend  className="formInputLabel">
-                Services
-              </legend>
-              <div className="mt-4 space-y-4">
+          </div>
+
+          <h3 className="formSectionTitle"> Student</h3>
+          {noEnrolmentMonthStudentsList?.length !== 0 && (
+            <>
+              <div className="formSection">
+                {/* Student Selection */}
+
+                <label htmlFor="student" className="formInputLabel">
+                  Student{" "}
+                  {!validity.validStudent && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <select
+                    id="student"
+                    name="student"
+                    value={formData.student}
+                    onChange={(e) => {
+                      const selectedStudent = noEnrolmentMonthStudentsList.find(
+                        (student) => student.student._id === e.target.value
+                      );
+                      //console.log('hello', selectedStudent)
+                      setFormData({
+                        ...formData,
+                        student: e.target.value,
+                        admission: selectedStudent?.id, //the list is originally admissions so id is for admission
+                      });
+                    }}
+                    className="formInputText"
+                    required
+                    disabled={!formData?.enrolmentMonth}
+                  >
+                    <option value="">Select Student</option>
+                    {isAdmissionSuccess &&
+                      noEnrolmentMonthStudentsList.map((student) => (
+                        <option
+                          key={student.student._id}
+                          value={student.student._id}
+                        >
+                          {`${student.student.studentName?.firstName} ${
+                            student.student.studentName?.middleName || ""
+                          } ${student.student.studentName?.lastName}`}
+                        </option>
+                      ))}
+                  </select>
+                </label>
+
+                {/* enrolment note */}
+
+                <label htmlFor="enrolmentNote" className="formInputLabel">
+                  Note{" "}
+                  {!validity?.validEnrolmentNote && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <textarea
+                    id="enrolmentNote"
+                    name="enrolmentNote"
+                    value={formData.enrolmentNote}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        enrolmentNote: e.target.value,
+                      })
+                    }
+                    className="formInputText"
+                    rows="2" // Adjust the number of rows as needed
+                    placeholder="[1-150 characters]"
+                  />
+                </label>
+              </div>
+              <h3 className="formSectionTitle"> Services</h3>
+
+              {/* Services Section */}
+              <div className="formSection">
                 {studentServicesList.map((service) => {
                   const isChecked = formData.enrolments.some(
-                    (enrolment) => enrolment.service === service.service
+                    (enrolment) => enrolment?.service === service?.service
                   );
 
                   return (
-                    <div key={service.service} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id={service.service}
-                        checked={isChecked}
-                        onChange={(e) =>
-                          handleServiceToggle(service.service, e.target.checked)
-                        }
-                        className="mr-2"
-                      />
-                      <label htmlFor={service.service}>
-                        {service.serviceType}
-                      </label>
-                      <span className="ml-4">
-                        Authorized Fee: {service.serviceAuthorisedFee}{" "}
-                        {`${CurrencySymbol}`}
+                    <div
+                      key={service?.service}
+                      className="flex items-center justify-between border-b border-gray-300 py-2 px-4 "
+                    >
+                      <div className="flex items-center space-x-2">
+                        <label
+                          htmlFor={service?.service}
+                          className="text-sm font-medium"
+                        >
+                          <input
+                            type="checkbox"
+                            id={service?.service}
+                            checked={isChecked}
+                            onChange={(e) =>
+                              handleServiceToggle(
+                                service?.service,
+                                e.target.checked
+                              )
+                            }
+                            className="formCheckbox"
+                          />
+
+                          {service?.serviceType}
+                        </label>
+                      </div>
+                      <span className="ml-2">
+                        Auth Fee: {service?.serviceAuthorisedFee}{" "}
+                        {`(${CurrencySymbol})`}
                       </span>
-                      <span className="ml-4">
-                        Period: {service.servicePeriod}
-                      </span>
-                      {isChecked && (
+                      <span className="ml-2">{service?.servicePeriod}</span>
+
+                      <label
+                        className="formInputLabel"
+                        htmlFor={`serviceFinalFee-${service?.service}`}
+                      >
+                      
                         <input
+                          aria-label={`Final fee for ${service?.serviceType}`}
+                          id={`serviceFinalFee-${service?.service}`}
                           type="number"
                           value={
                             formData.enrolments.find(
@@ -493,58 +524,52 @@ const NewEnrolmentForm = () => {
                           onChange={(e) =>
                             handleServiceChange(service.service, e.target.value)
                           }
-                          className="ml-4 border rounded-md p-1"
+                          className="ml-2 border rounded-md p-1 "
                           placeholder="Final Fee"
                         />
-                      )}
+                      </label>
                     </div>
                   );
                 })}
               </div>
-            </fieldset>
+            </>
+          )}
+
+          {noEnrolmentMonthStudentsList?.length === 0 && (
+            <div>
+              {`No enrolments available to add for ${formData?.enrolmentMonth}`}
+            </div>
+          )}
+          <div className="flex justify-end space-x-4">
+            <button
+              aria-label="cancel enrolment"
+              type="button"
+              className="cancel-button"
+              onClick={() => navigate("/students/enrolments/enrolments")}
+            >
+              Cancel
+            </button>
+            <button
+              aria-label="save enrolment"
+              type="submit"
+              disabled={!canSave || isEnrolmentLoading}
+              className="save-button"
+            >
+              Save
+            </button>
           </div>
-        ) : (
-          <div>{`No enrolments available to add for ${formData?.enrolmentMonth}`}</div>
-        )}
-        <div className="flex justify-end space-x-4">
-          <button
-            type="button"
-            className="cancel-button"
-            onClick={() => navigate("/students/enrolments/enrolments")}
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={!canSave || isEnrolmentLoading}
-            className={`flex items-center px-4 py-2 text-white rounded-md ${
-              canSave ? "bg-blue-600" : "bg-gray-400 cursor-not-allowed"
-            }`}
-          >
-            <FontAwesomeIcon icon={faSave} className="mr-2" />
-            Save
-          </button>
-        </div>
-        {/* Error message display */}
-        {isEnrolmentError && (
-          <div className="mt-4 text-red-600">
-            <p>
-              {enrolmentError?.data?.message ||
-                "Failed to save the enrolment. Please try again."}
-            </p>
-          </div>
-        )}
-      </form>
-      {/* Confirmation Modal */}
-      <ConfirmationModal
-        show={showConfirmation}
-        onClose={handleCloseModal}
-        onConfirm={handleConfirmSave}
-        title="Confirm Save"
-        message="Are you sure you want to save?"
-      />
-    </>
-  );
+        </form>
+        {/* Confirmation Modal */}
+        <ConfirmationModal
+          show={showConfirmation}
+          onClose={handleCloseModal}
+          onConfirm={handleConfirmSave}
+          title="Confirm Save"
+          message="Are you sure you want to save?"
+        />
+      </>
+    );
+  }
 
   return content;
 };

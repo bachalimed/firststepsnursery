@@ -7,19 +7,14 @@ import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import {
-  useGetStudentsQuery,
-  useGetStudentsByYearQuery,
-} from "../StudentsAndParents/Students/studentsApiSlice";
-import { useGetServicesByYearQuery } from "../../AppSettings/StudentsSet/NurseryServices/servicesApiSlice";
+
 import { useUpdateEnrolmentMutation } from "./enrolmentsApiSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { ROLES } from "../../../config/UserRoles";
-import { ACTIONS } from "../../../config/UserActions";
+
 import useAuth from "../../../hooks/useAuth";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
-import { useGetAcademicYearsQuery } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
+
 import { selectAllAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import {
   FEE_REGEX,
@@ -58,7 +53,6 @@ const EditEnrolmentForm = ({ enrolment }) => {
     student: enrolment?.student._id,
     enrolmentYear: enrolment?.enrolmentYear,
     enrolmentMonth: enrolment?.enrolmentMonth,
-
     service: enrolment?.service,
     serviceType: enrolment?.serviceType,
     servicePeriod: enrolment?.servicePeriod,
@@ -138,7 +132,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
     try {
       const response = await updateEnrolment(formData).unwrap();
       // navigate("/students/enrolments/enrolments");
-     if ((response.data && response.data.message) || response?.message) {
+      if ((response.data && response.data.message) || response?.message) {
         // Success response
         triggerBanner(response?.data?.message || response?.message, "success");
       } else if (
@@ -167,217 +161,207 @@ const EditEnrolmentForm = ({ enrolment }) => {
     <>
       <Students />
       <form onSubmit={handleSubmit} className="form-container">
-        <h2 className="text-xl font-bold">Edit Enrolment</h2>
-        <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
-          <div>
-            <label
-              htmlFor="student"
-               className="formInputLabel"
-            >
-              Student
-            </label>
-            <select
-              id="student"
-              name="student"
-              value={formData.student}
-              onChange={(e) =>
-                setFormData((prevData) => ({
-                  ...prevData,
-                  student: e.target.value, // update formData with input value
-                }))
-              }
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              required
-              disabled
-            >
-              <option key={enrolment.student._id} value={enrolment.student._id}>
-                {enrolment.student?.studentName?.firstName}{" "}
-                {enrolment.student.studentName?.middleName}{" "}
-                {enrolment.student.studentName?.lastName}
-              </option>
-            </select>
+        <h2 className="formTitle">Edit Enrolment</h2>
+        <div className="formSectionContainer">
+          <h3 className="formSectionTitle"> Enrolment Details</h3>
+          <div className="formSection">
+            <div className="formLineDiv">
+              <label htmlFor="student" className="formInputLabel">
+                Student
+                <select
+                  id="student"
+                  name="student"
+                  value={formData.student}
+                  onChange={(e) =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      student: e.target.value, // update formData with input value
+                    }))
+                  }
+                  className={`formInputText`}
+                  required
+                  disabled
+                >
+                  <option
+                    key={enrolment.student._id}
+                    value={enrolment.student._id}
+                  >
+                    {enrolment.student?.studentName?.firstName}{" "}
+                    {enrolment.student.studentName?.middleName}{" "}
+                    {enrolment.student.studentName?.lastName}
+                  </option>
+                </select>
+              </label>
+
+              <label htmlFor="enrolmentYear" className="formInputLabel">
+                Enrolment Year
+                <select
+                  id="enrolmentYear"
+                  name="enrolmentYear"
+                  value={formData.enrolmentYear}
+                  onChange={(e) =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      enrolmentYear: e.target.value, // update formData with input value
+                    }))
+                  }
+                  className={`formInputText`}
+                  disabled
+                >
+                  <option
+                    key={formData.enrolmentYear}
+                    value={formData.enrolmentYear}
+                  >
+                    {formData.enrolmentYear}
+                  </option>
+                </select>
+              </label>
+            </div>
+            <div className="formLineDiv">
+              {/* Enrolment Month Input */}
+
+              <label htmlFor="enrolmentMonth" className="formInputLabel">
+                Enrolment Month
+                <select
+                  id="enrolmentMonth"
+                  name="enrolmentMonth"
+                  value={formData.enrolmentMonth}
+                  onChange={(e) =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      enrolmentMonth: e.target.value, // update formData with input value
+                    }))
+                  }
+                  className={`formInputText`}
+                  disabled
+                >
+                  <option
+                    key={formData.enrolmentMonth}
+                    value={formData.enrolmentMonth}
+                  >
+                    {formData.enrolmentMonth}
+                  </option>
+                </select>
+              </label>
+
+              {/* Service Section */}
+
+              <label htmlFor="service" className="formInputLabel">
+                Service
+                <select
+                  id="service"
+                  name="Service"
+                  value={formData.service}
+                  onChange={(e) =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      service: e.target.value, // update formData with input value
+                    }))
+                  }
+                  className={`formInputText`}
+                  disabled
+                >
+                  <option key={formData.service} value={formData.service}>
+                    {formData.servicePeriod} {formData.serviceType}
+                  </option>
+                </select>
+              </label>
+            </div>
+
+           
           </div>
 
-          <div>
-            <label
-              htmlFor="enrolmentYear"
-               className="formInputLabel"
-            >
-              Enrolment Year
-            </label>
-            <select
-              id="enrolmentYear"
-              name="enrolmentYear"
-              value={formData.enrolmentYear}
-              onChange={(e) =>
-                setFormData((prevData) => ({
-                  ...prevData,
-                  enrolmentYear: e.target.value, // update formData with input value
-                }))
-              }
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              disabled
-            >
-              <option
-                key={formData.enrolmentYear}
-                value={formData.enrolmentYear}
+          <h3 className="formSectionTitle"> Service details</h3>
+          <div className="formSection">
+            {/* Services Section */}
+
+            <div>
+              
+              <label
+                htmlFor={formData?.service}
+                className=" flex items-center justify-between w-full gap-4"
               >
-                {formData.enrolmentYear}
-              </option>
-            </select>
-          </div>
+                <span className="ml-2 flex-1">
+                  Authorized Fee: {formData?.serviceAuthorisedFee}{" "}
+                  {`${CurrencySymbol}.`} Final Fee:{" "}
+                  {!validity?.validServiceFinalFee && (
+                    <span className="text-red-600">*</span>
+                  )}
+                </span>
 
-          {/* Enrolment Month Input */}
-          <div>
-            <label
-              htmlFor="enrolmentDate"
-               className="formInputLabel"
-            >
-              Enrolment Month
-            </label>
-            <select
-              id="enrolmentMonth"
-              name="enrolmentMonth"
-              value={formData.enrolmentMonth}
-              onChange={(e) =>
-                setFormData((prevData) => ({
-                  ...prevData,
-                  enrolmentMonth: e.target.value, // update formData with input value
-                }))
-              }
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              disabled
-            >
-              <option
-                key={formData.enrolmentMonth}
-                value={formData.enrolmentMonth}
-              >
-                {formData.enrolmentMonth}
-              </option>
-            </select>
-          </div>
-          {/* Service Section */}
+                <input
+                id={formData?.service}
+                  type="number"
+                  value={formData?.serviceFinalFee}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      serviceFinalFee: e.target.value,
+                    })
+                  }
+                  className="ml-2 border rounded-md p-1 w-auto"
+                  placeholder="Final Fee"
+                />
+              </label>
+              {/* enrolment note */}
 
-          <div>
-            <label
-              htmlFor="service"
-               className="formInputLabel"
-            >
-              Service
-            </label>
-            <select
-              id="service"
-              name="Service"
-              value={formData.service}
-              onChange={(e) =>
-                setFormData((prevData) => ({
-                  ...prevData,
-                  service: e.target.value, // update formData with input value
-                }))
-              }
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              disabled
-            >
-              <option key={formData.service} value={formData.service}>
-                {formData.servicePeriod} {formData.serviceType}
-              </option>
-            </select>
-          </div>
-        </div>
-
-        <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
-          {/* Services Section */}
-
-          <div className="">
-            <label htmlFor={formData?.service}> </label>
-            <span className="ml-4">
-              Authorized Fee: {formData?.serviceAuthorisedFee}{" "}
-              {`${CurrencySymbol}.`} Final Fee:{" "}
-              {!validity?.validServiceFinalFee && (
-                <span className="text-red-600">*</span>
-              )}
-            </span>
-
-            <input
-              type="number"
-              value={formData?.serviceFinalFee}
-              onChange={(e) =>
-                setFormData({ ...formData, serviceFinalFee: e.target.value })
-              }
-              className="ml-4 border rounded-md p-1"
-              placeholder="Final Fee"
-            />
-          </div>
-
-          {/* enrolment note */}
-          <div>
-            <label
-              htmlFor="enrolmentNote"
-               className="formInputLabel"
-            >
-              Enrolment Note
-            </label>
-            <textarea
-              id="enrolmentNote"
-              name="enrolmentNote"
-              value={formData.enrolmentNote}
-              onChange={(e) =>
-                setFormData({ ...formData, enrolmentNote: e.target.value })
-              }
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              rows="4" // Adjust the number of rows as needed
-              placeholder="Enter any additional notes here..."
-            />
-          </div>
-        </div>
-
-        <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
-          <div>
-            <label
-              htmlFor="enrolmentYear"
-               className="formInputLabel"
-            >
+              <label htmlFor="enrolmentNote" className="formInputLabel">
+                Enrolment Note
+                <textarea
+                  id="enrolmentNote"
+                  name="enrolmentNote"
+                  value={formData.enrolmentNote}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      enrolmentNote: e.target.value,
+                    })
+                  }
+                  className={`formInputText`}
+                  rows="2" // Adjust the number of rows as needed
+                  placeholder="[1-150 characters]"
+                />
+              </label>
+              <label htmlFor="suspensionEffectiveDate" className="formInputLabel">
               Enrolment Suspension
+              <input
+                type="date"
+                id="suspensionEffectiveDate"
+                name="suspensionEffectiveDate"
+                value={formData.enrolmentSuspension.enrolmentSuspensionDate}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    enrolmentSuspension: {
+                      enrolmentSuspensionOperator: userId,
+                      enrolmentSuspensionDate: e.target.value,
+                    },
+                  })
+                }
+                className={`formInputText`}
+              />
             </label>
-            <input
-              type="date"
-              id="suspensionEffectiveDate"
-              name="suspensionEffectiveDate"
-              value={formData.enrolmentSuspension.enrolmentSuspensionDate}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  enrolmentSuspension: {
-                    enrolmentSuspensionOperator: userId,
-                    enrolmentSuspensionDate: e.target.value,
-                  },
-                })
-              }
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            />
+            </div>
+            {/* Submit Button */}
+            <div className="flex justify-end space-x-4">
+              <button
+                aria-label="cancel enrolment"
+                type="button"
+                className="cancel-button"
+                onClick={() => navigate("/students/enrolments/enrolments")}
+              >
+                Cancel
+              </button>
+              <button
+                aria-label="save enrolment"
+                type="submit"
+                disabled={!canSave || isEnrolmentLoading}
+                className="save-button"
+              >
+                save
+              </button>
+            </div>
           </div>
-        </div>
-        {/* Submit Button */}
-        <div className="flex justify-end space-x-4">
-          <button
-            type="button"
-            className="cancel-button"
-            onClick={() => navigate("/students/enrolments/enrolments")}
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={!canSave || isEnrolmentLoading}
-            className={`inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
-              canSave
-                ? "bg-blue-600 hover:bg-blue-700"
-                : "bg-gray-400 cursor-not-allowed"
-            }`}
-          >
-            <FontAwesomeIcon icon={faSave} className="mr-2" />
-            {isEnrolmentLoading ? "Saving..." : "Save Enrolment"}
-          </button>
         </div>
       </form>
       {/* Confirmation Modal */}

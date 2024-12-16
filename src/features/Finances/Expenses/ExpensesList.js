@@ -285,7 +285,7 @@ const ExpensesList = () => {
         <Finances />
 
         <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-          <div className="flex space-x-2 items-center">
+          <div className="flex space-x-2 items-center ml-3">
             {/* Months Filter Dropdown */}
 
             {filteredExpenses?.length > 0 && (

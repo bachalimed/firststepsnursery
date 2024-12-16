@@ -384,7 +384,7 @@ const StudentsList = () => {
       selector: (row) => (
         <Link to={`/students/studentsParents/studentDocumentsList/${row.id}`} aria-label="students documents">
           {" "}
-          <IoDocumentAttachOutline className="text-fuchsia-500 text-2xl" />
+          <IoDocumentAttachOutline className="text-fuchsia-500 text-2xl " />
         </Link>
       ),
       sortable: true,
@@ -471,12 +471,12 @@ const StudentsList = () => {
     content = (
       <>
         <Students />
-        <div className="flex space-x-2 items-center">
+        <div className="flex space-x-2 items-center ml-3">
           {/* Search Bar */}
           <div className="relative h-10 mr-2 ">
             <HiOutlineSearch
               fontSize={20}
-              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3 "
               aria-label="search students"
             />
             <input
@@ -484,7 +484,7 @@ const StudentsList = () => {
               type="text"
               value={searchQuery}
               onChange={handleSearch}
-              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4 "
             />
           </div>
           {/* Grade Filter Dropdown */}

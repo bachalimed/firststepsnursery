@@ -997,7 +997,7 @@ useEffect(() => {
   return (
     <>
       <Academics />
-      <div className="flex space-x-2 items-center">
+      <div className="flex space-x-2 items-center ml-3">
         filters here
         <select
           // value={selectedSchoolName}

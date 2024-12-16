@@ -22,6 +22,8 @@ import {
 import { MONTHS } from "../../../config/Months";
 import { useOutletContext } from "react-router-dom";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
+import LoadingStateIcon from "../../../Components/LoadingStateIcon";
+
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
@@ -45,10 +47,10 @@ const NewAdmissionForm = () => {
   const [
     addNewAdmission,
     {
-      isLoading: isAdmissionLoading,
-      isSuccess: isAdmissionSuccess,
-      isError: isAdmissionError,
-      error: admissionError,
+      isLoading: isAdmissionAddLoading,
+      isSuccess: isAdmissionAddSuccess,
+      isError: isAdmissionAddError,
+      error: admissionAddError,
     },
   ] = useAddNewAdmissionMutation();
   //academic years states
@@ -78,10 +80,10 @@ const NewAdmissionForm = () => {
 
   const {
     data: admissions, //the data is renamed admissions
-    isLoading: isAdmissionGetLoading,
-    isSuccess: isAdmissionGetSuccess,
-    isError: isAdmissionGetError,
-    error: admissionGetError,
+    isLoading: isAdmissionLoading,
+    isSuccess: isAdmissionSuccess,
+    isError: isAdmissionError,
+    error: admissionError,
   } = useGetAdmissionsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -94,7 +96,7 @@ const NewAdmissionForm = () => {
     }
   );
 
-  const admissionsList = isAdmissionGetSuccess
+  const admissionsList = isAdmissionSuccess
     ? Object.values(admissions.entities)
     : [];
   const {
@@ -160,7 +162,7 @@ const NewAdmissionForm = () => {
         )
       )
     );
-  }, [isStudentsSuccess, isAdmissionGetSuccess]);
+  }, [isStudentsSuccess, isAdmissionSuccess]);
   console.log(noAdmissionStudents, "noAdmissionStudents");
   const servicesList = isServicesSuccess
     ? Object.values(services.entities)
@@ -186,39 +188,39 @@ const NewAdmissionForm = () => {
   //     }
   //   }
   // }, [isServicesSuccess]);
-// Set default admission service
-useEffect(() => {
-  if (isServicesSuccess && formData.agreedServices[0].service === "") {
-    const admissionService = servicesList.find(
-      (service) => service.serviceType === "Admission"
-    );
+  // Set default admission service
+  useEffect(() => {
+    if (isServicesSuccess && formData.agreedServices[0].service === "") {
+      const admissionService = servicesList.find(
+        (service) => service.serviceType === "Admission"
+      );
 
-    if (admissionService) {
-      setFormData((prevData) => ({
-        ...prevData,
-        agreedServices: [
-          {
-            ...prevData.agreedServices[0],
-            service: admissionService.id,
-            feeMonths: [
-              "January",
-              "February",
-              "March",
-              "April",
-              "May",
-              "June",
-              "September",
-              "October",
-              "November",
-              "December",
-            ], // All months except July and August
-          },
-          ...prevData.agreedServices.slice(1),
-        ],
-      }));
+      if (admissionService) {
+        setFormData((prevData) => ({
+          ...prevData,
+          agreedServices: [
+            {
+              ...prevData.agreedServices[0],
+              service: admissionService.id,
+              feeMonths: [
+                "January",
+                "February",
+                "March",
+                "April",
+                "May",
+                "June",
+                "September",
+                "October",
+                "November",
+                "December",
+              ], // All months except July and August
+            },
+            ...prevData.agreedServices.slice(1),
+          ],
+        }));
+      }
     }
-  }
-}, [isServicesSuccess, formData.agreedServices, servicesList]);
+  }, [isServicesSuccess, formData.agreedServices, servicesList]);
 
   const [admissionValidity, setAdmissionValidity] = useState([]);
 
@@ -389,7 +391,7 @@ useEffect(() => {
     setShowConfirmation(false);
   };
   useEffect(() => {
-    if (isAdmissionSuccess) {
+    if (isAdmissionAddSuccess) {
       //if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
       setFormData({
         student: "",
@@ -413,7 +415,7 @@ useEffect(() => {
       });
       navigate("/students/admissions/admissions"); //will navigate here after saving
     }
-  }, [isAdmissionSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success
+  }, [isAdmissionAddSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success
 
   // Function to filter available services based on previous selections
 
@@ -492,275 +494,288 @@ useEffect(() => {
       Object.values(validity).every(Boolean)
     ) &&
     Object.values(primaryValidity).every(Boolean) &&
-    !isAdmissionLoading;
+    !isAdmissionAddLoading;
   const handleCancel = () => {
     navigate("/students/admissions/admissions/");
   };
   console.log(formData, "formData");
-  const content = (
-    <>
-      <Students />
+  let content;
+  if (isStudentsLoading || isServicesLoading || isAdmissionLoading) {
+    content = (
+      <>
+        {" "}
+        <Students />
+        <LoadingStateIcon />
+      </>
+    );
+  }
+  if (isStudentsSuccess && isServicesSuccess && isAdmissionSuccess) {
+    content = (
+      <>
+        <Students />
 
-      {noAdmissionStudents?.length !== 0 ? (
-        <form onSubmit={handleSubmit} className="form-container">
-          <h2 className="formTitle">New Admission </h2>
-          <div className="formSectionContainer">
-            <h3 className="formSectionTitle">Admission Information</h3>
-            <div className="formSection">
-              <label htmlFor="student" className="formInputLabel">
-                Student{" "}
-                {!primaryValidity?.validStudent && (
-                  <span className="text-red-600">*</span>
-                )}
-                <select
-                  aria-invalid={!primaryValidity?.validStudent}
-                  id="student"
-                  name="student"
-                  value={formData.student}
-                  onChange={(e) =>
-                    setFormData((prevData) => ({
-                      ...prevData,
-                      student: e.target.value, // update formData with input value
-                    }))
-                  }
-                  className={`formInputText`}
-                  required
-                >
-                  <option value="">Select Student</option>
-                  {isStudentsSuccess &&
-                    noAdmissionStudents.map((student) => (
-                      <option key={student.id} value={student.id}>
-                        {student.studentName?.firstName}{" "}
-                        {student.studentName?.middleName}{" "}
-                        {student.studentName?.lastName}
-                      </option>
-                    ))}
-                </select>{" "}
-              </label>
-
-              <div className="formLineDiv">
-                <label htmlFor="admissionYear" className="formInputLabel">
-                  Admission Year{" "}
-                  {!primaryValidity.validAdmissionYear && (
+        {noAdmissionStudents?.length !== 0 ? (
+          <form onSubmit={handleSubmit} className="form-container">
+            <h2 className="formTitle">New Admission </h2>
+            <div className="formSectionContainer">
+              <h3 className="formSectionTitle">Admission Information</h3>
+              <div className="formSection">
+                <label htmlFor="student" className="formInputLabel">
+                  Student{" "}
+                  {!primaryValidity?.validStudent && (
                     <span className="text-red-600">*</span>
                   )}
                   <select
-                    aria-invalid={!primaryValidity?.validAdmissionYear}
-                    id="admissionYear"
-                    name="admissionYear"
-                    value={formData.admissionYear}
+                    aria-invalid={!primaryValidity?.validStudent}
+                    id="student"
+                    name="student"
+                    value={formData.student}
                     onChange={(e) =>
                       setFormData((prevData) => ({
                         ...prevData,
-                        admissionYear: e.target.value, // update formData with input value
+                        student: e.target.value, // update formData with input value
                       }))
                     }
                     className={`formInputText`}
                     required
                   >
-                    <option value="">Select Year</option>
-                    <option
-                      key={selectedAcademicYear?._id}
-                      value={selectedAcademicYear?.title}
+                    <option value="">Select Student</option>
+                    {isStudentsSuccess &&
+                      noAdmissionStudents.map((student) => (
+                        <option key={student.id} value={student.id}>
+                          {student.studentName?.firstName}{" "}
+                          {student.studentName?.middleName}{" "}
+                          {student.studentName?.lastName}
+                        </option>
+                      ))}
+                  </select>{" "}
+                </label>
+
+                <div className="formLineDiv">
+                  <label htmlFor="admissionYear" className="formInputLabel">
+                    Admission Year{" "}
+                    {!primaryValidity.validAdmissionYear && (
+                      <span className="text-red-600">*</span>
+                    )}
+                    <select
+                      aria-invalid={!primaryValidity?.validAdmissionYear}
+                      id="admissionYear"
+                      name="admissionYear"
+                      value={formData.admissionYear}
+                      onChange={(e) =>
+                        setFormData((prevData) => ({
+                          ...prevData,
+                          admissionYear: e.target.value, // update formData with input value
+                        }))
+                      }
+                      className={`formInputText`}
+                      required
                     >
-                      {selectedAcademicYear?.title}
-                    </option>
-                    {/* {academicYears.map((year) => (
+                      <option value="">Select Year</option>
+                      <option
+                        key={selectedAcademicYear?._id}
+                        value={selectedAcademicYear?.title}
+                      >
+                        {selectedAcademicYear?.title}
+                      </option>
+                      {/* {academicYears.map((year) => (
               <option key={year._id} value={year.title}>
                 {year.title}
               </option>
             ))} */}
-                  </select>{" "}
-                </label>
-
-                {/* Admission Date Input */}
-
-                <label htmlFor="admissionDate" className="formInputLabel">
-                  Effective start{" "}
-                  {!primaryValidity.validAdmissionDate && (
-                    <span className="text-red-600">*</span>
-                  )}
-                  <input
-                    aria-invalid={!primaryValidity?.validAdmissionDate}
-                    type="date"
-                    id="admissionDate"
-                    name="admissionDate"
-                    value={formData.admissionDate}
-                    onChange={(e) =>
-                      setFormData((prevData) => ({
-                        ...prevData,
-                        admissionDate: e.target.value, // update formData with input value
-                      }))
-                    }
-                    placeholder="YYYY-MM-DD"
-                    className={`formInputText`}
-                    required
-                  />{" "}
-                </label>
-              </div>
-            </div>
-
-            {/* Agreed Services Section */}
-            <h3 className="formSectionTitle">Services provided</h3>
-            {formData.agreedServices.map((service, index) => (
-              <div className="formSection">
-                <div key={index} className="formLineDiv">
-                  <label
-                    htmlFor={`service-${index}`}
-                    className="formInputLabel"
-                  >
-                    Service{" "}
-                    {!admissionValidity[index]?.validService && (
-                      <span className="text-red-600">*</span>
-                    )}
-                    {index === 0 && "(default)"}
-                    <select
-                      aria-invalid={!admissionValidity[index]?.validService}
-                      id={`service-${index}`}
-                      name="service"
-                      value={service.id}
-                      onChange={(e) => handleAgreedServicesChange(index, e)}
-                      className={`formInputText`}
-                      disabled={index === 0} // Disable the first service since it's "Admission"
-                      required
-                    >
-                      {index === 0 ? (
-                        <option value="Admission">Admission</option>
-                      ) : (
-                        <>
-                          <option value="">Select Service</option>
-                          {getAvailableServices(index).map((serviceOption) => (
-                            <option
-                              key={serviceOption.id}
-                              value={serviceOption.id}
-                            >
-                              {serviceOption.serviceType}
-                            </option>
-                          ))}
-                        </>
-                      )}
                     </select>{" "}
                   </label>
-                  <label
-                    htmlFor={`feePeriod-${index}`}
-                    className="formInputLabel"
-                  >
-                    Fee Period{" "}
-                    {!admissionValidity[index]?.validFeePeriod && (
-                      <span className="text-red-600">*</span>
-                    )}
-                    <select
-                      aria-invalid={!admissionValidity[index]?.validFeePeriod}
-                      id={`feePeriod-${index}`}
-                      name="feePeriod"
-                      value={service.feePeriod}
-                      onChange={(e) => handleAgreedServicesChange(index, e)}
-                      className={`formInputText`}
-                      required
-                    >
-                      <option value="">Select Period</option>
-                      {/* Ensure the correct serviceAnchor object is passed */}
-                      {servicesList.find(
-                        (service) =>
-                          service.id ===
-                          formData?.agreedServices[index]?.service
-                      )?.serviceAnchor &&
-                        Object.entries(
-                          servicesList.find(
-                            (service) =>
-                              service.id ===
-                              formData?.agreedServices[index]?.service
-                          )?.serviceAnchor
-                        ).map(([periodKey, value]) => (
-                          <option key={periodKey} value={periodKey}>
-                            {`${
-                              periodKey.charAt(0).toUpperCase() +
-                              periodKey.slice(1)
-                            } (anchor: ${value} ${CurrencySymbol})`}
-                          </option>
-                        ))}
-                    </select>
-                  </label>
-                </div>
 
-                <div className="formLineDiv">
-                  <label
-                    htmlFor={`feeValue-${index}`}
-                    className="formInputLabel"
-                  >
-                    Fee Value ({CurrencySymbol})
-                    {!admissionValidity[index]?.validFeeValue && (
+                  {/* Admission Date Input */}
+
+                  <label htmlFor="admissionDate" className="formInputLabel">
+                    Effective start{" "}
+                    {!primaryValidity.validAdmissionDate && (
                       <span className="text-red-600">*</span>
                     )}
                     <input
-                      aria-invalid={!admissionValidity[index]?.validFeeValue}
-                      type="number"
-                      id={`feeValue-${index}`}
-                      name="feeValue"
-                      value={service.feeValue}
-                      placeholder="[$$$.$$]"
-                      onChange={(e) => {
-                        setFeeValue(e.target.value);
-                        handleInputChange(index, "feeValue", e.target.value);
-                      }}
-                      className={`formInputText`}
-                      required
-                    />
-                  </label>
-
-                  <label
-                    htmlFor={`feeStartDate-${index}`}
-                    className="formInputLabel"
-                  >
-                    Fee Start Date{" "}
-                    {!admissionValidity[index]?.validFeeStartDate && (
-                      <span className="text-red-600">*</span>
-                    )}
-                    (Billing start)
-                    <input
-                      aria-invalid={
-                        !admissionValidity[index]?.validFeeStartDate
-                      }
+                      aria-invalid={!primaryValidity?.validAdmissionDate}
                       type="date"
-                      id={`feeStartDate-${index}`}
-                      name="feeStartDate"
-                      value={service.feeStartDate}
-                      onChange={(e) => handleAgreedServicesChange(index, e)}
+                      id="admissionDate"
+                      name="admissionDate"
+                      value={formData.admissionDate}
+                      onChange={(e) =>
+                        setFormData((prevData) => ({
+                          ...prevData,
+                          admissionDate: e.target.value, // update formData with input value
+                        }))
+                      }
                       placeholder="YYYY-MM-DD"
                       className={`formInputText`}
                       required
                     />{" "}
                   </label>
                 </div>
+              </div>
 
-                <div key={index} className="formSection">
-                  <div className="formInputLabel" htmlFor="feeMonth">
-                    Select Month(s){" "}
-                    {!service.feeMonths?.length > 0 && (
-                      <span className="text-red-600">*</span>
-                    )}
-                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-2">
-                      {MONTHS?.map((month) => (
-                        <button
-                          aria-label="feeMonth"
-                          id="feeMonth"
-                          key={month}
-                          type="button"
-                          className={`px-4 py-2 border border-sky-600 rounded cursor-pointer transition-colors hover:bg-sky-500 hover:text-white ${
-                            service.feeMonths.includes(month)
-                              ? "bg-sky-600 text-white"
-                              : "bg-white text-sky-700"
-                          }`}
-                          onClick={() => handleMonthSelection(index, month)}
-                        >
-                          {month}
-                        </button>
-                      ))}
+              {/* Agreed Services Section */}
+              <h3 className="formSectionTitle">Services provided</h3>
+              {formData.agreedServices.map((service, index) => (
+                <div className="formSection">
+                  <div key={index} className="formLineDiv">
+                    <label
+                      htmlFor={`service-${index}`}
+                      className="formInputLabel"
+                    >
+                      Service{" "}
+                      {!admissionValidity[index]?.validService && (
+                        <span className="text-red-600">*</span>
+                      )}
+                      {index === 0 && "(default)"}
+                      <select
+                        aria-invalid={!admissionValidity[index]?.validService}
+                        id={`service-${index}`}
+                        name="service"
+                        value={service.id}
+                        onChange={(e) => handleAgreedServicesChange(index, e)}
+                        className={`formInputText`}
+                        disabled={index === 0} // Disable the first service since it's "Admission"
+                        required
+                      >
+                        {index === 0 ? (
+                          <option value="Admission">Admission</option>
+                        ) : (
+                          <>
+                            <option value="">Select Service</option>
+                            {getAvailableServices(index).map(
+                              (serviceOption) => (
+                                <option
+                                  key={serviceOption.id}
+                                  value={serviceOption.id}
+                                >
+                                  {serviceOption.serviceType}
+                                </option>
+                              )
+                            )}
+                          </>
+                        )}
+                      </select>{" "}
+                    </label>
+                    <label
+                      htmlFor={`feePeriod-${index}`}
+                      className="formInputLabel"
+                    >
+                      Fee Period{" "}
+                      {!admissionValidity[index]?.validFeePeriod && (
+                        <span className="text-red-600">*</span>
+                      )}
+                      <select
+                        aria-invalid={!admissionValidity[index]?.validFeePeriod}
+                        id={`feePeriod-${index}`}
+                        name="feePeriod"
+                        value={service.feePeriod}
+                        onChange={(e) => handleAgreedServicesChange(index, e)}
+                        className={`formInputText`}
+                        required
+                      >
+                        <option value="">Select Period</option>
+                        {/* Ensure the correct serviceAnchor object is passed */}
+                        {servicesList.find(
+                          (service) =>
+                            service.id ===
+                            formData?.agreedServices[index]?.service
+                        )?.serviceAnchor &&
+                          Object.entries(
+                            servicesList.find(
+                              (service) =>
+                                service.id ===
+                                formData?.agreedServices[index]?.service
+                            )?.serviceAnchor
+                          ).map(([periodKey, value]) => (
+                            <option key={periodKey} value={periodKey}>
+                              {`${
+                                periodKey.charAt(0).toUpperCase() +
+                                periodKey.slice(1)
+                              } (anchor: ${value} ${CurrencySymbol})`}
+                            </option>
+                          ))}
+                      </select>
+                    </label>
+                  </div>
+
+                  <div className="formLineDiv">
+                    <label
+                      htmlFor={`feeValue-${index}`}
+                      className="formInputLabel"
+                    >
+                      Fee Value ({CurrencySymbol})
+                      {!admissionValidity[index]?.validFeeValue && (
+                        <span className="text-red-600">*</span>
+                      )}
+                      <input
+                        aria-invalid={!admissionValidity[index]?.validFeeValue}
+                        type="number"
+                        id={`feeValue-${index}`}
+                        name="feeValue"
+                        value={service.feeValue}
+                        placeholder="[$$$.$$]"
+                        onChange={(e) => {
+                          setFeeValue(e.target.value);
+                          handleInputChange(index, "feeValue", e.target.value);
+                        }}
+                        className={`formInputText`}
+                        required
+                      />
+                    </label>
+
+                    <label
+                      htmlFor={`feeStartDate-${index}`}
+                      className="formInputLabel"
+                    >
+                      Fee Start Date{" "}
+                      {!admissionValidity[index]?.validFeeStartDate && (
+                        <span className="text-red-600">*</span>
+                      )}
+                      (Billing start)
+                      <input
+                        aria-invalid={
+                          !admissionValidity[index]?.validFeeStartDate
+                        }
+                        type="date"
+                        id={`feeStartDate-${index}`}
+                        name="feeStartDate"
+                        value={service.feeStartDate}
+                        onChange={(e) => handleAgreedServicesChange(index, e)}
+                        placeholder="YYYY-MM-DD"
+                        className={`formInputText`}
+                        required
+                      />{" "}
+                    </label>
+                  </div>
+
+                  <div key={index} className="formSection">
+                    <div className="formInputLabel" htmlFor="feeMonth">
+                      Select Month(s){" "}
+                      {!service.feeMonths?.length > 0 && (
+                        <span className="text-red-600">*</span>
+                      )}
+                      <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-2">
+                        {MONTHS?.map((month) => (
+                          <button
+                            aria-label="feeMonth"
+                            id="feeMonth"
+                            key={month}
+                            type="button"
+                            className={`px-4 py-2 border border-sky-600 rounded cursor-pointer transition-colors hover:bg-sky-500 hover:text-white ${
+                              service.feeMonths.includes(month)
+                                ? "bg-sky-600 text-white"
+                                : "bg-white text-sky-700"
+                            }`}
+                            onClick={() => handleMonthSelection(index, month)}
+                          >
+                            {month}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* {index !== 0 && (
+                  {/* {index !== 0 && (
                           <div>
                             <label
                               htmlFor={`feeEndDate-${index}`}
@@ -780,93 +795,94 @@ useEffect(() => {
                           </div>
                         )} */}
 
-                <div>
-                  {service.isFlagged && (
-                    <div className="text-red-600">
-                      The entered fee value is below the minimum required fee
-                      for this service, please add note to help with
-                      authorisation processing.
-                    </div>
-                  )}
-                  <label
-                    htmlFor={`comment-${index}`}
-                    className="formInputLabel"
-                  >
-                    Note
-                    {!COMMENT_REGEX.test(service?.comment) && (
-                      <span className="text-red-600"> check your input</span>
+                  <div>
+                    {service.isFlagged && (
+                      <div className="text-red-600">
+                        The entered fee value is below the minimum required fee
+                        for this service, please add note to help with
+                        authorisation processing.
+                      </div>
                     )}
-                    <textarea
-                      type="text"
-                      id={`comment-${index}`}
-                      name="comment"
-                      placeholder="[1-150 characters]"
-                      value={service.comment}
-                      onChange={(e) => handleAgreedServicesChange(index, e)}
-                      className={`formInputText text-wrap`}
-                      maxLength="150"
-                    ></textarea>
-                  </label>
+                    <label
+                      htmlFor={`comment-${index}`}
+                      className="formInputLabel"
+                    >
+                      Note
+                      {!COMMENT_REGEX.test(service?.comment) && (
+                        <span className="text-red-600"> check your input</span>
+                      )}
+                      <textarea
+                        type="text"
+                        id={`comment-${index}`}
+                        name="comment"
+                        placeholder="[1-150 characters]"
+                        value={service.comment}
+                        onChange={(e) => handleAgreedServicesChange(index, e)}
+                        className={`formInputText text-wrap`}
+                        maxLength="150"
+                      ></textarea>
+                    </label>
+                  </div>
+
+                  {index !== 0 && (
+                    <button
+                      aria-label="remove service"
+                      type="button"
+                      onClick={() => removeAgreedService(index)}
+                      className="delete-button w-full"
+                    >
+                      Remove Service
+                    </button>
+                  )}
                 </div>
+              ))}
+              {/* we should only add the number of services availble */}
+              {formData.agreedServices.length <= servicesList.length && (
+                <button
+                  type="button"
+                  onClick={addAgreedService}
+                  className="add-button w-full"
+                  aria-label="add service"
+                >
+                  Add Another Service
+                </button>
+              )}
 
-                {index !== 0 && (
-                  <button
-                    aria-label="remove service"
-                    type="button"
-                    onClick={() => removeAgreedService(index)}
-                    className="delete-button w-full"
-                  >
-                    Remove Service
-                  </button>
-                )}
+              {/* Submit Button */}
+              <div className="flex justify-end gap-4">
+                <button
+                  type="button"
+                  className={"cancel-button"}
+                  onClick={handleCancel}
+                  aria-label="cancel admission"
+                >
+                  Cancel
+                </button>
+                <button
+                  className={"save-button"}
+                  type="submit"
+                  aria-label="submit admission"
+                  disabled={!canSave || isAdmissionLoading}
+                >
+                  save
+                </button>
               </div>
-            ))}
-            {/* we should only add the number of services availble */}
-            {formData.agreedServices.length <= servicesList.length && (
-              <button
-                type="button"
-                onClick={addAgreedService}
-                className="add-button w-full"
-                aria-label="add service"
-              >
-                Add Another Service
-              </button>
-            )}
-
-            {/* Submit Button */}
-            <div className="flex justify-end gap-4">
-              <button
-                type="button"
-                className={"cancel-button"}
-                onClick={handleCancel}
-                aria-label="cancel admission"
-              >
-                Cancel
-              </button>
-              <button
-                className={"save-button"}
-                type="submit"
-                aria-label="submit admission"
-                disabled={!canSave || isAdmissionLoading}
-              >
-                save
-              </button>
             </div>
-          </div>
-        </form>
-      ) : (
-        "No new Students for admission available"
-      )}
-      {/* Confirmation Modal */}
-      <ConfirmationModal
-        show={showConfirmation}
-        onClose={handleCloseModal}
-        onConfirm={handleConfirmSave}
-        title="Confirm Save"
-        message="Are you sure you want to save?"
-      />
-    </>
-  );
+          </form>
+        ) : (
+          "No new Students for admission available"
+        )}
+        {/* Confirmation Modal */}
+        <ConfirmationModal
+          show={showConfirmation}
+          onClose={handleCloseModal}
+          onConfirm={handleConfirmSave}
+          title="Confirm Save"
+          message="Are you sure you want to save?"
+        />
+      </>
+    );
+  }
 
   //if (noAdmissionStudents.length === 0) return <LoadingStateIcon />;
   //if (noAdmissionStudents.length) return content;
