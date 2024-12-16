@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-
+import LoadingStateIcons from "../../../../Components/LoadingStateIcon";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -16,7 +16,10 @@ import {
   selectAcademicYearById,
   selectAllAcademicYears,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import { NAME_REGEX, DATE_REGEX } from "../../../../config/REGEX";
+import {
+  DATE_REGEX,
+  OBJECTID_REGEX,
+} from "../../../../config/REGEX";
 import { useOutletContext } from "react-router-dom";
 
 const NewAnimatorsAssignmentForm = () => {
@@ -46,10 +49,10 @@ const NewAnimatorsAssignmentForm = () => {
   );
   const {
     data: schools, //the data is renamed schools
-    isLoading: isSchoolLoading,
-    isSuccess: isSchoolSuccess,
-    isError: isSchoolError,
-    error: schoolError,
+    isLoading: isSchoolsLoading,
+    isSuccess: isSchoolsSuccess,
+    isError: isSchoolsError,
+    error: schoolsError,
   } = useGetAttendedSchoolsQuery({
     endpointName: "NewAnimatorsAssignmentForm",
   }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
@@ -76,7 +79,7 @@ const NewAnimatorsAssignmentForm = () => {
     creator: userId,
     operator: userId,
   });
-  let schoolsList = isSchoolSuccess ? Object.values(schools.entities) : [];
+  let schoolsList = isSchoolsSuccess ? Object.values(schools.entities) : [];
   // let employeesList = isEmployeesSuccess
   //   ? Object.values(employees.entities)
   //   : [];
@@ -100,6 +103,7 @@ const NewAnimatorsAssignmentForm = () => {
     validAssignmentYear: false,
     validAssignments: false,
     validAssignedFrom: false,
+    validNonEmptyschools:false,
     validAssignedTo: false,
     noOverlap: true, // New validity check for date overlap
   });
@@ -135,9 +139,12 @@ const NewAnimatorsAssignmentForm = () => {
     setValidity((prev) => ({
       ...prev,
       validAssignmentYear: DATE_REGEX.test(formData.assignmentYear),
+      validNonEmptyschools: formData.assignments.every(
+        (assign) => assign?.schools?.length > 0
+      ),
       validAssignments:
         formData.assignments.length > 0 &&
-        formData.assignments.every((animator) => animator !== ""),
+        formData.assignments.every((assign) => assign?.animator !== ""),
       validAssignedFrom: DATE_REGEX.test(formData.assignedFrom), // Ensure schoolType is selected
       validAssignedTo:
         !!formData.assignedTo &&
@@ -170,7 +177,7 @@ const NewAnimatorsAssignmentForm = () => {
       navigate("/academics/plannings/animatorsAssignments");
     }
   }, [isAddSuccess, navigate]);
-
+  // check that every animator assignemtn is not empty!!!
   // Check if all fields are valid and enable the submit button
   const canSubmit = Object.values(validity).every(Boolean) && !isAddLoading;
 
@@ -194,7 +201,7 @@ const NewAnimatorsAssignmentForm = () => {
     try {
       const response = await addNewAnimatorsAssignment(formData).unwrap();
       console.log(response, "response");
-     if ((response.data && response.data.message) || response?.message) {
+      if ((response.data && response.data.message) || response?.message) {
         // Success response
         triggerBanner(response?.data?.message || response?.message, "success");
       } else if (
@@ -276,6 +283,14 @@ const NewAnimatorsAssignmentForm = () => {
     setFormData((prev) => ({ ...prev, assignments: updatedAssignments }));
   };
 
+  // Remove an assignment row
+  const removeAssignment = (index) => {
+    const updatedAssignments = formData.assignments.filter(
+      (_, i) => i !== index
+    );
+    setFormData((prev) => ({ ...prev, assignments: updatedAssignments }));
+  };
+
   // Add a new assignment row for another animator
   const addAssignment = () => {
     setFormData((prev) => ({
@@ -286,138 +301,164 @@ const NewAnimatorsAssignmentForm = () => {
 
   console.log(formData, "formdata");
 
-  return (
-    <>
-      <Academics />
-
-      <form onSubmit={handleSubmit} className="form-container">
-        <h2 className="formTitle ">New Assignment</h2>
-        <div className="formSectionContainer">
-          <h3 className="formSectionTitle">Assignments Dates</h3>
-          <div className="formSection">
-            <div>
-              <label htmlFor="assignmentYear" className="formInputLabel">
-                Assignment Year{" "}
-                {!validity.validAssignmentYear && (
-                  <span className="text-red-600">*</span>
-                )}
-                <select
-                  aria-invalid={!validity.validAssignmentYear}
-                  required
-                  id="assignmentYear"
-                  name="assignmentYear"
-                  value={formData.assignmentYear}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-                >
-                  <option
-                    key={selectedAcademicYear?.title}
-                    value={selectedAcademicYear?.title}
-                  >
-                    {selectedAcademicYear?.title}{" "}
-                  </option>
-                </select>
-              </label>
-            </div>
-
-            <div className="formLineDiv">
-              <div>
-                <label htmlFor="assignedFrom" className="formInputLabel">
-                  From{" "}
-                  {(!validity.validAssignedFrom || !validity.noOverlap) && (
+  let content;
+  if (isSchoolsLoading || isEmployeesLoading || isAssignmentsLoading) {
+    content = (
+      <>
+        <Academics />
+        <LoadingStateIcons />
+      </>
+    );
+  }
+  if (isSchoolsSuccess && isEmployeesSuccess && isAssignmentsSuccess) {
+    content = (
+      <>
+        <Academics />
+        <form onSubmit={handleSubmit} className="form-container">
+          <h2 className="formTitle ">New Assignment</h2>
+          <div className="formSectionContainer">
+            <h3 className="formSectionTitle">Assignments Dates</h3>
+            <div className="formSection">
+              
+                <label htmlFor="assignmentYear" className="formInputLabel">
+                  Assignment Year{" "}
+                  {!validity.validAssignmentYear && (
                     <span className="text-red-600">*</span>
                   )}
-                  <input
-                    aria-invalid={!validity.validAssignedFrom}
+                  <select
+                    aria-invalid={!validity.validAssignmentYear}
                     required
-                    placeholder="[dd/mm/yyyy]"
-                    type="date"
-                    id="assignedFrom"
-                    name="assignedFrom"
-                    value={formData.assignedFrom}
+                    id="assignmentYear"
+                    name="assignmentYear"
+                    value={formData.assignmentYear}
                     onChange={handleChange}
-                    className="formInputText"
-                  />{" "}
-                  {(!validity.validAssignedFrom || !validity.noOverlap) && (
-                    formData?.assignedFrom &&<span className="text-red-600">
-                      wrong format or date overlap
-                    </span>
-                  )}
+                    className={`formInputText`}
+                  >
+                    <option
+                      key={selectedAcademicYear?.title}
+                      value={selectedAcademicYear?.title}
+                    >
+                      {selectedAcademicYear?.title}{" "}
+                    </option>
+                  </select>
                 </label>
-              </div>
-              <div className="mb-4">
-                <label htmlFor="assignedTo" className="formInputLabel">
-                  To{" "}
-                  {(!validity.validAssignedTo || !validity.noOverlap)  &&(
+              
+
+              <div className="formLineDiv">
+              
+                  <label htmlFor="assignedFrom" className="formInputLabel">
+                    From{" "}
+                    {(!validity.validAssignedFrom || !validity.noOverlap) && (
                       <span className="text-red-600">*</span>
                     )}
-                  <input
-                    aria-invalid={!validity.validAssignedTo}
-                    required
-                    placeholder="[dd/mm/yyyy]"
-                    type="date"
-                    id="assignedTo"
-                    name="assignedTo"
-                    value={formData.assignedTo}
-                    onChange={handleChange}
-                    className="formInputText"
-                  />{" "}
-                  {(!validity.validAssignedTo || !validity.noOverlap) &&
-                    formData?.assignedTo && (
-                      <span className="text-red-600">
-                        wrong format or date overlap
-                      </span>
+                    <input
+                      aria-invalid={!validity.validAssignedFrom}
+                      required
+                      placeholder="[dd/mm/yyyy]"
+                      type="date"
+                      id="assignedFrom"
+                      name="assignedFrom"
+                      value={formData.assignedFrom}
+                      onChange={handleChange}
+                      className="formInputText"
+                    />{" "}
+                    {(!validity.validAssignedFrom || !validity.noOverlap) &&
+                      formData?.assignedFrom && (
+                        <span className="text-red-600">
+                          wrong format or date overlap
+                        </span>
+                      )}
+                  </label>
+                
+               
+                  <label htmlFor="assignedTo" className="formInputLabel">
+                    To{" "}
+                    {(!validity.validAssignedTo || !validity.noOverlap) && (
+                      <span className="text-red-600">*</span>
                     )}
-                </label>
+                    <input
+                      aria-invalid={!validity.validAssignedTo}
+                      required
+                      placeholder="[dd/mm/yyyy]"
+                      type="date"
+                      id="assignedTo"
+                      name="assignedTo"
+                      value={formData.assignedTo}
+                      onChange={handleChange}
+                      className="formInputText"
+                    />{" "}
+                    {(!validity.validAssignedTo || !validity.noOverlap) &&
+                      formData?.assignedTo && (
+                        <span className="text-red-600">
+                          wrong format or date overlap
+                        </span>
+                      )}
+                  </label>
+               
               </div>
             </div>
           </div>
-        </div>
 
-        <h3 className="formSectionTitle">Assignments</h3>
-        {formData.assignments.map((assignment, index) => (
-          <div key={index} className="mb-4 p-4 border rounded-md">
-            <label className="formInputLabel">
-              Animator
-            </label>
-            <select
-              value={assignment.animator}
-              onChange={(e) =>
-                handleAssignmentChange(index, "animator", e.target.value)
-              }
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-            >
-              <option value="">Select Animator</option>
-              {getAvailableAnimators(index).map((employee) => (
-                <option key={employee.id} value={employee.id}>
-                  {employee.userFullName.userFirstName}{" "}
-                  {employee.userFullName.userMiddleName}{" "}
-                  {employee.userFullName.userLastName}
-                </option>
-              ))}
-            </select>
-
-            <label className="formInputLabel">
-              Schools
-            </label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              {getAvailableSchools(index).map((school) => (
-                <button
-                  key={school.id}
-                  type="button"
-                  onClick={() => toggleSchoolSelection(index, school.id)}
-                  className={`px-3 py-1 rounded-md ${
-                    assignment.schools.includes(school.id)
-                      ? "bg-sky-700 text-white"
-                      : "bg-gray-200 text-gray-700"
-                  }`}
+          <h3 className="formSectionTitle">Assignments</h3>
+          {formData.assignments.map((assignment, index) => (
+            <div key={index} className="mb-4 p-4 border rounded-md">
+              <label htmlFor={`assignmentAnimator-${index}`} className="formInputLabel">
+                Animator{" "}
+                {!OBJECTID_REGEX.test(assignment?.animator) && (
+                  <span className="text-red-600">*</span>
+                )}
+                <select
+                id={`assignmentAnimator-${index}`}
+                  value={assignment.animator}
+                  onChange={(e) =>
+                    handleAssignmentChange(index, "animator", e.target.value)
+                  }
+                  className={`formInputText`}
                 >
-                  {school.schoolName}
-                </button>
-              ))}
-            </div>
+                  <option value="">Select Animator</option>
+                  {getAvailableAnimators(index).map((employee) => (
+                    <option key={employee.id} value={employee.id}>
+                      {employee.userFullName.userFirstName}{" "}
+                      {employee.userFullName.userMiddleName}{" "}
+                      {employee.userFullName.userLastName}
+                    </option>
+                  ))}
+                </select>
+              </label>
 
-            {/* <div className="mt-2 text-gray-600">
+              <div className="formInputLabel">
+                Schools
+                {!assignment?.schools?.length > 0 && (
+                  <span className="text-red-600">*</span>
+                )}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2 mt-1">
+                  {getAvailableSchools(index).map((school) => (
+                    <button
+                      aria-label="selectschool"
+                      key={school.id}
+                      type="button"
+                      onClick={() => toggleSchoolSelection(index, school.id)}
+                      className={`px-3 py-1  rounded-md ${
+                        assignment.schools.includes(school.id)
+                          ? "bg-sky-700 text-white hover:bg-sky-600"
+                          : "bg-gray-200 text-gray-700 hover:bg-sky-600 hover:text-white"
+                      }`}
+                    >
+                      {school.schoolName}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  aria-label="remove assigment"
+                  onClick={() => removeAssignment(index)}
+                  className="w-full delete-button mb-2"
+                >
+                  remove
+                </button>
+              </div>
+
+              {/* <div className="mt-2 text-gray-600">
               Selected Schools:{" "}
               {assignment.schools
                 .map(
@@ -427,49 +468,51 @@ const NewAnimatorsAssignmentForm = () => {
                 )
                 .join(", ")}
             </div> */}
-          </div>
-        ))}
+            </div>
+          ))}
 
-        <button
-          type="button"
-          aria-label="add assigment"
-          onClick={addAssignment}
-          className="w-full add-button mb-2"
-        >
-          Add Assignment
-        </button>
-        <div className="flex justify-end gap-4">
           <button
             type="button"
-            //disabled={!canSubmit}
-            className="cancel-button"
-            aria-label="cancel assignments"
-            onClick={() =>
-              navigate("/academics/plannings/animatorsAssignments/")
-            }
+            aria-label="add assigment"
+            onClick={addAssignment}
+            className="w-full add-button mb-2"
           >
-            Cancel
+            Add Assignment
           </button>
-          <button
-            type="submit"
-            aria-label="submit form"
-            disabled={!canSubmit || isAddLoading}
-            className="save-button"
-          >
-            {isAddLoading ? "Adding..." : "Add Assignment"}
-          </button>
-        </div>
-      </form>
-      {/* Confirmation Modal */}
-      <ConfirmationModal
-        show={showConfirmation}
-        onClose={handleCloseModal}
-        onConfirm={handleConfirmSave}
-        title="Confirm Save"
-        message="Are you sure you want to save?"
-      />
-    </>
-  );
+          <div className="flex justify-end gap-4">
+            <button
+              type="button"
+              //disabled={!canSubmit}
+              className="cancel-button"
+              aria-label="cancel assignments"
+              onClick={() =>
+                navigate("/academics/plannings/animatorsAssignments/")
+              }
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              aria-label="submit form"
+              disabled={!canSubmit || isAddLoading}
+              className="save-button"
+            >
+              save
+            </button>
+          </div>
+        </form>
+        {/* Confirmation Modal */}
+        <ConfirmationModal
+          show={showConfirmation}
+          onClose={handleCloseModal}
+          onConfirm={handleConfirmSave}
+          title="Confirm Save"
+          message="Are you sure you want to save?"
+        />
+      </>
+    );
+  }
+  return content;
 };
 
 export default NewAnimatorsAssignmentForm;
