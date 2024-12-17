@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
-
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  useUpdateInvoiceMutation,
-  useGetInvoicesQuery,
-} from "./invoicesApiSlice"; // Redux API action
+import { useUpdateInvoiceMutation } from "./invoicesApiSlice"; // Redux API action
 import { useOutletContext } from "react-router-dom";
 import Finances from "../Finances";
 import useAuth from "../../../hooks/useAuth";
@@ -84,18 +80,23 @@ const EditInvoiceForm = ({ invoice }) => {
 
       validInvoiceAmount: NUMBER_REGEX.test(formData.invoiceAmount),
       validInvoiceAuthorisedAmount: NUMBER_REGEX.test(
-        formData.invoiceAuthorisedAmount
+        formData?.invoiceAuthorisedAmount
       ),
-      validInvoiceDiscountAmount: NUMBER_REGEX.test(
-        formData.invoiceDiscountAmount
-      ),
+      validInvoiceDiscountAmount:
+        formData?.invoiceDiscountAmount === "" ||
+        formData?.invoiceDiscountAmount === 0 ||
+        formData?.invoiceDiscountAmount === "0" ||
+        NUMBER_REGEX.test(formData?.invoiceDiscountAmount),
+
       validInvoiceDiscountType:
-        NAME_REGEX.test(formData.invoiceDiscountType) ||
-        (formData.invoiceDiscountAmount &&
-          (formData.invoiceDiscountAmount !== "" ||
-            formData.invoiceDiscountAmount !== "0")), // no type saved without an actual amount
+        formData?.invoiceDiscountAmount === "" ||
+        formData?.invoiceDiscountAmount === "0" ||
+        formData?.invoiceDiscountAmount === 0
+          ? formData?.invoiceDiscountType === ""
+          : formData?.invoiceDiscountType !== "",
+      // no type saved without an actual amount
       validInvoiceDiscountNote: COMMENT_REGEX.test(
-        formData.invoiceDiscountNote
+        formData?.invoiceDiscountNote
       ),
     }));
   }, [formData]);
@@ -144,7 +145,7 @@ const EditInvoiceForm = ({ invoice }) => {
       setShowConfirmation(true);
     }
   };
-
+  console.log(validity, "validity");
   const handleConfirmSave = async () => {
     // Close the confirmation modal
     setShowConfirmation(false);
@@ -200,134 +201,142 @@ const EditInvoiceForm = ({ invoice }) => {
       <Finances />
 
       <form onSubmit={handleSubmit} className="form-container">
-        <h2 className="text-2xl font-bold mb-6 text-center">
-          Edit Invoice:{" "}
-          <div>
-            {invoice?.enrolments[0]?.student?.studentName?.firstName}{" "}
-            {invoice?.enrolments[0]?.student?.studentName?.middleName}{" "}
-            {invoice?.enrolments[0]?.student?.studentName?.lastName}{" "}
-          </div>
-          <div>
+        <h2 className="formTitle ">
+          Edit Invoice for{" "}
+          {invoice?.enrolments[0]?.student?.studentName?.firstName}{" "}
+          {invoice?.enrolments[0]?.student?.studentName?.middleName}{" "}
+          {invoice?.enrolments[0]?.student?.studentName?.lastName}{" "}
+        </h2>
+        <div className="formSectionContainer">
+          <h3 className="formSectionTitle">
+            {formData.invoiceMonth}-{formData.invoiceYear}{" "}
+          </h3>
+          <h3 className="formSectionTitle">
             {invoice?.enrolments[0]?.servicePeriod}{" "}
             {invoice?.enrolments[0]?.serviceType}{" "}
+          </h3>
+          <h3 className="formSectionTitle">Discount Details</h3>
+          <div className="formSection">
+            <div className="formLineDiv">
+              <label
+                htmlFor="authorisedAmount"
+                aria-label="authorised amount"
+                className="block text-gray-700"
+              >
+                Authorised Amount:
+                <input
+                  id="authorisedAmount"
+                  name="authorisedAmount"
+                  type="text"
+                  value={formData.invoiceAuthorisedAmount}
+                  disabled
+                  className="formInputText"
+                />
+              </label>
+
+              <label
+                htmlFor="invoiceAmount"
+                className="block text-gray-700  mb-4"
+              >
+                Invoice Amount :
+                <input
+                  id="invoiceAmount"
+                  name="invoiceAmount"
+                  type="text"
+                  value={formData.invoiceAmount}
+                  disabled
+                  className="formInputText"
+                />
+              </label>
+            </div>
+            <div className="formLineDiv">
+              <label htmlFor="invoiceDiscountAmount" className="formInputLabel">
+                Discount Amount
+                {!validity.validInvoiceDiscountAmount && (
+                  <span className="text-red-600">*</span>
+                )}
+                <input
+                  aria-invalid={!validity.validInvoiceDiscountAmount}
+                  type="number"
+                  id="invoiceDiscountAmount"
+                  name="invoiceDiscountAmount"
+                  value={formData.invoiceDiscountAmount}
+                  onChange={handleChange}
+                  placeholder="[$$$.$$$]"
+                  className="formInputText"
+                />{" "}
+              </label>
+              {/* {formData.invoiceDiscountAmount !== "0" && ( */}
+              <label htmlFor="invoiceDiscountType" className="formInputLabel">
+                Discount Type{" "}
+                {!validity.validInvoiceDiscountType && (
+                  <span className="text-red-600">*</span>
+                )}
+                <select
+                  aria-label="classroom capacity"
+                  placeholder="[1-2 digits]"
+                  id="invoiceDiscountType"
+                  name="invoiceDiscountType"
+                  value={formData.invoiceDiscountType}
+                  onChange={handleChange}
+                  className="formInputText"
+                >
+                  <option value="">No discount</option>
+                  {DiscountTypes.map((type, index) => (
+                    <option key={index} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>{" "}
+              </label>
+              {/* )} */}
+            </div>
+
+            {(formData.invoiceDiscountAmount !== "")  && (
+              <label htmlFor="invoiceDiscountNote" className="formInputLabel">
+                Discount Note
+                <textarea
+                  type="text"
+                  id="invoiceDiscountNote"
+                  name="invoiceDiscountNote"
+                  value={formData.invoiceDiscountNote}
+                  onChange={handleChange}
+                  placeholder="[1-150 characters]"
+                  className="formInputText"
+                  required={formData.invoiceDiscountAmount}
+                ></textarea>
+              </label>
+            )}
           </div>
-          <div>
-            {formData.invoiceMonth}-{formData.invoiceYear}{" "}
-          </div>
-        </h2>
-        <div className="mb-4">
-          <label htmlFor=""
-            htmlFor="authorisedAmount"
-            aria-label="authorised amount"
-            className="block text-gray-700"
-          >
-            Authorised Amount:
-            <input
-              id="authorisedAmount"
-              name="authorisedAmount"
-              type="text"
-              value={formData.invoiceAuthorisedAmount}
-              readOnly
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
-            />
-          </label>
         </div>
-
-        <div className="mb-4">
-          <label htmlFor="" className="block text-gray-700  mb-4">
-            Invoice Amount :
-            <input
-              id="invoiceAmount"
-              name="invoiceAmount"
-              type="text"
-              value={formData.invoiceAmount}
-              readOnly
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
-            />
-          </label>
-        </div>
-        <div className="mb-4">
-          <label htmlFor=""  className="formInputLabel">
-            Discount Type
-            <select
-              aria-label="classroom capacity"
-              aria-invalid={!validity.validClassroomCapacity}
-              placeholder="[1-2 digits]"
-              name="invoiceDiscountType"
-              value={formData.invoiceDiscountType}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-            >
-              <option value="">No additional discount</option>
-              {DiscountTypes.map((type, index) => (
-                <option key={index} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>{" "}
-          </label>
-        </div>
-
-        {formData?.invoiceDiscountType && (
-          <div className="mb-4">
-            <label htmlFor=""  className="formInputLabel">
-              Discount Amount
-              <input
-                type="number"
-                name="invoiceDiscountAmount"
-                value={formData.invoiceDiscountAmount}
-                onChange={handleChange}
-                placeholder="Enter discount amount"
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-              />{" "}
-            </label>
-          </div>
-        )}
-
-        {formData.invoiceDiscountAmount !== "0" && (
-          <div className="mb-4">
-            <label htmlFor=""  className="formInputLabel">
-              Discount Note
-              <input
-                type="text"
-                name="invoiceDiscountNote"
-                value={formData.invoiceDiscountNote}
-                onChange={handleChange}
-                placeholder="Optional note"
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-                required={formData.invoiceDiscountAmount}
-              />
-            </label>
-          </div>
-        )}
-
-        <div className="mb-4">
-          <label htmlFor=""  className="formInputLabel">
+        <h3 className="formSectionTitle">Invoice Dates</h3>
+        <div className="formSection">
+          <label htmlFor="invoiceDueDate" className="formInputLabel">
             Due Date{" "}
             {!validity.validInvoiceDueDate && (
               <span className="text-red-600">*</span>
             )}
             <input
               type="date"
+              id="invoiceDueDate"
               name="invoiceDueDate"
               value={formData.invoiceDueDate}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
+              className="formInputText"
             />{" "}
           </label>
-        </div>
 
-        <div className="mb-4">
-          <label htmlFor=""  className="formInputLabel">
-            Is Fully Paid
+          <label htmlFor="invoiceIsFullyPaid" className="formInputLabel">
             <input
               type="checkbox"
+              id="invoiceIsFullyPaid"
               name="invoiceIsFullyPaid"
               checked={formData.invoiceIsFullyPaid}
               onChange={handleCheckboxChange}
-              className="form-checkbox"
+              className="formCheckbox"
               disabled={!isManager}
-            />{" "}
+            />
+            Is Fully Paid
           </label>
         </div>
 
@@ -344,9 +353,9 @@ const EditInvoiceForm = ({ invoice }) => {
             aria-label="sumbit invoice"
             type="submit"
             disabled={!canSubmit || isUpdateLoading}
-            className={`save-button `}
+            className="save-button"
           >
-            {isUpdateLoading ? "Saving..." : "Update Invoice"}
+            save
           </button>
         </div>
 
