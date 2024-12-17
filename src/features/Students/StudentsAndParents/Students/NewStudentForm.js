@@ -858,8 +858,8 @@ const NewStudentForm = () => {
             <button
               type="submit"
               className="save-button"
-              title="Save"
-              aria-label="save changes"
+              
+              aria-label="submit student"
               onClick={onSaveStudentClicked}
               disabled={!canSave || isLoading}
             >
