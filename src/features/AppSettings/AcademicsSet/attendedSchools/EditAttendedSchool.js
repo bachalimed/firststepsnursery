@@ -7,7 +7,7 @@ import {
 } from "./attendedSchoolsApiSlice"; //we will pull the user  data from the state and not use query
 import EditAttendedSchoolForm from "./EditAttendedSchoolForm";
 import useAuth from "../../../../hooks/useAuth";
-import LoadingStateIcons from "../../../../Components/LoadingStateIcon";
+import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 import { currentAttendedSchoolsList } from "./attendedSchoolsSlice";
 import AcademicsSet from "../../AcademicsSet";
 const EditAttendedSchool = () => {
@@ -46,7 +46,7 @@ const EditAttendedSchool = () => {
   ) : (
     <>
       <AcademicsSet />
-      <LoadingStateIcons />
+      <LoadingStateIcon />
     </>
   );
 

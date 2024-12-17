@@ -8,7 +8,7 @@ import EditExpenseCategoryForm from "./EditExpenseCategoryForm";
 import useAuth from "../../../../hooks/useAuth";
 
 import FinancesSet from "../../FinancesSet";
-import LoadingStateIcons from "react-loading-icons";
+import LoadingStateIcon from "react-loading-icons";
 const EditExpenseCategory = () => {
   const { id } = useParams(); //pull the id from use params from the url
   //will get hte student from the state
@@ -52,7 +52,7 @@ const EditExpenseCategory = () => {
   //   content = 
   //     <>
   //       <FinancesSet />
-  //       <LoadingStateIcons />
+  //       <LoadingStateIcon />
   //     </>
     
   // }

@@ -6,7 +6,7 @@ import {
 } from "./academicYearsApiSlice"; //we will pull the user  data from the state and not use query
 import EditAcademicYearForm from "./EditAcademicYearForm";
 import useAuth from "../../../../hooks/useAuth";
-import LoadingStateIcons from "../../../../Components/LoadingStateIcon";
+import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 import { currentAcademicYearsList } from "./academicYearsSlice";
 import AcademicsSet from "../../AcademicsSet";
 const EditAcademicYear = () => {
@@ -29,7 +29,7 @@ const EditAcademicYear = () => {
   ) : (
     <>
       <AcademicsSet />
-      <LoadingStateIcons />
+      <LoadingStateIcon />
     </>
   );
 

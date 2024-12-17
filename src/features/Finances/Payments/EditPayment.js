@@ -7,7 +7,7 @@ import {
 } from "./paymentsApiSlice"; //we will pull the user  data from the state and not use query
 import EditPaymentForm from "./EditPaymentForm";
 import useAuth from "../../../hooks/useAuth";
-import LoadingStateIcons from "../../../Components/LoadingStateIcon";
+import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 //import { currentPaymentsList } from "./paymentsSlice";
 import Finances from "../Finances";
 const EditPayment = () => {
@@ -36,7 +36,7 @@ const EditPayment = () => {
   ) : (
     <>
       <Finances />
-      <LoadingStateIcons />
+      <LoadingStateIcon />
     </>
   );
 

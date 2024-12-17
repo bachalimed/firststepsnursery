@@ -5,7 +5,7 @@ import {
   useGetServicesByIdQuery,
 
 } from "./servicesApiSlice";
-import LoadingStateIcons from "react-loading-icons";
+import LoadingStateIcon from "react-loading-icons";
 import StudentsSet from "../../StudentsSet";
 const EditService = () => {
   const { id } = useParams(); //pull the id from use params from the url
@@ -37,7 +37,7 @@ const EditService = () => {
 //     content = 
 //     <>
 //        <StudentsSet />
-//        <LoadingStateIcons />
+//        <LoadingStateIcon />
 //      </>
   
 // } 
@@ -59,7 +59,7 @@ const EditService = () => {
   // ) : (
   //   <>
   //     <StudentsSet />
-  //     <LoadingStateIcons />
+  //     <LoadingStateIcon />
   //   </>
   // );
 

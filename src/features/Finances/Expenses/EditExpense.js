@@ -7,7 +7,7 @@ import {
 } from "./expensesApiSlice"; //we will pull the user  data from the state and not use query
 import EditExpenseForm from "./EditExpenseForm";
 import useAuth from "../../../hooks/useAuth";
-import LoadingStateIcons from "../../../Components/LoadingStateIcon";
+import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 //import { currentExpensesList } from "./expensesSlice";
 import Finances from "../Finances";
 const EditExpense = () => {
@@ -48,7 +48,7 @@ const EditExpense = () => {
   ) : (
     <>
       <Finances />
-      <LoadingStateIcons />
+      <LoadingStateIcon />
     </>
   );
 

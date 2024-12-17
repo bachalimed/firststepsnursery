@@ -7,7 +7,7 @@ import {
 } from "./classroomsApiSlice"; //we will pull the user  data from the state and not use query
 import EditClassroomForm from "./EditClassroomsForm";
 import useAuth from "../../../../hooks/useAuth";
-import LoadingStateIcons from "../../../../Components/LoadingStateIcon";
+import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 import { currentClassroomsList } from "./classroomsSlice";
 import AcademicsSet from "../../AcademicsSet";
 const EditClassroom = () => {
@@ -47,7 +47,7 @@ const EditClassroom = () => {
   ) : (
     <>
       <AcademicsSet />
-      <LoadingStateIcons />
+      <LoadingStateIcon />
     </>
   );
 

@@ -1,7 +1,4 @@
 import { useState, useEffect } from "react";
-import { IoMdAddCircleOutline } from "react-icons/io";
-import { MdAddBox } from "react-icons/md";
-import { MdOutlineAddBox } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useAddNewPaymentMutation } from "./paymentsApiSlice"; // Redux API action
@@ -9,7 +6,7 @@ import { CurrencySymbol } from "../../../config/Currency";
 import Finances from "../Finances";
 import useAuth from "../../../hooks/useAuth";
 import { useGetEnrolmentsByYearQuery } from "../../Students/Enrolments/enrolmentsApiSlice";
-
+import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
@@ -17,14 +14,16 @@ import {
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import {
   NAME_REGEX,
+  SHORTCOMMENT_REGEX,
   DATE_REGEX,
   YEAR_REGEX,
   OBJECTID_REGEX,
   NUMBER_REGEX,
   COMMENT_REGEX,
 } from "../../../config/REGEX";
-import { MONTHS } from "../../../config/Months";
+
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
+
 const NewPaymentForm = () => {
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -122,7 +121,7 @@ const NewPaymentForm = () => {
       validPaymentType: NAME_REGEX.test(formData?.paymentType),
       validPaymentReference:
         formData?.paymentReference === "" ||
-        NAME_REGEX.test(formData?.paymentReference),
+        SHORTCOMMENT_REGEX.test(formData?.paymentReference),
       validPaymentDate: DATE_REGEX.test(formData?.paymentDate),
     }));
     console.log(validity);
@@ -154,7 +153,7 @@ const NewPaymentForm = () => {
 
   // Check if all fields are valid and enable the submit button
   const canSubmit = Object.values(validity).every(Boolean) && !isAddLoading;
-
+console.log(validity)
   // Handle form submission
 
   const handleSubmit = async (e) => {
@@ -264,43 +263,102 @@ const NewPaymentForm = () => {
 
   console.log(formData, "formdata");
 
-  return (
-    <>
-      <Finances />
+  let content;
+  if (isEnrolmentsLoading) {
+    content = (
+      <>
+        <Finances />
+        <LoadingStateIcon />
+      </>
+    );
+  }
+  if (isEnrolmentsSuccess) {
+    content = (
+      <>
+        <Finances />
 
-      <form onSubmit={handleSubmit} className="form-container">
-        <h2 className="text-2xl font-bold mb-6 text-center">Add Payment</h2>
-        {/* Student Selection */}
-        <div className="mb-4">
-          <label htmlFor=""  className="formInputLabel">
-            Select Student{" "}
-            {!validity.validPaymentStudent && (
-              <span className="text-red-600">*</span>
-            )}
-          </label>
-          <select
-            value={selectedStudent?.id || ""}
-            onChange={handleStudentChange}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-          >
-            <option value="">Select a Student</option>
-            {studentsEnrolmentsList.map((student) => (
-              <option key={student?.id} value={student?.id}>
-                {`${student?.studentName?.firstName} ${student?.studentName?.middleName} ${student?.studentName?.lastName}`}
-              </option>
-            ))}
-          </select>
-        </div>
+        <form onSubmit={handleSubmit} className="form-container">
+          <h2 className="formTitle ">Add Payment {selectedAcademicYear?.title}</h2>
+          {/* Student Selection */}
+          <div className="formSectionContainer">
+            <h3 className="formSectionTitle">Invoices</h3>
+            <div className="formSection">
+              <label htmlFor="selectedStudent" className="formInputLabel">
+                Select Student{" "}
+                {!validity.validPaymentStudent && (
+                  <span className="text-red-600">*</span>
+                )}
+                <select
+                  aria-invalid={!validity.validPaymentStudent}
+                  required
+                  id="selectedStudent"
+                  value={selectedStudent?.id || ""}
+                  onChange={handleStudentChange}
+                  className={`formInputText`}
+                >
+                  <option value="">Select a Student</option>
+                  {studentsEnrolmentsList.map((student) => (
+                    <option key={student?.id} value={student?.id}>
+                      {`${student?.studentName?.firstName} ${student?.studentName?.middleName} ${student?.studentName?.lastName}`}
+                    </option>
+                  ))}
+                </select>
+              </label>
 
-        {/* Invoices List */}
-        {selectedStudent && (
-          <div className="mb-4">
-            <h3 className="text-gray-700 font-bold mb-2">
-              Select Invoices{" "}
-              {!validity.validPaymentInvoices && (
-                <span className="text-red-600">*</span>
+              {/* Invoices List */}
+              {selectedStudent && (
+                <h3 className="formSectionTitle">Select Invoices</h3>
               )}
-            </h3>
+              {selectedStudent && (
+                <div className="formInputLabel">
+                  Invoices{" "}
+                  {!validity.validPaymentInvoices && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2 mt-1 max-h-80 overflow-y-auto">
+                    {selectedStudent.enrolments.map((enrolment) => {
+                      const isSelected = selectedInvoices.some(
+                        (selectedInvoice) =>
+                          selectedInvoice._id === enrolment.invoice._id
+                      );
+                      return (
+                        <button
+                          aria-label="paymentInvoice"
+                          key={enrolment.invoice._id}
+                          type="button"
+                          onClick={() => handleInvoiceClick(enrolment.invoice)}
+                          className={`px-3 py-2 text-left rounded-md ${
+                            isSelected
+                              ? "bg-sky-700 text-white hover:bg-sky-600"
+                              : "bg-gray-200 text-gray-700 hover:bg-sky-600 hover:text-white"
+                          }`}
+                        >
+                          <div className="font-semibold">
+                            {`${
+                              enrolment?.servicePeriod.charAt(0).toUpperCase() +
+                              enrolment?.servicePeriod.slice(1)
+                            } ${enrolment?.serviceType} for ${
+                              enrolment?.invoice?.invoiceMonth
+                            }`}
+                          </div>
+                          <div className="text-sm">
+                            {`Amount: ${enrolment?.invoice?.invoiceAmount} ${CurrencySymbol} / ${enrolment?.invoice?.invoiceAuthorisedAmount} ${CurrencySymbol}`}
+                          </div>
+                          {enrolment?.invoice?.invoiceDiscountAmount !==
+                            "0" && (
+                            <div className="text-sm text-green-600">
+                              {`with ${enrolment?.invoice?.invoiceDiscountAmount} ${CurrencySymbol} discount`}
+                            </div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+          {/* {selectedStudent && (
             <ul className="border rounded-md p-2 max-h-80 overflow-y-auto">
               {selectedStudent.enrolments.map((enrolment) => (
                 <li
@@ -325,176 +383,186 @@ const NewPaymentForm = () => {
                   {`Amount: ${enrolment?.invoice?.invoiceAmount} ${CurrencySymbol} / ${enrolment?.invoice?.invoiceAuthorisedAmount} ${CurrencySymbol}`}
                   <br />
                   {enrolment?.invoice?.invoiceDiscountAmount !== "0"
-                    ? `with ${enrolment?.invoice?.invoiceDiscountAmount} ${CurrencySymbol} discount`
-                    : ""}
+                        ? with ${enrolment?.invoice?.invoiceDiscountAmount} ${CurrencySymbol} discount
+                        : ""}
                 </li>
               ))}
             </ul>
-          </div>
-        )}
-
-        {/* Selected Invoices Summary */}
-        {selectedInvoices.length > 0 && (
-          <div className="mb-4">
-            <h3 className="text-gray-700 font-bold mb-2">Selected Invoices</h3>
-            <ul className="border rounded-md p-2 max-h-80 overflow-y-auto">
-              {selectedInvoices.map((invoice) => (
-                <li
-                  key={invoice._id}
-                  className="cursor-pointer hover:bg-red-100 p-2 border-b"
-                  onClick={() => handleRemoveInvoice(invoice)}
-                >
-                  {`${invoice.invoiceMonth}: ${
-                    invoice.invoiceAmount
-                  }${" "}${CurrencySymbol}`}
-                </li>
-              ))}
-            </ul>
-            <div className="mt-2 font-bold">
-              Selected Invoices Total: {totalInvoiceAmount} {CurrencySymbol}
+          )} */}
+          {/* Selected Invoices Summary */}
+          {/* {selectedInvoices.length > 0 && (
+            <div className="mb-4">
+              <h3 className="formSectionTitle">
+                Selected Invoices
+              </h3>
+              <ul className="border rounded-md p-2 max-h-80 overflow-y-auto">
+                {selectedInvoices.map((invoice) => (
+                  <li
+                    key={invoice._id}
+                    className="cursor-pointer hover:bg-red-100 p-2 border-b"
+                    onClick={() => handleRemoveInvoice(invoice)}
+                  >
+                    {`${invoice.invoiceMonth}: ${
+                      invoice.invoiceAmount
+                    }${" "}${CurrencySymbol}`}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-2 font-bold">
+                Selected Invoices Total: {totalInvoiceAmount} {CurrencySymbol}
+              </div>
             </div>
+          )} */}
+          <h3 className="formSectionTitle">Payment Details</h3>
+          <div className="formSection">
+            <div className="formLineDiv">
+              {/* Payment Amount */}
+              <label htmlFor="paymentAmount" className="formInputLabel">
+                Payment Amount{" "}
+                {!validity.validPaymentAmount && (
+                  <span className="text-red-600">*</span>
+                )}{" "}
+                ({CurrencySymbol})
+                <input
+                  aria-invalid={!validity.validPaymentAmount}
+                  type="number"
+                  id="paymentAmount"
+                  placeholder="[$$$.$$]"
+                  name="paymentAmount"
+                  value={formData.paymentAmount}
+                  onChange={handleInputChange}
+                  className={`formInputText ${
+                    validity.validPaymentAmount
+                      ? "focus:ring-sky-700"
+                      : "focus:ring-red-600"
+                  }`}
+                  required
+                />
+                {!validity.validPaymentAmount && (
+                  <p className="text-red-600 text-sm">
+                    Amount must be a valid number and equal to the total invoice
+                    amount.
+                  </p>
+                )}
+              </label>
+
+              {/* Payment Date */}
+
+              <label htmlFor="paymentDate" className="formInputLabel">
+                Payment Date{" "}
+                {!validity.validPaymentDate && (
+                  <span className="text-red-600">*</span>
+                )}
+                <input
+                  aria-invalid={!validity.validPaymentDate}
+                  type="date"
+                  id="paymentDate"
+                  name="paymentDate"
+                  value={formData.paymentDate}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
+                  required
+                />{" "}
+              </label>
+            </div>
+
+            {/* Payment Type */}
+            <div className="formLineDiv">
+              <label htmlFor="paymentType" className="formInputLabel">
+                Payment Type{" "}
+                {!validity.validPaymentType && (
+                  <span className="text-red-600">*</span>
+                )}
+                <select
+                  id="paymentType"
+                  name="paymentType"
+                  value={formData.paymentType}
+                  onChange={handleInputChange}
+                  className="formInputText"
+                  required
+                >
+                  <option value="" disabled>
+                    Select Payment Type
+                  </option>
+                  {PaymentTypes.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>{" "}
+              </label>
+
+              {/* Payment Type Reference */}
+
+              <label htmlFor="paymentReference" className="formInputLabel">
+                Payment Reference{" "}
+                {!validity.validPaymentReference && (
+                  <span className="text-red-600">*</span>
+                )}
+                <input
+                  type="text"
+                  id="paymentReference"
+                  name="paymentReference"
+                  placeholder="[3-30 letters]"
+                  value={formData.paymentReference}
+                  onChange={handleInputChange}
+                  className="formInputText"
+                />{" "}
+              </label>
+            </div>
+
+            {/* Payment Note */}
+
+            <label htmlFor="paymentNote" className="formInputLabel">
+              Payment Note
+              {!validity.validPaymentNote && (
+                <span className="text-red-600">*</span>
+              )}
+              <textarea
+                id="paymentNote"
+                name="paymentNote"
+                placeholder="[1-150 letters]"
+                value={formData.paymentNote}
+                onChange={handleInputChange}
+                className={`formInputText`}
+                rows="2"
+              ></textarea>{" "}
+            </label>
           </div>
-        )}
 
-        {/* Payment Amount */}
-        <div className="mb-4">
-          <label htmlFor=""  className="formInputLabel">
-            Payment Amount{" "}
-            {!validity.validPaymentAmount && (
-              <span className="text-red-600">*</span>
-            )}{" "}
-            ({CurrencySymbol})
-          </label>
-          <input
-            type="number"
-            name="paymentAmount"
-            value={formData.paymentAmount}
-            onChange={handleInputChange}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
-              validity.validPaymentAmount
-                ? "focus:ring-sky-700"
-                : "focus:ring-red-600"
-            }`}
-            required
-          />
-          {!validity.validPaymentAmount && (
-            <p className="text-red-600 text-sm">
-              Amount must be a valid number and equal to the total invoice
-              amount.
-            </p>
-          )}
-        </div>
-        {/* Payment Date */}
-        <div className="mb-4">
-          <label htmlFor=""  className="formInputLabel">
-            Payment Date{" "}
-            {!validity.validPaymentDate && (
-              <span className="text-red-600">*</span>
-            )}
-          </label>
-          <input
-            type="date"
-            name="paymentDate"
-            value={formData.paymentDate}
-            onChange={handleInputChange}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-            required
-          />
-        </div>
+          {/* Submit Button */}
+          <div className="flex justify-end gap-4">
+            <button
+              aria-label="cancel payment"
+              type="button"
+              className="cancel-button"
+              onClick={() => navigate("/finances/payments/paymentsList/")}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              aria-label="submit form"
+              className="save-button"
+              disabled={!canSubmit || isAddLoading}
+            >save
+              {/* {isAddLoading ? "Submitting..." : "Submit Payment"} */}
+            </button>
+          </div>
+        </form>
 
-        {/* Payment Type */}
-        <div className="mb-4">
-          <label htmlFor=""  className="formInputLabel">
-            Payment Type{" "}
-            {!validity.validPaymentType && (
-              <span className="text-red-600">*</span>
-            )}
-          </label>
-          <select
-            name="paymentType"
-            value={formData.paymentType}
-            onChange={handleInputChange}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-            required
-          >
-            <option value="" disabled>
-              Select Payment Type
-            </option>
-            {PaymentTypes.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Payment Type Reference */}
-        <div className="mb-4">
-          <label htmlFor=""  className="formInputLabel">
-            Payment Reference
-          </label>
-          <input
-            type="text"
-            name="paymentReference"
-            value={formData.paymentReference}
-            onChange={handleInputChange}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
-              validity.validPaymentReference
-                ? "focus:ring-sky-700"
-                : "focus:ring-red-600"
-            }`}
-          />
-        </div>
-
-        {/* Payment Note */}
-        <div className="mb-4">
-          <label htmlFor=""  className="formInputLabel">
-            Payment Note
-          </label>
-          <textarea
-            name="paymentNote"
-            value={formData.paymentNote}
-            onChange={handleInputChange}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
-              validity.validPaymentNote
-                ? "focus:ring-sky-700"
-                : "focus:ring-red-600"
-            }`}
-            rows="3"
-          ></textarea>
-        </div>
-
-        {/* Submit Button */}
-        <div className="flex justify-end space-x-4">
-          <button
-            type="button"
-            className="cancel-button"
-            onClick={() => navigate("/finances/payments/paymentsList/")}
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className={` bg-sky-700 text-white font-bold py-2 px-4 rounded ${
-              canSubmit ? "hover:bg-blue-600" : "opacity-50 cursor-not-allowed"
-            }`}
-            disabled={!canSubmit || isAddLoading}
-          >
-            {isAddLoading ? "Submitting..." : "Submit Payment"}
-          </button>
-        </div>
-      </form>
-
-      {/* Confirmation Modal */}
-      <ConfirmationModal
-        show={showConfirmation}
-        onClose={handleCloseModal}
-        onConfirm={handleConfirmSave}
-        title="Confirm Save"
-        message="Are you sure you want to save?"
-      />
-    </>
-  );
+        {/* Confirmation Modal */}
+        <ConfirmationModal
+          show={showConfirmation}
+          onClose={handleCloseModal}
+          onConfirm={handleConfirmSave}
+          title="Confirm Save"
+          message="Are you sure you want to save?"
+        />
+      </>
+    );
+  }
+  return content;
 };
 
 export default NewPaymentForm;

@@ -7,7 +7,7 @@ import {
 } from "./animatorsAssignmentsApiSlice"; //we will pull the user  data from the state and not use query
 import EditAnimatorsAssignmentForm from "./EditAnimatorsAssignmentForm";
 import useAuth from "../../../../hooks/useAuth";
-import LoadingStateIcons from "../../../../Components/LoadingStateIcon";
+import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 //import { currentAnimatorsAssignmentsList } from "./animatorsAssignmentsSlice";
 import Academics from "../../Academics";
 const EditAnimatorsAssignment = () => {
@@ -49,7 +49,7 @@ const EditAnimatorsAssignment = () => {
   ) : (
     <>
       <Academics />
-      <LoadingStateIcons />
+      <LoadingStateIcon />
     </>
   );
 

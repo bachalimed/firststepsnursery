@@ -8,7 +8,7 @@ import EditPayeeForm from "./EditPayeeForm";
 import useAuth from "../../../../hooks/useAuth";
 import { currentPayeesList } from "./payeesSlice";
 import FinancesSet from "../../FinancesSet";
-import LoadingStateIcons from "react-loading-icons";
+import LoadingStateIcon from "react-loading-icons";
 const EditPayee = () => {
   const { id } = useParams(); //pull the id from use params from the url
   //will get hte student from the state
@@ -52,7 +52,7 @@ const EditPayee = () => {
   //   content = 
   //     <>
   //       <FinancesSet />
-  //       <LoadingStateIcons />
+  //       <LoadingStateIcon />
   //     </>
     
   // }

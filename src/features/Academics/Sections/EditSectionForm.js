@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useUpdateSectionMutation } from "./sectionsApiSlice";
 import { useNavigate } from "react-router-dom";
-import LoadingStateIcons from "../../../Components/LoadingStateIcon";
+import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import Academics from "../Academics";
 import useAuth from "../../../hooks/useAuth";
 import { useSelector } from "react-redux";
@@ -253,7 +253,7 @@ const EditSectionForm = ({ section }) => {
     content = (
       <>
         <Academics />
-        <LoadingStateIcons />
+        <LoadingStateIcon />
       </>
     );
   }

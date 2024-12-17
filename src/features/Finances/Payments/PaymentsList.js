@@ -44,12 +44,12 @@ const PaymentsList = () => {
   const PaymentTypes = ["Cash", "Cheque", "Bank Transfer", "Online Payment"];
   const [selectedPaymentType, setSelectedPaymentType] = useState(""); // "paid" or "unpaid"
 
-  const [selectedPaymentMonth, setSelectedPaymentMonth] = useState(""); // payment month
   //function to return curent month for month selection
   const getCurrentMonth = () => {
     const currentMonthIndex = new Date().getMonth(); // Get current month (0-11)
     return MONTHS[currentMonthIndex]; // Return the month name with the first letter capitalized
   };
+  const [selectedPaymentMonth, setSelectedPaymentMonth] = useState(getCurrentMonth()); // payment month
   //console.log("Fetch payments for academic year:", selectedAcademicYear);
   const {
     data: payments, //the data is renamed payments
@@ -402,8 +402,8 @@ const PaymentsList = () => {
         >
           {/* Default option is the current month */}
 
-          <option value="">All Months</option>
           <option value="">{getCurrentMonth()}</option>
+          <option value="">All Months</option>
 
           {/* Render the rest of the months, excluding the current month */}
           {MONTHS.map((month, index) => {
@@ -469,7 +469,7 @@ const PaymentsList = () => {
               onClick={() => navigate("/finances/payments/newPayment/")}
               hidden={!canCreate}
             >
-              Add Payment
+              New Payment
             </button>
           
         </div>

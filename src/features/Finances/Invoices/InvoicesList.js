@@ -45,12 +45,12 @@ const InvoicesList = () => {
 
   const [paidFilter, setPaidFilter] = useState(""); // "paid" or "unpaid"
   const [selectedServiceType, setSelectedServiceType] = useState(""); // service type from servicesList
-  const [selectedInvoiceMonth, setSelectedInvoiceMonth] = useState(""); // invoice month
   //function to return curent month for month selection
   const getCurrentMonth = () => {
     const currentMonthIndex = new Date().getMonth(); // Get current month (0-11)
     return MONTHS[currentMonthIndex]; // Return the month name with the first letter capitalized
   };
+  const [selectedInvoiceMonth, setSelectedInvoiceMonth] = useState(getCurrentMonth()); // invoice month
   //console.log("Fetch invoices for academic year:", selectedAcademicYear);
   const {
     data: invoices, //the data is renamed invoices
@@ -410,6 +410,7 @@ const InvoicesList = () => {
     content = (
       <>
         <Finances />
+        {/* //the filters will be hidden for another selection */}
         <div className="error-bar">
           {invoicesError?.data?.message}
           {servicesError?.data?.message}

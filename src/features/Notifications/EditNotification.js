@@ -7,7 +7,7 @@ import {
 import EditNotificationForm from "./EditNotificationForm";
 import useAuth from "../../../hooks/useAuth";
 import { currentNotificationsList } from "./notificationsSlice";
-import LoadingStateIcons from "react-loading-icons";
+import LoadingStateIcon from "react-loading-icons";
 const EditNotification = () => {
   const { id } = useParams(); //pull the id from use params from the url
 
@@ -20,7 +20,7 @@ const EditNotification = () => {
   content = notificationToEdit ? (<>notification header here
     <EditNotificationForm notification={notificationToEdit} /></>
   ) : (
-    <>notification header here<LoadingStateIcons /></>
+    <>notification header here<LoadingStateIcon /></>
   );
 
   //}

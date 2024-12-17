@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import LoadingStateIcons from "../../../../Components/LoadingStateIcon";
+import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -297,7 +297,7 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
     content = (
       <>
         <Academics />
-        <LoadingStateIcons />
+        <LoadingStateIcon />
       </>
     );
   }

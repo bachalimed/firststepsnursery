@@ -2,15 +2,10 @@ import { useState, useEffect } from "react";
 import { useGetPayeesByYearQuery } from "../../AppSettings/FinancesSet/Payees/payeesApiSlice";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  useUpdateExpenseMutation,
-  useGetExpensesQuery,
-} from "./expensesApiSlice"; // Redux API action
+import { useUpdateExpenseMutation } from "./expensesApiSlice"; // Redux API action
 import { useGetServicesByYearQuery } from "../../AppSettings/StudentsSet/NurseryServices/servicesApiSlice";
 import Finances from "../Finances";
 import useAuth from "../../../hooks/useAuth";
-import { useGetAttendedSchoolsQuery } from "../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
-import { useGetEmployeesByYearQuery } from "../../HR/Employees/employeesApiSlice";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import {
   selectCurrentAcademicYearId,
@@ -124,7 +119,7 @@ const EditExpenseForm = ({ expense }) => {
     expenseMethod: expense?.expenseMethod,
     expenseOperator: userId,
   });
-  const [selectedItems, setSelectedItems] = useState(formData?.expenseItems);
+  const [selectedItems, setSelectedItems] = useState(expense?.expenseItems);
 
   //confirmation Modal states
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -217,7 +212,6 @@ const EditExpenseForm = ({ expense }) => {
     // Close the confirmation modal
     setShowConfirmation(false);
 
-    
     try {
       const response = await updateExpense(formData).unwrap();
       if ((response.data && response.data.message) || response?.message) {
@@ -250,16 +244,31 @@ const EditExpenseForm = ({ expense }) => {
   const selectedCategory = expenseCategoriesList.find(
     (category) => category.id === formData?.expenseCategory
   );
-  //sets expenseITems to [] when we change
+  //sets expenseItems to [] when we change category, an issue when editing because it resets the items
+
+  // useEffect(() => {
+  //   if (formData.expenseCategory) {
+  //     setSelectedItems([]);
+  //     setFormData((prevFormData) => ({
+  //       ...prevFormData,
+  //       expenseItems: [], // Clear items for the new category
+  //     }));
+  //   }
+  // }, [formData.expenseCategory]);
+
+  //refactored version
+  const [prevCategory, setPrevCategory] = useState(expense?.expenseCategory);
+
   useEffect(() => {
-    if (formData.expenseCategory) {
+    if (formData.expenseCategory && formData.expenseCategory !== prevCategory) {
       setSelectedItems([]);
       setFormData((prevFormData) => ({
         ...prevFormData,
         expenseItems: [], // Clear items for the new category
       }));
+      setPrevCategory(formData.expenseCategory); // Update the previous category
     }
-  }, [formData.expenseCategory]);
+  }, [formData.expenseCategory, prevCategory]);
 
   const handleItemClick = (item) => {
     setSelectedItems((prevSelected) => {
@@ -279,23 +288,33 @@ const EditExpenseForm = ({ expense }) => {
 
   console.log(formData, "formdata");
   console.log(validity, "validity");
-  if (isPayeesLoading || isServicesLoading || isExpenseCategoriesLoading) {
-    return (
-      <div>
+  let content;
+  if (isExpenseCategoriesLoading || isPayeesLoading || isServicesLoading) {
+    content = (
+      <>
+        <Finances />
         <LoadingStateIcon />
-      </div>
+      </>
     );
   }
+  if (
+    isExpenseCategoriesSuccess &&
+    isPayeesSuccess &&
+    isExpenseCategoriesSuccess
+  ) {
+    content = (
+      <>
+        <Finances />
 
-  return (
-    <>
-      <Finances />
-
-      <form onSubmit={handleSubmit} className="form-container">
-        <h2 className="text-2xl font-bold mb-6 text-center">
-          Add New Expense {selectedAcademicYear?.title}
-        </h2>
-        {/* <div className="mb-4">
+        <form onSubmit={handleSubmit} className="form-container">
+          <h2 className="formTitle">
+            Edit Expense {selectedAcademicYear?.title}
+          </h2>
+          <div className="formSectionContainer">
+            <h3 className="formSectionTitle">Expense details</h3>
+            <div className="formSection">
+              <div className="formLineDiv">
+                {/* <div className="mb-4">
             <label  className="formInputLabel">
               Expense Year{" "}
               {!validity.validExpenseYear && (
@@ -308,7 +327,7 @@ const EditExpenseForm = ({ expense }) => {
               value={formData.expenseYear}
               // onChange={handleChange}
               placeholder="Enter Year"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
+               className={`formInputText`}
               required
              
             >
@@ -318,156 +337,162 @@ const EditExpenseForm = ({ expense }) => {
             </select>
           </div> */}
 
-        {/* Expense Month */}
-        <div className="mb-4">
-          <label
-            htmlFor="expenseMonth"
-             className="formInputLabel"
-          >
-            Expense Month{" "}
-            {!validity.validExpenseMonth && (
-              <span className="text-red-600">*</span>
-            )}
-            <select
-              aria-label="expense month"
-              aria-invalid={!validity.validExpenseMonth}
-              id="expenseMonth"
-              value={formData.expenseMonth || ""}
-              onChange={(e) =>
-                setFormData({ ...formData, expenseMonth: e.target.value })
-              }
-              required
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-            >
-              <option value="">Select a month</option>
-              {MONTHS.map((month) => (
-                <option key={month} value={month}>
-                  {month}
-                </option>
-              ))}
-            </select>{" "}
-          </label>
-        </div>
+                {/* Expense Month */}
+                <label htmlFor="expenseMonth" className="formInputLabel">
+                  Expense Month{" "}
+                  {!validity.validExpenseMonth && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <select
+                    aria-label="expense month"
+                    aria-invalid={!validity.validExpenseMonth}
+                    id="expenseMonth"
+                    value={formData.expenseMonth || ""}
+                    onChange={(e) =>
+                      setFormData({ ...formData, expenseMonth: e.target.value })
+                    }
+                    required
+                    className={`formInputText`}
+                  >
+                    <option value="">Select a month</option>
+                    {MONTHS.map((month) => (
+                      <option key={month} value={month}>
+                        {month}
+                      </option>
+                    ))}
+                  </select>{" "}
+                </label>
 
-        {/* Expense Service */}
-        <div style={{ marginBottom: "16px" }}>
-          <label
-            htmlFor="expenseService"
-             className="formInputLabel"
-          >
-            Expense Service{" "}
-            {!validity.validExpenseService && (
-              <span className="text-red-600">*</span>
-            )}
-            <select
-              aria-label="expense service"
-              aria-invalid={!validity.validExpenseService}
-              id="expenseService"
-              value={formData?.expenseService}
-              onChange={(e) =>
-                setFormData({ ...formData, expenseService: e.target.value })
-              }
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-              required
-            >
-              <option value="">Select a service</option>
-              {servicesList.map((serv) => (
-                <option key={serv?.id} value={serv?.id}>
-                  {serv?.serviceType}
-                </option>
-              ))}
-            </select>{" "}
-          </label>
-        </div>
+                {/* Expense Service */}
 
-        {/* Expense Payee */}
-        <div style={{ marginBottom: "16px" }}>
-          <label
-            htmlFor="expensePayee"
-             className="formInputLabel"
-          >
-            Expense Payee{" "}
-            {!validity.validExpensePayee && (
-              <span className="text-red-600">*</span>
-            )}
-            <select
-              aria-label="expense payee"
-              aria-invalid={!validity.validExpensePayee}
-              id="expensePayee"
-              value={formData?.expensePayee}
-              onChange={(e) =>
-                setFormData({ ...formData, expensePayee: e.target.value })
-              }
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-              required
-            >
-              <option value="">Select a payee</option>
-              {payeesList.map((payee) => (
-                <option key={payee?.id} value={payee?.id}>
-                  {payee?.payeeLabel}
-                </option>
-              ))}
-            </select>{" "}
-          </label>
-        </div>
+                <label htmlFor="expenseService" className="formInputLabel">
+                  Expense Service{" "}
+                  {!validity.validExpenseService && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <select
+                    aria-label="expense service"
+                    aria-invalid={!validity.validExpenseService}
+                    id="expenseService"
+                    value={formData?.expenseService}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        expenseService: e.target.value,
+                      })
+                    }
+                    className={`formInputText`}
+                    required
+                  >
+                    <option value="">Select a service</option>
+                    {servicesList.map((serv) => (
+                      <option key={serv?.id} value={serv?.id}>
+                        {serv?.serviceType}
+                      </option>
+                    ))}
+                  </select>{" "}
+                </label>
+              </div>
+              <div className="formLineDiv">
+                {/* Expense Payee */}
 
-        {/* Expense Category */}
-        <div style={{ marginBottom: "16px" }}>
-          <label
-            htmlFor="expenseCategory"
-             className="formInputLabel"
-          >
-            Expense Categroy{" "}
-            {!validity.validExpenseCategory && (
-              <span className="text-red-600">*</span>
-            )}
-            <select
-              aria-label="expense category"
-              aria-invalid={!validity.validExpenseCategory}
-              id="expenseCategory"
-              value={formData?.expenseCategory}
-              onChange={(e) =>
-                setFormData({ ...formData, expenseCategory: e.target.value })
-              }
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-              required
-            >
-              <option value="">Select a Category</option>
-              {expenseCategoriesList.map((cat) => (
-                <option key={cat?.id} value={cat?.id}>
-                  {cat?.expenseCategoryLabel}
-                </option>
-              ))}
-            </select>{" "}
-          </label>
-        </div>
-        {/* Expense Category items*/}
+                <label htmlFor="expensePayee" className="formInputLabel">
+                  Expense Payee{" "}
+                  {!validity.validExpensePayee && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <select
+                    aria-label="expense payee"
+                    aria-invalid={!validity.validExpensePayee}
+                    id="expensePayee"
+                    value={formData?.expensePayee}
+                    onChange={(e) =>
+                      setFormData({ ...formData, expensePayee: e.target.value })
+                    }
+                    className={`formInputText`}
+                    required
+                  >
+                    <option value="">Select a payee</option>
+                    {payeesList.map((payee) => (
+                      <option key={payee?.id} value={payee?.id}>
+                        {payee?.payeeLabel}
+                      </option>
+                    ))}
+                  </select>{" "}
+                </label>
 
-        <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-          <h3>{selectedCategory?.categoryName || "Select items"}</h3>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-            {selectedCategory?.expenseCategoryItems?.map((item, index) => (
-              <button
-                aria-label="select items"
-                type="button"
-                key={index}
-                onClick={() => handleItemClick(item)}
-                style={{
-                  padding: "10px 15px",
-                  border: "1px solid #007bff",
-                  borderRadius: "5px",
-                  backgroundColor: selectedItems.includes(item)
-                    ? "#007bff"
-                    : "#ffffff",
-                  color: selectedItems.includes(item) ? "#ffffff" : "#007bff",
-                  cursor: "pointer",
-                }}
-              >
-                {item}
-              </button>
-            ))}
-          </div>
-          {/* <div style={{ marginTop: "20px" }}>
+                {/* Expense Category */}
+
+                <label htmlFor="expenseCategory" className="formInputLabel">
+                  Expense Categroy{" "}
+                  {!validity.validExpenseCategory && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <select
+                    aria-label="expense category"
+                    aria-invalid={!validity.validExpenseCategory}
+                    id="expenseCategory"
+                    value={formData?.expenseCategory}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        expenseCategory: e.target.value,
+                      })
+                    }
+                    className={`formInputText`}
+                    required
+                  >
+                    <option value="">Select a Category</option>
+                    {expenseCategoriesList.map((cat) => (
+                      <option key={cat?.id} value={cat?.id}>
+                        {cat?.expenseCategoryLabel}
+                      </option>
+                    ))}
+                  </select>{" "}
+                </label>
+              </div>
+            </div>
+
+            <h3 className="formSectionTitle">Expense items</h3>
+            <div className="formSection">
+              {/* Expense Category items*/}
+
+              <h3 className="formSectionTitle">
+                {selectedCategory?.expenseCategoryLabel || "Select items"}
+              </h3>
+
+              {selectedCategory?.expenseCategoryItems && (
+                <div className="formInputLabel">
+                  Items{" "}
+                  {!selectedCategory?.expenseCategoryItems.length && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2 mt-1 max-h-80 overflow-y-auto">
+                    {selectedCategory.expenseCategoryItems.map(
+                      (item, index) => {
+                        const isSelected = selectedItems.includes(item);
+                        return (
+                          <button
+                            aria-label="selectItem"
+                            key={index}
+                            type="button"
+                            onClick={() => handleItemClick(item)}
+                            className={`px-3 py-2 text-left rounded-md ${
+                              isSelected
+                                ? "bg-sky-700 text-white hover:bg-sky-600"
+                                : "bg-gray-200 text-gray-700 hover:bg-sky-600 hover:text-white"
+                            }`}
+                          >
+                            <div className="font-semibold">{item}</div>
+                          </button>
+                        );
+                      }
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* <div style={{ marginTop: "20px" }}>
               <h4>Selected Items:</h4>
               {selectedItems.length > 0 ? (
                 <ul>
@@ -479,170 +504,177 @@ const EditExpenseForm = ({ expense }) => {
                 <p>No items selected</p>
               )}
             </div> */}
-        </div>
+            </div>
+            <h3 className="formSectionTitle">Expense amount</h3>
+            <div className="formSection">
+              <div className="formLineDiv">
+                {/* Expense Amount */}
 
-        {/* Expense Amount */}
-        <div style={{ marginBottom: "16px" }}>
-          <label
-            htmlFor="expenseAmount"
-             className="formInputLabel"
-          >
-            Expense Amount{" "}
-            {!validity.validExpenseAmount && (
-              <span className="text-red-600">*</span>
-            )}{" "}
-            ({CurrencySymbol})
-            <input
-              aria-label="expense amount"
-              aria-invalid={!validity.validExpenseAmount}
-              placeholder="[999.99]"
-              type="number"
-              id="expenseAmount"
-              value={formData.expenseAmount || ""}
-              onChange={(e) =>
-                setFormData({ ...formData, expenseAmount: e.target.value })
-              }
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-              required
-            />{" "}
-          </label>
-        </div>
-        {/* Expense Method */}
-        <div style={{ marginBottom: "16px" }}>
-          <label
-            htmlFor="paymentMethod"
-             className="formInputLabel"
-          >
-            Payment Method{" "}
-            {!validity.validExpenseMethod && (
-              <span className="text-red-600">*</span>
-            )}
-            <select
-              aria-label="expense method"
-              aria-invalid={!validity.validExpenseMethod}
-              id="expenseMethod"
-              value={formData.expenseMethod || ""}
-              onChange={(e) =>
-                setFormData({ ...formData, expenseMethod: e.target.value })
-              }
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-              required
-            >
-              <option value="">Select a method</option>
-              {[
-                "Cash",
-                "Credit Card",
-                "Bank Transfer",
-                "Online Payment",
-                "Credit",
-              ].map((method) => (
-                <option key={method} value={method}>
-                  {method}
-                </option>
-              ))}
-            </select>{" "}
-          </label>
-        </div>
+                <label htmlFor="expenseAmount" className="formInputLabel">
+                  Expense Amount{" "}
+                  {!validity.validExpenseAmount && (
+                    <span className="text-red-600">*</span>
+                  )}{" "}
+                  ({CurrencySymbol})
+                  <input
+                    aria-label="expense amount"
+                    aria-invalid={!validity.validExpenseAmount}
+                    placeholder="[$$$.$$]"
+                    type="number"
+                    id="expenseAmount"
+                    value={formData.expenseAmount || ""}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        expenseAmount: e.target.value,
+                      })
+                    }
+                    className={`formInputText`}
+                    required
+                  />{" "}
+                </label>
+                {/* Expense Date */}
 
-        {/* Expense Date */}
-        <div style={{ marginBottom: "16px" }}>
-          <label
-            htmlFor="expenseDate"
-             className="formInputLabel"
-          >
-            Expense Date{" "}
-            {!validity.validExpenseDate && (
-              <span className="text-red-600">*</span>
-            )}
-            <input
-              aria-label="expense date"
-              aria-invalid={!validity.validExpenseDate}
-              type="date"
-              id="expenseDate"
-              value={formData.expenseDate || ""}
-              onChange={(e) =>
-                setFormData({ ...formData, expenseDate: e.target.value })
-              }
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-              required
-            />
-          </label>
-        </div>
-        {/* Expense Payment Date */}
-        {formData?.expenseMethod === "Credit" && (
-          <div style={{ marginBottom: "16px" }}>
-            <label
-              htmlFor="expensePaymentDate"
-               className="formInputLabel"
-            >
-              Expense Payment Date
-              <input
-                aria-label="expense payment date"
-                type="date"
-                id="expensePaymentDate"
-                value={formData.expensePaymentDate || ""}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    expensePaymentDate: e.target.value,
-                  })
-                }
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-              />
-            </label>
+                <label htmlFor="expenseDate" className="formInputLabel">
+                  Expense Date{" "}
+                  {!validity.validExpenseDate && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <input
+                    aria-label="expense date"
+                    aria-invalid={!validity.validExpenseDate}
+                    type="date"
+                    id="expenseDate"
+                    value={formData.expenseDate || ""}
+                    onChange={(e) =>
+                      setFormData({ ...formData, expenseDate: e.target.value })
+                    }
+                    className={`formInputText`}
+                    required
+                  />
+                </label>
+              </div>
+              <div className="formLineDiv">
+                {/* Expense Method */}
+
+                <label htmlFor="expenseMethod" className="formInputLabel">
+                  Payment Method{" "}
+                  {!validity.validExpenseMethod && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <select
+                    aria-label="expense method"
+                    aria-invalid={!validity.validExpenseMethod}
+                    id="expenseMethod"
+                    value={formData.expenseMethod || ""}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        expenseMethod: e.target.value,
+                        //pppayment date will become empty id not credit
+                        expensePaymentDate:
+                          formData?.expenseMethod === "Credit"
+                            ? ""
+                            : formData?.expenseDate,
+                      })
+                    }
+                    className={`formInputText`}
+                    required
+                  >
+                    <option value="">Select a method</option>
+                    {[
+                      "Cash",
+                      "Credit Card",
+                      "Bank Transfer",
+                      "Online Payment",
+                      "Credit",
+                    ].map((method) => (
+                      <option key={method} value={method}>
+                        {method}
+                      </option>
+                    ))}
+                  </select>{" "}
+                </label>
+
+                {/* Expense Payment Date */}
+
+                <label htmlFor="expensePaymentDate" className="formInputLabel">
+                  Expense Payment Date{" "}
+                  {!validity.validExpensePaymentDate && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <input
+                    aria-invalid={!validity.validExpensePaymentDate}
+                    aria-label="expense payment date"
+                    type="date"
+                    id="expensePaymentDate"
+                    value={formData.expensePaymentDate || ""}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        expensePaymentDate: e.target.value,
+                      })
+                    }
+                    className={`formInputText`}
+                  />
+                </label>
+              </div>
+
+              {/* Expense Note */}
+
+              <label htmlFor="expenseNote" className="formInputLabel">
+                Expense Note{" "}
+                {!validity.validExpenseNote && (
+                  <span className="text-red-600">*</span>
+                )}
+                <textarea
+                  aria-invalid={!validity.validExpenseNote}
+                  aria-label="expense note"
+                  id="expenseNote"
+                  value={formData.expenseNote || ""}
+                  onChange={(e) =>
+                    setFormData({ ...formData, expenseNote: e.target.value })
+                  }
+                  rows="4"
+                  className={`formInputText`}
+                />
+              </label>
+            </div>
           </div>
-        )}
 
-        {/* Expense Note */}
-        <div style={{ marginBottom: "16px" }}>
-          <label
-            htmlFor="expenseNote"
-             className="formInputLabel"
-          >
-            Expense Note
-            <textarea
-              aria-label="expense note"
-              id="expenseNote"
-              value={formData.expenseNote || ""}
-              onChange={(e) =>
-                setFormData({ ...formData, expenseNote: e.target.value })
-              }
-              rows="4"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-            />
-          </label>
-        </div>
+          <div className="flex justify-end space-x-4">
+            <button
+              aria-label="cancel expense"
+              type="button"
+              //disabled={!canSubmit}
+              className="cancel-button"
+              onClick={() => navigate("/finances/expenses/expensesList/")}
+            >
+              Cancel
+            </button>
+            <button
+              aria-label="submit expense"
+              type="submit"
+              disabled={!canSubmit || isUpdateLoading}
+              className="save-button"
+            >
+              save
+              {/* {isUpdateLoading ? "Adding..." : "Save Expense"} */}
+            </button>
+          </div>
+        </form>
 
-        <div className="flex justify-end space-x-4">
-          <button
-            aria-label="cancel expense"
-            type="button"
-            //disabled={!canSubmit}
-            className="cancel-button"
-            onClick={() => navigate("/finances/expenses/expensesList/")}
-          >
-            Cancel
-          </button>
-          <button
-            aria-label="submit expense"
-            type="submit"
-            disabled={!canSubmit || isUpdateLoading}
-            className="save-button"
-          >
-            {isUpdateLoading ? "Adding..." : "Save Expense"}
-          </button>
-        </div>
-      </form>
-
-      {/* Confirmation Modal */}
-      <ConfirmationModal
-        show={showConfirmation}
-        onClose={handleCloseModal}
-        onConfirm={handleConfirmSave}
-        title="Confirm Save"
-        message="Are you sure you want to save?"
-      />
-    </>
-  );
+        {/* Confirmation Modal */}
+        <ConfirmationModal
+          show={showConfirmation}
+          onClose={handleCloseModal}
+          onConfirm={handleConfirmSave}
+          title="Confirm Save"
+          message="Are you sure you want to save?"
+        />
+      </>
+    );
+  }
+  return content;
 };
 export default EditExpenseForm;

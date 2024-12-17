@@ -8,7 +8,7 @@ import EditPayslipForm from "./EditPayslipForm";
 import useAuth from "../../../hooks/useAuth";
 
 import HR from "../HR";
-import LoadingStateIcons from "react-loading-icons";
+import LoadingStateIcon from "react-loading-icons";
 const EditPayslip = () => {
   const { id } = useParams(); //pull the id from use params from the url
   //will get hte student from the state
@@ -52,7 +52,7 @@ const EditPayslip = () => {
   //   content = 
   //     <>
   //       <HR />
-  //       <LoadingStateIcons />
+  //       <LoadingStateIcon />
   //     </>
     
   // }

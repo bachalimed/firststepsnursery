@@ -8,7 +8,7 @@ import EditEmployeeForm from "./EditEmployeeForm";
 import useAuth from "../../../hooks/useAuth";
 import { currentEmployeesList } from "./employeesSlice";
 import HR from "../HR";
-import LoadingStateIcons from "react-loading-icons";
+import LoadingStateIcon from "react-loading-icons";
 const EditEmployee = () => {
   const { id } = useParams(); //pull the id from use params from the url
   //will get hte student from the state
@@ -52,7 +52,7 @@ const EditEmployee = () => {
   //   content = 
   //     <>
   //       <HR />
-  //       <LoadingStateIcons />
+  //       <LoadingStateIcon />
   //     </>
     
   // }

@@ -5,7 +5,7 @@ import { useGetStudentDocumentsListByIdQuery } from "./studentDocumentsListsApiS
 import useAuth from "../../../../hooks/useAuth";
 import { Puff } from "react-loading-icons";
 import StudentsSet from "../../StudentsSet";
-import LoadingStateIcons from "react-loading-icons";
+import LoadingStateIcon from "react-loading-icons";
 const EditStudentDocumentsList = () => {
   //pull the id from use params from the url
   const { id } = useParams();
@@ -56,7 +56,7 @@ const EditStudentDocumentsList = () => {
   //   content = (
   //     <>
   //       <StudentsSet />
-  //       <LoadingStateIcons />
+  //       <LoadingStateIcon />
   //     </>
   //   );
   // }
@@ -68,7 +68,7 @@ const EditStudentDocumentsList = () => {
   ) : (
     <>
       <StudentsSet />
-      <LoadingStateIcons />
+      <LoadingStateIcon />
     </>
   );
 

@@ -20,7 +20,7 @@ import {
 } from "../../../config/REGEX";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 const EditInvoiceForm = ({ invoice }) => {
-  const { userId, isManager } = useAuth();
+  const { userId, isManager,isAdmin } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
@@ -327,6 +327,7 @@ const EditInvoiceForm = ({ invoice }) => {
           </label>
 
           <label htmlFor="invoiceIsFullyPaid" className="formInputLabel">
+            {isManager && <p className="text-amber-700">use only unpay invoice if needed"</p>}
             <input
               type="checkbox"
               id="invoiceIsFullyPaid"
@@ -335,6 +336,7 @@ const EditInvoiceForm = ({ invoice }) => {
               onChange={handleCheckboxChange}
               className="formCheckbox"
               disabled={!isManager}
+              hidden={!isAdmin||!isManager}
             />
             Is Fully Paid
           </label>

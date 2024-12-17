@@ -4,7 +4,7 @@ import EditEmployeeDocumentsListForm from "./EditEmployeeDocumentsListForm";
 import { useGetEmployeeDocumentsListsQuery } from "./employeeDocumentsListsApiSlice";
 import useAuth from "../../../../hooks/useAuth";
 import { Puff } from "react-loading-icons";
-import LoadingStateIcons from "../../../../Components/LoadingStateIcon";
+import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 import HRSet from "../../HRSet";
 const EditEmployeeDocumentsList = () => {
   //pull the id from use params from the url
@@ -29,7 +29,7 @@ const EditEmployeeDocumentsList = () => {
   content = employeeDocumentsList ? (
     <><EditEmployeeDocumentsListForm listToEdit={employeeDocumentsList} /></>
   ) : (
-    <><HRSet/><LoadingStateIcons /></>
+    <><HRSet/><LoadingStateIcon /></>
   );
 
   return content;

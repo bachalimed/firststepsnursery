@@ -15,7 +15,7 @@ import {
 import { OBJECTID_REGEX, DATE_REGEX, NAME_REGEX } from "../../../config/REGEX";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 import { useOutletContext } from "react-router-dom";
-import LoadingStateIcons from "../../../Components/LoadingStateIcon";
+import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 const NewSectionForm = () => {
   const navigate = useNavigate();
   const { userId } = useAuth();
@@ -247,7 +247,7 @@ const NewSectionForm = () => {
     content = (
       <>
         <Academics />
-        <LoadingStateIcons />
+        <LoadingStateIcon />
       </>
     );
   }
