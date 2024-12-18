@@ -99,6 +99,7 @@ const NewEmployeeForm = () => {
     validCity: false,
     validArea: false,
 
+    validSecondaryPhone: false,
     validPrimaryPhone: false,
     validPostCode: false,
     validEmail: false,
@@ -130,7 +131,9 @@ const NewEmployeeForm = () => {
       ...prev,
       validUsername: USER_REGEX.test(formData.username),
       validFirstName: NAME_REGEX.test(formData.userFullName.userFirstName),
-      validMiddleName: NAME_REGEX.test(formData.userFullName.userMiddleName),
+      validMiddleName:
+      formData?.userFullName?.userMiddleName !== ""?
+      NAME_REGEX.test(formData.userFullName.userMiddleName):true,
       validLastName: NAME_REGEX.test(formData.userFullName.userLastName),
       validDob: DATE_REGEX.test(formData.userDob),
       validUserSex: NAME_REGEX.test(formData.userSex),
@@ -272,7 +275,7 @@ const NewEmployeeForm = () => {
   };
   const canSave =
     Object.values(validity).every(Boolean) &&
-    // ((formData.employeeYears[0].academicYear)!=='') &&
+   
 
     !isLoading;
   console.log(validity, "validity");
@@ -326,7 +329,7 @@ const NewEmployeeForm = () => {
 
       <form onSubmit={onSaveEmployeeClicked} className="form-container">
         <h2 className="formTitle">
-          Add Employee:{" "}
+          Add employee:{" "}
           {`${formData.userFullName.userFirstName} ${formData.userFullName.userMiddleName} ${formData.userFullName.userLastName}`}
         </h2>
         <div className="formSectionContainer">

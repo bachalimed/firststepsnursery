@@ -88,6 +88,7 @@ const EditEmployeeForm = ({ employee }) => {
     validPostCode: false,
     validEmail: false,
     validPrimaryPhone: false,
+    validSecondaryPhone: false,
     validCurrentPosition: false,
     validJoinDate: false,
     validContractType: false,
@@ -115,7 +116,9 @@ const EditEmployeeForm = ({ employee }) => {
       ...prev,
 
       validFirstName: NAME_REGEX.test(formData.userFullName?.userFirstName),
-      validMiddleName: NAME_REGEX.test(formData.userFullName.userMiddleName),
+      validMiddleName:
+        formData?.userFullName?.userMiddleName !== ""?
+        NAME_REGEX.test(formData.userFullName.userMiddleName):true,
       validLastName: NAME_REGEX.test(formData.userFullName?.userLastName),
       validDob: DATE_REGEX.test(formData.userDob.split("T")[0]),
       validUserSex: NAME_REGEX.test(formData.userSex),
@@ -980,7 +983,7 @@ const EditEmployeeForm = ({ employee }) => {
         <h3 className="formSectionTitle">Employee roles</h3>
         {(isAdmin || isManager || isDirector) && (
           <div className="formSection">
-            <div>
+            
               <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2 mt-1 max-h-80 overflow-y-auto">
                 {Object.values(ROLES)
                   .filter((role) => role !== "Employee" && role !== "Parent") // Filter out Employee and Parent
@@ -1003,7 +1006,7 @@ const EditEmployeeForm = ({ employee }) => {
                     );
                   })}
               </div>
-            </div>
+            
           </div>
         )}
 
