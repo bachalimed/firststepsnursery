@@ -489,9 +489,7 @@ const NewStudentForm = () => {
                 </div>
               </label>
             </div>
-          </div>
-
-          <div className="formSectionContainer">
+          
             <h3 className="formSectionTitle">Student situation</h3>
             <div className="formSection">
               <div className="formLineDiv">
@@ -556,9 +554,7 @@ const NewStudentForm = () => {
                 </label>
               </div>
             </div>
-          </div>
-
-          <div className="formSectionContainer">
+        
             <h3 className="formSectionTitle">Student Gardien</h3>
             {!validStudentGardien && (
               <span className="text-red-600 ">
@@ -730,9 +726,7 @@ const NewStudentForm = () => {
                 Add Gardien
               </button>
             </div>
-          </div>
-
-          <div className="formSectionContainer">
+        
             <h3 className="formSectionTitle">
               Student Education{" "}
               {!validCurrentEducation && (

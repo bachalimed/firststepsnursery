@@ -325,7 +325,7 @@ const NewEmployeeForm = () => {
       <HR />
 
       <form onSubmit={onSaveEmployeeClicked} className="form-container">
-        <h2 className="formTitle ">
+        <h2 className="formTitle">
           Add Employee:{" "}
           {`${formData.userFullName.userFirstName} ${formData.userFullName.userMiddleName} ${formData.userFullName.userLastName}`}
         </h2>
@@ -737,6 +737,9 @@ const NewEmployeeForm = () => {
           <h3 className="formSectionTitle">Current position</h3>
           <div className="formSection">
             <div className="formLineDiv">
+
+
+              
               <label className="formInputLabel">
                 Employee Active:
                 <div className="formCheckboxItemsDiv">
@@ -989,173 +992,195 @@ const NewEmployeeForm = () => {
                 </label>
               </div>
             </div>
-          </div>
-        </div>
 
-        <h3 className="formSectionTitle">Employement history</h3>
-        <div className="formSection">
-          {formData.employeeWorkHistory.map((work, index) => (
-            <div key={index} className="formSection">
-              <div className="formLineDiv">
-                {/* Institution */}
+            <h3 className="formSectionTitle">Employement history</h3>
+            <div className="formSection">
+              {formData.employeeWorkHistory.map((work, index) => (
+                <div key={index} className="formSection">
+                  <div className="formLineDiv">
+                    {/* Institution */}
 
-                <label htmlFor="institution" className="formInputLabel">
-                  Institution
-                  {!NAME_REGEX.test(
-                    formData?.employeeWorkHistory?.[index]?.institution
-                  ) && <span className="text-red-600">*</span>}
-                  <input
-                    aria-label="institution"
-                    type="text"
-                    id="institution"
-                    name="institution"
-                    value={work.institution}
-                    onChange={(e) =>
-                      handleWorkHistoryChange(
-                        index,
-                        "institution",
-                        e.target.value
-                      )
-                    }
-                    className={`formInputText`}
-                    placeholder="[3-20 letters]"
-                  />{" "}
-                </label>
+                    <label htmlFor="institution" className="formInputLabel">
+                      Institution
+                      {!NAME_REGEX.test(
+                        formData?.employeeWorkHistory?.[index]?.institution
+                      ) && <span className="text-red-600">*</span>}
+                      <input
+                        aria-label="institution"
+                        type="text"
+                        id="institution"
+                        name="institution"
+                        value={work.institution}
+                        onChange={(e) =>
+                          handleWorkHistoryChange(
+                            index,
+                            "institution",
+                            e.target.value
+                          )
+                        }
+                        className={`formInputText`}
+                        placeholder="[3-20 letters]"
+                      />{" "}
+                    </label>
 
-                {/* From Date */}
+                    {/* From Date */}
 
-                <label htmlFor="fromDate" className="formInputLabel">
-                  From Date{" "}
-                  {!work.fromDate && <span className="text-red-600">*</span>}
-                  <input
-                    aria-label="fromDate"
-                    type="date"
-                    id="fromDate"
-                    name="fromDate"
-                    value={work.fromDate}
-                    onChange={(e) =>
-                      handleWorkHistoryChange(index, "fromDate", e.target.value)
-                    }
-                    className={`formInputText`}
-                  />{" "}
-                </label>
+                    <label htmlFor="fromDate" className="formInputLabel">
+                      From Date{" "}
+                      {!work.fromDate && (
+                        <span className="text-red-600">*</span>
+                      )}
+                      <input
+                        aria-label="fromDate"
+                        type="date"
+                        id="fromDate"
+                        name="fromDate"
+                        value={work.fromDate}
+                        onChange={(e) =>
+                          handleWorkHistoryChange(
+                            index,
+                            "fromDate",
+                            e.target.value
+                          )
+                        }
+                        className={`formInputText`}
+                      />{" "}
+                    </label>
 
-                {/* To Date */}
+                    {/* To Date */}
 
-                <label htmlFor="toDate" className="formInputLabel">
-                  To Date{" "}
-                  {!work.toDate && <span className="text-red-600">*</span>}
-                  <input
-                    aria-label="toDate"
-                    type="date"
-                    id="toDate"
-                    name="toDate"
-                    value={work.toDate}
-                    onChange={(e) =>
-                      handleWorkHistoryChange(index, "toDate", e.target.value)
-                    }
-                    className={`formInputText`}
-                  />{" "}
-                </label>
+                    <label htmlFor="toDate" className="formInputLabel">
+                      To Date{" "}
+                      {!work.toDate && <span className="text-red-600">*</span>}
+                      <input
+                        aria-label="toDate"
+                        type="date"
+                        id="toDate"
+                        name="toDate"
+                        value={work.toDate}
+                        onChange={(e) =>
+                          handleWorkHistoryChange(
+                            index,
+                            "toDate",
+                            e.target.value
+                          )
+                        }
+                        className={`formInputText`}
+                      />{" "}
+                    </label>
 
-                {/* Position */}
+                    {/* Position */}
 
-                <label htmlFor={`position-${index}`} className="formInputLabel">
-                  Position{" "}
-                  {!NAME_REGEX.test(
-                    formData?.employeeWorkHistory?.[index]?.position
-                  ) && <span className="text-red-600">*</span>}
-                  <input
-                    aria-label="position"
-                    type="text"
-                    id={`position-${index}`}
-                    name="position"
-                    value={work.position}
-                    onChange={(e) =>
-                      handleWorkHistoryChange(index, "position", e.target.value)
-                    }
-                    className={`formInputText`}
-                    placeholder="[3-20 letters]"
-                  />{" "}
-                </label>
+                    <label
+                      htmlFor={`position-${index}`}
+                      className="formInputLabel"
+                    >
+                      Position{" "}
+                      {!NAME_REGEX.test(
+                        formData?.employeeWorkHistory?.[index]?.position
+                      ) && <span className="text-red-600">*</span>}
+                      <input
+                        aria-label="position"
+                        type="text"
+                        id={`position-${index}`}
+                        name="position"
+                        value={work.position}
+                        onChange={(e) =>
+                          handleWorkHistoryChange(
+                            index,
+                            "position",
+                            e.target.value
+                          )
+                        }
+                        className={`formInputText`}
+                        placeholder="[3-20 letters]"
+                      />{" "}
+                    </label>
 
-                {/* Contract Type */}
+                    {/* Contract Type */}
 
-                <label htmlFor={`contractType-${index}`} className="formInputLabel">
-                  Contract Type{" "}
-                  {!NAME_REGEX.test(
-                    formData?.employeeWorkHistory?.[index]?.contractType
-                  ) && <span className="text-red-600">*</span>}
-                  <input
-                    aria-label="contractType"
-                    aria-invalid={!validity.contractType}
-                    type="text"
-                    id={`contractType-${index}`}
-                    name="contractType"
-                    value={work.contractType}
-                    onChange={(e) =>
-                      handleWorkHistoryChange(
-                        index,
-                        "contractType",
-                        e.target.value
-                      )
-                    }
-                    className={`formInputText`}
-                    placeholder="[3-20 letters]"
-                  />
-                </label>
+                    <label
+                      htmlFor={`contractType-${index}`}
+                      className="formInputLabel"
+                    >
+                      Contract Type{" "}
+                      {!NAME_REGEX.test(
+                        formData?.employeeWorkHistory?.[index]?.contractType
+                      ) && <span className="text-red-600">*</span>}
+                      <input
+                        aria-label="contractType"
+                        aria-invalid={!validity.contractType}
+                        type="text"
+                        id={`contractType-${index}`}
+                        name="contractType"
+                        value={work.contractType}
+                        onChange={(e) =>
+                          handleWorkHistoryChange(
+                            index,
+                            "contractType",
+                            e.target.value
+                          )
+                        }
+                        className={`formInputText`}
+                        placeholder="[3-20 letters]"
+                      />
+                    </label>
 
-                {/* Salary Package */}
+                    {/* Salary Package */}
 
-                <label htmlFor="salaryPackage" className="formInputLabel">
-                  Salary Package
-                  {formData?.employeeWorkHistory?.[index]?.salaryPackage &&
-                    !NUMBER_REGEX.test(
-                      formData?.employeeWorkHistory?.[index]?.salaryPackage
-                    ) && (
-                      <span className="text-red-600"> [Format: $$$$.$$$]</span>
-                    )}
-                  <input
-                    aria-label="salaryPackage"
-                    type="text"
-                    id="salaryPackage"
-                    name="salaryPackage"
-                    value={work.salaryPackage}
-                    onChange={(e) =>
-                      handleWorkHistoryChange(
-                        index,
-                        "salaryPackage",
-                        e.target.value
-                      )
-                    }
-                    className={`formInputText`}
-                    placeholder="[$$$$.$$$]"
-                  />
-                </label>
-              </div>
-              {/* Remove Work History Button */}
+                    <label htmlFor="salaryPackage" className="formInputLabel">
+                      Salary Package
+                      {formData?.employeeWorkHistory?.[index]?.salaryPackage &&
+                        !NUMBER_REGEX.test(
+                          formData?.employeeWorkHistory?.[index]?.salaryPackage
+                        ) && (
+                          <span className="text-red-600">
+                            {" "}
+                            [Format: $$$$.$$$]
+                          </span>
+                        )}
+                      <input
+                        aria-label="salaryPackage"
+                        type="text"
+                        id="salaryPackage"
+                        name="salaryPackage"
+                        value={work.salaryPackage}
+                        onChange={(e) =>
+                          handleWorkHistoryChange(
+                            index,
+                            "salaryPackage",
+                            e.target.value
+                          )
+                        }
+                        className={`formInputText`}
+                        placeholder="[$$$$.$$$]"
+                      />
+                    </label>
+                  </div>
+                  {/* Remove Work History Button */}
+                  <button
+                    aria-label="remove work history"
+                    type="button"
+                    onClick={() => handleRemoveWorkHistory(index)}
+                    className="delete-button w-full"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+
+              {/* Add Work History Button */}
               <button
-                aria-label="remove work history"
+                aria-label="add work history"
                 type="button"
-                onClick={() => handleRemoveWorkHistory(index)}
-                className="delete-button w-full"
+                onClick={handleAddWorkHistory}
+                className="add-button w-full"
               >
-                Remove
+                Add Work History
               </button>
             </div>
-          ))}
-
-          {/* Add Work History Button */}
-          <button
-            aria-label="add work history"
-            type="button"
-            onClick={handleAddWorkHistory}
-            className="add-button w-full"
-          >
-            Add Work History
-          </button>
+          </div>
         </div>
-
         {/* Submit Button */}
         <div className="flex justify-end gap-4">
           <button
