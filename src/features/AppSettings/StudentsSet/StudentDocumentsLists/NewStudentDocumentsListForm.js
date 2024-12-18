@@ -3,8 +3,6 @@ import StudentsSet from "../../StudentsSet";
 import { useAddNewStudentDocumentsListMutation } from "./studentDocumentsListsApiSlice";
 import { useNavigate } from "react-router-dom";
 
-import { ROLES } from "../../../../config/UserRoles";
-import { ACTIONS } from "../../../../config/UserActions";
 import useAuth from "../../../../hooks/useAuth";
 import { useGetStudentDocumentsListsQuery } from "./studentDocumentsListsApiSlice";
 import { useSelector } from "react-redux";
@@ -265,7 +263,7 @@ const NewStudentDocumentsListForm = () => {
               <div key={index} className="formSection">
                 <div className="formLineDiv">
                   <label
-                    htmlFor={`entry.documentTitle-${index}`}
+                    htmlFor={`${entry.documentTitle}-${index}`}
                     className="formInputLabel"
                   >
                     Document Title:{" "}
@@ -277,8 +275,8 @@ const NewStudentDocumentsListForm = () => {
                       aria-label="Document Title"
                       placeholder="[3-20] Characters"
                       type="text"
-                      id={`entry.documentTitle-${index}`}
-                      name={entry.documentTitle}
+                      id={`${entry.documentTitle}-${index}`}
+                      name={`${entry.documentTitle}-${index}`}
                       value={entry.documentTitle}
                       onChange={(e) =>
                         handleFieldChange(
@@ -288,7 +286,7 @@ const NewStudentDocumentsListForm = () => {
                         )
                       }
                       className={`formInputText`}
-                      disabled={index < 3} // Disable input for the first three elements
+                      disabled={index < 3} // Disable input for the first three elements to avoid changing title because we need exact syntax of titile
                     />
                   </label>
 
@@ -335,16 +333,15 @@ const NewStudentDocumentsListForm = () => {
                 )}
               </div>
             ))}
-            <div className="flex justify-between mt-6">
-              <button
-                aria-label="add document"
-                type="button"
-                onClick={handleAddEntry}
-                className="add-button w-full"
-              >
-                Add Document
-              </button>
-            </div>
+
+            <button
+              aria-label="add document"
+              type="button"
+              onClick={handleAddEntry}
+              className="add-button w-full"
+            >
+              Add Document
+            </button>
           </div>
           <div className="cancelSavebuttonsDiv">
             <button

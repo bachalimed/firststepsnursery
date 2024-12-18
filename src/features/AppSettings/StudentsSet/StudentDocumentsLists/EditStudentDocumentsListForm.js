@@ -1,29 +1,21 @@
 import React from "react";
 import StudentsSet from "../../StudentsSet";
 import { useState, useEffect } from "react";
-import { useGetAcademicYearsQuery } from "../../AcademicsSet/AcademicYears/academicYearsApiSlice";
 import { useUpdateStudentDocumentsListMutation } from "./studentDocumentsListsApiSlice";
 import { useNavigate } from "react-router-dom";
-import { ROLES } from "../../../../config/UserRoles";
-import { ACTIONS } from "../../../../config/UserActions";
-import { selectAllAcademicYears } from "../../AcademicsSet/AcademicYears/academicYearsApiSlice";
 import useAuth from "../../../../hooks/useAuth";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
-import { useSelector } from "react-redux";
-import { Puff } from "react-loading-icons";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-//constrains on inputs when creating new user
+
 import { useOutletContext } from "react-router-dom";
-const TITLE_REGEX = /^[A-z/ 0-9]{8,20}$/;
+import {TITLE_REGEX, NAME_REGEX} from'../../../../config/REGEX'
 
 const EditStudentDocumentsListForm = ({ listToEdit }) => {
   //console.log(listToEdit.documentsAcademicYear,'lllllyear')
   const Navigate = useNavigate();
   const { _id } = listToEdit;
-
+console.log(listToEdit,'listToEdit in form')
   const [documentsAcademicYear, setDocumentsAcademicYear] = useState(
-    listToEdit.documentsAcademicYear
+    listToEdit?.documentsAcademicYear
   );
   const [studentDocumentsList, setStudentDocumentsList] = useState(
     listToEdit.documentsList || []
@@ -46,9 +38,13 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
     },
   ] = useUpdateStudentDocumentsListMutation(); //it will not execute the mutation nownow but when called
 
+  // Validation effects
   useEffect(() => {
-    setValidDocumentTitle(TITLE_REGEX.test(documentTitle));
-  }, [documentTitle]);
+    const allValid = studentDocumentsList?.every((entry) =>
+      NAME_REGEX.test(entry.documentTitle)
+    );
+    setValidDocumentTitle(allValid);
+  }, [studentDocumentsList]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -60,12 +56,18 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
   }, [isSuccess, Navigate]); //even if no success it will navigate and not show any warning if failed or success
 
   // Ensure that the first three documents cannot be removed
-  const isRemovable = (index) => index >= 1;
+  const isRemovable = (index) => index >= 2;//the first threea reprpedefined(stud photo, father photo, mother photo)
 
+  // Handler to update an entry field
   const handleFieldChange = (index, field, value) => {
-    setStudentDocumentsList((prevState) =>
-      prevState.map((doc, i) =>
-        i === index ? { ...doc, [field]: value } : doc
+    const updatedEntries = [...studentDocumentsList];
+    updatedEntries[index][field] = value;
+    setStudentDocumentsList(updatedEntries);
+  };
+  const handleActionChange = (index, action) => {
+    setStudentDocumentsList((prevList) =>
+      prevList.map((entry, i) =>
+        i === index ? { ...entry, [action]: !entry[action] } : entry
       )
     );
   };
@@ -108,7 +110,7 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
         documentsAcademicYear,
       });
       console.log(response, "response");
-     if ((response.data && response.data.message) || response?.message) {
+      if ((response.data && response.data.message) || response?.message) {
         // Success response
         triggerBanner(response?.data?.message || response?.message, "success");
       } else if (
@@ -123,7 +125,10 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to update student document. Please try again.", "error");
+      triggerBanner(
+        "Failed to update student document. Please try again.",
+        "error"
+      );
 
       console.error("Error updating student document:", error);
     }
@@ -143,67 +148,94 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
         className="form-container"
         onSubmit={onSaveStudentDocumentsListClicked}
       >
-        <div className="form__title-row">
-          <h2>Edit Student Documents List for {documentsAcademicYear}</h2>
-        </div>
-        <h1>Student Documents</h1>
-        {studentDocumentsList.map((entry, index) => (
-          <div key={index}>
-            <input
-              aria-label="document title"
-              placeholder="[3-20 characters]"
-              type="text"
-              value={entry.documentTitle}
-              onChange={(e) =>
-                handleFieldChange(index, "documentTitle", e.target.value)
-              }
-              disabled={index < 3} // Disable editing for the first three elements if needed
-            />
-            <label htmlFor="">
-              <input
-                aria-label="id required"
-                type="checkbox"
-                checked={entry.isRequired}
-                onChange={(e) =>
-                  handleFieldChange(index, "isRequired", e.target.checked)
-                }
-              />
-              Is Required?
-            </label>
-            <label htmlFor="">
-              <input
-                aria-label="id legalised"
-                type="checkbox"
-                checked={entry.isLegalised}
-                onChange={(e) =>
-                  handleFieldChange(index, "isLegalised", e.target.checked)
-                }
-              />
-              Is Legalised?
-            </label>
-            {isRemovable(index) && (
-              <button
-                className="delete-button"
-                aria-label="remove document"
-                type="button"
-                onClick={() => handleRemoveEntry(index)}
-              >
-                Remove
-              </button>
-            )}
+        <h2 className="formTitle">
+          Edit Documents List Form for {documentsAcademicYear}{" "}
+        </h2>
+        <div className="formSectionContainer">
+          <h3 className="formSectionTitle">Student Documents</h3>
+          <div className="formSection">
+            {studentDocumentsList.map((entry, index) => (
+              <div key={index} className="formSection">
+                <div className="formLineDiv"></div>
+                <label
+                  htmlFor={`${entry.documentTitle}-${index}`}
+                  className="formInputLabel"
+                >
+                  Document Title:{" "}
+                  {!validDocumentTitle && (
+                    <span className="text-red-600 ">*</span>
+                  )}
+                  <input
+                    aria-invalid={!validDocumentTitle}
+                    aria-label="document title"
+                    placeholder="[3-20 characters]"
+                    type="text"
+                    id={`${entry.documentTitle}-${index}`}
+                    name={`${entry.documentTitle}-${index}`}
+                    value={entry.documentTitle}
+                    onChange={(e) =>
+                      handleFieldChange(index, "documentTitle", e.target.value)
+                    }
+                    className={`formInputText`}
+                    disabled={index < 3} // Disable editing for the first three elements if needed
+                  />
+                </label>
+                <div className="grid grid-cols-1 md:grid-cols-1 gap-2 mb-2 mt-1 max-h-80 overflow-y-auto">
+                  <button
+                    aria-label="is required"
+                    type="button"
+                    onClick={() => handleActionChange(index, "isRequired")}
+                    className={`px-3 py-2 text-left rounded-md ${
+                      entry.isRequired
+                        ? "bg-green-600 text-white hover:bg-green-500"
+                        : "bg-gray-100 text-gray-700 hover:bg-sky-600 hover:text-white"
+                    }`}
+                  >
+                    <div className="font-semibold">
+                      {entry.isRequired ? "Required" : "Not Required"}
+                    </div>
+                  </button>
+                  <button
+                    aria-label="is legalised"
+                    type="button"
+                    onClick={() => handleActionChange(index, "isLegalised")}
+                    className={`px-3 py-2 text-left rounded-md ${
+                      entry.isLegalised
+                        ? "bg-green-600 text-white hover:bg-green-500"
+                        : "bg-gray-100 text-gray-700 hover:bg-sky-600 hover:text-white"
+                    }`}
+                  >
+                    <div className="font-semibold">
+                      {entry.isLegalised ? "Legalised" : "Not Legalised"}
+                    </div>
+                  </button>
+                </div>
+
+                {isRemovable(index) && (
+                  <button
+                    className="delete-button w-full"
+                    aria-label="remove document"
+                    type="button"
+                    onClick={() => handleRemoveEntry(index)}
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+            ))}
           </div>
-        ))}
-        <button
-          type="button"
-          className="add-button"
-          aria-label="add document"
-          onClick={handleAddEntry}
-        >
-          Add Document
-        </button>
+          <button
+            type="button"
+            className="add-button w-full"
+            aria-label="add document"
+            onClick={handleAddEntry}
+          >
+            Add Document
+          </button>
+        </div>
         <div className="cancelSavebuttonsDiv">
           <button
-            aria-label="cancel new list"
+            aria-label="cancel edit list"
             className="cancel-button"
             onClick={handleCancel}
           >
@@ -213,11 +245,9 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
             aria-label="submit  list"
             className="save-button"
             type="submit"
-            title="Save"
-            onClick={onSaveStudentDocumentsListClicked}
             disabled={!canSave || isLoading}
           >
-            Save Changes
+            Save
           </button>
         </div>
       </form>

@@ -13,4 +13,6 @@ a dialog will open to Register the studetn by selecting the current year. now th
 6. discounts are applied directly onteh final price and will appear on the invoice list
 7. there is no ppppayment editing, we should remove a payment and create a new payment a again ( avoid changes of past payments)
 8. we create a new employee and we can edit employee and choose roles for employee(animator, desk, academic...)
+9. studetn document and employee documetns: there should be not editing of document after document have been uploaded, at least no removing.(alert or prevent)
+10. studetn docuetn edit only works second click?
  

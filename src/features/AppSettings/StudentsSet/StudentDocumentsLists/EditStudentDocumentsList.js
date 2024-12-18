@@ -37,7 +37,7 @@ const EditStudentDocumentsList = () => {
     }
   ) || {};
 
-  //console.log('helllllow',studentDocumentsListToEdit, 'list id')
+  console.log('helllllow',studentDocumentsListToEdit, 'list id')
   const studentDocumentsList = isSuccess ? studentDocumentsListToEdit : [];
 
   // will not get from the state because not set to state already

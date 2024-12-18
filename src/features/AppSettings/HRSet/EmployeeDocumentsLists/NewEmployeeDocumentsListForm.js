@@ -1,13 +1,8 @@
 import React from "react";
-
 import EmployeesSet from "../../HRSet";
 import { useState, useEffect } from "react";
 import { useAddNewEmployeeDocumentsListMutation } from "./employeeDocumentsListsApiSlice";
 import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { ROLES } from "../../../../config/UserRoles";
-import { ACTIONS } from "../../../../config/UserActions";
 import useAuth from "../../../../hooks/useAuth";
 import { useGetEmployeeDocumentsListsQuery } from "./employeeDocumentsListsApiSlice";
 import { useSelector } from "react-redux";
@@ -16,10 +11,10 @@ import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
 } from "../../AcademicsSet/AcademicYears/academicYearsSlice";
-import { useGetAcademicYearsQuery } from "../../AcademicsSet/AcademicYears/academicYearsApiSlice";
-import { TITLE_REGEX } from "../../../../config/REGEX";
+import { TITLE_REGEX, NAME_REGEX } from "../../../../config/REGEX";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
-
+import { useOutletContext } from "react-router-dom";
+import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 const NewEmployeeDocumentsListForm = () => {
   const Navigate = useNavigate();
 
@@ -72,6 +67,8 @@ const NewEmployeeDocumentsListForm = () => {
         )
     );
   }
+
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   //initialisation of states for each input
   const [employeeDocumentsList, setEmployeeDocumentsList] = useState([
     { documentTitle: "Employee Photo", isRequired: false, isLegalised: false },
@@ -90,9 +87,13 @@ const NewEmployeeDocumentsListForm = () => {
   //use effect is used to validate the inputs against the defined REGEX above
   //the previous constrains have to be verified on the form for teh user to know
 
+  // Validation effects
   useEffect(() => {
-    setValidDocumentTitle(TITLE_REGEX.test(documentTitle));
-  }, [documentTitle]);
+    const allValid = employeeDocumentsList.every((entry) =>
+      NAME_REGEX.test(entry.documentTitle)
+    );
+    setValidDocumentTitle(allValid);
+  }, [employeeDocumentsList]);
   useEffect(() => {
     setValidDocumentsAcademicYear(TITLE_REGEX.test(documentsAcademicYear));
   }, [documentsAcademicYear]);
@@ -130,6 +131,13 @@ const NewEmployeeDocumentsListForm = () => {
     updatedEntries[index][field] = value;
     setEmployeeDocumentsList(updatedEntries);
   };
+  const handleActionChange = (index, action) => {
+    setEmployeeDocumentsList((prevList) =>
+      prevList.map((entry, i) =>
+        i === index ? { ...entry, [action]: !entry[action] } : entry
+      )
+    );
+  };
 
   const handleAddEntry = () => {
     setEmployeeDocumentsList([
@@ -161,15 +169,31 @@ const NewEmployeeDocumentsListForm = () => {
     // Close the confirmation modal
     setShowConfirmation(false);
     try {
-      await addNewEmployeeDocumentsList({
+      const response = await addNewEmployeeDocumentsList({
         documentsList: employeeDocumentsList,
         documentsAcademicYear,
       });
-      if (isAddError) {
-        console.log("Error saving:", addError);
+      if ((response.data && response.data.message) || response?.message) {
+        // Success response
+        triggerBanner(response?.data?.message || response?.message, "success");
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
       }
-    } catch (addError) {
-      console.error("Error saving student:", addError);
+    } catch (error) {
+      triggerBanner(
+        "Failed to create student document. Please try again.",
+        "error"
+      );
+
+      console.error("Error creating student document:", error);
     }
   };
   // Close the modal without saving
@@ -179,135 +203,170 @@ const NewEmployeeDocumentsListForm = () => {
   const handleCancel = () => {
     Navigate("/settings/hrSet/employeeDocumentsListsList");
   };
+  let content;
+  if (isEmpDocsLoading) {
+    content = (
+      <>
+        {" "}
+        <EmployeesSet />
+        <LoadingStateIcon />
+      </>
+    );
+  }
+  if (isEmpDocsSuccess) {
+    content = (
+      <>
+        <EmployeesSet />
 
-  const content = (
-    <>
-      <EmployeesSet />
-
-      <form
-        className="form-container"
-        onSubmit={onSaveEmployeeDocumentsListClicked}
-      >
-        <div className="form__title-row mb-4">
-          <h2 className="text-xl font-semibold">
-            New EmployeeDocumentsList Form
-          </h2>
-        </div>
-        <label htmlFor=""
-          htmlFor="documentsAcademicYear"
-          className="block text-sm font-medium text-gray-700 mb-1"
+        <form
+          className="form-container"
+          onSubmit={onSaveEmployeeDocumentsListClicked}
         >
-          <div className="mb-4">
-            Select Year
-            <select
-              aria-label="document academic year"
-              value={documentsAcademicYear}
-              onChange={onDocumentsAcademicYearChanged}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-700 focus:border-sky-700 sm:text-sm"
-            >
-              <option value="">Select Year</option>
-              {filteredAcademicYearsList.map((year) => (
-                <option key={year.id} value={year.title}>
-                  {year.title}
-                </option>
-              ))}
-            </select>{" "}
+          <h2 className="formTitle">New EmployeeDocumentsList Form</h2>
+          <div className="formSectionContainer">
+            <h3 className="formSectionTitle">Year selection</h3>
+            <div className="formSection">
+              <label htmlFor="documentsAcademicYear" className="formInputLabel">
+                List year{" "}
+                {!validDocumentsAcademicYear && (
+                  <span className="text-red-600 ">*</span>
+                )}
+                <select
+                  aria-invalid={!validDocumentsAcademicYear}
+                  aria-label="document academic year"
+                  id="documentsAcademicYear"
+                  name="documentsAcademicYear"
+                  value={documentsAcademicYear}
+                  onChange={onDocumentsAcademicYearChanged}
+                  className={`formInputText`}
+                >
+                  <option value="">Select Year</option>
+                  {filteredAcademicYearsList.map((year) => (
+                    <option key={year.id} value={year.title}>
+                      {year.title}
+                    </option>
+                  ))}
+                </select>{" "}
+              </label>
+            </div>
           </div>
-        </label>
-        <h1 className="text-lg font-semibold mb-4">Employee Documents</h1>
-        {employeeDocumentsList.map((entry, index) => (
-          <div key={index} className="mb-4 p-4 bg-white rounded shadow">
-            <label htmlFor="" className="text-sm text-gray-700">
-              <div className="mb-2">
-                <input
-                  aria-label="document title"
-                  placeholder="[3-20 characters]"
-                  type="text"
-                  value={entry.documentTitle}
-                  onChange={(e) =>
-                    handleFieldChange(index, "documentTitle", e.target.value)
-                  }
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-700 focus:border-sky-700 sm:text-sm"
-                />
+          <h3 className="formSectionTitle">Employee Documents</h3>
+          <div className="formSection">
+            {employeeDocumentsList.map((entry, index) => (
+              <div key={index} className="formSection">
+                <div className="formLineDiv">
+                  <label
+                    htmlFor={`${entry.documentTitle}-${index}`}
+                    className="formInputLabel"
+                  >
+                    Document Title:{" "}
+                    {!validDocumentTitle && (
+                      <span className="text-red-600 ">*</span>
+                    )}
+                    <input
+                      aria-invalid={!validDocumentTitle}
+                      aria-label="document title"
+                      placeholder="[3-20 characters]"
+                      type="text"
+                      id={`${entry.documentTitle}-${index}`}
+                      name={`${entry.documentTitle}-${index}`}
+                      value={entry.documentTitle}
+                      onChange={(e) =>
+                        handleFieldChange(
+                          index,
+                          "documentTitle",
+                          e.target.value
+                        )
+                      }
+                      className={`formInputText`}
+                     disabled={index < 1} // Disable input for the  element to avoid changing title because we need exact syntax of titile
+                    />
+                  </label>
+                  <div className="grid grid-cols-1 md:grid-cols-1 gap-2 mb-2 mt-1 max-h-80 overflow-y-auto">
+                    <button
+                      aria-label="is required"
+                      type="button"
+                      onClick={() => handleActionChange(index, "isRequired")}
+                      className={`px-3 py-2 text-left rounded-md ${
+                        entry.isRequired
+                          ? "bg-green-600 text-white hover:bg-green-500"
+                          : "bg-gray-100 text-gray-700 hover:bg-sky-600 hover:text-white"
+                      }`}
+                    >
+                      <div className="font-semibold">
+                        {entry.isRequired ? "Required" : "Not Required"}
+                      </div>
+                    </button>
+                    <button
+                      aria-label="is legalised"
+                      type="button"
+                      onClick={() => handleActionChange(index, "isLegalised")}
+                      className={`px-3 py-2 text-left rounded-md ${
+                        entry.isLegalised
+                          ? "bg-green-600 text-white hover:bg-green-500"
+                          : "bg-gray-100 text-gray-700 hover:bg-sky-600 hover:text-white"
+                      }`}
+                    >
+                      <div className="font-semibold">
+                        {entry.isLegalised ? "Legalised" : "Not Legalised"}
+                      </div>
+                    </button>
+                  </div>
+                </div>
+                {index >= 1 && (
+                  <button
+                    aria-label="remove document"
+                    type="button"
+                    onClick={() => handleRemoveEntry(index)}
+                    className="delete-button w-full"
+                  >
+                    Remove
+                  </button>
+                )}
               </div>
-            </label>
-            <div className="flex items-center mb-2">
-              <label htmlFor="" className="text-sm text-gray-700">
-                <input
-                  aria-label="is required"
-                  type="checkbox"
-                  checked={entry.isRequired}
-                  onChange={(e) =>
-                    handleFieldChange(index, "isRequired", e.target.checked)
-                  }
-                  className="mr-2"
-                />
-                Is Required?
-              </label>
-            </div>
-            <div className="flex items-center mb-2">
-              <label htmlFor="" className="text-sm text-gray-700">
-                <input
-                  aria-label="is legalised"
-                  type="checkbox"
-                  checked={entry.isLegalised}
-                  onChange={(e) =>
-                    handleFieldChange(index, "isLegalised", e.target.checked)
-                  }
-                  className="mr-2"
-                />
-                Is Legalised?
-              </label>
-            </div>
-            {index >= 1 && (
-              <button
-                aria-label="remove document"
-                type="button"
-                onClick={() => handleRemoveEntry(index)}
-                className="delete-button"
-              >
-                Remove
-              </button>
-            )}
+            ))}
+
+            <button
+              aria-label="add document"
+              type="button"
+              className="add-button w-full"
+              onClick={handleAddEntry}
+            >
+              Add Document
+            </button>
           </div>
-        ))}
-        <button
-          aria-label="add document"
-          type="button"
-          className="add-button"
-          onClick={handleAddEntry}
-        >
-          Add Document
-        </button>
-        <div className="cancelSavebuttonsDiv">
-          <button
-            aria-label="cancel new document list"
-            className="cancel-button"
-            onClick={handleCancel}
-          >
-            Cancel
-          </button>
-          <button
-            aria-label="submit new document list"
-            className="save-button"
-            type="submit"
-            onClick={onSaveEmployeeDocumentsListClicked}
-            disabled={!canSave || isAddLoading}
-          >
-            Save Changes
-          </button>
-        </div>
-      </form>
-      {/* Confirmation Modal */}
-      <ConfirmationModal
-        show={showConfirmation}
-        onClose={handleCloseModal}
-        onConfirm={handleConfirmSave}
-        title="Confirm Save"
-        message="Are you sure you want to save?"
-      />
-    </>
-  );
+
+          <div className="cancelSavebuttonsDiv">
+            <button
+              aria-label="cancel new document list"
+              className="cancel-button"
+              onClick={handleCancel}
+            >
+              Cancel
+            </button>
+            <button
+              aria-label="submit new document list"
+              className="save-button"
+              type="submit"
+              onClick={onSaveEmployeeDocumentsListClicked}
+              disabled={!canSave || isAddLoading}
+            >
+              Save Changes
+            </button>
+          </div>
+        </form>
+        {/* Confirmation Modal */}
+        <ConfirmationModal
+          show={showConfirmation}
+          onClose={handleCloseModal}
+          onConfirm={handleConfirmSave}
+          title="Confirm Save"
+          message="Are you sure you want to save?"
+        />
+      </>
+    );
+  }
+
   return content;
 };
 export default NewEmployeeDocumentsListForm;
