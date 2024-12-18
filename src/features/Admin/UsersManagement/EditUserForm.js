@@ -204,7 +204,7 @@ const EditUserForm = ({ user }) => {
     } catch (error) {
       triggerBanner("Failed to update user. Please try again.", "error");
 
-      console.error("Error saving:", error);
+      console.error("Error updating user:", error);
     }
   };
 

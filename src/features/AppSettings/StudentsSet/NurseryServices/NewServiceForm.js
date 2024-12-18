@@ -138,9 +138,9 @@ const NewServiceForm = () => {
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to update classroom. Please try again.", "error");
+      triggerBanner("Failed to update service. Please try again.", "error");
 
-      console.error("Error saving:", error);
+      console.error("Error updating service:", error);
     }
   };
   // Close the modal without saving

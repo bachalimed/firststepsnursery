@@ -151,7 +151,7 @@ const EditPayeeForm = ({ payee }) => {
     } catch (error) {
       triggerBanner("Failed to update payee. Please try again.", "error");
 
-      console.error("Error saving:", error);
+      console.error("Error updating payee:", error);
     }
   };
 

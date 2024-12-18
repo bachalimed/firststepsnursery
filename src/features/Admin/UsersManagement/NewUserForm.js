@@ -202,7 +202,7 @@ const NewUserForm = () => {
     try {
       const response = await addNewUser({ formData }); //we call the add new user mutation and set the arguments to be saved
       //added this to confirm save
-      console.log(response, "response");
+     
      if ((response.data && response.data.message) || response?.message) {
         // Success response
         triggerBanner(response?.data?.message || response?.message, "success");
@@ -218,9 +218,9 @@ const NewUserForm = () => {
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to add user. Please try again.", "error");
+      triggerBanner("Failed to create user. Please try again.", "error");
 
-      console.error("Error saving:", error);
+      console.error("Error creating user:", error);
     }
   };
   // Close the modal without saving

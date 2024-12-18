@@ -414,7 +414,7 @@ const EditAdmissionForm = ({ admission }) => {
     } catch (error) {
       triggerBanner("Failed to update admission. Please try again.", "error");
 
-      console.error("Error saving:", error);
+      console.error("Error updating admission:", error);
     }
   };
   // Close the modal without saving

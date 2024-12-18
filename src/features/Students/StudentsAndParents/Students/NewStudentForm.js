@@ -345,9 +345,9 @@ const NewStudentForm = () => {
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to add student. Please try again.", "error");
+      triggerBanner("Failed to create student. Please try again.", "error");
 
-      console.error("Error saving:", error);
+      console.error("Error creating student:", error);
     }
   };
 

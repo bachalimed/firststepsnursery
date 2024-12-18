@@ -13,12 +13,14 @@ import {
   PAYMENT_PERIODS,
 } from "../../../config/UserRoles";
 import {
+  SHORTCOMMENT_REGEX,
+  NAME_REGEX,
+  NUMBER_REGEX,
   USER_REGEX,
-  YEAR_REGEX,
   PHONE_REGEX,
   DATE_REGEX,
-  NUMBER_REGEX,
-  NAME_REGEX,
+  YEAR_REGEX,
+  EMAIL_REGEX,
 } from "../../../config/REGEX";
 import {
   selectAllAcademicYears,
@@ -27,12 +29,12 @@ import {
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { useSelector } from "react-redux";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
-import { useGetAcademicYearsQuery } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
 
+import { useOutletContext } from "react-router-dom";
 const EditEmployeeForm = ({ employee }) => {
   const navigate = useNavigate();
 
-  const { isAdmin, isManager } = useAuth();
+  const { isAdmin, isManager, isDirector } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
@@ -70,16 +72,21 @@ const EditEmployeeForm = ({ employee }) => {
       },
     },
   });
+
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   //console.log(formData.userRoles);
   const [validity, setValidity] = useState({
     validFirstName: false,
+    validMiddleName: false,
     validLastName: false,
     validDob: false,
     validUserSex: false,
     validHouse: false,
-
+    validArea: false,
     validStreet: false,
     validCity: false,
+    validPostCode: false,
+    validEmail: false,
     validPrimaryPhone: false,
     validCurrentPosition: false,
     validJoinDate: false,
@@ -89,19 +96,43 @@ const EditEmployeeForm = ({ employee }) => {
     validEmployeeYear: false,
   });
 
+  //validation for workhjistory for non empty fields
+  const validateWorkHistory = () => {
+    return formData.employeeWorkHistory.every((work) => {
+      const requiredFields = [
+        "institution",
+        "fromDate",
+        "toDate",
+        "contractType",
+        "position",
+      ];
+      return requiredFields.every((field) => work[field]?.trim() !== "");
+    });
+  };
   // Validate inputs using regex patterns
   useEffect(() => {
     setValidity((prev) => ({
       ...prev,
 
       validFirstName: NAME_REGEX.test(formData.userFullName?.userFirstName),
+      validMiddleName: NAME_REGEX.test(formData.userFullName.userMiddleName),
       validLastName: NAME_REGEX.test(formData.userFullName?.userLastName),
       validDob: DATE_REGEX.test(formData.userDob.split("T")[0]),
       validUserSex: NAME_REGEX.test(formData.userSex),
       validHouse: NAME_REGEX.test(formData.userAddress?.house),
       validStreet: NAME_REGEX.test(formData.userAddress?.street),
       validCity: NAME_REGEX.test(formData.userAddress?.city),
+      validArea:
+        formData?.userAddress?.area === "" ||
+        SHORTCOMMENT_REGEX.test(formData.userAddress.area),
+      validPostCode: SHORTCOMMENT_REGEX.test(formData.userAddress.postCode),
       validPrimaryPhone: PHONE_REGEX.test(formData.userContact?.primaryPhone),
+      validEmail:
+        formData.userContact.email === "" ||
+        EMAIL_REGEX.test(formData.userContact.email),
+      validSecondaryPhone:
+        formData.userContact.secondaryPhone === "" ||
+        PHONE_REGEX.test(formData.userContact.secondaryPhone),
       validCurrentPosition: NAME_REGEX.test(
         formData.employeeCurrentEmployment?.position
       ),
@@ -121,25 +152,13 @@ const EditEmployeeForm = ({ employee }) => {
       validEmployeeYear: YEAR_REGEX.test(
         formData.employeeYears[0]?.academicYear
       ),
+      validWorkHistory: validateWorkHistory(),
     }));
   }, [formData]);
 
-  console.log(
-    validity.validFirstName,
-    validity.validLastName,
-    validity.validDob,
-    validity.validUserSex,
-    validity.validHouse,
-    validity.validStreet,
-    validity.validCity,
-    validity.validPrimaryPhone,
-    validity.validCurrentPosition,
-    validity.validJoinDate,
-    validity.validContractType,
-    validity.validBasic,
-    validity.validPayment,
-    validity.validEmployeeYear
-  );
+  console.log(validity);
+  console.log(formData, "formData");
+
   useEffect(() => {
     if (isSuccess) {
       setFormData({});
@@ -169,52 +188,48 @@ const EditEmployeeForm = ({ employee }) => {
     }
   };
   const onAcademicYearChanged = (e, yearTitle) => {
-    const { checked } = e.target;
-
     setFormData((prev) => {
       const updatedYears = [...prev.employeeYears];
 
-      if (checked) {
-        // Add the selected year if it's checked and not already in the array
-        if (
-          !updatedYears.some((empYear) => empYear.academicYear === yearTitle)
-        ) {
-          updatedYears.push({ academicYear: yearTitle });
-        }
-      } else {
-        // Remove the year if unchecked
-        const filteredYears = updatedYears.filter(
-          (empYear) => empYear.academicYear !== yearTitle
-        );
-        return { ...prev, employeeYears: filteredYears };
-      }
+      // Check if the year is already selected
+      const isAlreadySelected = updatedYears.some(
+        (empYear) => empYear.academicYear === yearTitle
+      );
 
-      return { ...prev, employeeYears: updatedYears };
+      if (isAlreadySelected) {
+        // Remove the year if already selected
+        return {
+          ...prev,
+          employeeYears: updatedYears.filter(
+            (empYear) => empYear.academicYear !== yearTitle
+          ),
+        };
+      } else {
+        // Add the year if not already selected
+        updatedYears.push({ academicYear: yearTitle });
+        return { ...prev, employeeYears: updatedYears };
+      }
     });
   };
-  const onUserRolesChanged = (e, role) => {
-    const { checked } = e.target;
 
+  const onUserRolesChanged = (e, role) => {
     setFormData((prev) => {
-      // Clone the previous userRoles array to avoid direct mutation
       const updatedUserRoles = [...prev.userRoles];
 
-      if (checked) {
-        // Add the selected role if it's checked and not already in the array
-        if (!updatedUserRoles.includes(role)) {
-          updatedUserRoles.push(role);
-        }
-      } else {
-        // Remove the role if unchecked
+      if (updatedUserRoles.includes(role)) {
+        // Remove the role if it's already in the array (unselect)
         const filteredRoles = updatedUserRoles.filter(
           (userRole) => userRole !== role
         );
         return { ...prev, userRoles: filteredRoles };
+      } else {
+        // Add the role if it's not already in the array (select)
+        updatedUserRoles.push(role);
+        return { ...prev, userRoles: updatedUserRoles };
       }
-
-      return { ...prev, userRoles: updatedUserRoles };
     });
   };
+
   // Handler to update work history
   const handleWorkHistoryChange = (index, field, value) => {
     // Create a new copy of employeeWorkHistory
@@ -273,7 +288,6 @@ const EditEmployeeForm = ({ employee }) => {
     formData?.userRoles?.length > 0 &&
     !isLoading;
 
-  console.log(formData, "formData");
   console.log(canSave, "canSave");
 
   const onSaveEmployeeClicked = async (e) => {
@@ -288,9 +302,25 @@ const EditEmployeeForm = ({ employee }) => {
     setShowConfirmation(false);
 
     try {
-      await updateEmployee(formData);
-    } catch (err) {
-      console.error("Failed to save the employee:", err);
+      const response = await updateEmployee(formData);
+      if ((response.data && response.data.message) || response?.message) {
+        // Success response
+        triggerBanner(response?.data?.message || response?.message, "success");
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner("Failed to update employee. Please try again.", "error");
+
+      console.error("Error updating employee:", error);
     }
   };
 
@@ -304,203 +334,214 @@ const EditEmployeeForm = ({ employee }) => {
       <HR />
 
       <form onSubmit={onSaveEmployeeClicked} className="form-container">
-        <h2  className="formTitle ">
+        <h2 className="formTitle ">
           Edit Employee :{" "}
           {`${formData?.userFullName?.userFirstName} ${formData?.userFullName?.userMiddleName} ${formData?.userFullName?.userLastName}`}
         </h2>
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Employee Information</h3>
-          <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
-            <div>
-              <label htmlFor=""  className="formInputLabel">
+        <div className="formSectionContainer">
+          <h3 className="formSectionTitle">Personal details</h3>
+          <div className="formSection">
+            <div className="formLineDiv">
+              <label htmlFor="userFirstName" className="formInputLabel">
                 First Name{" "}
                 {!validity.validFirstName && (
                   <span className="text-red-600">*</span>
                 )}
+                <input
+                  aria-label="userFirstName"
+                  aria-invalid={!validity.validFirstName}
+                  type="text"
+                  id="userFirstName"
+                  name="userFullName.userFirstName" // Changed to match the nested structure
+                  value={formData?.userFullName?.userFirstName}
+                  onChange={handleInputChange}
+                  className={`formInputText`}
+                  placeholder="[3-20] letters"
+                  required
+                />
               </label>
-              <input
-                type="text"
-                name="userFullName.userFirstName" // Changed to match the nested structure
-                value={formData?.userFullName?.userFirstName}
-                onChange={handleInputChange}
-                className={`mt-1 block w-full border ${
-                  validity.validFirstName ? "border-gray-300" : "border-red-600"
-                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                placeholder="Enter First Name"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor=""  className="formInputLabel">
+
+              <label htmlFor="userMiddleName" className="formInputLabel">
                 Middle Name
+                <input
+                  aria-label="userMiddleName"
+                  aria-invalid={!validity.validMiddleName}
+                  id="userMiddleName"
+                  type="text"
+                  className={`formInputText`}
+                  placeholder="[3-20] letters"
+                  name="userFullName.userMiddleName" // Changed to match the nested structure
+                  value={formData.userFullName.userMiddleName}
+                  onChange={handleInputChange}
+                />{" "}
               </label>
-              <input
-                type="text"
-                name="userFullName.userMiddleName" // Changed to match the nested structure
-                value={formData.userFullName.userMiddleName}
-                onChange={handleInputChange}
-              />
             </div>
-            <div>
-              <label htmlFor=""  className="formInputLabel">
+            <div className="formLineDiv">
+              <label htmlFor="userLastName" className="formInputLabel">
                 Last Name{" "}
                 {!validity.validLastName && (
                   <span className="text-red-600">*</span>
                 )}
+                <input
+                  aria-label="userLastName"
+                  aria-invalid={!validity.validLastName}
+                  id="userLastName"
+                  type="text"
+                  name="userFullName.userLastName" // Changed to match the nested structure
+                  value={formData.userFullName.userLastName}
+                  onChange={handleInputChange}
+                  required
+                  className={`formInputText`}
+                  placeholder="[3-20] letters"
+                />{" "}
               </label>
-              <input
-                type="text"
-                name="userFullName.userLastName" // Changed to match the nested structure
-                value={formData.userFullName.userLastName}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            {/* DOB and Sex */}
-            <div className="space-y-4">
-              <div>
-                <label htmlFor=""
-                   className="formInputLabel"
-                  htmlFor="userDob"
-                >
-                  Date of Birth{" "}
-                  {!validity.validDob && (
-                    <span className="text-red-600">*</span>
-                  )}
-                </label>
+
+              {/* DOB and Sex */}
+
+              <label className="formInputLabel" htmlFor="userDob">
+                Date of Birth{" "}
+                {!validity.validDob && <span className="text-red-600">*</span>}
                 <input
                   type="date"
+                  id="userDob"
                   name="userDob"
                   value={formData.userDob}
                   onChange={handleInputChange}
-                  className={`mt-1 block w-full border ${
-                    validity.validDob ? "border-gray-300" : "border-red-600"
-                  } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                  className={`formInputText`}
                   required
                 />
-              </div>
-
+              </label>
+            </div>
+            <div className="formLineDiv">
               <div>
-                <label htmlFor=""  className="formInputLabel">
+                <label className="formInputLabel">
                   Sex{" "}
                   {!validity.validUserSex && (
                     <span className="text-red-600">*</span>
                   )}
+                  <div className="formCheckboxItemsDiv">
+                    <label htmlFor="male" className="formCheckboxChoice">
+                      <input
+                        type="checkbox"
+                        id="male"
+                        value="Male"
+                        checked={formData.userSex === "Male"}
+                        onChange={(e) => {
+                          setFormData((prev) => ({
+                            ...prev,
+                            userSex: e.target.checked
+                              ? "Male"
+                              : formData.userSex === "Male"
+                              ? ""
+                              : formData.userSex,
+                          }));
+                        }}
+                        className="formCheckbox"
+                      />
+                      Male
+                    </label>
+
+                    <label htmlFor="female" className="formCheckboxChoice">
+                      <input
+                        type="checkbox"
+                        id="female"
+                        value="Female"
+                        checked={formData.userSex === "Female"}
+                        onChange={(e) => {
+                          setFormData((prev) => ({
+                            ...prev,
+                            userSex: e.target.checked
+                              ? "Female"
+                              : formData.userSex === "Female"
+                              ? ""
+                              : formData.userSex,
+                          }));
+                        }}
+                        className="formCheckbox"
+                      />
+                      Female
+                    </label>
+                  </div>
                 </label>
-                <div className="flex items-center space-x-4 mt-1">
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      name="userSex"
-                      value="Male"
-                      checked={formData.userSex === "Male"}
-                      onChange={(e) => {
-                        setFormData((prev) => ({
-                          ...prev,
-                          userSex: e.target.checked
-                            ? "Male"
-                            : formData.userSex === "Male"
-                            ? ""
-                            : formData.userSex,
-                        }));
-                      }}
-                      className={`h-4 w-4 ${
-                        validity.validUserSex
-                          ? "border-gray-300 rounded"
-                          : "border-red-600 rounded"
-                      } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                    />
-                    <label htmlFor="" className="ml-2 text-sm text-gray-700">Male</label>
-                  </div>
-
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      name="userSex"
-                      value="Female"
-                      checked={formData.userSex === "Female"}
-                      onChange={(e) => {
-                        setFormData((prev) => ({
-                          ...prev,
-                          userSex: e.target.checked
-                            ? "Female"
-                            : formData.userSex === "Female"
-                            ? ""
-                            : formData.userSex,
-                        }));
-                      }}
-                      className="h-4 w-4 border-gray-300 rounded focus:ring-indigo-500"
-                    />
-                    <label htmlFor="" className="ml-2 text-sm text-gray-700">Female</label>
-                  </div>
-                </div>
-
-                {/* Employee Years */}
-                <h3 className="text-lg font-semibold mt-6">Employee Years</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {academicYears && academicYears.length > 0 ? (
-                    academicYears.map((year, index) => {
-                      const isChecked = formData.employeeYears.some(
-                        (empYear) => empYear.academicYear === year.title
-                      );
-
-                      return (
-                        <div key={index} className="flex items-center">
-                          <input
-                            type="checkbox"
-                            checked={isChecked}
-                            onChange={(e) =>
-                              onAcademicYearChanged(e, year.title)
-                            }
-                            className="mr-2"
-                          />
-                          <label htmlFor="" className="text-gray-700">{year.title}</label>
-                        </div>
-                      );
-                    })
-                  ) : (
-                    <p>No academic years available.</p>
-                  )}
-                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Current Employment */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold">
-            Employee Current EmploymentWork History
-          </h3>
-          <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
-            <div className="flex items-center space-x-3">
-              <input
-                type="checkbox"
-                id="employeeIsActive"
-                checked={formData.employeeIsActive === true}
-                onChange={(e) => {
-                  setFormData((prev) => ({
-                    ...prev,
-                    employeeIsActive: e.target.checked ? true : false,
-                  }));
-                }}
-                className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-              />
-              <label htmlFor=""
-                htmlFor="employeeIsActive"
-                className="text-sm font-medium text-gray-700"
-              >
-                Employee is Active
-              </label>
+
+        <h3 className="formSectionTitle">Employee Current Employment</h3>
+        <div className="formSection">
+          <div className="formSection">
+            {/* Employee Years */}
+            <h3 className="formInputLabel">Employee Years</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2 mt-1 max-h-80 overflow-y-auto">
+              {academicYears &&
+                academicYears.length > 0 &&
+                academicYears.map((year, index) => {
+                  const isChecked = formData.employeeYears.some(
+                    (empYear) => empYear.academicYear === year.title
+                  );
+
+                  return (
+                    <button
+                      aria-label="employee year"
+                      key={index}
+                      type="button"
+                      hidden={
+                        isManager
+                          ? false
+                          : year?.title !== selectedAcademicYear?.title
+                      }
+                      onClick={(e) => onAcademicYearChanged(e, year.title)}
+                      className={`px-3 py-2 text-left rounded-md ${
+                        isChecked
+                          ? "bg-sky-700 text-white hover:bg-sky-600"
+                          : "bg-gray-200 text-gray-700 hover:bg-sky-600 hover:text-white"
+                      }`}
+                    >
+                      <div className="font-semibold">{year.title}</div>
+                    </button>
+                  );
+                })}
             </div>
-            <div>
-              <label htmlFor=""  className="formInputLabel">
-                Current Position{" "}
-                {!validity.validCurrentPosition && (
-                  <span className="text-red-600">*</span>
-                )}
-              </label>
+          </div>
+
+          <div className="formLineDiv">
+            <label className="formInputLabel">
+              Employee Active:
+              <div className="formCheckboxItemsDiv">
+                <label
+                  htmlFor="employeeIsActive"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  <input
+                    type="checkbox"
+                    id="employeeIsActive"
+                    name="employeeIsActive"
+                    checked={formData.employeeIsActive === true}
+                    onChange={(e) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        employeeIsActive: e.target.checked ? true : false,
+                      }));
+                    }}
+                    className="formCheckbox"
+                  />
+                  Employee is active
+                </label>
+              </div>
+            </label>
+            {/* Current Employment */}
+            <label htmlFor="currentPosition" className="formInputLabel">
+              Current Position{" "}
+              {!validity.validCurrentPosition && (
+                <span className="text-red-600">*</span>
+              )}
               <select
+                aria-label="position"
+                aria-invalid={!validity.validCurrentPosition}
+                id="currentPosition"
                 name="position"
                 value={formData.employeeCurrentEmployment.position}
                 onChange={(e) =>
@@ -512,11 +553,7 @@ const EditEmployeeForm = ({ employee }) => {
                     },
                   }))
                 }
-                className={`mt-1 block w-full border ${
-                  validity.validCurrentPosition
-                    ? "border-gray-300"
-                    : "border-red-600"
-                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                className={`formInputText`}
                 required
               >
                 {/* <option value="">Select Position</option> */}
@@ -525,18 +562,19 @@ const EditEmployeeForm = ({ employee }) => {
                     {position}
                   </option>
                 ))}
-              </select>
-            </div>
+              </select>{" "}
+            </label>
 
-            <div>
-              <label htmlFor=""  className="formInputLabel">
-                Join Date{" "}
-                {!validity.validJoinDate && (
-                  <span className="text-red-600">*</span>
-                )}
-              </label>
+            <label htmlFor="joinDate" className="formInputLabel">
+              Join Date{" "}
+              {!validity.validJoinDate && (
+                <span className="text-red-600">*</span>
+              )}
               <input
+                aria-label="joinDate"
+                aria-invalid={!validity.validJoinDate}
                 type="date"
+                id="joinDate"
                 name="joinDate"
                 value={
                   formData.employeeCurrentEmployment.joinDate.split("T")[0]
@@ -550,21 +588,20 @@ const EditEmployeeForm = ({ employee }) => {
                     },
                   }))
                 }
-                className={`mt-1 block w-full border ${
-                  validity.validJoinDate ? "border-gray-300" : "border-red-600"
-                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                className={`formInputText`}
                 required
               />
-            </div>
+            </label>
 
-            <div>
-              <label htmlFor=""  className="formInputLabel">
-                Contract Type{" "}
-                {!validity.validContractType && (
-                  <span className="text-red-600">*</span>
-                )}
-              </label>
+            <label htmlFor="currentContractType" className="formInputLabel">
+              Contract Type{" "}
+              {!validity.validContractType && (
+                <span className="text-red-600">*</span>
+              )}
               <select
+                aria-label="contractType"
+                aria-invalid={!validity.validContractType}
+                id="currentContractType"
                 name="contractType"
                 value={formData.employeeCurrentEmployment.contractType}
                 onChange={(e) =>
@@ -576,11 +613,7 @@ const EditEmployeeForm = ({ employee }) => {
                     },
                   }))
                 }
-                className={`mt-1 block w-full border ${
-                  validity.validContractType
-                    ? "border-gray-300"
-                    : "border-red-600"
-                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                className={`formInputText`}
                 required
               >
                 {/* <option value="">Select Contract Type</option> */}
@@ -590,302 +623,319 @@ const EditEmployeeForm = ({ employee }) => {
                   </option>
                 ))}
               </select>
+            </label>
+          </div>
+
+          <h4 className="formSectionTitle">Salary Package</h4>
+          <div className="formSection">
+            <div className="formLineDiv">
+              <label htmlFor="basic" className="formInputLabel">
+                Basic{" "}
+                {!validity.validBasic && (
+                  <span className="text-red-600">*</span>
+                )}
+                <input
+                  aria-label="basic"
+                  aria-invalid={!validity.validBasic}
+                  type="number"
+                  id="basic"
+                  name="basic"
+                  name="basic"
+                  value={formData.employeeCurrentEmployment.salaryPackage.basic}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      employeeCurrentEmployment: {
+                        ...prev.employeeCurrentEmployment,
+                        salaryPackage: {
+                          ...prev.employeeCurrentEmployment.salaryPackage,
+                          basic: e.target.value,
+                        },
+                      },
+                    }))
+                  }
+                  className={`formInputText`}
+                  placeholder="[$$$$.$$$]"
+                />{" "}
+              </label>
+
+              <label htmlFor="payment" className="formInputLabel">
+                Payment{" "}
+                {!validity.validPayment && (
+                  <span className="text-red-600">*</span>
+                )}
+                <select
+                  aria-label="payment"
+                  aria-invalid={!validity.validPayment}
+                  id="payment"
+                  name="payment"
+                  value={
+                    formData.employeeCurrentEmployment.salaryPackage.payment
+                  }
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      employeeCurrentEmployment: {
+                        ...prev.employeeCurrentEmployment,
+                        salaryPackage: {
+                          ...prev.employeeCurrentEmployment.salaryPackage,
+                          payment: e.target.value,
+                        },
+                      },
+                    }))
+                  }
+                  className={`formInputText`}
+                  required
+                >
+                  {/* <option value="">Select Payment Period</option> */}
+                  {PAYMENT_PERIODS.map((period) => (
+                    <option key={period} value={period}>
+                      {period}
+                    </option>
+                  ))}
+                </select>{" "}
+              </label>
             </div>
 
-            <div>
-              <label htmlFor=""  className="formInputLabel">
-                Salary Package
+            <div className="formLineDiv">
+              <label htmlFor="cnss" className="formInputLabel">
+                CNSS{" "}
+                {formData?.employeeCurrentEmployment?.salaryPackage?.cnss &&
+                  !NUMBER_REGEX.test(
+                    formData?.employeeCurrentEmployment?.salaryPackage?.cnss
+                  ) && <span className="text-red-600">[$$$$.$$$]</span>}
+                <input
+                  aria-label="cnss"
+                  type="number"
+                  id="cnss"
+                  name="cnss"
+                  value={formData.employeeCurrentEmployment.salaryPackage.cnss}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      employeeCurrentEmployment: {
+                        ...prev.employeeCurrentEmployment,
+                        salaryPackage: {
+                          ...prev.employeeCurrentEmployment.salaryPackage,
+                          cnss: e.target.value,
+                        },
+                      },
+                    }))
+                  }
+                  className={`formInputText`}
+                  placeholder="[$$$$.$$$]"
+                />{" "}
               </label>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div>
-                  <label htmlFor=""  className="formInputLabel">
-                    Basic{" "}
-                    {!validity.validBasic && (
-                      <span className="text-red-600">*</span>
-                    )}
-                  </label>
-                  <input
-                    type="number"
-                    name="basic"
-                    value={
-                      formData.employeeCurrentEmployment.salaryPackage.basic
-                    }
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        employeeCurrentEmployment: {
-                          ...prev.employeeCurrentEmployment,
-                          salaryPackage: {
-                            ...prev.employeeCurrentEmployment.salaryPackage,
-                            basic: e.target.value,
-                          },
-                        },
-                      }))
-                    }
-                    className={`mt-1 block w-full border ${
-                      validity.validCity ? "border-gray-300" : "border-red-600"
-                    } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                    placeholder="Enter Basic Salary"
-                  />
-                </div>
-                <div>
-                  <label htmlFor=""  className="formInputLabel">
-                    Payment{" "}
-                    {!validity.validPayment && (
-                      <span className="text-red-600">*</span>
-                    )}
-                  </label>
-                  <select
-                    name="payment"
-                    value={
-                      formData.employeeCurrentEmployment.salaryPackage.payment
-                    }
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        employeeCurrentEmployment: {
-                          ...prev.employeeCurrentEmployment,
-                          salaryPackage: {
-                            ...prev.employeeCurrentEmployment.salaryPackage,
-                            payment: e.target.value,
-                          },
-                        },
-                      }))
-                    }
-                    className={`mt-1 block w-full border ${
-                      validity.validPayment
-                        ? "border-gray-300"
-                        : "border-red-600"
-                    } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                    required
-                  >
-                    {/* <option value="">Select Payment Period</option> */}
-                    {PAYMENT_PERIODS.map((period) => (
-                      <option key={period} value={period}>
-                        {period}
-                      </option>
-                    ))}
-                  </select>
-                </div>
 
-                <div>
-                  <label htmlFor=""  className="formInputLabel">
-                    CNSS
-                  </label>
-                  <input
-                    type="number"
-                    name="cnss"
-                    value={
-                      formData.employeeCurrentEmployment.salaryPackage.cnss
-                    }
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        employeeCurrentEmployment: {
-                          ...prev.employeeCurrentEmployment,
-                          salaryPackage: {
-                            ...prev.employeeCurrentEmployment.salaryPackage,
-                            cnss: e.target.value,
-                          },
+              <label htmlFor="other" className="formInputLabel">
+                Other
+                {formData?.employeeCurrentEmployment?.salaryPackage?.other &&
+                  !NUMBER_REGEX.test(
+                    formData?.employeeCurrentEmployment?.salaryPackage?.other
+                  ) && <span className="text-red-600">[$$$$.$$$]</span>}
+                <input
+                  aria-label="other"
+                  type="number"
+                  id="other"
+                  name="other"
+                  value={formData.employeeCurrentEmployment.salaryPackage.other}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      employeeCurrentEmployment: {
+                        ...prev.employeeCurrentEmployment,
+                        salaryPackage: {
+                          ...prev.employeeCurrentEmployment.salaryPackage,
+                          other: e.target.value,
                         },
-                      }))
-                    }
-                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Enter CNSS"
-                  />
-                </div>
+                      },
+                    }))
+                  }
+                  className={`formInputText`}
+                  placeholder="[$$$$.$$$]"
+                />{" "}
+              </label>
+            </div>
+          </div>
+        </div>
 
-                <div>
-                  <label htmlFor=""  className="formInputLabel">
-                    Other
-                  </label>
-                  <input
-                    type="number"
-                    name="other"
-                    value={
-                      formData.employeeCurrentEmployment.salaryPackage.other
-                    }
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        employeeCurrentEmployment: {
-                          ...prev.employeeCurrentEmployment,
-                          salaryPackage: {
-                            ...prev.employeeCurrentEmployment.salaryPackage,
-                            other: e.target.value,
-                          },
-                        },
-                      }))
-                    }
-                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Enter Other Salary"
-                  />
-                </div>
+        <h3 className="formSectionTitle">Employee roles</h3>
+        {(isAdmin || isManager || isDirector) && (
+          <div className="formSection">
+            <div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2 mt-1 max-h-80 overflow-y-auto">
+                {Object.values(ROLES)
+                  .filter((role) => role !== "Employee" && role !== "Parent") // Filter out Employee and Parent
+                  .map((role, index) => {
+                    const checked = formData?.userRoles?.includes(role);
+                    return (
+                      <button
+                        aria-label="role"
+                        key={index}
+                        type="button"
+                        onClick={(e) => onUserRolesChanged(e, role)}
+                        className={`px-3 py-2 text-left rounded-md ${
+                          checked
+                            ? "bg-sky-700 text-white hover:bg-sky-600"
+                            : "bg-gray-200 text-gray-700 hover:bg-sky-600 hover:text-white"
+                        }`}
+                      >
+                        <div className="font-semibold">{role}</div>
+                      </button>
+                    );
+                  })}
               </div>
             </div>
           </div>
-          {(isAdmin || isManager) && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Assign User Roles</h3>
+        )}
 
-              <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
-                <div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {Object.values(ROLES).map((role) => (
-                      <div key={role} className="flex items-center space-x-3">
-                        <input
-                          type="checkbox"
-                          id={`role-${role}`}
-                          checked={formData.userRoles.includes(role)}
-                          onChange={(e) => onUserRolesChanged(e, role)}
-                          className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                        />
-                        <label htmlFor=""
-                          htmlFor={`role-${role}`}
-                          className="text-sm font-medium text-gray-700"
-                        >
-                          {role}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Employee Work History</h3>
+        <h3 className="formSectionTitle">Employement history</h3>
+        <div className="formSection">
           {formData.employeeWorkHistory.map((work, index) => (
-            <div
-              key={index}
-              className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2"
-            >
-              {/* Institution */}
-              <div>
-                <label htmlFor=""  className="formInputLabel">
-                  Institution{" "}
-                  {!work.institution && <span className="text-red-600">*</span>}
-                </label>
-                <input
-                  type="text"
-                  name="institution"
-                  value={work.institution}
-                  onChange={(e) =>
-                    handleWorkHistoryChange(
-                      index,
-                      "institution",
-                      e.target.value
-                    )
-                  }
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  placeholder="Enter Institution"
-                />
-              </div>
+            <div key={index} className="formSection">
+              <div className="formLineDiv">
+                {/* Institution */}
 
-              {/* From Date */}
-              <div>
-                <label htmlFor=""  className="formInputLabel">
+                <label htmlFor="institution" className="formInputLabel">
+                  Institution
+                  {!NAME_REGEX.test(
+                    formData?.employeeWorkHistory?.[index]?.institution
+                  ) && <span className="text-red-600">*</span>}
+                  <input
+                    aria-label="institution"
+                    type="text"
+                    id="institution"
+                    name="institution"
+                    value={work.institution}
+                    onChange={(e) =>
+                      handleWorkHistoryChange(
+                        index,
+                        "institution",
+                        e.target.value
+                      )
+                    }
+                    className={`formInputText`}
+                    placeholder="[3-20 letters]"
+                  />{" "}
+                </label>
+
+                {/* From Date */}
+
+                <label htmlFor="fromDate" className="formInputLabel">
                   From Date{" "}
                   {!work.fromDate && <span className="text-red-600">*</span>}
+                  <input
+                    aria-label="fromDate"
+                    type="date"
+                    id="fromDate"
+                    name="fromDate"
+                    value={work.fromDate}
+                    onChange={(e) =>
+                      handleWorkHistoryChange(index, "fromDate", e.target.value)
+                    }
+                    className={`formInputText`}
+                  />{" "}
                 </label>
-                <input
-                  type="date"
-                  name="fromDate"
-                  value={work.fromDate}
-                  onChange={(e) =>
-                    handleWorkHistoryChange(index, "fromDate", e.target.value)
-                  }
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
-              </div>
 
-              {/* To Date */}
-              <div>
-                <label htmlFor=""  className="formInputLabel">
+                {/* To Date */}
+
+                <label htmlFor="toDate" className="formInputLabel">
                   To Date{" "}
                   {!work.toDate && <span className="text-red-600">*</span>}
+                  <input
+                    aria-label="toDate"
+                    type="date"
+                    id="toDate"
+                    name="toDate"
+                    value={work.toDate}
+                    onChange={(e) =>
+                      handleWorkHistoryChange(index, "toDate", e.target.value)
+                    }
+                    className={`formInputText`}
+                  />{" "}
                 </label>
-                <input
-                  type="date"
-                  name="toDate"
-                  value={work.toDate}
-                  onChange={(e) =>
-                    handleWorkHistoryChange(index, "toDate", e.target.value)
-                  }
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
-              </div>
 
-              {/* Position */}
-              <div>
-                <label htmlFor=""  className="formInputLabel">
+                {/* Position */}
+
+                <label htmlFor={`position-${index}`} className="formInputLabel">
                   Position{" "}
-                  {!work.position && <span className="text-red-600">*</span>}
+                  {!NAME_REGEX.test(
+                    formData?.employeeWorkHistory?.[index]?.position
+                  ) && <span className="text-red-600">*</span>}
+                  <input
+                    aria-label="position"
+                    type="text"
+                    id={`position-${index}`}
+                    name="position"
+                    value={work.position}
+                    onChange={(e) =>
+                      handleWorkHistoryChange(index, "position", e.target.value)
+                    }
+                    className={`formInputText`}
+                    placeholder="[3-20 letters]"
+                  />{" "}
                 </label>
-                <input
-                  type="text"
-                  name="position"
-                  value={work.position}
-                  onChange={(e) =>
-                    handleWorkHistoryChange(index, "position", e.target.value)
-                  }
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  placeholder="Enter Position"
-                />
-              </div>
 
-              {/* Contract Type */}
-              <div>
-                <label htmlFor=""  className="formInputLabel">
+                {/* Contract Type */}
+
+                <label htmlFor={`contractType-${index}`} className="formInputLabel">
                   Contract Type{" "}
-                  {!work.contractType && (
-                    <span className="text-red-600">*</span>
-                  )}
+                  {!NAME_REGEX.test(
+                    formData?.employeeWorkHistory?.[index]?.contractType
+                  ) && <span className="text-red-600">*</span>}
+                  <input
+                    aria-label="contractType"
+                    aria-invalid={!validity.contractType}
+                    type="text"
+                    id={`contractType-${index}`}
+                    name="contractType"
+                    value={work.contractType}
+                    onChange={(e) =>
+                      handleWorkHistoryChange(
+                        index,
+                        "contractType",
+                        e.target.value
+                      )
+                    }
+                    className={`formInputText`}
+                    placeholder="[3-20 letters]"
+                  />
                 </label>
-                <input
-                  type="text"
-                  name="contractType"
-                  value={work.contractType}
-                  onChange={(e) =>
-                    handleWorkHistoryChange(
-                      index,
-                      "contractType",
-                      e.target.value
-                    )
-                  }
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  placeholder="Enter Contract Type"
-                />
-              </div>
 
-              {/* Salary Package */}
-              <div>
-                <label htmlFor=""  className="formInputLabel">
+                {/* Salary Package */}
+
+                <label htmlFor="salaryPackage" className="formInputLabel">
                   Salary Package
+                  {formData?.employeeWorkHistory?.[index]?.salaryPackage &&
+                    !NUMBER_REGEX.test(
+                      formData?.employeeWorkHistory?.[index]?.salaryPackage
+                    ) && (
+                      <span className="text-red-600"> [Format: $$$$.$$$]</span>
+                    )}
+                  <input
+                    aria-label="salaryPackage"
+                    type="text"
+                    id="salaryPackage"
+                    name="salaryPackage"
+                    value={work.salaryPackage}
+                    onChange={(e) =>
+                      handleWorkHistoryChange(
+                        index,
+                        "salaryPackage",
+                        e.target.value
+                      )
+                    }
+                    className={`formInputText`}
+                    placeholder="[$$$$.$$$]"
+                  />
                 </label>
-                <input
-                  type="text"
-                  name="salaryPackage"
-                  value={work.salaryPackage}
-                  onChange={(e) =>
-                    handleWorkHistoryChange(
-                      index,
-                      "salaryPackage",
-                      e.target.value
-                    )
-                  }
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  placeholder="Enter Salary Package"
-                />
               </div>
-
               {/* Remove Work History Button */}
               <button
+                aria-label="remove work history"
                 type="button"
                 onClick={() => handleRemoveWorkHistory(index)}
-                className="mt-2 text-red-600 hover:text-red-800 text-sm font-medium"
+                className="delete-button w-full"
               >
                 Remove
               </button>
@@ -894,9 +944,10 @@ const EditEmployeeForm = ({ employee }) => {
 
           {/* Add Work History Button */}
           <button
+            aria-label="add work history"
             type="button"
             onClick={handleAddWorkHistory}
-            className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="add-button w-full"
           >
             Add Work History
           </button>
@@ -905,20 +956,18 @@ const EditEmployeeForm = ({ employee }) => {
         {/* Submit Button */}
         <div className="flex justify-end gap-4">
           <button
+            aria-label="cancel employee"
             type="button"
-            onClick={() => navigate("/hr/employees/employees")}
+            onClick={() => navigate("/hr/employees/employeesList/")}
             className="cancel-button"
           >
             Cancel
           </button>
           <button
+            aria-label="submit employee"
             type="submit"
             disabled={!canSave || isLoading}
-            className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
-              canSave
-                ? "bg-green-600 hover:bg-green-700 focus:ring-green-500"
-                : "bg-gray-400 cursor-not-allowed"
-            } focus:outline-none focus:ring-2 focus:ring-offset-2`}
+            className="save-button"
           >
             Save
           </button>

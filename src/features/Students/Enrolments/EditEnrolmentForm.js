@@ -149,7 +149,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
     } catch (error) {
       triggerBanner("Failed to update enrolment. Please try again.", "error");
 
-      console.error("Error saving:", error);
+      console.error("Error updating enrolment:", error);
     }
   };
   // Close the modal without saving

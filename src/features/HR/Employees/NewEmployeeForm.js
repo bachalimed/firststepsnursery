@@ -14,12 +14,14 @@ import {
   selectAcademicYearById,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import {
+  SHORTCOMMENT_REGEX,
   NAME_REGEX,
   NUMBER_REGEX,
   USER_REGEX,
   PHONE_REGEX,
   DATE_REGEX,
   YEAR_REGEX,
+  EMAIL_REGEX,
 } from "../../../config/REGEX";
 
 import { useOutletContext } from "react-router-dom";
@@ -95,16 +97,33 @@ const NewEmployeeForm = () => {
     validHouse: false,
     validStreet: false,
     validCity: false,
+    validArea: false,
+
     validPrimaryPhone: false,
-    validSecondaryPrimaryPhone: false,
+    validPostCode: false,
+    validEmail: false,
     validCurrentPosition: false,
     validJoinDate: false,
     validContractType: false,
     validBasic: false,
     validPayment: false,
     validEmployeeYear: false,
+    validWorkHistory: false,
   });
 
+  //validation for workhjistory for non empty fields
+  const validateWorkHistory = () => {
+    return formData.employeeWorkHistory.every((work) => {
+      const requiredFields = [
+        "institution",
+        "fromDate",
+        "toDate",
+        "contractType",
+        "position",
+      ];
+      return requiredFields.every((field) => work[field]?.trim() !== "");
+    });
+  };
   // Validate inputs using regex patterns
   useEffect(() => {
     setValidity((prev) => ({
@@ -118,10 +137,17 @@ const NewEmployeeForm = () => {
       validHouse: NAME_REGEX.test(formData.userAddress.house),
       validStreet: NAME_REGEX.test(formData.userAddress.street),
       validCity: NAME_REGEX.test(formData.userAddress.city),
+      validArea:
+        formData?.userAddress?.area === "" ||
+        SHORTCOMMENT_REGEX.test(formData.userAddress.area),
+      validPostCode: SHORTCOMMENT_REGEX.test(formData.userAddress.postCode),
       validPrimaryPhone: PHONE_REGEX.test(formData.userContact.primaryPhone),
-      validSecondaryPhone: PHONE_REGEX.test(
-        formData.userContact.secondaryPhone
-      ),
+      validEmail:
+        formData.userContact.email === "" ||
+        EMAIL_REGEX.test(formData.userContact.email),
+      validSecondaryPhone:
+        formData.userContact.secondaryPhone === "" ||
+        PHONE_REGEX.test(formData.userContact.secondaryPhone),
       validCurrentPosition: USER_REGEX.test(
         formData.employeeCurrentEmployment.position
       ),
@@ -140,6 +166,7 @@ const NewEmployeeForm = () => {
       validEmployeeYear: YEAR_REGEX.test(
         formData.employeeYears[0].academicYear
       ),
+      validWorkHistory: validateWorkHistory(),
     }));
   }, [formData]);
 
@@ -186,7 +213,7 @@ const NewEmployeeForm = () => {
           },
         },
       });
-      navigate("/hr/employees/employees");
+      navigate("/hr/employees/employeesList/");
     }
   }, [isSuccess, navigate]);
 
@@ -279,9 +306,12 @@ const NewEmployeeForm = () => {
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to update classroom. Please try again.", "error");
+      triggerBanner(
+        "Failed to create student document. Please try again.",
+        "error"
+      );
 
-      console.error("Error saving:", error);
+      console.error("Error creating student document:", error);
     }
   };
 
@@ -545,7 +575,10 @@ const NewEmployeeForm = () => {
             </div>
             <div className="formLineDiv">
               <label htmlFor="area" className="formInputLabel">
-                Area
+                Area{" "}
+                {!validity?.validArea && formData?.userContact.area !== "" && (
+                  <span className="text-red-600 ">[0-15] letters</span>
+                )}
                 <input
                   aria-label="area"
                   type="text"
@@ -562,7 +595,7 @@ const NewEmployeeForm = () => {
                     }))
                   }
                   className={`formInputText`}
-                  placeholder="[3-20] letters"
+                  placeholder="[0-20] letters"
                 />{" "}
               </label>
 
@@ -592,7 +625,11 @@ const NewEmployeeForm = () => {
             </div>
             <div className="formLineDiv">
               <label htmlFor="postCode" className="formInputLabel">
-                Post Code
+                Post Code{" "}
+                {!validity?.validPostCode &&
+                  formData?.userContact.postCode !== "" && (
+                    <span className="text-red-600 ">[0-15] characters</span>
+                  )}
                 <input
                   aria-label="postCode"
                   type="text"
@@ -609,14 +646,18 @@ const NewEmployeeForm = () => {
                     }))
                   }
                   className={`formInputText`}
-                  placeholder="Enter dfdfdfPost Code"
+                  placeholder="[0-15] characters"
                 />{" "}
               </label>
 
               {/* Email */}
 
               <label htmlFor="email" className="formInputLabel">
-                Email
+                Email{" "}
+                {!validity?.validEmail &&
+                  formData?.userContact.email !== "" && (
+                    <span className="text-red-600 ">[6-25] characters</span>
+                  )}
                 <input
                   aria-label="email"
                   type="email"
@@ -633,7 +674,7 @@ const NewEmployeeForm = () => {
                     }))
                   }
                   className={`formInputText`}
-                  placeholder="Enter Efsfsfsmail Address"
+                  placeholder="[6-25] characters"
                 />{" "}
               </label>
             </div>
@@ -660,7 +701,7 @@ const NewEmployeeForm = () => {
                     }))
                   }
                   className={`formInputText`}
-                  placeholder="Enter Primary Phone"
+                  placeholder="[6-15] digits"
                   required
                 />{" "}
               </label>
@@ -687,7 +728,7 @@ const NewEmployeeForm = () => {
                     }))
                   }
                   className={`formInputText`}
-                  placeholder="Enter Secondary Phone"
+                  placeholder="[6-15] digits"
                 />{" "}
               </label>
             </div>
@@ -716,21 +757,20 @@ const NewEmployeeForm = () => {
                       }}
                       className="formCheckbox"
                     />
-                    Employee IsActive {validity.validEmployeeIsActive && "*"}
+                    Employee is active {validity.validEmployeeIsActive && "*"}
                   </label>
                 </div>
               </label>
               {/* Current Employment */}
 
-              <label htmlFor="position" className="formInputLabel">
+              <label htmlFor="currentPosition" className="formInputLabel">
                 Current Position{" "}
                 {!validity.validCurrentPosition && (
                   <span className="text-red-600">*</span>
                 )}
                 <select
-                  aria-label="position"
                   aria-invalid={!validity.validCurrentPosition}
-                  id="position"
+                  id="currentPosition"
                   name="position"
                   value={formData.employeeCurrentEmployment.position}
                   onChange={(e) =>
@@ -781,7 +821,7 @@ const NewEmployeeForm = () => {
                 />{" "}
               </label>
 
-              <label htmlFor="contractType" className="formInputLabel">
+              <label htmlFor="currentContractType" className="formInputLabel">
                 Contract Type{" "}
                 {!validity.validContractType && (
                   <span className="text-red-600">*</span>
@@ -789,7 +829,7 @@ const NewEmployeeForm = () => {
                 <select
                   aria-label="contractType"
                   aria-invalid={!validity.validContractType}
-                  id="contractType"
+                  id="currentContractType"
                   name="contractType"
                   value={formData.employeeCurrentEmployment.contractType}
                   onChange={(e) =>
@@ -844,7 +884,7 @@ const NewEmployeeForm = () => {
                       }))
                     }
                     className={`formInputText`}
-                    placeholder="Enter Basic ssfSalary"
+                    placeholder="[$$$$.$$$]"
                   />{" "}
                 </label>
 
@@ -887,7 +927,11 @@ const NewEmployeeForm = () => {
               </div>
               <div className="formLineDiv">
                 <label htmlFor="cnss" className="formInputLabel">
-                  CNSS
+                  CNSS{" "}
+                  {formData?.employeeCurrentEmployment?.salaryPackage?.cnss &&
+                    !NUMBER_REGEX.test(
+                      formData?.employeeCurrentEmployment?.salaryPackage?.cnss
+                    ) && <span className="text-red-600">[$$$$.$$$]</span>}
                   <input
                     aria-label="cnss"
                     type="number"
@@ -909,12 +953,16 @@ const NewEmployeeForm = () => {
                       }))
                     }
                     className={`formInputText`}
-                    placeholder="Enterklhj CNSS"
+                    placeholder="[$$$$.$$$]"
                   />{" "}
                 </label>
 
                 <label htmlFor="other" className="formInputLabel">
-                  Other
+                  Other{" "}
+                  {formData?.employeeCurrentEmployment?.salaryPackage?.other &&
+                    !NUMBER_REGEX.test(
+                      formData?.employeeCurrentEmployment?.salaryPackage?.other
+                    ) && <span className="text-red-600">[$$$$.$$$]</span>}
                   <input
                     aria-label="other"
                     type="number"
@@ -936,7 +984,7 @@ const NewEmployeeForm = () => {
                       }))
                     }
                     className={`formInputText`}
-                    placeholder="Entekjlh;lklary"
+                    placeholder="[$$$$.$$$]"
                   />{" "}
                 </label>
               </div>
@@ -952,8 +1000,10 @@ const NewEmployeeForm = () => {
                 {/* Institution */}
 
                 <label htmlFor="institution" className="formInputLabel">
-                  Institution{" "}
-                  {!work.institution && <span className="text-red-600">*</span>}
+                  Institution
+                  {!NAME_REGEX.test(
+                    formData?.employeeWorkHistory?.[index]?.institution
+                  ) && <span className="text-red-600">*</span>}
                   <input
                     aria-label="institution"
                     type="text"
@@ -968,7 +1018,7 @@ const NewEmployeeForm = () => {
                       )
                     }
                     className={`formInputText`}
-                    placeholder="Enter Inkjhstitution"
+                    placeholder="[3-20 letters]"
                   />{" "}
                 </label>
 
@@ -1010,35 +1060,37 @@ const NewEmployeeForm = () => {
 
                 {/* Position */}
 
-                <label htmlFor="position" className="formInputLabel">
+                <label htmlFor={`position-${index}`} className="formInputLabel">
                   Position{" "}
-                  {!work.position && <span className="text-red-600">*</span>}
+                  {!NAME_REGEX.test(
+                    formData?.employeeWorkHistory?.[index]?.position
+                  ) && <span className="text-red-600">*</span>}
                   <input
                     aria-label="position"
                     type="text"
-                    id="position"
+                    id={`position-${index}`}
                     name="position"
                     value={work.position}
                     onChange={(e) =>
                       handleWorkHistoryChange(index, "position", e.target.value)
                     }
                     className={`formInputText`}
-                    placeholder="Enter lkjlkPosition"
+                    placeholder="[3-20 letters]"
                   />{" "}
                 </label>
 
                 {/* Contract Type */}
 
-                <label htmlFor="contractType" className="formInputLabel">
+                <label htmlFor={`contractType-${index}`} className="formInputLabel">
                   Contract Type{" "}
-                  {!work.contractType && (
-                    <span className="text-red-600">*</span>
-                  )}
+                  {!NAME_REGEX.test(
+                    formData?.employeeWorkHistory?.[index]?.contractType
+                  ) && <span className="text-red-600">*</span>}
                   <input
                     aria-label="contractType"
                     aria-invalid={!validity.contractType}
                     type="text"
-                    id="contractType"
+                    id={`contractType-${index}`}
                     name="contractType"
                     value={work.contractType}
                     onChange={(e) =>
@@ -1049,7 +1101,7 @@ const NewEmployeeForm = () => {
                       )
                     }
                     className={`formInputText`}
-                    placeholder="Entejkhct Type"
+                    placeholder="[3-20 letters]"
                   />
                 </label>
 
@@ -1057,6 +1109,12 @@ const NewEmployeeForm = () => {
 
                 <label htmlFor="salaryPackage" className="formInputLabel">
                   Salary Package
+                  {formData?.employeeWorkHistory?.[index]?.salaryPackage &&
+                    !NUMBER_REGEX.test(
+                      formData?.employeeWorkHistory?.[index]?.salaryPackage
+                    ) && (
+                      <span className="text-red-600"> [Format: $$$$.$$$]</span>
+                    )}
                   <input
                     aria-label="salaryPackage"
                     type="text"
@@ -1071,7 +1129,7 @@ const NewEmployeeForm = () => {
                       )
                     }
                     className={`formInputText`}
-                    placeholder="Ejkl;hPackage"
+                    placeholder="[$$$$.$$$]"
                   />
                 </label>
               </div>

@@ -185,7 +185,7 @@ const FamiliesList = () => {
     } catch (error) {
       triggerBanner("Failed to delete family. Please try again.", "error");
 
-      console.error("Error deleting:", error);
+      console.error("Error deleting family:", error);
     }
   };
   // Function to close the modal without deleting

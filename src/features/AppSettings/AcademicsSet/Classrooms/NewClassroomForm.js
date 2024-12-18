@@ -110,9 +110,9 @@ const NewClassroomForm = () => {
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to add classroom. Please try again.", "error");
+      triggerBanner("Failed to create classroom. Please try again.", "error");
 
-      console.error("Error saving classroom:", error);
+      console.error("Error creating classroom:", error);
     }
   };
   // Close the modal without saving

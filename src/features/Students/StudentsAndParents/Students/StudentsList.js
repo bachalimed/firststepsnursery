@@ -118,7 +118,7 @@ const StudentsList = () => {
     } catch (error) {
       triggerBanner("Failed to delete student. Please try again.", "error");
 
-      console.error("Error deleting:", error);
+      console.error("Error deleting student:", error);
     }
   };
 
@@ -243,7 +243,7 @@ const StudentsList = () => {
     } catch (error) {
       triggerBanner("Failed to update student. Please try again.", "error");
 
-      console.error("Error saving:", error);
+      console.error("Error updating student:", error);
     }
     setIsRegisterModalOpen(false); // Close modal
   };

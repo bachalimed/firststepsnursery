@@ -192,9 +192,9 @@ const NewStudentDocumentsListForm = () => {
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to update classroom. Please try again.", "error");
+      triggerBanner("Failed to create student document. Please try again.", "error");
 
-      console.error("Error saving:", error);
+      console.error("Error creating student document:", error);
     }
   };
 

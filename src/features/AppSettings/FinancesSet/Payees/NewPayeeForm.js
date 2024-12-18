@@ -149,9 +149,9 @@ const NewPayeeForm = () => {
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to add payee. Please try again.", "error");
+      triggerBanner("Failed to create payee. Please try again.", "error");
 
-      console.error("Error saving:", error);
+      console.error("Error creating payee:", error);
     }
   };
 

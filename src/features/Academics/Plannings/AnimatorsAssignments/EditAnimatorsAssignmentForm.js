@@ -209,7 +209,7 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
     } catch (error) {
       triggerBanner("Failed to update assignment. Please try again.", "error");
 
-      console.error("Error saving assignment:", error);
+      console.error("Error updating assignment:", error);
     }
   };
 

@@ -386,7 +386,7 @@ const EditStudentForm = ({ student }) => {
     } catch (error) {
       triggerBanner("Failed to update student. Please try again.", "error");
 
-      console.error("Error saving:", error);
+      console.error("Error updating student:", error);
     }
   };
   // Close the modal without saving

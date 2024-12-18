@@ -205,7 +205,7 @@ const NurserySectionsList = () => {
 
     try {
       const response = await updateSection(updatedSectionObject); // Save updated section to backend
-      console.log("Section updated successfully");
+      
      if ((response.data && response.data.message) || response?.message) {
         // Success response
         triggerBanner(response?.data?.message || response?.message, "success");
@@ -223,7 +223,7 @@ const NurserySectionsList = () => {
     } catch (error) {
       triggerBanner("Failed to update section. Please try again.", "error");
 
-      console.error("Error saving:", error);
+      console.error("Error updating section:", error);
     }
 
     setIsRegisterModalOpen(false); // Close modal

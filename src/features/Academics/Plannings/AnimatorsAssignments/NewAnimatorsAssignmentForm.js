@@ -216,9 +216,9 @@ const NewAnimatorsAssignmentForm = () => {
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to add assignment. Please try again.", "error");
+      triggerBanner("Failed to create assignment. Please try again.", "error");
 
-      console.error("Error saving assignment:", error);
+      console.error("Error creating assignment:", error);
     }
   };
   // Close the modal without saving

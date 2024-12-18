@@ -138,9 +138,9 @@ const NewAcademicYearForm = () => {
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to add academic year. Please try again.", "error");
+      triggerBanner("Failed to create academic year. Please try again.", "error");
 
-      console.error("Error saving:", error);
+      console.error("Error creating acadmic year:", error);
     }
   };
   // Close the modal without saving

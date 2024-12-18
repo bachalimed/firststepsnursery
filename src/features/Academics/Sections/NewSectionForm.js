@@ -229,9 +229,9 @@ const NewSectionForm = () => {
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to add section. Please try again.", "error");
+      triggerBanner("Failed to create section. Please try again.", "error");
 
-      console.error("Error saving section:", error);
+      console.error("Error creating section:", error);
     }
   };
 

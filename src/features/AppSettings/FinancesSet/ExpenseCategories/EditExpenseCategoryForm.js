@@ -175,7 +175,7 @@ const EditExpenseCategoryForm = ({ expenseCategory }) => {
     } catch (error) {
       triggerBanner("Failed to update expense. Please try again.", "error");
 
-      console.error("Error saving:", error);
+      console.error("Error updating expense:", error);
     }
   };
 

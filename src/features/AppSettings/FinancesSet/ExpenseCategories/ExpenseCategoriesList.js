@@ -102,7 +102,7 @@ const ExpenseCategoriesList = () => {
   } catch (error) {
     triggerBanner("Failed to delete expense. Please try again.", "error");
 
-    console.error("Error deleting:", error);
+    console.error("Error deleting expense:", error);
   }
   };
 

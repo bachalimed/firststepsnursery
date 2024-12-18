@@ -236,9 +236,9 @@ const EditSectionForm = ({ section }) => {
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to update section. Please try again.", "error");
+      triggerBanner("Operation failed. Please try again.", "error");
 
-      console.error("Error saving section:", error);
+      console.error("Error saving:", error);
     }
   };
 

@@ -98,9 +98,9 @@ const NewAttendedSchoolForm = () => {
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to add school. Please try again.", "error");
+      triggerBanner("Failed to create school. Please try again.", "error");
 
-      console.error("Error saving:", error);
+      console.error("Error creating school:", error);
     }
   };
   // Close the modal without saving

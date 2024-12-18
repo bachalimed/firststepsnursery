@@ -79,7 +79,7 @@ const AcademicYearsList = () => {
   } catch (error) {
     triggerBanner("Failed to delete academic year. Please try again.", "error");
 
-    console.error("Error deleting:", error);
+    console.error("Error deleting academic year:", error);
   }
   };
 

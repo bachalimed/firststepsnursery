@@ -103,7 +103,7 @@ const PayeesList = () => {
   } catch (error) {
     triggerBanner("Failed to delete payee. Please try again.", "error");
 
-    console.error("Error deleting:", error);
+    console.error("Error deleting payee:", error);
   }
   };
 

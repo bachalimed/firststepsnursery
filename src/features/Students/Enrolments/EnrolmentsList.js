@@ -145,7 +145,7 @@ const EnrolmentsList = () => {
     } catch (error) {
       triggerBanner("Failed to delete enrolment. Please try again.", "error");
 
-      console.error("Error deleting:", error);
+      console.error("Error deleting enrolment:", error);
     }
   };
 
@@ -256,9 +256,9 @@ const EnrolmentsList = () => {
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to add invoice. Please try again.", "error");
+      triggerBanner("Failed to create invoice. Please try again.", "error");
 
-      console.error("Error saving:", error);
+      console.error("Error creating invoice:", error);
     }
   };
 

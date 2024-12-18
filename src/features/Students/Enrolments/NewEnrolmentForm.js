@@ -304,9 +304,9 @@ const NewEnrolmentForm = () => {
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to add enrolment. Please try again.", "error");
+      triggerBanner("Failed to create enrolment. Please try again.", "error");
 
-      console.error("Error saving:", error);
+      console.error("Error creating enrolement:", error);
     }
   };
 

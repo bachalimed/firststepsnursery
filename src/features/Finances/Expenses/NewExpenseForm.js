@@ -209,7 +209,6 @@ const NewExpenseForm = () => {
       setShowConfirmation(true);
     }
   };
-
   // This function handles the confirmed save action
   const handleConfirmSave = async () => {
     // Close the confirmation modal
@@ -232,9 +231,9 @@ const NewExpenseForm = () => {
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to update classroom. Please try again.", "error");
+      triggerBanner("Failed to create expense. Please try again.", "error");
 
-      console.error("Error saving:", error);
+      console.error("Error creating expense:", error);
     }
   };
   // Close the modal without saving

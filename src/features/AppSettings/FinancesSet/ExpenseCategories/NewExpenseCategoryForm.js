@@ -169,9 +169,9 @@ const NewExpenseCategoryForm = () => {
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to add expense. Please try again.", "error");
+      triggerBanner("Failed to create expense. Please try again.", "error");
 
-      console.error("Error saving:", error);
+      console.error("Error creating expense:", error);
     }
   };
 

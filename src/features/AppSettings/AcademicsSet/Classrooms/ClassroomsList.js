@@ -73,7 +73,7 @@ const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for 
   } catch (error) {
     triggerBanner("Failed to delete classroom. Please try again.", "error");
 
-    console.error("Error deleting:", error);
+    console.error("Error deleting classroom:", error);
   }
   };
 

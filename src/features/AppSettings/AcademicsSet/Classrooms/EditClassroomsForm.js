@@ -87,7 +87,7 @@ const EditClassroomForm = ({ classroom }) => {
 
     try {
       const response = await updateClassroom(formData); //.unwrap();
-      console.log(response, "response");
+ 
      if ((response.data && response.data.message) || response?.message) {
         // Success response
         triggerBanner(response?.data?.message || response?.message, "success");
@@ -105,7 +105,7 @@ const EditClassroomForm = ({ classroom }) => {
     } catch (error) {
       triggerBanner("Failed to update classroom. Please try again.", "error");
 
-      console.error("Error saving:", error);
+      console.error("Error updating classroom:", error);
     }
   };
   // Close the modal without saving

@@ -136,9 +136,9 @@ const AnimatorsAssignmentsList = () => {
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to add assignment. Please try again.", "error");
+      triggerBanner("Failed to delete assignment. Please try again.", "error");
 
-      console.error("Error saving assignment:", error);
+      console.error("Error deleting assignment:", error);
     }
     setIsDeleteModalOpen(false); // Close the modal
   };

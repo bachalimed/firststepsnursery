@@ -110,9 +110,9 @@ const NewFamily = () => {
       }
     } catch (error) {
       setCurrentStep(3)
-      triggerBanner("Failed to add family. Please try again.", "error");
+      triggerBanner("Failed to create family. Please try again.", "error");
 
-      console.error("Error saving family:", error);
+      console.error("Error creating family:", error);
     }
     // if (!isAddLoading) {
     //   setCurrentStep(4);
