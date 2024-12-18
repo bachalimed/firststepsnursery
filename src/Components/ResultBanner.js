@@ -8,11 +8,11 @@ const ResultBanner = ({ message, type }) => {
 
   return (
     <div
-      className="fixed top-4 left-1/2 transform -translate-x-1/2 w-11/12 max-w-4xl shadow-lg rounded-lg bg-gray-100 bg-opacity-80 flex flex-col"
+      className="fixed top-4 left-1/2 transform -translate-x-1/2 w-11/12 max-w-4xl shadow-lg rounded-lg bg-gray-100 bg-opacity-95 flex flex-col"
       style={{ zIndex: 1000 }}
     >
       {/* Top bar */}
-      <div className={`h-3 rounded-t-lg ${colors[type] || "bg-gray-300"}`}></div>
+      <div className={`h-8 rounded-t-lg ${colors[type] || "bg-gray-300"}`}></div>
 
       {/* Lower part */}
       <div className="p-4 flex items-center">

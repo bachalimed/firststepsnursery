@@ -434,12 +434,12 @@ const LeavesList = () => {
     // },
     {
       name: "Comment", //means authorised
-      selector: (row) => row?.leaveNote,
+      selector: (row) => row?.leaveComment,
 
       sortable: true,
       cell: (row) => (
         <div style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
-          {row?.leaveNote}
+          {row?.leaveComment}
         </div>
       ),
       width: "140px",

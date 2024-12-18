@@ -481,7 +481,7 @@ const NewLeaveForm = () => {
           {/* Submit Button */}
           <div className="flex justify-end gap-4">
             <button
-              aria-label="cancel payment"
+              aria-label="cancel leave"
               type="button"
               onClick={() => navigate("/hr/leaves/leavesList/")}
               className="cancel-button"
@@ -489,7 +489,7 @@ const NewLeaveForm = () => {
               Cancel
             </button>
             <button
-              aria-label="submit payment"
+              aria-label="submit leave"
               type="submit"
               disabled={!canSave || isAddLoading}
               className="save-button"
