@@ -467,6 +467,224 @@ const EditEmployeeForm = ({ employee }) => {
             </div>
           </div>
         </div>
+        <h3 className="formSectionTitle">Contact details</h3>
+          <div className="formSection">
+            {/* Contact Information */}
+
+            <div className="formLineDiv">
+              {/* Address Information */}
+              <label htmlFor="house" className="formInputLabel">
+                House{" "}
+                {!validity.validHouse && (
+                  <span className="text-red-600">*</span>
+                )}
+                <input
+                  aria-label="house"
+                  aria-invalid={!validity.validHouse}
+                  type="text"
+                  id="house"
+                  name="house"
+                  value={formData.userAddress.house}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      userAddress: {
+                        ...prev.userAddress,
+                        house: e.target.value,
+                      },
+                    }))
+                  }
+                  className={`formInputText`}
+                  placeholder="[3-20] letters"
+                />{" "}
+              </label>
+
+              <label htmlFor="street" className="formInputLabel">
+                Street{" "}
+                {!validity.validStreet && (
+                  <span className="text-red-600">*</span>
+                )}
+                <input
+                  aria-label="street"
+                  aria-invalid={!validity.validStreet}
+                  type="text"
+                  id="street"
+                  name="street"
+                  value={formData.street}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      userAddress: {
+                        ...prev.userAddress,
+                        street: e.target.value,
+                      },
+                    }))
+                  }
+                  className={`formInputText`}
+                  placeholder="[3-20] letters"
+                />{" "}
+              </label>
+            </div>
+            <div className="formLineDiv">
+              <label htmlFor="area" className="formInputLabel">
+                Area{" "}
+                {!validity?.validArea && formData?.userContact.area !== "" && (
+                  <span className="text-red-600 ">[0-15] letters</span>
+                )}
+                <input
+                  aria-label="area"
+                  type="text"
+                  id="area"
+                  name="area"
+                  value={formData.userAddress.area}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      userAddress: {
+                        ...prev.userAddress,
+                        area: e.target.value,
+                      },
+                    }))
+                  }
+                  className={`formInputText`}
+                  placeholder="[0-20] letters"
+                />{" "}
+              </label>
+
+              <label htmlFor="city" className="formInputLabel">
+                City{" "}
+                {!validity.validCity && <span className="text-red-600">*</span>}
+                <input
+                  aria-label="city"
+                  aria-invalid={!validity.validCity}
+                  type="text"
+                  id="city"
+                  name="city"
+                  value={formData.userAddress.city}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      userAddress: {
+                        ...prev.userAddress,
+                        city: e.target.value,
+                      },
+                    }))
+                  }
+                  className={`formInputText`}
+                  placeholder="[3-20] letters"
+                />{" "}
+              </label>
+            </div>
+            <div className="formLineDiv">
+              <label htmlFor="postCode" className="formInputLabel">
+                Post Code{" "}
+                {!validity?.validPostCode &&
+                  formData?.userContact.postCode !== "" && (
+                    <span className="text-red-600 ">[0-15] characters</span>
+                  )}
+                <input
+                  aria-label="postCode"
+                  type="text"
+                  id="postCode"
+                  name="postCode"
+                  value={formData.userAddress.postCode}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      userAddress: {
+                        ...prev.userAddress,
+                        postCode: e.target.value,
+                      },
+                    }))
+                  }
+                  className={`formInputText`}
+                  placeholder="[0-15] characters"
+                />{" "}
+              </label>
+
+              {/* Email */}
+
+              <label htmlFor="email" className="formInputLabel">
+                Email{" "}
+                {!validity?.validEmail &&
+                  formData?.userContact.email !== "" && (
+                    <span className="text-red-600 ">[6-25] characters</span>
+                  )}
+                <input
+                  aria-label="email"
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.userContact.email}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      userContact: {
+                        ...prev.userContact,
+                        email: e.target.value,
+                      },
+                    }))
+                  }
+                  className={`formInputText`}
+                  placeholder="[6-25] characters"
+                />{" "}
+              </label>
+            </div>
+            <div className="formLineDiv">
+              <label htmlFor="primaryPhone" className="formInputLabel">
+                Primary Phone{" "}
+                {!validity.validPrimaryPhone && (
+                  <span className="text-red-600">*</span>
+                )}
+                <input
+                  aria-label="primaryPhone"
+                  aria-invalid={!validity.validPrimaryPhone}
+                  type="text"
+                  id="primaryPhone"
+                  name="primaryPhone"
+                  value={formData.userContact.primaryPhone}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      userContact: {
+                        ...prev.userContact,
+                        primaryPhone: e.target.value,
+                      },
+                    }))
+                  }
+                  className={`formInputText`}
+                  placeholder="[6-15] digits"
+                  required
+                />{" "}
+              </label>
+
+              <label htmlFor="secondaryPhone" className="formInputLabel">
+                Secondary Phone
+                {!validity?.validSecondaryPhone &&
+                  formData?.userContact.secondaryPhone !== "" && (
+                    <span className="text-red-600 ">[6-15] digits</span>
+                  )}
+                <input
+                  aria-label="secondaryPhone"
+                  type="text"
+                  id="secondaryPhone"
+                  name="secondaryPhone"
+                  value={formData?.userContact?.secondaryPhone}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      userContact: {
+                        ...prev.userContact,
+                        secondaryPhone: e.target.value,
+                      },
+                    }))
+                  }
+                  className={`formInputText`}
+                  placeholder="[6-15] digits"
+                />{" "}
+              </label>
+            </div>
+          </div>
 
         {/* Current Employment */}
 
