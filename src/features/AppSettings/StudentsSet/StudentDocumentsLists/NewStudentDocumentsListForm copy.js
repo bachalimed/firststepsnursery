@@ -223,7 +223,7 @@ const NewStudentDocumentsListForm = () => {
         <button type="button" onClick={handleAddEntry}>
           Add Document
         </button>
-        <div className="flex justify-end gap-4">
+        <div className="cancelSavebuttonsDiv">
           <button
             className="cancel-button"
             onClick={() =>

@@ -9,7 +9,7 @@ const ConfirmationModal = ({ show, onClose, onConfirm, title, message }) => {
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
         <h2 className="text-xl font-semibold mb-4" id="modal-title" data-testid="modal-title">{title}</h2>
         <p className="text-gray-700 mb-6" data-testid="modal-message">{message}</p>
-        <div className="flex justify-end space-x-4">
+        <div className="cancelSavebuttonsDiv">
           <button
             onClick={onClose}
             className="cancel-button"
@@ -44,7 +44,7 @@ export default ConfirmationModal;
 //       <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
 //         <h2 className="text-xl font-semibold mb-4" aria-label="title">{title}</h2>
 //         <p className="text-gray-700 mb-6">{message}</p>
-//         <div className="flex justify-end space-x-4">
+//         <div className="cancelSavebuttonsDiv">
 //           <button
 //             onClick={onClose}
 //             className="cancel-button"

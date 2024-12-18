@@ -341,7 +341,7 @@ const EditPayeeForm = ({ payee }) => {
         </div>
 
         {/* Save Button */}
-        <div className="flex justify-end space-x-4">
+        <div className="cancelSavebuttonsDiv">
           <button
             aria-label="cancel add payee"
             type="button"

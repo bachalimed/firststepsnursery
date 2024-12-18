@@ -201,7 +201,7 @@ let content
     selectableRowsHighlight
     >
 	</DataTable>
-	<div className="flex justify-end items-center space-x-4">
+	<div className="cancelSavebuttonsDiv">
         <button 
             className=" px-4 py-2 bg-green-600 text-white rounded"
             onClick={handleDetailsSelected}

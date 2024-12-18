@@ -210,7 +210,7 @@ const PayeeDetails = () => {
           </div>
         </div>
 
-        <div className="flex justify-end items-center space-x-4 mt-6">
+        <div className="cancelSavebuttonsDiv mt-6">
           <button
             onClick={() => navigate(`/hr/payees/payeesList/`)}
             className="cancel-button"

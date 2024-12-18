@@ -263,7 +263,7 @@ const EmployeeDocumentsListsList = () => {
             onSelectedRowsChange={handleRowSelected}
             selectableRowsHighlight
           />
-          <div className="flex justify-end items-center space-x-4">
+          <div className="cancelSavebuttonsDiv">
             <button
               className="add-button"
               onClick={() =>

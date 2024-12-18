@@ -256,7 +256,7 @@ const isYearFound = admission?.admissionYears?.some(
             </div>
           </div>
 
-          <div className="flex justify-end items-center space-x-4 mt-6">
+          <div className="cancelSavebuttonsDiv">
             <button
               onClick={() => navigate(`/admissions/admissionsParents/admissions`)}
               className="cancel-button"

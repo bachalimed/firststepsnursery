@@ -836,7 +836,7 @@ const NewUserForm = () => {
             </div> */}
           </div>
         </div>
-        <div className="flex justify-end gap-4">
+        <div className="cancelSavebuttonsDiv">
           <button
             aria-label="cancel user"
             type="button"

@@ -464,7 +464,7 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
           >
             Add Assignment
           </button>
-          <div className="flex justify-end gap-4">
+          <div className="cancelSavebuttonsDiv">
             <button
               type="button"
               aria-label="cancel assignments"

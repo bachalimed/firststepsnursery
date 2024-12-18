@@ -353,7 +353,7 @@ const UnenrolmentsList = () => {
             onSelectedRowsChange={handleRowSelected}
             selectableRowsHighlight
           ></DataTable>
-          <div className="flex justify-end items-center space-x-4">
+          <div className="cancelSavebuttonsDiv">
             <button
               className=" px-4 py-2 bg-green-600 text-white rounded"
               disabled={selectedRows.length !== 1} // Disable if no rows are selected

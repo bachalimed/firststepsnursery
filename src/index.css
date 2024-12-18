@@ -40,7 +40,10 @@
 .delete-button {
   @apply px-4 py-2 border border-red-700 text-red-700 rounded bg-white hover:text-white hover:bg-red-600 active:bg-red-800 active:border-red-800 active:text-white;
 }
-
+/*set the two buttons on two columns was flex justify-end space-x-4 */
+.cancelSavebuttonsDiv {
+  @apply grid grid-cols-2 gap-4 mt-2;
+}
 
 /* this applies to plannings??*/
 .form {

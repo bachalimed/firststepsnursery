@@ -1073,7 +1073,7 @@ const NewNotificationForm = () => {
         </div>
 
         {/* Submit Button */}
-        <div className="flex justify-end gap-4">
+        <div className="cancelSavebuttonsDiv">
           <button
             type="button"
             onClick={() => navigate("/hr/notifications/notifications/")}

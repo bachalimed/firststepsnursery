@@ -212,7 +212,7 @@ const NewAttendedSchoolForm = () => {
               {apiError?.data?.message || "Error adding the school."}
             </p>
           )}
-          <div className="flex justify-end gap-4">
+          <div className="cancelSavebuttonsDiv">
             <button
               aria-label="cancel new school"
               type="button"

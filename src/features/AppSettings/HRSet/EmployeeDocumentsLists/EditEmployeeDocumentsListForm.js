@@ -191,7 +191,7 @@ const [showConfirmation, setShowConfirmation] = useState(false);
         <button aria-label="add document" className="add-button" type="button" onClick={handleAddEntry}>
           Add Document
         </button>
-        <div className="flex justify-end gap-4">
+        <div className="cancelSavebuttonsDiv">
          
           <button
           aria-label="cancel new document list"

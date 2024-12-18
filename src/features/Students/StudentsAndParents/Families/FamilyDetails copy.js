@@ -224,7 +224,7 @@ const FamilyDetails = () => {
         ) : (
           <p>No children profiles available.</p>
         )}
-        <div className="flex justify-end items-center space-x-4 mt-6">
+        <div className="cancelSavebuttonsDiv">
           <button
             onClick={() => navigate(`/students/studentsParents/familiesList`)}
             className="cancel-button"

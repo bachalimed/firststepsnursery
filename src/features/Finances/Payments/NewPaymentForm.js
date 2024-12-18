@@ -531,7 +531,7 @@ console.log(validity)
           </div>
 
           {/* Submit Button */}
-          <div className="flex justify-end gap-4">
+          <div className="cancelSavebuttonsDiv">
             <button
               aria-label="cancel payment"
               type="button"

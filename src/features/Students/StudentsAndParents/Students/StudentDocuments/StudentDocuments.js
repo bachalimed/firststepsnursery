@@ -380,7 +380,7 @@ const StudentDocuments = () => {
             pageSizeControl
           />
 
-          <div className="flex justify-end items-center space-x-4">
+          <div className="cancelSavebuttonsDiv">
             <button
               className="cancel-button"
               onClick={() => Navigate(`/students/studentsParents/students`)}

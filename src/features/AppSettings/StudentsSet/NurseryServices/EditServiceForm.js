@@ -296,7 +296,7 @@ const EditServiceForm = ({ service }) => {
         </div>
 
         {/* Form Actions */}
-        <div className="flex justify-end gap-4">
+        <div className="cancelSavebuttonsDiv">
           <button
             aria-label="cancel new service"
             type="button"

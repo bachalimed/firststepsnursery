@@ -243,7 +243,7 @@
 //     onSelectedRowsChange={handleRowSelected}
 //     pageSizeControl>
 //    </DataTable>
-//    <div className="flex justify-end items-center space-x-4">
+//    <div className="cancelSavebuttonsDiv">
 //           <button
 //                className="px-3 py-2 bg-amber-300 text-white rounded"
 //                onClick={handleAssignChild}

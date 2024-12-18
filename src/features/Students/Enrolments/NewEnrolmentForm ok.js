@@ -466,7 +466,7 @@ const NewEnrolmentForm = () => {
           </div>
         </fieldset>
 
-        <div className="flex justify-end mt-6">
+        <div className="cancelSavebuttonsDiv">
           <button
             type="submit"
             disabled={!canSave || isEnrolmentLoading}

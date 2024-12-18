@@ -611,7 +611,7 @@ const NewEmployeeForm = () => {
                     ))}
                     </div> */}
 
-        <div className="flex justify-end gap-4">
+        <div className="cancelSavebuttonsDiv">
           <button
             className="cancel-button"
             onClick={() => navigate("/admin/usersManagement/users/")}

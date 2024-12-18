@@ -212,7 +212,7 @@ const EditAcademicYearForm = ({ academicYear }) => {
           </div>
 
           {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
-          <div className="flex justify-end gap-4">
+          <div className="cancelSavebuttonsDiv">
             <button
               aria-label="cancel edit"
               type="button"

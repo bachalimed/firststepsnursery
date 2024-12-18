@@ -479,7 +479,7 @@ const NewLeaveForm = () => {
             </div>
           </div>
           {/* Submit Button */}
-          <div className="flex justify-end gap-4">
+          <div className="cancelSavebuttonsDiv">
             <button
               aria-label="cancel leave"
               type="button"

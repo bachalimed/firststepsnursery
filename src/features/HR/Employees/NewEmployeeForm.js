@@ -132,8 +132,9 @@ const NewEmployeeForm = () => {
       validUsername: USER_REGEX.test(formData.username),
       validFirstName: NAME_REGEX.test(formData.userFullName.userFirstName),
       validMiddleName:
-      formData?.userFullName?.userMiddleName !== ""?
-      NAME_REGEX.test(formData.userFullName.userMiddleName):true,
+        formData?.userFullName?.userMiddleName !== ""
+          ? NAME_REGEX.test(formData.userFullName.userMiddleName)
+          : true,
       validLastName: NAME_REGEX.test(formData.userFullName.userLastName),
       validDob: DATE_REGEX.test(formData.userDob),
       validUserSex: NAME_REGEX.test(formData.userSex),
@@ -273,11 +274,7 @@ const NewEmployeeForm = () => {
       ),
     }));
   };
-  const canSave =
-    Object.values(validity).every(Boolean) &&
-   
-
-    !isLoading;
+  const canSave = Object.values(validity).every(Boolean) && !isLoading;
   console.log(validity, "validity");
   console.log(formData, "formData");
 
@@ -740,9 +737,6 @@ const NewEmployeeForm = () => {
           <h3 className="formSectionTitle">Current position</h3>
           <div className="formSection">
             <div className="formLineDiv">
-
-
-              
               <label className="formInputLabel">
                 Employee Active:
                 <div className="formCheckboxItemsDiv">
@@ -1185,7 +1179,7 @@ const NewEmployeeForm = () => {
           </div>
         </div>
         {/* Submit Button */}
-        <div className="flex justify-end gap-4">
+        <div className="cancelSavebuttonsDiv">
           <button
             aria-label="cancel employee"
             type="button"

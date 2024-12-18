@@ -343,7 +343,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
             </label>
             </div>
             {/* Submit Button */}
-            <div className="flex justify-end space-x-4">
+            <div className="cancelSavebuttonsDiv">
               <button
                 aria-label="cancel enrolment"
                 type="button"

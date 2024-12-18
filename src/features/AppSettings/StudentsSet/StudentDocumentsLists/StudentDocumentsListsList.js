@@ -273,7 +273,7 @@ if(isDocumentsListsSuccess){
           onSelectedRowsChange={handleRowSelected}
           selectableRowsHighlight
         />
-        <div className="flex justify-end items-center space-x-4">
+        <div className="cancelSavebuttonsDiv">
           <button
           aria-label="add new list"
             className="add-button"

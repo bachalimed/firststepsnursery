@@ -466,7 +466,7 @@ const EditSectionForm = ({ section }) => {
           </div>
 
           {/* Submit Button */}
-          <div className="flex justify-end gap-4">
+          <div className="cancelSavebuttonsDiv">
             <button
               aria-label="cancel new section"
               type="button"

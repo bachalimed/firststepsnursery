@@ -279,7 +279,7 @@ const NewEmployeeDocumentsListForm = () => {
         >
           Add Document
         </button>
-        <div className="flex justify-end gap-4">
+        <div className="cancelSavebuttonsDiv">
           <button
             aria-label="cancel new document list"
             className="cancel-button"

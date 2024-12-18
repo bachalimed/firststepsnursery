@@ -201,7 +201,7 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
         >
           Add Document
         </button>
-        <div className="flex justify-end gap-4">
+        <div className="cancelSavebuttonsDiv">
           <button
             aria-label="cancel new list"
             className="cancel-button"

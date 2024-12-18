@@ -477,7 +477,7 @@ const Elements = () => {
             </div>
           </div>
         </div>
-        <div className="flex justify-end gap-4">
+        <div className="cancelSavebuttonsDiv">
           <button className="cancel-button" onClick={handleCancel}>
             Cancel
           </button>

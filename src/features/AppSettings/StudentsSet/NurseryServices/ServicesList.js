@@ -211,10 +211,10 @@ const ServicesList = () => {
             //onSelectedRowsChange={handleRowSelected}
             selectableRowsHighlight
           />
-          <div className="flex justify-end space-x-4">
+          <div className="cancelSavebuttonsDiv">
             {canCreate && (
               <button
-                className="px-4 py-2 bg-green-600 text-white rounded"
+                className="add-button"
                 onClick={() => navigate("/settings/studentsSet/newService")}
                 // disabled={selectedRows.length !== 1}
               >

@@ -555,7 +555,7 @@ const StudentsList = () => {
               },
             }}
           ></DataTable>
-          {(isAcademic|| isDesk ||isDirector||isManager || isAdmin) &&<div className="flex justify-end items-center space-x-4">
+          {(isAcademic|| isDesk ||isDirector||isManager || isAdmin) &&<div className="cancelSavebuttonsDiv">
             <button
               className="add-button"
               onClick={() => navigate("/students/studentsParents/newStudent/")}

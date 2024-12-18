@@ -85,7 +85,7 @@ const RegisterModal = ({
             </div>
           ))}
         </div>
-        <div className="mt-6 flex justify-end space-x-3">
+        <div className="cancelSavebuttonsDiv">
           <button
             onClick={onClose}
             className="cancel-button"

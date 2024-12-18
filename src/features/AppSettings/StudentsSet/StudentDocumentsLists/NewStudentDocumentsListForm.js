@@ -1,27 +1,22 @@
 import React, { useState, useEffect } from "react";
-
 import StudentsSet from "../../StudentsSet";
 import { useAddNewStudentDocumentsListMutation } from "./studentDocumentsListsApiSlice";
 import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
+
 import { ROLES } from "../../../../config/UserRoles";
 import { ACTIONS } from "../../../../config/UserActions";
 import useAuth from "../../../../hooks/useAuth";
-import {
-  useGetStudentDocumentsListsQuery,
-  useDeleteStudentDocumentsListMutation,
-} from "./studentDocumentsListsApiSlice";
+import { useGetStudentDocumentsListsQuery } from "./studentDocumentsListsApiSlice";
 import { useSelector } from "react-redux";
 import {
   selectAllAcademicYears,
   selectCurrentAcademicYearId,
   selectAcademicYearById,
 } from "../../AcademicsSet/AcademicYears/academicYearsSlice";
-import { TITLE_REGEX } from "../../../../config/REGEX";
+import { NAME_REGEX, YEAR_REGEX } from "../../../../config/REGEX";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 import { useOutletContext } from "react-router-dom";
-
+import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 const NewStudentDocumentsListForm = () => {
   const navigate = useNavigate();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -92,11 +87,14 @@ const NewStudentDocumentsListForm = () => {
 
   // Validation effects
   useEffect(() => {
-    setValidDocumentTitle(TITLE_REGEX.test(documentTitle));
-  }, [documentTitle]);
+    const allValid = studentDocumentsList.every((entry) =>
+      NAME_REGEX.test(entry.documentTitle)
+    );
+    setValidDocumentTitle(allValid);
+  }, [studentDocumentsList]);
 
   useEffect(() => {
-    setValidDocumentsAcademicYear(TITLE_REGEX.test(documentsAcademicYear));
+    setValidDocumentsAcademicYear(YEAR_REGEX.test(documentsAcademicYear));
   }, [documentsAcademicYear]);
 
   useEffect(() => {
@@ -139,6 +137,13 @@ const NewStudentDocumentsListForm = () => {
     updatedEntries[index][field] = value;
     setStudentDocumentsList(updatedEntries);
   };
+  const handleActionChange = (index, action) => {
+    setStudentDocumentsList((prevList) =>
+      prevList.map((entry, i) =>
+        i === index ? { ...entry, [action]: !entry[action] } : entry
+      )
+    );
+  };
 
   const handleAddEntry = () => {
     setStudentDocumentsList([
@@ -177,7 +182,7 @@ const NewStudentDocumentsListForm = () => {
         documentsList: studentDocumentsList,
         documentsAcademicYear,
       });
-     if ((response.data && response.data.message) || response?.message) {
+      if ((response.data && response.data.message) || response?.message) {
         // Success response
         triggerBanner(response?.data?.message || response?.message, "success");
       } else if (
@@ -192,152 +197,189 @@ const NewStudentDocumentsListForm = () => {
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to create student document. Please try again.", "error");
+      triggerBanner(
+        "Failed to create student document. Please try again.",
+        "error"
+      );
 
       console.error("Error creating student document:", error);
     }
   };
+  console.log(studentDocumentsList, "studentDocumentsList");
 
   // Close the modal without saving
   const handleCloseModal = () => {
     setShowConfirmation(false);
   };
+  let content;
+  if (isDocsListLoading) {
+    content = (
+      <>
+        {" "}
+        <StudentsSet />
+        <LoadingStateIcon />
+      </>
+    );
+  }
+  if (isDocsListSucess) {
+    content = (
+      <>
+        <StudentsSet />
 
-  const content = (
-    <>
-      <StudentsSet />
+        <form
+          className="form-container"
+          onSubmit={onSaveStudentDocumentsListClicked}
+        >
+          <h2 className="formTitle">New Student Documents List Form</h2>
 
-      <form
-        className="form-container"
-        onSubmit={onSaveStudentDocumentsListClicked}
-      >
-        <div className="form__title-row mb-4">
-          <h2 className="text-xl font-semibold">
-            New Student Documents List Form
-          </h2>
-        </div>
-        <div className="mb-4">
-          <label htmlFor=""
-            htmlFor="documentsAcademicYear"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Select Year
-            <select
-              aria-label="document year"
-              value={documentsAcademicYear}
-              onChange={onDocumentsAcademicYearChanged}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-700 focus:border-sky-700 sm:text-sm"
-            >
-              <option value="">Select Year</option>
-              {filteredAcademicYearsList.map((year) => (
-                <option key={year.id} value={year.title}>
-                  {year.title}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-        <h1 className="text-lg font-semibold mb-4">Student Documents</h1>
-        {studentDocumentsList.map((entry, index) => (
-          <div key={index} className="mb-4 p-4 bg-white rounded shadow">
-            <div className="mb-2">
-              <label htmlFor="" className="text-sm text-gray-700">
-                <input
-                  aria-label="Document Title"
-                  placeholder="[3-20] Characters"
-                  type="text"
-                  value={entry.documentTitle}
-                  onChange={(e) =>
-                    handleFieldChange(index, "documentTitle", e.target.value)
-                  }
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-700 focus:border-sky-700 sm:text-sm"
-                  disabled={index < 3} // Disable input for the first three elements
-                />
+          <div className="formSectionContainer">
+            <h3 className="formSectionTitle">Year selection</h3>
+            <div className="formSection">
+              <label htmlFor="documentsAcademicYear" className="formInputLabel">
+                List year{" "}
+                {!validDocumentsAcademicYear && (
+                  <span className="text-red-600 ">*</span>
+                )}
+                <select
+                  aria-invalid={!validDocumentsAcademicYear}
+                  aria-label="document year"
+                  id="documentsAcademicYear"
+                  name="documentsAcademicYear"
+                  value={documentsAcademicYear}
+                  onChange={onDocumentsAcademicYearChanged}
+                  className={`formInputText`}
+                >
+                  <option value="">Select Year</option>
+                  {filteredAcademicYearsList.map((year) => (
+                    <option key={year.id} value={year.title}>
+                      {year.title}
+                    </option>
+                  ))}
+                </select>
               </label>
             </div>
-            <div className="flex items-center mb-2">
-              <label htmlFor="" className="text-sm text-gray-700">
-                <input
-                  aria-label="id required"
-                  type="checkbox"
-                  checked={entry.isRequired}
-                  onChange={(e) =>
-                    handleFieldChange(index, "isRequired", e.target.checked)
-                  }
-                  className="mr-2"
-                />
-                Is Required?
-              </label>
-            </div>
-            <div className="flex items-center mb-2">
-              <label htmlFor="" className="text-sm text-gray-700">
-                <input
-                  aria-label="is legalised"
-                  type="checkbox"
-                  checked={entry.isLegalised}
-                  onChange={(e) =>
-                    handleFieldChange(index, "isLegalised", e.target.checked)
-                  }
-                  className="mr-2"
-                />
-                Is Legalised?
-              </label>
-            </div>
-            {index >= 3 && (
-              <button
-                aria-label="remove document"
-                type="button"
-                onClick={() => handleRemoveEntry(index)}
-                className="delete-button"
-              >
-                Remove
-              </button>
-            )}
           </div>
-        ))}
-        <div className="flex justify-between mt-6">
-          <button
-            aria-label="add document"
-            type="button"
-            onClick={handleAddEntry}
-            className="add-button"
-          >
-            Add Document
-          </button>
-        </div>
-        <div className="flex justify-end gap-4">
-          <button
-            aria-label="cancel new list"
-            className="cancel-button"
-            onClick={() =>
-              navigate("/settings/studentsSet/studentDocumentsListsList")
-            }
-          >
-            Cancel
-          </button>
-          <button
-            aria-label="submit new list"
-            type="submit"
-            disabled={!canSave || isAddLoading}
-            className="save-button"
-          >
-            Save
-          </button>
-        </div>
-      </form>
+          <h3 className="formSectionTitle">Student Documents</h3>
+          <div className="formSection">
+            {studentDocumentsList.map((entry, index) => (
+              <div key={index} className="formSection">
+                <div className="formLineDiv">
+                  <label
+                    htmlFor={`entry.documentTitle-${index}`}
+                    className="formInputLabel"
+                  >
+                    Document Title:{" "}
+                    {!validDocumentTitle && (
+                      <span className="text-red-600 ">*</span>
+                    )}
+                    <input
+                      aria-invalid={!validDocumentTitle}
+                      aria-label="Document Title"
+                      placeholder="[3-20] Characters"
+                      type="text"
+                      id={`entry.documentTitle-${index}`}
+                      name={entry.documentTitle}
+                      value={entry.documentTitle}
+                      onChange={(e) =>
+                        handleFieldChange(
+                          index,
+                          "documentTitle",
+                          e.target.value
+                        )
+                      }
+                      className={`formInputText`}
+                      disabled={index < 3} // Disable input for the first three elements
+                    />
+                  </label>
 
-      {/* Confirmation Modal */}
-      {showConfirmation && (
-        <ConfirmationModal
-          show={showConfirmation}
-          onClose={handleCloseModal}
-          onConfirm={handleConfirmSave}
-          title="Confirm Save"
-          message="Are you sure you want to save?"
-        />
-      )}
-    </>
-  );
+                  <div className="grid grid-cols-1 md:grid-cols-1 gap-2 mb-2 mt-1 max-h-80 overflow-y-auto">
+                    <button
+                      aria-label="is required"
+                      type="button"
+                      onClick={() => handleActionChange(index, "isRequired")}
+                      className={`px-3 py-2 text-left rounded-md ${
+                        entry.isRequired
+                          ? "bg-green-600 text-white hover:bg-green-500"
+                          : "bg-gray-100 text-gray-700 hover:bg-sky-600 hover:text-white"
+                      }`}
+                    >
+                      <div className="font-semibold">
+                        {entry.isRequired ? "Required" : "Not Required"}
+                      </div>
+                    </button>
+                    <button
+                      aria-label="is legalised"
+                      type="button"
+                      onClick={() => handleActionChange(index, "isLegalised")}
+                      className={`px-3 py-2 text-left rounded-md ${
+                        entry.isLegalised
+                          ? "bg-green-600 text-white hover:bg-green-500"
+                          : "bg-gray-100 text-gray-700 hover:bg-sky-600 hover:text-white"
+                      }`}
+                    >
+                      <div className="font-semibold">
+                        {entry.isLegalised ? "Legalised" : "Not Legalised"}
+                      </div>
+                    </button>
+                  </div>
+                </div>
+                {index >= 3 && (
+                  <button
+                    aria-label="remove document"
+                    type="button"
+                    onClick={() => handleRemoveEntry(index)}
+                    className="delete-button w-full"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+            ))}
+            <div className="flex justify-between mt-6">
+              <button
+                aria-label="add document"
+                type="button"
+                onClick={handleAddEntry}
+                className="add-button w-full"
+              >
+                Add Document
+              </button>
+            </div>
+          </div>
+          <div className="cancelSavebuttonsDiv">
+            <button
+              aria-label="cancel new list"
+              className="cancel-button"
+              onClick={() =>
+                navigate("/settings/studentsSet/studentDocumentsListsList")
+              }
+            >
+              Cancel
+            </button>
+            <button
+              aria-label="submit new list"
+              type="submit"
+              disabled={!canSave || isAddLoading}
+              className="save-button"
+            >
+              Save
+            </button>
+          </div>
+        </form>
+
+        {/* Confirmation Modal */}
+        {showConfirmation && (
+          <ConfirmationModal
+            show={showConfirmation}
+            onClose={handleCloseModal}
+            onConfirm={handleConfirmSave}
+            title="Confirm Save"
+            message="Are you sure you want to save?"
+          />
+        )}
+      </>
+    );
+  }
 
   return content;
 };

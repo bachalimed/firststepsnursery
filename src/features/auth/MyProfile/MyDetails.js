@@ -129,7 +129,7 @@ console.log(user,'user')
         </div>
       </div>
 
-      <div className="flex justify-end items-center space-x-4 mt-6">
+      <div className="cancelSavebuttonsDiv mt-6">
         <button
         aria-label="dashboard page"
           onClick={()=>navigate("/dashboard/")}

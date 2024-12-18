@@ -524,7 +524,7 @@ const NurserySectionsList = () => {
               },
             }}
           ></DataTable>
-          <div className="flex justify-end items-center space-x-4">
+          <div className="cancelSavebuttonsDiv">
             {isAdmin && (
               <button
                 className="add-button"

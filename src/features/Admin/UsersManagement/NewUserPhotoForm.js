@@ -78,7 +78,7 @@ const NewUserPhotoForm = () => {
         {/* will show only if status is loading */}
         {isLoading === "loading" && <p>Submitting...</p>}
 
-        <div className="flex justify-end items-center space-x-4">
+        <div className="cancelSavebuttonsDiv">
           <button
             className=" px-4 py-2 bg-green-600 text-white rounded"
             type="submit"

@@ -141,7 +141,7 @@ const ServiceDetails = () => {
         </div>
       </div>
 
-      <div className="flex justify-end gap-4">
+      <div className="cancelSavebuttonsDiv">
         <button
           onClick={() => navigate(`/hr/services/services/`)}
          className="cancel-button"

@@ -763,7 +763,7 @@ const EditMyProfileForm = ({ user }) => {
             </div>
           </div>
         )}
-        <div className="flex justify-end gap-4">
+        <div className="cancelSavebuttonsDiv">
           <button
             aria-label="cancel edit my profile"
             className="cancel-button"

@@ -504,7 +504,7 @@ export default function NewFatherForm() {
         </div>
 
         {/* Button Section */}
-        {/* <div className="flex justify-end space-x-4">
+        {/* <div className="cancelSavebuttonsDiv">
       <button
         className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
         type="submit"
