@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 import { useUpdatePayeeMutation } from "./payeesApiSlice";
-import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { ROLES } from "../../../../config/UserRoles";
-import { ACTIONS } from "../../../../config/UserActions";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import FinancesSet from "../../FinancesSet";
 import useAuth from "../../../../hooks/useAuth";
 import { useSelector } from "react-redux";
@@ -16,19 +12,13 @@ import {
 import {
   COMMENT_REGEX,
   NAME_REGEX,
-  NUMBER_REGEX,
-  USER_REGEX,
   PHONE_REGEX,
-  DATE_REGEX,
-  YEAR_REGEX,
 } from "../../../../config/REGEX";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
-import { EXPENSE_CATEGORIES } from "../../../../config/ExpenseCategories";
-import { useOutletContext } from "react-router-dom";
 
 const EditPayeeForm = ({ payee }) => {
   const navigate = useNavigate();
-  const { userId } = useAuth();
+  const { userId,isAdmin } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
@@ -102,9 +92,19 @@ const EditPayeeForm = ({ payee }) => {
 
   const handleYearChange = (year) => {
     setFormData((prev) => {
-      const updatedYears = prev.payeeYears.includes(year)
-        ? prev.payeeYears.filter((yr) => yr !== year)
-        : [...prev.payeeYears, year];
+      // Check if the year is already selected
+      const isSelected = prev.payeeYears.includes(year);
+  
+      // If the year is selected and the user is not an admin, prevent removal
+      if (isSelected && !isAdmin) {
+        return prev; // Return the unchanged state
+      }
+  
+      // Proceed with adding or removing the year
+      const updatedYears = isSelected
+        ? prev.payeeYears.filter((yr) => yr !== year) // Remove the year (allowed for admins only)
+        : [...prev.payeeYears, year]; // Add the year
+  
       return { ...prev, payeeYears: updatedYears };
     });
   };
@@ -134,7 +134,7 @@ const EditPayeeForm = ({ payee }) => {
     try {
       const response = await updatePayee(formData);
       console.log(response, "response");
-     if ((response.data && response.data.message) || response?.message) {
+      if ((response.data && response.data.message) || response?.message) {
         // Success response
         triggerBanner(response?.data?.message || response?.message, "success");
       } else if (
@@ -165,185 +165,156 @@ const EditPayeeForm = ({ payee }) => {
   const content = (
     <>
       <FinancesSet />
-
       <form onSubmit={onSavePayeeClicked} className="form-container">
-        <h2  className="formTitle ">
-          Add New Payee: {`${formData?.payeeLabel} `}
-        </h2>
-        {/* Payee Label */}
-        <div>
-          <label htmlFor=""  className="formInputLabel">
-            Payee Label{" "}
-            {!validity.validPayeeLabel && (
-              <span className="text-red-600">*</span>
-            )}
-            <input
-              aria-label="payee label"
-              aria-invalid={!validity.validPayeeLabel}
-              placeholder=" [3-20 characters]"
-              type="text"
-              name="payeeLabel"
-              value={formData.payeeLabel}
-              onChange={handleInputChange}
-              className={`mt-1 block w-full border ${
-                validity.validPayeeLabel ? "border-gray-300" : "border-red-600"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-              required
-            />{" "}
-          </label>
-        </div>
-        {/* Payee Active Status */}
-        <div>
-          <label htmlFor=""  className="formInputLabel">
-            Payee Is Active
-            <input
-              aria-label="payee is active"
-              type="checkbox"
-              name="payeeIsActive"
-              checked={formData.payeeIsActive}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  payeeIsActive: e.target.checked,
-                }))
-              }
-              className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
-            />
-          </label>
-        </div>
-
-        {/* Payee Years Selection - Using Checkboxes */}
-        <div>
-          <label htmlFor=""  className="formInputLabel">
-            Payee Years{" "}
-            {!validity.validPayeeYears && (
-              <span className="text-red-600">*</span>
-            )}
-            <div className="space-y-2">
-              {academicYears.map((year) => (
-                <div key={year.id} className="flex items-center">
-                  <input
-                    aria-label="payee year"
-                    type="checkbox"
-                    id={`year-${year.id}`}
-                    checked={formData.payeeYears.includes(year.title)}
-                    onChange={() => handleYearChange(year.title)}
-                    className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
-                  />
-                  <label htmlFor=""
-                    htmlFor={`year-${year.id}`}
-                    className="ml-2 text-sm font-medium text-gray-700"
-                  >
-                    {year.title}
+        <h2 className="formTitle ">New Payee: {`${formData?.payeeLabel} `}</h2>
+        <div className="formSectionContainer">
+          <h3 className="formSectionTitle">Payee details</h3>
+          <div className="formSection">
+            <div className="formLineDiv">
+              {/* Payee Active Status */}
+              <label className="formInputLabel">
+                Payee Active:
+                <div className="formCheckboxItemsDiv">
+                  <label htmlFor="payeeIsActive" className="formCheckboxChoice">
+                    <input
+                      aria-label="payee is active"
+                      type="checkbox"
+                      id="payeeIsActive"
+                      name="payeeIsActive"
+                      checked={formData.payeeIsActive}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          payeeIsActive: e.target.checked,
+                        }))
+                      }
+                      className={`formCheckbox`}
+                    />
+                    Payee Is Active
                   </label>
                 </div>
-              ))}
-            </div>
-          </label>
-        </div>
+              </label>
+              {/* Payee Label */}
 
-        {/* Payee Categories Selection */}
-        {/* <div>
-            <label htmlFor=""  className="formInputLabel">
-              Payee Categories{" "}
-              {!validity.validPayeeCategories && (
-                <span className="text-red-600">*</span>
-              )}
-            </label>
-            <div className="space-y-2">
-              {Object.values(EXPENSE_CATEGORIES).map((category) => (
-                <div key={category} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id={category}
-                    checked={formData.payeeCategories.includes(category)}
-                    onChange={() => handleCategoryChange(category)}
-                    className="h-4 w-4 text-blue-600 focus:ring-sky-700 border-gray-300 rounded"
-                  />
-                  <label htmlFor=""
-                    htmlFor={category}
-                    className="ml-2 text-sm font-medium text-gray-700"
-                  >
-                    {category}
-                  </label>
+              <label htmlFor="payeeLabel" className="formInputLabel">
+                Payee Label{" "}
+                {!validity.validPayeeLabel && (
+                  <span className="text-red-600">*</span>
+                )}
+                <input
+                  aria-label="payee label"
+                  aria-invalid={!validity.validPayeeLabel}
+                  placeholder="[3-20 characters]"
+                  type="text"
+                  id="payeeLabel"
+                  name="payeeLabel"
+                  value={formData.payeeLabel}
+                  onChange={handleInputChange}
+                  className={`formInputText`}
+                  required
+                />
+              </label>
+            </div>
+
+            {/* Payee Years Selection - Using Checkboxes */}
+            <h3 className="formSectionTitle">Payee years</h3>
+            <div className="formSection">
+              <div className="formInputLabel">
+                Select year(s){" "}
+                {!validity.validPayeeYears && (
+                  <span className="text-red-600">*</span>
+                )}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2 mt-1 max-h-80 overflow-y-auto">
+                  {academicYears
+                    .filter((year) => year?.title !== "1000")
+                    .map((year, index) => {
+                      const isSelected = formData.payeeYears.includes(
+                        year.title
+                      );
+                      return (
+                        <button
+                          aria-label="selectYears"
+                          key={index}
+                          type="button"
+                          onClick={() => handleYearChange(year?.title)} // Use onClick instead of onChange
+                          className={`px-3 py-2 text-left rounded-md ${
+                            isSelected
+                              ? "bg-sky-700 text-white hover:bg-sky-600"
+                              : "bg-gray-200 text-gray-700 hover:bg-sky-600 hover:text-white"
+                          }`}
+                        >
+                          <div className="font-semibold">{year?.title}</div>
+                        </button>
+                      );
+                    })}
                 </div>
-              ))}
+              </div>
             </div>
-          </div> */}
+            <div className="formLineDiv">
+              {/* Contact Information */}
 
-        {/* Contact Information */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label htmlFor=""  className="formInputLabel">
-              Payee Phone{" "}
-              {!validity.validPayeePhone && (
+              <label htmlFor="payeePhone" className="formInputLabel">
+                Payee Phone{" "}
+                {!validity.validPayeePhone && (
+                  <span className="text-red-600">*</span>
+                )}
+                <input
+                  aria-label="payee phone"
+                  aria-invalid={!validity.validPayeePhone}
+                  placeholder="[6-15 digits]"
+                  type="text"
+                  id="payeePhone"
+                  name="payeePhone"
+                  value={formData.payeePhone}
+                  onChange={handleInputChange}
+                  className={`formInputText`}
+                />
+              </label>
+
+              <label htmlFor="payeeAddress" className="formInputLabel">
+                Payee Address{" "}
+                {!validity.validPayeeAddress && (
+                  <span className="text-red-600">*</span>
+                )}
+                <input
+                  aria-label="payee address"
+                  aria-invalid={!validity.validPayeeAddress}
+                  placeholder=" [3-20 characters]"
+                  type="text"
+                  id="payeeAddress"
+                  name="payeeAddress"
+                  value={formData.payeeAddress}
+                  onChange={handleInputChange}
+                  className={`formInputText`}
+                />{" "}
+              </label>
+            </div>
+
+            {/* Payee Notes */}
+
+            <label htmlFor="payeeNotes" className="formInputLabel">
+              Payee Notes{" "}
+              {!validity.validPayeeNotes && (
                 <span className="text-red-600">*</span>
               )}
-              <input
-                aria-label="payee phone"
-                aria-invalid={!validity.validPayeePhone}
-                placeholder="[6-15 digits]"
-                type="text"
-                name="payeePhone"
-                value={formData.payeePhone}
+              <textarea
+                aria-label="payee notes"
+                aria-invalid={!validity.validPayeeNotes}
+                placeholder=" [1-150 characters]"
+                id="payeeNotes"
+                name="payeeNotes"
+                value={formData.payeeNotes}
                 onChange={handleInputChange}
-                className={`mt-1 block w-full border ${
-                  validity.validPayeePhone
-                    ? "border-gray-300"
-                    : "border-red-600"
-                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-              />
+                className={`formInputText`}
+              ></textarea>
             </label>
           </div>
-          <div>
-            <label htmlFor=""  className="formInputLabel">
-              Payee Address{" "}
-              {!validity.validPayeeAddress && (
-                <span className="text-red-600">*</span>
-              )}
-              <input
-                aria-label="payee address"
-                aria-invalid={!validity.validPayeeAddress}
-                placeholder=" [3-20 characters]"
-                type="text"
-                name="payeeAddress"
-                value={formData.payeeAddress}
-                onChange={handleInputChange}
-                className={`mt-1 block w-full border ${
-                  validity.validPayeeAddress
-                    ? "border-gray-300"
-                    : "border-red-600"
-                } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-              />
-            </label>
-          </div>
-        </div>
-
-        {/* Payee Notes */}
-        <div>
-          <label htmlFor=""  className="formInputLabel">
-            Payee Notes{" "}
-            {!validity.validPayeeNotes && (
-              <span className="text-red-600">*</span>
-            )}
-            <textarea
-              aria-label="payee notes"
-              aria-invalid={!validity.validPayeeNotes}
-              placeholder=" [1-150 characters]"
-              name="payeeNotes"
-              value={formData.payeeNotes}
-              onChange={handleInputChange}
-              className={`mt-1 block w-full border ${
-                validity.validPayeeNotes ? "border-gray-300" : "border-red-600"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-            ></textarea>{" "}
-          </label>
         </div>
 
         {/* Save Button */}
         <div className="cancelSavebuttonsDiv">
           <button
-            aria-label="cancel add payee"
+            aria-label="cancel edit payee"
             type="button"
             className="cancel-button"
             onClick={() => navigate("/settings/financesSet/payeesList/")}

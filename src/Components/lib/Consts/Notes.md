@@ -16,4 +16,5 @@ a dialog will open to Register the studetn by selecting the current year. now th
 9. studetn document and employee documetns: there should be not editing of document after document have been uploaded, at least no removing.(alert or prevent) because references in the document have been set for documents
 10. studetn docuetn edit only works second click?
 academic years "1000" use as criteria to query all years data instead of only one selected year
+11. payee editing should prevents non admin from removing existing years, they can add year but not remove.
  

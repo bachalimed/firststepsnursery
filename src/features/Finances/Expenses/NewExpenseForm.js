@@ -464,6 +464,8 @@ const NewExpenseForm = () => {
                   )}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2 mt-1 max-h-80 overflow-y-auto">
                     {selectedCategory.expenseCategoryItems.map(
+
+                      
                       (item, index) => {
                         const isSelected = selectedItems.includes(item);
                         return (

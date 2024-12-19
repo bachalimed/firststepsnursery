@@ -664,7 +664,9 @@ const EditStudentForm = ({ student }) => {
                           className={`formInputText`}
                         >
                           <option value="">Select Year</option>
-                          {academicYears.map((year, i) => (
+                          {academicYears
+                           .filter((year) => year?.title !== "1000")
+                          .map((year, i) => (
                             <option key={year?.title} value={year?.title}>
                               {year?.title}
                             </option>
@@ -769,7 +771,9 @@ const EditStudentForm = ({ student }) => {
                           className={`formInputText`}
                         >
                           <option value="">Select Year</option>
-                          {academicYears.map(
+                          {academicYears
+                           .filter((year) => year?.title !== "1000")
+                          .map(
                             (year, i) =>
                               year.title !== "1000" && (
                                 <option key={year.title} value={year.title}>

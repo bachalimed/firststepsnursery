@@ -263,7 +263,7 @@ const PayeesList = () => {
           {canEdit ? (
             <button
             aria-label="edit payee"
-              className="text-amber300"
+              className="text-amber-300"
               onClick={() => navigate(`/settings/financesSet/editPayee/${row.id}`)}
             >
               <FiEdit className="text-2xl" />
