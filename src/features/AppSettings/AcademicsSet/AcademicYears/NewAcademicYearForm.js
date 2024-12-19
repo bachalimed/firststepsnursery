@@ -151,7 +151,7 @@ const NewAcademicYearForm = () => {
 
   return (
     <>
-      <AcademicsSet />
+      <AcademicsSet/>
 
       <form onSubmit={handleSubmit} className="form-container">
         <h2 className="formTitle">New Academic Year</h2>
@@ -231,17 +231,13 @@ const NewAcademicYearForm = () => {
           <button
            aria-label="submit year"
             type="submit"
-            disabled={!canSubmit}
+            disabled={!canSubmit||isNewYearLoading}
             className="save-button w-full"
           >
             Save
           </button>
         </div>
-        {/* {isNewYearError && (
-            <p className="text-red-600 text-sm mt-2">
-              {newYearError?.data?.message || "Error creating academic year."}
-            </p>
-          )} */}
+        
       </form>
 
       {/* Confirmation Modal */}

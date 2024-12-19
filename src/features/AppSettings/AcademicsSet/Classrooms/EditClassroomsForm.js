@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useUpdateClassroomMutation } from "./classroomsApiSlice";
-import { classroomAdded } from "./classroomsSlice";
 import AcademicsSet from "../../AcademicsSet";
 import { NAME_REGEX, SMALLNUMBER_REGEX } from "../../../../config/REGEX";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
@@ -87,8 +86,8 @@ const EditClassroomForm = ({ classroom }) => {
 
     try {
       const response = await updateClassroom(formData); //.unwrap();
- 
-     if ((response.data && response.data.message) || response?.message) {
+
+      if ((response.data && response.data.message) || response?.message) {
         // Success response
         triggerBanner(response?.data?.message || response?.message, "success");
       } else if (
@@ -126,125 +125,118 @@ const EditClassroomForm = ({ classroom }) => {
       <AcademicsSet />
 
       <form onSubmit={handleSubmit} className="form-container">
-        <h2 className="text-2xl font-bold mb-6 text-center">Edit Classroom</h2>
-        <div className="mb-4">
-          <label htmlFor=""  className="formInputLabel">
-            Classroom Number
-            <input
-              aria-label="classroom number"
-              aria-invalid={!validity.validClassroomNumber}
-              placeholder="[1-4 digits]"
-              type="text"
-              name="classroomNumber"
-              value={formData.classroomNumber}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-            />
-            {!validity.validClassroomNumber && formData.classroomNumber && (
-              <p className="text-red-600 text-sm">Invalid classroom number.</p>
-            )}
-          </label>
-        </div>
-        <div className="mb-4">
-          <label htmlFor=""  className="formInputLabel">
-            Classroom Label
-            <input
-              aria-label="classroom label"
-              aria-invalid={!validity.validClassroomLabel}
-              placeholder="[3-20 letters]"
-              type="text"
-              name="classroomLabel"
-              value={formData.classroomLabel}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-            />
-            {!validity.validClassroomLabel && formData.classroomLabel && (
-              <p className="text-red-600 text-sm">Invalid classroom label.</p>
-            )}
-          </label>
-        </div>
+        <h2 className="formTitle">New Classroom</h2>
+        <div className="formSectionContainer">
+          <h3 className="formSectionTitle">Classroom details</h3>
+          <div className="formSection">
+            <div className="formLineDiv">
+              <label htmlFor="classroomNumber" className="formInputLabel">
+                Classroom Number{" "}
+                {!validity.validClassroomNumber && (
+                  <span className="text-red-600 text-sm">*</span>
+                )}
+                <input
+                  aria-label="classroom number"
+                  aria-invalid={!validity.validClassroomNumber}
+                  placeholder="[1-4 digits]"
+                  type="text"
+                  id="classroomNumber"
+                  name="classroomNumber"
+                  value={formData.classroomNumber}
+                  onChange={handleChange}
+                  required
+                  className={`formInputText`}
+                />
+              </label>
 
-        <div className="mb-4">
-          <label htmlFor=""  className="formInputLabel">
-            Classroom Capacity
-            <input
-              aria-label="classroom capacity"
-              aria-invalid={!validity.validClassroomCapacity}
-              placeholder="[1-2 digits]"
-              type="text"
-              name="classroomCapacity"
-              value={formData.classroomCapacity}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-            />
-            {!validity.validClassroomCapacity && formData.classroomCapacity && (
-              <p className="text-red-600 text-sm">
-                Invalid classroom capacity.
-              </p>
-            )}
-          </label>
-        </div>
-        <div className="mb-4">
-          <label htmlFor=""  className="formInputLabel">
-            Classroom Max Capacity
-            <input
-              aria-label="classroom max capacity"
-              aria-invalid={!validity.validClassroomMaxCapacity}
-              placeholder="[1-2 digits]"
-              type="text"
-              name="classroomMaxCapacity"
-              value={formData.classroomMaxCapacity}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-            />
-            {!validity.validClassroomMaxCapacity &&
-              formData.classroomMaxCapacity && (
-                <p className="text-red-600 text-sm">
-                  Invalid classroom max capacity.
-                </p>
-              )}
-          </label>
-        </div>
+              <label htmlFor="classroomLabel" className="formInputLabel">
+                Classroom Label{" "}
+                {!validity.validClassroomLabel && (
+                  <span className="text-red-600 text-sm">*</span>
+                )}
+                <input
+                  aria-label="classroom label"
+                  aria-invalid={!validity.validClassroomLabel}
+                  placeholder="[3-20 letters]"
+                  type="text"
+                  id="classroomLabel"
+                  name="classroomLabel"
+                  value={formData.classroomLabel}
+                  onChange={handleChange}
+                  required
+                  className={`formInputText`}
+                />
+              </label>
 
-        <div className="mb-4">
-          <label htmlFor=""  className="formInputLabel">
-            Classroom Color
-            <input
-              type="color"
-              name="classroomColor"
-              value={formData.classroomColor}
-              onChange={handleChange}
-              className="w-full"
-            />{" "}
-          </label>
-        </div>
+              <label htmlFor="classroomCapacity" className="formInputLabel">
+                Classroom Capacity{" "}
+                {!validity.validClassroomCapacity && (
+                  <span className="text-red-600 text-sm">*</span>
+                )}
+                <input
+                  aria-label="classroom capacity"
+                  aria-invalid={!validity.validClassroomCapacity}
+                  placeholder="[1-2 digits]"
+                  type="text"
+                  id="classroomCapacity"
+                  name="classroomCapacity"
+                  value={formData.classroomCapacity}
+                  onChange={handleChange}
+                  required
+                  className={`formInputText`}
+                />
+              </label>
 
-        {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
-        {isError && (
-          <p className="text-red-600 text-sm mt-2">
-            {apiError?.data?.message || "Error adding the classroom."}
-          </p>
-        )}
-        <div className="cancelSavebuttonsDiv">
-          <button
-            aria-label="cancel new classroom"
-            type="button"
-            onClick={() => navigate("/settings/academicsSet/classrooms/")}
-            className="cancel-button"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={!canSubmit}
-            className="w-full bg-sky-700 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200"
-          >
-            {isLoading ? "Adding..." : "Add Classroom"}
-          </button>
+              <label htmlFor="classroomMaxCapacity" className="formInputLabel">
+                Classroom Max Capacity{" "}
+                {!validity.validClassroomMaxCapacity && (
+                  <span className="text-red-600 text-sm">*</span>
+                )}
+                <input
+                  aria-label="classroom max capacity"
+                  aria-invalid={!validity.validClassroomMaxCapacity}
+                  placeholder="[1-2 digits]"
+                  type="text"
+                  id="classroomMaxCapacity"
+                  name="classroomMaxCapacity"
+                  value={formData.classroomMaxCapacity}
+                  onChange={handleChange}
+                  required
+                  className={`formInputText`}
+                />
+              </label>
+            </div>
+
+            <label htmlFor="" className="formInputLabel">
+              Classroom Color
+              <input
+                type="color"
+                name="classroomColor"
+                value={formData.classroomColor}
+                onChange={handleChange}
+                className="w-full"
+              />{" "}
+            </label>
+          </div>
+
+          <div className="cancelSavebuttonsDiv">
+            <button
+              aria-label="cancel new classroom"
+              type="button"
+              onClick={() => navigate("/settings/academicsSet/classrooms/")}
+              className="cancel-button"
+            >
+              Cancel
+            </button>
+            <button
+              aria-label="submit classroom"
+              type="submit"
+              disabled={!canSubmit || isLoading}
+              className="save-button"
+            >
+              {isLoading ? "Adding..." : "Add Classroom"}
+            </button>
+          </div>
         </div>
       </form>
 

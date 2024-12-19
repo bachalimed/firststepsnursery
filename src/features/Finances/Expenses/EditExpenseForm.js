@@ -646,7 +646,7 @@ const EditExpenseForm = ({ expense }) => {
             <button
               aria-label="cancel expense"
               type="button"
-              //disabled={!canSubmit}
+            
               className="cancel-button"
               onClick={() => navigate("/finances/expenses/expensesList/")}
             >

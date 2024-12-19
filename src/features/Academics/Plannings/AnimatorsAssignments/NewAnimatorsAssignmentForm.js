@@ -482,7 +482,7 @@ const NewAnimatorsAssignmentForm = () => {
           <div className="cancelSavebuttonsDiv">
             <button
               type="button"
-              //disabled={!canSubmit}
+             
               className="cancel-button"
               aria-label="cancel assignments"
               onClick={() =>

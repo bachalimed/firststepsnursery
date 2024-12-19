@@ -198,7 +198,7 @@ const EditAttendedSchoolForm = ({ attendedSchool }) => {
           >
             Cancel
           </button>
-          <button type="submit" disabled={!canSubmit} className="save-button">
+          <button type="submit" disabled={!canSubmit||isLoading} className="save-button">
             Save
           </button>
         </div>
