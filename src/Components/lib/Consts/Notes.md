@@ -15,4 +15,5 @@ a dialog will open to Register the studetn by selecting the current year. now th
 8. we create a new employee and we can edit employee and choose roles for employee(animator, desk, academic...)
 9. studetn document and employee documetns: there should be not editing of document after document have been uploaded, at least no removing.(alert or prevent) because references in the document have been set for documents
 10. studetn docuetn edit only works second click?
+academic years "1000" use as criteria to query all years data instead of only one selected year
  

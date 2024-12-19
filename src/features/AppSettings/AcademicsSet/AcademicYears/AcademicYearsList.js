@@ -148,12 +148,7 @@ const AcademicYearsList = () => {
       sortable: true,
       width: "200px",
     },
-    {
-      name: "Action",
-      selector: null,
-
-      removableRows: true,
-    },
+   
     {
       name: "Actions",
       cell: (row) => (

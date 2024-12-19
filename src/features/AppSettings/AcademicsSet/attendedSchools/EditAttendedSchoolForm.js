@@ -1,21 +1,19 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { useUpdateAttendedSchoolMutation } from "./attendedSchoolsApiSlice";
 import { attendedSchoolAdded } from "./attendedSchoolsSlice";
 import AcademicsSet from "../../AcademicsSet";
 import { NAME_REGEX } from "../../../../config/REGEX";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
-import { useOutletContext } from "react-router-dom";
-
+import { SchoolTypeOptions } from "../../../../config/Constants";
 const EditAttendedSchoolForm = ({ attendedSchool }) => {
   //confirmation Modal states
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [formData, setFormData] = useState({
-    schoolName: attendedSchool.schoolName,
-    schoolCity: attendedSchool.schoolCity,
-    schoolType: attendedSchool.schoolType,
-    schoolColor: attendedSchool.schoolColor || "#FF5733", // Default color if none exists
+    schoolName: attendedSchool?.schoolName,
+    schoolCity: attendedSchool?.schoolCity,
+    schoolType: attendedSchool?.schoolType,
+    schoolColor: attendedSchool?.schoolColor || "#FF5733", // Default color if none exists
     id: attendedSchool._id,
   });
 
@@ -24,14 +22,15 @@ const EditAttendedSchoolForm = ({ attendedSchool }) => {
     validSchoolCity: false,
     validSchoolType: false,
   });
-
-  const [error, setError] = useState("");
+  console.log(attendedSchool,'attendedSchool')
+  console.log(validity,'validity')
+  console.log(formData,'formdata')
+  
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const [
     updateAttendedSchool,
-    { isLoading, isError, error: apiError, isSuccess },
+    { isLoading, isError, error, isSuccess },
   ] = useUpdateAttendedSchoolMutation();
 
   // Validate inputs using regex patterns
@@ -39,7 +38,7 @@ const EditAttendedSchoolForm = ({ attendedSchool }) => {
     setValidity({
       validSchoolName: NAME_REGEX.test(formData.schoolName),
       validSchoolCity: NAME_REGEX.test(formData.schoolCity),
-      validSchoolType: !!formData.schoolType,
+      validSchoolType: NAME_REGEX.test(formData.schoolType),
     });
   }, [formData]);
 
@@ -67,7 +66,7 @@ const EditAttendedSchoolForm = ({ attendedSchool }) => {
     try {
       const response = await updateAttendedSchool(formData).unwrap();
       console.log(response, "response");
-     if ((response.data && response.data.message) || response?.message) {
+      if ((response.data && response.data.message) || response?.message) {
         // Success response
         triggerBanner(response?.data?.message || response?.message, "success");
       } else if (
@@ -107,126 +106,104 @@ const EditAttendedSchoolForm = ({ attendedSchool }) => {
   return (
     <>
       <AcademicsSet />
-     
 
-        <form onSubmit={handleSubmit} className="form-container">
-        <h2 className="text-2xl font-bold mb-6 text-center">
-          Edit Attended School
-        </h2>
-          <div className="mb-4">
-            <label htmlFor=""  className="formInputLabel">
-              School Name
-              <input
-                aria-label="school name"
-                aria-invalid={!validity.validSchoolName}
-                placeholder="[6-20 letters]"
-                type="text"
-                name="schoolName"
-                value={formData.schoolName}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-              />
-              {!validity.validSchoolName && formData.schoolName && (
-                <p className="text-red-600 text-sm">Invalid school name.</p>
-              )}
-            </label>
-          </div>
+      <form onSubmit={handleSubmit} className="form-container">
+        <h2 className="formTitle">Edit School</h2>
+        <div className="formSectionContainer">
+          <h3 className="formSectionTitle">School details</h3>
+          <div className="formSection">
+            <div className="formLineDiv">
+              <label htmlFor="schoolName" className="formInputLabel">
+                School Name{" "}
+                {!validity.validSchoolName && (
+                  <span className="text-red-600 text-sm">*</span>
+                )}
+                <input
+                  aria-label="school name"
+                  aria-invalid={!validity.validSchoolName}
+                  placeholder="[6-20 letters]"
+                  type="text"
+                  id="schoolName"
+                  name="schoolName"
+                  value={formData?.schoolName}
+                  onChange={handleChange}
+                  required
+                  className={`formInputText`}
+                />
+              </label>
 
-          <div className="mb-4">
-            <label htmlFor=""  className="formInputLabel">
-              School City
-              <input
-                aria-label="school city"
-                aria-invalid={!validity.validSchoolCity}
-                placeholder="[3-20 letters]"
-                type="text"
-                name="schoolCity"
-                value={formData.schoolCity}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-              />
-              {!validity.validSchoolCity && formData.schoolCity && (
-                <p className="text-red-600 text-sm">Invalid school city.</p>
-              )}
-            </label>
-          </div>
+              <label htmlFor="schoolCity" className="formInputLabel">
+                School City{" "}
+                {!validity.validSchoolCity && (
+                  <span className="text-red-600 text-sm">*</span>
+                )}
+                <input
+                  aria-label="school city"
+                  aria-invalid={!validity.validSchoolCity}
+                  placeholder="[3-20 letters]"
+                  type="text"
+                  id="schoolCity"
+                  name="schoolCity"
+                  value={formData?.schoolCity}
+                  onChange={handleChange}
+                  required
+                  className={`formInputText`}
+                />
+              </label>
 
-          <div className="mb-4">
-            <label htmlFor=""  className="formInputLabel">
-              School Type
-              <select
-                required
-                name="schoolType"
-                aria-label="school type"
-                aria-invalid={!validity.validSchoolType}
-                value={formData.schoolType}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-              >
-                <option value="">Select School Type</option>
-                <option value="Public">Public</option>
-                <option value="Private">Private</option>
-                <option value="Charter">Charter</option>
-                <option value="Other">Other</option>
-              </select>
-              {!validity.validSchoolType && formData.schoolType && (
-                <p className="text-red-600 text-sm">
-                  Please select a school type.
-                </p>
-              )}{" "}
-            </label>
-          </div>
-
-          <div className="mb-4">
-            <label htmlFor=""  className="formInputLabel">
-              School Color
-              <div className="flex items-center">
-                {/* Square displaying the selected color */}
-                <div
-                  className="w-8 h-8 mr-4 border"
-                  style={{ backgroundColor: formData.schoolColor }}
-                ></div>
-                {/* Color input field */}
+              <label htmlFor="schoolType" className="formInputLabel">
+                School Type{" "}
+                {!validity.validSchoolType && (
+                  <span className="text-red-600">*</span>
+                )}
+                <select
+                  aria-label="school type"
+                  aria-invalid={!validity.validSchoolType}
+                  required
+                  id="schoolType"
+                  name="schoolType"
+                  value={formData?.schoolType}
+                  onChange={handleChange}
+                  className={`formInputText`}
+                >
+                  <option value="">Select School Type</option>
+                  {SchoolTypeOptions.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label htmlFor="schoolColor" className="formInputLabel">
+                School Color
                 <input
                   type="color"
+                  id="schoolColor"
                   name="schoolColor"
                   value={formData.schoolColor}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-                />
-              </div>
-            </label>
+                  className="block w-full rounded-md"
+                />{" "}
+              </label>
+            </div>
           </div>
+        </div>
 
-          {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
-          {isError && (
-            <p className="text-red-600 text-sm mt-2">
-              {apiError?.data?.message || "Error updating the school."}
-            </p>
-          )}
-          <div className="cancelSavebuttonsDiv">
-            <button
-              aria-label="cancel new school"
-              type="button"
-              onClick={() =>
-                navigate("/settings/academicsSet/attendedSchools/")
-              }
-              className="cancel-button"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={!canSubmit}
-              className="w-full bg-sky-700 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200"
-            >
-              {isLoading ? "Updating..." : "Update School"}
-            </button>
-          </div>
-        </form>
-      
+        <div className="cancelSavebuttonsDiv">
+          <button
+            aria-label="cancel new school"
+            type="button"
+            onClick={() => navigate("/settings/academicsSet/attendedSchools/")}
+            className="cancel-button"
+          >
+            Cancel
+          </button>
+          <button type="submit" disabled={!canSubmit} className="save-button">
+            Save
+          </button>
+        </div>
+      </form>
+
       {/* Confirmation Modal */}
       <ConfirmationModal
         show={showConfirmation}

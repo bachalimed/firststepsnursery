@@ -13,7 +13,7 @@ const AcademicsSet = () => {
       path: "/settings/academicsSet/academicYears/",
     },
     (  isDirector||isManager || isAdmin) &&  {
-      title: "attendedSchools",
+      title: "Schools",
       path: "/settings/academicsSet/attendedSchools/",
     },
     (  isDirector||isManager || isAdmin) && { title: "Classrooms", path: "/settings/academicsSet/classrooms/" },
