@@ -214,7 +214,7 @@ const ExpenseCategoriesList = () => {
 
       sortable: true,
       removableRows: true,
-      width: "100px",
+      width: "150px",
     },
     {
       name: "Years",
