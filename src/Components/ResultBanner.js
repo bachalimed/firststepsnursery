@@ -15,12 +15,12 @@ const ResultBanner = ({ message, type }) => {
       <div className={`h-8 rounded-t-lg ${colors[type] || "bg-gray-300"}`}></div>
 
       {/* Lower part */}
-      <div className="p-4 flex items-center">
+      <div className="p-4 flex items-center justify-center">
         <div className={`text-2xl mr-3 ${type === "success" ? "text-green-500" : "text-red-500"}`}>
           {type === "success" && <AiOutlineCheckCircle />}
           {type === "error" && <AiOutlineExclamationCircle />}
         </div>
-        <p className="text-gray-900 text-lg">{message}</p>
+        <p className="text-gray-900 text-lg ">{message}</p>
       </div>
     </div>
   );

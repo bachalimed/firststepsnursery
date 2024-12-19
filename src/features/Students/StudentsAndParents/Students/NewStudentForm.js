@@ -373,16 +373,7 @@ const NewStudentForm = () => {
     content = (
       <>
         <Students />
-        {/* Display status message */}
-        {/* {showMessage && (
-        <p
-          className={`mt-4 text-center ${
-            statusType === "success" ? "text-green-500" : "text-red-600"
-          }`}
-        >
-          {statusMessage}
-        </p>
-      )} */}
+    
         <form className="form-container" onSubmit={onSaveStudentClicked}>
           <h2 className="formTitle">
             New student: {firstName} {middleName} {lastName}

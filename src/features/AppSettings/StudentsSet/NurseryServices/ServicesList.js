@@ -218,7 +218,7 @@ const ServicesList = () => {
                 onClick={() => navigate("/settings/studentsSet/newService")}
                 // disabled={selectedRows.length !== 1}
               >
-                Add Service
+                New Service
               </button>
             )}
           </div>

@@ -2,14 +2,9 @@ import { useUpdateServiceMutation } from "./servicesApiSlice";
 import { useState, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { ROLES } from "../../../../config/UserRoles";
-import { ACTIONS } from "../../../../config/UserActions";
 import { SERVICETYPES } from "../../../../config/SchedulerConsts";
 import StudentsSet from "../../StudentsSet";
 import useAuth from "../../../../hooks/useAuth";
-
 import { useSelector } from "react-redux";
 import {
   selectAllAcademicYears,
@@ -53,6 +48,7 @@ const EditServiceForm = ({ service }) => {
     validMonthlyAnchor: false,
     validWeeklyAnchor: false,
     validOneTimeOffAnchor: false,
+    noEmptyAnchor: false,
   });
 
   // Validate inputs using regex patterns
@@ -64,6 +60,10 @@ const EditServiceForm = ({ service }) => {
       validMonthlyAnchor: FEE_REGEX.test(formData.serviceAnchor.monthly),
       validWeeklyAnchor: FEE_REGEX.test(formData.serviceAnchor.weekly),
       validOneTimeOffAnchor: FEE_REGEX.test(formData.serviceAnchor.oneTimeOff),
+      noEmptyAnchor:
+        formData?.serviceAnchor?.monthly != "" || //we use != because we are ocmparing anumber in formdata and a string ""
+        formData?.serviceAnchor?.weekly != "" ||
+        formData?.serviceAnchor?.oneTimeOff != "",
     }));
   }, [formData]);
 
@@ -123,7 +123,7 @@ const EditServiceForm = ({ service }) => {
 
     try {
       const response = await updateService(formData);
-     if ((response.data && response.data.message) || response?.message) {
+      if ((response.data && response.data.message) || response?.message) {
         // Success response
         triggerBanner(response?.data?.message || response?.message, "success");
       } else if (
@@ -154,145 +154,135 @@ const EditServiceForm = ({ service }) => {
       <StudentsSet />
 
       <form onSubmit={onSaveServiceClicked} className="form-container">
-        <h2  className="formTitle ">
-          Add New Service:{" "}
-          {`${formData.servicePeriodicity} ${formData.serviceType} ${formData.serviceYear}`}
+        <h2 className="formTitle ">
+          Edit Service: {formData?.servicePeriodicity} {formData?.serviceType}{" "}
+          {formData?.serviceYear}
         </h2>
-        {/* Service Type */}
-        <div>
-          <label htmlFor=""  className="formInputLabel">
-            Service Type{" "}
-            {validity.validServiceType ? (
-              ""
-            ) : (
-              <span className="text-red-600">*</span>
-            )}
-            <select
-              aria-label="service Type"
-              aria-invalid={!validity.validServiceType}
-              name="serviceType"
-              value={formData.serviceType}
-              onChange={handleInputChange}
-              className={`mt-1 block w-full border ${
-                validity.validServiceType ? "border-gray-300" : "border-red-600"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-              required
-            >
-              <option value="">Select Service Type</option>
-              {Object.values(SERVICETYPES).map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
+        <div className="formSectionContainer">
+          <h3 className="formSectionTitle">Service selection</h3>
+          <div className="formSection">
+            <div className="formLineDiv">
+              {/* Service Year */}
 
-        {/* Service Year */}
-        <div>
-          <label htmlFor=""  className="formInputLabel">
-            Service Year{" "}
-            {validity.validServiceYear ? (
-              ""
-            ) : (
-              <span className="text-red-600">*</span>
-            )}
-            <select
-              aria-label="service year"
-              aria-invalid={!validity.validServiceYear}
-              name="serviceYear"
-              value={formData.serviceYear}
-              onChange={handleInputChange}
-              className={`mt-1 block w-full border ${
-                validity.validServiceYear ? "border-gray-300" : "border-red-600"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-              required
-            >
-              <option value="">Select Year</option>
-              {academicYears.map((year) => (
-                <option key={year.id} value={year.title}>
-                  {year.title}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
+              <label htmlFor="serviceYear" className="formInputLabel">
+                Service Year{" "}
+                {!validity.validServiceYear && (
+                  <span className="text-red-600">*</span>
+                )}
+                <select
+                  aria-label="service year"
+                  aria-invalid={!validity.validServiceYear}
+                  id="serviceYear"
+                  name="serviceYear"
+                  value={formData.serviceYear}
+                  onChange={handleInputChange}
+                  className={`formInputText`}
+                  required
+                  disabled
+                >
+                  <option value="">Select Year</option>
+                  {academicYears.map((year) => (
+                    <option key={year.id} value={year.title}>
+                      {year.title}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {/* Service Type */}
 
-        {/* Monthly Service anchor */}
-        <div>
-          <label htmlFor=""  className="formInputLabel">
-            Monthly Service Anchor{" "}
-            {validity.validMonthlyAnchor ? (
-              ""
-            ) : (
+              <label htmlFor="serviceType" className="formInputLabel">
+                Service Type{" "}
+                {!validity.validServiceType && (
+                  <span className="text-red-600">*</span>
+                )}
+                <select
+                  aria-label="service Type"
+                  aria-invalid={!validity.validServiceType}
+                  id="serviceType"
+                  name="serviceType"
+                  value={formData.serviceType}
+                  onChange={handleInputChange}
+                  className={`formInputText`}
+                  required
+                >
+                  <option value="">Select Service Type</option>
+                  {Object.values(SERVICETYPES).map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+          </div>
+          <h3 className="formSectionTitle">
+            Service Fees{" "}
+            {!validity?.noEmptyAnchor && (
               <span className="text-red-600">*</span>
             )}
-            <input
-              aria-label="monthly anchor"
-              aria-invalid={!validity.validMonthlyAnchor}
-              type="number"
-              name="monthlyAnchor"
-              value={formData.serviceAnchor.monthly}
-              onChange={handleInputChange}
-              className={`mt-1 block w-full border ${
-                validity.validMonthlyAnchor
-                  ? "border-gray-300"
-                  : "border-red-600"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-              placeholder="Enter Monthly Service Anchor"
-            />
-          </label>
-        </div>
+          </h3>
+          <div className="formSection">
+            <div className="grid grid-cols-3 gap-4">
+              {/* Monthly Service anchor */}
 
-        {/* Weekly Service anchor */}
-        <div>
-          <label htmlFor=""  className="formInputLabel">
-            Weekly Service Anchor{" "}
-            {validity.validWeeklyAnchor ? (
-              ""
-            ) : (
-              <span className="text-red-600">*</span>
-            )}
-            <input
-              aria-label="weekly anchor"
-              aria-invalid={!validity.validWeeklyAnchor}
-              type="number"
-              name="weeklyAnchor"
-              value={formData.serviceAnchor.weekly}
-              onChange={handleInputChange}
-              className={`mt-1 block w-full border ${
-                validity.validWeeklyAnchor
-                  ? "border-gray-300"
-                  : "border-red-600"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-              placeholder="Enter Weekly Service Anchor"
-            />
-          </label>
-        </div>
-        {/* Weekly Service anchor */}
-        <div>
-          <label htmlFor=""  className="formInputLabel">
-            One-time Off Service Anchor{" "}
-            {validity.validOneTimeOffAnchor ? (
-              ""
-            ) : (
-              <span className="text-red-600">*</span>
-            )}
-            <input
-              aria-label="one time off anchor"
-              aria-invalid={!validity.validOneTimeOffAnchor}
-              type="number"
-              name="oneTimeOffAnchor"
-              value={formData.serviceAnchor.oneTimeOff}
-              onChange={handleInputChange}
-              className={`mt-1 block w-full border ${
-                validity.validOneTimeOffAnchor
-                  ? "border-gray-300"
-                  : "border-red-600"
-              } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-              placeholder="Enter One-time off  Service Anchor"
-            />
-          </label>
+              <label htmlFor="monthlyAnchor" className="formInputLabel">
+                Monthly Anchor{" "}
+                {!validity.validMonthlyAnchor && (
+                  <span className="text-red-600">*</span>
+                )}
+                <input
+                  aria-label="monthly anchor"
+                  aria-invalid={!validity.validMonthlyAnchor}
+                  type="number"
+                  id="monthlyAnchor"
+                  name="monthlyAnchor"
+                  value={formData.serviceAnchor.monthly}
+                  onChange={handleInputChange}
+                  className={`formInputText`}
+                  placeholder="[$$$.$$]"
+                />
+              </label>
+
+              {/* onetime off Service anchor */}
+
+              <label htmlFor="oneTimeOffAnchor" className="formInputLabel">
+                One-time Off Anchor{" "}
+                {!validity.validOneTimeOffAnchor && (
+                  <span className="text-red-600">*</span>
+                )}
+                <input
+                  aria-label="one time off anchor"
+                  aria-invalid={!validity.validOneTimeOffAnchor}
+                  type="number"
+                  id="oneTimeOffAnchor"
+                  name="oneTimeOffAnchor"
+                  value={formData.oneTimeOffAnchor}
+                  onChange={handleInputChange}
+                  className={`formInputText`}
+                  placeholder="[$$$.$$]"
+                />
+              </label>
+              {/* Weekly Service anchor */}
+
+              <label htmlFor="weeklyAnchor" className="formInputLabel">
+                Weekly Anchor{" "}
+                {!validity.validWeeklyAnchor && (
+                  <span className="text-red-600">*</span>
+                )}
+                <input
+                  aria-label="weekly anchor"
+                  aria-invalid={!validity.validWeeklyAnchor}
+                  type="number"
+                  id="weeklyAnchor"
+                  name="weeklyAnchor"
+                  value={formData.weekly}
+                  onChange={handleInputChange}
+                  className={`formInputText`}
+                  placeholder="[$$$.$$]"
+                />
+              </label>
+            </div>
+          </div>
         </div>
 
         {/* Form Actions */}
