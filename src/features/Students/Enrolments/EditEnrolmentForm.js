@@ -34,10 +34,10 @@ const EditEnrolmentForm = ({ enrolment }) => {
   const [
     updateEnrolment,
     {
-      isLoading: isEnrolmentLoading,
-      isSuccess: isEnrolmentSuccess,
-      isError: isEnrolmentError,
-      error: enrolmentError,
+      isLoading: isUpdateLoading,
+      isSuccess: isUpdateSuccess,
+      isError: isUpdateError,
+      error: updateError,
     },
   ] = useUpdateEnrolmentMutation();
   //academic years states
@@ -88,7 +88,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
   }, [formData]);
 
   useEffect(() => {
-    if (isEnrolmentSuccess) {
+    if (isUpdateSuccess) {
       //if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
       setFormData({
         enrolmentId: "",
@@ -109,11 +109,11 @@ const EditEnrolmentForm = ({ enrolment }) => {
       });
       navigate("/students/enrolments/enrolments"); //will navigate here after saving
     }
-  }, [isEnrolmentSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success
+  }, [isUpdateSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success
 
   // For checking whether the form is valid
   const canSave =
-    validity && Object.values(validity).every(Boolean) && !isEnrolmentLoading;
+    validity && Object.values(validity).every(Boolean) && !isUpdateLoading;
 
   // Submit the form
 
@@ -131,25 +131,25 @@ const EditEnrolmentForm = ({ enrolment }) => {
     setShowConfirmation(false);
     try {
       const response = await updateEnrolment(formData).unwrap();
-      // navigate("/students/enrolments/enrolments");
-      if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isUpdateError) {
+        // In case of unexpected response format
+        triggerBanner(updateError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to update enrolment. Please try again.", "error");
-
-      console.error("Error updating enrolment:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
   // Close the modal without saving
@@ -355,7 +355,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
               <button
                 aria-label="save enrolment"
                 type="submit"
-                disabled={!canSave || isEnrolmentLoading}
+                disabled={!canSave || isUpdateLoading}
                 className="save-button"
               >
                 save

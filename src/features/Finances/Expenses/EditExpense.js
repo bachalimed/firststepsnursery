@@ -26,10 +26,10 @@ const EditExpense = () => {
     refetchOnFocus: true, 
     refetchOnMountOrArgChange: true, 
   });
-  console.log('hiiiiiiiiiiii')
+  //console.log('hiiiiiiiiiiii')
   // useEffect(() => {
   //   if (isExpenseSuccess) {
-       console.log('helllllow',expenseToEdit, 'mystu')
+       //console.log('helllllow',expenseToEdit, 'mystu')
   //     //const expenseInit = Object.values(expenseToEdit.entities)
   //     // setExpense(expenseToEdit); // Set expense state to the first object
   //     //console.log('helllllow',expense, 'mystu')

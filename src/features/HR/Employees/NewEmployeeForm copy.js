@@ -379,7 +379,7 @@ const NewEmployeeForm = () => {
         </div>
         <div>
           <label className="form__label" htmlFor="userFirstName">
-            First Name* : <span className="nowrap">[3-20 letters]</span>
+            First Name* : <span className="nowrap">[3-25 letters]</span>
           </label>
           <input
             className={`form__input `}
@@ -405,7 +405,7 @@ const NewEmployeeForm = () => {
         </div>
         <div>
           <label className="form__label" htmlFor="userLastName">
-            Last Name* : <span className="nowrap">[3-20 letters]</span>
+            Last Name* : <span className="nowrap">[3-25 letters]</span>
           </label>
           <input
             className={`form__input `}
@@ -458,7 +458,7 @@ const NewEmployeeForm = () => {
         <div>
           Address
           <label className="form__label" htmlFor="house">
-            House* : <span className="nowrap">[3-20 letters]</span>
+            House* : <span className="nowrap">[3-25 letters]</span>
           </label>
           <input
             className={`form__input `}
@@ -470,7 +470,7 @@ const NewEmployeeForm = () => {
             onChange={onHouseChanged}
           />
           <label className="form__label" htmlFor="street">
-            Street* : <span className="nowrap">[3-20 letters]</span>
+            Street* : <span className="nowrap">[3-25 letters]</span>
           </label>
           <input
             className={`form__input `}
@@ -495,7 +495,7 @@ const NewEmployeeForm = () => {
               onChange={onAreaChanged}
             />
             <label className="form__label" htmlFor="city">
-              City* : <span className="nowrap">[3-20 letters]</span>
+              City* : <span className="nowrap">[3-25 letters]</span>
             </label>
             <input
               className={`form__input `}

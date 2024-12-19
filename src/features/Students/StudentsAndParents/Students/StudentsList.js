@@ -99,26 +99,25 @@ const StudentsList = () => {
     try {
       const response = await deleteStudent({ id: idStudentToDelete });
       setIsDeleteModalOpen(false); // Close the modal
-      //console.log(response,'response')
-
-     if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isDelError) {
+        // In case of unexpected response format
+        triggerBanner(delError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to delete student. Please try again.", "error");
-
-      console.error("Error deleting student:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
 
@@ -224,29 +223,29 @@ const StudentsList = () => {
 
     try {
       const response = await updateStudent(updatedStudentObject); // Save updated student to backend
-      //console.log(response,'response')
-      // console.log(updateError,'updateError')
-     if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isUpdateError) {
+        // In case of unexpected response format
+        triggerBanner(updateError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to update student. Please try again.", "error");
-
-      console.error("Error updating student:", error);
+      triggerBanner(error?.data?.message, "error");
     }
     setIsRegisterModalOpen(false); // Close modal
   };
+  
 
   const column = [
     {
@@ -449,7 +448,7 @@ const StudentsList = () => {
 
   //console.log(filteredStudents, "filteredStudents");
   let content;
-  if (isStudentsLoading)
+  if (isStudentsLoading||isSchoolsLoading)
     content = (
       <>
         <Students />
@@ -467,7 +466,7 @@ const StudentsList = () => {
       </>
     );
   }
-  if (isStudentsSuccess || filteredStudents?.length > 0) {
+  if (isStudentsSuccess &&isSchoolsSuccess) {
     content = (
       <>
         <Students />

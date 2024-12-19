@@ -47,10 +47,10 @@ const NewAdmissionForm = () => {
   const [
     addNewAdmission,
     {
-      isLoading: isAdmissionAddLoading,
-      isSuccess: isAdmissionAddSuccess,
-      isError: isAdmissionAddError,
-      error: admissionAddError,
+      isLoading: isAddLoading,
+      isSuccess: isAddSuccess,
+      isError: isAddError,
+      error: addError,
     },
   ] = useAddNewAdmissionMutation();
   //academic years states
@@ -365,25 +365,25 @@ const NewAdmissionForm = () => {
     setShowConfirmation(false);
     try {
       const response = await addNewAdmission(formData).unwrap();
-      // navigate("/students/admissions/admissions");
-      if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isAddError) {
+        // In case of unexpected response format
+        triggerBanner(addError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to create admission. Please try again.", "error");
-
-      console.error("Error creating admission:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
   // Close the modal without saving
@@ -391,7 +391,7 @@ const NewAdmissionForm = () => {
     setShowConfirmation(false);
   };
   useEffect(() => {
-    if (isAdmissionAddSuccess) {
+    if (isAddSuccess) {
       //if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
       setFormData({
         student: "",
@@ -415,7 +415,7 @@ const NewAdmissionForm = () => {
       });
       navigate("/students/admissions/admissions"); //will navigate here after saving
     }
-  }, [isAdmissionAddSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success
+  }, [isAddSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success
 
   // Function to filter available services based on previous selections
 
@@ -494,7 +494,7 @@ const NewAdmissionForm = () => {
       Object.values(validity).every(Boolean)
     ) &&
     Object.values(primaryValidity).every(Boolean) &&
-    !isAdmissionAddLoading;
+    !isAddLoading;
   const handleCancel = () => {
     navigate("/students/admissions/admissions/");
   };

@@ -11,26 +11,20 @@ import {
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import { useGetServicesByYearQuery } from "../../AppSettings/StudentsSet/NurseryServices/servicesApiSlice";
 import Finances from "../Finances";
-import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
 import { useSelector } from "react-redux";
-import { MdOutlineAddBox } from "react-icons/md";
 import { useEffect, useState } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { ImProfile } from "react-icons/im";
+import { Link ,useNavigate,useOutletContext} from "react-router-dom";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MONTHS } from "../../../config/Months";
 import useAuth from "../../../hooks/useAuth";
-
 import { MdPaid, MdOutlinePaid } from "react-icons/md";
 const InvoicesList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-
+ 
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
 
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -177,7 +171,7 @@ const InvoicesList = () => {
       );
     });
   }
-  console.log(filteredInvoices, "filteredInvoices");
+ // console.log(filteredInvoices, "filteredInvoices");
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
@@ -399,25 +393,34 @@ const InvoicesList = () => {
   );
 
   let content;
-  if (isInvoicesLoading)
+  if (isInvoicesLoading||isServicesLoading)
     content = (
       <>
         <Finances />
         <LoadingStateIcon />
       </>
     );
-  if (isInvoicesError || isServicesError) {
-    content = (
-      <>
-        <Finances />
-        {/* //the filters will be hidden for another selection */}
-        <div className="error-bar">
-          {invoicesError?.data?.message}
-          {servicesError?.data?.message}
-        </div>
-      </>
-    );
+console.log(invoicesError,'invoicesError')
+
+    const { triggerBanner } = useOutletContext(); // Access banner trigger
+// Trigger the banner for errors
+useEffect(() => {
+  if (isInvoicesError) {
+    triggerBanner({
+      type: "error",
+      message: invoicesError?.data?.message || invoicesError?.message|| "Error fetching invoices.",
+    });
   }
+  if (isServicesError) {
+    triggerBanner({
+      type: "error",
+      message: servicesError?.data?.message || invoicesError?.message|| "Error fetching services.",
+    });
+  }
+}, [isInvoicesError, isServicesError, invoicesError, servicesError, triggerBanner]);
+
+
+
 
   if (isInvoicesSuccess && isServicesSuccess) {
     content = (

@@ -46,7 +46,7 @@ const AttendedSchoolsList = () => {
       isLoading: isDelLoading,
       isSuccess: isDelSuccess,
       isError: isDelError,
-      error: delerror,
+      error: delError,
     },
   ] = useDeleteAttendedSchoolMutation();
   const { triggerBanner } = useOutletContext(); // Access banner trigger
@@ -62,29 +62,27 @@ const AttendedSchoolsList = () => {
       const response = await deleteAttendedSchool({
         id: idAttendedSchoolToDelete,
       });
-      setIsDeleteModalOpen(false); // Close the modal
-     if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isDelError) {
+        // In case of unexpected response format
+        triggerBanner(delError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner(
-        "Failed to delete attended School. Please try again.",
-        "error"
-      );
-
-      console.error("Error deleting:", error);
+      triggerBanner(error?.data?.message, "error");
     }
+    setIsDeleteModalOpen(false); // Close the modal
   };
 
   // Function to close the modal without deleting

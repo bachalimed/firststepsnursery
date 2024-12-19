@@ -32,10 +32,10 @@ const NewEnrolmentForm = () => {
   const [
     addNewEnrolment,
     {
-      isEnrolmentLoading,
-      isEnrolmentSuccess,
-      isEnrolmentError,
-      enrolmentError,
+     isLoading:isAddLoading,
+     isSuccess: isAddSuccess,
+      isError:isAddError,
+      error:addError,
     },
   ] = useAddNewEnrolmentMutation();
 
@@ -148,7 +148,7 @@ const NewEnrolmentForm = () => {
   };
 
   useEffect(() => {
-    if (isEnrolmentSuccess) {
+    if (isAddSuccess) {
       // Reset the form data
       setFormData({
         student: "",
@@ -160,11 +160,11 @@ const NewEnrolmentForm = () => {
         enrolmentOperator: "",
         enrolments: [],
       });
-
+   
       // Navigate to the enrolments page
       navigate("/students/enrolments/enrolments/");
     }
-  }, [isEnrolmentSuccess, navigate]);
+  }, [isAddSuccess, navigate]);
 
   console.log(studentServicesList, "studentServicesList");
   // Form Validation using regex
@@ -188,7 +188,7 @@ const NewEnrolmentForm = () => {
       validEnrolmentCreator: OBJECTID_REGEX.test(formData?.enrolmentCreator),
     });
   }, [formData]);
-  const canSave = Object.values(validity).every(Boolean) && !isEnrolmentLoading;
+  const canSave = Object.values(validity).every(Boolean) && !isAddLoading;
 
   // Populate services list when the enrolment month or student changes
   useEffect(() => {
@@ -219,7 +219,7 @@ const NewEnrolmentForm = () => {
     );
     setNoEnrolmentMonthStudentsList(filteredList);
     console.log(noEnrolmentMonthStudentsList, "noEnrolmentMonthStudentsList");
-  }, [formData.student, formData.enrolmentMonth, isEnrolmentSuccess]);
+  }, [formData.student, formData.enrolmentMonth, isAddSuccess]);
 
   // Handle toggling services in the form
   const handleServiceToggle = (serviceId, checked) => {
@@ -281,6 +281,7 @@ const NewEnrolmentForm = () => {
       setShowConfirmation(true);
     }
   };
+  
   // This function handles the confirmed save action
   const handleConfirmSave = async () => {
     // Close the confirmation modal
@@ -288,25 +289,25 @@ const NewEnrolmentForm = () => {
 
     try {
       const response = await addNewEnrolment(formData);
-      navigate("/students/enrolments/enrolments/");
-      if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isAddError) {
+        // In case of unexpected response format
+        triggerBanner(addError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to create enrolment. Please try again.", "error");
-
-      console.error("Error creating enrolement:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
 
@@ -552,7 +553,7 @@ const NewEnrolmentForm = () => {
             <button
               aria-label="save enrolment"
               type="submit"
-              disabled={!canSave || isEnrolmentLoading}
+              disabled={!canSave || isAddLoading}
               className="save-button"
             >
               Save

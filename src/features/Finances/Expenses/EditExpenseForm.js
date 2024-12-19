@@ -100,7 +100,7 @@ const EditExpenseForm = ({ expense }) => {
   let expenseCategoriesList = isExpenseCategoriesSuccess
     ? Object.values(expenseCategories.entities)
     : [];
-  console.log(selectedAcademicYear?.title, "selectedAcademicYear?.title");
+  //console.log(selectedAcademicYear?.title, "selectedAcademicYear?.title");
 
   const [formData, setFormData] = useState({
     id: expense?._id,
@@ -214,26 +214,30 @@ const EditExpenseForm = ({ expense }) => {
 
     try {
       const response = await updateExpense(formData).unwrap();
-      if ((response.data && response.data.message) || response?.message) {
+
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isUpdateError) {
+        // In case of unexpected response format
+        triggerBanner(updateError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to update expense. Please try again.", "error");
-
-      console.error("Error updating expense:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
+
+  
   // Close the modal without saving
   const handleCloseModal = () => {
     setShowConfirmation(false);
@@ -286,8 +290,8 @@ const EditExpenseForm = ({ expense }) => {
     });
   };
 
-  console.log(formData, "formdata");
-  console.log(validity, "validity");
+  //console.log(formData, "formdata");
+  //console.log(validity, "validity");
   let content;
   if (isExpenseCategoriesLoading || isPayeesLoading || isServicesLoading) {
     content = (
@@ -646,7 +650,6 @@ const EditExpenseForm = ({ expense }) => {
             <button
               aria-label="cancel expense"
               type="button"
-            
               className="cancel-button"
               onClick={() => navigate("/finances/expenses/expensesList/")}
             >

@@ -32,7 +32,7 @@ const EditClassroomForm = ({ classroom }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [updateClassroom, { isLoading, isError, error: apiError, isSuccess }] =
+  const [updateClassroom, { isLoading:isUpdateLoading, isError:isUpdateError, error: updateError, isSuccess:isUpdateSuccess }] =
     useUpdateClassroomMutation();
 
   // Validate inputs using regex patterns
@@ -53,7 +53,7 @@ const EditClassroomForm = ({ classroom }) => {
 
   // Redirect on success
   useEffect(() => {
-    if (isSuccess) {
+    if (isUpdateSuccess) {
       setFormData({
         classroomNumber: "",
         classroomLabel: "",
@@ -65,10 +65,10 @@ const EditClassroomForm = ({ classroom }) => {
       setError("");
       navigate("/settings/academicsSet/classrooms/");
     }
-  }, [isSuccess, navigate]);
+  }, [isUpdateSuccess, navigate]);
 
   // Check if form is ready for submission
-  const canSubmit = Object.values(validity).every(Boolean) && !isLoading;
+  const canSubmit = Object.values(validity).every(Boolean) && !isUpdateLoading;
 
   const { triggerBanner } = useOutletContext(); // Access banner trigger
 
@@ -86,25 +86,25 @@ const EditClassroomForm = ({ classroom }) => {
 
     try {
       const response = await updateClassroom(formData); //.unwrap();
-
-      if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isUpdateError) {
+        // In case of unexpected response format
+        triggerBanner(updateError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to update classroom. Please try again.", "error");
-
-      console.error("Error updating classroom:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
   // Close the modal without saving
@@ -157,7 +157,7 @@ const EditClassroomForm = ({ classroom }) => {
                 <input
                   aria-label="classroom label"
                   aria-invalid={!validity.validClassroomLabel}
-                  placeholder="[3-20 letters]"
+                  placeholder="[3-25 letters]"
                   type="text"
                   id="classroomLabel"
                   name="classroomLabel"
@@ -231,10 +231,10 @@ const EditClassroomForm = ({ classroom }) => {
             <button
               aria-label="submit classroom"
               type="submit"
-              disabled={!canSubmit || isLoading}
+              disabled={!canSubmit || isUpdateLoading}
               className="save-button"
             >
-              {isLoading ? "Adding..." : "Add Classroom"}
+              {isUpdateLoading ? "Adding..." : "Add Classroom"}
             </button>
           </div>
         </div>

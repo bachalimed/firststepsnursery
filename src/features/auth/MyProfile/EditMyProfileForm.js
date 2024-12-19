@@ -23,8 +23,15 @@ const EditMyProfileForm = ({ user }) => {
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
   //initialise the mutation to be used later
-  const [updateUser, { isLoading, isSuccess, isError, error }] =
-    useUpdateUserMutation();
+  const [
+    updateUser,
+    {
+      isLoading: isUpdateLoading,
+      isSuccess: isUpdateSuccess,
+      isError: isUpdateError,
+      error: updateError,
+    },
+  ] = useUpdateUserMutation();
 
   //confirmation Modal states
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -89,7 +96,7 @@ const EditMyProfileForm = ({ user }) => {
   }, [formData]);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isUpdateSuccess) {
       setFormData({
         username: "",
         password: undefined,
@@ -117,7 +124,7 @@ const EditMyProfileForm = ({ user }) => {
       });
       navigate(`/myProfile/myDetails/${user?.id}`);
     }
-  }, [isSuccess, navigate]);
+  }, [isUpdateSuccess, navigate]);
 
   // Handle form field changes generically
   const handleInputChange = (e) => {
@@ -149,7 +156,7 @@ const EditMyProfileForm = ({ user }) => {
   };
 
   //to check if we can save before onsave, if every one is true, and also if we are not loading status
-  const canSave = Object.values(validity).every(Boolean) && !isLoading;
+  const canSave = Object.values(validity).every(Boolean) && !isUpdateLoading;
 
   const { triggerBanner } = useOutletContext(); // Access banner trigger
 
@@ -168,25 +175,25 @@ const EditMyProfileForm = ({ user }) => {
 
     try {
       const response = await updateUser({ formData });
-      console.log(response, "response");
-     if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isUpdateError) {
+        // In case of unexpected response format
+        triggerBanner(updateError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to update user. Please try again.", "error");
-
-      console.error("Error updating user:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
 
@@ -204,7 +211,7 @@ const EditMyProfileForm = ({ user }) => {
       <MyProfile />
 
       <form onSubmit={onSaveUserClicked} className="form-container">
-        <h2  className="formTitle ">
+        <h2 className="formTitle ">
           Edit User{" "}
           {`${formData.userFullName.userFirstName} ${formData.userFullName.userMiddleName} ${formData.userFullName.userLastName}`}
         </h2>
@@ -213,7 +220,7 @@ const EditMyProfileForm = ({ user }) => {
           <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label htmlFor=""  className="formInputLabel">
+                <label htmlFor="" className="formInputLabel">
                   UserName
                   {!validity.validUsername && (
                     <span className="text-red-600">*</span>
@@ -241,7 +248,7 @@ const EditMyProfileForm = ({ user }) => {
                 </label>
               </div>
               <div>
-                <label htmlFor=""  className="formInputLabel">
+                <label htmlFor="" className="formInputLabel">
                   Password
                   {!validity.validPassword && (
                     <span className="text-red-600">*</span>
@@ -270,14 +277,14 @@ const EditMyProfileForm = ({ user }) => {
               </div>
             </div>
             <div>
-              <label htmlFor=""  className="formInputLabel">
+              <label htmlFor="" className="formInputLabel">
                 First Name
                 {!validity.validFirstName && (
                   <span className="text-red-600">*</span>
                 )}
                 <input
                   aria-invalid={!validity.validFirstName}
-                  placeholder="[3-20 letters]"
+                  placeholder="[3-25 letters]"
                   aria-label="first name"
                   type="text"
                   name="userFirstName"
@@ -302,10 +309,10 @@ const EditMyProfileForm = ({ user }) => {
             </div>
             {/* Middle Name */}
             <div>
-              <label htmlFor=""  className="formInputLabel">
+              <label htmlFor="" className="formInputLabel">
                 Middle Name
                 <input
-                  placeholder="[3-20 letters]"
+                  placeholder="[3-25 letters]"
                   aria-label="middle name"
                   type="text"
                   name="userMiddleName"
@@ -326,7 +333,7 @@ const EditMyProfileForm = ({ user }) => {
 
             {/* Last Name */}
             <div>
-              <label htmlFor=""  className="formInputLabel">
+              <label htmlFor="" className="formInputLabel">
                 Last Name{" "}
                 {!validity.validLastName && (
                   <span className="text-red-600">*</span>
@@ -334,7 +341,7 @@ const EditMyProfileForm = ({ user }) => {
                 <input
                   aria-invalid={!validity.validLastName}
                   aria-label="last name"
-                  placeholder="[3-20 letters]"
+                  placeholder="[3-25 letters]"
                   type="text"
                   name="userLastName"
                   value={formData.userFullName.userLastName}
@@ -359,10 +366,7 @@ const EditMyProfileForm = ({ user }) => {
 
             {/* Date of Birth */}
             <div>
-              <label htmlFor=""
-                 className="formInputLabel"
-                htmlFor="userDob"
-              >
+              <label htmlFor="" className="formInputLabel" htmlFor="userDob">
                 Date of Birth{" "}
                 {!validity.validUserDob && (
                   <span className="text-red-600">*</span>
@@ -386,7 +390,7 @@ const EditMyProfileForm = ({ user }) => {
             {/* Sex Selection */}
 
             <div>
-              <label htmlFor=""  className="formInputLabel">
+              <label htmlFor="" className="formInputLabel">
                 Sex{" "}
                 {!validity.validUserSex && (
                   <span className="text-red-600">*</span>
@@ -451,7 +455,7 @@ const EditMyProfileForm = ({ user }) => {
           {/* Contact Information */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor=""  className="formInputLabel">
+              <label htmlFor="" className="formInputLabel">
                 Primary Phone{" "}
                 {!validity.validPrimaryPhone && (
                   <span className="text-red-600">*</span>
@@ -483,7 +487,7 @@ const EditMyProfileForm = ({ user }) => {
             </div>
 
             <div>
-              <label htmlFor=""  className="formInputLabel">
+              <label htmlFor="" className="formInputLabel">
                 Secondary Phone
                 <input
                   placeholder="[6-15 digits]"
@@ -507,7 +511,7 @@ const EditMyProfileForm = ({ user }) => {
           </div>
           {/* Email */}
           <div>
-            <label htmlFor=""  className="formInputLabel">
+            <label htmlFor="" className="formInputLabel">
               Email
               <input
                 placeholder="[email@address.com]"
@@ -531,14 +535,14 @@ const EditMyProfileForm = ({ user }) => {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor=""  className="formInputLabel">
+              <label htmlFor="" className="formInputLabel">
                 House{" "}
                 {!validity.validHouse && (
                   <span className="text-red-600">*</span>
                 )}
                 <input
                   aria-invalid={!validity.validHouse}
-                  placeholder="[3-20 letters]"
+                  placeholder="[3-25 letters]"
                   aria-label="house number"
                   type="text"
                   name="house"
@@ -560,7 +564,7 @@ const EditMyProfileForm = ({ user }) => {
             </div>
 
             <div>
-              <label htmlFor=""  className="formInputLabel">
+              <label htmlFor="" className="formInputLabel">
                 Street{" "}
                 {!validity.validStreet && (
                   <span className="text-red-600">*</span>
@@ -568,7 +572,7 @@ const EditMyProfileForm = ({ user }) => {
                 <input
                   aria-invalid={!validity.validStreet}
                   aria-label="street name"
-                  placeholder="[3-20 letters]"
+                  placeholder="[3-25 letters]"
                   type="text"
                   name="street"
                   value={formData.userAddress.street}
@@ -589,10 +593,10 @@ const EditMyProfileForm = ({ user }) => {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2">
-                <label htmlFor=""  className="formInputLabel">
+                <label htmlFor="" className="formInputLabel">
                   Area
                   <input
-                    placeholder="[3-20 letters]"
+                    placeholder="[3-25 letters]"
                     aria-label="area"
                     type="text"
                     name="area"
@@ -611,10 +615,10 @@ const EditMyProfileForm = ({ user }) => {
                 </label>
               </div>
               <div>
-                <label htmlFor=""  className="formInputLabel">
+                <label htmlFor="" className="formInputLabel">
                   Post Code
                   <input
-                    placeholder="[3-20 letters]"
+                    placeholder="[3-25 letters]"
                     aria-label="post code"
                     type="text"
                     name="postCode"
@@ -635,12 +639,12 @@ const EditMyProfileForm = ({ user }) => {
             </div>
 
             <div>
-              <label htmlFor=""  className="formInputLabel">
+              <label htmlFor="" className="formInputLabel">
                 City{" "}
                 {!validity.validCity && <span className="text-red-600">*</span>}
                 <input
                   aria-invalid={!validity.validCity}
-                  placeholder="[3-20 letters]"
+                  placeholder="[3-25 letters]"
                   type="text"
                   name="city"
                   value={formData.userAddress.city}
@@ -666,7 +670,7 @@ const EditMyProfileForm = ({ user }) => {
           <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
             {/* Family ID Input */}
             <div>
-              <label htmlFor=""  className="formInputLabel">
+              <label htmlFor="" className="formInputLabel">
                 Family ID
                 <input
                   aria-label="family id"
@@ -682,7 +686,7 @@ const EditMyProfileForm = ({ user }) => {
 
             {/* Employee ID Input */}
             <div>
-              <label htmlFor=""  className="formInputLabel">
+              <label htmlFor="" className="formInputLabel">
                 Employee ID
                 <input
                   aria-label="employee id"
@@ -698,7 +702,7 @@ const EditMyProfileForm = ({ user }) => {
 
             {/* User Is Active Checkbox */}
             <div>
-              <label htmlFor=""  className="formInputLabel">
+              <label htmlFor="" className="formInputLabel">
                 User Is Active
                 <input
                   aria-label="user is active"
@@ -712,7 +716,7 @@ const EditMyProfileForm = ({ user }) => {
             </div>
             {/* User role selection */}
             <div>
-              <label htmlFor=""  className="formInputLabel">
+              <label htmlFor="" className="formInputLabel">
                 User Roles
                 <div className="flex flex-wrap">
                   {Object.keys(ROLES).map((role) => (
@@ -737,7 +741,7 @@ const EditMyProfileForm = ({ user }) => {
 
             {/* User action selection */}
             <div>
-              <label htmlFor=""  className="formInputLabel">
+              <label htmlFor="" className="formInputLabel">
                 Allowed Actions
                 <div className="flex flex-wrap">
                   {Object.keys(ACTIONS).map((action) => (
@@ -777,7 +781,7 @@ const EditMyProfileForm = ({ user }) => {
             type="submit"
             title="Save"
             onClick={onSaveUserClicked}
-            disabled={!canSave || isLoading}
+            disabled={!canSave || isUpdateLoading}
           >
             Save Changes
           </button>

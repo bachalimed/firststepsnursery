@@ -27,7 +27,7 @@ const NewAttendedSchoolForm = () => {
   // Redux mutation for adding the attended school
   const [
     addNewAttendedSchool,
-    { isLoading, isError, error: apiError, isSuccess },
+    { isLoading:isAddLoading, isError:isAddError, error:addError, isSuccess:isAddSuccess },
   ] = useAddNewAttendedSchoolMutation();
   //confirmation Modal states
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -43,7 +43,7 @@ const NewAttendedSchoolForm = () => {
 
   // Clear form and errors on success
   useEffect(() => {
-    if (isSuccess) {
+    if (isAddSuccess) {
       setFormData({
         schoolName: "",
         schoolCity: "",
@@ -53,10 +53,10 @@ const NewAttendedSchoolForm = () => {
       setError("");
       navigate("/settings/academicsSet/attendedSchools/");
     }
-  }, [isSuccess, navigate]);
+  }, [isAddSuccess, navigate]);
 
   // Check if all fields are valid and enable the submit button
-  const canSubmit = Object.values(validity).every(Boolean) && !isLoading;
+  const canSubmit = Object.values(validity).every(Boolean) && !isAddLoading;
 
   const { triggerBanner } = useOutletContext(); // Access banner trigger
 
@@ -80,25 +80,25 @@ const NewAttendedSchoolForm = () => {
 
     try {
       const response = await addNewAttendedSchool(formData).unwrap();
-
-      if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isAddError) {
+        // In case of unexpected response format
+        triggerBanner(addError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to create school. Please try again.", "error");
-
-      console.error("Error creating school:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
   // Close the modal without saving
@@ -154,7 +154,7 @@ const NewAttendedSchoolForm = () => {
                 <input
                   aria-label="school city"
                   aria-invalid={!validity.validSchoolCity}
-                  placeholder="[3-20 letters]"
+                  placeholder="[3-25 letters]"
                   type="text"
                   id="schoolCity"
                   name="schoolCity"
@@ -213,7 +213,7 @@ const NewAttendedSchoolForm = () => {
           >
             Cancel
           </button>
-          <button type="submit" disabled={!canSubmit||isLoading} className="save-button">
+          <button type="submit" disabled={!canSubmit||isAddLoading} className="save-button">
             Save
           </button>
         </div>

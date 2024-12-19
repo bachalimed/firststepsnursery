@@ -26,27 +26,27 @@ const EditExpenseCategoryForm = ({ expenseCategory }) => {
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-  const [updateExpenseCategory, { isLoading, isSuccess, isError, error }] =
+  const [updateExpenseCategory, { isLoading:isUpdateLoading, isSuccess:isUpdateSuccess, isError:isUpdateError, error:updateError }] =
     useUpdateExpenseCategoryMutation();
 
-  const {
-    data: services, //the data is renamed services
-    isLoading: isServicesLoading,
-    isSuccess: isServicesSuccess,
-    isError: isServicesError,
-    error: servicesError,
-  } = useGetServicesByYearQuery(
-    {
-      selectedYear: selectedAcademicYear?.title,
-      endpointName: "EditExpenseCategoryForm",
-    } || {},
-    {
-      refetchOnFocus: true,
-      refetchOnMountOrArgChange: true,
-    }
-  );
+  // const {
+  //   data: services, //the data is renamed services
+  //   isLoading: isServicesLoading,
+  //   isSuccess: isServicesSuccess,
+  //   isError: isServicesError,
+  //   error: servicesError,
+  // } = useGetServicesByYearQuery(
+  //   {
+  //     selectedYear: selectedAcademicYear?.title,
+  //     endpointName: "EditExpenseCategoryForm",
+  //   } || {},
+  //   {
+  //     refetchOnFocus: true,
+  //     refetchOnMountOrArgChange: true,
+  //   }
+  // );
 
-  let servicesList = isServicesSuccess ? Object.values(services.entities) : [];
+  // let servicesList = isServicesSuccess ? Object.values(services.entities) : [];
 
   //confirmation Modal states
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -80,7 +80,7 @@ const EditExpenseCategoryForm = ({ expenseCategory }) => {
   }, [formData]);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isUpdateSuccess) {
       setFormData({
         id: "",
         expenseCategoryLabel: "",
@@ -93,7 +93,7 @@ const EditExpenseCategoryForm = ({ expenseCategory }) => {
       });
       navigate("/settings/financesSet/expenseCategoriesList/");
     }
-  }, [isSuccess, navigate]);
+  }, [isUpdateSuccess, navigate]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -131,7 +131,7 @@ const EditExpenseCategoryForm = ({ expenseCategory }) => {
     }));
   };
 
-  const canSave = Object.values(validity).every(Boolean) && !isLoading;
+  const canSave = Object.values(validity).every(Boolean) && !isUpdateLoading;
 
   const onSaveExpenseCategoryClicked = async (e) => {
     e.preventDefault();
@@ -148,25 +148,25 @@ const EditExpenseCategoryForm = ({ expenseCategory }) => {
 
     try {
       const response = await updateExpenseCategory(formData);
-      console.log(response, "response");
-      if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isUpdateError) {
+        // In case of unexpected response format
+        triggerBanner(updateError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to update expense. Please try again.", "error");
-
-      console.error("Error updating expense:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
 
@@ -177,17 +177,7 @@ const EditExpenseCategoryForm = ({ expenseCategory }) => {
   console.log(validity, "valisty");
 
   console.log(formData, "formData");
-  let content;
-  if (isServicesLoading) {
-    content = (
-      <>
-        <FinancesSet />
-        <LoadingStateIcon />
-      </>
-    );
-  }
-  if (isServicesSuccess) {
-    content = (
+  return  (
       <>
         <FinancesSet />
 
@@ -238,7 +228,7 @@ const EditExpenseCategoryForm = ({ expenseCategory }) => {
                 <input
                   aria-label="expense category"
                   aria-invalid={!validity.validExpenseCategoryLabel}
-                  placeholder="[3 - 20 letters]"
+                  placeholder="[3-25 letters]"
                   type="text"
                   id="expenseCategoryLabel"
                   name="expenseCategoryLabel"
@@ -351,7 +341,7 @@ const EditExpenseCategoryForm = ({ expenseCategory }) => {
               aria-label="submit expense category"
               type="submit"
               className="save-button"
-              disabled={!canSave || isLoading}
+              disabled={!canSave || isUpdateLoading}
             >
               Save
             </button>
@@ -369,8 +359,7 @@ const EditExpenseCategoryForm = ({ expenseCategory }) => {
         />
       </>
     );
-  }
-  return content;
+  
 };
 
 export default EditExpenseCategoryForm;

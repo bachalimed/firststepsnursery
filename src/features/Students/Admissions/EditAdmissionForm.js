@@ -48,10 +48,10 @@ const EditAdmissionForm = ({ admission }) => {
   const [
     updateAdmission,
     {
-      isLoading: isAdmissionLoading,
-      isSuccess: isAdmissionSuccess,
-      isError: isAdmissionError,
-      error: admissionError,
+      isLoading: isUpdateLoading,
+      isSuccess: isUpdateSuccess,
+      isError: isUpdateError,
+      error: updateError,
     },
   ] = useUpdateAdmissionMutation();
   //academic years states
@@ -249,7 +249,7 @@ const EditAdmissionForm = ({ admission }) => {
   };
 
   useEffect(() => {
-    if (isAdmissionSuccess) {
+    if (isUpdateSuccess) {
       //if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
       setFormData({
         admissionId: "",
@@ -274,7 +274,7 @@ const EditAdmissionForm = ({ admission }) => {
       });
       navigate("/students/admissions/admissions"); //will navigate here after saving
     }
-  }, [isAdmissionSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success
+  }, [isUpdateSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success
 
   // Function to filter available services based on previous selections
 
@@ -379,7 +379,7 @@ const EditAdmissionForm = ({ admission }) => {
       (validity) => validity && Object.values(validity).every(Boolean)
     ) &&
     Object.values(primaryValidity).every(Boolean) &&
-    !isAdmissionLoading;
+    !isUpdateLoading;
   const { triggerBanner } = useOutletContext(); // Access banner trigger
   // Submit the form
 
@@ -395,26 +395,25 @@ const EditAdmissionForm = ({ admission }) => {
     setShowConfirmation(false);
     try {
       const response = await updateAdmission(formData).unwrap();
-      // navigate("/students/admissions/admissions");
-      console.log(response, "response");
-      if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isUpdateError) {
+        // In case of unexpected response format
+        triggerBanner(updateError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to update admission. Please try again.", "error");
-
-      console.error("Error updating admission:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
   // Close the modal without saving
@@ -755,7 +754,7 @@ const EditAdmissionForm = ({ admission }) => {
               <button
                 type="submit"
                 aria-label="submit admission"
-                disabled={!canSave || isAdmissionLoading}
+                disabled={!canSave || isUpdateLoading}
                 className={"save-button"}
               >
                 save

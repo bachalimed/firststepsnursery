@@ -142,7 +142,7 @@ const FamiliesList = () => {
 
   const [
     deleteFamily,
-    { isSuccess: isDelSuccess, isError: isDelError, error: delerror },
+    { isSuccess: isDelSuccess, isError: isDelError, error: delError },
   ] = useDeleteFamilyMutation();
 
   const handleSearch = (e) => {
@@ -168,24 +168,25 @@ const FamiliesList = () => {
     try {
       const response = await deleteFamily({ id: idFamilyToDelete });
       setIsDeleteModalOpen(false); // Close the modal
-     if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isDelError) {
+        // In case of unexpected response format
+        triggerBanner(delError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to delete family. Please try again.", "error");
-
-      console.error("Error deleting family:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
   // Function to close the modal without deleting

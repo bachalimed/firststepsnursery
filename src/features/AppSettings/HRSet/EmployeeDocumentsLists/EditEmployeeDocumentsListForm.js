@@ -31,10 +31,10 @@ const EditEmployeeDocumentsListForm = ({ listToEdit }) => {
     updateEmployeeDocumentsList,
     {
       //an object that calls the status when we execute the newUserForm function
-      isLoading: isDocumentsLoading,
-      isSuccess: isDocumentsSuccess,
-      isError: isDocumentsError,
-      error: documentsError,
+      isLoading: isUpdateLoading,
+      isSuccess: isUpdateSuccess,
+      isError: isUpdateError,
+      error: updateError,
     },
   ] = useUpdateEmployeeDocumentsListMutation(); //it will not execute the mutation nownow but when called
 
@@ -43,12 +43,12 @@ const EditEmployeeDocumentsListForm = ({ listToEdit }) => {
   }, [documentTitle]);
 
   useEffect(() => {
-    if (isDocumentsSuccess) {
+    if (isUpdateSuccess) {
       setEmployeeDocumentsList([]);
       setDocumentsAcademicYear("");
       navigate("/settings/HRSet/EmployeeDocumentsListsList/"); //will navigate here after saving
     }
-  }, [isDocumentsSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success
+  }, [isUpdateSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success
 
   // Ensure that the first three documents cannot be removed
   const isRemovable = (index) => index >= 1;
@@ -81,7 +81,7 @@ const EditEmployeeDocumentsListForm = ({ listToEdit }) => {
     [
       documentsAcademicYear,
       ...employeeDocumentsList.map((entry) => entry.documentTitle),
-    ].every(Boolean) && !isDocumentsLoading;
+    ].every(Boolean) && !isUpdateLoading;
 
   const onSaveEmployeeDocumentsListClicked = async (e) => {
     e.preventDefault();
@@ -99,27 +99,25 @@ const EditEmployeeDocumentsListForm = ({ listToEdit }) => {
         documentsList: employeeDocumentsList,
         documentsAcademicYear,
       });
-      if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isUpdateError) {
+        // In case of unexpected response format
+        triggerBanner(updateError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner(
-        "Failed to update student document. Please try again.",
-        "error"
-      );
-
-      console.error("Error updating student document:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
 
@@ -172,7 +170,7 @@ const EditEmployeeDocumentsListForm = ({ listToEdit }) => {
                   <input
                     aria-invalid={!validDocumentTitle}
                     aria-label="document title"
-                    placeholder="[3-20 characters]"
+                    placeholder="[3-25 characters]"
                     type="text"
                     id={`${entry.documentTitle}-${index}`}
                     name={`${entry.documentTitle}-${index}`}
@@ -248,7 +246,7 @@ const EditEmployeeDocumentsListForm = ({ listToEdit }) => {
             aria-label="submit list"
             className="save-button"
             type="submit"
-            disabled={!canSave || isDocumentsLoading}
+            disabled={!canSave || isUpdateLoading}
           >
             Save
           </button>

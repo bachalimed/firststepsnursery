@@ -220,25 +220,25 @@ const EditSectionForm = ({ section }) => {
 
     try {
       const response = await updateSection(formData);
-      console.log(response, "response");
-      if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isUpdateSectionError) {
+        // In case of unexpected response format
+        triggerBanner(updateSectionError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Operation failed. Please try again.", "error");
-
-      console.error("Error saving:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
 
@@ -287,7 +287,7 @@ const EditSectionForm = ({ section }) => {
                     value={formData.sectionLabel}
                     onChange={handleInputChange}
                     // className="mt-1 block w-full border className="formInputLabel"-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="[3-20 letters]"
+                    placeholder="[3-25 letters]"
                     required
                     className={`formInputText`}
                   />

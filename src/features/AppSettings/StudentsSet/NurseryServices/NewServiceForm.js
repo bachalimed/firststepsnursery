@@ -23,7 +23,7 @@ const NewServiceForm = () => {
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
   //console.log(selectedAcademicYear?.title, "selectedAcademicYear");
-  const [addNewService, { isLoading, isSuccess, isError, error }] =
+  const [addNewService, { isLoading:isAddLoading, isSuccess:isAddSuccess, isError:isAddError, error:addError }] =
     useAddNewServiceMutation();
 
   // Consolidated form state
@@ -68,7 +68,7 @@ const NewServiceForm = () => {
 
   // If the service is added successfully, reset the form and navigate
   useEffect(() => {
-    if (isSuccess) {
+    if (isAddSuccess) {
       setFormData({
         serviceType: "",
         serviceYear: "",
@@ -82,7 +82,7 @@ const NewServiceForm = () => {
       });
       navigate("/settings/studentsSet/services");
     }
-  }, [isSuccess, navigate]);
+  }, [isAddSuccess, navigate]);
 
   const { triggerBanner } = useOutletContext(); // Access banner trigger
   // Handle input changes
@@ -108,7 +108,7 @@ const NewServiceForm = () => {
   };
 
   // Check if the form can be submitted
-  const canSave = Object.values(validity).every(Boolean) && !isLoading;
+  const canSave = Object.values(validity).every(Boolean) && !isAddLoading;
   //console.log(formData, "formData");
   // Handle form submission
   const onSaveServiceClicked = async (e) => {
@@ -125,24 +125,25 @@ const NewServiceForm = () => {
 
     try {
       const response = await addNewService(formData);
-      if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isAddError) {
+        // In case of unexpected response format
+        triggerBanner(addError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to create service. Please try again.", "error");
-
-      console.error("Error creating service:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
   // Close the modal without saving
@@ -298,7 +299,7 @@ const NewServiceForm = () => {
           <button
             aria-label="submit new service"
             type="submit"
-            disabled={!canSave || isLoading}
+            disabled={!canSave || isAddLoading}
             className={`save-button `}
           >
             Save

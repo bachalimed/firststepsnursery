@@ -6,13 +6,13 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "../../../../hooks/useAuth";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 import { useOutletContext } from "react-router-dom";
-import {TITLE_REGEX, NAME_REGEX} from'../../../../config/REGEX'
+import { TITLE_REGEX, NAME_REGEX } from "../../../../config/REGEX";
 
 const EditStudentDocumentsListForm = ({ listToEdit }) => {
   //console.log(listToEdit.documentsAcademicYear,'lllllyear')
   const navigate = useNavigate();
   const { _id } = listToEdit;
-//console.log(listToEdit,'listToEdit in form')
+  //console.log(listToEdit,'listToEdit in form')
   const [documentsAcademicYear, setDocumentsAcademicYear] = useState(
     listToEdit?.documentsAcademicYear
   );
@@ -30,10 +30,10 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
     updateStudentDocumentsList,
     {
       //an object that calls the status when we execute the newUserForm function
-      isLoading,
-      isSuccess,
-      isError,
-      error,
+      isLoading: isUpdateLoading,
+      isSuccess: isUpdateSuccess,
+      isError: isUpdateError,
+      error: updateError,
     },
   ] = useUpdateStudentDocumentsListMutation(); //it will not execute the mutation nownow but when called
 
@@ -46,16 +46,16 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
   }, [studentDocumentsList]);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isUpdateSuccess) {
       setStudentDocumentsList([]);
       setDocumentsAcademicYear("");
       setDocumentTitle("");
       navigate("/settings/studentsSet/studentDocumentsListsList"); //will navigate here after saving
     }
-  }, [isSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success
+  }, [isUpdateSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success
 
   // Ensure that the first three documents cannot be removed
-  const isRemovable = (index) => index >= 2;//the first threea reprpedefined(stud photo, father photo, mother photo)
+  const isRemovable = (index) => index >= 2; //the first threea reprpedefined(stud photo, father photo, mother photo)
 
   // Handler to update an entry field
   const handleFieldChange = (index, field, value) => {
@@ -91,7 +91,7 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
     [
       documentsAcademicYear,
       ...studentDocumentsList.map((entry) => entry.documentTitle),
-    ].every(Boolean) && !isLoading;
+    ].every(Boolean) && !isUpdateLoading;
 
   const onSaveStudentDocumentsListClicked = async (e) => {
     e.preventDefault();
@@ -108,28 +108,25 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
         documentsList: studentDocumentsList,
         documentsAcademicYear,
       });
-      console.log(response, "response");
-      if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isUpdateError) {
+        // In case of unexpected response format
+        triggerBanner(updateError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner(
-        "Failed to update student document. Please try again.",
-        "error"
-      );
-
-      console.error("Error updating student document:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
 
@@ -142,7 +139,7 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
 
   const content = (
     <>
-      <StudentsSet/>
+      <StudentsSet />
 
       <form
         className="form-container"
@@ -156,7 +153,6 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
           <div className="formSection">
             {studentDocumentsList.map((entry, index) => (
               <div key={index} className="formSection">
-                
                 <label
                   htmlFor={`${entry.documentTitle}-${index}`}
                   className="formInputLabel"
@@ -168,7 +164,7 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
                   <input
                     aria-invalid={!validDocumentTitle}
                     aria-label="document title"
-                    placeholder="[3-20 characters]"
+                    placeholder="[3-25 characters]"
                     type="text"
                     id={`${entry.documentTitle}-${index}`}
                     name={`${entry.documentTitle}-${index}`}
@@ -237,7 +233,9 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
           <button
             aria-label="cancel edit list"
             className="cancel-button"
-            onClick={()=>navigate('/settings/studentsSet/studentDocumentsListsList/')}
+            onClick={() =>
+              navigate("/settings/studentsSet/studentDocumentsListsList/")
+            }
           >
             Cancel
           </button>
@@ -245,7 +243,7 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
             aria-label="submit list"
             className="save-button"
             type="submit"
-            disabled={!canSave || isLoading}
+            disabled={!canSave || isUpdateLoading}
           >
             Save
           </button>

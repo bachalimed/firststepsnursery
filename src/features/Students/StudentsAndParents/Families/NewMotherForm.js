@@ -226,10 +226,10 @@ export default function NewMotherForm() {
               Mother First Name{" "}{!validUserFirstName && (
                 <span className="text-red-600">*</span>
               )}
-              <span className="text-sm text-gray-500">[3-20 letters]</span>
+              <span className="text-sm text-gray-500">[3-25 letters]</span>
             </label>
             <input
-              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-sky-700 focus:border-sky-700"
+               className={`formInputText`}
               id="userFirstName"
               name="userFirstName"
               type="text"
@@ -248,7 +248,7 @@ export default function NewMotherForm() {
               Mother Middle Name
             </label>
             <input
-              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-sky-700 focus:border-sky-700"
+               className={`formInputText`}
               id="userMiddleName"
               name="userMiddleName"
               type="text"
@@ -266,10 +266,10 @@ export default function NewMotherForm() {
               Mother Last Name{" "}{!validUserLastName && (
                 <span className="text-red-600">*</span>
               )}
-              <span className="text-sm text-gray-500">[3-20 letters]</span>
+              <span className="text-sm text-gray-500">[3-25 letters]</span>
             </label>
             <input
-              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-sky-700 focus:border-sky-700"
+               className={`formInputText`}
               id="userLastName"
               name="userLastName"
               type="text"
@@ -288,7 +288,7 @@ export default function NewMotherForm() {
               <span className="text-sm text-gray-500">[dd/mm/yyyy]</span>
             </label>
             <input
-              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-sky-700 focus:border-sky-700"
+               className={`formInputText`}
               id="userDob"
               name="userDob"
               type="date"
@@ -305,10 +305,10 @@ export default function NewMotherForm() {
               House{" "}{!validHouse && (
                 <span className="text-red-600">*</span>
               )}
-              <span className="text-sm text-gray-500">[3-20 letters]</span>
+              <span className="text-sm text-gray-500">[3-25 letters]</span>
             </label>
             <input
-              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-sky-700 focus:border-sky-700"
+               className={`formInputText`}
               id="house"
               name="house"
               type="text"
@@ -324,10 +324,10 @@ export default function NewMotherForm() {
               Street{" "}{!validStreet && (
                 <span className="text-red-600">*</span>
               )}
-              <span className="text-sm text-gray-500">[3-20 letters]</span>
+              <span className="text-sm text-gray-500">[3-25 letters]</span>
             </label>
             <input
-              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-sky-700 focus:border-sky-700"
+               className={`formInputText`}
               id="street"
               name="street"
               type="text"
@@ -343,7 +343,7 @@ export default function NewMotherForm() {
               Area
             </label>
             <input
-              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-sky-700 focus:border-sky-700"
+               className={`formInputText`}
               id="area"
               name="area"
               type="text"
@@ -358,10 +358,10 @@ export default function NewMotherForm() {
               City{" "}{!validCity && (
                 <span className="text-red-600">*</span>
               )}
-              <span className="text-sm text-gray-500">[3-20 letters]</span>
+              <span className="text-sm text-gray-500">[3-25 letters]</span>
             </label>
             <input
-              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-sky-700 focus:border-sky-700"
+               className={`formInputText`}
               id="city"
               name="city"
               type="text"
@@ -377,7 +377,7 @@ export default function NewMotherForm() {
               Post Code
             </label>
             <input
-              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-sky-700 focus:border-sky-700"
+               className={`formInputText`}
               id="postCode"
               name="postCode"
               type="text"
@@ -398,7 +398,7 @@ export default function NewMotherForm() {
               <span className="text-sm text-gray-500">[6 to 15 digits]</span>
             </label>
             <input
-              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-sky-700 focus:border-sky-700"
+               className={`formInputText`}
               id="primaryPhone"
               name="primaryPhone"
               type="tel"
@@ -417,7 +417,7 @@ export default function NewMotherForm() {
               Secondary Phone
             </label>
             <input
-              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-sky-700 focus:border-sky-700"
+               className={`formInputText`}
               id="secondaryPhone"
               name="secondaryPhone"
               type="tel"
@@ -432,7 +432,7 @@ export default function NewMotherForm() {
               Email
             </label>
             <input
-              className="form__input w-full border-gray-300 rounded-lg shadow-sm focus:ring-sky-700 focus:border-sky-700"
+               className={`formInputText`}
               id="email"
               name="email"
               type="email"

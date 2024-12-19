@@ -26,7 +26,7 @@ const NewPayeeForm = () => {
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
 
-  const [addNewPayee, { isLoading, isSuccess, isError, error }] =
+  const [addNewPayee, { isLoading:isAddLoading, isSuccess:isAddSuccess, isError:isAddError, error:addError }] =
     useAddNewPayeeMutation();
 
   //confirmation Modal states
@@ -71,7 +71,7 @@ const NewPayeeForm = () => {
   }, [formData]);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isAddSuccess) {
       setFormData({
         payeeLabel: "",
         payeePhone: "",
@@ -85,7 +85,7 @@ const NewPayeeForm = () => {
       });
       navigate("/settings/financesSet/payeesList/");
     }
-  }, [isSuccess, navigate]);
+  }, [isAddSuccess, navigate]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -110,7 +110,7 @@ const NewPayeeForm = () => {
   //   });
   // };
 
-  const canSave = Object.values(validity).every(Boolean) && !isLoading;
+  const canSave = Object.values(validity).every(Boolean) && !isAddLoading;
   const { triggerBanner } = useOutletContext(); // Access banner trigger
   const onSavePayeeClicked = async (e) => {
     e.preventDefault();
@@ -124,25 +124,25 @@ const NewPayeeForm = () => {
     setShowConfirmation(false);
     try {
       const response = await addNewPayee(formData);
-      console.log(response, "response");
-      if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isAddError) {
+        // In case of unexpected response format
+        triggerBanner(addError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to create payee. Please try again.", "error");
-
-      console.error("Error creating payee:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
 
@@ -195,7 +195,7 @@ const NewPayeeForm = () => {
                 <input
                   aria-label="payee label"
                   aria-invalid={!validity.validPayeeLabel}
-                  placeholder="[3-20 characters]"
+                  placeholder="[3-25 characters]"
                   type="text"
                   id="payeeLabel"
                   name="payeeLabel"
@@ -272,7 +272,7 @@ const NewPayeeForm = () => {
                 <input
                   aria-label="payee address"
                   aria-invalid={!validity.validPayeeAddress}
-                  placeholder=" [3-20 characters]"
+                  placeholder=" [3-25 characters]"
                   type="text"
                   id="payeeAddress"
                   name="payeeAddress"
@@ -318,7 +318,7 @@ const NewPayeeForm = () => {
             aria-label="submit payee"
             type="submit"
             className="save-button"
-            disabled={!canSave || isLoading}
+            disabled={!canSave || isAddLoading}
           >
             <span className="ml-2">Save Payee</span>
           </button>

@@ -187,7 +187,7 @@ width:"100px"
  const tableHeader = (
   <div>
     <h2>Classrooms List: 
-    <span> {classroomsList?.length} users</span></h2>
+    <span> {classroomsList?.length} classrooms</span></h2>
   </div>
 );
 let content

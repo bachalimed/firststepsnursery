@@ -91,28 +91,38 @@ const NewFamily = () => {
       mother: mother,
       children: children,
       familySituation: familySituation,
-    }); //we call the add new user mutation and set the arguments to be saved
+    }); 
+    //we call the add new user mutation and set the arguments to be saved
     //added this to confirm save
     console.log(response,'response')
-     if ((response.data && response.data.message) || response?.message) {
+    if (response?.data?.message ) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
+        triggerBanner(response?.data?.message, "success");
         setCurrentStep(4)
 
-      } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
-        // Error response
-        triggerBanner(response.error.data.message, "error");
-        setCurrentStep(3)
-      } else {
-        // In case of unexpected response format
-        triggerBanner("Unexpected response from server.", "error");
-        setCurrentStep(3)
-      }
-    } catch (error) {
-      setCurrentStep(3)
-      triggerBanner("Failed to create family. Please try again.", "error");
+      } else if (response?.message) {
+        // Success response
+        triggerBanner(response?.message, "success");
+        setCurrentStep(4)
 
-      console.error("Error creating family:", error);
+      }
+      else if (response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response?.error?.data?.message, "error");
+        setCurrentStep(3)
+      } else if (isAddError) {
+        // In case of unexpected response format
+        triggerBanner(addError?.data?.message, "error");
+        setCurrentStep(3)
+      
+    } else {
+      // In case of unexpected response format
+      triggerBanner("Unexpected response from server.", "error");
+      setCurrentStep(3)
+    }
+    } catch (error) {
+      triggerBanner(error?.data?.message, "error");
+      setCurrentStep(3)
     }
     // if (!isAddLoading) {
     //   setCurrentStep(4);

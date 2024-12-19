@@ -30,7 +30,7 @@ const EditAttendedSchoolForm = ({ attendedSchool }) => {
 
   const [
     updateAttendedSchool,
-    { isLoading, isError, error, isSuccess },
+    { isLoading:isUpdateLoading, isError:isUpdateError, error:updateError, isSuccess:isUpdateSuccess },
   ] = useUpdateAttendedSchoolMutation();
 
   // Validate inputs using regex patterns
@@ -44,13 +44,13 @@ const EditAttendedSchoolForm = ({ attendedSchool }) => {
 
   // Redirect on success
   useEffect(() => {
-    if (isSuccess) {
+    if (isUpdateSuccess) {
       navigate("/settings/academicsSet/attendedSchools/");
     }
-  }, [isSuccess, navigate]);
+  }, [isUpdateSuccess, navigate]);
 
   // Check if form is ready for submission
-  const canSubmit = Object.values(validity).every(Boolean) && !isLoading;
+  const canSubmit = Object.values(validity).every(Boolean) && !isUpdateLoading;
   const { triggerBanner } = useOutletContext(); // Access banner trigger
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -65,28 +65,25 @@ const EditAttendedSchoolForm = ({ attendedSchool }) => {
     setShowConfirmation(false);
     try {
       const response = await updateAttendedSchool(formData).unwrap();
-      console.log(response, "response");
-      if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isUpdateError) {
+        // In case of unexpected response format
+        triggerBanner(updateError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner(
-        "Failed to update attended school. Please try again.",
-        "error"
-      );
-
-      console.error("Error saving:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
 
@@ -140,7 +137,7 @@ const EditAttendedSchoolForm = ({ attendedSchool }) => {
                 <input
                   aria-label="school city"
                   aria-invalid={!validity.validSchoolCity}
-                  placeholder="[3-20 letters]"
+                  placeholder="[3-25 letters]"
                   type="text"
                   id="schoolCity"
                   name="schoolCity"
@@ -198,7 +195,7 @@ const EditAttendedSchoolForm = ({ attendedSchool }) => {
           >
             Cancel
           </button>
-          <button type="submit" disabled={!canSubmit||isLoading} className="save-button">
+          <button type="submit" disabled={!canSubmit||isUpdateLoading} className="save-button">
             Save
           </button>
         </div>

@@ -75,7 +75,7 @@ const EditAcademicYearForm = ({ academicYear }) => {
   // Redux mutation for updating the academic year
   const [
     updateAcademicYear,
-    { isLoading: isUpdating, isError: isUpdateError, error: updateError },
+    { isLoading: isUpdateLoading,isSuccess:isUpdateSuccess, isError: isUpdateError, error: updateError },
   ] = useUpdateAcademicYearMutation();
 
   const handleSubmit = async (e) => {
@@ -89,6 +89,18 @@ const EditAcademicYearForm = ({ academicYear }) => {
   };
   const { triggerBanner } = useOutletContext(); // Access banner trigger
 
+// Clear form and errors on success
+useEffect(() => {
+  if (isUpdateSuccess) {
+    setTitle("")
+    setYearStart("")
+    setYearEnd("")
+    navigate("/settings/academicsSet/academicYears/");
+  }
+}, [isUpdateSuccess, navigate]);
+
+
+
   const handleConfirmSave = async () => {
     // Close the confirmation modal
     setShowConfirmation(false);
@@ -100,30 +112,25 @@ const EditAcademicYearForm = ({ academicYear }) => {
         yearEnd: new Date(yearEnd),
         academicYearCreator,
       }).unwrap();
-
-      navigate("/settings/academicsSet/academicYears/");
-      console.log(response, "response");
-      if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isUpdateError) {
+        // In case of unexpected response format
+        triggerBanner(updateError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner(
-        "Failed to update academic Year. Please try again.",
-        "error"
-      );
-
-      console.error("Error saving:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
   // Close the modal without saving
@@ -223,7 +230,7 @@ const EditAcademicYearForm = ({ academicYear }) => {
           <button
            aria-label="submit year"
             type="submit"
-            disabled={!canSubmit || isUpdating}
+            disabled={!canSubmit || isUpdateLoading}
             className="save-button"
           >
             Save

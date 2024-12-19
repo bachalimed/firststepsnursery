@@ -35,7 +35,10 @@ const NewEmployeeForm = () => {
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
   //console.log(selectedAcademicYear?.title, "selectedAcademicYear");
-  const [addNewEmployee, { isLoading, isSuccess, isError, error }] =
+  const [addNewEmployee, {  isLoading:isAddLoading,
+    isSuccess:isAddSuccess,
+    isError:isAddError,
+    error:addError }] =
     useAddNewEmployeeMutation();
 
   const generateRandomUsername = () =>
@@ -175,7 +178,7 @@ const NewEmployeeForm = () => {
   }, [formData]);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isAddSuccess) {
       setFormData({
         username: generateRandomUsername(),
         password: "12345678",
@@ -219,7 +222,7 @@ const NewEmployeeForm = () => {
       });
       navigate("/hr/employees/employeesList/");
     }
-  }, [isSuccess, navigate]);
+  }, [isAddSuccess, navigate]);
 
   const { triggerBanner } = useOutletContext(); // Access banner trigger
   const handleInputChange = (e) => {
@@ -274,7 +277,7 @@ const NewEmployeeForm = () => {
       ),
     }));
   };
-  const canSave = Object.values(validity).every(Boolean) && !isLoading;
+  const canSave = Object.values(validity).every(Boolean) && !isAddLoading;
   console.log(validity, "validity");
   console.log(formData, "formData");
 
@@ -291,27 +294,25 @@ const NewEmployeeForm = () => {
 
     try {
       const response = await addNewEmployee(formData);
-      if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isAddError) {
+        // In case of unexpected response format
+        triggerBanner(addError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner(
-        "Failed to create student document. Please try again.",
-        "error"
-      );
-
-      console.error("Error creating student document:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
 
@@ -355,7 +356,7 @@ const NewEmployeeForm = () => {
                     }))
                   }
                   className={`formInputText`}
-                  placeholder="[3-20] letters"
+                  placeholder="[3-25] letters"
                   required
                 />{" "}
               </label>
@@ -366,7 +367,7 @@ const NewEmployeeForm = () => {
                 Middle Name{" "}
                 {!validity?.validMiddleName &&
                   formData.userFullName.userMiddleName !== "" && (
-                    <span className="text-red-600 ">[3-20] letters</span>
+                    <span className="text-red-600 ">[3-25] letters</span>
                   )}
                 <input
                   aria-label="userMiddleName"
@@ -385,7 +386,7 @@ const NewEmployeeForm = () => {
                     }))
                   }
                   className={`formInputText`}
-                  placeholder="[3-20] letters"
+                  placeholder="[3-25] letters"
                 />{" "}
               </label>
             </div>
@@ -414,7 +415,7 @@ const NewEmployeeForm = () => {
                     }))
                   }
                   className={`formInputText`}
-                  placeholder="[3-20] letters"
+                  placeholder="[3-25] letters"
                   required
                 />
               </label>
@@ -543,7 +544,7 @@ const NewEmployeeForm = () => {
                     }))
                   }
                   className={`formInputText`}
-                  placeholder="[3-20] letters"
+                  placeholder="[3-25] letters"
                 />{" "}
               </label>
 
@@ -569,7 +570,7 @@ const NewEmployeeForm = () => {
                     }))
                   }
                   className={`formInputText`}
-                  placeholder="[3-20] letters"
+                  placeholder="[3-25] letters"
                 />{" "}
               </label>
             </div>
@@ -619,7 +620,7 @@ const NewEmployeeForm = () => {
                     }))
                   }
                   className={`formInputText`}
-                  placeholder="[3-20] letters"
+                  placeholder="[3-25] letters"
                 />{" "}
               </label>
             </div>
@@ -1016,7 +1017,7 @@ const NewEmployeeForm = () => {
                           )
                         }
                         className={`formInputText`}
-                        placeholder="[3-20 letters]"
+                        placeholder="[3-25 letters]"
                       />{" "}
                     </label>
 
@@ -1090,7 +1091,7 @@ const NewEmployeeForm = () => {
                           )
                         }
                         className={`formInputText`}
-                        placeholder="[3-20 letters]"
+                        placeholder="[3-25 letters]"
                       />{" "}
                     </label>
 
@@ -1119,7 +1120,7 @@ const NewEmployeeForm = () => {
                           )
                         }
                         className={`formInputText`}
-                        placeholder="[3-20 letters]"
+                        placeholder="[3-25 letters]"
                       />
                     </label>
 
@@ -1191,7 +1192,7 @@ const NewEmployeeForm = () => {
           <button
             aria-label="submit employee"
             type="submit"
-            disabled={!canSave || isLoading}
+            disabled={!canSave || isAddLoading}
             className="save-button"
           >
             Save

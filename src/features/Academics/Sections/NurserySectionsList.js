@@ -205,29 +205,29 @@ const NurserySectionsList = () => {
 
     try {
       const response = await updateSection(updatedSectionObject); // Save updated section to backend
-      
-     if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isUpdateError) {
+        // In case of unexpected response format
+        triggerBanner(updateError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to update section. Please try again.", "error");
-
-      console.error("Error updating section:", error);
+      triggerBanner(error?.data?.message, "error");
     }
-
     setIsRegisterModalOpen(false); // Close modal
   };
+  
 
   //const [sectionYears, setSectionYears] = useState([])
   //adds to the previous entries in arrays for gardien, schools...
@@ -262,27 +262,29 @@ const NurserySectionsList = () => {
   const handleConfirmDelete = async () => {
     try {
       const response = await deleteSection({ id: idSectionToDelete });
-     if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isDelSectionError) {
+        // In case of unexpected response format
+        triggerBanner(delSectionError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to delete section. Please try again.", "error");
-
-      console.error("Error saving:", error);
+      triggerBanner(error?.data?.message, "error");
     }
     setIsDeleteModalOpen(false); // Close the modal
   };
+  
 
   // Function to close the modal without deleting
   const handleCloseDeleteModal = () => {

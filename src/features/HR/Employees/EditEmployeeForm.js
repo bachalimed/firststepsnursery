@@ -42,7 +42,10 @@ const EditEmployeeForm = ({ employee }) => {
   const academicYears = useSelector(selectAllAcademicYears);
   // console.log(employee,'employee')
 
-  const [updateEmployee, { isLoading, isSuccess, isError, error }] =
+  const [updateEmployee, { isLoading: isUpdateLoading,
+    isSuccess: isUpdateSuccess,
+    isError: isUpdateError,
+    error: updateError, }] =
     useUpdateEmployeeMutation();
 
   //confirmation Modal states
@@ -163,12 +166,12 @@ const EditEmployeeForm = ({ employee }) => {
   console.log(formData, "formData");
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isUpdateSuccess) {
       setFormData({});
 
       navigate("/hr/employees/employeesList/");
     }
-  }, [isSuccess, navigate]);
+  }, [isUpdateSuccess, navigate]);
   const handleInputChange = (e) => {
     console.log(e.target.name, e.target.value); // Debugging line
     const { name, value } = e.target;
@@ -289,7 +292,7 @@ const EditEmployeeForm = ({ employee }) => {
   const canSave =
     Object.values(validity).every(Boolean) &&
     formData?.userRoles?.length > 0 &&
-    !isLoading;
+    !isUpdateLoading;
 
   console.log(canSave, "canSave");
 
@@ -306,24 +309,25 @@ const EditEmployeeForm = ({ employee }) => {
 
     try {
       const response = await updateEmployee(formData);
-      if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isUpdateError) {
+        // In case of unexpected response format
+        triggerBanner(updateError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to update employee. Please try again.", "error");
-
-      console.error("Error updating employee:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
 
@@ -359,7 +363,7 @@ const EditEmployeeForm = ({ employee }) => {
                   value={formData?.userFullName?.userFirstName}
                   onChange={handleInputChange}
                   className={`formInputText`}
-                  placeholder="[3-20] letters"
+                  placeholder="[3-25] letters"
                   required
                 />
               </label>
@@ -372,7 +376,7 @@ const EditEmployeeForm = ({ employee }) => {
                   id="userMiddleName"
                   type="text"
                   className={`formInputText`}
-                  placeholder="[3-20] letters"
+                  placeholder="[3-25] letters"
                   name="userFullName.userMiddleName" // Changed to match the nested structure
                   value={formData.userFullName.userMiddleName}
                   onChange={handleInputChange}
@@ -395,7 +399,7 @@ const EditEmployeeForm = ({ employee }) => {
                   onChange={handleInputChange}
                   required
                   className={`formInputText`}
-                  placeholder="[3-20] letters"
+                  placeholder="[3-25] letters"
                 />{" "}
               </label>
 
@@ -498,7 +502,7 @@ const EditEmployeeForm = ({ employee }) => {
                     }))
                   }
                   className={`formInputText`}
-                  placeholder="[3-20] letters"
+                  placeholder="[3-25] letters"
                 />{" "}
               </label>
 
@@ -524,7 +528,7 @@ const EditEmployeeForm = ({ employee }) => {
                     }))
                   }
                   className={`formInputText`}
-                  placeholder="[3-20] letters"
+                  placeholder="[3-25] letters"
                 />{" "}
               </label>
             </div>
@@ -574,7 +578,7 @@ const EditEmployeeForm = ({ employee }) => {
                     }))
                   }
                   className={`formInputText`}
-                  placeholder="[3-20] letters"
+                  placeholder="[3-25] letters"
                 />{" "}
               </label>
             </div>
@@ -1036,7 +1040,7 @@ const EditEmployeeForm = ({ employee }) => {
                       )
                     }
                     className={`formInputText`}
-                    placeholder="[3-20 letters]"
+                    placeholder="[3-25 letters]"
                   />{" "}
                 </label>
 
@@ -1093,7 +1097,7 @@ const EditEmployeeForm = ({ employee }) => {
                       handleWorkHistoryChange(index, "position", e.target.value)
                     }
                     className={`formInputText`}
-                    placeholder="[3-20 letters]"
+                    placeholder="[3-25 letters]"
                   />{" "}
                 </label>
 
@@ -1119,7 +1123,7 @@ const EditEmployeeForm = ({ employee }) => {
                       )
                     }
                     className={`formInputText`}
-                    placeholder="[3-20 letters]"
+                    placeholder="[3-25 letters]"
                   />
                 </label>
 
@@ -1187,7 +1191,7 @@ const EditEmployeeForm = ({ employee }) => {
           <button
             aria-label="submit employee"
             type="submit"
-            disabled={!canSave || isLoading}
+            disabled={!canSave || isUpdateLoading}
             className="save-button"
           >
             Save

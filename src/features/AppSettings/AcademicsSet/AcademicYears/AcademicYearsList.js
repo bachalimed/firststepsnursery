@@ -9,13 +9,12 @@ import { useNavigate } from "react-router-dom";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { setAcademicYears } from "./academicYearsSlice";
-import DeletionConfirmModal from '../../../../Components/Shared/Modals/DeletionConfirmModal'
+import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
 import useAuth from "../../../../hooks/useAuth";
-import {  useDeleteAcademicYearMutation } from "./academicYearsApiSlice";
+import { useDeleteAcademicYearMutation } from "./academicYearsApiSlice";
 import { useSelector, useDispatch } from "react-redux";
 import AcademicsSet from "../../AcademicsSet";
 import { useOutletContext } from "react-router-dom";
-
 
 const AcademicYearsList = () => {
   const Navigate = useNavigate();
@@ -37,7 +36,6 @@ const AcademicYearsList = () => {
   const academicYears = useSelector(selectAllAcademicYears);
   //handle delete
 
-  
   //initialising the delete Mutation
   const [
     deleteAcademicYear,
@@ -45,7 +43,7 @@ const AcademicYearsList = () => {
       isLoading: isDelLoading,
       isSuccess: isDelSuccess,
       isError: isDelError,
-      error: delerror,
+      error: delError,
     },
   ] = useDeleteAcademicYearMutation();
 
@@ -54,33 +52,36 @@ const AcademicYearsList = () => {
   const [idYearToDelete, setIdYearToDelete] = useState(null);
   const handleDelete = (id) => {
     // Function to handle the delete button click
-  
+
     setIdYearToDelete(id); // Set the document to delete
     setIsDeleteModalOpen(true); // Open the modal
   };
-  
-  
+
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
     try {
       const response = await deleteAcademicYear({ id: idYearToDelete });
-    setIsDeleteModalOpen(false); // Close the modal
-    if (response.data && response.data.message) {
-      // Success response
-      triggerBanner(response.data.message, "success");
-
-    } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
-      // Error response
-      triggerBanner(response.error.data.message, "error");
-    } else {
-      // In case of unexpected response format
-      triggerBanner("Unexpected response from server.", "error");
+      if ( response?.message) {
+        // Success response
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isDelError) {
+        // In case of unexpected response format
+        triggerBanner(delError?.data?.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner(error?.data?.message, "error");
     }
-  } catch (error) {
-    triggerBanner("Failed to delete academic year. Please try again.", "error");
-
-    console.error("Error deleting academic year:", error);
-  }
+    setIsDeleteModalOpen(false); // Close the modal
   };
 
   // Function to close the modal without deleting
@@ -88,7 +89,6 @@ const AcademicYearsList = () => {
     setIsDeleteModalOpen(false);
     setIdYearToDelete(null);
   };
-
 
   const handleNextSelected = () => {
     console.log("Selected Rows to duplicate forward:", selectedRows);
@@ -104,7 +104,7 @@ const AcademicYearsList = () => {
 
   //define the content to be conditionally rendered
   const column = [
-    isAdmin&&{
+    isAdmin && {
       name: "ID",
       selector: (row) => row.id,
       sortable: true,
@@ -129,7 +129,7 @@ const AcademicYearsList = () => {
             })}
           </div>
           <div>
-          {"End: "}
+            {"End: "}
             {new Date(row.yearEnd).toLocaleString("en-GB", {
               day: "numeric",
               month: "numeric",
@@ -141,14 +141,14 @@ const AcademicYearsList = () => {
       sortable: true,
       width: "140px", // Adjust the width as needed to fit both dates
     },
-   
+
     {
       name: "Creator",
       selector: (row) => row?.academicYearCreator,
       sortable: true,
       width: "200px",
     },
-   
+
     {
       name: "Actions",
       cell: (row) => (
@@ -178,15 +178,15 @@ const AcademicYearsList = () => {
       button: true,
     },
   ].filter(Boolean); // Filter out falsy values like `false` or `undefined`
- // Custom header to include the row count
- const tableHeader = (
-  <div>
-    <h2>Academics Years List: 
-    <span> {academicYears.length} users</span></h2>
-  </div>
-);
-
-
+  // Custom header to include the row count
+  const tableHeader = (
+    <div>
+      <h2>
+        Academics Years List:
+        <span> {academicYears.length} users</span>
+      </h2>
+    </div>
+  );
 
   let content;
 
@@ -200,7 +200,7 @@ const AcademicYearsList = () => {
    </div> */}
 
         <DataTable
-         title={tableHeader}
+          title={tableHeader}
           columns={column}
           data={academicYears}
           pagination
@@ -211,8 +211,8 @@ const AcademicYearsList = () => {
             headCells: {
               style: {
                 // Apply Tailwind style via a class-like syntax
-                justifyContent: 'center', // Align headers to the center
-                textAlign: 'center', // Center header text
+                justifyContent: "center", // Align headers to the center
+                textAlign: "center", // Center header text
               },
             },
             // cells: {

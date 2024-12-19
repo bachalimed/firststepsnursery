@@ -33,10 +33,10 @@ const NewStudentForm = () => {
     addNewStudent,
     {
       //an object that calls the status when we execute the newUserForm function
-      isLoading,
-      isSuccess,
-      isError,
-      error,
+      isLoading: isAddLoading,
+      isSuccess: isAddSuccess,
+      isError: isAddError,
+      error: addError,
     },
   ] = useAddNewStudentMutation(); //it will not execute the mutation nownow but when called
 
@@ -77,7 +77,7 @@ const NewStudentForm = () => {
   const [studentIsActive, setStudentIsActive] = useState((prev) => !prev);
 
   //const [validStudentGrade, setValidStudentGrade] = useState(false);
-  const [studentGrade, setStudentGrade] = useState(null);
+  //const [studentGrade, setStudentGrade] = useState(null);
   const [academicYear, setAcademicYear] = useState(null);
   const [studentYears, setStudentYears] = useState([]);
   //const [studentJointFamily, setStudentJointFamily] = useState(true)
@@ -116,7 +116,7 @@ const NewStudentForm = () => {
   //ensure studentgardien has no empty array
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isAddSuccess) {
       //if the add of new user using the mutation is success, empty all the individual states and naviagte back to the users list
       setFirstName("");
       setValidFirstName(false);
@@ -146,7 +146,7 @@ const NewStudentForm = () => {
       setOperator("");
       naviagte("/students/studentsParents/students"); //will naviagte here after saving
     }
-  }, [isSuccess, naviagte]); //even if no success it will naviagte and not show any warning if failed or success
+  }, [isAddSuccess, naviagte]); //even if no success it will naviagte and not show any warning if failed or success
 
   //handlers to get the individual states from the input
 
@@ -299,7 +299,7 @@ const NewStudentForm = () => {
       studentYears,
       validStudentDob,
       studentSex,
-    ].every(Boolean) && !isLoading;
+    ].every(Boolean) &&studentYears[0]?.grade && !isAddLoading;
 
   const { triggerBanner } = useOutletContext(); // Access banner trigger
 
@@ -330,24 +330,25 @@ const NewStudentForm = () => {
         operator,
       });
       console.log(response, "response");
-      if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isAddError) {
+        // In case of unexpected response format
+        triggerBanner(addError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to create student. Please try again.", "error");
-
-      console.error("Error creating student:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
 
@@ -373,7 +374,7 @@ const NewStudentForm = () => {
     content = (
       <>
         <Students />
-    
+
         <form className="form-container" onSubmit={onSaveStudentClicked}>
           <h2 className="formTitle">
             New student: {firstName} {middleName} {lastName}
@@ -387,7 +388,7 @@ const NewStudentForm = () => {
                   {!validFirstName && <span className="text-red-600 ">*</span>}
                   <input
                     aria-invalid={!validFirstName}
-                    placeholder="[3-20 letters]"
+                    placeholder="[3-25 letters]"
                     className={`formInputText`}
                     id="firstName"
                     name="firstName"
@@ -402,10 +403,10 @@ const NewStudentForm = () => {
                 <label className="formInputLabel" htmlFor="middleName">
                   Middle Name{" "}
                   {!validMiddleName && middleName !== "" && (
-                    <span className="text-red-600 ">[3-20] letters</span>
+                    <span className="text-red-600 ">[3-25] letters</span>
                   )}
                   <input
-                    placeholder="[3-20 letters]"
+                    placeholder="[3-25 letters]"
                     className={`formInputText`}
                     id="middleName"
                     name="middleName"
@@ -422,7 +423,7 @@ const NewStudentForm = () => {
                   {!validLastName && <span className="text-red-600">*</span>}
                   <input
                     aria-invalid={!validLastName}
-                    placeholder="[3-20 letters]"
+                    placeholder="[3-25 letters]"
                     className={`formInputText`}
                     id="lastName"
                     name="lastName"
@@ -480,7 +481,7 @@ const NewStudentForm = () => {
                 </div>
               </label>
             </div>
-          
+
             <h3 className="formSectionTitle">Student situation</h3>
             <div className="formSection">
               <div className="formLineDiv">
@@ -545,7 +546,7 @@ const NewStudentForm = () => {
                 </label>
               </div>
             </div>
-        
+
             <h3 className="formSectionTitle">Student Gardien</h3>
             {!validStudentGardien && (
               <span className="text-red-600 ">
@@ -566,7 +567,7 @@ const NewStudentForm = () => {
                         <input
                           id={`gardienFirstName-${index}`}
                           type="text"
-                          placeholder="[3-20 letters]"
+                          placeholder="[3-25 letters]"
                           value={entry.gardienFirstName}
                           onChange={(e) =>
                             handleGardienFieldChange(
@@ -587,7 +588,7 @@ const NewStudentForm = () => {
                         <input
                           id={`gardienMiddleName-${index}`}
                           type="text"
-                          placeholder="[3-20 letters]"
+                          placeholder="[3-25 letters]"
                           value={entry.gardienMiddleName}
                           onChange={(e) =>
                             handleGardienFieldChange(
@@ -610,7 +611,7 @@ const NewStudentForm = () => {
                         <input
                           id={`gardienLastName-${index}`}
                           type="text"
-                          placeholder="[3-20 letters]"
+                          placeholder="[3-25 letters]"
                           value={entry.gardienLastName}
                           onChange={(e) =>
                             handleGardienFieldChange(
@@ -662,7 +663,7 @@ const NewStudentForm = () => {
                         <input
                           id={`gardienRelation-${index}`}
                           type="text"
-                          placeholder="[3-20 letters]"
+                          placeholder="[3-25 letters]"
                           value={entry.gardienRelation}
                           onChange={(e) =>
                             handleGardienFieldChange(
@@ -717,7 +718,7 @@ const NewStudentForm = () => {
                 Add Gardien
               </button>
             </div>
-        
+
             <h3 className="formSectionTitle">
               Student Education{" "}
               {!validCurrentEducation && (
@@ -843,10 +844,9 @@ const NewStudentForm = () => {
             <button
               type="submit"
               className="save-button"
-              
               aria-label="submit student"
               onClick={onSaveStudentClicked}
-              disabled={!canSave || isLoading}
+              disabled={!canSave || isAddLoading}
             >
               Save
             </button>
@@ -858,7 +858,7 @@ const NewStudentForm = () => {
           onClose={handleCloseModal}
           onConfirm={handleConfirmSave}
           title="Confirm Save"
-          message="Are you sure you want to save?"
+          message="Create new student?"
         />
       </>
     );

@@ -281,7 +281,7 @@ const Elements = () => {
                 )}
                 <input
                   aria-invalid={!validity.validFirstName}
-                  placeholder="[3-20 letters]"
+                  placeholder="[3-25 letters]"
                   aria-label="first name"
                   type="text"
                   name="userFirstName"

@@ -207,26 +207,25 @@ const NewUserForm = () => {
 
     try {
       const response = await addNewUser({ formData }); //we call the add new user mutation and set the arguments to be saved
-      //added this to confirm save
-
-      if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isAddError) {
+        // In case of unexpected response format
+        triggerBanner(addError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to create user. Please try again.", "error");
-
-      console.error("Error creating user:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
   // Close the modal without saving
@@ -304,7 +303,7 @@ const NewUserForm = () => {
                 )}
                 <input
                   aria-invalid={!validity.validFirstName}
-                  placeholder="[3-20 letters]"
+                  placeholder="[3-25 letters]"
                   aria-label="first name"
                   type="text"
                   id="userFirstName"
@@ -330,10 +329,10 @@ const NewUserForm = () => {
                 Middle Name
                 {!validity?.validMiddleName &&
                   formData.userFullName.userMiddleName !== "" && (
-                    <span className="text-red-600 ">[3-20] letters</span>
+                    <span className="text-red-600 ">[3-25] letters</span>
                   )}
                 <input
-                  placeholder="[3-20 letters]"
+                  placeholder="[3-25 letters]"
                   aria-label="middle name"
                   type="text"
                   id="userMiddleName"
@@ -361,7 +360,7 @@ const NewUserForm = () => {
                 )}
                 <input
                   aria-invalid={!validity.validLastName}
-                  placeholder="[3-20 letters]"
+                  placeholder="[3-25 letters]"
                   aria-label="last name"
                   type="text"
                   id="userLastName"
@@ -485,7 +484,7 @@ const NewUserForm = () => {
                     }))
                   }
                   className={`formInputText`}
-                  placeholder="[3-20] letters"
+                  placeholder="[3-25] letters"
                 />{" "}
               </label>
 
@@ -511,7 +510,7 @@ const NewUserForm = () => {
                     }))
                   }
                   className={`formInputText`}
-                  placeholder="[3-20] letters"
+                  placeholder="[3-25] letters"
                 />{" "}
               </label>
             </div>
@@ -561,7 +560,7 @@ const NewUserForm = () => {
                     }))
                   }
                   className={`formInputText`}
-                  placeholder="[3-20] letters"
+                  placeholder="[3-25] letters"
                 />{" "}
               </label>
             </div>

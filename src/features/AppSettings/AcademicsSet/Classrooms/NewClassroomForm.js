@@ -28,7 +28,7 @@ const NewClassroomForm = () => {
   const navigate = useNavigate();
 
   // Redux mutation for adding the attended classroom
-  const [addNewClassroom, { isLoading, isError, error, isSuccess }] =
+  const [addNewClassroom, { isLoading:isAddLoading, isError:isAddError, error:addError, isSuccess:isAddSuccess }] =
     useAddNewClassroomMutation();
   //confirmation Modal states
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -50,7 +50,7 @@ const NewClassroomForm = () => {
 
   // Clear form and errors on success
   useEffect(() => {
-    if (isSuccess) {
+    if (isAddSuccess) {
       setFormData({
         classroomNumber: "",
         classroomLabel: "",
@@ -62,10 +62,10 @@ const NewClassroomForm = () => {
 
       navigate("/settings/academicsSet/classrooms/");
     }
-  }, [isSuccess, navigate]);
+  }, [isAddSuccess, navigate]);
 
   // Check if all fields are valid and enable the submit button
-  const canSubmit = Object.values(validity).every(Boolean) && !isLoading;
+  const canSubmit = Object.values(validity).every(Boolean) && !isAddLoading;
 
   const { triggerBanner } = useOutletContext(); // Access banner trigger
 
@@ -87,26 +87,25 @@ const NewClassroomForm = () => {
 
     try {
       const response = await addNewClassroom(formData); //.unwrap();
-      //dispatch(classroomAdded(newClassroom)); // Optionally update Redux state
-      console.log(response, "response");
-      if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isAddError) {
+        // In case of unexpected response format
+        triggerBanner(addError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to create classroom. Please try again.", "error");
-
-      console.error("Error creating classroom:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
   // Close the modal without saving
@@ -162,7 +161,7 @@ const NewClassroomForm = () => {
                 <input
                   aria-label="classroom label"
                   aria-invalid={!validity.validClassroomLabel}
-                  placeholder="[3-20 letters]"
+                  placeholder="[3-25 letters]"
                   type="text"
                   id="classroomLabel"
                   name="classroomLabel"
@@ -236,10 +235,10 @@ const NewClassroomForm = () => {
             <button
               aria-label="submit classroom"
               type="submit"
-              disabled={!canSubmit || isLoading}
+              disabled={!canSubmit || isAddLoading}
               className="save-button"
             >
-              {isLoading ? "Adding..." : "Add Classroom"}
+              Save
             </button>
           </div>
         </div>

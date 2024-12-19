@@ -38,8 +38,7 @@ const PayeesList = () => {
   const dispatch = useDispatch();
 
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
-  const [requiredDocNumber, setRequiredDocNumber] = useState("");
-  const [payeeDocNumber, setPayeeDocNumber] = useState("");
+ 
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idPayeeToDelete, setIdPayeeToDelete] = useState(null); // State to track which document to delete
@@ -74,7 +73,7 @@ const PayeesList = () => {
       isLoading: isDelLoading,
       isSuccess: isDelSuccess,
       isError: isDelError,
-      error: delerror,
+      error: delError,
     },
   ] = useDeletePayeeMutation();
   const { triggerBanner } = useOutletContext(); // Access banner trigger
@@ -88,24 +87,28 @@ const PayeesList = () => {
   const handleConfirmDelete = async () => {
     try {
       const response = await deletePayee({ id: idPayeeToDelete });
-    setIsDeleteModalOpen(false); // Close the modal
-    if (response.data && response.data.message) {
-      // Success response
-      triggerBanner(response.data.message, "success");
-
-    } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
-      // Error response
-      triggerBanner(response.error.data.message, "error");
+      if ( response?.message) {
+        // Success response
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response?.error?.data?.message, "error");
+    } else if (isDelError) {
+      // In case of unexpected response format
+      triggerBanner(delError?.data?.message, "error");
     } else {
       // In case of unexpected response format
       triggerBanner("Unexpected response from server.", "error");
     }
   } catch (error) {
-    triggerBanner("Failed to delete payee. Please try again.", "error");
-
-    console.error("Error deleting payee:", error);
+    triggerBanner(error?.data?.message, "error");
   }
-  };
+  setIsDeleteModalOpen(false); // Close the modal
+};
 
   // Function to close the modal without deleting
   const handleCloseDeleteModal = () => {

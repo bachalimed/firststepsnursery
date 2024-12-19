@@ -180,27 +180,25 @@ const NewStudentDocumentsListForm = () => {
         documentsList: studentDocumentsList,
         documentsAcademicYear,
       });
-      if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isAddError) {
+        // In case of unexpected response format
+        triggerBanner(addError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner(
-        "Failed to create student document. Please try again.",
-        "error"
-      );
-
-      console.error("Error creating student document:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
   console.log(studentDocumentsList, "studentDocumentsList");
@@ -273,7 +271,7 @@ const NewStudentDocumentsListForm = () => {
                     <input
                       aria-invalid={!validDocumentTitle}
                       aria-label="Document Title"
-                      placeholder="[3-20] Characters"
+                      placeholder="[3-25] Characters"
                       type="text"
                       id={`${entry.documentTitle}-${index}`}
                       name={`${entry.documentTitle}-${index}`}

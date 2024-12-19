@@ -146,7 +146,7 @@ const EditStudentForm = ({ student }) => {
   useEffect(() => {
     if (isUpdateSuccess) {
       //if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
-      console.log("updated!!!!!!");
+      
       setId(student.id);
       setFirstName("");
       setValidFirstName(false);
@@ -367,26 +367,25 @@ const EditStudentForm = ({ student }) => {
         studentGardien,
         operator,
       }); //we call the add new user mutation and set the arguments to be saved
-      //added this to confirm save
-      console.log(response, "response");
-      if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isUpdateError) {
+        // In case of unexpected response format
+        triggerBanner(updateError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to update student. Please try again.", "error");
-
-      console.error("Error updating student:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
   // Close the modal without saving
@@ -424,7 +423,7 @@ const EditStudentForm = ({ student }) => {
                   {!validFirstName && <span className="text-red-600 ">*</span>}
                   <input
                     aria-invalid={!validFirstName}
-                    placeholder="[3-20 letters]"
+                    placeholder="[3-25 letters]"
                     className={`formInputText`}
                     id="firstName"
                     name="firstName"
@@ -439,10 +438,10 @@ const EditStudentForm = ({ student }) => {
                 <label className="formInputLabel" htmlFor="middleName">
                   Middle Name{" "}
                   {!validMiddleName && middleName !== "" && (
-                    <span className="text-red-600 ">[3-20] letters</span>
+                    <span className="text-red-600 ">[3-25] letters</span>
                   )}
                   <input
-                    placeholder="[3-20 letters]"
+                    placeholder="[3-25 letters]"
                     className={`formInputText`}
                     id="middleName"
                     name="middleName"
@@ -459,7 +458,7 @@ const EditStudentForm = ({ student }) => {
                   {!validLastName && <span className="text-red-600">*</span>}
                   <input
                     aria-invalid={!validLastName}
-                    placeholder="[3-20 letters]"
+                    placeholder="[3-25 letters]"
                     className={`formInputText`}
                     id="lastName"
                     name="lastName"
@@ -610,7 +609,7 @@ const EditStudentForm = ({ student }) => {
                         <input
                           id={`gardienMiddleName-${index}`}
                           type="text"
-                          placeholder="[3-20 letters]"
+                          placeholder="[3-25 letters]"
                           value={entry.gardienMiddleName}
                           onChange={(e) =>
                             handleGardienFieldChange(
@@ -633,7 +632,7 @@ const EditStudentForm = ({ student }) => {
                         <input
                           id={`gardienLastName-${index}`}
                           type="text"
-                          placeholder="[3-20 letters]"
+                          placeholder="[3-25 letters]"
                           value={entry.gardienLastName}
                           onChange={(e) =>
                             handleGardienFieldChange(
@@ -875,7 +874,7 @@ const EditStudentForm = ({ student }) => {
           onClose={handleCloseModal}
           onConfirm={handleConfirmSave}
           title="Confirm Save"
-          message="Are you sure you want to save?"
+          message="Save changes to student?"
         />
       </>
     );

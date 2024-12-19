@@ -23,7 +23,7 @@ const EditUserForm = ({ user }) => {
   const navigate = useNavigate();
   const { isManager, isAdmin, isDirector } = useAuth();
   //initialise the mutation to be used later
-  const [updateUser, { isLoading, isSuccess, isError, error }] =
+  const [updateUser, { isLoading:isUpdateLoading, isSuccess:isUpdateSuccess, isError:isUpdateError, error:updateError }] =
     useUpdateUserMutation();
 
   //confirmation Modal states
@@ -122,7 +122,7 @@ const EditUserForm = ({ user }) => {
   }, [formData]);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isUpdateSuccess) {
       setFormData({
         username: "",
         password: undefined,
@@ -154,7 +154,7 @@ const EditUserForm = ({ user }) => {
       });
       navigate("/admin/usersManagement/users/");
     }
-  }, [isSuccess, navigate]);
+  }, [isUpdateSuccess, navigate]);
 
   // Handle form field changes generically
   const handleInputChange = (e) => {
@@ -190,7 +190,7 @@ const EditUserForm = ({ user }) => {
   };
 
   //to check if we can save before onsave, if every one is true, and also if we are not loading status
-  const canSave = Object.values(validity).every(Boolean) && !isLoading;
+  const canSave = Object.values(validity).every(Boolean) && !isUpdateLoading;
 
   const { triggerBanner } = useOutletContext(); // Access banner trigger
 
@@ -209,25 +209,25 @@ const EditUserForm = ({ user }) => {
 
     try {
       const response = await updateUser({ formData });
-      console.log(response, "response");
-      if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isUpdateLoading) {
+        // In case of unexpected response format
+        triggerBanner(updateError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to update user. Please try again.", "error");
-
-      console.error("Error updating user:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
 
@@ -309,7 +309,7 @@ const EditUserForm = ({ user }) => {
                 )}
                 <input
                   aria-invalid={!validity.validFirstName}
-                  placeholder="[3-20 letters]"
+                  placeholder="[3-25 letters]"
                   aria-label="first name"
                   type="text"
                   id="userFirstName"
@@ -333,10 +333,10 @@ const EditUserForm = ({ user }) => {
                 Middle Name
                 {!validity?.validMiddleName &&
                   formData.userFullName.userMiddleName !== "" && (
-                    <span className="text-red-600 ">[3-20] letters</span>
+                    <span className="text-red-600 ">[3-25] letters</span>
                   )}
                 <input
-                  placeholder="[3-20 letters]"
+                  placeholder="[3-25 letters]"
                   aria-label="middle name"
                   type="text"
                   id="userMiddleName"
@@ -363,7 +363,7 @@ const EditUserForm = ({ user }) => {
                 )}
                 <input
                   aria-invalid={!validity.validLastName}
-                  placeholder="[3-20 letters]"
+                  placeholder="[3-25 letters]"
                   aria-label="last name"
                   type="text"
                   id="userLastName"
@@ -488,7 +488,7 @@ const EditUserForm = ({ user }) => {
                     }))
                   }
                   className={`formInputText`}
-                  placeholder="[3-20] letters"
+                  placeholder="[3-25] letters"
                 />{" "}
               </label>
 
@@ -514,7 +514,7 @@ const EditUserForm = ({ user }) => {
                     }))
                   }
                   className={`formInputText`}
-                  placeholder="[3-20] letters"
+                  placeholder="[3-25] letters"
                 />{" "}
               </label>
             </div>
@@ -564,7 +564,7 @@ const EditUserForm = ({ user }) => {
                     }))
                   }
                   className={`formInputText`}
-                  placeholder="[3-20] letters"
+                  placeholder="[3-25] letters"
                 />{" "}
               </label>
             </div>
@@ -833,7 +833,7 @@ const EditUserForm = ({ user }) => {
             className="save-button"
             type="submit"
             onClick={onSaveUserClicked}
-            disabled={!canSave || isLoading}
+            disabled={!canSave || isUpdateLoading}
           >
             Save
           </button>

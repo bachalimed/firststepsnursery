@@ -25,8 +25,15 @@ const EditServiceForm = ({ service }) => {
   const academicYears = useSelector(selectAllAcademicYears);
   // console.log(service,'service')
 
-  const [updateService, { isLoading, isSuccess, isError, error }] =
-    useUpdateServiceMutation();
+  const [
+    updateService,
+    {
+      isLoading: isUpdateLoading,
+      isSuccess: isUpdateSuccess,
+      isError: isUpdateError,
+      error: updateError,
+    },
+  ] = useUpdateServiceMutation();
 
   const { triggerBanner } = useOutletContext(); // Access banner trigger
   //confirmation Modal states
@@ -69,7 +76,7 @@ const EditServiceForm = ({ service }) => {
 
   // If the service is added successfully, reset the form and navigate
   useEffect(() => {
-    if (isSuccess) {
+    if (isUpdateSuccess) {
       setFormData({
         serviceType: "",
         serviceYear: "",
@@ -83,7 +90,7 @@ const EditServiceForm = ({ service }) => {
       });
       navigate("/settings/studentsSet/services");
     }
-  }, [isSuccess, navigate]);
+  }, [isUpdateSuccess, navigate]);
   // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -106,7 +113,7 @@ const EditServiceForm = ({ service }) => {
   };
 
   // Check if the form can be submitted
-  const canSave = Object.values(validity).every(Boolean) && !isLoading;
+  const canSave = Object.values(validity).every(Boolean) && !isUpdateLoading;
   console.log(formData, "formData");
   // Handle form submission
   const onSaveServiceClicked = async (e) => {
@@ -123,24 +130,25 @@ const EditServiceForm = ({ service }) => {
 
     try {
       const response = await updateService(formData);
-      if ((response.data && response.data.message) || response?.message) {
+      if ( response?.message) {
         // Success response
-        triggerBanner(response?.data?.message || response?.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      }
+      else if (response?.data?.message ) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isUpdateError) {
+        // In case of unexpected response format
+        triggerBanner(updateError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to update service. Please try again.", "error");
-
-      console.error("Error updating service:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
 
@@ -298,7 +306,7 @@ const EditServiceForm = ({ service }) => {
           <button
             aria-label="submit new service"
             type="submit"
-            disabled={!canSave || isLoading}
+            disabled={!canSave || isUpdateLoading}
             className={`save-button `}
           >
             Save

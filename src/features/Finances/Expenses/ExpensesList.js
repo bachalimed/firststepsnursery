@@ -1,10 +1,7 @@
 import { HiOutlineSearch } from "react-icons/hi";
-import { useGetEmployeesByYearQuery } from "../../HR/Employees/employeesApiSlice";
 import DataTable from "react-data-table-component";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
@@ -20,11 +17,11 @@ import {
   useGetExpensesQuery,
   useDeleteExpenseMutation,
 } from "./expensesApiSlice";
-import { useGetAttendedSchoolsQuery } from "../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
-
 import { useSelector, useDispatch } from "react-redux";
-
 import Finances from "../Finances";
+import { useOutletContext } from "react-router-dom";
+
+
 
 const ExpensesList = () => {
   const navigate = useNavigate();
@@ -62,6 +59,7 @@ const ExpensesList = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idAttendedSchoolToDelete, setIdAttendedSchoolToDelete] =
     useState(null); // State to track which document to delete
+    const { triggerBanner } = useOutletContext(); // Access banner trigger
 
   //initialising the delete Mutation
 
@@ -265,12 +263,14 @@ const ExpensesList = () => {
 
   if (isExpensesLoading)
     content = (
-      <p>
+      <p><Finances />
         <LoadingStateIcon />
       </p>
     );
 
   if (isExpensesError) {
+    //console.log(expensesError,'expensesError')
+    //triggerBanner(expensesError?.data?.message, "error");
     content = (
       <>
         <Finances />
