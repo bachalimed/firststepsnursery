@@ -61,10 +61,10 @@ export const employeeDocumentsListsApiSlice = apiSlice.injectEndpoints({
       },
 
 
-      transformResponse: (responseData) => {
-        return responseData;
-      },
-      providesTags: ["employeeDocument"],
+      // transformResponse: (responseData) => {
+      //   return responseData;
+      // },
+      providesTags: ["employeeDocumentsList"],
     }),
     updateEmployeeDocumentsList: builder.mutation({
       query: (initialEmployeeDocumentsListData) => ({

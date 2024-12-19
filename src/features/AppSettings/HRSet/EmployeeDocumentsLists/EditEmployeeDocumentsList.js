@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom"; //because we will get the userId from the url
 import { useSelector } from "react-redux";
 import EditEmployeeDocumentsListForm from "./EditEmployeeDocumentsListForm";
-import { useGetEmployeeDocumentsListsQuery } from "./employeeDocumentsListsApiSlice";
+import { useGetEmployeeDocumentsListByIdQuery } from "./employeeDocumentsListsApiSlice";
 import useAuth from "../../../../hooks/useAuth";
 import { Puff } from "react-loading-icons";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
@@ -11,22 +11,33 @@ const EditEmployeeDocumentsList = () => {
   const { id } = useParams();
   //console.log(id,'idddd')
   //RTK query the employeeDocumentsList and not from the state to reduce cache data
-  const { employeeDocumentsList } = useGetEmployeeDocumentsListsQuery(
-    "employeeDocumentsList",
-    {
-      selectFromResult: ({ data }) => ({
-        employeeDocumentsList: data?.entities[id],
-      }),
-    }
-  );
+  
 
-  // will not get from the state because not set to state already
+  const {
+      data: employeeDocumentsListToEdit,
+      isLoading,
+      isSuccess,
+      isError,
+      error,
+    } = useGetEmployeeDocumentsListByIdQuery(
+      {
+        id: id,
+        endpointName: "EditEmployeeDocumentsList",
+      },
+      {
+        refetchOnFocus: true,
+        refetchOnMountOrArgChange: true,
+      }
+    ) || {};
+
+    
+    const employeeDocumentsList = isSuccess ? employeeDocumentsListToEdit : [];
   // const employeeDocumentsListToEdit = useSelector(state=> state.employeeDocumentsList?.entities[id])
   //console.log('helllllow',employeeDocumentsList, 'list id')
   
   let content;
 
-  content = employeeDocumentsList ? (
+  content = (employeeDocumentsList!={}) ? (
     <><EditEmployeeDocumentsListForm listToEdit={employeeDocumentsList} /></>
   ) : (
     <><HRSet/><LoadingStateIcon /></>

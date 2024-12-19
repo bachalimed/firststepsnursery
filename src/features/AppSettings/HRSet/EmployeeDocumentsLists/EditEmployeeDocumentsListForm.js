@@ -1,26 +1,18 @@
 import React from "react";
 import HRSet from "../../HRSet";
 import { useState, useEffect } from "react";
-import { useGetAcademicYearsQuery } from "../../AcademicsSet/AcademicYears/academicYearsApiSlice";
 import { useUpdateEmployeeDocumentsListMutation } from "./employeeDocumentsListsApiSlice";
 import { useNavigate } from "react-router-dom";
-import { ROLES } from "../../../../config/UserRoles";
-import { ACTIONS } from "../../../../config/UserActions";
-import { selectAllAcademicYears } from "../../AcademicsSet/AcademicYears/academicYearsApiSlice";
 import useAuth from "../../../../hooks/useAuth";
-
-import { useSelector } from "react-redux";
-import { Puff } from "react-loading-icons";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { TITLE_REGEX } from "../../../../config/REGEX";
+import { NAME_REGEX, TITLE_REGEX } from "../../../../config/REGEX";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
+import { useOutletContext } from "react-router-dom";
 
 const EditEmployeeDocumentsListForm = ({ listToEdit }) => {
   //console.log(listToEdit.documentsAcademicYear,'lllllyear')
-  const Navigate = useNavigate();
-  const id = listToEdit.id;
-  console.log(id, "ddddd");
+  const navigate = useNavigate();
+  const { _id: id } = listToEdit;
+  ///console.log(id, "ddddd");
   const [documentsAcademicYear, setDocumentsAcademicYear] = useState(
     listToEdit.documentsAcademicYear
   );
@@ -29,9 +21,9 @@ const EditEmployeeDocumentsListForm = ({ listToEdit }) => {
   );
   const [documentTitle, setDocumentTitle] = useState("");
   const [validDocumentTitle, setValidDocumentTitle] = useState(false);
-//confirmation Modal states
-const [showConfirmation, setShowConfirmation] = useState(false);
-
+  //confirmation Modal states
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
   const { userId, canEdit, canDelete, canAdd, canCreate, isParent, status2 } =
     useAuth();
 
@@ -39,10 +31,10 @@ const [showConfirmation, setShowConfirmation] = useState(false);
     updateEmployeeDocumentsList,
     {
       //an object that calls the status when we execute the newUserForm function
-      isLoading:isDocumentsLoading,
-      isSuccess:isDocumentsSuccess,
-      isError:isDocumentsError,
-      error:documentsError,
+      isLoading: isDocumentsLoading,
+      isSuccess: isDocumentsSuccess,
+      isError: isDocumentsError,
+      error: documentsError,
     },
   ] = useUpdateEmployeeDocumentsListMutation(); //it will not execute the mutation nownow but when called
 
@@ -54,19 +46,17 @@ const [showConfirmation, setShowConfirmation] = useState(false);
     if (isDocumentsSuccess) {
       setEmployeeDocumentsList([]);
       setDocumentsAcademicYear("");
-      Navigate("/settings/HRSet/EmployeeDocumentsListsList/"); //will navigate here after saving
+      navigate("/settings/HRSet/EmployeeDocumentsListsList/"); //will navigate here after saving
     }
-  }, [isDocumentsSuccess, Navigate]); //even if no success it will navigate and not show any warning if failed or success
+  }, [isDocumentsSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success
 
+  // Ensure that the first three documents cannot be removed
+  const isRemovable = (index) => index >= 1;
 
-  
-   // Ensure that the first three documents cannot be removed
-   const isRemovable = (index) => index >= 1;
-
-  const handleFieldChange = (index, field, value) => {
-    setEmployeeDocumentsList((prevState) =>
-      prevState.map((doc, i) =>
-        i === index ? { ...doc, [field]: value } : doc
+  const handleActionChange = (index, action) => {
+    setEmployeeDocumentsList((prevList) =>
+      prevList.map((entry, i) =>
+        i === index ? { ...entry, [action]: !entry[action] } : entry
       )
     );
   };
@@ -96,7 +86,6 @@ const [showConfirmation, setShowConfirmation] = useState(false);
   const onSaveEmployeeDocumentsListClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
-      
       setShowConfirmation(true);
     }
   };
@@ -104,23 +93,42 @@ const [showConfirmation, setShowConfirmation] = useState(false);
   const handleConfirmSave = async () => {
     // Close the confirmation modal
     setShowConfirmation(false);
-
-      await updateEmployeeDocumentsList({
+    try {
+      const response = await updateEmployeeDocumentsList({
         id: listToEdit.id,
         documentsList: employeeDocumentsList,
         documentsAcademicYear,
       });
-      if (isDocumentsError) {
-        console.error("Error saving:", documentsError);
+      if ((response.data && response.data.message) || response?.message) {
+        // Success response
+        triggerBanner(response?.data?.message || response?.message, "success");
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
       }
-    }
+    } catch (error) {
+      triggerBanner(
+        "Failed to update student document. Please try again.",
+        "error"
+      );
 
-// Close the modal without saving
+      console.error("Error updating student document:", error);
+    }
+  };
+
+  // Close the modal without saving
   const handleCloseModal = () => {
     setShowConfirmation(false);
   };
   const handleCancel = () => {
-    Navigate("/settings/employeesSet/employeeDocumentsListsList/");
+    navigate("/settings/employeesSet/employeeDocumentsListsList/");
   };
 
   // const [isRequired, setIsRequired] = useState(false)
@@ -136,79 +144,113 @@ const [showConfirmation, setShowConfirmation] = useState(false);
   // const onIsLegalisedChanged = e => setIsLegalised(e.target.value)
 
   //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
-  const errClass = isDocumentsError ? "error-bar" : "offscreen";
 
   const content = (
     <>
       <HRSet />
-     
-      <form className="form-container" onSubmit={onSaveEmployeeDocumentsListClicked}>
-        <div className="form__title-row">
-          <h2>Edit Employee Documents List for {documentsAcademicYear}</h2>
-        </div>
-        <h1>Employee Documents</h1>
-        {employeeDocumentsList.map((entry, index) => (
-          <div key={index}>
-            <input
-             aria-label="document title"
-             
-             placeholder="[3-20 characters]"
-              type="text"
-             
-              value={entry.documentTitle}
-              onChange={(e) =>
-                handleFieldChange(index, "documentTitle", e.target.value)
-              }
-              disabled={index < 1} // Disable editing for the first three elements if needed
-            />
-            <label htmlFor="">
-              <input
-                aria-label="is required"
-                type="checkbox"
-                checked={entry.isRequired}
-                onChange={(e) =>
-                  handleFieldChange(index, "isRequired", e.target.checked)
-                }
-              />
-              Is Required?
-            </label>
-            <label htmlFor="">
-              <input
-               aria-label="is legalised"
-                type="checkbox"
-                checked={entry.isLegalised}
-                onChange={(e) =>
-                  handleFieldChange(index, "isLegalised", e.target.checked)
-                }
-              />
-              Is Legalised?
-            </label>
-            {isRemovable(index) && (  <button  className="delete-button" aria-label="remove document" type="button" onClick={() => handleRemoveEntry(index)}>
-              Remove
-            </button>)}
+
+      <form
+        className="form-container"
+        onSubmit={onSaveEmployeeDocumentsListClicked}
+      >
+        <h2 className="formTitle">
+          Edit Employee Documents List for {documentsAcademicYear}
+        </h2>
+        <div className="formSectionContainer">
+          <h3 className="formSectionTitle">Employee documents</h3>
+          <div className="formSection">
+            {employeeDocumentsList.map((entry, index) => (
+              <div key={index} className="formSection">
+                <label
+                  htmlFor={`${entry.documentTitle}-${index}`}
+                  className="formInputLabel"
+                >
+                  Document Title:{" "}
+                  {!validDocumentTitle && (
+                    <span className="text-red-600 ">*</span>
+                  )}
+                  <input
+                    aria-invalid={!validDocumentTitle}
+                    aria-label="document title"
+                    placeholder="[3-20 characters]"
+                    type="text"
+                    id={`${entry.documentTitle}-${index}`}
+                    name={`${entry.documentTitle}-${index}`}
+                    value={entry.documentTitle}
+                    onChange={(e) =>
+                      handleActionChange(index, "documentTitle", e.target.value)
+                    }
+                    className={`formInputText`}
+                    disabled={index < 1} // Disable editing for the first  element if needed
+                  />
+                </label>
+                <div className="grid grid-cols-1 md:grid-cols-1 gap-2 mb-2 mt-1 max-h-80 overflow-y-auto">
+                  <button
+                    aria-label="is required"
+                    type="button"
+                    onClick={() => handleActionChange(index, "isRequired")}
+                    className={`px-3 py-2 text-left rounded-md ${
+                      entry.isRequired
+                        ? "bg-green-600 text-white hover:bg-green-500"
+                        : "bg-gray-100 text-gray-700 hover:bg-sky-600 hover:text-white"
+                    }`}
+                  >
+                    <div className="font-semibold">
+                      {entry.isRequired ? "Required" : "Not Required"}
+                    </div>
+                  </button>
+                  <button
+                    aria-label="is legalised"
+                    type="button"
+                    onClick={() => handleActionChange(index, "isLegalised")}
+                    className={`px-3 py-2 text-left rounded-md ${
+                      entry.isLegalised
+                        ? "bg-green-600 text-white hover:bg-green-500"
+                        : "bg-gray-100 text-gray-700 hover:bg-sky-600 hover:text-white"
+                    }`}
+                  >
+                    <div className="font-semibold">
+                      {entry.isLegalised ? "Legalised" : "Not Legalised"}
+                    </div>
+                  </button>
+                </div>
+                {isRemovable(index) && (
+                  <button
+                    className="delete-button w-full"
+                    aria-label="remove document"
+                    type="button"
+                    onClick={() => handleRemoveEntry(index)}
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+            ))}
           </div>
-        ))}
-        <button aria-label="add document" className="add-button" type="button" onClick={handleAddEntry}>
-          Add Document
-        </button>
-        <div className="cancelSavebuttonsDiv">
-         
           <button
-          aria-label="cancel new document list"
+            aria-label="add document"
+            className="add-button w-full"
+            type="button"
+            onClick={handleAddEntry}
+          >
+            Add Document
+          </button>
+        </div>
+        <div className="cancelSavebuttonsDiv">
+          <button
+            aria-label="cancel edit list"
             className="cancel-button"
-            onClick={handleCancel}
+            onClick={()=>navigate('/settings/HRSet/EmployeeDocumentsListsList')}
           >
             Cancel
           </button>
           <button
-          aria-label="submit edit document list"
-           className="save-button"
+            aria-label="submit list"
+            className="save-button"
             type="submit"
-            title="Save"
-            onClick={onSaveEmployeeDocumentsListClicked}
-            disabled={!canSave||isDocumentsLoading}
+            disabled={!canSave || isDocumentsLoading}
           >
-            Save Changes
+            Save
           </button>
         </div>
       </form>

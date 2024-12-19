@@ -5,15 +5,14 @@ import { useUpdateStudentDocumentsListMutation } from "./studentDocumentsListsAp
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../../../hooks/useAuth";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
-
 import { useOutletContext } from "react-router-dom";
 import {TITLE_REGEX, NAME_REGEX} from'../../../../config/REGEX'
 
 const EditStudentDocumentsListForm = ({ listToEdit }) => {
   //console.log(listToEdit.documentsAcademicYear,'lllllyear')
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const { _id } = listToEdit;
-console.log(listToEdit,'listToEdit in form')
+//console.log(listToEdit,'listToEdit in form')
   const [documentsAcademicYear, setDocumentsAcademicYear] = useState(
     listToEdit?.documentsAcademicYear
   );
@@ -51,9 +50,9 @@ console.log(listToEdit,'listToEdit in form')
       setStudentDocumentsList([]);
       setDocumentsAcademicYear("");
       setDocumentTitle("");
-      Navigate("/settings/studentsSet/studentDocumentsListsList"); //will navigate here after saving
+      navigate("/settings/studentsSet/studentDocumentsListsList"); //will navigate here after saving
     }
-  }, [isSuccess, Navigate]); //even if no success it will navigate and not show any warning if failed or success
+  }, [isSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success
 
   // Ensure that the first three documents cannot be removed
   const isRemovable = (index) => index >= 2;//the first threea reprpedefined(stud photo, father photo, mother photo)
@@ -133,16 +132,17 @@ console.log(listToEdit,'listToEdit in form')
       console.error("Error updating student document:", error);
     }
   };
+
   const handleCloseModal = () => {
     setShowConfirmation(false);
   };
   const handleCancel = () => {
-    Navigate("/settings/studentsSet/studentDocumentsListsList/");
+    navigate("/settings/studentsSet/studentDocumentsListsList/");
   };
 
   const content = (
     <>
-      <StudentsSet />
+      <StudentsSet/>
 
       <form
         className="form-container"
@@ -156,7 +156,7 @@ console.log(listToEdit,'listToEdit in form')
           <div className="formSection">
             {studentDocumentsList.map((entry, index) => (
               <div key={index} className="formSection">
-                <div className="formLineDiv"></div>
+                
                 <label
                   htmlFor={`${entry.documentTitle}-${index}`}
                   className="formInputLabel"
@@ -237,12 +237,12 @@ console.log(listToEdit,'listToEdit in form')
           <button
             aria-label="cancel edit list"
             className="cancel-button"
-            onClick={handleCancel}
+            onClick={()=>navigate('/settings/studentsSet/studentDocumentsListsList/')}
           >
             Cancel
           </button>
           <button
-            aria-label="submit  list"
+            aria-label="submit list"
             className="save-button"
             type="submit"
             disabled={!canSave || isLoading}

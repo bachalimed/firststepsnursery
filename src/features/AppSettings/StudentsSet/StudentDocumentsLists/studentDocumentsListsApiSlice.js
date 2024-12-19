@@ -44,9 +44,9 @@ export const studentDocumentsListsApiSlice = apiSlice.injectEndpoints({
         return response.status === 200 && !result.isError;
       },
 
-      transformResponse: (responseData) => {
-        return responseData;
-      },
+      // transformResponse: (responseData) => {
+      //   return responseData;
+      // },
       providesTags: ["studentDocument"],
     }),
     getStudentDocumentsListById: builder.query({
@@ -60,10 +60,10 @@ export const studentDocumentsListsApiSlice = apiSlice.injectEndpoints({
         return response.status === 200 && !result.isError;
       },
 
-      transformResponse: (responseData) => {
-        return responseData;
-      },
-      providesTags: ["studentDocument"],
+      // transformResponse: (responseData) => {
+      //   return responseData;
+      // },
+      providesTags: ["studentDocumentList"],
     }),
     updateStudentDocumentsList: builder.mutation({
       query: (initialStudentDocumentsListData) => ({
