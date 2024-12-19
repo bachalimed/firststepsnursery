@@ -81,7 +81,7 @@ const EditAcademicYearForm = ({ academicYear }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!title || !yearStart || !yearEnd || !academicYearCreator) {
+    if (canSubmit) {
       setError("All fields are required.");
       return;
     }
@@ -103,7 +103,7 @@ const EditAcademicYearForm = ({ academicYear }) => {
 
       navigate("/settings/academicsSet/academicYears/");
       console.log(response, "response");
-     if ((response.data && response.data.message) || response?.message) {
+      if ((response.data && response.data.message) || response?.message) {
         // Success response
         triggerBanner(response?.data?.message || response?.message, "success");
       } else if (
@@ -144,28 +144,24 @@ const EditAcademicYearForm = ({ academicYear }) => {
   return (
     <>
       <AcademicsSet />
-      
 
-        <form onSubmit={handleSubmit} className="form-container">
-        <h2 className="formTitle">
-          {" "}
-          {`Edit Academic Year ${academicYear.title}`}
-        </h2>
-          <div className="mb-4">
-            <label htmlFor="" formInputLabel>
-              Starting Year (Format: yyyy)
+      <form onSubmit={handleSubmit} className="form-container">
+        <h2 className="formTitle">Edit Academic Year {academicYear.title}</h2>
+        <div className="formSectionContainer">
+          <h3 className="formSectionTitle">Year title</h3>
+          <div className="formSection">
+            <label htmlFor="startingyear" className="formInputLabel">
+              Start Year {!title && <span className="text-red-600">*</span>}
               <input
-               aria-label="starting year"
-               
-               placeholder="[yyyy]"
+                aria-label="starting year"
+                id="startingyear"
+                name="startingyear"
+                placeholder="[yyyy]"
                 type="text"
                 value={title.split("/")[0] || ""}
                 onChange={handleYearStartChange}
-                
                 maxLength="4"
-                className={`w-full px-3 py-2 border rounded-md ${
-                  titleError ? "border-red-600" : ""
-                } focus:outline-none focus:ring-2 focus:ring-sky-700`}
+                className={`formInputText`}
               />
               {titleError && (
                 <p className="text-red-600 text-sm mt-2">{titleError}</p>
@@ -173,71 +169,73 @@ const EditAcademicYearForm = ({ academicYear }) => {
             </label>
           </div>
 
-          <div className="mb-4">
-            <label htmlFor="" formInputLabel>
-              Academic Year Title
+          <h3 className="formSectionTitle">Year details</h3>
+          <div className="formSection">
+            <label htmlFor="yearTitle" className="formInputLabel">
+            Academic Year Title
               <input
-               aria-label="year title"
-               
-             
+                aria-label="year title"
+                id="yearTitle"
+                name="yearTitle"
                 type="text"
                 value={title}
                 readOnly
-                className="w-full px-3 py-2 border rounded-md bg-gray-100"
+                className={`formInputText`}
               />
             </label>
-          </div>
 
-          <div className="mb-4">
-            <label htmlFor=""  className="formInputLabel">
+            <label htmlFor="" className="formInputLabel">
               Year Start
               <input
+                id="yearStart"
+                name="yearStart"
+                readOnly
                 type="text"
                 value={yearStart}
                 onChange={(e) => setYearStart(e.target.value)}
-                className="w-full px-3 py-2 border rounded-md bg-gray-100"
+                className={`formInputText`}
               />
             </label>
-          </div>
 
-          <div className="mb-4">
-            <label htmlFor=""  className="formInputLabel">
+            <label htmlFor="yearEnd" className="formInputLabel">
               Year End
               <input
+                id="yearEnd"
+                name="yearEnd"
                 type="text"
-                value={new Date(yearEnd).toLocaleDateString()}
-                className="w-full px-3 py-2 border rounded-md bg-gray-100"
+                value={yearEnd}
+                readOnly
+                className={`formInputText`}
               />
             </label>
           </div>
+        </div>
 
-          {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
-          <div className="cancelSavebuttonsDiv">
-            <button
-              aria-label="cancel edit"
-              type="button"
-              onClick={() =>
-                navigate("/settings/academicsSet/academicYears/")
-              }
-              className="cancel-button"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={!canSubmit || isUpdating}
-              className="save-button"
-            >
-              {isUpdating ? "Updating..." : "Update Academic Year"}
-            </button>
-          </div>
-          {/* {isUpdateError && (
+        <div className="cancelSavebuttonsDiv">
+          <button
+            aria-label="cancel edit"
+            type="button"
+            onClick={() => navigate("/settings/academicsSet/academicYears/")}
+            className="cancel-button"
+          >
+            Cancel
+          </button>
+          <button
+           aria-label="submit year"
+            type="submit"
+            disabled={!canSubmit || isUpdating}
+            className="save-button"
+          >
+            Save
+          </button>
+        </div>
+        {/* {isUpdateError && (
             <p className="text-red-600 text-sm mt-2">
               {updateError?.data?.message || "Error updating academic year."}
             </p>
           )} */}
-        </form>
-      
+      </form>
+
       {/* Confirmation Modal */}
       <ConfirmationModal
         show={showConfirmation}

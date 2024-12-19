@@ -77,13 +77,6 @@ const NewAcademicYearForm = () => {
     }
   };
 
-  // Utility function to reset fields
-  const resetFields = () => {
-    setTitle("");
-    setYearStart("");
-    setYearEnd("");
-  };
-
   // Redux mutation for adding the academic year
   const [
     addNewAcademicYear,
@@ -95,58 +88,6 @@ const NewAcademicYearForm = () => {
   ] = useAddNewAcademicYearMutation();
 
   const { triggerBanner } = useOutletContext(); // Access banner trigger
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Validate fields
-    if (!title || !yearStart || !yearEnd || !academicYearCreator) {
-      setError("All fields are required.");
-      return;
-    }
-    setShowConfirmation(true);
-  };
-  // This function handles the confirmed save action
-  const handleConfirmSave = async () => {
-    // Close the confirmation modal
-    setShowConfirmation(false);
-    try {
-      // Ensure yearStart and yearEnd are Date objects when creating the new academic year
-      const newAcademicYear = await addNewAcademicYear({
-        title,
-        yearStart: new Date(yearStart), // Ensure it's a Date object
-        yearEnd: new Date(yearEnd),
-        academicYearCreator,
-      }).unwrap();
-
-      // Dispatch action to update the state in the slice
-      dispatch(academicYearAdded(newAcademicYear)); //maybe no need to dispatch because it will update when querying again
-
-      navigate("/settings/academicsSet/academicYears/"); // Redirect after successful creation
-      if (newAcademicYear.data && newAcademicYear.data.message) {
-        // Success response
-        triggerBanner(newAcademicYear.data.message, "success");
-      } else if (
-        newAcademicYear?.error &&
-        newAcademicYear?.error?.data &&
-        newAcademicYear?.error?.data?.message
-      ) {
-        // Error response
-        triggerBanner(newAcademicYear.error.data.message, "error");
-      } else {
-        // In case of unexpected response format
-        triggerBanner("Unexpected response from server.", "error");
-      }
-    } catch (error) {
-      triggerBanner("Failed to create academic year. Please try again.", "error");
-
-      console.error("Error creating acadmic year:", error);
-    }
-  };
-  // Close the modal without saving
-  const handleCloseModal = () => {
-    setShowConfirmation(false);
-  };
   // Update canSubmit state whenever relevant variables change
   useEffect(() => {
     setCanSubmit(
@@ -157,40 +98,78 @@ const NewAcademicYearForm = () => {
         !titleError
     );
   }, [title, yearStart, yearEnd, academicYearCreator, titleError]);
-  // console.log(
-  //   title,
-  //   yearStart,
-  //   yearEnd,
-  //   academicYearCreator,
-  //   "title ,yearStart ,yearEnd,academicYearCreator"
-  // );
-  // academicYears.map((year) => {
-  //   console.log(year, "year");
-  // });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (canSubmit) {
+      setShowConfirmation(true);
+    }
+  };
+  // This function handles the confirmed save action
+  const handleConfirmSave = async () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
+    try {
+      // Ensure yearStart and yearEnd are Date objects when creating the new academic year
+      const response = await addNewAcademicYear({
+        title,
+        yearStart: new Date(yearStart), // Ensure it's a Date object
+        yearEnd: new Date(yearEnd),
+        academicYearCreator,
+      }).unwrap();
+
+      // Dispatch action to update the state in the slice
+      dispatch(academicYearAdded(response)); //maybe no need to dispatch because it will update when querying again
+
+      navigate("/settings/academicsSet/academicYears/"); // Redirect after successful creation
+      if ((response.data && response.data.message) || response?.message) {
+        // Success response
+        triggerBanner(response?.data?.message || response?.message, "success");
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner(
+        "Failed to create academic year. Please try again.",
+        "error"
+      );
+
+      console.error("Error creating acadmic year:", error);
+    }
+  };
+  // Close the modal without saving
+  const handleCloseModal = () => {
+    setShowConfirmation(false);
+  };
+
   return (
     <>
       <AcademicsSet />
-     
 
-        <form onSubmit={handleSubmit} className="form-container">
-        <h2 className="text-2xl font-bold mb-6 text-center">
-          New Academic Year
-        </h2>
-          <div className="mb-4">
-            <label htmlFor=""  className="formInputLabel">
-              Starting Year (Format: yyyy)
+      <form onSubmit={handleSubmit} className="form-container">
+        <h2 className="formTitle">New Academic Year</h2>
+        <div className="formSectionContainer">
+          <h3 className="formSectionTitle">Year title</h3>
+          <div className="formSection">
+            <label htmlFor="startingyear" className="formInputLabel">
+              Starting Year {!title && <span className="text-red-600">*</span>}
               <input
-               aria-label="starting year"
-               
-               placeholder="[yyyy]"
+                aria-label="starting year"
+                placeholder="[yyyy]"
                 type="text"
+                id="startingyear"
+                name="startingyear"
                 value={title.split("/")[0] || ""} // Show only the first year in input
                 onChange={handleYearStartChange}
-              
                 maxLength="4"
-                className={`w-full px-3 py-2 border rounded-md ${
-                  titleError ? "border-red-600" : ""
-                } focus:outline-none focus:ring-2 focus:ring-sky-700`}
+                className={`formInputText`}
               />
               {titleError && (
                 <p className="text-red-600 text-sm mt-2">{titleError}</p>
@@ -198,69 +177,73 @@ const NewAcademicYearForm = () => {
             </label>
           </div>
 
-          <div className="mb-4">
-            <label htmlFor=""  className="formInputLabel">
+          <h3 className="formSectionTitle">Year details</h3>
+          <div className="formSection">
+            <label htmlFor="yearTitle" className="formInputLabel">
               Academic Year Title
               <input
-              aria-label="year title"
+                aria-label="year title"
+                id="yearTitle"
+                name="yearTitle"
                 type="text"
                 value={title}
                 readOnly
-                className="w-full px-3 py-2 border rounded-md bg-gray-100"
+                className={`formInputText`}
               />
             </label>
-          </div>
 
-          <div className="mb-4">
-            <label htmlFor=""  className="formInputLabel">
-              Year Start
+            <label htmlFor="yearStart" className="formInputLabel">
+             Start year
               <input
                 type="text"
                 value={yearStart}
+                id="yearStart"
+                name="yearStart"
                 readOnly
-                className="w-full px-3 py-2 border rounded-md bg-gray-100"
+                className={`formInputText`}
               />{" "}
             </label>
-          </div>
 
-          <div className="mb-4">
-            <label htmlFor=""  className="formInputLabel">
+            <label htmlFor="yearEnd" className="formInputLabel">
               Year End
               <input
+               id="yearEnd"
+                name="yearEnd"
                 type="text"
                 value={yearEnd}
                 readOnly
-                className="w-full px-3 py-2 border rounded-md bg-gray-100"
+                className={`formInputText`}
               />
             </label>
           </div>
+        </div>
 
-          {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
-          <div className="cancelSavebuttonsDiv">
-            <button
-              aria-label="cancel new"
-              type="button"
-              onClick={() => navigate("/settings/academicsSet/academicYears/")}
-              className="cancel-button"
-            >
-              Cancel
-            </button>
-            <button
-
-              type="submit"
-              disabled={!canSubmit}
-              className="w-full bg-sky-700 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200"
-            >
-              {isNewYearLoading ? "Creating..." : "Create Academic Year"}
-            </button>
-          </div>
-          {/* {isNewYearError && (
+        <div className="cancelSavebuttonsDiv">
+          <button
+            aria-label="cancel new"
+            
+            type="button"
+            onClick={() => navigate("/settings/academicsSet/academicYears/")}
+            className="cancel-button w-full"
+          >
+            Cancel
+          </button>
+          <button
+           aria-label="submit year"
+            type="submit"
+            disabled={!canSubmit}
+            className="save-button w-full"
+          >
+            Save
+          </button>
+        </div>
+        {/* {isNewYearError && (
             <p className="text-red-600 text-sm mt-2">
               {newYearError?.data?.message || "Error creating academic year."}
             </p>
           )} */}
-        </form>
-     
+      </form>
+
       {/* Confirmation Modal */}
       <ConfirmationModal
         show={showConfirmation}
