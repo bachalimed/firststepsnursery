@@ -211,7 +211,7 @@ const NewEnrolmentForm = () => {
 
     //update teh list so we only have studetn with no enrolment for that selected enrolment month
     const filteredList = noEnrolmentStudentsList.filter((student) =>
-      student.agreedServices.some(
+      student.agreedServices.some(// some means if any service has a month similar to the one selcted, the whole student will be in the list
         (
           service /////put .some to make sure if any of the agredservice has the month, it will not be excluded
         ) => service.feeMonths.includes(formData.enrolmentMonth)

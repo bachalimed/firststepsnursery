@@ -188,13 +188,12 @@ const NewAdmissionForm = () => {
   //     }
   //   }
   // }, [isServicesSuccess]);
-  // Set default admission service
+  // Set default admission service, we select september as default whcih will be changed
   useEffect(() => {
     if (isServicesSuccess && formData.agreedServices[0].service === "") {
       const admissionService = servicesList.find(
         (service) => service.serviceType === "Admission"
       );
-
       if (admissionService) {
         setFormData((prevData) => ({
           ...prevData,
@@ -202,18 +201,7 @@ const NewAdmissionForm = () => {
             {
               ...prevData.agreedServices[0],
               service: admissionService.id,
-              feeMonths: [
-                "January",
-                "February",
-                "March",
-                "April",
-                "May",
-                "June",
-                "September",
-                "October",
-                "November",
-                "December",
-              ], // All months except July and August
+              feeMonths: ["September"], // All months except July and August
             },
             ...prevData.agreedServices.slice(1),
           ],
@@ -279,10 +267,16 @@ const NewAdmissionForm = () => {
 
   //console.log(admissionValidity, "admissionValidity");
   const [primaryValidity, setPrimaryValidity] = useState({
-    validStudent: OBJECTID_REGEX.test(formData.student),
-    validAdmissionYear: formData.admissionYear !== "",
-    validAdmissionDate: DATE_REGEX.test(formData.admissionDate),
+    validStudent: false,
+    validAdmissionYear: false,
+    validAdmissionDate: false,
   });
+
+  const [validFirstAdmission, setValidFirstAdmisison] = useState(false);
+
+  useEffect(() => {
+    setValidFirstAdmisison(formData.agreedServices[0].feeMonths?.length === 1);
+  }, [formData.agreedServices[0].feeMonths]);
 
   useEffect(() => {
     setPrimaryValidity((prev) => ({
@@ -365,11 +359,10 @@ const NewAdmissionForm = () => {
     setShowConfirmation(false);
     try {
       const response = await addNewAdmission(formData).unwrap();
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -416,7 +409,7 @@ const NewAdmissionForm = () => {
       navigate("/students/admissions/admissions"); //will navigate here after saving
     }
   }, [isAddSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success
-
+console.log(validFirstAdmission,'validFirstAdmission')
   // Function to filter available services based on previous selections
 
   const getAvailableServices = (index) => {
@@ -494,6 +487,7 @@ const NewAdmissionForm = () => {
       Object.values(validity).every(Boolean)
     ) &&
     Object.values(primaryValidity).every(Boolean) &&
+    validFirstAdmission &&
     !isAddLoading;
   const handleCancel = () => {
     navigate("/students/admissions/admissions/");
@@ -753,6 +747,9 @@ const NewAdmissionForm = () => {
                       Select Month(s){" "}
                       {!service.feeMonths?.length > 0 && (
                         <span className="text-red-600">*</span>
+                      )}
+                      {!validFirstAdmission && index === 0 && (
+                        <span className="text-red-600">one-time-off service</span>
                       )}
                       <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-2">
                         {MONTHS?.map((month) => (

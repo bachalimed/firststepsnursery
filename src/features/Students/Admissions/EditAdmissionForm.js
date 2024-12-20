@@ -9,8 +9,7 @@ import {
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { useGetServicesByYearQuery } from "../../AppSettings/StudentsSet/NurseryServices/servicesApiSlice";
 import { useUpdateAdmissionMutation } from "./admissionsApiSlice";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
+
 import useAuth from "../../../hooks/useAuth";
 import { selectAllAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import {
@@ -133,6 +132,11 @@ const EditAdmissionForm = ({ admission }) => {
 
   const [admissionValidity, setAdmissionValidity] = useState([]);
 
+  const [validFirstAdmission, setValidFirstAdmisison] = useState(false);
+  useEffect(() => {
+    setValidFirstAdmisison(formData.agreedServices[0].feeMonths?.length === 1);
+  }, [formData.agreedServices[0].feeMonths]);
+
   const handleInputChange = (index, field, value) => {
     // Deep copy the agreedServices array
     const updatedServices = JSON.parse(JSON.stringify(formData.agreedServices));
@@ -188,9 +192,9 @@ const EditAdmissionForm = ({ admission }) => {
 
   console.log(admissionValidity, "admissionValidity2");
   const [primaryValidity, setPrimaryValidity] = useState({
-    validStudent: OBJECTID_REGEX.test(formData.student),
-    validAdmissionYear: formData.admissionYear !== "",
-    validAdmissionDate: DATE_REGEX.test(formData.admissionDate),
+    validStudent: false,
+    validAdmissionYear: false,
+    validAdmissionDate: false,
   });
 
   useEffect(() => {
@@ -288,10 +292,21 @@ const EditAdmissionForm = ({ admission }) => {
     );
   };
 
-  const handleMonthSelection = (index, month) => {
-    const updatedServices = [...formData.agreedServices];
-    const currentMonths = updatedServices[index].feeMonths || [];
 
+  const handleMonthSelection = (index, month) => {
+    // Create a deep copy of the agreedServices array
+    const updatedServices = formData.agreedServices.map((service, serviceIndex) =>
+      serviceIndex === index
+        ? {
+            ...service,
+            feeMonths: service.feeMonths ? [...service.feeMonths] : [],
+          }
+        : service
+    );
+  
+    // Get the current feeMonths for the selected index
+    const currentMonths = updatedServices[index].feeMonths;
+  
     if (currentMonths.includes(month)) {
       // Remove month if already selected
       updatedServices[index].feeMonths = currentMonths.filter(
@@ -301,12 +316,33 @@ const EditAdmissionForm = ({ admission }) => {
       // Add month to selection
       updatedServices[index].feeMonths = [...currentMonths, month];
     }
-
+  
+    // Update the formData state
     setFormData((prevData) => ({
       ...prevData,
       agreedServices: updatedServices,
     }));
   };
+  
+  // const handleMonthSelection = (index, month) => {
+  //   const updatedServices = [...formData.agreedServices];
+  //   const currentMonths = updatedServices[index].feeMonths || []; ////
+
+  //   if (currentMonths.includes(month)) {
+  //     // Remove month if already selected
+  //     updatedServices[index].feeMonths = currentMonths.filter(
+  //       (selectedMonth) => selectedMonth !== month
+  //     );
+  //   } else {
+  //     // Add month to selection
+  //     updatedServices[index].feeMonths = [...currentMonths, month];
+  //   }
+
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     agreedServices: updatedServices,
+  //   }));
+  // };
 
   // Function to handle agreed services check and set isFlagged if necessary
   const handleAgreedServicesCheck = (index) => {
@@ -378,6 +414,7 @@ const EditAdmissionForm = ({ admission }) => {
     admissionValidity.every(
       (validity) => validity && Object.values(validity).every(Boolean)
     ) &&
+    validFirstAdmission &&
     Object.values(primaryValidity).every(Boolean) &&
     !isUpdateLoading;
   const { triggerBanner } = useOutletContext(); // Access banner trigger
@@ -395,11 +432,10 @@ const EditAdmissionForm = ({ admission }) => {
     setShowConfirmation(false);
     try {
       const response = await updateAdmission(formData).unwrap();
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -668,6 +704,9 @@ const EditAdmissionForm = ({ admission }) => {
                     {!service.feeMonths?.length > 0 && (
                       <span className="text-red-600">*</span>
                     )}
+                     {!validFirstAdmission && index === 0 && (
+                        <span className="text-red-600">one-time-off service</span>
+                      )}
                     <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-2">
                       {MONTHS?.map((month) => (
                         <button

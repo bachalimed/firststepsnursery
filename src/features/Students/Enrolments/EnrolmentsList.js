@@ -689,7 +689,7 @@ const EnrolmentsList = () => {
             columns={column}
             data={filteredEnrolments}
             pagination
-            //selectableRows
+            selectableRows
             removableRows
             pageSizeControl
             onSelectedRowsChange={handleRowSelected}
@@ -735,8 +735,9 @@ const EnrolmentsList = () => {
           </button>
           <button
             className={`px-4 py-2 ${
-              selectedRows?.length === 1 ? "add-button" : "bg-gray-300"
+              selectedRows?.length >0 ? "add-button" : "bg-gray-300"
             } text-white rounded`}
+           
             onClick={handleGenerateInvoice}
             hidden={!canCreate}
             disabled={selectedRows?.length > 20 || selectedRows?.length < 1}

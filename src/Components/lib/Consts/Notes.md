@@ -20,3 +20,5 @@ academic years "1000" use as criteria to query all years data instead of only on
 12. expense category: nor removing of previous items, only  admin wiell be allowed, in case previous expenses werer made with that category item
 13. studetn adn expenses do not send same error messages from back end , controllers are similar: one needs response.data.message and teh other response.message
  14. enrollments that weere invoiced will not be editable on the list.
+ 15. for new enrolment, the list of studetn is for any studetn that has any service that have (some) month in one of the services that corresponds to the month selected.
+ so for new admissions, select only one month for admission service and other months for any service.
