@@ -15,7 +15,7 @@ import DataTable from "react-data-table-component";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
-import { Link ,useNavigate,useOutletContext} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MONTHS } from "../../../config/Months";
@@ -24,7 +24,7 @@ import { MdPaid, MdOutlinePaid } from "react-icons/md";
 const InvoicesList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
- 
+
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
 
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -44,7 +44,9 @@ const InvoicesList = () => {
     const currentMonthIndex = new Date().getMonth(); // Get current month (0-11)
     return MONTHS[currentMonthIndex]; // Return the month name with the first letter capitalized
   };
-  const [selectedInvoiceMonth, setSelectedInvoiceMonth] = useState(getCurrentMonth()); // invoice month
+  const [selectedInvoiceMonth, setSelectedInvoiceMonth] = useState(
+    getCurrentMonth()
+  ); // invoice month
   //console.log("Fetch invoices for academic year:", selectedAcademicYear);
   const {
     data: invoices, //the data is renamed invoices
@@ -148,19 +150,19 @@ const InvoicesList = () => {
       const meetsDiscountedCriteria =
         !discountedFilter ||
         (discountedFilter === "Discounted"
-          ? parseFloat(invoi.invoiceDiscountAmount) !== 0
-          : parseFloat(invoi.invoiceDiscountAmount) === 0);
+          ? parseFloat(invoi?.invoiceDiscountAmount) !== 0
+          : parseFloat(invoi?.invoiceDiscountAmount) === 0);
 
       const meetsPaidCriteria =
         !paidFilter ||
         (paidFilter === "paid"
-          ? invoi.invoiceIsFullyPaid
-          : !invoi.invoiceIsFullyPaid);
+          ? invoi?.invoiceIsFullyPaid
+          : !invoi?.invoiceIsFullyPaid);
       const meetsServiceTypeCriteria =
         !selectedServiceType ||
-        invoi.enrolments[0]?.serviceType === selectedServiceType;
+        invoi?.enrolments[0]?.serviceType === selectedServiceType;
       const meetsInvoiceMonthCriteria =
-        !selectedInvoiceMonth || invoi.invoiceMonth === selectedInvoiceMonth;
+        !selectedInvoiceMonth || invoi?.invoiceMonth === selectedInvoiceMonth;
 
       return (
         (nameMatches || otherMatches) &&
@@ -171,7 +173,7 @@ const InvoicesList = () => {
       );
     });
   }
- // console.log(filteredInvoices, "filteredInvoices");
+  // console.log(filteredInvoices, "filteredInvoices");
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
@@ -355,7 +357,7 @@ const InvoicesList = () => {
           </button>} */}
           {canEdit ? (
             <button
-            aria-label="edit invoice"
+              aria-label="edit invoice"
               className="text-amber-300"
               onClick={() =>
                 navigate(`/finances/invoices/editInvoice/${row.id}`)
@@ -366,7 +368,7 @@ const InvoicesList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
-            aria-label="delete invoice"
+              aria-label="delete invoice"
               className="text-red-600"
               onClick={() => onDeleteInvoiceClicked(row.id)}
             >
@@ -384,64 +386,47 @@ const InvoicesList = () => {
 
   // Custom header to include the row count
   const tableHeader = (
-   
-      <h2>
-        Invoices List:
-        <span> {filteredInvoices.length} invoices</span>
-      </h2>
-   
+    <h2>
+      Invoices List:
+      <span> {filteredInvoices.length} invoices</span>
+    </h2>
   );
 
   let content;
-  if (isInvoicesLoading||isServicesLoading)
+  if (isInvoicesLoading || isServicesLoading) {
     content = (
       <>
         <Finances />
+
         <LoadingStateIcon />
       </>
     );
-console.log(invoicesError,'invoicesError')
-
-    const { triggerBanner } = useOutletContext(); // Access banner trigger
-// Trigger the banner for errors
-useEffect(() => {
-  if (isInvoicesError) {
-    triggerBanner({
-      type: "error",
-      message: invoicesError?.data?.message || invoicesError?.message|| "Error fetching invoices.",
-    });
   }
-  if (isServicesError) {
-    triggerBanner({
-      type: "error",
-      message: servicesError?.data?.message || invoicesError?.message|| "Error fetching services.",
-    });
-  }
-}, [isInvoicesError, isServicesError, invoicesError, servicesError, triggerBanner]);
+  //console.log(invoicesError, "invoicesError");
 
+  content = (
+    <>
+      <Finances />
+      <div className="flex space-x-2 items-center ml-3">
+        {/* Search Bar */}
+        <div className="relative h-10 mr-2 ">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+          />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+          />
+        </div>
+        {/* Invoice Month Filter */}
 
-
-
-  if (isInvoicesSuccess && isServicesSuccess) {
-    content = (
-      <>
-        <Finances />
-        <div className="flex space-x-2 items-center ml-3">
-          {/* Search Bar */}
-          <div className="relative h-10 mr-2 ">
-            <HiOutlineSearch
-              fontSize={20}
-              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-            />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={handleSearch}
-              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
-            />
-          </div>
-          {/* Invoice Month Filter */}
+        <label htmlFor="monthFilter" className="formInputLabel">
           <select
+            aria-label="monthFilter"
+            id="monthFilter"
             value={selectedInvoiceMonth}
             onChange={(e) => setSelectedInvoiceMonth(e.target.value)}
             className="text-sm h-8 border border-gray-300  px-4"
@@ -459,8 +444,12 @@ useEffect(() => {
                 )
             )}
           </select>
-          {/* Service Type Filter */}
+        </label>
+        {/* Service Type Filter */}
+        <label htmlFor="serviceTypeFilter" className="formInputLabel">
           <select
+            aria-label="serviceTypeFilter"
+            id="serviceTypeFilter"
             value={selectedServiceType}
             onChange={(e) => setSelectedServiceType(e.target.value)}
             className="text-sm h-8 border border-gray-300  px-4"
@@ -472,9 +461,12 @@ useEffect(() => {
               </option>
             ))}
           </select>
-
-          {/* Invoiced Filter */}
+        </label>
+        {/* discounted Filter */}
+        <label htmlFor="discountedFilter" className="formInputLabel">
           <select
+            aria-label="discountedFilter"
+            id="discountedFilter"
             value={discountedFilter}
             onChange={(e) => setDiscountedFilter(e.target.value)}
             className="text-sm h-8 border border-gray-300  px-4"
@@ -483,9 +475,13 @@ useEffect(() => {
             <option value="Discounted">Discounted</option>
             <option value="Not Discounted">Not Discounted</option>
           </select>
+        </label>
 
-          {/* Paid Filter */}
+        {/* Paid Filter */}
+        <label htmlFor="paidFilter" className="formInputLabel">
           <select
+            aria-label="paidFilter"
+            id="paidFilter"
             value={paidFilter}
             onChange={(e) => setPaidFilter(e.target.value)}
             className="text-sm h-8 border border-gray-300  px-4"
@@ -494,54 +490,55 @@ useEffect(() => {
             <option value="paid">Paid</option>
             <option value="unpaid">Unpaid</option>
           </select>
-        </div>
-        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-          <DataTable
-            title={tableHeader}
-            columns={column}
-            data={filteredInvoices}
-            pagination
-            //selectableRows
-            removableRows
-            pageSizeControl
-            onSelectedRowsChange={handleRowSelected}
-            selectableRowsHighlight
-            customStyles={{
-              headCells: {
-                style: {
-                  // Apply Tailwind style via a class-like syntax
-                  justifyContent: "center", // Align headers to the center
-                  textAlign: "center", // Center header text
-                },
+        </label>
+      </div>
+
+      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+        <DataTable
+          title={tableHeader}
+          columns={column}
+          data={filteredInvoices}
+          pagination
+          //selectableRows
+          removableRows
+          pageSizeControl
+          onSelectedRowsChange={handleRowSelected}
+          selectableRowsHighlight
+          customStyles={{
+            headCells: {
+              style: {
+                // Apply Tailwind style via a class-like syntax
+                justifyContent: "center", // Align headers to the center
+                textAlign: "center", // Center header text
               },
-              cells: {
-                style: {
-                  justifyContent: 'center', // Center cell content
-                  textAlign: 'center',
-                },
+            },
+            cells: {
+              style: {
+                justifyContent: "center", // Center cell content
+                textAlign: "center",
               },
-            }}
-          ></DataTable>
-          
-            <div className="cancelSavebuttonsDiv">
-              <button
-                className="add-button"
-                onClick={() => navigate("/students/enrolments/enrolments/")}
-                hidden={!canCreate}
-              >
-                Invoice from Enrolment
-              </button>
-            </div>
-          
+            },
+          }}
+        ></DataTable>
+
+        <div className="cancelSavebuttonsDiv">
+          <button
+            className="add-button"
+            onClick={() => navigate("/students/enrolments/enrolments/")}
+            hidden={!canCreate}
+          >
+            Invoice from Enrolment
+          </button>
         </div>
-        <DeletionConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
-          onConfirm={handleConfirmDelete}
-        />
-      </>
-    );
-  }
+      </div>
+      <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
+    </>
+  );
+
   return content;
 };
 export default InvoicesList;

@@ -172,6 +172,7 @@ const AttendedSchoolsList = () => {
         <div className="space-x-1">
           {canEdit ? (
             <button
+            aria-label="edit school"
               className="text-amber-300"
               onClick={() =>
                 Navigate(`/settings/academicsSet/editAttendedSchool/${row.id}`)
@@ -182,6 +183,7 @@ const AttendedSchoolsList = () => {
           ) : null}
           {canDelete ? (
             <button
+            aria-label="delete school"
               className="text-red-600"
               onClick={() => onDeleteAttendedSchoolClicked(row.id)}
             >
@@ -213,16 +215,7 @@ const AttendedSchoolsList = () => {
       </>
     );
 
-  if (isSchoolsError) {
-    content = (
-      <>
-        <AcademicsSet />
-        <div className="error-bar">{schoolsError?.data?.message}</div>
-      </>
-    );
-  }
-
-  if (isSchoolsSuccess) {
+  
     return (
       <>
         <AcademicsSet />
@@ -274,6 +267,6 @@ const AttendedSchoolsList = () => {
         />
       </>
     );
-  }
+  
 };
 export default AttendedSchoolsList;

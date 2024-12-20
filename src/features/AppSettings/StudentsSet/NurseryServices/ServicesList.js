@@ -182,7 +182,7 @@ const ServicesList = () => {
 
   let content;
   if (isServicesLoading) content = <><StudentsSet /><LoadingStateIcon/></>;
-  if (isServicesError) content = <p>{servicesError?.data?.message}</p>;
+  
   
     content = (
       <>

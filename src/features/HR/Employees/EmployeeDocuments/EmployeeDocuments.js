@@ -351,6 +351,7 @@ const EmployeeDocuments = () => {
         <div className="space-x-1">
           {canView && row.documentUploaded && (
             <button
+            aria-label="view document"
               className="text-sky-700"
               fontSize={20}
               onClick={() => handleViewDocument(row.employeeDocumentId)}
@@ -361,6 +362,7 @@ const EmployeeDocuments = () => {
 
           {canEdit && !row.documentUploaded && (
             <button
+            aria-label="upload document"
               className="text-amber-300"
               onClick={() =>
                 handleUploadClick(row.documentTitle, row.documentReference)
@@ -371,6 +373,7 @@ const EmployeeDocuments = () => {
           )}
           {canDelete && row.documentUploaded && !isDelLoading && (
             <button
+            aria-label="delete document"
               className="text-red-600"
               onClick={() =>
                 onDeleteEmployeeDocumentClicked(row.employeeDocumentId)
@@ -394,10 +397,7 @@ const EmployeeDocuments = () => {
         <LoadingStateIcon />
       </>
     );
-  if (listIsError) {
-    content = <p className="errmsg">{listError?.data?.message}</p>; //errormessage class defined in the css, the error has data and inside we have message of error
-  }
-  if (listIsSuccess) {
+ 
     //console.log(employeeDocumentsListing)
     content = (
       <>
@@ -452,7 +452,7 @@ const EmployeeDocuments = () => {
         />
       </>
     );
-  }
+  
   return content;
 };
 export default EmployeeDocuments;

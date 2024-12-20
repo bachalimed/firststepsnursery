@@ -49,11 +49,13 @@ const PaymentsList = () => {
     const currentMonthIndex = new Date().getMonth(); // Get current month (0-11)
     return MONTHS[currentMonthIndex]; // Return the month name with the first letter capitalized
   };
-  const [selectedPaymentMonth, setSelectedPaymentMonth] = useState(getCurrentMonth()); // payment month
+  const [selectedPaymentMonth, setSelectedPaymentMonth] = useState(
+    getCurrentMonth()
+  ); // payment month
   //console.log("Fetch payments for academic year:", selectedAcademicYear);
   const {
     data: payments, //the data is renamed payments
-    isLoading: isPaymentsLoading, 
+    isLoading: isPaymentsLoading,
     isSuccess: isPaymentsSuccess,
     isError: isPaymentsError,
     error: paymentsError,
@@ -330,6 +332,7 @@ const PaymentsList = () => {
           ) : null} */}
           {canDelete && !isDelLoading && (
             <button
+            aria-label="delete payment"
               className="text-red-600"
               onClick={() => onDeletePaymentClicked(row.id)}
             >
@@ -347,35 +350,19 @@ const PaymentsList = () => {
 
   // Custom header to include the row count
   const tableHeader = (
- 
-      <h2>
-        Payments List: <span> {filteredPayments.length} payments</span>
-      </h2>
-  
+    <h2>
+      Payments List: <span> {filteredPayments.length} payments</span>
+    </h2>
   );
 
   let content;
-  if (isPaymentsLoading||isServicesLoading)
+  if (isPaymentsLoading || isServicesLoading)
     content = (
       <>
         <Finances />
         <LoadingStateIcon />
       </>
     );
-  if (isPaymentsError || isServicesError) {
-    content = (
-      <>
-        <Finances />
-        <div className="error-bar">
-          {paymentsError?.data?.message}
-          {servicesError?.data?.message}
-          
-        </div>
-      </>
-    ); //errormessage class defined in the css, the error has data and inside we have message of error
-  }
-
-  if (isPaymentsSuccess && isServicesSuccess){
 
   content = (
     <>
@@ -395,45 +382,53 @@ const PaymentsList = () => {
           />
         </div>
         {/* Payment Month Filter */}
-        <select
-          value={selectedPaymentMonth}
-          onChange={(e) => setSelectedPaymentMonth(e.target.value)}
-          className="text-sm h-8 border border-gray-300  px-4"
-        >
-          {/* Default option is the current month */}
+        <label htmlFor="monthFilter" className="formInputLabel">
+          <select
+            aria-label="monthFilter"
+            id="monthFilter"
+            value={selectedPaymentMonth}
+            onChange={(e) => setSelectedPaymentMonth(e.target.value)}
+            className="text-sm h-8 border border-gray-300  px-4"
+          >
+            {/* Default option is the current month */}
 
-          <option value="">{getCurrentMonth()}</option>
-          <option value="">All Months</option>
+            <option value="">{getCurrentMonth()}</option>
+            <option value="">All Months</option>
 
-          {/* Render the rest of the months, excluding the current month */}
-          {MONTHS.map((month, index) => {
-            if (month !== getCurrentMonth()) {
-              return (
-                <option key={index} value={month}>
-                  {month}
-                </option>
-              );
-            }
-            return null; // Ensure there's no option for the current month if it's already included
-          })}
-        </select>
+            {/* Render the rest of the months, excluding the current month */}
+            {MONTHS.map((month, index) => {
+              if (month !== getCurrentMonth()) {
+                return (
+                  <option key={index} value={month}>
+                    {month}
+                  </option>
+                );
+              }
+              return null; // Ensure there's no option for the current month if it's already included
+            })}
+          </select>
+        </label>
 
-        {/* Service Type Filter */}
-        <select
-          value={selectedPaymentType}
-          onChange={(e) => setSelectedPaymentType(e.target.value)}
-          className="text-sm h-8 border border-gray-300  px-4"
-        >
-          {/* Option for all payment types */}
-          <option value="">All Types</option>
+        {/* Payment Type Filter */}
+        <label htmlFor="paymentTypeFilter" className="formInputLabel">
+          <select
+            aria-label="paymentTypeFilter"
+            id="paymentTypeFilter"
+            value={selectedPaymentType}
+            onChange={(e) => setSelectedPaymentType(e.target.value)}
+            className="text-sm h-8 border border-gray-300  px-4"
+          >
+            {/* Option for all payment types */}
+            <option value="">All Types</option>
 
-          {/* Render available payment types */}
-          {PaymentTypes.map((paym, index) => (
-            <option key={index} value={paym}>
-              {paym}
-            </option>
-          ))}
-        </select>
+            {/* Render available payment types */}
+            {PaymentTypes.map((paym, index) => (
+              <option key={index} value={paym}>
+                {paym}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
       <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
         <DataTable
@@ -463,15 +458,13 @@ const PaymentsList = () => {
           }}
         ></DataTable>
         <div className="cancelSavebuttonsDiv">
-          
-            <button
-             className="add-button"
-              onClick={() => navigate("/finances/payments/newPayment/")}
-              hidden={!canCreate}
-            >
-              New Payment
-            </button>
-          
+          <button
+            className="add-button"
+            onClick={() => navigate("/finances/payments/newPayment/")}
+            hidden={!canCreate}
+          >
+            New Payment
+          </button>
         </div>
       </div>
       <DeletionConfirmModal
@@ -481,7 +474,7 @@ const PaymentsList = () => {
       />
     </>
   );
-  }
+
   return content;
 };
 export default PaymentsList;

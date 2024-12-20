@@ -390,6 +390,7 @@ const EmployeesList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
+          aria-label="employee Details"
             className="text-sky-700"
             fontSize={20}
             onClick={() => navigate(`/hr/employees/employeeDetails/${row.id}`)}
@@ -398,6 +399,7 @@ const EmployeesList = () => {
           </button>
           {canEdit ? (
             <button
+            aria-label="edit employee"
               className="text-amber-300"
               onClick={() => navigate(`/hr/employees/editEmployee/${row.id}`)}
             >
@@ -406,6 +408,7 @@ const EmployeesList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
+            aria-label="delete employee"
               className="text-red-600"
               onClick={() => onDeleteEmployeeClicked(row.id)}
             >
@@ -436,15 +439,7 @@ const EmployeesList = () => {
         <LoadingStateIcon />
       </>
     );
-  if (isEmployeesError) {
-    content = (
-      <>
-        <HR />
-        <div className="error-bar">{employeesError?.data?.message}</div>
-      </>
-    );
-  }
-  if (isEmployeesSuccess) {
+ 
     content = (
       <>
         <HR />
@@ -524,7 +519,7 @@ const EmployeesList = () => {
       /> */}
       </>
     );
-  }
+  
   return content;
 };
 export default EmployeesList;

@@ -27,8 +27,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import useAuth from "../../../hooks/useAuth";
 import { setAdmissions } from "./admissionsSlice";
 import { useOutletContext } from "react-router-dom";
-
-
+import { MONTHS } from "../../../config/Months";
 const AdmissionsList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
@@ -49,7 +48,7 @@ const AdmissionsList = () => {
   //console.log("Fetch admissions for academic year:", selectedAcademicYear);
   const {
     data: admissions, //the data is renamed admissions
-    isLoading: isAdmissionsLoading, 
+    isLoading: isAdmissionsLoading,
     isSuccess: isAdmissionsSuccess,
     isError: isAdmissionsError,
     error: admissionsError,
@@ -59,10 +58,9 @@ const AdmissionsList = () => {
       endpointName: "admissionsList",
     } || {},
     {
-     
-      pollingInterval: 60000, 
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
+      pollingInterval: 60000,
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
   const {
@@ -77,7 +75,6 @@ const AdmissionsList = () => {
       endpointName: "admissionsList",
     } || {},
     {
-      
       //pollingInterval: 60000,//will refetch data every 60seconds
       refetchOnFocus: true, //when we focus on another window then come back to the window ti will refetch data
       refetchOnMountOrArgChange: true, //refetch when we remount the component
@@ -104,24 +101,27 @@ const AdmissionsList = () => {
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
     try {
-      const response= await deleteAdmission({ id: idAdmissionToDelete });
-    setIsDeleteModalOpen(false); // Close the modal
-    if (response.data && response.data.message) {
-      // Success response
-      triggerBanner(response.data.message, "success");
+      const response = await deleteAdmission({ id: idAdmissionToDelete });
+      setIsDeleteModalOpen(false); // Close the modal
+      if (response.data && response.data.message) {
+        // Success response
+        triggerBanner(response.data.message, "success");
+      } else if (
+        response?.error &&
+        response?.error?.data &&
+        response?.error?.data?.message
+      ) {
+        // Error response
+        triggerBanner(response.error.data.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner("Failed to delete admission. Please try again.", "error");
 
-    } else if (response?.error && response?.error?.data && response?.error?.data?.message) {
-      // Error response
-      triggerBanner(response.error.data.message, "error");
-    } else {
-      // In case of unexpected response format
-      triggerBanner("Unexpected response from server.", "error");
+      console.error("Error deleting admission:", error);
     }
-  } catch (error) {
-    triggerBanner("Failed to delete admission. Please try again.", "error");
-
-    console.error("Error deleting admission:", error);
-  }
   };
 
   // Function to close the modal without deleting
@@ -153,9 +153,6 @@ const AdmissionsList = () => {
     admissionsList = Object.values(entities); //we are using entity adapter in this query
     dispatch(setAdmissions(admissionsList)); //timing issue to update the state and use it the same time
 
-   
-
-  
     // Apply filters for search, month, and service type with both conditions required
     filteredAdmissions = admissionsList.filter((item) => {
       const nameMatches = [
@@ -549,6 +546,7 @@ const AdmissionsList = () => {
             <IoMdAddCircleOutline className="text-2xl" />
           </button> */}
           <button
+          aria-label="admission Details"
             className="text-sky-700"
             fontSize={20}
             onClick={() =>
@@ -559,6 +557,7 @@ const AdmissionsList = () => {
           </button>
           {canEdit ? (
             <button
+            aria-label="edit admission"
               className="text-amber-300"
               onClick={() =>
                 navigate(`/students/admissions/editAdmission/${row.id}`)
@@ -569,6 +568,7 @@ const AdmissionsList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
+            aria-label="delet admission"
               className="text-red-600"
               onClick={() => onDeleteAdmissionClicked(row.id)}
             >
@@ -584,16 +584,14 @@ const AdmissionsList = () => {
     },
   ].filter(Boolean); // Filter out falsy values like `false` or `undefined`
 
-
-   // Custom header to include the row count
-   const tableHeader = (
-   
-      <h2>Admissions List: 
-      <span> {filteredAdmissions.length} admissions</span></h2>
-    
+  // Custom header to include the row count
+  const tableHeader = (
+    <h2>
+      Admissions List:
+      <span> {filteredAdmissions.length} admissions</span>
+    </h2>
   );
-  
-  
+
   let content;
   if (isAdmissionsLoading || isServicesLoading)
     content = (
@@ -602,59 +600,51 @@ const AdmissionsList = () => {
         <LoadingStateIcon />
       </>
     );
-  if (isAdmissionsError || isServicesError) {
-    content = (
-      <>
-       
-        <Students />
-        <div className="error-bar">
-          {admissionsError?.data?.message}
-          {servicesError?.data?.message}
-         
+
+  content = (
+    <>
+      <Students />
+      <div className="flex space-x-2 items-center ml-3">
+        {/* Search Bar */}
+        <div className="relative h-10 mr-2 ">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+          />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+          />
         </div>
-      </>
-    ); }
-  if (isAdmissionsSuccess && isServicesSuccess) {
-    content = (
-      <>
-        <Students />
-        <div className="flex space-x-2 items-center ml-3">
-          {/* Search Bar */}
-          <div className="relative h-10 mr-2 ">
-            <HiOutlineSearch
-              fontSize={20}
-              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-            />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={handleSearch}
-              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
-            />
-          </div>
-          {/* feeMonths Filter Dropdown */}
-          {/* Month Filter Dropdown */}
+        {/* feeMonths Filter Dropdown */}
+        {/* Month Filter Dropdown */}
+        <label htmlFor="monthFilter" className="formInputLabel">
           <select
+            aria-label="monthFilter"
+            id="monthFilter"
             onChange={handleMonthFilterChange}
             value={monthFilter}
             className="text-sm h-8 border border-gray-300  px-4"
           >
             <option value="">All Months</option>
-            <option value="September">September</option>
-            <option value="October">October</option>
-            <option value="November">November</option>
-            <option value="December">December</option>
-            <option value="January">January</option>
-            <option value="February">February</option>
-            <option value="March">March</option>
-            <option value="April">April</option>
-            <option value="May">May</option>
-            <option value="June">June</option>
-            <option value="July">July</option>
-            <option value="August">August</option>
+            {MONTHS.map(
+                       (month, index) =>
+                         
+                           <option key={index} value={month}>
+                             {month}
+                           </option>
+                        
+                         
+                       )}
           </select>
-          {/* Service Type filter dropdown */}
+        </label>
+        {/* Service Type filter dropdown */}
+        <label htmlFor="serviceTypeFilter" className="formInputLabel">
           <select
+            aria-label="serviceTypeFilter"
+            id="serviceTypeFilter"
             onChange={handleServiceTypeFilterChange}
             value={serviceTypeFilter}
             className="text-sm h-8 border border-gray-300  px-4"
@@ -667,8 +657,12 @@ const AdmissionsList = () => {
               </option>
             ))}
           </select>
+        </label>
 
+        <label htmlFor="flaggedFilter" className="formInputLabel">
           <select
+            aria-label="flaggedFilter"
+            id="flaggedFilter"
             value={isFlaggedFilter}
             onChange={(e) => setIsFlaggedFilter(e.target.value)}
             className="text-sm h-8 border border-gray-300  px-4"
@@ -677,8 +671,12 @@ const AdmissionsList = () => {
             <option value="flagged">Flagged</option>
             <option value="notflagged">Not Flagged</option>
           </select>
+        </label>
 
+        <label htmlFor="authorisedFilter" className="formInputLabel">
           <select
+            aria-label="authorisedFilter"
+            id="authorisedFilter"
             value={isAuthorisedFilter}
             onChange={(e) => setIsAuthorisedFilter(e.target.value)}
             className="text-sm h-8 border border-gray-300  px-4"
@@ -687,54 +685,55 @@ const AdmissionsList = () => {
             <option value="authorised">Authorised</option>
             <option value="notauthorised">Not Authorised</option>
           </select>
-        </div>
+        </label>
+      </div>
 
-        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-          <DataTable
+      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+        <DataTable
           title={tableHeader}
-            columns={column}
-            data={filteredAdmissions}
-            pagination
-            // selectableRows
-            removableRows
-            pageSizeControl
-            onSelectedRowsChange={handleRowSelected}
-            selectableRowsHighlight
-            customStyles={{
-              headCells: {
-                style: {
-                  // Apply Tailwind style via a class-like syntax
-                  justifyContent: "center", // Align headers to the center
-                  textAlign: "center", // Center header text
-                },
+          columns={column}
+          data={filteredAdmissions}
+          pagination
+          // selectableRows
+          removableRows
+          pageSizeControl
+          onSelectedRowsChange={handleRowSelected}
+          selectableRowsHighlight
+          customStyles={{
+            headCells: {
+              style: {
+                // Apply Tailwind style via a class-like syntax
+                justifyContent: "center", // Align headers to the center
+                textAlign: "center", // Center header text
               },
-              cells: {
-                style: {
-                  justifyContent: 'center', // Center cell content
-                  textAlign: 'center',
-                },
+            },
+            cells: {
+              style: {
+                justifyContent: "center", // Center cell content
+                textAlign: "center",
               },
-            }}
-          ></DataTable>
+            },
+          }}
+        ></DataTable>
 
-          <div className="cancelSavebuttonsDiv">
-            <button
-              className="add-button"
-              onClick={() => navigate("/students/admissions/newAdmission/")}
-              hidden={!canCreate}
-            >
-              New Admission
-            </button>
-          </div>
+        <div className="cancelSavebuttonsDiv">
+          <button
+            className="add-button"
+            onClick={() => navigate("/students/admissions/newAdmission/")}
+            hidden={!canCreate}
+          >
+            New Admission
+          </button>
         </div>
-        <DeletionConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
-          onConfirm={handleConfirmDelete}
-        />
-      </>
-    );
-  }
+      </div>
+      <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
+    </>
+  );
+
   return content;
 };
 export default AdmissionsList;

@@ -194,21 +194,9 @@ let content
 
 if (isClassroomsLoading) content = <> <AcademicsSet/><LoadingStateIcon/></>
 
-if (isClassroomsError) {
-    content =  (
-      <>
-       
-        <AcademicsSet />
-        <div className="error-bar">
-          {classroomsError?.data?.message}
-         
-        </div>
-      </>
-    ); }
 
- if (isClassroomsSuccess ) {
 
-return (
+content = (
   <>
   <AcademicsSet/>
  
@@ -265,8 +253,8 @@ return (
       />
   </>
 )
+return content
 
-}
 
 }
 export default ClassroomsList

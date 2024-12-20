@@ -129,11 +129,10 @@ const UsersList = () => {
     try {
       const response = await deleteUser({ id: idUserToDelete });
       setIsDeleteModalOpen(false); // Close the modal
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -150,7 +149,6 @@ const UsersList = () => {
       triggerBanner(error?.data?.message, "error");
     }
   };
-  
 
   // Function to close the modal without deleting
   const handleCloseDeleteModal = () => {
@@ -324,6 +322,7 @@ const UsersList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
+          aria-label="userDetails"
             className="text-sky-700"
             fontSize={20}
             onClick={() =>
@@ -336,6 +335,7 @@ const UsersList = () => {
           {/* /////////////////////condition is canEdit and not ! of it */}
 
           <button
+          aria-label="edit user"
             className="text-amber-300"
             onClick={() => navigate(`/admin/usersManagement/${row._id}/`)}
             hidden={!canEdit}
@@ -344,6 +344,7 @@ const UsersList = () => {
           </button>
 
           <button
+          aria-label="delete user"
             className="text-red-600"
             onClick={() => onDeleteUserClicked(row._id)}
             hidden={!canDelete}
@@ -360,12 +361,10 @@ const UsersList = () => {
 
   // Custom header to include the row count
   const tableHeader = (
-    
-      <h2>
-        Users List:
-        <span> {filteredUsers.length} users</span>
-      </h2>
-    
+    <h2>
+      Users List:
+      <span> {filteredUsers.length} users</span>
+    </h2>
   );
 
   let content;
@@ -378,36 +377,27 @@ const UsersList = () => {
       </>
     );
 
-  if (isUsersError) {
-    content = (
-      <>
-        <UsersManagement />
-        <div className="error-bar">{usersError?.data?.message}</div>
-      </>
-    );
-  }
-
-  if (isUsersSuccess || isDelSuccess) {
-    content = (
-      <>
-        <UsersManagement />
-        <div className="flex space-x-2 items-center ml-3">
-          {/* Search Bar */}
-          <div className="relative h-10 mr-2 ">
-            <HiOutlineSearch
-              fontSize={20}
-              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-            />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
-            />
-          </div>
-          {/* User Roles Filter */}
-
+  content = (
+    <>
+      <UsersManagement />
+      <div className="flex space-x-2 items-center ml-3">
+        {/* Search Bar */}
+        <div className="relative h-10 mr-2 ">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+          />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+          />
+        </div>
+        {/* User Roles Filter */}
+        <label htmlFor="userRolesFilter" className="formInputLabel">
           <select
+            id="userRolesFilter"
             value={selectedUserRoles}
             onChange={handleRoleChange}
             className="text-sm h-8 border border-gray-300  px-4"
@@ -419,10 +409,11 @@ const UsersList = () => {
               </option>
             ))}
           </select>
-
-          {/* User Actions Filter */}
-
+        </label>
+        {/* User Actions Filter */}
+        <label htmlFor="userActionsFilter" className="formInputLabel">
           <select
+            id="userActionsFilter"
             value={selectedUserActions}
             onChange={handleActionChange}
             className="text-sm h-8 border border-gray-300  px-4"
@@ -434,44 +425,45 @@ const UsersList = () => {
               </option>
             ))}
           </select>
-        </div>
-        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-          <DataTable
-            title={tableHeader}
-            columns={column}
-            data={filteredUsers}
-            pagination
-            //selectableRows
-            removableRows
-            pageSizeControl
-            onSelectedRowsChange={handleRowSelected}
-            selectableRowsHighlight
-            customStyles={{
-              headCells: {
-                style: {
-                  // Apply Tailwind style via a class-like syntax
-                  justifyContent: "center", // Align headers to the center
-                  textAlign: "center", // Center header text
-                },
+        </label>
+      </div>
+      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+        <DataTable
+          title={tableHeader}
+          columns={column}
+          data={filteredUsers}
+          pagination
+          //selectableRows
+          removableRows
+          pageSizeControl
+          onSelectedRowsChange={handleRowSelected}
+          selectableRowsHighlight
+          customStyles={{
+            headCells: {
+              style: {
+                // Apply Tailwind style via a class-like syntax
+                justifyContent: "center", // Align headers to the center
+                textAlign: "center", // Center header text
               },
-              cells: {
-                style: {
-                  justifyContent: 'center', // Center cell content
-                  textAlign: 'center',
-                },
+            },
+            cells: {
+              style: {
+                justifyContent: "center", // Center cell content
+                textAlign: "center",
               },
-            }}
-          ></DataTable>
-          <div className="cancelSavebuttonsDiv">
-            <button
-              className="add-button"
-              onClick={() => navigate("/admin/usersManagement/newUser/")}
-              // disabled={selectedRows.length !== 1} // Disable if no rows are selected
-            >
-              New User
-            </button>
+            },
+          }}
+        ></DataTable>
+        <div className="cancelSavebuttonsDiv">
+          <button
+            className="add-button"
+            onClick={() => navigate("/admin/usersManagement/newUser/")}
+            // disabled={selectedRows.length !== 1} // Disable if no rows are selected
+          >
+            New User
+          </button>
 
-            {/* <button
+          {/* <button
               className="px-3 py-2 bg-amber-300 text-white rounded"
               onClick={handleDuplicateSelected}
               disabled={selectedRows.length !== 1} // Disable if no rows are selected
@@ -479,17 +471,17 @@ const UsersList = () => {
             >
               Duplicate Selected
             </button> */}
-          </div>
         </div>
+      </div>
 
-        <DeletionConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
-          onConfirm={handleConfirmDelete}
-        />
-      </>
-    );
-  }
+      <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
+    </>
+  );
+
   return content;
 };
 

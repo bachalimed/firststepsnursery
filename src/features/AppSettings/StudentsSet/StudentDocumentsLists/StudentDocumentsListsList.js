@@ -236,18 +236,7 @@ const StudentDocumentsListsList = () => {
   if (isDocumentsListsLoading) content = ( <>
       <StudentsSet /><LoadingStateIcon /></>);
 
-  if (isDocumentsListsError) {
-    content =  (
-      <>
-       
-        <StudentsSet />
-        <div className="error-bar">
-         
-          {documentsListsError?.data?.message}
-        </div>
-      </>
-    ); }
-if(isDocumentsListsSuccess){
+
   content = (
     <>
       <StudentsSet />
@@ -293,7 +282,7 @@ if(isDocumentsListsSuccess){
         onConfirm={handleConfirmDelete}
       />
     </>
-  );}
+  )
 
   return content;
 };

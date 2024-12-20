@@ -155,6 +155,7 @@ const AcademicYearsList = () => {
         <div className="space-x-1">
           {canEdit ? (
             <button
+            aria-label="edit year"
               className="text-amber-300"
               onClick={() =>
                 Navigate(`/settings/academicsSet/editAcademicYear/${row.id}`)
@@ -165,6 +166,7 @@ const AcademicYearsList = () => {
           ) : null}
           {canDelete ? (
             <button
+            aria-label="delete year"
               className="text-red-600"
               onClick={() => handleDelete(row.id)}
             >

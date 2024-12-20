@@ -305,17 +305,7 @@ const PayeesList = () => {
         <LoadingStateIcon />
       </>
     );
-  if (isPayeesError) {
-    content = (
-      <>
-        <FinancesSet />
-        <div className="error-bar">
-          {payeesError?.data?.message}
-         
-        </div>
-      </>
-    );  }
-  if (isPayeesSuccess) {
+
     content = (
       <>
         <FinancesSet />
@@ -389,7 +379,7 @@ const PayeesList = () => {
        
       </>
     );
-  }
+ 
   return content;
 };
 export default PayeesList;

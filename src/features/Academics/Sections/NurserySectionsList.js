@@ -205,11 +205,10 @@ const NurserySectionsList = () => {
 
     try {
       const response = await updateSection(updatedSectionObject); // Save updated section to backend
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -227,7 +226,6 @@ const NurserySectionsList = () => {
     }
     setIsRegisterModalOpen(false); // Close modal
   };
-  
 
   //const [sectionYears, setSectionYears] = useState([])
   //adds to the previous entries in arrays for gardien, schools...
@@ -262,11 +260,10 @@ const NurserySectionsList = () => {
   const handleConfirmDelete = async () => {
     try {
       const response = await deleteSection({ id: idSectionToDelete });
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -284,7 +281,6 @@ const NurserySectionsList = () => {
     }
     setIsDeleteModalOpen(false); // Close the modal
   };
-  
 
   // Function to close the modal without deleting
   const handleCloseDeleteModal = () => {
@@ -416,6 +412,7 @@ const NurserySectionsList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
+          aria-label="section details"
             className="text-sky-700"
             fontSize={20}
             onClick={() =>
@@ -426,6 +423,7 @@ const NurserySectionsList = () => {
           </button>
           {!row.sectionTo && canEdit ? (
             <button
+            aria-label="edit section"
               className="text-amber-300"
               onClick={() =>
                 navigate(`/academics/sections/editSection/${row.id}`)
@@ -438,6 +436,7 @@ const NurserySectionsList = () => {
 
           {canDelete && (
             <button
+            aria-label="delete section"
               className="text-red-600"
               onClick={() => onDeleteStudentClicked(row.id)}
               hidden={!canDelete}
@@ -454,109 +453,105 @@ const NurserySectionsList = () => {
   ].filter(Boolean); // Filter out falsy values like `false` or `undefined`
   // Custom header to include the row count
   const tableHeader = (
-   
-      <h2>
-        Sections List:
-        <span> {filteredSections.length} sections</span>
-      </h2>
-  
+    <h2>
+      Sections List:
+      <span> {filteredSections.length} sections</span>
+    </h2>
   );
 
   let content;
-  if (isSectionsLoading) content = <LoadingStateIcon />;
-  if (isSectionsError) {
+  if (isSectionsLoading)
     content = (
       <>
         <Academics />
-        <div className="error-bar">{sectionsError?.data?.message}</div>
+        <LoadingStateIcon />
       </>
     );
-  }
-  if (isSectionsSuccess) {
-    content = (
-      <>
-        <Academics />
-        <div className="flex space-x-2 items-center ml-3">
-          <div className="relative h-10 mr-2 ">
-            <HiOutlineSearch
-              fontSize={20}
-              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-            />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={handleSearch}
-              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
-            />
-          </div>
-          <button
-            onClick={() => setCurrentSectionsFilter((prev) => !prev)}
-            className="ml-2 p-2 bg-gray-200 rounded hover:text-blue-600"
-          >
-            {currentSectionsFilter
-              ? "Current Sections Shown"
-              : "All Sections Shown"}
-          </button>
-        </div>
 
-        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-          <DataTable
-            title={tableHeader}
-            columns={column}
-            data={filteredSections}
-            pagination
-            selectableRows
-            removableRows
-            pageSizeControl
-            onSelectedRowsChange={handleRowSelected}
-            selectableRowsHighlight
-            customStyles={{
-              headCells: {
-                style: {
-                  // Apply Tailwind style via a class-like syntax
-                  justifyContent: "center", // Align headers to the center
-                  textAlign: "center", // Center header text
-                },
-              },
-              cells: {
-                style: {
-                  justifyContent: 'center', // Center cell content
-                  textAlign: 'center',
-                },
-              },
-            }}
-          ></DataTable>
-          <div className="cancelSavebuttonsDiv">
-            {isAdmin && (
-              <button
-                className="add-button"
-                onClick={() => navigate("/academics/sections/newSection/")}
-                //disabled={selectedRows.length !== 1} // Disable if no rows are selected
-                hidden={!canCreate}
-              >
-                New Section
-              </button>
-            )}
-          </div>
+  content = (
+    <>
+      <Academics />
+      <div className="flex space-x-2 items-center ml-3">
+        <div className="relative h-10 mr-2 ">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+          />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+          />
         </div>
-        <DeletionConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
-          onConfirm={handleConfirmDelete}
-        />
-        <RegisterModal
-          isOpen={isRegisterModalOpen}
-          onClose={() => setIsRegisterModalOpen(false)}
-          sectionYears={sectionYears}
-          sectionObject={sectionObject}
-          setSectionObject={setSectionObject}
-          setSectionYears={setSectionYears}
-          academicYears={academicYears}
-          onSave={onUpdateSectionClicked}
-        />
-      </>
-    );
-  }
+        <button
+          onClick={() => setCurrentSectionsFilter((prev) => !prev)}
+          className="ml-2 p-2 bg-gray-200 rounded hover:text-blue-600"
+        >
+          {currentSectionsFilter
+            ? "Current Sections Shown"
+            : "All Sections Shown"}
+        </button>
+      </div>
+
+      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+        <DataTable
+          title={tableHeader}
+          columns={column}
+          data={filteredSections}
+          pagination
+          selectableRows
+          removableRows
+          pageSizeControl
+          onSelectedRowsChange={handleRowSelected}
+          selectableRowsHighlight
+          customStyles={{
+            headCells: {
+              style: {
+                // Apply Tailwind style via a class-like syntax
+                justifyContent: "center", // Align headers to the center
+                textAlign: "center", // Center header text
+              },
+            },
+            cells: {
+              style: {
+                justifyContent: "center", // Center cell content
+                textAlign: "center",
+              },
+            },
+          }}
+        ></DataTable>
+        <div className="cancelSavebuttonsDiv">
+          {isAdmin && (
+            <button
+              className="add-button"
+              onClick={() => navigate("/academics/sections/newSection/")}
+              //disabled={selectedRows.length !== 1} // Disable if no rows are selected
+              hidden={!canCreate}
+            >
+              New Section
+            </button>
+          )}
+        </div>
+      </div>
+      <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
+      <RegisterModal
+        isOpen={isRegisterModalOpen}
+        onClose={() => setIsRegisterModalOpen(false)}
+        sectionYears={sectionYears}
+        sectionObject={sectionObject}
+        setSectionObject={setSectionObject}
+        setSectionYears={setSectionYears}
+        academicYears={academicYears}
+        onSave={onUpdateSectionClicked}
+      />
+    </>
+  );
+
   return content;
 };
 export default NurserySectionsList;

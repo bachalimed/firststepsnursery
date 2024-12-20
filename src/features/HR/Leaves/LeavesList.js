@@ -463,6 +463,7 @@ const LeavesList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
+          aria-label="leave Details"
             className="text-sky-700"
             fontSize={20}
             onClick={() => navigate(`/hr/leaves/leaveDetails/${row.id}`)}
@@ -471,6 +472,7 @@ const LeavesList = () => {
           </button>
           {canEdit ? (
             <button
+            aria-label="edit leave"
               className="text-amber-300"
               onClick={() => navigate(`/hr/leaves/editLeave/${row.id}`)}
             >
@@ -479,6 +481,7 @@ const LeavesList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
+            aria-label="delete leave"
               className="text-red-600"
               onClick={() => onDeleteLeaveClicked(row.id)}
             >
@@ -495,11 +498,9 @@ const LeavesList = () => {
 
   // Custom header to include the row count
   const tableHeader = (
-  
-      <h2>
-        Leaves List: <span> {filteredLeaves.length} leaves</span>
-      </h2>
-  
+    <h2>
+      Leaves List: <span> {filteredLeaves.length} leaves</span>
+    </h2>
   );
   let content;
   if (isLeavesLoading)
@@ -509,35 +510,30 @@ const LeavesList = () => {
         <LoadingStateIcon />
       </>
     );
-  if (isLeavesError) {
-    content = (
-      <>
-        <HR />
-        <div className="error-bar">{leavesError?.data?.message}</div>
-      </>
-    );
-  }
-  if (isLeavesSuccess) {
-    content = (
-      <>
-        <HR />
 
-        <div className="flex space-x-2 items-center ml-3">
-          {/* Search Bar */}
-          <div className="relative h-10 mr-2 ">
-            <HiOutlineSearch
-              fontSize={20}
-              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-            />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={handleSearch}
-              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
-            />
-          </div>
-          {/*  Month Filter */}
+  content = (
+    <>
+      <HR />
+
+      <div className="flex space-x-2 items-center ml-3">
+        {/* Search Bar */}
+        <div className="relative h-10 mr-2 ">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+          />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+          />
+        </div>
+        {/*  Month Filter */}
+        <label htmlFor="monthFilter" className="formInputLabel">
           <select
+            aria-label="monthFilter"
+            id="monthFilter"
             value={selectedLeaveMonth}
             onChange={(e) => setSelectedLeaveMonth(e.target.value)}
             className="text-sm h-8 border border-gray-300  px-4"
@@ -555,45 +551,46 @@ const LeavesList = () => {
                 )
             )}
           </select>
-        </div>
-        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-          <DataTable
-            title={tableHeader}
-            columns={column}
-            data={filteredLeaves}
-            pagination
-            selectableRows
-            removableRows
-            pageSizeControl
-            onSelectedRowsChange={handleRowSelected}
-            selectableRowsHighlight
-            customStyles={{
-              headCells: {
-                style: {
-                  // Apply Tailwind style via a class-like syntax
-                  justifyContent: "center", // Align headers to the center
-                  textAlign: "center", // Center header text
-                },
+        </label>
+      </div>
+      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+        <DataTable
+          title={tableHeader}
+          columns={column}
+          data={filteredLeaves}
+          pagination
+          selectableRows
+          removableRows
+          pageSizeControl
+          onSelectedRowsChange={handleRowSelected}
+          selectableRowsHighlight
+          customStyles={{
+            headCells: {
+              style: {
+                // Apply Tailwind style via a class-like syntax
+                justifyContent: "center", // Align headers to the center
+                textAlign: "center", // Center header text
               },
-              cells: {
-                style: {
-                  justifyContent: 'center', // Center cell content
-                  textAlign: 'center',
-                },
+            },
+            cells: {
+              style: {
+                justifyContent: "center", // Center cell content
+                textAlign: "center",
               },
-            }}
-          ></DataTable>
-          <div className="cancelSavebuttonsDiv">
-            <button
-              className="add-button"
-              onClick={() => navigate("/hr/leaves/newLeave")}
-              // disabled={selectedRows.length !== 1} // Disable if no rows are selected
-              hidden={!canCreate}
-            >
-              New Leave
-            </button>
+            },
+          }}
+        ></DataTable>
+        <div className="cancelSavebuttonsDiv">
+          <button
+            className="add-button"
+            onClick={() => navigate("/hr/leaves/newLeave")}
+            // disabled={selectedRows.length !== 1} // Disable if no rows are selected
+            hidden={!canCreate}
+          >
+            New Leave
+          </button>
 
-            {/* {isAdmin && (
+          {/* {isAdmin && (
             <button
               className="px-3 py-2 bg-gray-400 text-white rounded"
               onClick={handleDuplicateSelected}
@@ -603,23 +600,23 @@ const LeavesList = () => {
               optional button
             </button>
           )} */}
-          </div>
         </div>
-        <DeletionConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
-          onConfirm={handleConfirmDelete}
-        />
-        {/* <RegisterModal 
+      </div>
+      <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
+      {/* <RegisterModal 
         isOpen={isRegisterModalOpen}
         onClose={() => setIsRegisterModalOpen(false)}
         leaveYears={leaveYears}
         academicYears={academicYears}
         onSave={onUpdateLeaveClicked}
       /> */}
-      </>
-    );
-  }
+    </>
+  );
+
   return content;
 };
 export default LeavesList;

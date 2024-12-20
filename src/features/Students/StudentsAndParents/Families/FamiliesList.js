@@ -424,16 +424,7 @@ const FamiliesList = () => {
       </>
     );
 
-  if (isFamiliesError) {
-    content = (
-      <>
-        <Students />
-        <div className="error-bar">{familiesError?.data?.message}</div>
-      </>
-    );
-  }
 
-  if (isFamiliesSuccess) {
     //console.log('filtered and success', filteredFamilies)
 
     content = (
@@ -497,7 +488,7 @@ const FamiliesList = () => {
         />
       </>
     );
-  }
+  
   return content;
 };
 export default FamiliesList;

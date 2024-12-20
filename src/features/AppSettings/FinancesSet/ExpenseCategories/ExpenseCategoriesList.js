@@ -296,17 +296,7 @@ const ExpenseCategoriesList = () => {
         <LoadingStateIcon />
       </>
     );
-  if (isExpenseCategoriesError) {
-    content = (
-      <>
-        <FinancesSet />
-        <div className="error-bar">
-          {expenseCategoriesError?.data?.message}
-          
-        </div>
-      </>
-    );  }
-  if (isExpenseCategoriesSuccess) {
+
     content = (
       <>
         <FinancesSet />
@@ -381,7 +371,7 @@ const ExpenseCategoriesList = () => {
         />
       </>
     );
-  }
+  
   return content;
 };
 export default ExpenseCategoriesList;

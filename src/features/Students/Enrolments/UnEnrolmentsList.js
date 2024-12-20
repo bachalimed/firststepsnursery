@@ -175,16 +175,13 @@ const UnenrolmentsList = () => {
     },
     //show this column only if user is a parent and not employee
 
-    isAdmin
-      && {
-          name: "student ID",
-          selector: (row) => row?.student?._id,
+    isAdmin && {
+      name: "student ID",
+      selector: (row) => row?.student?._id,
 
-          sortable: true,
-          width: "200px",
-        }
-      ,
-
+      sortable: true,
+      width: "200px",
+    },
     {
       name: " Active Student",
       selector: (row) => row?.student?.studentIsActive,
@@ -261,6 +258,7 @@ const UnenrolmentsList = () => {
 
           {canCreate ? (
             <button
+            aria-label="new Enrolment"
               className="text-green-500"
               onClick={() => navigate("/students/enrolments/newEnrolment/")}
             >
@@ -283,37 +281,29 @@ const UnenrolmentsList = () => {
         <LoadingStateIcon />
       </>
     );
-  if (isAdmissionsError || isServicesError) {
-    content = (
-      <>
-        <Students />
-        <div className="error-bar">
-          {admissionsError?.data?.message}
-          {servicesError?.data?.message}
+
+  content = (
+    <>
+      <Students />
+      <div className="flex space-x-2 items-center ml-3">
+        {/* Search Bar */}
+        <div className="relative h-10 mr-2 ">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+          />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+          />
         </div>
-      </>
-    );
-  }
-  if (isAdmissionsSuccess && isServicesSuccess) {
-    content = (
-      <>
-        <Students />
-        <div className="flex space-x-2 items-center ml-3">
-          {/* Search Bar */}
-          <div className="relative h-10 mr-2 ">
-            <HiOutlineSearch
-              fontSize={20}
-              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-            />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={handleSearch}
-              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
-            />
-          </div>
-          {/* Enrolment Month Filter */}
+        {/* Enrolment Month Filter */}
+        <label htmlFor="monthFilter" className="formInputLabel">
           <select
+            aria-label="monthFilter"
+            id="monthFilter"
             value={selectedFeeMonth}
             onChange={(e) => setSelectedFeeMonth(e.target.value)}
             className="text-sm h-8 border border-gray-300  px-4"
@@ -328,8 +318,12 @@ const UnenrolmentsList = () => {
                 )
             )}
           </select>
-          {/* Service Type Filter */}
+        </label>
+        {/* Service Type Filter */}
+        <label htmlFor="serviceTypeFilter" className="formInputLabel">
           <select
+            aria-label="serviceTypeFilter"
+            id="serviceTypeFilter"
             value={selectedServiceType}
             onChange={(e) => setSelectedServiceType(e.target.value)}
             className="text-sm h-8 border border-gray-300  px-4"
@@ -341,44 +335,43 @@ const UnenrolmentsList = () => {
               </option>
             ))}
           </select>
-        </div>
-        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-          <DataTable
-            columns={column}
-            data={filteredAdmissions}
-            pagination
-            selectableRows
-            removableRows
-            pageSizeControl
-            onSelectedRowsChange={handleRowSelected}
-            selectableRowsHighlight
-          ></DataTable>
-          <div className="cancelSavebuttonsDiv">
+        </label>
+      </div>
+      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+        <DataTable
+          columns={column}
+          data={filteredAdmissions}
+          pagination
+          selectableRows
+          removableRows
+          pageSizeControl
+          onSelectedRowsChange={handleRowSelected}
+          selectableRowsHighlight
+        ></DataTable>
+        <div className="cancelSavebuttonsDiv">
+          <button
+            className=" px-4 py-2 bg-green-600 text-white rounded"
+            disabled={selectedRows.length !== 1} // Disable if no rows are selected
+            hidden={!canCreate}
+          >
+            tobechanged
+          </button>
+
+          {isAdmin && (
             <button
-              className=" px-4 py-2 bg-green-600 text-white rounded"
+              className="px-3 py-2 bg-gray-400 text-white rounded"
+              onClick={handleDuplicateSelected}
               disabled={selectedRows.length !== 1} // Disable if no rows are selected
               hidden={!canCreate}
             >
-              tobechanged
+              All
             </button>
-
-            
-
-            {isAdmin && (
-              <button
-                className="px-3 py-2 bg-gray-400 text-white rounded"
-                onClick={handleDuplicateSelected}
-                disabled={selectedRows.length !== 1} // Disable if no rows are selected
-                hidden={!canCreate}
-              >
-                All
-              </button>
-            )}
-          </div>
+          )}
         </div>
-      </>
-    );
-  }
+      </div>
+    </>
+  );
+
   return content;
 };
 export default UnenrolmentsList;

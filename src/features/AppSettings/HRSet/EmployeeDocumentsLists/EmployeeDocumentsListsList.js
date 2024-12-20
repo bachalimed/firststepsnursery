@@ -229,15 +229,7 @@ const EmployeeDocumentsListsList = () => {
       </>
     );
 
-  if (isDocumentsListsError) {
-    content = (
-      <>
-        <EmployeesSet />
-        <div className="error-bar">{documentsListsError?.data?.message}</div>
-      </>
-    );
-  }
-  if (isDocumentsListsSuccess) {
+
     content = (
       <>
         <EmployeesSet />
@@ -283,7 +275,7 @@ const EmployeeDocumentsListsList = () => {
         />
       </>
     );
-  }
+ 
   return content;
 };
 export default EmployeeDocumentsListsList;

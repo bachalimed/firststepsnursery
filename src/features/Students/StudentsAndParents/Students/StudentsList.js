@@ -4,7 +4,11 @@ import {
   useDeleteStudentMutation,
 } from "./studentsApiSlice";
 import { HiOutlineSearch } from "react-icons/hi";
-import { IoShieldCheckmark, IoShieldCheckmarkOutline,IoDocumentAttachOutline } from "react-icons/io5";
+import {
+  IoShieldCheckmark,
+  IoShieldCheckmarkOutline,
+  IoDocumentAttachOutline,
+} from "react-icons/io5";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
@@ -13,7 +17,7 @@ import {
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 import RegisterModal from "./RegisterModal";
 import Students from "../../Students";
-import { useDispatch,useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import DataTable from "react-data-table-component";
 import { useState } from "react";
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
@@ -34,8 +38,24 @@ const StudentsList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   //variables to be used for authorisation
-  const { canEdit, canView, canDelete, canCreate,isEmployee ,isParent,isContentManager,isAnimator,isAcademic,isFinance,isHR,isDesk , isDirector ,isManager , isAdmin  } = useAuth();
-  
+  const {
+    canEdit,
+    canView,
+    canDelete,
+    canCreate,
+    isEmployee,
+    isParent,
+    isContentManager,
+    isAnimator,
+    isAcademic,
+    isFinance,
+    isHR,
+    isDesk,
+    isDirector,
+    isManager,
+    isAdmin,
+  } = useAuth();
+
   //filter states
   const [selectedGrade, setSelectedGrade] = useState("");
   const [selectedSchoolName, setSelectedSchoolName] = useState("");
@@ -99,11 +119,10 @@ const StudentsList = () => {
     try {
       const response = await deleteStudent({ id: idStudentToDelete });
       setIsDeleteModalOpen(false); // Close the modal
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -223,11 +242,10 @@ const StudentsList = () => {
 
     try {
       const response = await updateStudent(updatedStudentObject); // Save updated student to backend
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -245,7 +263,6 @@ const StudentsList = () => {
     }
     setIsRegisterModalOpen(false); // Close modal
   };
-  
 
   const column = [
     {
@@ -253,7 +270,6 @@ const StudentsList = () => {
       cell: (row, index) => index + 1, // Display the index + 1 (for 1-based numbering)
       sortable: false,
       width: "50px",
-      
     },
     {
       name: "Active",
@@ -273,7 +289,7 @@ const StudentsList = () => {
     },
     isAdmin && {
       name: "ID",
-      selector: (row) =>    row.id,
+      selector: (row) => row.id,
       sortable: true,
       width: "210px",
     },
@@ -378,10 +394,13 @@ const StudentsList = () => {
       removableRows: true,
       width: "110px",
     },
-    (isAcademic|| isDesk ||isDirector||isManager || isAdmin) &&{
+    (isAcademic || isDesk || isDirector || isManager || isAdmin) && {
       name: "Documents",
       selector: (row) => (
-        <Link to={`/students/studentsParents/studentDocumentsList/${row.id}`} aria-label="students documents">
+        <Link
+          to={`/students/studentsParents/studentDocumentsList/${row.id}`}
+          aria-label="students documents"
+        >
           {" "}
           <IoDocumentAttachOutline className="text-fuchsia-500 text-2xl " />
         </Link>
@@ -391,7 +410,7 @@ const StudentsList = () => {
       width: "120px",
     },
 
-    (isAcademic|| isDesk ||isDirector||isManager || isAdmin) &&{
+    (isAcademic || isDesk || isDirector || isManager || isAdmin) && {
       name: "Actions",
       cell: (row) => (
         <div className="space-x-1">
@@ -406,18 +425,18 @@ const StudentsList = () => {
           >
             <ImProfile className="text-2xl" />
           </button>
-         
-            <button
-              className="text-amber-300"
-              aria-label="edit student"
-              onClick={() =>
-                navigate(`/students/studentsParents/editStudent/${row.id}`)
-              }
-              hidden={!canEdit}
-            >
-              <FiEdit className="text-2xl" />
-            </button>
-         
+
+          <button
+            className="text-amber-300"
+            aria-label="edit student"
+            onClick={() =>
+              navigate(`/students/studentsParents/editStudent/${row.id}`)
+            }
+            hidden={!canEdit}
+          >
+            <FiEdit className="text-2xl" />
+          </button>
+
           {!isDelLoading && (
             <button
               className="text-red-600"
@@ -435,20 +454,17 @@ const StudentsList = () => {
     },
   ].filter(Boolean); // Filter out falsy values like `false` or `undefined`
 
-  
   // Custom header to include the row count
   const tableHeader = (
-    
-      <h2>
-        Students List:
-        <span> {filteredStudents.length} students</span>
-      </h2>
-    
+    <h2>
+      Students List:
+      <span> {filteredStudents.length} students</span>
+    </h2>
   );
 
   //console.log(filteredStudents, "filteredStudents");
   let content;
-  if (isStudentsLoading||isSchoolsLoading)
+  if (isStudentsLoading || isSchoolsLoading)
     content = (
       <>
         <Students />
@@ -466,7 +482,7 @@ const StudentsList = () => {
       </>
     );
   }
-  if (isStudentsSuccess &&isSchoolsSuccess) {
+  if (isStudentsSuccess && isSchoolsSuccess) {
     content = (
       <>
         <Students />
@@ -479,7 +495,7 @@ const StudentsList = () => {
               aria-label="search students"
             />
             <input
-            aria-label="search students"
+              aria-label="search students"
               type="text"
               value={searchQuery}
               onChange={handleSearch}
@@ -487,41 +503,46 @@ const StudentsList = () => {
             />
           </div>
           {/* Grade Filter Dropdown */}
-          <select
-            value={selectedGrade}
-            onChange={handleGradeChange}
-            className="text-sm h-8 border border-gray-300  px-4"
-            aria-label="filter by grade"
-          >
-            <option value="">All Grades</option>
-            {gradeOptions.map((grade) => (
-              <option key={grade} value={grade}>
-                Grade {grade}
-              </option>
-            ))}
-          </select>
+          <label htmlFor="gradeFilter" className="formInputLabel">
+            <select
+              aria-label="gradeFilter"
+              id="gradeFilter"
+              value={selectedGrade}
+              onChange={handleGradeChange}
+              className="text-sm h-8 border border-gray-300  px-4"
+            >
+              <option value="">All Grades</option>
+              {gradeOptions.map((grade) => (
+                <option key={grade} value={grade}>
+                  Grade {grade}
+                </option>
+              ))}
+            </select>
+          </label>
           {/* Attended school selection dropdown */}
-          <select
-            value={selectedSchoolName}
-            onChange={handleSchoolChange}
-            className="text-sm h-8 border border-gray-300  px-4"
-            aria-label="filter by school"
-          >
-            <option value="">All Schools</option>
-            {attendedSchools?.map(
-              (school) =>
-                school.schoolName !== "First Steps" && (
-                  <option key={school.id} value={school.schoolName}>
-                    {school.schoolName}
-                  </option>
-                )
-            )}
-          </select>
+          <label htmlFor="schoolFilter" className="formInputLabel">
+            <select
+              aria-label="schoolFilter"
+              id="schoolFilter"
+              value={selectedSchoolName}
+              onChange={handleSchoolChange}
+              className="text-sm h-8 border border-gray-300  px-4"
+            >
+              <option value="">All Schools</option>
+              {attendedSchools?.map(
+                (school) =>
+                  school.schoolName !== "First Steps" && (
+                    <option key={school.id} value={school.schoolName}>
+                      {school.schoolName}
+                    </option>
+                  )
+              )}
+            </select>
+          </label>
         </div>
 
         <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
           <DataTable
-          
             title={tableHeader}
             columns={column}
             data={filteredStudents}
@@ -537,45 +558,49 @@ const StudentsList = () => {
                   // Apply Tailwind style via a class-like syntax
                   justifyContent: "center", // Align headers to the center
                   textAlign: "center", // Center header text
-                  color:'black'
+                  color: "black",
                 },
               },
               header: {
                 icon: {
-                  color: 'red', // Set sorting indicator color to black
+                  color: "red", // Set sorting indicator color to black
                 },
               },
               cells: {
                 style: {
-                  justifyContent: 'center', // Center cell content
-                  textAlign: 'center',
-                  color:'black',
+                  justifyContent: "center", // Center cell content
+                  textAlign: "center",
+                  color: "black",
                 },
               },
             }}
           ></DataTable>
-          {(isAcademic|| isDesk ||isDirector||isManager || isAdmin) &&<div className="cancelSavebuttonsDiv">
-            <button
-              className="add-button"
-              onClick={() => navigate("/students/studentsParents/newStudent/")}
-              // disabled={selectedRows.length !== 1} // Disable if no rows are selected
-              hidden={!canCreate}
-              aria-label="add student"
-            >
-              New Student
-            </button>
-            <button
-              className={`px-4 py-2 ${
-                selectedRows?.length === 1 ? "add-button" : "bg-gray-300"
-              } text-white rounded`}
-              onClick={handleRegisterSelected}
-              disabled={selectedRows?.length !== 1} // Disable if no rows are selected
-              hidden={!canCreate}
-               aria-label="register student"
-            >
-              Register
-            </button>
-          </div>}
+          {(isAcademic || isDesk || isDirector || isManager || isAdmin) && (
+            <div className="cancelSavebuttonsDiv">
+              <button
+                className="add-button"
+                onClick={() =>
+                  navigate("/students/studentsParents/newStudent/")
+                }
+                // disabled={selectedRows.length !== 1} // Disable if no rows are selected
+                hidden={!canCreate}
+                aria-label="add student"
+              >
+                New Student
+              </button>
+              <button
+                className={`px-4 py-2 ${
+                  selectedRows?.length === 1 ? "add-button" : "bg-gray-300"
+                } text-white rounded`}
+                onClick={handleRegisterSelected}
+                disabled={selectedRows?.length !== 1} // Disable if no rows are selected
+                hidden={!canCreate}
+                aria-label="register student"
+              >
+                Register
+              </button>
+            </div>
+          )}
         </div>
         <DeletionConfirmModal
           isOpen={isDeleteModalOpen}

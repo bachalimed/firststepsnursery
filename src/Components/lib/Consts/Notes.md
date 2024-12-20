@@ -18,5 +18,5 @@ a dialog will open to Register the studetn by selecting the current year. now th
 academic years "1000" use as criteria to query all years data instead of only one selected year
 11. payee editing should prevents non admin from removing existing years, they can add year but not remove.
 12. expense category: nor removing of prepvious items, only  admin wiell be allowed, in case previous expenses werer made with that category item
-
+13. studetn adn expenses do not send same error messages from back end , controllers are similar: one needs response.data.message and teh other response.message
  

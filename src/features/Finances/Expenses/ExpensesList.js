@@ -17,22 +17,22 @@ import {
   useGetExpensesQuery,
   useDeleteExpenseMutation,
 } from "./expensesApiSlice";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import Finances from "../Finances";
-import { useOutletContext } from "react-router-dom";
-
-
 
 const ExpensesList = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+
   //get several things from the query
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-
+  const getCurrentMonth = () => {
+    const currentMonthIndex = new Date().getMonth(); // Get current month (0-11)
+    return MONTHS[currentMonthIndex]; // Return the month name with the first letter capitalized
+  };
   const {
     data: expenses, //the data is renamed schools
     isLoading: isExpensesLoading,
@@ -55,11 +55,10 @@ const ExpensesList = () => {
   // }
   //we do not want to import from state but from DB
   const [selectedRows, setSelectedRows] = useState([]);
-
+  const [searchQuery, setSearchQuery] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idAttendedSchoolToDelete, setIdAttendedSchoolToDelete] =
     useState(null); // State to track which document to delete
-    const { triggerBanner } = useOutletContext(); // Access banner trigger
 
   //initialising the delete Mutation
 
@@ -84,11 +83,16 @@ const ExpensesList = () => {
     setIdAttendedSchoolToDelete(null);
   };
 
+  // console.log(filteredInvoices, "filteredInvoices");
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+  };
   // Handler for selecting rows
   const handleRowSelected = (state) => {
     setSelectedRows(state.selectedRows);
     //console.log('selectedRows', selectedRows)
   };
+
   const [monthFilter, setMonthFilter] = useState(""); // Initialize with empty string (for "All Months")
   let filteredExpenses = [];
   let expensesList = [];
@@ -225,6 +229,7 @@ const ExpensesList = () => {
         <div className="space-x-1">
           {canEdit ? (
             <button
+            aria-label="edit expense"
               className="text-amber-300"
               onClick={() =>
                 navigate(`/finances/expenses/editExpense/${row.id}`)
@@ -235,6 +240,7 @@ const ExpensesList = () => {
           ) : null}
           {canDelete ? (
             <button
+            aria-label="delete expense"
               className="text-red-600"
               onClick={() => onDeleteAttendedSchoolClicked(row.id)}
             >
@@ -251,95 +257,110 @@ const ExpensesList = () => {
 
   // Custom header to include the row count
   const tableHeader = (
-   
-      <h2>
-        Expenses List:
-        <span> {filteredExpenses.length} expenses</span>
-      </h2>
-   
+    <h2>
+      Expenses List:
+      <span> {filteredExpenses.length} expenses</span>
+    </h2>
   );
 
   let content;
 
-  if (isExpensesLoading)
+  if (isExpensesLoading) {
     content = (
-      <p><Finances />
+      <p>
+        <Finances />
         <LoadingStateIcon />
       </p>
     );
-
-  if (isExpensesError) {
-    //console.log(expensesError,'expensesError')
-    //triggerBanner(expensesError?.data?.message, "error");
-    content = (
-      <>
-        <Finances />
-        <div className="error-bar">{expensesError?.data?.message}</div>
-      </>
-    );
   }
 
-  if (isExpensesSuccess) {
-    return (
-      <>
-        <Finances />
+  content = (
+    <>
+      <Finances />
 
-        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-          <div className="flex space-x-2 items-center ml-3">
-            {/* Months Filter Dropdown */}
-
-            {filteredExpenses?.length > 0 && (
-              <select
-                onChange={handleMonthChange}
-                className="text-sm h-8 border border-gray-300  px-4"
-              >
-                {MONTHS}
-              </select>
-            )}
-          </div>
-
-          <DataTable
-            title={tableHeader}
-            columns={column}
-            data={filteredExpenses}
-            pagination
-            selectableRows
-            removableRows
-            pageSizeControl
-            customStyles={{
-              headCells: {
-                style: {
-                  // Apply Tailwind style via a class-like syntax
-                  justifyContent: "center", // Align headers to the center
-                  textAlign: "center", // Center header text
-                },
-              },
-              cells: {
-                style: {
-                  justifyContent: 'center', // Center cell content
-                  textAlign: 'center',
-                },
-              },
-            }}
-          ></DataTable>
-          <div className="cancelSavebuttonsDiv">
-            <button
-              className="add-button"
-              onClick={() => navigate("/finances/expenses/newExpense/")}
-              disabled={selectedRows.length !== 0} // Disable if no rows are selected
-              hidden={!canCreate}
-            >
-              New Expense
-            </button>
-          </div>
+      <div className="flex space-x-2 items-center ml-3">
+        {/* Search Bar */}
+        <div className="relative h-10 mr-2 ">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+          />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+          />
         </div>
-        <DeletionConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
-          onConfirm={handleConfirmDelete}
-        />
-      </>
-    );
-  }
+        {/* Months Filter Dropdown */}
+
+        <label htmlFor="monthFilter" className="formInputLabel">
+          <select
+            aria-label="monthFilter"
+            id="monthFilter"
+            value={searchQuery}
+            onChange={(e) => setMonthFilter(e.target.value)}
+            className="text-sm h-8 border border-gray-300  px-4"
+          >
+            {/* Default option is the current month */}
+            <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
+            <option value="">All Months</option>
+            {/* Render the rest of the months, excluding the current month */}
+            {MONTHS.map(
+              (month, index) =>
+                month !== getCurrentMonth() && (
+                  <option key={index} value={month}>
+                    {month}
+                  </option>
+                )
+            )}
+          </select>
+        </label>
+      </div>
+
+      <DataTable
+        title={tableHeader}
+        columns={column}
+        data={filteredExpenses}
+        pagination
+        selectableRows
+        removableRows
+        pageSizeControl
+        customStyles={{
+          headCells: {
+            style: {
+              // Apply Tailwind style via a class-like syntax
+              justifyContent: "center", // Align headers to the center
+              textAlign: "center", // Center header text
+            },
+          },
+          cells: {
+            style: {
+              justifyContent: "center", // Center cell content
+              textAlign: "center",
+            },
+          },
+        }}
+      ></DataTable>
+      <div className="cancelSavebuttonsDiv">
+        <button
+          className="add-button"
+          onClick={() => navigate("/finances/expenses/newExpense/")}
+          disabled={selectedRows.length !== 0} // Disable if no rows are selected
+          hidden={!canCreate}
+        >
+          New Expense
+        </button>
+      </div>
+
+      <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
+    </>
+  );
+
+  return content;
 };
 export default ExpensesList;

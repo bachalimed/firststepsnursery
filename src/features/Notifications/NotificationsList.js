@@ -406,6 +406,7 @@ const NotificationsList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
+          aria-label="notification Details"
             className="text-sky-700"
             fontSize={20}
             onClick={() => navigate(`/hr/notifications/notificationDetails/${row.id}`)}
@@ -414,6 +415,7 @@ const NotificationsList = () => {
           </button>
           {canEdit ? (
             <button
+            aria-label="edit notification"
               className="text-amber-300"
               onClick={() => navigate(`/hr/notifications/editNotification/${row.id}`)}
             >
@@ -422,6 +424,7 @@ const NotificationsList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
+            aria-label="delete notification"
               className="text-red-600"
               onClick={() => onDeleteNotificationClicked(row.id)}
             >
@@ -436,19 +439,8 @@ const NotificationsList = () => {
     },
   ].filter(Boolean); // Filter out falsy values like `false` or `undefined`
   let content;
-  if (isNotificationsLoading) content = <p><LoadingStateIcon/>.</p>;
-  if (isNotificationsError) {
-    content =  (
-      <>
-       
-        <Notifications />
-        <div className="error-bar">
-          {notificationsError?.data?.message}
-          
-        </div>
-      </>
-    )}
-  if (isNotificationsSuccess){
+  if (isNotificationsLoading) content = <><Notifications /><LoadingStateIcon/>.</>;
+
 
   content = (
     <>
@@ -522,7 +514,7 @@ const NotificationsList = () => {
       /> */}
     </>
   );
-  }
+  
   return content;
 };
 export default NotificationsList;

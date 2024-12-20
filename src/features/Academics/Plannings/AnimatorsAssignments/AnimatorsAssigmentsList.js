@@ -121,11 +121,10 @@ const AnimatorsAssignmentsList = () => {
   const handleConfirmDelete = async () => {
     try {
       const response = await deleteAssignment({ id: idAttendedSchoolToDelete });
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -143,7 +142,6 @@ const AnimatorsAssignmentsList = () => {
     }
     setIsDeleteModalOpen(false); // Close the modal
   };
-  
 
   // Function to close the modal without deleting
   const handleCloseDeleteModal = () => {
@@ -299,6 +297,7 @@ const AnimatorsAssignmentsList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
+          aria-label="edit Assignment"
             className="text-amber-300"
             onClick={() =>
               navigate(`/academics/plannings/editAnimatorsAssignment/${row.id}`)
@@ -309,6 +308,7 @@ const AnimatorsAssignmentsList = () => {
           </button>
 
           <button
+          aria-label="delete Assignment"
             className="text-red-600"
             onClick={() => onDeleteAttendedSchoolClicked(row.id)}
             hidden={!canDelete}
@@ -340,124 +340,115 @@ const AnimatorsAssignmentsList = () => {
       </>
     );
 
-  if (isSchoolsError || isEmployeesError || isAssignmentsError) {
-    content = (
-      <>
-        <Academics />
-        <div className="error-bar">
-          {schoolsError?.data?.message}
-          {assignmentsError?.data?.message}
-          {employeesError?.data?.message}
-        </div>
-      </>
-    );
-  }
+  return (
+    <>
+      <Academics />
 
-  if (isSchoolsSuccess) {
-    return (
-      <>
-        <Academics />
-
-        <div className="flex space-x-2 items-center ml-3">
-          {/* Search Bar */}
-          <div className="relative h-10 mr-2 ">
-            <HiOutlineSearch
-              fontSize={20}
-              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-              aria-label="search students"
-            />
-            <input
-              aria-label="search students"
-              type="text"
-              value={searchQuery}
-              onChange={handleSearch}
-              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
-            />
-          </div>
-
-          {/* Months Filter Dropdown */}
-          <select
-            value={monthFilter}
-            onChange={(e) => setMonthFilter(e.target.value)}
-            className="text-sm h-8 border  border-gray-300  px-4"
-          >
-            {/* Default option is the current month */}
-            <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
-
-            {/* Render the rest of the months, excluding the current month */}
-            {MONTHS.map(
-              (month, index) =>
-                month !== getCurrentMonth() && (
-                  <option key={index} value={month}>
-                    {month}
-                  </option>
-                )
-            )}
-          </select>
-          {/* date Filter  */}
-          <input
-            type="date"
-            value={dateFilter || ""}
-            onChange={(e) => setDateFilter(e.target.value)}
-            className="text-sm h-8 border border-gray-300 px-4 rounded"
-            placeholder="Select a date"
+      <div className="flex space-x-2 items-center ml-3">
+        {/* Search Bar */}
+        <div className="relative h-10 mr-2 ">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+            aria-label="search students"
           />
-          {/* Clear Button */}
-          {dateFilter && (
-            <button
-              onClick={() => setDateFilter("")}
-              className="text-sm text-gray-600 hover:text-red-600 focus:outline-none"
-            >
-              Clear
-            </button>
-          )}
+          <input
+            aria-label="search students"
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+          />
         </div>
-        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-          <DataTable
-            title={tableHeader}
-            columns={column}
-            data={filteredAssignments}
-            pagination
-            selectableRows
-            removableRows
-            pageSizeControl
-            customStyles={{
-              headCells: {
-                style: {
-                  // Apply Tailwind style via a class-like syntax
-                  justifyContent: "center", // Align headers to the center
-                  textAlign: "center", // Center header text
-                },
-              },
-              cells: {
-                style: {
-                  justifyContent: "center", // Center cell content
-                  textAlign: "center",
-                },
-              },
-            }}
-          ></DataTable>
-          {(isAdmin || isDirector || isManager || isAcademic) && (
-            <div className="cancelSavebuttonsDiv">
-              <button
-                className="add-button"
-                onClick={() =>
-                  navigate("/academics/plannings/NewAnimatorsAssignmentForm/")
-                }
-                hidden={!canCreate}
-              >
-                New Assignment
-              </button>
-            </div>
-          )}
-        </div>
-        <DeletionConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
-          onConfirm={handleConfirmDelete}
+        {/* Months Filter Dropdown */}
+        <label htmlFor="monthFilter" className="formInputLabel">
+        <select
+        aria-label="monthFilter"
+        id="monthFilter"
+        value={monthFilter}
+        onChange={(e) => setMonthFilter(e.target.value)}
+        className="text-sm h-8 border  border-gray-300  px-4"
+        >
+          {/* Default option is the current month */}
+          <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
+
+          {/* Render the rest of the months, excluding the current month */}
+          {MONTHS.map(
+            (month, index) =>
+              month !== getCurrentMonth() && (
+                <option key={index} value={month}>
+                  {month}
+                </option>
+              )
+              
+            )}
+        </select>
+            </label>
+        {/* date Filter  */}
+        <input
+        aria-label="dateFilter"
+          type="date"
+          value={dateFilter || ""}
+          onChange={(e) => setDateFilter(e.target.value)}
+          className="formInputLabel"
+          placeholder="Select a date"
         />
-      </>
-    );
-  }
+        {/* Clear Button */}
+        {dateFilter && (
+          <button
+            onClick={() => setDateFilter("")}
+            className="text-sm text-gray-600 hover:text-red-600 focus:outline-none"
+          >
+            Clear
+          </button>
+        )}
+      </div>
+
+      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+        <DataTable
+          title={tableHeader}
+          columns={column}
+          data={filteredAssignments}
+          pagination
+          selectableRows
+          removableRows
+          pageSizeControl
+          customStyles={{
+            headCells: {
+              style: {
+                // Apply Tailwind style via a class-like syntax
+                justifyContent: "center", // Align headers to the center
+                textAlign: "center", // Center header text
+              },
+            },
+            cells: {
+              style: {
+                justifyContent: "center", // Center cell content
+                textAlign: "center",
+              },
+            },
+          }}
+        ></DataTable>
+        {(isAdmin || isDirector || isManager || isAcademic) && (
+          <div className="cancelSavebuttonsDiv">
+            <button
+              className="add-button"
+              onClick={() =>
+                navigate("/academics/plannings/NewAnimatorsAssignmentForm/")
+              }
+              hidden={!canCreate}
+            >
+              New Assignment
+            </button>
+          </div>
+        )}
+      </div>
+      <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
+    </>
+  );
 };
 export default AnimatorsAssignmentsList;

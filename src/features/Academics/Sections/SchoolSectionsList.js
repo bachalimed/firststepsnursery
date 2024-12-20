@@ -292,15 +292,7 @@ const SchoolSectionsList = () => {
         <LoadingStateIcon />
       </>
     );
-  if (isSectionsError) {
-    content = (
-      <>
-        <Academics />
-        <div className="error-bar">{sectionsError?.data?.message}</div>
-      </>
-    );
-  }
-  if (isSectionsSuccess){
+
 
   content = (
     <>
@@ -357,7 +349,7 @@ const SchoolSectionsList = () => {
       </div>
     </>
   );
-  }
+  
   return content;
 };
 export default SchoolSectionsList;

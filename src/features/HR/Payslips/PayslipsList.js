@@ -403,6 +403,7 @@ const PayslipsList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
+          aria-label="payslip Details"
             className="text-sky-700"
             fontSize={20}
             onClick={() => navigate(`/hr/payslips/payslipDetails/${row.id}`)}
@@ -411,6 +412,7 @@ const PayslipsList = () => {
           </button>
           {canEdit ? (
             <button
+            aria-label="edit payslip"
               className="text-amber-300"
               onClick={() => navigate(`/hr/payslips/editPayslip/${row.id}`)}
             >
@@ -419,6 +421,7 @@ const PayslipsList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
+            aria-label="delete payslip"
               className="text-red-600"
               onClick={() => onDeletePayslipClicked(row.id)}
             >
@@ -449,15 +452,7 @@ const PayslipsList = () => {
         <LoadingStateIcon />
       </>
     );
-  if (isPayslipsError) {
-    content = (
-      <>
-        <HR />
-        <div className="error-bar">{payslipsError?.data?.message}</div>
-      </>
-    );
-  }
-  if (isPayslipsSuccess) {
+
     content = (
       <>
         <HR />
@@ -477,7 +472,10 @@ const PayslipsList = () => {
             />
           </div>
           {/*  Month Filter */}
-          <select
+          <label htmlFor="monthFilter" className="formInputLabel">
+        <select
+        aria-label="monthFilter"
+        id="monthFilter"
             value={selectedPayslipMonth}
             onChange={(e) => setSelectedPayslipMonth(e.target.value)}
             className="text-sm h-8 border border-gray-300  px-4"
@@ -494,7 +492,7 @@ const PayslipsList = () => {
                   </option>
                 )
             )}
-          </select>
+          </select></label>
         </div>
         <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
           <DataTable
@@ -559,7 +557,7 @@ const PayslipsList = () => {
       /> */}
       </>
     );
-  }
+  
   return content;
 };
 export default PayslipsList;

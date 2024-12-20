@@ -127,11 +127,10 @@ const EnrolmentsList = () => {
     try {
       const response = await deleteEnrolment({ id: idEnrolmentToDelete });
       setIsDeleteModalOpen(false); // Close the modal
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -241,11 +240,10 @@ const EnrolmentsList = () => {
         formData: selectedRows,
         operator: userId,
       });
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -507,6 +505,7 @@ const EnrolmentsList = () => {
             <IoMdAddCircleOutline className="text-2xl" />
           </button> */}
           <button
+          aria-label="enrolment Details"
             className="text-sky-700"
             fontSize={20}
             onClick={() =>
@@ -517,6 +516,7 @@ const EnrolmentsList = () => {
           </button>
           {canEdit ? (
             <button
+            aria-label="edit enrolment"
               className="text-amber-300"
               onClick={() =>
                 navigate(`/students/enrolments/editEnrolment/${row.id}`)
@@ -528,6 +528,7 @@ const EnrolmentsList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
+            aria-label="delete enrolment"
               className="text-red-600"
               onClick={() => onDeleteEnrolmentClicked(row.id)}
             >
@@ -544,12 +545,10 @@ const EnrolmentsList = () => {
   ].filter(Boolean); // Filter out falsy values like `false` or `undefined`
   // Custom header to include the row count
   const tableHeader = (
-   
-      <h2>
-        Enrolments List:
-        <span> {filteredEnrolments.length} enrolments</span>
-      </h2>
-   
+    <h2>
+      Enrolments List:
+      <span> {filteredEnrolments.length} enrolments</span>
+    </h2>
   );
 
   let content;
@@ -560,37 +559,29 @@ const EnrolmentsList = () => {
         <LoadingStateIcon />
       </>
     );
-  if (isEnrolmentsError || isServicesError) {
-    content = (
-      <>
-        <Students />
-        <div className="error-bar">
-          {enrolmentsError?.data?.message}
-          {servicesError?.data?.message}
+
+  content = (
+    <>
+      <Students />
+      <div className="flex space-x-2 items-center ml-3">
+        {/* Search Bar */}
+        <div className="relative h-10 mr-2 ">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+          />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+          />
         </div>
-      </>
-    );
-  }
-  if (isEnrolmentsSuccess && isServicesSuccess) {
-    content = (
-      <>
-        <Students />
-        <div className="flex space-x-2 items-center ml-3">
-          {/* Search Bar */}
-          <div className="relative h-10 mr-2 ">
-            <HiOutlineSearch
-              fontSize={20}
-              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-            />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={handleSearch}
-              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
-            />
-          </div>
-          {/* Enrolment Month Filter */}
+        {/* Enrolment Month Filter */}
+        <label htmlFor="monthFilter" className="formInputLabel">
           <select
+            aria-label="monthFilter"
+            id="monthFilter"
             value={selectedEnrolmentMonth}
             onChange={(e) => setSelectedEnrolmentMonth(e.target.value)}
             className="text-sm h-8 border border-gray-300  px-4"
@@ -606,8 +597,12 @@ const EnrolmentsList = () => {
                 )
             )}
           </select>
-          {/* Service Type Filter */}
+        </label>
+        {/* Service Type Filter */}
+        <label htmlFor="serviceTypeFilter" className="formInputLabel">
           <select
+            aria-label="serviceTypeFilter"
+            id="serviceTypeFilter"
             value={selectedServiceType}
             onChange={(e) => setSelectedServiceType(e.target.value)}
             className="text-sm h-8 border border-gray-300  px-4"
@@ -619,9 +614,13 @@ const EnrolmentsList = () => {
               </option>
             ))}
           </select>
+        </label>
 
-          {/* Invoiced Filter */}
+        {/* Invoiced Filter */}
+        <label htmlFor="invoicedFilter" className="formInputLabel">
           <select
+            aria-label="invoicedFilter"
+            id="invoicedFilter"
             value={invoicedFilter}
             onChange={(e) => setInvoicedFilter(e.target.value)}
             className="text-sm h-8 border border-gray-300  px-4"
@@ -630,9 +629,13 @@ const EnrolmentsList = () => {
             <option value="invoiced">Invoiced</option>
             <option value="notInvoiced">Not Invoiced</option>
           </select>
+        </label>
 
-          {/* Paid Filter */}
+        {/* Paid Filter */}
+        <label htmlFor="paidFilter" className="formInputLabel">
           <select
+            aria-label="paidFilter"
+            id="paidFilter"
             value={paidFilter}
             onChange={(e) => setPaidFilter(e.target.value)}
             className="text-sm h-8 border border-gray-300  px-4"
@@ -641,63 +644,64 @@ const EnrolmentsList = () => {
             <option value="paid">Paid</option>
             <option value="unpaid">Unpaid</option>
           </select>
-        </div>
-        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-          <DataTable
-            title={tableHeader}
-            columns={column}
-            data={filteredEnrolments}
-            pagination
-            selectableRows
-            removableRows
-            pageSizeControl
-            onSelectedRowsChange={handleRowSelected}
-            selectableRowsHighlight
-            customStyles={{
-              headCells: {
-                style: {
-                  // Apply Tailwind style via a class-like syntax
-                  justifyContent: "center", // Align headers to the center
-                  textAlign: "center", // Center header text
-                },
+        </label>
+      </div>
+      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+        <DataTable
+          title={tableHeader}
+          columns={column}
+          data={filteredEnrolments}
+          pagination
+          selectableRows
+          removableRows
+          pageSizeControl
+          onSelectedRowsChange={handleRowSelected}
+          selectableRowsHighlight
+          customStyles={{
+            headCells: {
+              style: {
+                // Apply Tailwind style via a class-like syntax
+                justifyContent: "center", // Align headers to the center
+                textAlign: "center", // Center header text
               },
-              cells: {
-                style: {
-                  justifyContent: 'center', // Center cell content
-                  textAlign: 'center',
-                },
+            },
+            cells: {
+              style: {
+                justifyContent: "center", // Center cell content
+                textAlign: "center",
               },
-            }}
-          ></DataTable>
+            },
+          }}
+        ></DataTable>
 
-          <div className="cancelSavebuttonsDiv">
-            <button
-              className="add-button"
-              onClick={() => navigate("/students/enrolments/newEnrolment/")}
-              hidden={!canCreate}
-            >
-              New Enrolment
-            </button>
-            <button
-              className={`px-4 py-2 ${
-                selectedRows?.length === 1 ? "add-button" : "bg-gray-300"
-              } text-white rounded`}
-              onClick={handleGenerateInvoice}
-              hidden={!canCreate}
-              disabled={selectedRows?.length > 20 || selectedRows?.length < 1}
-            >
-              Generate {selectedRows?.length} Invoices
-            </button>
-          </div>
+        <div className="cancelSavebuttonsDiv">
+          <button
+            className="add-button"
+            onClick={() => navigate("/students/enrolments/newEnrolment/")}
+            hidden={!canCreate}
+          >
+            New Enrolment
+          </button>
+          <button
+            className={`px-4 py-2 ${
+              selectedRows?.length === 1 ? "add-button" : "bg-gray-300"
+            } text-white rounded`}
+            onClick={handleGenerateInvoice}
+            hidden={!canCreate}
+            disabled={selectedRows?.length > 20 || selectedRows?.length < 1}
+          >
+            Generate {selectedRows?.length} Invoices
+          </button>
         </div>
-        <DeletionConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
-          onConfirm={handleConfirmDelete}
-        />
-      </>
-    );
-  }
+      </div>
+      <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
+    </>
+  );
+
   return content;
 };
 export default EnrolmentsList;
