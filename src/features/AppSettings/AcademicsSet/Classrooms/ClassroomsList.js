@@ -217,16 +217,21 @@ content = (
       headCells: {
         style: {
           // Apply Tailwind style via a class-like syntax
-          justifyContent: 'center', // Align headers to the center
-          textAlign: 'center', // Center header text
+          justifyContent: "center", // Align headers to the center
+          textAlign: "center", // Center header text
+          color: "black",
+          fontSize: "14px", // Increase font size for header text
         },
       },
-      // cells: {
-      //   style: {
-      //     justifyContent: 'center', // Center cell content
-      //     textAlign: 'center',
-      //   },
-      // },
+   
+      cells: {
+        style: {
+          justifyContent: "center", // Center cell content
+          textAlign: "center",
+          color: "black",
+          fontSize: "14px", // Increase font size for cell text
+        },
+      },
     }}
     >
    </DataTable>

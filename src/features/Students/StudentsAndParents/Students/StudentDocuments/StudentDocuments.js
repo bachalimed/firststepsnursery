@@ -247,7 +247,7 @@ const StudentDocuments = () => {
       name: "#", // New column for entry number
       cell: (row, index) => index + 1, // Display the index + 1 (for 1-based numbering)
       sortable: false,
-      width: "50px",
+      width: "40px",
     },
     //show this column only if user is a parent and not employee
 
@@ -378,8 +378,28 @@ const StudentDocuments = () => {
             //selectableRows
             removableRows
             pageSizeControl
-          />
-
+            customStyles={{
+              headCells: {
+                style: {
+                  // Apply Tailwind style via a class-like syntax
+                  justifyContent: "center", // Align headers to the center
+                  textAlign: "center", // Center header text
+                  color: "black",
+                  fontSize: "14px", // Increase font size for header text
+                },
+              },
+           
+              cells: {
+                style: {
+                  justifyContent: "center", // Center cell content
+                  textAlign: "center",
+                  color: "black",
+                  fontSize: "14px", // Increase font size for cell text
+                },
+              },
+            }}
+          >
+</DataTable>
           <div className="cancelSavebuttonsDiv">
             <button
               className="cancel-button"
@@ -396,14 +416,6 @@ const StudentDocuments = () => {
               Student Details
             </button>
 
-            {isAdmin && (
-              <button
-                className="px-3 py-2 bg-gray-400 text-white rounded"
-                hidden={!canCreate}
-              >
-                All
-              </button>
-            )}
           </div>
         </div>
         <UploadDocumentFormModal

@@ -221,7 +221,7 @@ const AnimatorsAssignmentsList = () => {
       name: "#", // New column for entry number
       cell: (row, index) => index + 1, // Display the index + 1 (for 1-based numbering)
       sortable: false,
-      width: "50px",
+      width: "40px",
     },
 
     {
@@ -233,7 +233,7 @@ const AnimatorsAssignmentsList = () => {
           day: "2-digit",
         }),
       sortable: true,
-      width: "100px",
+      width: "110px",
     },
     {
       name: "To",
@@ -244,7 +244,7 @@ const AnimatorsAssignmentsList = () => {
           day: "2-digit",
         }),
       sortable: true,
-      width: "100px",
+      width: "110px",
     },
 
     {
@@ -297,7 +297,7 @@ const AnimatorsAssignmentsList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
-          aria-label="edit Assignment"
+            aria-label="edit Assignment"
             className="text-amber-300"
             onClick={() =>
               navigate(`/academics/plannings/editAnimatorsAssignment/${row.id}`)
@@ -308,7 +308,7 @@ const AnimatorsAssignmentsList = () => {
           </button>
 
           <button
-          aria-label="delete Assignment"
+            aria-label="delete Assignment"
             className="text-red-600"
             onClick={() => onDeleteAttendedSchoolClicked(row.id)}
             hidden={!canDelete}
@@ -362,44 +362,43 @@ const AnimatorsAssignmentsList = () => {
         </div>
         {/* Months Filter Dropdown */}
         <label htmlFor="monthFilter" className="formInputLabel">
-        <select
-        aria-label="monthFilter"
-        id="monthFilter"
-        value={monthFilter}
-        onChange={(e) => setMonthFilter(e.target.value)}
-        className="text-sm h-8 border  border-gray-300  px-4"
-        >
-          {/* Default option is the current month */}
-          <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
+          <select
+            aria-label="monthFilter"
+            id="monthFilter"
+            value={monthFilter}
+            onChange={(e) => setMonthFilter(e.target.value)}
+            className="text-sm h-8 border  border-gray-300  px-4"
+          >
+            {/* Default option is the current month */}
+            <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
 
-          {/* Render the rest of the months, excluding the current month */}
-          {MONTHS.map(
-            (month, index) =>
-              month !== getCurrentMonth() && (
-                <option key={index} value={month}>
-                  {month}
-                </option>
-              )
-              
+            {/* Render the rest of the months, excluding the current month */}
+            {MONTHS.map(
+              (month, index) =>
+                month !== getCurrentMonth() && (
+                  <option key={index} value={month}>
+                    {month}
+                  </option>
+                )
             )}
-        </select>
-            </label>
+          </select>
+        </label>
         {/* date Filter  */}
         <input
-        aria-label="dateFilter"
+          aria-label="dateFilter"
           type="date"
           value={dateFilter || ""}
           onChange={(e) => setDateFilter(e.target.value)}
-          className="formInputLabel"
+          className="text-sm h-8 border   border-gray-300  px-4"
           placeholder="Select a date"
         />
         {/* Clear Button */}
         {dateFilter && (
           <button
             onClick={() => setDateFilter("")}
-            className="text-sm text-gray-600 hover:text-red-600 focus:outline-none"
+            className="text-sm h-8 border px-4  border-gray-300 hover:text-red-600 focus:outline-none"
           >
-            Clear
+            Clear Filters
           </button>
         )}
       </div>
@@ -410,7 +409,7 @@ const AnimatorsAssignmentsList = () => {
           columns={column}
           data={filteredAssignments}
           pagination
-          selectableRows
+          //selectableRows
           removableRows
           pageSizeControl
           customStyles={{
@@ -419,12 +418,17 @@ const AnimatorsAssignmentsList = () => {
                 // Apply Tailwind style via a class-like syntax
                 justifyContent: "center", // Align headers to the center
                 textAlign: "center", // Center header text
+                color: "black",
+                fontSize: "14px", // Increase font size for header text
               },
             },
+
             cells: {
               style: {
-                justifyContent: "center", // Center cell content
-                textAlign: "center",
+                //justifyContent: "center", // Center cell content
+                //textAlign: "center",
+                color: "black",
+                fontSize: "14px", // Increase font size for cell text
               },
             },
           }}

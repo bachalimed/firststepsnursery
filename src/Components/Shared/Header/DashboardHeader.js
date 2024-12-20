@@ -58,9 +58,9 @@ const DashboardHeader = () => {
       />
     </a>
   </noscript>
-        <div className="flex items-center">
+        {/* <div className="flex items-center">
           <AnimatedColorText company={company} />
-        </div>
+        </div> */}
       </div>
       <div className="flex flex-col md:flex-row items-center md:space-x-6 mb-2 md:mb-0">
         <h1 className="text-lg font-semibold text-center md:text-left">

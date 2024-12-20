@@ -13,12 +13,10 @@ import {
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import RegisterModal from "./RegisterModal";
 import Academics from "../Academics";
-import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
 import { useOutletContext } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { selectAllSectionsByYear, selectAllSections } from "./sectionsApiSlice"; //use the memoized selector
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
 //import RegisterModal from "./RegisterModal";
 import { Link } from "react-router-dom";
@@ -26,22 +24,11 @@ import { useNavigate } from "react-router-dom";
 import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { setAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-
 import useAuth from "../../../hooks/useAuth";
-
-import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
-import {
-  setSomeSections,
-  setSections,
-  currentSectionsList,
-} from "./sectionsSlice";
-import { IoDocumentAttachOutline } from "react-icons/io5";
 
 const NurserySectionsList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
 
@@ -50,13 +37,6 @@ const NurserySectionsList = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-  // useEffect(() => {
-  //     if (selectedAcademicYearId) {
-  //         // Fetch the sections for the selected academic year, if required
-  //         console.log('Fetch sections for academic year Id:', selectedAcademicYearId);
-  //     }
-  // }, [selectedAcademicYearId]);
-
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idSectionToDelete, setIdSectionToDelete] = useState(null); // State to track which document to delete
 
@@ -80,14 +60,9 @@ const NurserySectionsList = () => {
     }
   );
 
-  //const allSections = useSelector(selectAllSections)// not the same cache list we re looking for this is from getsections query and not getsectionbyyear wuery
-
-  //console.log('allSections from the state by year',allSections)
-  // State to hold selected rows
-  const [selectedRows, setSelectedRows] = useState([]);
   //state to hold the search query
   const [searchQuery, setSearchQuery] = useState("");
-  //const [filteredSections, setFilteredSections] = useState([])
+
   //we need to declare the variable outside of if statement to be able to use it outside later
   const [currentSectionsFilter, setCurrentSectionsFilter] = useState(false);
   let sectionsList = [];
@@ -96,7 +71,6 @@ const NurserySectionsList = () => {
     //set to the state to be used for other component s and edit section component
 
     const { entities } = sections;
-
     //we need to change into array to be read??
     sectionsList = Object.values(entities); //we are using entity adapter in this query
     //dispatch(setSections(sectionsList)); //timing issue to update the state and use it the same time
@@ -146,21 +120,6 @@ const NurserySectionsList = () => {
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
-  // Handler for selecting rows
-  const handleRowSelected = (state) => {
-    setSelectedRows(state.selectedRows);
-    //console.log('selectedRows', selectedRows)
-  };
-
-  // Handler for duplicating selected rows,
-  const handleDuplicateSelected = () => {
-    //console.log('Selected Rows to duplicate:', selectedRows);
-    // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
-    //ensure only one can be selected: the last one
-    const toDuplicate = selectedRows[-1];
-
-    setSelectedRows([]); // Clear selection after delete
-  };
 
   const [
     updateSection,
@@ -177,20 +136,6 @@ const NurserySectionsList = () => {
   //console.log(academicYears)
   // Handler for registering selected row,
   const [sectionYears, setSectionYears] = useState([]);
-  const handleRegisterSelected = () => {
-    //we already allowed only one to be selected in the button options
-    //console.log('Selected Rows to detail:', selectedRows)
-
-    setSectionObject(selectedRows[0]);
-    //console.log(sectionObject, "sectionObject");
-    //const {sectionYears}= (sectionObject)
-
-    setSectionYears(sectionObject.sectionYears);
-    //console.log("section years and id", sectionYears);
-    setIsRegisterModalOpen(true);
-
-    //setSelectedRows([]); // Clear selection after process
-  };
   const { triggerBanner } = useOutletContext(); // Access banner trigger
   // This is called when saving the updated section years from the modal
   const onUpdateSectionClicked = async (updatedYears) => {
@@ -293,7 +238,7 @@ const NurserySectionsList = () => {
       name: "#", // New column for entry number
       cell: (row, index) => index + 1, // Display the index + 1 (for 1-based numbering)
       sortable: false,
-      width: "50px",
+      width: "40px",
     },
     //show this column only if user is a parent and not employee
 
@@ -412,7 +357,7 @@ const NurserySectionsList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
-          aria-label="section details"
+            aria-label="section details"
             className="text-sky-700"
             fontSize={20}
             onClick={() =>
@@ -423,7 +368,7 @@ const NurserySectionsList = () => {
           </button>
           {!row.sectionTo && canEdit ? (
             <button
-            aria-label="edit section"
+              aria-label="edit section"
               className="text-amber-300"
               onClick={() =>
                 navigate(`/academics/sections/editSection/${row.id}`)
@@ -436,7 +381,7 @@ const NurserySectionsList = () => {
 
           {canDelete && (
             <button
-            aria-label="delete section"
+              aria-label="delete section"
               className="text-red-600"
               onClick={() => onDeleteStudentClicked(row.id)}
               hidden={!canDelete}
@@ -478,6 +423,9 @@ const NurserySectionsList = () => {
             className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
           />
           <input
+            aria-label="searchFilter"
+            id="searchFilter"
+            name="searchFilter"
             type="text"
             value={searchQuery}
             onChange={handleSearch}
@@ -485,8 +433,9 @@ const NurserySectionsList = () => {
           />
         </div>
         <button
+          aria-label="current section filter"
           onClick={() => setCurrentSectionsFilter((prev) => !prev)}
-          className="ml-2 p-2 bg-gray-200 rounded hover:text-blue-600"
+          className="text-sm h-8 border border-gray-300  px-4"
         >
           {currentSectionsFilter
             ? "Current Sections Shown"
@@ -500,26 +449,32 @@ const NurserySectionsList = () => {
           columns={column}
           data={filteredSections}
           pagination
-          selectableRows
+          //selectableRows
           removableRows
           pageSizeControl
-          onSelectedRowsChange={handleRowSelected}
+          //onSelectedRowsChange={handleRowSelected}
           selectableRowsHighlight
-          customStyles={{
-            headCells: {
-              style: {
-                // Apply Tailwind style via a class-like syntax
-                justifyContent: "center", // Align headers to the center
-                textAlign: "center", // Center header text
+         
+            customStyles={{
+              headCells: {
+                style: {
+                  // Apply Tailwind style via a class-like syntax
+                  justifyContent: "center", // Align headers to the center
+                  textAlign: "center", // Center header text
+                  color: "black",
+                  fontSize: "14px", // Increase font size for header text
+                },
               },
-            },
-            cells: {
-              style: {
-                justifyContent: "center", // Center cell content
-                textAlign: "center",
+           
+              cells: {
+                style: {
+                  justifyContent: "center", // Center cell content
+                  textAlign: "center",
+                  color: "black",
+                  fontSize: "14px", // Increase font size for cell text
+                },
               },
-            },
-          }}
+            }}
         ></DataTable>
         <div className="cancelSavebuttonsDiv">
           {isAdmin && (

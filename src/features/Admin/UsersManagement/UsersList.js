@@ -161,7 +161,7 @@ const UsersList = () => {
       name: "#", // New column for entry number
       cell: (row, index) => index + 1, // Display the index + 1 (for 1-based numbering)
       sortable: false,
-      width: "50px",
+      width: "40px",
     },
     //show this column only if user is a parent and not employee
 
@@ -444,12 +444,17 @@ const UsersList = () => {
                 // Apply Tailwind style via a class-like syntax
                 justifyContent: "center", // Align headers to the center
                 textAlign: "center", // Center header text
+                color: "black",
+                fontSize: "14px", // Increase font size for header text
               },
             },
+         
             cells: {
               style: {
                 justifyContent: "center", // Center cell content
                 textAlign: "center",
+                color: "black",
+                fontSize: "14px", // Increase font size for cell text
               },
             },
           }}
