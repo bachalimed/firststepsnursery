@@ -30,19 +30,17 @@ const StudentDocumentsListsList = () => {
   //RTK query studentDocumentsLists import
   const {
     data: studentDocumentsListsData,
-    isLoading:isDocumentsListsLoading,
-    isSuccess:isDocumentsListsSuccess,
-    isError:isDocumentsListsError,
-    error:documentsListsError,
+    isLoading: isDocumentsListsLoading,
+    isSuccess: isDocumentsListsSuccess,
+    isError: isDocumentsListsError,
+    error: documentsListsError,
   } = useGetStudentDocumentsListsQuery(
     {
-     
       endpointName: "StudentDocumentsListsList",
     } || {},
     {
-     
-      refetchOnFocus: true, 
-      refetchOnMountOrArgChange: true, 
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
     }
   );
   //initialising the delete Mutation
@@ -85,7 +83,6 @@ const StudentDocumentsListsList = () => {
   //console.log(studentDocumentsListsData)
   let filteredStudentDocumentsLists;
 
- 
   if (isDocumentsListsSuccess) {
     //transform into an array
     const { entities } = studentDocumentsListsData;
@@ -203,7 +200,7 @@ const StudentDocumentsListsList = () => {
         <div className="space-x-1">
           {canEdit ? (
             <button
-            aria-label="edit list"
+              aria-label="edit list"
               className="text-amber-300"
               onClick={() =>
                 Navigate(
@@ -217,7 +214,7 @@ const StudentDocumentsListsList = () => {
           ) : null}
 
           <button
-           aria-label="delete list"
+            aria-label="delete list"
             className="text-red-600"
             onClick={() => onDeleteStudentDocumentsListClicked(row.id)}
             hidden={!canDelete}
@@ -233,9 +230,13 @@ const StudentDocumentsListsList = () => {
   ].filter(Boolean); // Filter out falsy values like `false` or `undefined`
   let content;
 
-  if (isDocumentsListsLoading) content = ( <>
-      <StudentsSet /><LoadingStateIcon /></>);
-
+  if (isDocumentsListsLoading)
+    content = (
+      <>
+        <StudentsSet />
+        <LoadingStateIcon />
+      </>
+    );
 
   content = (
     <>
@@ -252,39 +253,49 @@ const StudentDocumentsListsList = () => {
           className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
         />
       </div>
-      <div className="flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-        <DataTable
-          columns={column}
-          data={filteredStudentDocumentsLists}
-          pagination
-          selectableRows
-          removableRows
-          onSelectedRowsChange={handleRowSelected}
-          selectableRowsHighlight
-          customStyles={{
-            headCells: {
-              style: {
-                // Apply Tailwind style via a class-like syntax
-                justifyContent: "center", // Align headers to the center
-                textAlign: "center", // Center header text
-                color: "black",
-                fontSize: "14px", // Increase font size for header text
+      <div className="dataTableContainer">
+        <div>
+          <DataTable
+            columns={column}
+            data={filteredStudentDocumentsLists}
+            pagination
+            selectableRows
+            removableRows
+            onSelectedRowsChange={handleRowSelected}
+            selectableRowsHighlight
+            customStyles={{
+              headCells: {
+                style: {
+                  // Apply Tailwind style via a class-like syntax
+                  justifyContent: "center", // Align headers to the center
+                  textAlign: "center", // Center header text
+                  color: "black",
+                  fontSize: "14px", // Increase font size for header text
+                },
               },
-            },
-         
-            cells: {
-              style: {
-                justifyContent: "center", // Center cell content
-                textAlign: "center",
-                color: "black",
-                fontSize: "14px", // Increase font size for cell text
+
+              cells: {
+                style: {
+                  justifyContent: "center", // Center cell content
+                  textAlign: "center",
+                  color: "black",
+                  fontSize: "14px", // Increase font size for cell text
+                },
               },
-            },
-          }}
-        ></DataTable>
+              pagination: {
+                style: {
+                  display: "flex",
+                  justifyContent: "center", // Center the pagination control
+                  alignItems: "center",
+                  padding: "10px 0", // Optional: Add padding for spacing
+                },
+              },
+            }}
+          ></DataTable>
+        </div>
         <div className="cancelSavebuttonsDiv">
           <button
-          aria-label="add new list"
+            aria-label="add new list"
             className="add-button"
             onClick={() =>
               Navigate("/settings/studentsSet/newStudentDocumentsList")
@@ -302,7 +313,7 @@ const StudentDocumentsListsList = () => {
         onConfirm={handleConfirmDelete}
       />
     </>
-  )
+  );
 
   return content;
 };

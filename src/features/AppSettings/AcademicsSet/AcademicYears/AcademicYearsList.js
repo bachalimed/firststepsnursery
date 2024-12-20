@@ -61,11 +61,10 @@ const AcademicYearsList = () => {
   const handleConfirmDelete = async () => {
     try {
       const response = await deleteAcademicYear({ id: idYearToDelete });
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -155,7 +154,7 @@ const AcademicYearsList = () => {
         <div className="space-x-1">
           {canEdit ? (
             <button
-            aria-label="edit year"
+              aria-label="edit year"
               className="text-amber-300"
               onClick={() =>
                 Navigate(`/settings/academicsSet/editAcademicYear/${row.id}`)
@@ -166,7 +165,7 @@ const AcademicYearsList = () => {
           ) : null}
           {canDelete ? (
             <button
-            aria-label="delete year"
+              aria-label="delete year"
               className="text-red-600"
               onClick={() => handleDelete(row.id)}
             >
@@ -196,20 +195,16 @@ const AcademicYearsList = () => {
     <>
       <AcademicsSet />
 
-      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-        {/* <div>
-    <input type="text" placeholder="search" onChange={handleFilter}/>
-   </div> */}
-
-        <DataTable
-          title={tableHeader}
-          columns={column}
-          data={academicYears}
-          pagination
-          selectableRows
-          removableRows
-          pageSizeControl
-          
+      <div className="dataTableContainer">
+        <div>
+          <DataTable
+            title={tableHeader}
+            columns={column}
+            data={academicYears}
+            pagination
+            selectableRows
+            removableRows
+            pageSizeControl
             customStyles={{
               headCells: {
                 style: {
@@ -220,7 +215,7 @@ const AcademicYearsList = () => {
                   fontSize: "14px", // Increase font size for header text
                 },
               },
-           
+
               cells: {
                 style: {
                   justifyContent: "center", // Center cell content
@@ -229,8 +224,17 @@ const AcademicYearsList = () => {
                   fontSize: "14px", // Increase font size for cell text
                 },
               },
+              pagination: {
+                style: {
+                  display: "flex",
+                  justifyContent: "center", // Center the pagination control
+                  alignItems: "center",
+                  padding: "10px 0", // Optional: Add padding for spacing
+                },
+              },
             }}
-        ></DataTable>
+          ></DataTable>
+        </div>
         <div className="cancelSavebuttonsDiv">
           <button
             className="add-button"

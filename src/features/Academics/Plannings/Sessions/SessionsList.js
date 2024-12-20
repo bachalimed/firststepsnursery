@@ -405,7 +405,7 @@ const SessionsList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
-          aria-label="edit session"
+            aria-label="edit session"
             className="text-sky-700"
             fontSize={20}
             onClick={() => navigate(`/hr/sessions/sessionDetails/${row.id}`)}
@@ -414,7 +414,7 @@ const SessionsList = () => {
           </button>
           {canEdit ? (
             <button
-            aria-label="delete session"
+              aria-label="delete session"
               className="text-amber300"
               onClick={() => navigate(`/hr/sessions/editSession/${row.id}`)}
             >
@@ -460,37 +460,53 @@ const SessionsList = () => {
           className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4"
         />
       </div>
-      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-        <DataTable
-          columns={column}
-          data={filteredSessions}
-          pagination
-          selectableRows
-          removableRows
-          pageSizeControl
-          onSelectedRowsChange={handleRowSelected}
-          selectableRowsHighlight
-          customStyles={{
-            headCells: {
-              style: {
-                // Apply Tailwind style via a class-like syntax
-                justifyContent: "center", // Align headers to the center
-                textAlign: "center", // Center header text
-                color: "black",
-                fontSize: "14px", // Increase font size for header text
+      <div className=" dataTableContainer">
+        <div>
+          <DataTable
+            columns={column}
+            data={filteredSessions}
+            pagination
+            selectableRows
+            removableRows
+            pageSizeControl
+            onSelectedRowsChange={handleRowSelected}
+            selectableRowsHighlight
+            customStyles={{
+              table: {
+                style: {
+                  tableLayout: "auto", // Allow dynamic resizing of columns
+                  width: "100%",
+                },
               },
-            },
-         
-            cells: {
-              style: {
-                justifyContent: "center", // Center cell content
-                textAlign: "center",
-                color: "black",
-                fontSize: "14px", // Increase font size for cell text
+              headCells: {
+                style: {
+                  // Apply Tailwind style via a class-like syntax
+                  justifyContent: "center", // Align headers to the center
+                  textAlign: "center", // Center header text
+                  color: "black",
+                  fontSize: "14px", // Increase font size for header text
+                },
               },
-            },
-          }}
-        ></DataTable>
+
+              cells: {
+                style: {
+                  justifyContent: "center", // Center cell content
+                  textAlign: "center",
+                  color: "black",
+                  fontSize: "14px", // Increase font size for cell text
+                },
+              },
+              pagination: {
+                style: {
+                  display: "flex",
+                  justifyContent: "center", // Center the pagination control
+                  alignItems: "center",
+                  padding: "10px 0", // Optional: Add padding for spacing
+                },
+              },
+            }}
+          ></DataTable>
+        </div>
         <div className="cancelSavebuttonsDiv">
           <button
             className=" px-4 py-2 bg-green-600 text-white rounded"

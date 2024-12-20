@@ -1,17 +1,16 @@
 import React from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { useGetFamiliesByYearQuery } from "./familiesApiSlice";
-import { setSomeFamilies, setFamilies } from "./familiesSlice";
+import { setFamilies } from "./familiesSlice";
 import Students from "../../Students";
 import DataTable from "react-data-table-component";
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import { useDeleteFamilyMutation } from "./familiesApiSlice";
-import { FiEdit, FiDelete } from "react-icons/fi";
+import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { MdOutlineFamilyRestroom } from "react-icons/md";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
@@ -19,9 +18,7 @@ import {
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import useAuth from "../../../../hooks/useAuth";
 import { ImProfile } from "react-icons/im";
-import { useDispatch } from "react-redux";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
-import { useOutletContext } from "react-router-dom";
 
 const FamiliesList = () => {
   //this is for the academic year selection
@@ -31,12 +28,6 @@ const FamiliesList = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-  // useEffect(() => {
-  //     if (selectedAcademicYearId) {
-  //         // Fetch the students for the selected academic year, if required
-  //         console.log('Fetch students for academic year Id:', selectedAcademicYearId);
-  //     }
-  // }, [selectedAcademicYearId]);
 
   const navigate = useNavigate();
   const Dispatch = useDispatch();
@@ -58,14 +49,6 @@ const FamiliesList = () => {
       refetchOnMountOrArgChange: true,
     }
   );
-
-  // //this ensures teh selected year is chosen before running hte useeffect it is working perfectly to dispaptch the selected year
-  // useEffect(() => {
-  //   if (selectedAcademicYear?.title) {
-  //     setSelectedYear(selectedAcademicYear?.title);
-  //     //console.log('Selected year updated:', selectedAcademicYear?.title)
-  //   }
-  // }, [selectedAcademicYear]);
 
   // State to hold selected rows
   const [selectedRows, setSelectedRows] = useState([]);
@@ -168,11 +151,10 @@ const FamiliesList = () => {
     try {
       const response = await deleteFamily({ id: idFamilyToDelete });
       setIsDeleteModalOpen(false); // Close the modal
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -195,26 +177,6 @@ const FamiliesList = () => {
     setIdFamilyToDelete(null);
   };
 
-  // Handler for duplicating selected rows,
-  const handleDuplicateSelected = () => {
-    //console.log('Selected Rows to duplicate:', selectedRows);
-    // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
-    //ensure only one can be selected: the last one
-    const toDuplicate = selectedRows[-1];
-
-    setSelectedRows([]); // Clear selection after delete
-  };
-
-  // Handler for duplicating selected rows,
-  const handleDetailsSelected = () => {
-    //console.log('Selected Rows to detail:', selectedRows)
-    // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
-    //ensure only one can be selected: the last one
-    const toDuplicate = selectedRows[-1];
-
-    setSelectedRows([]); // Clear selection after delete
-  };
-
   const column = [
     {
       name: "#", // New column for entry number
@@ -222,15 +184,15 @@ const FamiliesList = () => {
       sortable: false,
       width: "40px",
     },
-    isAdmin && {
-      name: "Family ID",
-      selector: (row) => row.id,
-      sortable: true,
-      width: "210px",
-    },
+    // isAdmin && {
+    //   name: "Family ID",
+    //   selector: (row) => row.id,
+    //   sortable: true,
+    //   width: "210px",
+    // },
 
     {
-      name: "Name",
+      name: "Parents",
       selector: (row) => (
         <div>
           <Link to={`/students/studentsParents/familyDetails/${row._id}`}>
@@ -253,6 +215,10 @@ const FamiliesList = () => {
           </Link>
         </div>
       ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       sortable: true,
       width: "180px",
     },
@@ -274,12 +240,15 @@ const FamiliesList = () => {
           ))}
         </div>
       ),
-
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       sortable: true,
       width: "180px",
     },
     {
-      name: "grade",
+      name: "Grade",
       selector: (row) => (
         <div>
           {row.children.map((child) => (
@@ -289,7 +258,7 @@ const FamiliesList = () => {
       ),
 
       sortable: true,
-      width: "80px",
+      width: "90px",
     },
 
     {
@@ -314,13 +283,17 @@ const FamiliesList = () => {
         </div>
       ),
       sortable: true,
-      width: "100px",
+      width: "110px",
     },
     {
       name: "Situation",
       selector: (row) => row.familySituation,
       sortable: true,
-      width: "100px",
+      width: "110px",
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
     },
 
     {
@@ -331,6 +304,10 @@ const FamiliesList = () => {
           <div> {row.mother?.userContact?.primaryPhone}</div>
         </div>
       ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       sortable: true,
       width: "120px",
     },
@@ -360,12 +337,16 @@ const FamiliesList = () => {
           )}
         </div>
       ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       sortable: true,
       width: "170px",
     },
 
     {
-      name: "Manage",
+      name: "Actions",
       cell: (row) => (
         <div className="space-x-1">
           <button
@@ -406,12 +387,10 @@ const FamiliesList = () => {
 
   // Custom header to include the row count
   const tableHeader = (
-   
-      <h2>
-        Families List:
-        <span> {filteredFamilies.length} families</span>
-      </h2>
-  
+    <h2>
+      Families List:
+      <span> {filteredFamilies.length} families</span>
+    </h2>
   );
 
   let content;
@@ -424,29 +403,25 @@ const FamiliesList = () => {
       </>
     );
 
+  //console.log('filtered and success', filteredFamilies)
 
-    //console.log('filtered and success', filteredFamilies)
-
-    content = (
-      <>
-        <Students />
-        <div className="relative h-10 mr-2 ">
-          <HiOutlineSearch
-            fontSize={20}
-            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-          />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={handleSearch}
-            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
-          />
-        </div>
-        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-          {/* <div>
-    <input type="text" placeholder="search" onChange={handleFilter}/>
-   </div> */}
-
+  content = (
+    <>
+      <Students />
+      <div className="relative h-10 mr-2 ">
+        <HiOutlineSearch
+          fontSize={20}
+          className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+        />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={handleSearch}
+          className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+        />
+      </div>
+      <div className="dataTableContainer">
+        <div>
           <DataTable
             title={tableHeader}
             columns={column}
@@ -465,7 +440,7 @@ const FamiliesList = () => {
                   fontSize: "14px", // Increase font size for header text
                 },
               },
-           
+
               cells: {
                 style: {
                   justifyContent: "center", // Center cell content
@@ -474,26 +449,35 @@ const FamiliesList = () => {
                   fontSize: "14px", // Increase font size for cell text
                 },
               },
+              pagination: {
+                style: {
+                  display: "flex",
+                  justifyContent: "center", // Center the pagination control
+                  alignItems: "center",
+                  padding: "10px 0", // Optional: Add padding for spacing
+                },
+              },
             }}
           ></DataTable>
-          <div className="cancelSavebuttonsDiv">
-            <button
-              className="add-button"
-              onClick={() => navigate("/students/studentsParents/newFamily/")}
-              hidden={!canCreate}
-            >
-              New Family
-            </button>
-          </div>
         </div>
-        <DeletionConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
-          onConfirm={handleConfirmDelete}
-        />
-      </>
-    );
-  
+        <div className="cancelSavebuttonsDiv">
+          <button
+            className="add-button"
+            onClick={() => navigate("/students/studentsParents/newFamily/")}
+            hidden={!canCreate}
+          >
+            New Family
+          </button>
+        </div>
+      </div>
+      <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
+    </>
+  );
+
   return content;
 };
 export default FamiliesList;

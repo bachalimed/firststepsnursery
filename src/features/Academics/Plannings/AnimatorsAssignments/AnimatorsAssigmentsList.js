@@ -233,6 +233,11 @@ const AnimatorsAssignmentsList = () => {
           day: "2-digit",
         }),
       sortable: true,
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      
+      },
       width: "110px",
     },
     {
@@ -289,7 +294,7 @@ const AnimatorsAssignmentsList = () => {
       ),
 
       sortable: true,
-      width: "180px",
+      width: "220px",
     },
 
     (isDirector || isAcademic || isManager || isAdmin) && {
@@ -403,55 +408,68 @@ const AnimatorsAssignmentsList = () => {
         )}
       </div>
 
-      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-        <DataTable
-          title={tableHeader}
-          columns={column}
-          data={filteredAssignments}
-          pagination
-          //selectableRows
-          removableRows
-          pageSizeControl
-          customStyles={{
-            headCells: {
-              style: {
-                // Apply Tailwind style via a class-like syntax
-                justifyContent: "center", // Align headers to the center
-                textAlign: "center", // Center header text
-                color: "black",
-                fontSize: "14px", // Increase font size for header text
+      <div className="dataTableContainer">
+        <div>
+          <DataTable
+            title={tableHeader}
+            columns={column}
+            data={filteredAssignments}
+            pagination
+            removableRows
+            pageSizeControl
+            customStyles={{
+              table: {
+                style: {
+                  tableLayout: "auto", // Allow dynamic resizing of columns
+                  width: "100%",
+                },
               },
-            },
+              headCells: {
+                style: {
+                  justifyContent: "center",
+                  textAlign: "center",
+                  color: "black",
+                  fontSize: "14px",
+                },
+              },
+              cells: {
+                style: {
+                  color: "black",
+                  fontSize: "14px",
+                },
+              },
+              pagination: {
+                style: {
+                  display: "flex",
+                  justifyContent: "center", // Center the pagination control
+                  alignItems: "center",
+                  padding: "10px 0", // Optional: Add padding for spacing
+                },
+              },
+            }}
+          />
+        </div>
 
-            cells: {
-              style: {
-                //justifyContent: "center", // Center cell content
-                //textAlign: "center",
-                color: "black",
-                fontSize: "14px", // Increase font size for cell text
-              },
-            },
-          }}
-        ></DataTable>
+        {/* Center the Buttons */}
         {(isAdmin || isDirector || isManager || isAcademic) && (
-          <div className="cancelSavebuttonsDiv">
-            <button
-              className="add-button"
-              onClick={() =>
-                navigate("/academics/plannings/NewAnimatorsAssignmentForm/")
-              }
-              hidden={!canCreate}
-            >
-              New Assignment
-            </button>
-          </div>
+          <button
+            className="add-button "
+            onClick={() =>
+              navigate("/academics/plannings/NewAnimatorsAssignmentForm/")
+            }
+            hidden={!canCreate}
+          >
+            New Assignment
+          </button>
         )}
+
+        {/* Deletion Modal */}
+        <DeletionConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+        />
       </div>
-      <DeletionConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
-      />
     </>
   );
 };

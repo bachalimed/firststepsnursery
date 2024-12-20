@@ -10,7 +10,7 @@ import DataTable from "react-data-table-component";
 
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal"
+import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { ImProfile } from "react-icons/im";
@@ -51,7 +51,7 @@ const ExpenseCategoriesList = () => {
 
   const {
     data: expenseCategories, //the data is renamed expenseCategories
-    isLoading: isExpenseCategoriesLoading, 
+    isLoading: isExpenseCategoriesLoading,
     isSuccess: isExpenseCategoriesSuccess,
     isError: isExpenseCategoriesError,
     error: expenseCategoriesError,
@@ -86,12 +86,13 @@ const ExpenseCategoriesList = () => {
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
     try {
-      const response = await deleteExpenseCategory({ id: idExpenseCategoryToDelete });
-      if ( response?.message) {
+      const response = await deleteExpenseCategory({
+        id: idExpenseCategoryToDelete,
+      });
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -108,7 +109,7 @@ const ExpenseCategoriesList = () => {
       triggerBanner(error?.data?.message, "error");
     }
     setIsDeleteModalOpen(false); // Close the modal
-};
+  };
 
   // Function to close the modal without deleting
   const handleCloseDeleteModal = () => {
@@ -177,7 +178,6 @@ const ExpenseCategoriesList = () => {
       width: "240px",
     },
 
-    
     {
       name: "Active",
       selector: (row) => row?.expenseCategoryIsActive,
@@ -236,13 +236,12 @@ const ExpenseCategoriesList = () => {
       width: "120px",
     },
 
-
     {
       name: "Actions",
       cell: (row) => (
         <div className="space-x-1">
           <button
-          aria-label="expense category details"
+            aria-label="expense category details"
             className="text-sky-700"
             fontSize={20}
             onClick={() =>
@@ -253,7 +252,7 @@ const ExpenseCategoriesList = () => {
           </button>
           {canEdit ? (
             <button
-            aria-label="edit expense category"
+              aria-label="edit expense category"
               className="text-amber-300"
               onClick={() =>
                 navigate(`/settings/financesSet/editExpenseCategory/${row.id}`)
@@ -264,7 +263,7 @@ const ExpenseCategoriesList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
-            aria-label="delete expense category"
+              aria-label="delete expense category"
               className="text-red-600"
               onClick={() => onDeleteExpenseCategoryClicked(row.id)}
             >
@@ -281,12 +280,10 @@ const ExpenseCategoriesList = () => {
 
   // Custom header to include the row count
   const tableHeader = (
-    
-      <h2>
-        ExpenseCategories List:{" "}
-        <span> {filteredExpenseCategories.length} expenseCategories</span>
-      </h2>
-   
+    <h2>
+      ExpenseCategories List:{" "}
+      <span> {filteredExpenseCategories.length} expenseCategories</span>
+    </h2>
   );
   let content;
   if (isExpenseCategoriesLoading)
@@ -297,23 +294,24 @@ const ExpenseCategoriesList = () => {
       </>
     );
 
-    content = (
-      <>
-        <FinancesSet />
+  content = (
+    <>
+      <FinancesSet />
 
-        <div className="relative h-10 mr-2 ">
-          <HiOutlineSearch
-            fontSize={20}
-            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-          />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={handleSearch}
-            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
-          />
-        </div>
-        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+      <div className="relative h-10 mr-2 ">
+        <HiOutlineSearch
+          fontSize={20}
+          className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+        />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={handleSearch}
+          className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+        />
+      </div>
+      <div className="dataTableContainer">
+        <div>
           <DataTable
             title={tableHeader}
             columns={column}
@@ -334,7 +332,7 @@ const ExpenseCategoriesList = () => {
                   fontSize: "14px", // Increase font size for header text
                 },
               },
-           
+
               cells: {
                 style: {
                   justifyContent: "center", // Center cell content
@@ -343,21 +341,30 @@ const ExpenseCategoriesList = () => {
                   fontSize: "14px", // Increase font size for cell text
                 },
               },
+              pagination: {
+                style: {
+                  display: "flex",
+                  justifyContent: "center", // Center the pagination control
+                  alignItems: "center",
+                  padding: "10px 0", // Optional: Add padding for spacing
+                },
+              },
             }}
           ></DataTable>
-          <div className="cancelSavebuttonsDiv">
-            <button
-              className="add-button"
-              onClick={() =>
-                navigate("/settings/financesSet/newExpenseCategory/")
-              }
-              // disabled={selectedRows.length !== 1} // Disable if no rows are selected
-              hidden={!canCreate}
-            >
-              New Category
-            </button>
+        </div>
+        <div className="cancelSavebuttonsDiv">
+          <button
+            className="add-button"
+            onClick={() =>
+              navigate("/settings/financesSet/newExpenseCategory/")
+            }
+            // disabled={selectedRows.length !== 1} // Disable if no rows are selected
+            hidden={!canCreate}
+          >
+            New Category
+          </button>
 
-            {/* {isAdmin && (
+          {/* {isAdmin && (
             <button
               className="px-3 py-2 bg-gray-400 text-white rounded"
               onClick={handleDuplicateSelected}
@@ -367,16 +374,16 @@ const ExpenseCategoriesList = () => {
               optional button
             </button>
           )} */}
-          </div>
         </div>
-        <DeletionConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
-          onConfirm={handleConfirmDelete}
-        />
-      </>
-    );
-  
+      </div>
+      <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
+    </>
+  );
+
   return content;
 };
 export default ExpenseCategoriesList;

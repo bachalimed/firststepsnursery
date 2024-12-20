@@ -62,11 +62,10 @@ const AttendedSchoolsList = () => {
       const response = await deleteAttendedSchool({
         id: idAttendedSchoolToDelete,
       });
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -104,7 +103,7 @@ const AttendedSchoolsList = () => {
     // console.log('isLoading:', isLoading)
     // console.log('isSuccess:', isSuccess)
     // console.log('isError:', isError)
-   
+
     if (isSchoolsSuccess) {
       //console.log('attendedSchoolsData',attendedSchoolsData)
       //transform into an array
@@ -125,7 +124,7 @@ const AttendedSchoolsList = () => {
 
   //define the content to be conditionally rendered
   const column = [
-    isAdmin &&  {
+    isAdmin && {
       name: "ID",
       selector: (row) => row.id,
       sortable: true,
@@ -172,7 +171,7 @@ const AttendedSchoolsList = () => {
         <div className="space-x-1">
           {canEdit ? (
             <button
-            aria-label="edit school"
+              aria-label="edit school"
               className="text-amber-300"
               onClick={() =>
                 Navigate(`/settings/academicsSet/editAttendedSchool/${row.id}`)
@@ -183,7 +182,7 @@ const AttendedSchoolsList = () => {
           ) : null}
           {canDelete ? (
             <button
-            aria-label="delete school"
+              aria-label="delete school"
               className="text-red-600"
               onClick={() => onDeleteAttendedSchoolClicked(row.id)}
             >
@@ -200,9 +199,9 @@ const AttendedSchoolsList = () => {
   // Custom header to include the row count
   const tableHeader = (
     <h2>
-        Schools List:
-        <span> {attendedSchools.length} users</span>
-      </h2>
+      Schools List:
+      <span> {attendedSchools.length} users</span>
+    </h2>
   );
 
   let content;
@@ -215,16 +214,12 @@ const AttendedSchoolsList = () => {
       </>
     );
 
-  
-    return (
-      <>
-        <AcademicsSet />
+  return (
+    <>
+      <AcademicsSet />
 
-        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-          {/* <div>
-    <input type="text" placeholder="search" onChange={handleFilter}/>
-   </div> */}
-
+      <div className="dataTableContainer">
+        <div>
           <DataTable
             title={tableHeader}
             columns={column}
@@ -243,7 +238,7 @@ const AttendedSchoolsList = () => {
                   fontSize: "14px", // Increase font size for header text
                 },
               },
-           
+
               cells: {
                 style: {
                   justifyContent: "center", // Center cell content
@@ -252,26 +247,34 @@ const AttendedSchoolsList = () => {
                   fontSize: "14px", // Increase font size for cell text
                 },
               },
+              pagination: {
+                style: {
+                  display: "flex",
+                  justifyContent: "center", // Center the pagination control
+                  alignItems: "center",
+                  padding: "10px 0", // Optional: Add padding for spacing
+                },
+              },
             }}
           ></DataTable>
-          <div className="cancelSavebuttonsDiv">
-            <button
-              className="add-button"
-              onClick={() => Navigate("/settings/academicsSet/newSchool")}
-              disabled={selectedRows.length !== 0} // Disable if no rows are selected
-              hidden={!canCreate}
-            >
-              New School
-            </button>
-          </div>
         </div>
-        <DeletionConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
-          onConfirm={handleConfirmDelete}
-        />
-      </>
-    );
-  
+        <div className="cancelSavebuttonsDiv">
+          <button
+            className="add-button"
+            onClick={() => Navigate("/settings/academicsSet/newSchool")}
+            disabled={selectedRows.length !== 0} // Disable if no rows are selected
+            hidden={!canCreate}
+          >
+            New School
+          </button>
+        </div>
+      </div>
+      <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
+    </>
+  );
 };
 export default AttendedSchoolsList;

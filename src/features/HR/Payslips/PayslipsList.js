@@ -403,7 +403,7 @@ const PayslipsList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
-          aria-label="payslip Details"
+            aria-label="payslip Details"
             className="text-sky-700"
             fontSize={20}
             onClick={() => navigate(`/hr/payslips/payslipDetails/${row.id}`)}
@@ -412,7 +412,7 @@ const PayslipsList = () => {
           </button>
           {canEdit ? (
             <button
-            aria-label="edit payslip"
+              aria-label="edit payslip"
               className="text-amber-300"
               onClick={() => navigate(`/hr/payslips/editPayslip/${row.id}`)}
             >
@@ -421,7 +421,7 @@ const PayslipsList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
-            aria-label="delete payslip"
+              aria-label="delete payslip"
               className="text-red-600"
               onClick={() => onDeletePayslipClicked(row.id)}
             >
@@ -438,11 +438,9 @@ const PayslipsList = () => {
 
   // Custom header to include the row count
   const tableHeader = (
-   
-      <h2>
-        Payslips List: <span> {filteredPayslips.length} payslips</span>
-      </h2>
-    
+    <h2>
+      Payslips List: <span> {filteredPayslips.length} payslips</span>
+    </h2>
   );
   let content;
   if (isPayslipsLoading)
@@ -453,29 +451,29 @@ const PayslipsList = () => {
       </>
     );
 
-    content = (
-      <>
-        <HR />
+  content = (
+    <>
+      <HR />
 
-        <div className="flex space-x-2 items-center ml-3">
-          {/* Search Bar */}
-          <div className="relative h-10 mr-2 ">
-            <HiOutlineSearch
-              fontSize={20}
-              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-            />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={handleSearch}
-              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
-            />
-          </div>
-          {/*  Month Filter */}
-          <label htmlFor="monthFilter" className="formInputLabel">
-        <select
-        aria-label="monthFilter"
-        id="monthFilter"
+      <div className="flex space-x-2 items-center ml-3">
+        {/* Search Bar */}
+        <div className="relative h-10 mr-2 ">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+          />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+          />
+        </div>
+        {/*  Month Filter */}
+        <label htmlFor="monthFilter" className="formInputLabel">
+          <select
+            aria-label="monthFilter"
+            id="monthFilter"
             value={selectedPayslipMonth}
             onChange={(e) => setSelectedPayslipMonth(e.target.value)}
             className="text-sm h-8 border border-gray-300  px-4"
@@ -492,9 +490,11 @@ const PayslipsList = () => {
                   </option>
                 )
             )}
-          </select></label>
-        </div>
-        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+          </select>
+        </label>
+      </div>
+      <div className="dataTableContainer">
+        <div>
           <DataTable
             title={tableHeader}
             columns={column}
@@ -515,7 +515,7 @@ const PayslipsList = () => {
                   fontSize: "14px", // Increase font size for header text
                 },
               },
-           
+
               cells: {
                 style: {
                   justifyContent: "center", // Center cell content
@@ -524,19 +524,28 @@ const PayslipsList = () => {
                   fontSize: "14px", // Increase font size for cell text
                 },
               },
+              pagination: {
+                style: {
+                  display: "flex",
+                  justifyContent: "center", // Center the pagination control
+                  alignItems: "center",
+                  padding: "10px 0", // Optional: Add padding for spacing
+                },
+              },
             }}
           ></DataTable>
-          <div className="cancelSavebuttonsDiv">
-            <button
-              className="add-button"
-              onClick={() => navigate("/hr/payslips/newPayslip")}
-              // disabled={selectedRows.length !== 1} // Disable if no rows are selected
-              hidden={!canCreate}
-            >
-              New Payslip
-            </button>
+        </div>
+        <div className="cancelSavebuttonsDiv">
+          <button
+            className="add-button"
+            onClick={() => navigate("/hr/payslips/newPayslip")}
+            // disabled={selectedRows.length !== 1} // Disable if no rows are selected
+            hidden={!canCreate}
+          >
+            New Payslip
+          </button>
 
-            {/* {isAdmin && (
+          {/* {isAdmin && (
             <button
               className="px-3 py-2 bg-gray-400 text-white rounded"
               onClick={handleDuplicateSelected}
@@ -546,23 +555,23 @@ const PayslipsList = () => {
               optional button
             </button>
           )} */}
-          </div>
         </div>
-        <DeletionConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
-          onConfirm={handleConfirmDelete}
-        />
-        {/* <RegisterModal 
+      </div>
+      <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
+      {/* <RegisterModal 
         isOpen={isRegisterModalOpen}
         onClose={() => setIsRegisterModalOpen(false)}
         payslipYears={payslipYears}
         academicYears={academicYears}
         onSave={onUpdatePayslipClicked}
       /> */}
-      </>
-    );
-  
+    </>
+  );
+
   return content;
 };
 export default PayslipsList;

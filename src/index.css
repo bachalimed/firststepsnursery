@@ -618,3 +618,7 @@ header .bg-blue-600 p {
 }
 
 
+/*datatable container  */
+.dataTableContainer {
+  @apply flex flex-col items-center bg-white px-4  pb-4 rounded-sm;
+}

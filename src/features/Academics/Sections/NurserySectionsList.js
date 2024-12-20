@@ -1,5 +1,4 @@
 import {
-  useGetSectionsQuery,
   useUpdateSectionMutation,
   useGetSectionsByYearQuery,
   useDeleteSectionMutation,
@@ -18,7 +17,6 @@ import { useOutletContext } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
-//import RegisterModal from "./RegisterModal";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { ImProfile } from "react-icons/im";
@@ -75,7 +73,6 @@ const NurserySectionsList = () => {
     sectionsList = Object.values(entities); //we are using entity adapter in this query
     //dispatch(setSections(sectionsList)); //timing issue to update the state and use it the same time
 
-    //the serach result data
     // Filter sections based on search query, including student names
     filteredSections = sectionsList?.filter((section) => {
       // Apply filter for sectionTo if needed
@@ -172,18 +169,6 @@ const NurserySectionsList = () => {
     setIsRegisterModalOpen(false); // Close modal
   };
 
-  //const [sectionYears, setSectionYears] = useState([])
-  //adds to the previous entries in arrays for gardien, schools...
-  const onSectionYearsChanged = (e, selectedYear) => {
-    if (e.target.checked) {
-      // Add the selectedYear to sectionYears if it's checked
-      setSectionYears([...sectionYears, selectedYear]);
-    } else {
-      // Remove the selectedYear from sectionYears if it's unchecked
-      setSectionYears(sectionYears.filter((year) => year !== selectedYear));
-    }
-  };
-
   //initialising the delete Mutation
   const [
     deleteSection,
@@ -257,7 +242,7 @@ const NurserySectionsList = () => {
       name: "Label",
       selector: (row) => row?.sectionLabel,
       sortable: true,
-      width: "120px",
+      width: "90px",
       cell: (row) => (
         <Link to={`/sections/sectionDetails/${row.id}`}>
           {row?.sectionLabel}
@@ -268,7 +253,7 @@ const NurserySectionsList = () => {
       name: "Count",
       selector: (row) => row?.students.length,
       sortable: true,
-      width: "80px",
+      width: "90px",
     },
     {
       name: "Students",
@@ -283,8 +268,14 @@ const NurserySectionsList = () => {
           ))}
         </div>
       ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      
+      },
+      
       sortable: true,
-      width: "220px",
+      width: "230px",
     },
     {
       name: "School",
@@ -297,21 +288,36 @@ const NurserySectionsList = () => {
           ))}
         </div>
       ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      
+      },
       sortable: true,
-      width: "150px",
+      width: "160px",
     },
     {
       name: "Animator",
       selector: (row) =>
         `${row?.sectionAnimator?.userFullName?.userFirstName} ${row?.sectionAnimator?.userFullName?.userMiddleName} ${row?.sectionAnimator?.userFullName?.userLastName}`.trim(),
       sortable: true,
-      width: "190px",
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      
+      },
+      width: "230",
     },
     {
       name: "Type",
       selector: (row) => row?.sectionType,
       sortable: true,
-      width: "100px",
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      
+      },
+      width: "110px",
     },
 
     {
@@ -321,7 +327,12 @@ const NurserySectionsList = () => {
         " " +
         row?.sectionLocation?.classroomLabel,
       sortable: true,
-      width: "180px",
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      
+      },
+      width: "160px",
     },
 
     {
@@ -348,8 +359,13 @@ const NurserySectionsList = () => {
           </div>
         </div>
       ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      
+      },
       sortable: true,
-      width: "180px",
+      width: "150px",
     },
 
     {
@@ -416,7 +432,7 @@ const NurserySectionsList = () => {
   content = (
     <>
       <Academics />
-      <div className="flex space-x-2 items-center ml-3">
+      <div className="flex space-x-2 items-center ml-3 ">
         <div className="relative h-10 mr-2 ">
           <HiOutlineSearch
             fontSize={20}
@@ -443,19 +459,25 @@ const NurserySectionsList = () => {
         </button>
       </div>
 
-      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-        <DataTable
-          title={tableHeader}
-          columns={column}
-          data={filteredSections}
-          pagination
-          //selectableRows
-          removableRows
-          pageSizeControl
-          //onSelectedRowsChange={handleRowSelected}
-          selectableRowsHighlight
-         
+      <div className="dataTableContainer">
+        <div>
+          <DataTable
+            title={tableHeader}
+            columns={column}
+            data={filteredSections}
+            pagination
+            //selectableRows
+            removableRows
+            pageSizeControl
+            //onSelectedRowsChange={handleRowSelected}
+            selectableRowsHighlight
             customStyles={{
+              table: {
+                style: {
+                  tableLayout: "auto", // Allow dynamic resizing of columns
+                  width: "100%",
+                },
+              },
               headCells: {
                 style: {
                   // Apply Tailwind style via a class-like syntax
@@ -465,7 +487,7 @@ const NurserySectionsList = () => {
                   fontSize: "14px", // Increase font size for header text
                 },
               },
-           
+
               cells: {
                 style: {
                   justifyContent: "center", // Center cell content
@@ -474,20 +496,28 @@ const NurserySectionsList = () => {
                   fontSize: "14px", // Increase font size for cell text
                 },
               },
+              pagination: {
+                style: {
+                  display: "flex",
+                  justifyContent: "center", // Center the pagination control
+                  alignItems: "center",
+                  padding: "10px 0", // Optional: Add padding for spacing
+                },
+              },
             }}
-        ></DataTable>
-        <div className="cancelSavebuttonsDiv">
-          {isAdmin && (
-            <button
-              className="add-button"
-              onClick={() => navigate("/academics/sections/newSection/")}
-              //disabled={selectedRows.length !== 1} // Disable if no rows are selected
-              hidden={!canCreate}
-            >
-              New Section
-            </button>
-          )}
+          ></DataTable>
         </div>
+
+        {isAdmin && (
+          <button
+            className="add-button"
+            onClick={() => navigate("/academics/sections/newSection/")}
+            //disabled={selectedRows.length !== 1} // Disable if no rows are selected
+            hidden={!canCreate}
+          >
+            New Section
+          </button>
+        )}
       </div>
       <DeletionConfirmModal
         isOpen={isDeleteModalOpen}

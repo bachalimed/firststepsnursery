@@ -270,21 +270,21 @@ const EnrolmentsList = () => {
     },
     //show this column only if user is a parent and not employee
 
-    isAdmin
-      ? {
-          name: "Enrolment ID",
-          selector: (row) => (
-            <Link to={`/enrolments/enrolments/enrolmentDetails/${row.id}`}>
-              {row.id}
-            </Link>
-          ),
-          sortable: true,
-          width: "200px",
-        }
-      : null,
+    // isAdmin
+    //   ? {
+    //       name: "Enrolment ID",
+    //       selector: (row) => (
+    //         <Link to={`/enrolments/enrolments/enrolmentDetails/${row.id}`}>
+    //           {row.id}
+    //         </Link>
+    //       ),
+    //       sortable: true,
+    //       width: "200px",
+    //     }
+    //   : null,
 
     {
-      name: " Active Student",
+      name: " Active",
       selector: (row) => row.student.studentIsActive,
       cell: (row) => (
         <span>
@@ -296,7 +296,7 @@ const EnrolmentsList = () => {
         </span>
       ),
       sortable: true,
-      width: "80px",
+      width: "90px",
     },
     {
       name: "Sex",
@@ -312,7 +312,7 @@ const EnrolmentsList = () => {
       ),
       sortable: true,
       removableRows: true,
-      width: "70px",
+      width: "80px",
     },
     {
       name: "Student Name",
@@ -323,7 +323,11 @@ const EnrolmentsList = () => {
         " " +
         row.student.studentName?.lastName,
       sortable: true,
-      width: "160px",
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
+      width: "200px",
     },
     {
       name: "Admission Service",
@@ -331,8 +335,12 @@ const EnrolmentsList = () => {
         `${row.admission.agreedServices?.feePeriod || ""} ${
           row.service?.serviceType || ""
         }`,
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       sortable: true,
-      width: "160px",
+      width: "180px",
     },
     {
       name: "Amount",
@@ -348,18 +356,22 @@ const EnrolmentsList = () => {
           {row?.serviceFinalFee}
         </span>
       ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       sortable: true,
       width: "100px",
     },
     {
-      name: "Authorised Fee", //means authorised
+      name: "Authorised", //means authorised
       selector: (row) =>
         `${row?.serviceAuthorisedFee} / ${
           row?.admission?.agreedServices?.isAuthorised ? "Yes" : "No"
         }`,
 
       sortable: true,
-      width: "140px",
+      width: "120px",
     },
     {
       name: "Comment", //means authorised
@@ -371,7 +383,11 @@ const EnrolmentsList = () => {
           {row?.enrolmentNote}
         </div>
       ),
-      width: "140px",
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
+      width: "150px",
     },
     // {
     //   name: "Authorised", //means authorised
@@ -383,11 +399,11 @@ const EnrolmentsList = () => {
     // },
 
     {
-      name: "Admission Fee Dates",
+      name: "Fee Dates",
       selector: (row) => (
         <>
           <div>
-            from{" "}
+            fr{" "}
             {new Date(
               row.admission.agreedServices?.feeStartDate
             ).toLocaleDateString("en-GB", {
@@ -409,16 +425,20 @@ const EnrolmentsList = () => {
           </div>
         </>
       ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       sortable: true,
-      width: "160px",
+      width: "130px",
     },
 
     {
-      name: "Enrolment Month",
+      name: "Month",
       selector: (row) =>
         `${row.enrolmentDuration || ""} ${row.enrolmentMonth || ""}`,
       sortable: true,
-      width: "160px",
+      width: "100px",
     },
 
     // {
@@ -469,28 +489,43 @@ const EnrolmentsList = () => {
           </div>
         </>
       ),
-
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       sortable: true,
-      width: "140px",
+      width: "130px",
     },
     {
       name: "Paid",
       selector: (row) => (
         <>
           <div>
-            on{" "}
-            {new Date(row.enrolmentStartDate).toLocaleDateString("en-GB", {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-            })}
+            {" "}
+            {row?.enrolmentInvoice?.invoicePayment
+              ? `${row?.enrolmentInvoice?.invoicePayment?.paymentAmount} `
+              : ""}
           </div>
-          <div>110 pending invoice implementation</div>
+          <div>
+            {row?.enrolmentInvoice?.invoicePayment
+              ? `on ${new Date(
+                  row.enrolmentInvoice.invoicePayment?.paymentDate
+                ).toLocaleDateString("en-GB", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                })}`
+              : "No"}
+          </div>
         </>
       ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
 
       sortable: true,
-      width: "140px",
+      width: "130px",
     },
 
     {
@@ -505,7 +540,7 @@ const EnrolmentsList = () => {
             <IoMdAddCircleOutline className="text-2xl" />
           </button> */}
           <button
-          aria-label="enrolment Details"
+            aria-label="enrolment Details"
             className="text-sky-700"
             fontSize={20}
             onClick={() =>
@@ -516,7 +551,7 @@ const EnrolmentsList = () => {
           </button>
           {canEdit ? (
             <button
-            aria-label="edit enrolment"
+              aria-label="edit enrolment"
               className="text-amber-300"
               onClick={() =>
                 navigate(`/students/enrolments/editEnrolment/${row.id}`)
@@ -528,7 +563,7 @@ const EnrolmentsList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
-            aria-label="delete enrolment"
+              aria-label="delete enrolment"
               className="text-red-600"
               onClick={() => onDeleteEnrolmentClicked(row.id)}
             >
@@ -571,6 +606,7 @@ const EnrolmentsList = () => {
             className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
           />
           <input
+          aria-label="search"
             type="text"
             value={searchQuery}
             onChange={handleSearch}
@@ -646,38 +682,48 @@ const EnrolmentsList = () => {
           </select>
         </label>
       </div>
-      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-        <DataTable
-          title={tableHeader}
-          columns={column}
-          data={filteredEnrolments}
-          pagination
-          selectableRows
-          removableRows
-          pageSizeControl
-          onSelectedRowsChange={handleRowSelected}
-          selectableRowsHighlight
-          customStyles={{
-            headCells: {
-              style: {
-                // Apply Tailwind style via a class-like syntax
-                justifyContent: "center", // Align headers to the center
-                textAlign: "center", // Center header text
-                color: "black",
-                fontSize: "14px", // Increase font size for header text
+      <div className="dataTableContainer">
+        <div>
+          <DataTable
+            title={tableHeader}
+            columns={column}
+            data={filteredEnrolments}
+            pagination
+            //selectableRows
+            removableRows
+            pageSizeControl
+            onSelectedRowsChange={handleRowSelected}
+            selectableRowsHighlight
+            customStyles={{
+              headCells: {
+                style: {
+                  // Apply Tailwind style via a class-like syntax
+                  justifyContent: "center", // Align headers to the center
+                  textAlign: "center", // Center header text
+                  color: "black",
+                  fontSize: "14px", // Increase font size for header text
+                },
               },
-            },
-         
-            cells: {
-              style: {
-                justifyContent: "center", // Center cell content
-                textAlign: "center",
-                color: "black",
-                fontSize: "14px", // Increase font size for cell text
+
+              cells: {
+                style: {
+                  justifyContent: "center", // Center cell content
+                  textAlign: "center",
+                  color: "black",
+                  fontSize: "14px", // Increase font size for cell text
+                },
               },
-            },
-          }}
-        ></DataTable>
+              pagination: {
+                style: {
+                  display: "flex",
+                  justifyContent: "center", // Center the pagination control
+                  alignItems: "center",
+                  padding: "10px 0", // Optional: Add padding for spacing
+                },
+              },
+            }}
+          ></DataTable>
+        </div>
 
         <div className="cancelSavebuttonsDiv">
           <button

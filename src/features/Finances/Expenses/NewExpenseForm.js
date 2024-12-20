@@ -143,6 +143,21 @@ const NewExpenseForm = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  //validation for date in the expense month
+  const isValidExpenseDate = (expenseDate, expenseMonth) => {
+    // Check if the expenseDate matches the DATE_REGEX
+    const isValidDate = DATE_REGEX.test(expenseDate);
+
+    // Check if the month of the expenseDate matches the expenseMonth
+    if (isValidDate) {
+      const date = new Date(expenseDate);
+      const monthName = date.toLocaleString("en-US", { month: "long" }); // Get the full month name (e.g., "January")
+      console.log(monthName)
+      return monthName === expenseMonth;
+    }
+
+    return false; // Invalid date or mismatched month
+  };
 
   // Validate inputs using regex patterns
   useEffect(() => {
@@ -159,13 +174,17 @@ const NewExpenseForm = () => {
       validExpenseNote: COMMENT_REGEX.test(formData.expenseNote),
       validExpenseService: OBJECTID_REGEX.test(formData.expenseService),
       validExpensePayee: OBJECTID_REGEX.test(formData.expensePayee),
-      validExpenseDate: DATE_REGEX.test(formData.expenseDate),
-      validExpensePaymentDate:
-        (formData?.expenseMethod === "Credit" &&
-          formData?.expensePaymentDate !== "" &&
-          DATE_REGEX.test(formData?.expensePaymentDate)) ||
-        (formData?.expenseMethod !== "Credit" &&
-          formData.expensePaymentDate === ""),
+      validExpensePaymentDate: DATE_REGEX.test(formData.expensePaymentDate),
+      validExpenseDate: isValidExpenseDate(
+        formData.expenseDate,
+        formData.expenseMonth
+      ),
+      // validExpensePaymentDate:
+      //   (formData?.expenseMethod === "Credit" &&
+      //     formData?.expensePaymentDate !== "" &&
+      //     DATE_REGEX.test(formData?.expensePaymentDate)) ||
+      //   (formData?.expenseMethod !== "Credit" &&
+      //     formData.expensePaymentDate === ""),
 
       validExpenseMethod: NAME_REGEX.test(formData.expenseMethod),
       validExpenseOperator: OBJECTID_REGEX.test(formData.expenseOperator),
@@ -216,11 +235,10 @@ const NewExpenseForm = () => {
 
     try {
       const response = await addNewExpense(formData).unwrap();
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -465,8 +483,6 @@ const NewExpenseForm = () => {
                   )}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2 mt-1 max-h-80 overflow-y-auto">
                     {selectedCategory.expenseCategoryItems.map(
-
-                      
                       (item, index) => {
                         const isSelected = selectedItems.includes(item);
                         return (
@@ -545,11 +561,15 @@ const NewExpenseForm = () => {
                     id="expenseDate"
                     value={formData.expenseDate || ""}
                     onChange={(e) =>
-                      setFormData({ ...formData, expenseDate: e.target.value })
+                      setFormData({
+                        ...formData,
+                        expenseDate: e.target.value,
+                        expensePaymentDate: e.target.value,
+                      })
                     }
                     className={`formInputText`}
                     required
-                  />{" "}
+                  />
                 </label>
               </div>
               <div className="formLineDiv">
@@ -569,11 +589,11 @@ const NewExpenseForm = () => {
                       setFormData({
                         ...formData,
                         expenseMethod: e.target.value,
-                        //pppayment date will become empty id not credit
-                        expensePaymentDate:
-                          formData?.expenseMethod === "Credit"
-                            ? ""
-                            : formData?.expenseDate,
+                        // //pppayment date will become empty id not credit
+                        // expensePaymentDate:
+                        //   formData?.expenseMethod === "Credit"
+                        //     ? ""
+                        //     : formData?.expenseDate,
                       })
                     }
                     className={`formInputText`}
@@ -644,7 +664,6 @@ const NewExpenseForm = () => {
             <button
               aria-label="cancel expense"
               type="button"
-            
               className="cancel-button"
               onClick={() => navigate("/finances/expenses/expensesList/")}
             >

@@ -1,5 +1,4 @@
 import {
-  useGetAdmissionsQuery,
   useUpdateAdmissionMutation,
   useGetAdmissionsByYearQuery,
   useDeleteAdmissionMutation,
@@ -13,21 +12,19 @@ import {
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import { useGetServicesByYearQuery } from "../../AppSettings/StudentsSet/NurseryServices/servicesApiSlice";
 import Students from "../Students";
-import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
-import { useSelector } from "react-redux";
-import { IoFlagSharp, IoFlagOutline } from "react-icons/io5";
+import { useSelector, useDispatch } from "react-redux";
+import { IoFlagSharp } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import useAuth from "../../../hooks/useAuth";
 import { setAdmissions } from "./admissionsSlice";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import { MONTHS } from "../../../config/Months";
+import { CurrencySymbol } from "../../../config/Constants";
 const AdmissionsList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
@@ -212,15 +209,7 @@ const AdmissionsList = () => {
     //console.log('selectedRows', selectedRows)
   };
 
-  // Handler for duplicating selected rows,
-  const handleDuplicateSelected = () => {
-    //console.log('Selected Rows to duplicate:', selectedRows);
-    // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
-    //ensure only one can be selected: the last one
-    const toDuplicate = selectedRows[-1];
-
-    setSelectedRows([]); // Clear selection after delete
-  };
+ 
 
   const [
     updateAdmission,
@@ -237,23 +226,10 @@ const AdmissionsList = () => {
   //console.log(academicYears)
   // Handler for registering selected row,
   const [admissionYears, setAdmissionYears] = useState([]);
-  const handleRegisterSelected = () => {
-    //we already allowed only one to be selected in the button options
-    //console.log('Selected Rows to detail:', selectedRows)
-
-    setAdmissionObject(selectedRows[0]);
-    //console.log(admissionObject, "admissionObject");
-    //const {admissionYears}= (admissionObject)
-
-    setAdmissionYears(admissionObject.admissionYears);
-    //console.log("admission years and id", admissionYears);
-    setIsRegisterModalOpen(true);
-
-    //setSelectedRows([]); // Clear selection after process
-  };
+ 
 
   const handleUpdateAdmission = (admission, index, agreedService) => {
-    console.log(admission, "admissionnnnnnnnnnn");
+    //console.log(admission, "admissionnnnnnnnnnn");
 
     // Create a new admission object to avoid mutating the original
     const updatedAdmission = {
@@ -285,6 +261,14 @@ const AdmissionsList = () => {
         // Handle errors if the update fails
         console.error("Failed to update admission:", error);
       });
+      if (isUpdateError) {
+        // In case of unexpected response format
+        triggerBanner(updateError?.data?.message, "error");
+      }
+
+
+
+      
   };
 
   const column = [
@@ -296,20 +280,20 @@ const AdmissionsList = () => {
     },
     //show this column only if user is a parent and not employee
 
-    isAdmin
-      ? {
-          name: "ID",
-          selector: (row) => (
-            <Link
-              to={`/admissions/admissionsParents/admissionDetails/${row.id}`}
-            >
-              {row.id}
-            </Link>
-          ),
-          sortable: true,
-          width: "200px",
-        }
-      : null,
+    // isAdmin
+    //   ? {
+    //       name: "ID",
+    //       selector: (row) => (
+    //         <Link
+    //           to={`/admissions/admissionsParents/admissionDetails/${row.id}`}
+    //         >
+    //           {row.id}
+    //         </Link>
+    //       ),
+    //       sortable: true,
+    //       width: "200px",
+    //     }
+    //   : null,
 
     {
       name: "Student Name",
@@ -319,12 +303,16 @@ const AdmissionsList = () => {
         row?.student?.studentName?.middleName +
         " " +
         row?.student?.studentName?.lastName,
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       sortable: true,
-      width: "180px",
+      width: "190px",
     },
 
     {
-      name: "Admission Date",
+      name: "Date",
       selector: (row) =>
         new Date(row?.admissionDate).toLocaleDateString("en-GB", {
           year: "numeric",
@@ -333,11 +321,11 @@ const AdmissionsList = () => {
         }),
 
       sortable: true,
-      width: "140px",
+      width: "110px",
     },
 
     {
-      name: "Admission & Services",
+      name: "Services",
 
       selector: (row) => (
         <div>
@@ -349,6 +337,10 @@ const AdmissionsList = () => {
           ))}
         </div>
       ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       sortable: true,
       removableRows: true,
       width: "180px",
@@ -367,7 +359,7 @@ const AdmissionsList = () => {
       ),
       sortable: true,
       removableRows: true,
-      width: "90px",
+      width: "100px",
     },
     // {
     //   name: "Agreed Fees",
@@ -384,7 +376,7 @@ const AdmissionsList = () => {
     //   width: "120px",
     // },
     {
-      name: "Agreed Fees",
+      name: "Agreed",
       selector: (row) => (
         <div>
           {row?.agreedServices.map((feeObj, index) => {
@@ -408,7 +400,7 @@ const AdmissionsList = () => {
       ),
       sortable: true,
       removableRows: true,
-      width: "120px",
+      width: "100px",
     },
     {
       name: "Flagged",
@@ -419,9 +411,12 @@ const AdmissionsList = () => {
           ))}
         </div>
       ),
-
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       sortable: true,
-      width: "90px",
+      width: "100px",
     },
     {
       name: "Authorised",
@@ -432,17 +427,21 @@ const AdmissionsList = () => {
           ))}
         </div>
       ),
-
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       sortable: true,
-      width: "110px",
+      width: "120px",
     },
     isManager && {
-      name: "Authorise Fees",
+      name: "Authorise",
       selector: (row) => (
         <div>
           {row?.agreedServices.map((feeObj, index) => (
             <div key={index}>
               <button
+                aria-label={`authorise-service${index}`}
                 key={index}
                 className={`${
                   feeObj?.isAuthorised ? "text-green-200" : "text-red-600"
@@ -476,7 +475,7 @@ const AdmissionsList = () => {
       // ),
       ignoreRowClick: true,
       button: true,
-      width: "120px",
+      width: "90px",
     },
     // (isManager && {
     //   name: "Authorise Fees",
@@ -500,7 +499,7 @@ const AdmissionsList = () => {
     // }),
 
     {
-      name: "Fee start",
+      name: "Start",
 
       selector: (row) => (
         <div>
@@ -520,18 +519,37 @@ const AdmissionsList = () => {
       width: "120px",
     },
     {
-      name: "Fee Months",
-
+      name: "Months",
       selector: (row) => (
-        <div>
-          {row?.agreedServices.map((feeObj, index) =>
-            feeObj?.feeMonths ? <div>{feeObj?.feeMonths} </div> : <div>---</div>
-          )}
+        <div style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
+          {row?.agreedServices.map((feeObj, index) => (
+            <div key={index}>
+              {feeObj?.feeMonths?.join(", ") || "---"}
+              {index < row.agreedServices.length - 1 && (
+                <hr className="my-2 border-gray-300" />
+              )}
+            </div>
+          ))}
         </div>
       ),
-
+      cell: (row) => (
+        <div style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
+          {row?.agreedServices.map((feeObj, index) => (
+            <div key={index}>
+              {feeObj?.feeMonths?.join(", ") || "---"}
+              {index < row.agreedServices.length - 1 && (
+                <hr className="my-2 border-gray-300" />
+              )}
+            </div>
+          ))}
+        </div>
+      ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       sortable: true,
-      width: "120px",
+      width: "230px",
     },
 
     {
@@ -546,7 +564,7 @@ const AdmissionsList = () => {
             <IoMdAddCircleOutline className="text-2xl" />
           </button> */}
           <button
-          aria-label="admission Details"
+            aria-label="admission Details"
             className="text-sky-700"
             fontSize={20}
             onClick={() =>
@@ -557,7 +575,7 @@ const AdmissionsList = () => {
           </button>
           {canEdit ? (
             <button
-            aria-label="edit admission"
+              aria-label="edit admission"
               className="text-amber-300"
               onClick={() =>
                 navigate(`/students/admissions/editAdmission/${row.id}`)
@@ -568,7 +586,7 @@ const AdmissionsList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
-            aria-label="delet admission"
+              aria-label="delet admission"
               className="text-red-600"
               onClick={() => onDeleteAdmissionClicked(row.id)}
             >
@@ -611,7 +629,9 @@ const AdmissionsList = () => {
             fontSize={20}
             className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
           />
+
           <input
+            aria-label="search"
             type="text"
             value={searchQuery}
             onChange={handleSearch}
@@ -629,15 +649,11 @@ const AdmissionsList = () => {
             className="text-sm h-8 border border-gray-300  px-4"
           >
             <option value="">All Months</option>
-            {MONTHS.map(
-                       (month, index) =>
-                         
-                           <option key={index} value={month}>
-                             {month}
-                           </option>
-                        
-                         
-                       )}
+            {MONTHS.map((month, index) => (
+              <option key={index} value={month}>
+                {month}
+              </option>
+            ))}
           </select>
         </label>
         {/* Service Type filter dropdown */}
@@ -688,38 +704,48 @@ const AdmissionsList = () => {
         </label>
       </div>
 
-      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-        <DataTable
-          title={tableHeader}
-          columns={column}
-          data={filteredAdmissions}
-          pagination
-          // selectableRows
-          removableRows
-          pageSizeControl
-          onSelectedRowsChange={handleRowSelected}
-          selectableRowsHighlight
-          customStyles={{
-            headCells: {
-              style: {
-                // Apply Tailwind style via a class-like syntax
-                justifyContent: "center", // Align headers to the center
-                textAlign: "center", // Center header text
-                color: "black",
-                fontSize: "14px", // Increase font size for header text
+      <div className="dataTableContainer">
+        <div>
+          <DataTable
+            title={tableHeader}
+            columns={column}
+            data={filteredAdmissions}
+            pagination
+            // selectableRows
+            removableRows
+            pageSizeControl
+            onSelectedRowsChange={handleRowSelected}
+            selectableRowsHighlight
+            customStyles={{
+              headCells: {
+                style: {
+                  // Apply Tailwind style via a class-like syntax
+                  justifyContent: "center", // Align headers to the center
+                  textAlign: "center", // Center header text
+                  color: "black",
+                  fontSize: "14px", // Increase font size for header text
+                },
               },
-            },
-         
-            cells: {
-              style: {
-                justifyContent: "center", // Center cell content
-                textAlign: "center",
-                color: "black",
-                fontSize: "14px", // Increase font size for cell text
+
+              cells: {
+                style: {
+                  justifyContent: "center", // Center cell content
+                  textAlign: "center",
+                  color: "black",
+                  fontSize: "14px", // Increase font size for cell text
+                },
               },
-            },
-          }}
-        ></DataTable>
+              pagination: {
+                style: {
+                  display: "flex",
+                  justifyContent: "center", // Center the pagination control
+                  alignItems: "center",
+                  padding: "10px 0", // Optional: Add padding for spacing
+                },
+              },
+            }}
+          ></DataTable>
+        </div>
 
         <div className="cancelSavebuttonsDiv">
           <button

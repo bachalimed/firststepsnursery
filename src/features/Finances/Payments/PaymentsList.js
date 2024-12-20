@@ -332,7 +332,7 @@ const PaymentsList = () => {
           ) : null} */}
           {canDelete && !isDelLoading && (
             <button
-            aria-label="delete payment"
+              aria-label="delete payment"
               className="text-red-600"
               onClick={() => onDeletePaymentClicked(row.id)}
             >
@@ -430,38 +430,48 @@ const PaymentsList = () => {
           </select>
         </label>
       </div>
-      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
-        <DataTable
-          title={tableHeader}
-          columns={column}
-          data={filteredPayments}
-          pagination
-          //selectableRows
-          removableRows
-          pageSizeControl
-          onSelectedRowsChange={handleRowSelected}
-          selectableRowsHighlight
-          customStyles={{
-            headCells: {
-              style: {
-                // Apply Tailwind style via a class-like syntax
-                justifyContent: "center", // Align headers to the center
-                textAlign: "center", // Center header text
-                color: "black",
-                fontSize: "14px", // Increase font size for header text
+      <div className="dataTableContainer">
+        <div>
+          <DataTable
+            title={tableHeader}
+            columns={column}
+            data={filteredPayments}
+            pagination
+            //selectableRows
+            removableRows
+            pageSizeControl
+            onSelectedRowsChange={handleRowSelected}
+            selectableRowsHighlight
+            customStyles={{
+              headCells: {
+                style: {
+                  // Apply Tailwind style via a class-like syntax
+                  justifyContent: "center", // Align headers to the center
+                  textAlign: "center", // Center header text
+                  color: "black",
+                  fontSize: "14px", // Increase font size for header text
+                },
               },
-            },
-         
-            cells: {
-              style: {
-                justifyContent: "center", // Center cell content
-                textAlign: "center",
-                color: "black",
-                fontSize: "14px", // Increase font size for cell text
+
+              cells: {
+                style: {
+                  justifyContent: "center", // Center cell content
+                  textAlign: "center",
+                  color: "black",
+                  fontSize: "14px", // Increase font size for cell text
+                },
               },
-            },
-          }}
-        ></DataTable>
+              pagination: {
+                style: {
+                  display: "flex",
+                  justifyContent: "center", // Center the pagination control
+                  alignItems: "center",
+                  padding: "10px 0", // Optional: Add padding for spacing
+                },
+              },
+            }}
+          ></DataTable>
+        </div>
         <div className="cancelSavebuttonsDiv">
           <button
             className="add-button"

@@ -21,7 +21,7 @@ import StudentsSet from "../../StudentsSet";
 const ServicesList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
-   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
+  const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idServiceToDelete, setIdServiceToDelete] = useState(null); // State to track which document to delete
@@ -33,7 +33,7 @@ const ServicesList = () => {
 
   const {
     data: services, //the data is renamed services
-    isLoading: isServicesLoading, 
+    isLoading: isServicesLoading,
     isSuccess: isServicesSuccess,
     isError: isServicesError,
     error: servicesError,
@@ -42,7 +42,7 @@ const ServicesList = () => {
       selectedYear: selectedAcademicYear?.title,
       endpointName: "servicesList",
     } || {},
-    { 
+    {
       refetchOnFocus: true,
       refetchOnMountOrArgChange: true,
     }
@@ -79,7 +79,7 @@ const ServicesList = () => {
 
   //state to hold the search query
   const [searchQuery, setSearchQuery] = useState("");
- 
+
   //we need to declare the variable outside of if statement to be able to use it outside later
   let servicesList = [];
   let filteredServices = [];
@@ -91,14 +91,11 @@ const ServicesList = () => {
     //we need to change into array to be read??
     servicesList = Object.values(entities); //we are using entity adapter in this query
     //console.log(servicesList,'servicesList')
- 
+
     //the serach result data
     filteredServices = servicesList?.filter((item) => {
-    
-      return (
-        Object.values(item).some((val) =>
-          String(val).toLowerCase().includes(searchQuery.toLowerCase())
-        ) 
+      return Object.values(item).some((val) =>
+        String(val).toLowerCase().includes(searchQuery.toLowerCase())
       );
     });
   }
@@ -124,20 +121,22 @@ const ServicesList = () => {
     },
     {
       name: "Service",
-      cell: (row) => (
-        
-          <div> {row.serviceType}</div>
-       
-      ),
+      cell: (row) => <div> {row.serviceType}</div>,
       width: "120px",
     },
     {
       name: "Anchor",
       selector: (row) => (
         <>
-          {row.serviceAnchor?.monthly && <div> Monthly {row.serviceAnchor.monthly}</div>}
-          {row.serviceAnchor?.weekly && <div> Weekly {row.serviceAnchor.weekly}</div>}
-          {row.serviceAnchor?.oneTimeOff && <div> OneTimeOff {row.serviceAnchor.oneTimeOff}</div>}
+          {row.serviceAnchor?.monthly && (
+            <div> Monthly {row.serviceAnchor.monthly}</div>
+          )}
+          {row.serviceAnchor?.weekly && (
+            <div> Weekly {row.serviceAnchor.weekly}</div>
+          )}
+          {row.serviceAnchor?.oneTimeOff && (
+            <div> OneTimeOff {row.serviceAnchor.oneTimeOff}</div>
+          )}
         </>
       ),
       width: "130px",
@@ -146,18 +145,21 @@ const ServicesList = () => {
       name: "Actions",
       cell: (row) => (
         <div className="space-x-1">
-         
           {canEdit && (
-            <button 
-            aria-label="edit service"
-            onClick={() => navigate(`/settings/studentsSet/editService/${row.id}`)}>
+            <button
+              aria-label="edit service"
+              onClick={() =>
+                navigate(`/settings/studentsSet/editService/${row.id}`)
+              }
+            >
               <FiEdit className="text-2xl text-amber-300" />
             </button>
           )}
           {canDelete && (
-            <button 
-             aria-label="delete service"
-            onClick={() => onDeleteServiceClicked(row.id)}>
+            <button
+              aria-label="delete service"
+              onClick={() => onDeleteServiceClicked(row.id)}
+            >
               <RiDeleteBin6Line className="text-2xl text-red-600" />
             </button>
           )}
@@ -167,43 +169,44 @@ const ServicesList = () => {
     },
   ].filter(Boolean);
 
-   // Custom header to include the row count
-   const tableHeader = (
-    
+  // Custom header to include the row count
+  const tableHeader = (
     <h2>
       services List:
       <span> {filteredServices.length} services</span>
     </h2>
-  
-);
-
-
-
+  );
 
   let content;
-  if (isServicesLoading) content = <><StudentsSet /><LoadingStateIcon/></>;
-  
-  
+  if (isServicesLoading)
     content = (
       <>
         <StudentsSet />
-        <div className="relative h-10 mr-2 ">
-            <HiOutlineSearch
-              fontSize={20}
-              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-              aria-label="search students"
-            />
-            <input
-            aria-label="search students"
-              type="text"
-              value={searchQuery}
-              onChange={handleSearch}
-              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
-            />
-          </div>
-        <div className="flex-1 bg-white px-4 pt-3 pb-4 border-gray-200">
+        <LoadingStateIcon />
+      </>
+    );
+
+  content = (
+    <>
+      <StudentsSet />
+      <div className="relative h-10 mr-2 ">
+        <HiOutlineSearch
+          fontSize={20}
+          className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+          aria-label="search students"
+        />
+        <input
+          aria-label="search students"
+          type="text"
+          value={searchQuery}
+          onChange={handleSearch}
+          className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+        />
+      </div>
+      <div className="dataTableContainer">
+        <div>
           <DataTable
-           title={tableHeader}
+            title={tableHeader}
             columns={columns}
             data={filteredServices}
             pagination
@@ -220,7 +223,7 @@ const ServicesList = () => {
                   fontSize: "14px", // Increase font size for header text
                 },
               },
-           
+
               cells: {
                 style: {
                   justifyContent: "center", // Center cell content
@@ -229,28 +232,36 @@ const ServicesList = () => {
                   fontSize: "14px", // Increase font size for cell text
                 },
               },
+              pagination: {
+                style: {
+                  display: "flex",
+                  justifyContent: "center", // Center the pagination control
+                  alignItems: "center",
+                  padding: "10px 0", // Optional: Add padding for spacing
+                },
+              },
             }}
           ></DataTable>
-          <div className="cancelSavebuttonsDiv">
-            {canCreate && (
-              <button
-                className="add-button"
-                onClick={() => navigate("/settings/studentsSet/newService")}
-                // disabled={selectedRows.length !== 1}
-              >
-                New Service
-              </button>
-            )}
-          </div>
         </div>
-        <DeletionConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
-          onConfirm={handleConfirmDelete}
-        />
-      </>
-    );
-  
+        <div className="cancelSavebuttonsDiv">
+          {canCreate && (
+            <button
+              className="add-button"
+              onClick={() => navigate("/settings/studentsSet/newService")}
+              // disabled={selectedRows.length !== 1}
+            >
+              New Service
+            </button>
+          )}
+        </div>
+      </div>
+      <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
+    </>
+  );
 
   return <>{content}</>;
 };

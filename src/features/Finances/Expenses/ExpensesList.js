@@ -98,47 +98,30 @@ const ExpensesList = () => {
   let expensesList = [];
   if (isExpensesSuccess) {
     const { entities } = expenses;
-    expensesList = Object.values(entities); //we are using entity adapter in this query
+    expensesList = Object.values(entities); // Convert entity adapter to an array
 
-    // Handle month filter change
-
-    // Handle month filter change
+    // Apply filters
     filteredExpenses = expensesList.filter((expense) => {
-      const startMonth = new Date(expense.startTime).getMonth() + 1; // getMonth() returns 0-based month (0-11), so add 1
-      const endMonth = new Date(expense.endTime).getMonth() + 1;
+      const matchesMonth =
+        monthFilter === "" || monthFilter === expense?.expenseMonth;
+      const matchesSearch =
+        searchQuery === "" ||
+        // Check in payeeLabel
+        (expense?.expensePayee?.payeeLabel &&
+          expense.expensePayee.payeeLabel
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())) ||
+        // Check in items array
+        (Array.isArray(expense?.expenseItems) &&
+          expense.expenseItems.some((item) =>
+            JSON.stringify(item)
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase())
+          ));
 
-      // Assuming assignedFrom and assignedTo are either Date objects or strings representing dates
-      const assignedFromMonth = new Date(expense.assignedFrom).getMonth() + 1;
-      const assignedToMonth = new Date(expense.assignedTo).getMonth() + 1;
-
-      // Format the numeric month values to match the format "01", "02", ..., "12"
-      const formattedStartMonth = startMonth.toString().padStart(2, "0");
-      const formattedEndMonth = endMonth.toString().padStart(2, "0");
-      const formattedAssignedFromMonth = assignedFromMonth
-        .toString()
-        .padStart(2, "0");
-      const formattedAssignedToMonth = assignedToMonth
-        .toString()
-        .padStart(2, "0");
-
-      // If a month is selected, filter by start, end, assignedFrom, or assignedTo month
-      return (
-        monthFilter === "" || // Show all if no month is selected
-        formattedStartMonth === monthFilter ||
-        formattedEndMonth === monthFilter ||
-        formattedAssignedFromMonth === monthFilter ||
-        formattedAssignedToMonth === monthFilter
-      );
+      return matchesMonth && matchesSearch; // AND logic
     });
   }
-
-  const handleMonthChange = (e) => setMonthFilter(e.target.value); // Update selected grade
-
-  //handle delete
-
-  const handleDelete = () => {
-    console.log("deleting");
-  };
 
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
 
@@ -162,22 +145,34 @@ const ExpensesList = () => {
       selector: (row) => row?.expensePayee?.payeeLabel,
 
       sortable: true,
-      width: "150px",
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
+      width: "110px",
     },
     {
-      name: "Payment",
+      name: "Amount",
       selector: (row) => (
         <>
           {row?.expenseAmount} {row?.expenseMethod}
         </>
       ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       sortable: true,
-      width: "120px",
+      width: "140px",
     },
     {
       name: "Category",
       selector: (row) => row?.expenseCategory?.expenseCategoryLabel,
       sortable: true,
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       width: "120px",
     },
     {
@@ -189,8 +184,12 @@ const ExpensesList = () => {
           ))}
         </div>
       ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       sortable: false,
-      width: "90px",
+      width: "140px",
     },
 
     {
@@ -206,7 +205,7 @@ const ExpensesList = () => {
     },
 
     {
-      name: "Payment Date",
+      name: "Payment",
       selector: (row) =>
         row?.expensePaymentDate
           ? new Date(row?.expensePaymentDate).toLocaleDateString("en-GB", {
@@ -219,6 +218,10 @@ const ExpensesList = () => {
               month: "2-digit",
               day: "2-digit",
             }),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       sortable: true,
       width: "130px",
     },
@@ -229,7 +232,7 @@ const ExpensesList = () => {
         <div className="space-x-1">
           {canEdit ? (
             <button
-            aria-label="edit expense"
+              aria-label="edit expense"
               className="text-amber-300"
               onClick={() =>
                 navigate(`/finances/expenses/editExpense/${row.id}`)
@@ -240,7 +243,7 @@ const ExpensesList = () => {
           ) : null}
           {canDelete ? (
             <button
-            aria-label="delete expense"
+              aria-label="delete expense"
               className="text-red-600"
               onClick={() => onDeleteAttendedSchoolClicked(row.id)}
             >
@@ -286,6 +289,7 @@ const ExpensesList = () => {
             className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
           />
           <input
+            aria-label="search"
             type="text"
             value={searchQuery}
             onChange={handleSearch}
@@ -298,7 +302,7 @@ const ExpensesList = () => {
           <select
             aria-label="monthFilter"
             id="monthFilter"
-            value={searchQuery}
+            value={monthFilter}
             onChange={(e) => setMonthFilter(e.target.value)}
             className="text-sm h-8 border border-gray-300  px-4"
           >
@@ -317,45 +321,56 @@ const ExpensesList = () => {
           </select>
         </label>
       </div>
+      <div className="dataTableContainer">
+        <div>
+          <DataTable
+            title={tableHeader}
+            columns={column}
+            data={filteredExpenses}
+            pagination
+            //selectableRows
+            removableRows
+            pageSizeControl
+            customStyles={{
+              headCells: {
+                style: {
+                  // Apply Tailwind style via a class-like syntax
+                  justifyContent: "center", // Align headers to the center
+                  textAlign: "center", // Center header text
+                  color: "black",
+                  fontSize: "14px", // Increase font size for header text
+                },
+              },
 
-      <DataTable
-        title={tableHeader}
-        columns={column}
-        data={filteredExpenses}
-        pagination
-        selectableRows
-        removableRows
-        pageSizeControl
-        customStyles={{
-          headCells: {
-            style: {
-              // Apply Tailwind style via a class-like syntax
-              justifyContent: "center", // Align headers to the center
-              textAlign: "center", // Center header text
-              color: "black",
-              fontSize: "14px", // Increase font size for header text
-            },
-          },
-       
-          cells: {
-            style: {
-              justifyContent: "center", // Center cell content
-              textAlign: "center",
-              color: "black",
-              fontSize: "14px", // Increase font size for cell text
-            },
-          },
-        }}
-      ></DataTable>
-      <div className="cancelSavebuttonsDiv">
-        <button
-          className="add-button"
-          onClick={() => navigate("/finances/expenses/newExpense/")}
-          disabled={selectedRows.length !== 0} // Disable if no rows are selected
-          hidden={!canCreate}
-        >
-          New Expense
-        </button>
+              cells: {
+                style: {
+                  justifyContent: "center", // Center cell content
+                  textAlign: "center",
+                  color: "black",
+                  fontSize: "14px", // Increase font size for cell text
+                },
+              },
+              pagination: {
+                style: {
+                  display: "flex",
+                  justifyContent: "center", // Center the pagination control
+                  alignItems: "center",
+                  padding: "10px 0", // Optional: Add padding for spacing
+                },
+              },
+            }}
+          ></DataTable>
+        </div>
+        <div className="cancelSavebuttonsDiv">
+          <button
+            className="add-button"
+            onClick={() => navigate("/finances/expenses/newExpense/")}
+            disabled={selectedRows.length !== 0} // Disable if no rows are selected
+            hidden={!canCreate}
+          >
+            New Expense
+          </button>
+        </div>
       </div>
 
       <DeletionConfirmModal

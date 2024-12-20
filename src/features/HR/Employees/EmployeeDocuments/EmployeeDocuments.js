@@ -351,7 +351,7 @@ const EmployeeDocuments = () => {
         <div className="space-x-1">
           {canView && row.documentUploaded && (
             <button
-            aria-label="view document"
+              aria-label="view document"
               className="text-sky-700"
               fontSize={20}
               onClick={() => handleViewDocument(row.employeeDocumentId)}
@@ -362,7 +362,7 @@ const EmployeeDocuments = () => {
 
           {canEdit && !row.documentUploaded && (
             <button
-            aria-label="upload document"
+              aria-label="upload document"
               className="text-amber-300"
               onClick={() =>
                 handleUploadClick(row.documentTitle, row.documentReference)
@@ -373,7 +373,7 @@ const EmployeeDocuments = () => {
           )}
           {canDelete && row.documentUploaded && !isDelLoading && (
             <button
-            aria-label="delete document"
+              aria-label="delete document"
               className="text-red-600"
               onClick={() =>
                 onDeleteEmployeeDocumentClicked(row.employeeDocumentId)
@@ -397,14 +397,15 @@ const EmployeeDocuments = () => {
         <LoadingStateIcon />
       </>
     );
- 
-    //console.log(employeeDocumentsListing)
-    content = (
-      <>
-        {" "}
-        {isDelSuccess && <p>Document deleted successfully!</p>}
-        <HR />
-        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+
+  //console.log(employeeDocumentsListing)
+  content = (
+    <>
+      {" "}
+      {isDelSuccess && <p>Document deleted successfully!</p>}
+      <HR />
+      <div className="dataTableContainer">
+        <div>
           <DataTable
             columns={column}
             data={employeeDocumentsListing}
@@ -422,7 +423,7 @@ const EmployeeDocuments = () => {
                   fontSize: "14px", // Increase font size for header text
                 },
               },
-           
+
               cells: {
                 style: {
                   justifyContent: "center", // Center cell content
@@ -431,48 +432,55 @@ const EmployeeDocuments = () => {
                   fontSize: "14px", // Increase font size for cell text
                 },
               },
+              pagination: {
+                style: {
+                  display: "flex",
+                  justifyContent: "center", // Center the pagination control
+                  alignItems: "center",
+                  padding: "10px 0", // Optional: Add padding for spacing
+                },
+              },
             }}
           ></DataTable>
-
-          <div className="cancelSavebuttonsDiv">
-            <button
-              className="cancel-button"
-              onClick={() => Navigate(`/hr/employees/employeesList/`)}
-            >
-              Back to List
-            </button>
-            <button
-              className=" px-4 py-2 bg-sky-700 text-white rounded"
-              onClick={() =>
-                Navigate(`/hr/employees/employeeDetails/${userId}`)
-              }
-            >
-              Employee Details
-            </button>
-          </div>
         </div>
-        <UploadDocumentFormModal
-          isOpen={isUploadModalOpen}
-          onRequestClose={() => setIsUploadModalOpen(false)}
-          userId={userId}
-          year={employeeDocumentYear}
-          documentTitle={documentTitle}
-          employeeDocumentReference={employeeDocumentReference}
-          onUpload={handleUpload}
-        />
-        <ViewDocumentModal
-          isOpen={isViewModalOpen}
-          onRequestClose={() => setIsViewModalOpen(false)}
-          documentUrl={documentToView}
-        />
-        <DeletionConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
-          onConfirm={handleConfirmDelete}
-        />
-      </>
-    );
-  
+
+        <div className="cancelSavebuttonsDiv">
+          <button
+            className="cancel-button"
+            onClick={() => Navigate(`/hr/employees/employeesList/`)}
+          >
+            Back to List
+          </button>
+          <button
+            className=" px-4 py-2 bg-sky-700 text-white rounded"
+            onClick={() => Navigate(`/hr/employees/employeeDetails/${userId}`)}
+          >
+            Employee Details
+          </button>
+        </div>
+      </div>
+      <UploadDocumentFormModal
+        isOpen={isUploadModalOpen}
+        onRequestClose={() => setIsUploadModalOpen(false)}
+        userId={userId}
+        year={employeeDocumentYear}
+        documentTitle={documentTitle}
+        employeeDocumentReference={employeeDocumentReference}
+        onUpload={handleUpload}
+      />
+      <ViewDocumentModal
+        isOpen={isViewModalOpen}
+        onRequestClose={() => setIsViewModalOpen(false)}
+        documentUrl={documentToView}
+      />
+      <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
+    </>
+  );
+
   return content;
 };
 export default EmployeeDocuments;

@@ -11,7 +11,7 @@ import {
   selectAllAcademicYears,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
-import RegisterModal from "./RegisterModal";
+
 import Academics from "../Academics";
 import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
@@ -319,7 +319,8 @@ const SchoolSectionsList = () => {
             : "All Sections Shown"}
         </button>
       </div>
-      <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+      <div className="dataTableContainer">
+        <div>
         <DataTable
           title={tableHeader}
           columns={column}
@@ -348,9 +349,17 @@ const SchoolSectionsList = () => {
                 color: "black",
                 fontSize: "14px", // Increase font size for cell text
               },
+            }, pagination: {
+              style: {
+                display: "flex",
+                justifyContent: "center", // Center the pagination control
+                alignItems: "center",
+                padding: "10px 0", // Optional: Add padding for spacing
+              },
             },
           }}
         ></DataTable>
+      </div>
       </div>
     </>
   );

@@ -38,7 +38,6 @@ const PayeesList = () => {
   const dispatch = useDispatch();
 
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
- 
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idPayeeToDelete, setIdPayeeToDelete] = useState(null); // State to track which document to delete
@@ -51,7 +50,7 @@ const PayeesList = () => {
 
   const {
     data: payees, //the data is renamed payees
-    isLoading: isPayeesLoading, 
+    isLoading: isPayeesLoading,
     isSuccess: isPayeesSuccess,
     isError: isPayeesError,
     error: payeesError,
@@ -87,28 +86,27 @@ const PayeesList = () => {
   const handleConfirmDelete = async () => {
     try {
       const response = await deletePayee({ id: idPayeeToDelete });
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
         // Error response
         triggerBanner(response?.error?.data?.message, "error");
-    } else if (isDelError) {
-      // In case of unexpected response format
-      triggerBanner(delError?.data?.message, "error");
-    } else {
-      // In case of unexpected response format
-      triggerBanner("Unexpected response from server.", "error");
+      } else if (isDelError) {
+        // In case of unexpected response format
+        triggerBanner(delError?.data?.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner(error?.data?.message, "error");
     }
-  } catch (error) {
-    triggerBanner(error?.data?.message, "error");
-  }
-  setIsDeleteModalOpen(false); // Close the modal
-};
+    setIsDeleteModalOpen(false); // Close the modal
+  };
 
   // Function to close the modal without deleting
   const handleCloseDeleteModal = () => {
@@ -136,12 +134,9 @@ const PayeesList = () => {
 
     //the serach result data
     filteredPayees = payeesList?.filter((item) => {
-      
       //console.log('filteredPayees in the success', item)
-      return (
-        Object.values(item).some((val) =>
-          String(val).toLowerCase().includes(searchQuery.toLowerCase())
-        )
+      return Object.values(item).some((val) =>
+        String(val).toLowerCase().includes(searchQuery.toLowerCase())
       );
     });
   }
@@ -155,7 +150,6 @@ const PayeesList = () => {
     //console.log('selectedRows', selectedRows)
   };
 
- 
   //console.log(filteredPayees, "filteredPayees");
 
   const column = [
@@ -196,7 +190,6 @@ const PayeesList = () => {
       removableRows: true,
       width: "120px",
     },
-   
 
     {
       name: "Active",
@@ -256,25 +249,29 @@ const PayeesList = () => {
       cell: (row) => (
         <div className="space-x-1">
           <button
-          aria-label="payee details"
+            aria-label="payee details"
             className="text-sky-700"
             fontSize={20}
-            onClick={() => navigate(`/settings/financesSet/payeeDetails/${row.id}`)}
+            onClick={() =>
+              navigate(`/settings/financesSet/payeeDetails/${row.id}`)
+            }
           >
             <ImProfile className="text-2xl" />
           </button>
           {canEdit ? (
             <button
-            aria-label="edit payee"
+              aria-label="edit payee"
               className="text-amber-300"
-              onClick={() => navigate(`/settings/financesSet/editPayee/${row.id}`)}
+              onClick={() =>
+                navigate(`/settings/financesSet/editPayee/${row.id}`)
+              }
             >
               <FiEdit className="text-2xl" />
             </button>
           ) : null}
           {canDelete && !isDelLoading && (
             <button
-            aria-label="delete payee"
+              aria-label="delete payee"
               className="text-red-600"
               onClick={() => onDeletePayeeClicked(row.id)}
             >
@@ -291,11 +288,9 @@ const PayeesList = () => {
 
   // Custom header to include the row count
   const tableHeader = (
-    
-      <h2>
-        Payees List: <span> {filteredPayees.length} payees</span>
-      </h2>
-   
+    <h2>
+      Payees List: <span> {filteredPayees.length} payees</span>
+    </h2>
   );
   let content;
   if (isPayeesLoading)
@@ -306,23 +301,24 @@ const PayeesList = () => {
       </>
     );
 
-    content = (
-      <>
-        <FinancesSet />
+  content = (
+    <>
+      <FinancesSet />
 
-        <div className="relative h-10 mr-2 ">
-          <HiOutlineSearch
-            fontSize={20}
-            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-          />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={handleSearch}
-            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
-          />
-        </div>
-        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+      <div className="relative h-10 mr-2 ">
+        <HiOutlineSearch
+          fontSize={20}
+          className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+        />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={handleSearch}
+          className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
+        />
+      </div>
+      <div className="dataTableContainer">
+        <div>
           <DataTable
             title={tableHeader}
             columns={column}
@@ -343,7 +339,7 @@ const PayeesList = () => {
                   fontSize: "14px", // Increase font size for header text
                 },
               },
-           
+
               cells: {
                 style: {
                   justifyContent: "center", // Center cell content
@@ -352,19 +348,28 @@ const PayeesList = () => {
                   fontSize: "14px", // Increase font size for cell text
                 },
               },
+              pagination: {
+                style: {
+                  display: "flex",
+                  justifyContent: "center", // Center the pagination control
+                  alignItems: "center",
+                  padding: "10px 0", // Optional: Add padding for spacing
+                },
+              },
             }}
           ></DataTable>
-          <div className="cancelSavebuttonsDiv">
-            <button
-              className="add-button"
-              onClick={() => navigate("/settings/financesSet/newPayee/")}
-              // disabled={selectedRows.length !== 1} // Disable if no rows are selected
-              hidden={!canCreate}
-            >
-              New Payee
-            </button>
+        </div>
+        <div className="cancelSavebuttonsDiv">
+          <button
+            className="add-button"
+            onClick={() => navigate("/settings/financesSet/newPayee/")}
+            // disabled={selectedRows.length !== 1} // Disable if no rows are selected
+            hidden={!canCreate}
+          >
+            New Payee
+          </button>
 
-            {/* {isAdmin && (
+          {/* {isAdmin && (
             <button
               className="px-3 py-2 bg-gray-400 text-white rounded"
               onClick={handleDuplicateSelected}
@@ -374,17 +379,16 @@ const PayeesList = () => {
               optional button
             </button>
           )} */}
-          </div>
         </div>
-        <DeletionConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
-          onConfirm={handleConfirmDelete}
-        />
-       
-      </>
-    );
- 
+      </div>
+      <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
+    </>
+  );
+
   return content;
 };
 export default PayeesList;

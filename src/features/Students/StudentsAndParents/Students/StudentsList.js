@@ -269,7 +269,7 @@ const StudentsList = () => {
       name: "#",
       cell: (row, index) => index + 1, // Display the index + 1 (for 1-based numbering)
       sortable: false,
-      width: "50px",
+      width: "40px",
     },
     {
       name: "Active",
@@ -285,14 +285,14 @@ const StudentsList = () => {
       ),
       sortable: true,
       removableRows: true,
-      width: "80px",
+      width: "90px",
     },
-    isAdmin && {
-      name: "ID",
-      selector: (row) => row.id,
-      sortable: true,
-      width: "210px",
-    },
+    // isAdmin && {
+    //   name: "ID",
+    //   selector: (row) => row.id,
+    //   sortable: true,
+    //   width: "210px",
+    // },
 
     {
       name: "Student Name",
@@ -303,7 +303,7 @@ const StudentsList = () => {
         " " +
         row.studentName?.lastName,
       sortable: true,
-      width: "180px",
+      width: "190px",
       cell: (row) => (
         <Link to={`/students/studentsParents/studentDetails/${row.id}`}>
           {row.studentName?.firstName +
@@ -313,6 +313,11 @@ const StudentsList = () => {
             row.studentName?.lastName}
         </Link>
       ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+        
+      },
     },
     {
       name: "Sex",
@@ -326,9 +331,14 @@ const StudentsList = () => {
           )}
         </span>
       ),
+      style: {
+        justifyContent: "center",
+        textAlign: "center",
+      
+      },
       sortable: true,
       removableRows: true,
-      width: "70px",
+      width: "90px",
     },
     {
       name: "Grade",
@@ -345,7 +355,12 @@ const StudentsList = () => {
         return gradeForSelectedYear || "N/A"; // Display 'N/A' if no grade is found
       },
       sortable: true,
-      width: "80px",
+      style: {
+        justifyContent: "center",
+        textAlign: "center",
+      
+      },
+      width: "90px",
     },
 
     {
@@ -359,6 +374,10 @@ const StudentsList = () => {
 
         // Return the grade or a fallback value if not found
         return schoolForSelectedYear || "N/A";
+      },
+      style: {
+        justifyContent: "left",
+        
       },
 
       sortable: true,
@@ -374,11 +393,11 @@ const StudentsList = () => {
         }),
 
       sortable: true,
-      width: "100px",
+      width: "120px",
     },
 
     {
-      name: "Admissions",
+      name: "Admission",
 
       selector: (row) => (
         <div>
@@ -392,7 +411,7 @@ const StudentsList = () => {
       ),
       sortable: true,
       removableRows: true,
-      width: "110px",
+      width: "130px",
     },
     (isAcademic || isDesk || isDirector || isManager || isAdmin) && {
       name: "Documents",
@@ -407,7 +426,12 @@ const StudentsList = () => {
       ),
       sortable: true,
       removableRows: true,
-      width: "120px",
+      style: {
+        justifyContent: "center",
+        textAlign: "center",
+      
+      },
+      width: "130px",
     },
 
     (isAcademic || isDesk || isDirector || isManager || isAdmin) && {
@@ -471,18 +495,7 @@ const StudentsList = () => {
         <LoadingStateIcon />
       </>
     );
-  if (isStudentsError || isSchoolsError) {
-    content = (
-      <>
-        <Students />
-        <div className="error-bar">
-          {studentsError?.data?.message && <p>{studentsError.data.message}</p>}
-          {schoolsError?.data?.message && <p>{schoolsError.data.message}</p>}
-        </div>
-      </>
-    );
-  }
-  if (isStudentsSuccess && isSchoolsSuccess) {
+
     content = (
       <>
         <Students />
@@ -541,7 +554,8 @@ const StudentsList = () => {
           </label>
         </div>
 
-        <div className=" flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200">
+        <div className="dataTableContainer">
+          <div>
           <DataTable
             title={tableHeader}
             columns={column}
@@ -555,26 +569,30 @@ const StudentsList = () => {
             customStyles={{
               headCells: {
                 style: {
-                  // Apply Tailwind style via a class-like syntax
-                  justifyContent: "center", // Align headers to the center
-                  textAlign: "center", // Center header text
+                  justifyContent: "center",
+                  textAlign: "center",
                   color: "black",
-                },
-              },
-              header: {
-                icon: {
-                  color: "red", // Set sorting indicator color to black
+                  fontSize: "14px",
                 },
               },
               cells: {
                 style: {
-                  justifyContent: "center", // Center cell content
-                  textAlign: "center",
                   color: "black",
+                  fontSize: "14px",
+                  
+                },
+              },
+              pagination: {
+                style: {
+                  display: "flex",
+                  justifyContent: "center", // Center the pagination control
+                  alignItems: "center",
+                  padding: "10px 0", // Optional: Add padding for spacing
                 },
               },
             }}
           ></DataTable>
+          </div>
           {(isAcademic || isDesk || isDirector || isManager || isAdmin) && (
             <div className="cancelSavebuttonsDiv">
               <button
@@ -619,7 +637,7 @@ const StudentsList = () => {
         />
       </>
     );
-  }
+ 
   return content;
 };
 export default StudentsList;
