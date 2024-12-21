@@ -1,225 +1,124 @@
-import { useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
-import { selectLeaveById } from "./leavesApiSlice";
-import {
-  selectCurrentAcademicYearId,
-  selectAcademicYearById,
-  selectAllAcademicYears,
-} from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { useGetLeaveByIdQuery } from "./leavesApiSlice";
-import useFetchUserPhoto from "../../../hooks/useFetchUserPhoto";
-
-import {useState, useEffect} from "react"
-import HR from "../HR";
-
+import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import useAuth from "../../../hooks/useAuth";
+import HR from "../HR";
 
 const LeaveDetails = () => {
   const { id } = useParams();
-
-
-  const {canEdit}=useAuth()
-  //const leave = useSelector((state) => state.leave?.entities[id]);
   const navigate = useNavigate();
-  const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
-  const selectedAcademicYear = useSelector((state) =>
-    selectAcademicYearById(state, selectedAcademicYearId)
-  ); // Get the full academic year object
-  const academicYears = useSelector(selectAllAcademicYears);
+  const { canEdit } = useAuth();
   const {
-    data: leave, //the data is renamed leaves
-    isLoading: isLeaveLoading, 
+    data: leaveOrg,
+    isLoading: isLeaveLoading,
     isSuccess: isLeaveSuccess,
-    isError: isLeaveError,
-    error: leaveError,
+    isError: leaveError,
   } = useGetLeaveByIdQuery(
+    { id: id, endpointName: "leaveDetails" },
     {
-      id: id,
-      endpointName: "LeaveDetails",
-    } || {},
-    {
+      pollingInterval: 60000,
       refetchOnFocus: true,
       refetchOnMountOrArgChange: true,
     }
   );
-  const [photoId, setPhotoId] = useState(null);
-  console.log(leave, "leave");
 
-
-
-
-
-  const { photoUrl } = useFetchUserPhoto(photoId);
-  // const leaveToview = isLeaveSuccess ? leave : [];
+  console.log(leaveOrg, "leaveOrg");
+ 
   let content;
-  // console.log(leaveToview);
-  content = 
-   (  content = isLeaveSuccess 
-     ) ? (
-    <>
-      <HR />
-      <div className="max-w-4xl mx-auto mt-8 bg-white p-8 shadow-lg rounded-lg">
-        <h1 className="text-2xl font-bold mb-6 text-gray-800">
-          Leave Details
-        </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Full Name */}
-          <div>
-            <p className="text-sm font-medium text-gray-700">Full Name</p>
-            <p className="text-lg text-gray-900">
-              {leave?.userFullName?.userFirstName}{" "}
-              {leave?.userFullName?.userMiddleName}{" "}
-              {leave?.userFullName?.userLastName || ""}
-            </p>
-          </div>
-          {photoUrl && (
-            <div className="flex justify-center mb-6">
-              <img
-                src={photoUrl}
-                alt="Leave"
-                className="w-32 h-32 object-cover rounded-full border border-gray-300"
-              />
+  if (isLeaveLoading) {
+    content = (
+      <>
+        <HR />
+        <LoadingStateIcon />
+      </>
+    );
+  }
+  if (isLeaveSuccess && leaveOrg?.length === 1) {
+    const leave = leaveOrg[0];
+    content = (
+      <>
+        <HR />
+        <div className="container mx-auto p-6 bg-white rounded-sm border border-gray-200">
+          <h1 className="text-xl font-bold mb-4">Leave Details</h1>
+
+          {/* Leave Information */}
+          <section className="mb-6">
+            <h2 className="text-lg font-semibold mb-2">Leave Information</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p>
+                  <strong>Leave Year:</strong> {leave.leaveYear}
+                </p>
+                <p>
+                  <strong>Leave Month:</strong> {leave.leaveMonth}
+                </p>
+                <p>
+                  <strong>Start Date:</strong>{" "}
+                  {new Date(leave.leaveStartDate).toLocaleDateString()}
+                </p>
+              </div>
+              <div>
+                <p>
+                  <strong>End Date:</strong>{" "}
+                  {new Date(leave.leaveEndDate).toLocaleDateString()}
+                </p>
+                <p>
+                  <strong>Is Approved:</strong>{" "}
+                  {leave.leaveIsApproved ? "Yes" : "No"}
+                </p>
+                <p>
+                  <strong>Is Paid Leave:</strong>{" "}
+                  {leave.leaveIsPaidLeave ? "Yes" : "No"}
+                </p>
+              </div>
             </div>
-          )}
+          </section>
 
-          {/* Date of Birth */}
-          <div>
-            <p className="text-sm font-medium text-gray-700">Date of Birth</p>
-            <p className="text-lg text-gray-900">
-              {leave?.userDob ? leave.userDob.split("T")[0] : "N/A"}
-            </p>
-          </div>
-
-          {/* Sex */}
-          <div>
-            <p className="text-sm font-medium text-gray-700">Sex</p>
-            <p className="text-lg text-gray-900">
-              {leave?.userSex || "N/A"}
-            </p>
-          </div>
-
-          {/* Address */}
-          <div>
-            <p className="text-sm font-medium text-gray-700">Address</p>
-            <p className="text-lg text-gray-900">
-              {leave?.userAddress?.house} {leave?.userAddress?.street}
-            </p>
-            <p className="text-lg text-gray-900">
-              {leave?.userAddress?.area}
-            </p>
-            <p className="text-lg text-gray-900">
-              {leave?.userAddress?.postCode}
-            </p>
-            <p className="text-lg text-gray-900">
-              {leave?.userAddress?.city}
-            </p>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <p className="text-sm font-medium text-gray-700">Contact</p>
-            <p className="text-lg text-gray-900">
-              {leave?.userContact?.primaryPhone || "N/A"}
-            </p>
-            <p className="text-lg text-gray-900">
-              {leave?.userContact?.secondaryPhone || "N/A"}
-            </p>
-            <p className="text-lg text-gray-900">
-              {leave?.userContact?.email || "N/A"}
-            </p>
-          </div>
-
-          {/* Roles */}
-          <div>
-            <p className="text-sm font-medium text-gray-700">Roles</p>
-            <p className="text-lg text-gray-900">
-              {leave?.userRoles?.length > 0
-                ? leave.userRoles.join(", ")
-                : "N/A"}
-            </p>
-          </div>
-
-          {/* Active Status */}
-          <div>
-            <p className="text-sm font-medium text-gray-700">Active Status</p>
-            <div>
-            User:
-            <span
-              className={`text-lg font-semibold ${
-                leave?.userIsActive ? "text-green-600" : "text-red-600"
-              }`}
-            >
-              {" "}
-              {leave?.userIsActive ? "Active" : "Inactive"}
-            </span></div>
-            <div>
-            Leave:
-            <span
-              className={`text-lg font-semibold ${
-                leave?.leaveId?.leaveIsActive
-                  ? "text-green-600"
-                  : "text-red-600"
-              }`}
-            >
-              {" "}
-              {leave?.leaveId?.leaveIsActive ? "Active" : "Inactive"}
-            </span>
+          {/* Employee Information */}
+          <section className="mb-6">
+            <h2 className="text-lg font-semibold mb-2">Employee Information</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p>
+                  <strong>Name:</strong>{" "}
+                  {`${leave.leaveEmployeeName.userFirstName} ${
+                    leave.leaveEmployeeName.userMiddleName || ""
+                  } ${leave.leaveEmployeeName.userLastName}`.trim()}
+                </p>
+              </div>
             </div>
-          </div>
+          </section>
 
-          {/* Academic Years */}
-          <div>
-            <p className="text-sm font-medium text-gray-700">Academic Years</p>
-            <ul className="list-disc list-inside text-lg text-gray-900">
-              {leave?.leaveId?.leaveYears?.length > 0 ? (
-                leave.leaveId.leaveYears.map((year, idx) => (
-                  <li key={idx}>{year.academicYear}</li>
-                ))
-              ) : (
-                <li>N/A</li>
-              )}
-            </ul>
-          </div>
+          {/* Leave Type */}
+          <section className="mb-6">
+            <h2 className="text-lg font-semibold mb-2">Leave Type</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <p>
+                <strong>Is Sick Leave:</strong>{" "}
+                {leave.leaveIsSickLeave ? "Yes" : "No"}
+              </p>
+              <p>
+                <strong>Is Part-Day Leave:</strong>{" "}
+                {leave.leaveIsPartDay ? "Yes" : "No"}
+              </p>
+            </div>
+          </section>
 
-          {/* Current Employment */}
-          <div>
-            <p className="text-sm font-medium text-gray-700">
-              Current Employment
-            </p>
-            <p className="text-lg text-gray-900">
-              {leave?.leaveId?.leaveCurrentEmployment?.position
-                ? `${
-                    leave?.leaveId?.leaveCurrentEmployment?.position
-                  }, Joined on: ${
-                    leave?.leaveId?.leaveCurrentEmployment?.joinDate.split(
-                      "T"
-                    )[0]
-                  }`
-                : "N/A"}
-            </p>
-          </div>
-
-          {/* Work History */}
-          <div>
-            <p className="text-sm font-medium text-gray-700">Work History</p>
-            <ul className="list-disc list-inside text-lg text-gray-900">
-              {leave?.leaveId?.leaveWorkHistory?.length > 0 ? (
-                leave.leaveId.leaveWorkHistory.map(
-                  (history, idx) => (
-                    <li key={idx}>
-                      {history.position} at {history.company} (
-                      {history.startDate} - {history.endDate || "Present"})
-                    </li>
-                  )
-                )
-              ) : (
-                <li>N/A</li>
-              )}
-            </ul>
-          </div>
+          {/* Metadata */}
+          <section>
+            <div className="text-sm text-gray-500">
+              <p>
+                <strong>Operator:</strong> {leave.leaveOperator}
+              </p>
+              <p>
+                <strong>Creator:</strong> {leave.leaveCreator}
+              </p>
+            </div>
+          </section>
         </div>
 
+        {/* Navigation Buttons */}
         <div className="cancelSavebuttonsDiv">
           <button
             onClick={() => navigate(`/hr/leaves/leavesList/`)}
@@ -230,14 +129,15 @@ const LeaveDetails = () => {
           <button
             onClick={() => navigate(`/hr/leaves/editLeave/${id}`)}
             className="edit-button"
-               hidden={!canEdit}
+            hidden={!canEdit}
           >
             Edit Leave
           </button>
         </div>
-      </div>
-    </>
-  ) : null;
+      </>
+    );
+  }
+
   return content;
 };
 

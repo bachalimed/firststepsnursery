@@ -1,11 +1,10 @@
 import {
   useGetEmployeesByYearQuery,
-  useUpdateEmployeeMutation,
   useDeleteEmployeeMutation,
 } from "./employeesApiSlice";
 import { HiOutlineSearch } from "react-icons/hi";
 import HR from "../HR";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import DataTable from "react-data-table-component";
 import { useEffect, useState } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
@@ -28,12 +27,9 @@ import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 const EmployeesList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const { canEdit, isAdmin, isManager, canDelete, canCreate, status2 } =
     useAuth();
-  const [requiredDocNumber, setRequiredDocNumber] = useState("");
-  const [employeeDocNumber, setEmployeeDocNumber] = useState("");
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idEmployeeToDelete, setIdEmployeeToDelete] = useState(null); // State to track which document to delete
@@ -111,18 +107,9 @@ const EmployeesList = () => {
     setIdEmployeeToDelete(null);
   };
 
-  // State for the selected year
-  const [selectedYear, setSelectedYear] = useState("");
-
-  // Handler for year change
-  const handleYearChange = (event) => {
-    setSelectedYear(event.target.value);
-  };
-  // State to hold selected rows
-  const [selectedRows, setSelectedRows] = useState([]);
   //state to hold the search query
   const [searchQuery, setSearchQuery] = useState("");
-  //const [filteredEmployees, setFilteredEmployees] = useState([])
+
   //we need to declare the variable outside of if statement to be able to use it outside later
   let employeesList = [];
   let filteredEmployees = [];
@@ -164,72 +151,6 @@ const EmployeesList = () => {
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
-  };
-  // Handler for selecting rows
-  const handleRowSelected = (state) => {
-    setSelectedRows(state.selectedRows);
-    //console.log('selectedRows', selectedRows)
-  };
-
-  // Handler for duplicating selected rows,
-  const handleDuplicateSelected = () => {
-    //console.log('Selected Rows to duplicate:', selectedRows);
-    // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
-    //ensure only one can be selected: the last one
-    const toDuplicate = selectedRows[-1];
-
-    setSelectedRows([]); // Clear selection after delete
-  };
-
-  const [
-    updateEmployee,
-    {
-      isLoading: isUpdateLoading,
-      isSuccess: isUpdateSuccess,
-      isError: isUpdateError,
-      error: updateError,
-    },
-  ] = useUpdateEmployeeMutation(); //it will not execute the mutation nownow but when called
-  const [employeeObject, setEmployeeObject] = useState("");
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
-
-  //console.log(academicYears)
-  // Handler for registering selected row,
-  const [employeeYears, setEmployeeYears] = useState([]);
-  const handleRegisterSelected = () => {
-    //we already allowed only one to be selected in the button options
-    //console.log('Selected Rows to detail:', selectedRows)
-
-    setEmployeeObject(selectedRows[0]);
-    //console.log(employeeObject, "employeeObject");
-    //const {employeeYears}= (employeeObject)
-
-    setEmployeeYears(employeeObject?.employeeYears);
-    //console.log("employee years and id", employeeYears);
-    setIsRegisterModalOpen(true);
-
-    //setSelectedRows([]); // Clear selection after process
-  };
-  //console.log(filteredEmployees, "filteredEmployees");
-  // This is called when saving the updated employee years from the modal
-  const onUpdateEmployeeClicked = async (updatedYears) => {
-    console.log("Updated employeeYears from modal:", updatedYears);
-
-    const updatedEmployeeObject = {
-      ...employeeObject,
-      employeeYears: updatedYears, // Merge updated employeeYears
-    };
-
-    console.log("Saving updated employee:", updatedEmployeeObject);
-
-    try {
-      await updateEmployee(updatedEmployeeObject); // Save updated employee to backend
-      console.log("Employee updated successfully");
-    } catch (employeesError) {
-      console.log("employeesError saving employee:", employeesError);
-    }
-
-    setIsRegisterModalOpen(false); // Close modal
   };
 
   const column = [
@@ -464,37 +385,37 @@ const EmployeesList = () => {
         <LoadingStateIcon />
       </>
     );
-
-  content = (
-    <>
-      <HR />
-      <div className="flex space-x-2 items-center ml-3">
-        <div className="relative h-10 mr-2 ">
-          <HiOutlineSearch
-            fontSize={20}
-            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-          />
-          <input
-            aria-label="search"
-            type="text"
-            value={searchQuery}
-            onChange={handleSearch}
-            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => handleSearch({ target: { value: "" } })} // Clear search
-              className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
-              aria-label="clear search"
-            >
-              &times;
-            </button>
-          )}
-        </div>
-        {/* Year Filter Dropdown */}
-        {/* not implemented becasue we only query the selected eyar */}
-        {/* <label htmlFor="yearFilter" className="relative">
+  if (isEmployeesSuccess) {
+    content = (
+      <>
+        <HR />
+        <div className="flex space-x-2 items-center ml-3">
+          <div className="relative h-10 mr-2 ">
+            <HiOutlineSearch
+              fontSize={20}
+              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+            />
+            <input
+              aria-label="search"
+              type="text"
+              value={searchQuery}
+              onChange={handleSearch}
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => handleSearch({ target: { value: "" } })} // Clear search
+                className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+                aria-label="clear search"
+              >
+                &times;
+              </button>
+            )}
+          </div>
+          {/* Year Filter Dropdown */}
+          {/* not implemented becasue we only query the selected eyar */}
+          {/* <label htmlFor="yearFilter" className="relative">
           <select
             aria-label="yearFilter"
             id="yearFilter"
@@ -512,60 +433,60 @@ const EmployeesList = () => {
               ))}
           </select>
         </label> */}
-      </div>
-      <div className="dataTableContainer">
-        <div>
-          <DataTable
-            title={tableHeader}
-            columns={column}
-            data={filteredEmployees}
-            pagination
-            //selectableRows
-            removableRows
-            pageSizeControl
-            onSelectedRowsChange={handleRowSelected}
-            selectableRowsHighlight
-            customStyles={{
-              headCells: {
-                style: {
-                  // Apply Tailwind style via a class-like syntax
-                  justifyContent: "center", // Align headers to the center
-                  textAlign: "center", // Center header text
-                  color: "black",
-                  fontSize: "14px", // Increase font size for header text
-                },
-              },
-
-              cells: {
-                style: {
-                  justifyContent: "center", // Center cell content
-                  textAlign: "center",
-                  color: "black",
-                  fontSize: "14px", // Increase font size for cell text
-                },
-              },
-              pagination: {
-                style: {
-                  display: "flex",
-                  justifyContent: "center", // Center the pagination control
-                  alignItems: "center",
-                  padding: "10px 0", // Optional: Add padding for spacing
-                },
-              },
-            }}
-          ></DataTable>
         </div>
-        <div className="cancelSavebuttonsDiv">
-          <button
-            className="add-button"
-            onClick={() => navigate("/hr/employees/newEmployee")}
-            // disabled={selectedRows.length !== 1} // Disable if no rows are selected
-            hidden={!canCreate}
-          >
-            New Employee
-          </button>
+        <div className="dataTableContainer">
+          <div>
+            <DataTable
+              title={tableHeader}
+              columns={column}
+              data={filteredEmployees}
+              pagination
+              //selectableRows
+              removableRows
+              pageSizeControl
+              //onSelectedRowsChange={handleRowSelected}
+              selectableRowsHighlight
+              customStyles={{
+                headCells: {
+                  style: {
+                    // Apply Tailwind style via a class-like syntax
+                    justifyContent: "center", // Align headers to the center
+                    textAlign: "center", // Center header text
+                    color: "black",
+                    fontSize: "14px", // Increase font size for header text
+                  },
+                },
 
-          {/* {isAdmin && (
+                cells: {
+                  style: {
+                    justifyContent: "center", // Center cell content
+                    textAlign: "center",
+                    color: "black",
+                    fontSize: "14px", // Increase font size for cell text
+                  },
+                },
+                pagination: {
+                  style: {
+                    display: "flex",
+                    justifyContent: "center", // Center the pagination control
+                    alignItems: "center",
+                    padding: "10px 0", // Optional: Add padding for spacing
+                  },
+                },
+              }}
+            ></DataTable>
+          </div>
+          <div className="cancelSavebuttonsDiv">
+            <button
+              className="add-button"
+              onClick={() => navigate("/hr/employees/newEmployee")}
+              // disabled={selectedRows.length !== 1} // Disable if no rows are selected
+              hidden={!canCreate}
+            >
+              New Employee
+            </button>
+
+            {/* {isAdmin && (
             <button
               className="px-3 py-2 bg-gray-400 text-white rounded"
               onClick={handleDuplicateSelected}
@@ -575,15 +496,16 @@ const EmployeesList = () => {
               optional button
             </button>
           )} */}
+          </div>
         </div>
-      </div>
-      <DeletionConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
-      />
-    </>
-  );
+        <DeletionConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+        />
+      </>
+    );
+  }
 
   return content;
 };

@@ -366,16 +366,6 @@ const NurserySectionsList = () => {
       name: "Actions",
       cell: (row) => (
         <div className="space-x-1">
-          <button
-            aria-label="section details"
-            className="text-sky-700"
-            fontSize={20}
-            onClick={() =>
-              navigate(`/academics/sections/SectionDetails/${row.id}`)
-            }
-          >
-            <ImProfile className="text-2xl" />
-          </button>
           {!row.sectionTo && canEdit ? (
             <button
               aria-label="edit section"

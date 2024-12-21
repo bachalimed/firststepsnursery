@@ -39,11 +39,13 @@ import FamilyDetails from "./features/Students/StudentsAndParents/Families/Famil
 import AdmissionsList from "./features/Students/Admissions/AdmissionsList";
 import EditAdmission from "./features/Students/Admissions/EditAdmission";
 import NewAdmissionForm from "./features/Students/Admissions/NewAdmissionForm";
+import AdmissionDetails from "./features/Students/Admissions/AdmissionDetails";
 
 import EnrolmentsList from "./features/Students/Enrolments/EnrolmentsList";
 import UnenrolmentsList from "./features/Students/Enrolments/UnenrolmentsList";
 import EditEnrolment from "./features/Students/Enrolments/EditEnrolment";
 import NewEnrolmentForm from "./features/Students/Enrolments/NewEnrolmentForm";
+import EnrolmentDetails from "./features/Students/Enrolments/EnrolmentDetails";
 
 import Academics from "./features/Academics/Academics"; //main tab
 import NewSectionForm from "./features/Academics/Sections/NewSectionForm";
@@ -77,7 +79,7 @@ import PaymentDetails from "./features/Finances/Payments/PaymentDetails";
 import ExpensesList from "./features/Finances/Expenses/ExpensesList";
 import NewExpenseForm from "./features/Finances/Expenses/NewExpenseForm";
 import EditExpense from "./features/Finances/Expenses/EditExpense";
-import ExpenseDetails from "./features/Finances/Expenses/ExpenseDetails";
+// import ExpenseDetails from "./features/Finances/Expenses/ExpenseDetails";
 
 import HR from "./features/HR/HR";//main tab
 import EmployeesList from "./features/HR/Employees/EmployeesList";
@@ -258,6 +260,7 @@ const App = () => {
                   <Route path="admissions/" element={<AdmissionsList />} />
                   <Route path="newAdmission/" element={<NewAdmissionForm />} />
                   <Route path="editAdmission/:id" element={<EditAdmission />} />
+                  <Route path="admissionDetails/:id" element={<AdmissionDetails />} />
                 </Route>{" "}
                 {/* end of Admissions route */}
                 <Route path="Enrolments">
@@ -267,6 +270,7 @@ const App = () => {
                   <Route path="unenrolments/" element={<UnenrolmentsList />} />
                   <Route path="newEnrolment/" element={<NewEnrolmentForm />} />
                   <Route path="editEnrolment/:id" element={<EditEnrolment />} />
+                  <Route path="enrolmentDetails/:id" element={<EnrolmentDetails />} />
                 </Route>{" "}
                 {/* end of Enrolments route */}
               </Route>{" "}
@@ -339,10 +343,7 @@ const App = () => {
                   <Route path="expensesList/" element={<ExpensesList />} />
                   <Route path="newExpense/" element={<NewExpenseForm />} />
                   <Route path="editExpense/:id" element={<EditExpense />} />
-                  <Route
-                    path="expenseDetails/:id"
-                    element={<ExpenseDetails />}
-                  />
+                 
                 </Route>{" "}
                 {/* end of expenses route */}
                 <Route path="invoices">

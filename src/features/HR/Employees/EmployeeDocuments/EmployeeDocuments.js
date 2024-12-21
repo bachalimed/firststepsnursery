@@ -1,19 +1,12 @@
 import { useParams } from "react-router-dom"; //because we will get the userId from the url
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 import EmployeeDocumentsList from "./EmployeeDocumentsList";
 import useAuth from "../../../../hooks/useAuth";
-import { currentEmployeesList } from "../employeesSlice";
-
-import { useGetUserByIdQuery } from "../../../Admin/UsersManagement/usersApiSlice";
-
 import React from "react";
 import axios from "axios";
-
-import { setEmployeeDocuments } from "./employeeDocumentsSlice";
 import HR from "../../HR";
-import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
 import { useState, useEffect } from "react";
 import {
   useAddEmployeeDocumentsMutation,
@@ -21,42 +14,14 @@ import {
 } from "./employeeDocumentsApiSlice";
 import { useGetEmployeeDocumentsByYearByIdQuery } from "../../../AppSettings/HRSet/EmployeeDocumentsLists/employeeDocumentsListsApiSlice"; //using the listslist to get the documents
 import { selectCurrentToken } from "../../../auth/authSlice";
-import { ROLES } from "../../../../config/UserRoles";
-import { ACTIONS } from "../../../../config/UserActions";
-
 import UploadDocumentFormModal from "./UploadDocumentFormModal";
-
 import ViewDocumentModal from "./ViewDocumentModal";
-
-import {
-  useGetEmployeesQuery,
-  useGetEmployeesByYearQuery,
-} from "../employeesApiSlice";
 import DataTable from "react-data-table-component";
-import {
-  selectAllEmployeesByYear,
-  selectAllEmployees,
-} from "../employeesApiSlice"; //use the memoized selector
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
-
-import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
-import {
-  MdOutlineRadioButtonChecked,
-  MdRadioButtonUnchecked,
-} from "react-icons/md";
 import { GrView } from "react-icons/gr";
-import {
-  IoCheckmarkDoneSharp,
-  IoDocumentAttachOutline,
-  IoCheckmarkSharp,
-  IoCheckmarkDoneOutline,
-} from "react-icons/io5";
+import { IoCheckmarkDoneSharp, IoCheckmarkSharp } from "react-icons/io5";
 import { GrDocumentUpload } from "react-icons/gr";
-import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { ImProfile } from "react-icons/im";
-import { HiOutlineSearch } from "react-icons/hi";
-
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
@@ -70,6 +35,7 @@ const EmployeeDocuments = () => {
   const Dispatch = useDispatch();
 
   //console.log(userId,'the id in teh list')
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
 
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
@@ -110,7 +76,7 @@ const EmployeeDocuments = () => {
       isLoading: isDelLoading,
       isSuccess: isDelSuccess,
       isError: isDelError,
-      error: delerror,
+      error: delError,
     },
   ] = useDeleteEmployeeDocumentMutation();
   const [selectedDocument, setSelectedDocument] = useState(null);
@@ -173,12 +139,34 @@ const EmployeeDocuments = () => {
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    console.log(
-      "id of the document when confirmed delete",
-      idEmployeeDocumentToDelete
-    );
-    await deleteEmployeeDocument({ id: idEmployeeDocumentToDelete });
-    setIsDeleteModalOpen(false); // Close the modal
+    // console.log(
+    //   "id of the document when confirmed delete",
+    //   idEmployeeDocumentToDelete
+    // );
+    try {
+      const response = await deleteEmployeeDocument({
+        id: idEmployeeDocumentToDelete,
+      });
+      setIsDeleteModalOpen(false); // Close the modal
+      if (response?.message) {
+        // Success response
+        triggerBanner(response?.message, "success");
+      } else if (response?.data?.message) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isDelError) {
+        // In case of unexpected response format
+        triggerBanner(delError?.data?.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner(error?.data?.message, "error");
+    }
   };
 
   // Function to close the modal without deleting
@@ -216,15 +204,35 @@ const EmployeeDocuments = () => {
 
     try {
       const response = await addEmployeeDocuments(formData); //.unwrap()
-      if (!response.ok) {
-        throw new Error("Something went wrong!");
-      }
-      const result = await response.json();
-      console.log("Upload successful:", result);
+      console.log("response :", response);
+      // if (!response.ok) {
+      //   throw new Error("Something went wrong!");
+      // }
+      // const result = await response.json();
+      //console.log("result :", result);
+      //extracode for banner/////////////////
+      if (response?.data?.message) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.message) {
+        // Success response
+        triggerBanner(response?.message, "success");
+      } else if (response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (uploadIsError) {
+        // In case of unexpected response format
+        triggerBanner(uploadError?.data?.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      } //////////////
     } catch (error) {
       console.error("Error uploading documents:", error);
+      triggerBanner(error?.data?.message, "error"); //////
     }
   };
+
   const token = useSelector(selectCurrentToken);
   //console.log(token,'token')
 
@@ -401,8 +409,8 @@ const EmployeeDocuments = () => {
   //console.log(employeeDocumentsListing)
   content = (
     <>
-      {" "}
-      {isDelSuccess && <p>Document deleted successfully!</p>}
+      {/* {" "}
+      {isDelSuccess && <p>Document deleted successfully!</p>} */}
       <HR />
       <div className="dataTableContainer">
         <div>

@@ -1,6 +1,5 @@
 import { useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
-import { selectEmployeeById } from "./employeesApiSlice";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
@@ -11,7 +10,6 @@ import useFetchUserPhoto from "../../../hooks/useFetchUserPhoto";
 import { useGetEmployeeDocumentsByYearByIdQuery } from "../../AppSettings/HRSet/EmployeeDocumentsLists/employeeDocumentsListsApiSlice"
 import {useState, useEffect} from "react"
 import HR from "../HR";
-
 import useAuth from "../../../hooks/useAuth";
 
 const EmployeeDetails = () => {

@@ -3,20 +3,16 @@ import { GiMoneyStack } from "react-icons/gi";
 import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
-import { IoShieldCheckmarkOutline, IoShieldOutline } from "react-icons/io5";
-import { IoDocumentAttachOutline } from "react-icons/io5";
 import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
 import { IoMdCheckboxOutline } from "react-icons/io";
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
 // import RegisterModal from './RegisterModal'
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import {
   useGetLeavesByYearQuery,
-  useUpdateLeaveMutation,
   useDeleteLeaveMutation,
 } from "./leavesApiSlice";
 import { MdCheckBoxOutlineBlank } from "react-icons/md";
@@ -24,7 +20,6 @@ import { TbMedicalCrossOff } from "react-icons/tb";
 import { TbMedicalCross } from "react-icons/tb";
 import HR from "../HR";
 import {
-  setAcademicYears,
   selectAllAcademicYears,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import useAuth from "../../../hooks/useAuth";
@@ -40,8 +35,6 @@ const LeavesList = () => {
   const dispatch = useDispatch();
 
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
-  const [requiredDocNumber, setRequiredDocNumber] = useState("");
-  const [leaveDocNumber, setLeaveDocNumber] = useState("");
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idLeaveToDelete, setIdLeaveToDelete] = useState(null); // State to track which document to delete
@@ -51,6 +44,7 @@ const LeavesList = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
 
   const [selectedLeaveMonth, setSelectedLeaveMonth] = useState(""); // invoice month
   //function to return curent month for month selection
@@ -83,7 +77,7 @@ const LeavesList = () => {
       isLoading: isDelLoading,
       isSuccess: isDelSuccess,
       isError: isDelError,
-      error: delerror,
+      error: delError,
     },
   ] = useDeleteLeaveMutation();
 
@@ -95,8 +89,28 @@ const LeavesList = () => {
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    await deleteLeave({ id: idLeaveToDelete });
-    setIsDeleteModalOpen(false); // Close the modal
+    try {
+      const response = await deleteLeave({ id: idLeaveToDelete });
+      setIsDeleteModalOpen(false); // Close the modal
+      if (response?.message) {
+        // Success response
+        triggerBanner(response?.message, "success");
+      } else if (response?.data?.message) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isDelError) {
+        // In case of unexpected response format
+        triggerBanner(delError?.data?.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner(error?.data?.message, "error");
+    }
   };
 
   // Function to close the modal without deleting
@@ -121,8 +135,7 @@ const LeavesList = () => {
     //we need to change into array to be read??
     leavesList = Object.values(entities); //we are using entity adapter in this query
     //console.log(leavesList,'leavesList')
-    //dispatch(setLeaves(leavesList)); //timing issue to update the state and use it the same time
-
+  
     //the serach result data
     filteredLeaves = leavesList?.filter((item) => {
       //the nested objects need extra logic to separate them
@@ -154,84 +167,6 @@ const LeavesList = () => {
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
-  // Handler for selecting rows
-  const handleRowSelected = (state) => {
-    setSelectedRows(state.selectedRows);
-    //console.log('selectedRows', selectedRows)
-  };
-
-  // Handler for duplicating selected rows,
-  const handleDuplicateSelected = () => {
-    //console.log('Selected Rows to duplicate:', selectedRows);
-    // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
-    //ensure only one can be selected: the last one
-    const toDuplicate = selectedRows[-1];
-
-    setSelectedRows([]); // Clear selection after delete
-  };
-
-  const [
-    updateLeave,
-    {
-      isLoading: isUpdateLoading,
-      isSuccess: isUpdateSuccess,
-      isError: isUpdateError,
-      error: updateError,
-    },
-  ] = useUpdateLeaveMutation(); //it will not execute the mutation nownow but when called
-  const [leaveObject, setLeaveObject] = useState("");
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
-
-  //console.log(academicYears)
-  // Handler for registering selected row,
-  const [leaveYears, setLeaveYears] = useState([]);
-  const handleRegisterSelected = () => {
-    //we already allowed only one to be selected in the button options
-    //console.log('Selected Rows to detail:', selectedRows)
-
-    setLeaveObject(selectedRows[0]);
-    //console.log(leaveObject, "leaveObject");
-    //const {leaveYears}= (leaveObject)
-
-    setLeaveYears(leaveObject?.leaveYears);
-    //console.log("leave years and id", leaveYears);
-    setIsRegisterModalOpen(true);
-
-    //setSelectedRows([]); // Clear selection after process
-  };
-  //console.log(filteredLeaves, "filteredLeaves");
-  // This is called when saving the updated leave years from the modal
-  const onUpdateLeaveClicked = async (updatedYears) => {
-    console.log("Updated leaveYears from modal:", updatedYears);
-
-    const updatedLeaveObject = {
-      ...leaveObject,
-      leaveYears: updatedYears, // Merge updated leaveYears
-    };
-
-    console.log("Saving updated leave:", updatedLeaveObject);
-
-    try {
-      await updateLeave(updatedLeaveObject); // Save updated leave to backend
-      console.log("Leave updated successfully");
-    } catch (leavesError) {
-      console.log("leavesError saving leave:", leavesError);
-    }
-
-    setIsRegisterModalOpen(false); // Close modal
-  };
-
-  //   const [leaveYears, setLeaveYears] = useState([])
-  // //adds to the previous entries in arrays for gardien, schools...
-  //       const onLeaveYearsChanged = (e, selectedYear) => {
-  //         if (e.target.checked) {
-  //           // Add the selectedYear to leaveYears if it's checked
-  //           setLeaveYears([...leaveYears, selectedYear]);
-  //         } else {
-  //           // Remove the selectedYear from leaveYears if it's unchecked
-  //           setLeaveYears(leaveYears.filter(year => year !== selectedYear))
-  //         }
-  //       }
 
   const column = [
     {
@@ -244,34 +179,33 @@ const LeavesList = () => {
       name: "Month", // New column for entry number
       selector: (row) => row?.leaveMonth, // Display the index + 1 (for 1-based numbering)
       sortable: false,
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       width: "100px",
     },
     //show this column only if user is a parent and not leave
 
-    isAdmin && {
-      name: "ID",
-      selector: (row) => (
-        <div>
-          <Link to={`/hr/leaves/leaveDetails/${row.id}`}>
-            <div>User {row.id} </div>
-          </Link>
-          <Link to={`/hr/leaves/leaveDetails/${row.id}`}>
-            {" "}
-            {/* the leave details use the user Id and not leaveId */}{" "}
-            {row.leaveId && <div>Emp {row.leaveId} </div>}
-          </Link>
-        </div>
-      ),
+    // isAdmin && {
+    //   name: "ID",
+    //   selector: (row) => (
+    //     <div>
+    //       <Link to={`/hr/leaves/leaveDetails/${row.id}`}>
+    //         <div>User {row.id} </div>
+    //       </Link>
+    //       <Link to={`/hr/leaves/leaveDetails/${row.id}`}>
+    //         {" "}
+    //         {/* the leave details use the user Id and not leaveId */}{" "}
+    //         {row.leaveId && <div>Emp {row.leaveId} </div>}
+    //       </Link>
+    //     </div>
+    //   ),
 
-      sortable: true,
-      width: "240px",
-    },
-    //  (isAdmin)&&{
-    // name: "Leave ID",
-    // selector:row=>( <Link to={`/hr/leaves/leaveDetails/${row.leaveId}`} >{row.leaveId} </Link> ),
-    // sortable:true,
-    // width:'200px'
-    //  },
+    //   sortable: true,
+    //   width: "240px",
+    // },
+
     {
       name: "Approved",
       selector: (row) => row?.leaveIsApproved,
@@ -285,10 +219,10 @@ const LeavesList = () => {
         </span>
       ),
       sortable: true,
-      width: "100px",
+      width: "120px",
     },
     {
-      name: "Paid Leave",
+      name: "Paid",
       selector: (row) => row?.leaveIsPaidLeave,
       cell: (row) => (
         <span>
@@ -300,10 +234,10 @@ const LeavesList = () => {
         </span>
       ),
       sortable: true,
-      width: "110px",
+      width: "90px",
     },
     {
-      name: "Sick Leave",
+      name: "Sick",
       selector: (row) => row?.leaveIsSickLeave,
       cell: (row) => (
         <span>
@@ -315,7 +249,7 @@ const LeavesList = () => {
         </span>
       ),
       sortable: true,
-      width: "110px",
+      width: "90px",
     },
     {
       name: "Employee Name",
@@ -323,8 +257,7 @@ const LeavesList = () => {
         `${row?.leaveEmployee?.userFullName?.userFirstName || ""} ${
           row?.leaveEmployee?.userFullName?.userMiddleName || ""
         } ${row?.leaveEmployee?.userFullName?.userLastName || ""}`,
-      sortable: true,
-      width: "200px",
+
       cell: (row) => (
         <Link to={`/hr/leaves/leaveDetails/${row.id}`}>
           {row?.leaveEmployee?.userFullName?.userFirstName}{" "}
@@ -332,6 +265,12 @@ const LeavesList = () => {
           {row?.leaveEmployee?.userFullName?.userLastName}
         </Link>
       ),
+      sortable: true,
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
+      width: "200px",
     },
 
     {
@@ -369,6 +308,10 @@ const LeavesList = () => {
         }
       },
       sortable: true,
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       removableRows: true,
       width: "130px",
     },
@@ -422,16 +365,14 @@ const LeavesList = () => {
         }
       },
       sortable: true,
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       removableRows: true,
-      width: "150px",
+      width: "160px",
     },
 
-    //  {name: "Worked hours",
-    //   selector:row=>(row?.TBD),
-
-    //   sortable:true,
-    //   width:'100px'
-    // },
     {
       name: "Comment", //means authorised
       selector: (row) => row?.leaveComment,
@@ -442,21 +383,12 @@ const LeavesList = () => {
           {row?.leaveComment}
         </div>
       ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       width: "140px",
     },
-
-    // {
-    //   name: "Documents",
-    //   selector: (row) => (
-    //     <Link to={`/hr/leaves/leaveDocumentsList/${row.id}`}>
-    //       {" "}
-    //       <IoDocumentAttachOutline className="text-slate-800 text-2xl" />
-    //     </Link>
-    //   ),
-    //   sortable: true,
-    //   removableRows: true,
-    //   width: "120px",
-    // },
 
     {
       name: "Actions",
@@ -572,10 +504,10 @@ const LeavesList = () => {
             columns={column}
             data={filteredLeaves}
             pagination
-            selectableRows
+            //selectableRows
             removableRows
             pageSizeControl
-            onSelectedRowsChange={handleRowSelected}
+            // onSelectedRowsChange={handleRowSelected}
             selectableRowsHighlight
             customStyles={{
               headCells: {
@@ -634,13 +566,6 @@ const LeavesList = () => {
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
       />
-      {/* <RegisterModal 
-        isOpen={isRegisterModalOpen}
-        onClose={() => setIsRegisterModalOpen(false)}
-        leaveYears={leaveYears}
-        academicYears={academicYears}
-        onSave={onUpdateLeaveClicked}
-      /> */}
     </>
   );
 

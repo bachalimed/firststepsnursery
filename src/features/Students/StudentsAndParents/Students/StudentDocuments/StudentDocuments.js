@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom"; //because we will get the userId f
 import React from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { useNavigate,useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import Students from "../../../Students";
 import { useState, useEffect } from "react";
 import {
@@ -26,6 +26,7 @@ import {
   selectAcademicYearById,
   selectAllAcademicYears,
 } from "../../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
+
 const StudentDocuments = () => {
   const { id } = useParams(); //pull the id from use params from the url
   //console.log(id,'in the parent before form')
@@ -197,13 +198,32 @@ const StudentDocuments = () => {
 
     try {
       const response = await addStudentDocuments(formData); //.unwrap()
-      if (!response.ok) {
-        throw new Error("Something went wrong!");
-      }
-      const result = await response.json();
-      console.log("Upload successful:", result);
+      console.log("response :", response);
+
+      // if (!response.ok) {
+      //   throw new Error("Something went wrong!");
+      // }
+      // const result = await response.json();
+      //console.log("Upload successful:", result);
+      if (response?.data?.message) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.message) {
+        // Success response
+        triggerBanner(response?.message, "success");
+      } else if (response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (uploadIsError) {
+        // In case of unexpected response format
+        triggerBanner(uploadError?.data?.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      } //////////////
     } catch (error) {
       console.error("Error uploading documents:", error);
+      triggerBanner(error?.data?.message, "error"); //////
     }
   };
   const token = useSelector(selectCurrentToken);
@@ -281,7 +301,6 @@ const StudentDocuments = () => {
       style: {
         justifyContent: "left",
         textAlign: "left",
-        
       },
       width: "170px",
     },

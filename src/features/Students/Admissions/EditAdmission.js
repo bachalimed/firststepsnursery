@@ -33,7 +33,7 @@ const EditAdmission = () => {
     ? Object.values(admToEdit.entities)
     : [];
 
-  if (admissionToEdit.length === 1) {
+  if (admissionToEdit?.length === 1) {
     const admission = admissionToEdit[0][0];
     //console.log(admissionToEdit,'admissionToEdit first')
     //console.log(admission,'admission first')
