@@ -1,15 +1,10 @@
 import { useState, useEffect } from "react";
 import { useUpdateUserMutation } from "../../Admin/UsersManagement/usersApiSlice";
 import { useNavigate } from "react-router-dom";
-import { ROLES } from "../../../config/UserRoles";
-import { ACTIONS } from "../../../config/UserActions";
 import MyProfile from "../MyProfile";
-
 import { PiEyeClosedThin, PiEyeLight } from "react-icons/pi";
-
 import { PWD_REGEX } from "../../../config/REGEX";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
-
 import { useOutletContext } from "react-router-dom";
 
 const ResetPasswordForm = ({ user }) => {
@@ -195,7 +190,7 @@ const ResetPasswordForm = ({ user }) => {
               )}
             </div>
           ))}
-          <div className="flex justify-between items-center">
+          <div className="cancelSavebuttonsDiv">
             <button
               aria-label="cancel update password"
               type="button"

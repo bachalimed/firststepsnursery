@@ -239,7 +239,9 @@ const NewEmployeeDocumentsListForm = () => {
                   className={`formInputText`}
                 >
                   <option value="">Select Year</option>
-                  {filteredAcademicYearsList.map((year) => (
+                  {filteredAcademicYearsList
+                  .filter((year)=>year.title!=="1000")
+                  .map((year) => (
                     <option key={year.id} value={year.title}>
                       {year.title}
                     </option>

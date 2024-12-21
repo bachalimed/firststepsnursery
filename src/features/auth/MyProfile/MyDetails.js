@@ -121,7 +121,7 @@ console.log(user,'user')
           <p className="text-sm font-medium text-gray-700">Active Status</p>
           <p
             className={`text-lg font-semibold ${
-              user?.userIsActive ? "text-green-600" : "text-red-600"
+              user?.userIsActive ? "text-green-800" : "text-red-600"
             }`}
           >
             {user?.userIsActive ? "Active" : "Inactive"}

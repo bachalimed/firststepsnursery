@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { useUpdateUserMutation } from "../../Admin/UsersManagement/usersApiSlice";
-import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { ROLES } from "../../../config/UserRoles";
-import { ACTIONS } from "../../../config/UserActions";
+import { useNavigate ,useOutletContext} from "react-router-dom";
+
 import MyProfile from "../MyProfile";
 import {
+  SHORTCOMMENT_REGEX,
+  EMAIL_REGEX,
   DATE_REGEX,
   USER_REGEX,
   PWD_REGEX,
@@ -16,12 +15,11 @@ import {
 } from "../../../config/REGEX";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 import useAuth from "../../../hooks/useAuth";
-import { useOutletContext } from "react-router-dom";
 
 const EditMyProfileForm = ({ user }) => {
   //user was passed as prop in editUser
   const navigate = useNavigate();
-  const { isAdmin } = useAuth();
+  const { isManager, isAdmin, isDirector } = useAuth();
   //initialise the mutation to be used later
   const [
     updateUser,
@@ -42,15 +40,17 @@ const EditMyProfileForm = ({ user }) => {
     id: user.id,
     username: user.username,
     password: "",
-
+    userRoles: user.userRoles,
+    userAllowedActions: user.userAllowedActions || [],
     userFullName: {
-      userFirstName: user.userFullName.userFirstName,
-      userMiddleName: user.userFullName?.userMiddleName || "",
-      userLastName: user.userFullName.userLastName,
+      userFirstName: user?.userFullName?.userFirstName,
+      userMiddleName: user?.userFullName?.userMiddleName || "",
+      userLastName: user?.userFullName?.userLastName,
     },
     userDob: user.userDob.split("T")[0],
     userSex: user.userSex,
-
+    userIsActive: user.userIsActive,
+    userPhoto: user?.userPhoto || "",
     userAddress: {
       house: user.userAddress.house,
       street: user.userAddress.street,
@@ -63,18 +63,27 @@ const EditMyProfileForm = ({ user }) => {
       secondaryPhone: user.userContact?.secondaryPhone || "",
       email: user.email || "",
     },
+    familyId: user?.familyId,
+    employeeId: user?.employeeId,
   });
   const [validity, setValidity] = useState({
     validUsername: false,
     validPassword: false,
     validFirstName: false,
+    validMiddleName: false,
     validLastName: false,
     validUserDob: false,
     validUserSex: false,
     validHouse: false,
     validStreet: false,
     validCity: false,
+    validArea: false,
     validPrimaryPhone: false,
+    validSecondaryPhone: false,
+    validPostCode: false,
+    validEmail: false,
+    validEmployeeId: false,
+    validFamilyId: false,
   });
   // Validate inputs using regex patterns
   useEffect(() => {
@@ -85,13 +94,35 @@ const EditMyProfileForm = ({ user }) => {
         ? PWD_REGEX.test(formData.password)
         : true, //if not changed, set to true
       validFirstName: NAME_REGEX.test(formData.userFullName.userFirstName),
+      validMiddleName:
+        formData?.userFullName?.userMiddleName !== ""
+          ? NAME_REGEX.test(formData.userFullName.userMiddleName)
+          : true,
       validLastName: NAME_REGEX.test(formData.userFullName.userLastName),
       validUserDob: DATE_REGEX.test(formData.userDob),
       validUserSex: NAME_REGEX.test(formData.userSex),
       validHouse: NAME_REGEX.test(formData.userAddress.house),
       validStreet: NAME_REGEX.test(formData.userAddress.street),
       validCity: NAME_REGEX.test(formData.userAddress.city),
+      validArea:
+        formData?.userAddress?.area === "" ||
+        SHORTCOMMENT_REGEX.test(formData.userAddress.area),
+      validPostCode: SHORTCOMMENT_REGEX.test(formData.userAddress.postCode),
       validPrimaryPhone: PHONE_REGEX.test(formData.userContact.primaryPhone),
+      validEmail:
+        formData.userContact.email === "" ||
+        EMAIL_REGEX.test(formData.userContact.email),
+      validSecondaryPhone:
+        formData.userContact.secondaryPhone === "" ||
+        PHONE_REGEX.test(formData.userContact.secondaryPhone),
+      validEmployeeId: formData.employeeId
+        ? OBJECTID_REGEX.test(formData.employeeId)
+        : true,
+      validFamilyId: formData.familyId
+        ? OBJECTID_REGEX.test(formData.familyId)
+        : true,
+      validUserRoles: formData.userRoles.length > 0, // At least one role should be selected
+      // validUserAllowedActions: formData.userAllowedActions.length > 0, // At least one action should be selected
     }));
   }, [formData]);
 
@@ -100,7 +131,8 @@ const EditMyProfileForm = ({ user }) => {
       setFormData({
         username: "",
         password: undefined,
-
+        userRoles: [],
+        userAllowedActions: [],
         userFullName: {
           userFirstName: "",
           userMiddleName: "",
@@ -108,7 +140,8 @@ const EditMyProfileForm = ({ user }) => {
         },
         userDob: "",
         userSex: "",
-
+        userIsActive: false,
+        userPhoto: "",
         userAddress: {
           house: "",
           street: "",
@@ -121,8 +154,10 @@ const EditMyProfileForm = ({ user }) => {
           secondaryPhone: "",
           email: "",
         },
+        familyId: undefined,
+        employeeId: undefined,
       });
-      navigate(`/myProfile/myDetails/${user?.id}`);
+      navigate(`/myProfile/myDetails/${user?.id}/`);
     }
   }, [isUpdateSuccess, navigate]);
 
@@ -134,26 +169,9 @@ const EditMyProfileForm = ({ user }) => {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
-  const handleRoleChange = (e) => {
-    const { value, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      userRoles: checked
-        ? [...prev.userRoles, value] // Add role
-        : prev.userRoles.filter((role) => role !== value), // Remove role
-    }));
-  };
+ 
 
-  // Handle action change
-  const handleActionChange = (e) => {
-    const { value, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      userAllowedActions: checked
-        ? [...prev.userAllowedActions, value] // Add action
-        : prev.userAllowedActions.filter((action) => action !== value), // Remove action
-    }));
-  };
+ 
 
   //to check if we can save before onsave, if every one is true, and also if we are not loading status
   const canSave = Object.values(validity).every(Boolean) && !isUpdateLoading;
@@ -175,17 +193,16 @@ const EditMyProfileForm = ({ user }) => {
 
     try {
       const response = await updateUser({ formData });
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
         // Error response
         triggerBanner(response?.error?.data?.message, "error");
-      } else if (isUpdateError) {
+      } else if (isUpdateLoading) {
         // In case of unexpected response format
         triggerBanner(updateError?.data?.message, "error");
       } else {
@@ -202,8 +219,9 @@ const EditMyProfileForm = ({ user }) => {
     setShowConfirmation(false);
   };
   const handleCancel = () => {
-    navigate(`/myProfile/myDetails/${user.id}`);
+    navigate(`/myProfile/myDetails/${user?.id}/`);
   };
+  console.log(validity, "validity");
   console.log(formData, "formData");
 
   const content = (
@@ -215,69 +233,60 @@ const EditMyProfileForm = ({ user }) => {
           Edit User{" "}
           {`${formData.userFullName.userFirstName} ${formData.userFullName.userMiddleName} ${formData.userFullName.userLastName}`}
         </h2>
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold">User Information</h3>
-          <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="" className="formInputLabel">
-                  UserName
-                  {!validity.validUsername && (
-                    <span className="text-red-600">*</span>
-                  )}
-                  <input
-                    aria-invalid={!validity.validUsername}
-                    aria-label="username"
-                    placeholder="[6-20 characters]"
-                    type="text"
-                    name="username"
-                    value={formData.username}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        username: e.target.value,
-                      }))
-                    }
-                    className={`mt-1 block w-full border ${
-                      validity.validUsername
-                        ? "border-gray-300"
-                        : "border-red-600"
-                    } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                    required
-                  />
-                </label>
-              </div>
-              <div>
-                <label htmlFor="" className="formInputLabel">
-                  Password
-                  {!validity.validPassword && (
-                    <span className="text-red-600">*</span>
-                  )}
-                  <input
-                    aria-invalid={!validity.validPassword}
-                    aria-label="password"
-                    placeholder="[8-20 characters]"
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        password: e.target.value,
-                      }))
-                    }
-                    className={`mt-1 block w-full border ${
-                      validity.validFirstName
-                        ? "border-gray-300"
-                        : "border-red-600"
-                    } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                    required
-                  />{" "}
-                </label>
-              </div>
-            </div>
-            <div>
-              <label htmlFor="" className="formInputLabel">
+        <div className="formSectionContainer">
+          <h3 className="formSectionTitle">Personal details</h3>
+          <div className="formSection">
+            <div className="formLineDiv">
+              <label htmlFor="username" className="formInputLabel">
+                UserName
+                {!validity.validUsername && (
+                  <span className="text-red-600">*</span>
+                )}
+                <input
+                  aria-invalid={!validity.validUsername}
+                  aria-label="username"
+                  placeholder="[6-20 characters]"
+                  type="text"
+                  id="username"
+                  name="username"
+                  value={formData.username}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      username: e.target.value,
+                    }))
+                  }
+                  className={`formInputText    `}
+                  required
+                  disabled
+                />
+              </label>
+
+              <label htmlFor="password" className="formInputLabel">
+                Password
+                {!validity.validPassword && (
+                  <span className="text-red-600">*</span>
+                )}
+                <input
+                  aria-invalid={!validity.validPassword}
+                  aria-label="password"
+                  placeholder="[8-20 characters]"
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      password: e.target.value,
+                    }))
+                  }
+                  className={`formInputText`}
+                  required
+                />
+              </label>
+
+              <label htmlFor="userFirstName" className="formInputLabel">
                 First Name
                 {!validity.validFirstName && (
                   <span className="text-red-600">*</span>
@@ -287,6 +296,7 @@ const EditMyProfileForm = ({ user }) => {
                   placeholder="[3-25 letters]"
                   aria-label="first name"
                   type="text"
+                  id="userFirstName"
                   name="userFirstName"
                   value={formData.userFullName.userFirstName}
                   onChange={(e) =>
@@ -298,23 +308,24 @@ const EditMyProfileForm = ({ user }) => {
                       },
                     }))
                   }
-                  className={`mt-1 block w-full border ${
-                    validity.validFirstName
-                      ? "border-gray-300"
-                      : "border-red-600"
-                  } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                  className={`formInputText`}
                   required
+                  disabled
                 />{" "}
               </label>
-            </div>
-            {/* Middle Name */}
-            <div>
-              <label htmlFor="" className="formInputLabel">
+              {/* Middle Name */}
+              <label htmlFor="userMiddleName" className="formInputLabel">
                 Middle Name
+                {!validity?.validMiddleName &&
+                  formData.userFullName.userMiddleName !== "" && (
+                    <span className="text-red-600 ">[3-25] letters</span>
+                  )}
                 <input
+                  disabled
                   placeholder="[3-25 letters]"
                   aria-label="middle name"
                   type="text"
+                  id="userMiddleName"
                   name="userMiddleName"
                   value={formData.userFullName.userMiddleName}
                   onChange={(e) =>
@@ -326,23 +337,22 @@ const EditMyProfileForm = ({ user }) => {
                       },
                     }))
                   }
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />{" "}
+                  className={`formInputText`}
+                />
               </label>
-            </div>
 
-            {/* Last Name */}
-            <div>
-              <label htmlFor="" className="formInputLabel">
+              {/* Last Name */}
+              <label htmlFor="userLastName" className="formInputLabel">
                 Last Name{" "}
                 {!validity.validLastName && (
                   <span className="text-red-600">*</span>
                 )}
                 <input
                   aria-invalid={!validity.validLastName}
-                  aria-label="last name"
                   placeholder="[3-25 letters]"
+                  aria-label="last name"
                   type="text"
+                  id="userLastName"
                   name="userLastName"
                   value={formData.userFullName.userLastName}
                   onChange={(e) =>
@@ -354,19 +364,14 @@ const EditMyProfileForm = ({ user }) => {
                       },
                     }))
                   }
-                  className={`mt-1 block w-full border ${
-                    validity.validLastName
-                      ? "border-gray-300"
-                      : "border-red-600"
-                  } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                  className={`formInputText`}
                   required
+                  disabled
                 />{" "}
               </label>
-            </div>
 
-            {/* Date of Birth */}
-            <div>
-              <label htmlFor="" className="formInputLabel" htmlFor="userDob">
+              {/* Date of Birth */}
+              <label className="formInputLabel" htmlFor="userDob">
                 Date of Birth{" "}
                 {!validity.validUserDob && (
                   <span className="text-red-600">*</span>
@@ -376,175 +381,91 @@ const EditMyProfileForm = ({ user }) => {
                   placeholder="[dd/mm/yyyy]"
                   aria-label="userDob"
                   type="date"
+                  id="userDob"
                   name="userDob"
                   value={formData.userDob}
                   onChange={handleInputChange}
-                  className={`mt-1 block w-full border ${
-                    validity.validUserDob ? "border-gray-300" : "border-red-600"
-                  } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                  className={`formInputText`}
                   required
+                  disabled
                 />
               </label>
+
+              {/* Sex Selection */}
             </div>
+            <div className="formLineDiv">
+              {/* Sex Selection */}
 
-            {/* Sex Selection */}
-
-            <div>
-              <label htmlFor="" className="formInputLabel">
+              <label className="formInputLabel">
                 Sex{" "}
                 {!validity.validUserSex && (
                   <span className="text-red-600">*</span>
                 )}
-                <div className="flex items-center space-x-4 mt-1">
-                  <div className="flex items-center">
-                    <label htmlFor="" className="ml-2 text-sm text-gray-700">
-                      <input
-                        type="checkbox"
-                        name="userSex"
-                        value="Male"
-                        checked={formData.userSex === "Male"}
-                        onChange={(e) => {
-                          setFormData((prev) => ({
-                            ...prev,
-                            userSex: e.target.checked
-                              ? "Male"
-                              : formData.userSex === "Male"
-                              ? ""
-                              : formData.userSex,
-                          }));
-                        }}
-                        className={`h-4 w-4 ${
-                          validity.validUserSex
-                            ? "border-gray-300 rounded"
-                            : "border-red-600 rounded"
-                        } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                      />
-                      Male
-                    </label>
-                  </div>
+                <div className="formCheckboxItemsDiv">
+                  <label htmlFor="male" className="formCheckboxChoice">
+                    <input
+                      disabled
+                      type="checkbox"
+                      id="male"
+                      value="Male"
+                      checked={formData.userSex === "Male"}
+                      onChange={(e) => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          userSex: e.target.checked
+                            ? "Male"
+                            : formData.userSex === "Male"
+                            ? ""
+                            : formData.userSex,
+                        }));
+                      }}
+                      className="formCheckbox"
+                    />
+                    Male
+                  </label>
 
-                  <div className="flex items-center">
-                    <label htmlFor="" className="ml-2 text-sm text-gray-700">
-                      <input
-                        type="checkbox"
-                        name="userSex"
-                        value="Female"
-                        checked={formData.userSex === "Female"}
-                        onChange={(e) => {
-                          setFormData((prev) => ({
-                            ...prev,
-                            userSex: e.target.checked
-                              ? "Female"
-                              : formData.userSex === "Female"
-                              ? ""
-                              : formData.userSex,
-                          }));
-                        }}
-                        className="h-4 w-4 border-gray-300 rounded focus:ring-indigo-500"
-                      />
-                      Female
-                    </label>
-                  </div>
-                </div>{" "}
+                  <label htmlFor="female" className="formCheckboxChoice">
+                    <input
+                      disabled
+                      type="checkbox"
+                      id="female"
+                      value="Female"
+                      checked={formData.userSex === "Female"}
+                      onChange={(e) => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          userSex: e.target.checked
+                            ? "Female"
+                            : formData.userSex === "Female"
+                            ? ""
+                            : formData.userSex,
+                        }));
+                      }}
+                      className="formCheckbox"
+                    />
+                    Female
+                  </label>
+                </div>
               </label>
             </div>
           </div>
-        </div>
-        <h3 className="text-lg font-semibold">User Contact</h3>
-        <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
-          {/* Contact Information */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="" className="formInputLabel">
-                Primary Phone{" "}
-                {!validity.validPrimaryPhone && (
-                  <span className="text-red-600">*</span>
-                )}
-                <input
-                  aria-invalid={!validity.validPrimaryPhone}
-                  placeholder="[6-15 digits]"
-                  aria-label="primary phone number"
-                  type="text"
-                  name="primaryPhone"
-                  value={formData.userContact.primaryPhone}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      userContact: {
-                        ...prev.userContact,
-                        primaryPhone: e.target.value,
-                      },
-                    }))
-                  }
-                  className={`mt-1 block w-full border ${
-                    validity.validPrimaryPhone
-                      ? "border-gray-300"
-                      : "border-red-600"
-                  } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-                  required
-                />
-              </label>
-            </div>
 
-            <div>
-              <label htmlFor="" className="formInputLabel">
-                Secondary Phone
-                <input
-                  placeholder="[6-15 digits]"
-                  aria-label="secondary phone number"
-                  type="text"
-                  name="secondaryPhone"
-                  value={formData.userContact.secondaryPhone}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      userContact: {
-                        ...prev.userContact,
-                        secondaryPhone: e.target.value,
-                      },
-                    }))
-                  }
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />{" "}
-              </label>
-            </div>
-          </div>
-          {/* Email */}
-          <div>
-            <label htmlFor="" className="formInputLabel">
-              Email
-              <input
-                placeholder="[email@address.com]"
-                aria-label="email"
-                type="email"
-                name="email"
-                value={formData.userContact.email}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    userContact: {
-                      ...prev.userContact,
-                      email: e.target.value,
-                    },
-                  }))
-                }
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              />{" "}
-            </label>
-          </div>
+          <h3 className="formSectionTitle">Contact details</h3>
+          <div className="formSection">
+            {/* Contact Information */}
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="" className="formInputLabel">
+            <div className="formLineDiv">
+              {/* Address Information */}
+              <label htmlFor="house" className="formInputLabel">
                 House{" "}
                 {!validity.validHouse && (
                   <span className="text-red-600">*</span>
                 )}
                 <input
+                  aria-label="house"
                   aria-invalid={!validity.validHouse}
-                  placeholder="[3-25 letters]"
-                  aria-label="house number"
                   type="text"
+                  id="house"
                   name="house"
                   value={formData.userAddress.house}
                   onChange={(e) =>
@@ -556,26 +477,23 @@ const EditMyProfileForm = ({ user }) => {
                       },
                     }))
                   }
-                  className={`mt-1 block w-full border ${
-                    validity.validHouse ? "border-gray-300" : "border-red-600"
-                  } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                  className={`formInputText`}
+                  placeholder="[3-25] letters"
                 />{" "}
               </label>
-            </div>
 
-            <div>
-              <label htmlFor="" className="formInputLabel">
+              <label htmlFor="street" className="formInputLabel">
                 Street{" "}
                 {!validity.validStreet && (
                   <span className="text-red-600">*</span>
                 )}
                 <input
+                  aria-label="street"
                   aria-invalid={!validity.validStreet}
-                  aria-label="street name"
-                  placeholder="[3-25 letters]"
                   type="text"
+                  id="street"
                   name="street"
-                  value={formData.userAddress.street}
+                  value={formData.street}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
@@ -585,67 +503,45 @@ const EditMyProfileForm = ({ user }) => {
                       },
                     }))
                   }
-                  className={`mt-1 block w-full border ${
-                    validity.validStreet ? "border-gray-300" : "border-red-600"
-                  } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                  className={`formInputText`}
+                  placeholder="[3-25] letters"
                 />{" "}
               </label>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2">
-                <label htmlFor="" className="formInputLabel">
-                  Area
-                  <input
-                    placeholder="[3-25 letters]"
-                    aria-label="area"
-                    type="text"
-                    name="area"
-                    value={formData.userAddress.area}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        userAddress: {
-                          ...prev.userAddress,
-                          area: e.target.value,
-                        },
-                      }))
-                    }
-                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  />{" "}
-                </label>
-              </div>
-              <div>
-                <label htmlFor="" className="formInputLabel">
-                  Post Code
-                  <input
-                    placeholder="[3-25 letters]"
-                    aria-label="post code"
-                    type="text"
-                    name="postCode"
-                    value={formData.userAddress.postCode}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        userAddress: {
-                          ...prev.userAddress,
-                          postCode: e.target.value,
-                        },
-                      }))
-                    }
-                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  />{" "}
-                </label>
-              </div>
-            </div>
+            <div className="formLineDiv">
+              <label htmlFor="area" className="formInputLabel">
+                Area{" "}
+                {!validity?.validArea && formData?.userContact.area !== "" && (
+                  <span className="text-red-600 ">[0-15] letters</span>
+                )}
+                <input
+                  aria-label="area"
+                  type="text"
+                  id="area"
+                  name="area"
+                  value={formData.userAddress.area}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      userAddress: {
+                        ...prev.userAddress,
+                        area: e.target.value,
+                      },
+                    }))
+                  }
+                  className={`formInputText`}
+                  placeholder="[0-20] letters"
+                />{" "}
+              </label>
 
-            <div>
-              <label htmlFor="" className="formInputLabel">
+              <label htmlFor="city" className="formInputLabel">
                 City{" "}
                 {!validity.validCity && <span className="text-red-600">*</span>}
                 <input
+                  aria-label="city"
                   aria-invalid={!validity.validCity}
-                  placeholder="[3-25 letters]"
                   type="text"
+                  id="city"
                   name="city"
                   value={formData.userAddress.city}
                   onChange={(e) =>
@@ -657,133 +553,140 @@ const EditMyProfileForm = ({ user }) => {
                       },
                     }))
                   }
-                  className={`mt-1 block w-full border ${
-                    validity.validCity ? "border-gray-300" : "border-red-600"
-                  } rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
+                  className={`formInputText`}
+                  placeholder="[3-25] letters"
+                />{" "}
+              </label>
+            </div>
+            <div className="formLineDiv">
+              <label htmlFor="postCode" className="formInputLabel">
+                Post Code{" "}
+                {!validity?.validPostCode &&
+                  formData?.userContact.postCode !== "" && (
+                    <span className="text-red-600 ">[0-15] characters</span>
+                  )}
+                <input
+                  aria-label="postCode"
+                  type="text"
+                  id="postCode"
+                  name="postCode"
+                  value={formData.userAddress.postCode}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      userAddress: {
+                        ...prev.userAddress,
+                        postCode: e.target.value,
+                      },
+                    }))
+                  }
+                  className={`formInputText`}
+                  placeholder="[0-15] characters"
+                />{" "}
+              </label>
+
+              {/* Email */}
+
+              <label htmlFor="email" className="formInputLabel">
+                Email{" "}
+                {!validity?.validEmail &&
+                  formData?.userContact.email !== "" && (
+                    <span className="text-red-600 ">[6-25] characters</span>
+                  )}
+                <input
+                  aria-label="email"
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.userContact.email}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      userContact: {
+                        ...prev.userContact,
+                        email: e.target.value,
+                      },
+                    }))
+                  }
+                  className={`formInputText`}
+                  placeholder="[6-25] characters"
+                />{" "}
+              </label>
+            </div>
+            <div className="formLineDiv">
+              <label htmlFor="primaryPhone" className="formInputLabel">
+                Primary Phone{" "}
+                {!validity.validPrimaryPhone && (
+                  <span className="text-red-600">*</span>
+                )}
+                <input
+                  aria-label="primaryPhone"
+                  aria-invalid={!validity.validPrimaryPhone}
+                  type="text"
+                  id="primaryPhone"
+                  name="primaryPhone"
+                  value={formData.userContact.primaryPhone}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      userContact: {
+                        ...prev.userContact,
+                        primaryPhone: e.target.value,
+                      },
+                    }))
+                  }
+                  className={`formInputText`}
+                  placeholder="[6-15] digits"
+                  required
+                />{" "}
+              </label>
+
+              <label htmlFor="secondaryPhone" className="formInputLabel">
+                Secondary Phone
+                {!validity?.validSecondaryPhone &&
+                  formData?.userContact.secondaryPhone !== "" && (
+                    <span className="text-red-600 ">[6-15] digits</span>
+                  )}
+                <input
+                  aria-invalid={!validity.validSecondaryPhone}
+                  aria-label="secondaryPhone"
+                  type="text"
+                  id="secondaryPhone"
+                  name="secondaryPhone"
+                  value={formData?.userContact?.secondaryPhone}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      userContact: {
+                        ...prev.userContact,
+                        secondaryPhone: e.target.value,
+                      },
+                    }))
+                  }
+                  className={`formInputText`}
+                  placeholder="[6-15] digits"
                 />{" "}
               </label>
             </div>
           </div>
         </div>
 
-        {isAdmin && (
-          <div className="border border-gray-200 p-4 rounded-md shadow-sm space-y-2">
-            {/* Family ID Input */}
-            <div>
-              <label htmlFor="" className="formInputLabel">
-                Family ID
-                <input
-                  aria-label="family id"
-                  placeholder="[24 characters]"
-                  type="text"
-                  name="familyId"
-                  value={formData.familyId}
-                  onChange={handleInputChange}
-                  className="form-input mt-1 block w-full"
-                />{" "}
-              </label>
-            </div>
-
-            {/* Employee ID Input */}
-            <div>
-              <label htmlFor="" className="formInputLabel">
-                Employee ID
-                <input
-                  aria-label="employee id"
-                  placeholder="[24 characters]"
-                  type="text"
-                  name="employeeId"
-                  value={formData.employeeId}
-                  onChange={handleInputChange}
-                  className="form-input mt-1 block w-full"
-                />{" "}
-              </label>
-            </div>
-
-            {/* User Is Active Checkbox */}
-            <div>
-              <label htmlFor="" className="formInputLabel">
-                User Is Active
-                <input
-                  aria-label="user is active"
-                  type="checkbox"
-                  name="userIsActive"
-                  checked={formData.userIsActive}
-                  onChange={handleInputChange}
-                  className="h-4 w-4"
-                />
-              </label>
-            </div>
-            {/* User role selection */}
-            <div>
-              <label htmlFor="" className="formInputLabel">
-                User Roles
-                <div className="flex flex-wrap">
-                  {Object.keys(ROLES).map((role) => (
-                    <div key={role} className="mr-4">
-                      <label htmlFor="" className="flex items-center">
-                        <input
-                          aria-label="user roles"
-                          type="checkbox"
-                          name="userRoles"
-                          value={role}
-                          checked={formData.userRoles?.includes(role)}
-                          onChange={handleRoleChange}
-                          className="h-4 w-4"
-                        />
-                        <span className="ml-2">{role}</span>
-                      </label>
-                    </div>
-                  ))}
-                </div>{" "}
-              </label>
-            </div>
-
-            {/* User action selection */}
-            <div>
-              <label htmlFor="" className="formInputLabel">
-                Allowed Actions
-                <div className="flex flex-wrap">
-                  {Object.keys(ACTIONS).map((action) => (
-                    <div key={action} className="mr-4">
-                      <label htmlFor="" className="flex items-center">
-                        <input
-                          aria-label="allowed actions"
-                          type="checkbox"
-                          name="userAllowedActions"
-                          value={action}
-                          checked={formData.userAllowedActions?.includes(
-                            action
-                          )}
-                          onChange={handleActionChange}
-                          className="h-4 w-4"
-                        />
-                        <span className="ml-2">{action}</span>
-                      </label>
-                    </div>
-                  ))}
-                </div>{" "}
-              </label>
-            </div>
-          </div>
-        )}
         <div className="cancelSavebuttonsDiv">
           <button
-            aria-label="cancel edit my profile"
+            aria-label="cancel edit user"
             className="cancel-button"
             onClick={handleCancel}
           >
             Cancel
           </button>
           <button
-            aria-label="submit edit my profile"
+            aria-label="submit user"
             className="save-button"
             type="submit"
-            title="Save"
             onClick={onSaveUserClicked}
             disabled={!canSave || isUpdateLoading}
           >
-            Save Changes
+            Save
           </button>
         </div>
       </form>

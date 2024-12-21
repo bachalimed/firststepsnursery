@@ -31,8 +31,7 @@ const ClassroomsList = () => {
     isError: isClassroomsError,
     error: classroomsError,
   } = useGetClassroomsQuery("classroomsList") || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
-  //we do not want to import from state but from DB
-  const [selectedRows, setSelectedRows] = useState([]);
+ 
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idClassroomToDelete, setIdClassroomToDelete] = useState(null); // State to track which document to delete
@@ -44,7 +43,7 @@ const ClassroomsList = () => {
       isLoading: isDelLoading,
       isSuccess: isDelSuccess,
       isError: isDelError,
-      error: delerror,
+      error: delError,
     },
   ] = useDeleteClassroomMutation();
 
@@ -60,24 +59,24 @@ const ClassroomsList = () => {
     try {
       const response = await deleteClassroom({ id: idClassroomToDelete });
       setIsDeleteModalOpen(false); // Close the modal
-      if (response.data && response.data.message) {
+      if (response?.message) {
         // Success response
-        triggerBanner(response.data.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      } else if (response?.data?.message) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isDelError) {
+        // In case of unexpected response format
+        triggerBanner(delError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to delete classroom. Please try again.", "error");
-
-      console.error("Error deleting classroom:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
 
@@ -87,21 +86,10 @@ const ClassroomsList = () => {
     setIdClassroomToDelete(null);
   };
 
-  // Handler for selecting rows
-  const handleRowSelected = (state) => {
-    setSelectedRows(state.selectedRows);
-    //console.log('selectedRows', selectedRows)
-  };
-
   //handle delete
 
-  const handleDelete = () => {
-    console.log("deleting");
-  };
-
-  const { canEdit, isAdmin,isManager, canDelete, canCreate, status2 } = useAuth();
-  //console.log(classroomsData)
-  //const [classrooms, setClassroomsState] = useState([])
+   const { canEdit, isAdmin, isManager, canDelete, canCreate, status2 } =
+    useAuth();
 
   let classroomsList = [];
   if (isClassroomsSuccess) {
@@ -109,10 +97,7 @@ const ClassroomsList = () => {
     //transform into an array
     const { entities } = classrooms;
     classroomsList = Object.values(entities);
-    //setClassroomsState(classroomsArray)
-
-    //dispatch(setClassrooms(entities)); // Dispatch to state  using setALL which will create the ids and entities automatically
-    // console.log('classrooms',classrooms)
+  
   }
 
   //define the content to be conditionally rendered
@@ -152,7 +137,6 @@ const ClassroomsList = () => {
       style: {
         justifyContent: "left",
         textAlign: "left",
-        
       },
       width: "140px",
     },
@@ -175,7 +159,7 @@ const ClassroomsList = () => {
         <div className="space-x-1">
           {canEdit ? (
             <button
-            hidden={!isAdmin||!isManager}
+              hidden={!isAdmin || !isManager}
               aria-label="edit classroom"
               className="text-amber-300"
               onClick={() =>
@@ -221,69 +205,69 @@ const ClassroomsList = () => {
         <LoadingStateIcon />
       </>
     );
+  if (isClassroomsSuccess)
+    content = (
+      <>
+        <AcademicsSet />
 
-  content = (
-    <>
-      <AcademicsSet />
+        <div className="dataTableContainer">
+          <div>
+            <DataTable
+              title={tableHeader}
+              columns={column}
+              data={classroomsList}
+              pagination
+              // selectableRows
+              removableRows
+              pageSizeControl
+              customStyles={{
+                headCells: {
+                  style: {
+                    // Apply Tailwind style via a class-like syntax
+                    justifyContent: "center", // Align headers to the center
+                    textAlign: "center", // Center header text
+                    color: "black",
+                    fontSize: "14px", // Increase font size for header text
+                  },
+                },
 
-      <div className="dataTableContainer">
-        <div>
-          <DataTable
-            title={tableHeader}
-            columns={column}
-            data={classroomsList}
-            pagination
-           // selectableRows
-            removableRows
-            pageSizeControl
-            customStyles={{
-              headCells: {
-                style: {
-                  // Apply Tailwind style via a class-like syntax
-                  justifyContent: "center", // Align headers to the center
-                  textAlign: "center", // Center header text
-                  color: "black",
-                  fontSize: "14px", // Increase font size for header text
+                cells: {
+                  style: {
+                    justifyContent: "center", // Center cell content
+                    textAlign: "center",
+                    color: "black",
+                    fontSize: "14px", // Increase font size for cell text
+                  },
                 },
-              },
-
-              cells: {
-                style: {
-                  justifyContent: "center", // Center cell content
-                  textAlign: "center",
-                  color: "black",
-                  fontSize: "14px", // Increase font size for cell text
+                pagination: {
+                  style: {
+                    display: "flex",
+                    justifyContent: "center", // Center the pagination control
+                    alignItems: "center",
+                    padding: "10px 0", // Optional: Add padding for spacing
+                  },
                 },
-              },
-              pagination: {
-                style: {
-                  display: "flex",
-                  justifyContent: "center", // Center the pagination control
-                  alignItems: "center",
-                  padding: "10px 0", // Optional: Add padding for spacing
-                },
-              },
-            }}
-          ></DataTable>
-        </div>
-        {/* <div className="cancelSavebuttonsDiv"> */}
+              }}
+            ></DataTable>
+          </div>
+          {/* <div className="cancelSavebuttonsDiv"> */}
           <button
             className="add-button"
             onClick={() => Navigate("/settings/academicsSet/newClassroom")}
-            disabled={selectedRows.length !== 0} // Disable if no rows are selected
+           
             hidden={!canCreate}
           >
             New Classroom
           </button>
-        {/* </div> */}
-      </div>
-      <DeletionConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
-      />
-    </>
-  );
+          {/* </div> */}
+        </div>
+        <DeletionConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+        />
+      </>
+    );
   return content;
 };
 export default ClassroomsList;

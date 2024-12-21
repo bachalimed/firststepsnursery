@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { setAttendedSchools } from "./attendedSchoolsSlice";
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
 import useAuth from "../../../../hooks/useAuth";
 import { useOutletContext } from "react-router-dom";
@@ -12,13 +11,11 @@ import {
   useGetAttendedSchoolsQuery,
   useDeleteAttendedSchoolMutation,
 } from "./attendedSchoolsApiSlice";
-import { useSelector, useDispatch } from "react-redux";
 import AcademicsSet from "../../AcademicsSet";
 
 const AttendedSchoolsList = () => {
   const Navigate = useNavigate();
-  const dispatch = useDispatch();
-  //get several things from the query
+   //get several things from the query
   const {
     data: attendedSchoolsData, //the data is renamed attendedSchoolsData
     isLoading: isSchoolsLoading,
@@ -27,7 +24,7 @@ const AttendedSchoolsList = () => {
     error: schoolsError,
   } = useGetAttendedSchoolsQuery({ endpointName: "attendedSchoolsList" }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
   //we do not want to import from state but from DB
-  const [selectedRows, setSelectedRows] = useState([]);
+  
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idAttendedSchoolToDelete, setIdAttendedSchoolToDelete] =
@@ -86,25 +83,9 @@ const AttendedSchoolsList = () => {
 
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
   //console.log(attendedSchoolsData)
-  const [attendedSchools, setAttendedSchoolsState] = useState([]);
-  useEffect(() => {
-    if (isSchoolsSuccess) {
-      //console.log('attendedSchoolsData',attendedSchoolsData)
-      //transform into an array
-      const { entities } = attendedSchoolsData;
-      const attendedSchoolsArray = Object.values(entities);
-      setAttendedSchoolsState(attendedSchoolsArray);
-      //console.log('academic years from list call', attendedSchools)
-      dispatch(setAttendedSchools(entities)); // Dispatch to state  using setALL which will create the ids and entities automatically
-      //console.log('attendedSchools',attendedSchools)
-    }
-  }, [
-    isSchoolsSuccess,
-    attendedSchoolsData,
-    isSchoolsError,
-    schoolsError,
-    dispatch,
-  ]);
+  
+  let attendedSchools = isSchoolsSuccess ? Object.values(attendedSchoolsData?.entities) : [];
+  
 
   //define the content to be conditionally rendered
   const column = [
@@ -209,7 +190,7 @@ const AttendedSchoolsList = () => {
         <LoadingStateIcon />
       </>
     );
-
+    if (isSchoolsSuccess)
  content =  (
     <>
       <AcademicsSet />
@@ -258,7 +239,7 @@ const AttendedSchoolsList = () => {
           <button
             className="add-button"
             onClick={() => Navigate("/settings/academicsSet/newSchool")}
-            disabled={selectedRows.length !== 0} // Disable if no rows are selected
+           
             hidden={!canCreate}
           >
             New School

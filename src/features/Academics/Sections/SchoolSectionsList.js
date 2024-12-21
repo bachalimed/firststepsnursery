@@ -50,15 +50,6 @@ const SchoolSectionsList = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-  // useEffect(() => {
-  //     if (selectedAcademicYearId) {
-  //         // Fetch the sections for the selected academic year, if required
-  //         console.log('Fetch sections for academic year Id:', selectedAcademicYearId);
-  //     }
-  // }, [selectedAcademicYearId]);
-
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
-  const [idSectionToDelete, setIdSectionToDelete] = useState(null); // State to track which document to delete
 
   //console.log("Fetch sections for academic year:", selectedAcademicYear);
   const {
@@ -80,11 +71,6 @@ const SchoolSectionsList = () => {
     }
   );
 
-  //const allSections = useSelector(selectAllSections)// not the same cache list we re looking for this is from getsections query and not getsectionbyyear wuery
-
-  //console.log('allSections from the state by year',allSections)
-  // State to hold selected rows
-  const [selectedRows, setSelectedRows] = useState([]);
   //state to hold the search query
   const [searchQuery, setSearchQuery] = useState("");
   //const [filteredSchoolSections, setFilteredSchoolSections] = useState([])
@@ -155,21 +141,6 @@ const SchoolSectionsList = () => {
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
-  // Handler for selecting rows
-  const handleRowSelected = (state) => {
-    setSelectedRows(state.selectedRows);
-    //console.log('selectedRows', selectedRows)
-  };
-
-  // Handler for duplicating selected rows,
-  const handleDuplicateSelected = () => {
-    //console.log('Selected Rows to duplicate:', selectedRows);
-    // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
-    //ensure only one can be selected: the last one
-    const toDuplicate = selectedRows[-1];
-
-    setSelectedRows([]); // Clear selection after delete
-  };
 
   const column = [
     {
@@ -198,6 +169,12 @@ const SchoolSectionsList = () => {
       width: "150px",
     },
     {
+      name: "Count",
+      selector: (row) => row?.students.length,
+      sortable: true,
+      width: "90px",
+    },
+    {
       name: "Students",
       selector: (row) => (
         <div>
@@ -210,15 +187,14 @@ const SchoolSectionsList = () => {
           ))}
         </div>
       ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       sortable: true,
       width: "220px",
     },
-    {
-      name: "Count",
-      selector: (row) => row?.students.length,
-      sortable: true,
-      width: "80px",
-    },
+
     {
       name: "Section Label",
       selector: (row) => (
@@ -228,8 +204,12 @@ const SchoolSectionsList = () => {
           ))}
         </div>
       ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       sortable: true,
-      width: "120px",
+      width: "160px",
     },
     {
       name: "Classroom",
@@ -242,6 +222,10 @@ const SchoolSectionsList = () => {
           ))}
         </div>
       ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       sortable: true,
       width: "180px",
     },
@@ -278,8 +262,8 @@ const SchoolSectionsList = () => {
   // Custom header to include the row count
   const tableHeader = (
     <h2>
-      Users List:
-      <span> {filteredSchoolSections.length} users</span>
+      Sections list:
+      <span> {filteredSchoolSections?.length} sections</span>
     </h2>
   );
   let content;
@@ -290,89 +274,90 @@ const SchoolSectionsList = () => {
         <LoadingStateIcon />
       </>
     );
-
-  content = (
-    <>
-      <Academics />
-      <div className="flex space-x-2 items-center ml-3">
-        <div className="relative h-10 mr-2 ">
-          <HiOutlineSearch
-            fontSize={20}
-            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-            aria-label="search sections"
-          />
-          <input
-            aria-label="search sections"
-            type="text"
-            value={searchQuery}
-            onChange={handleSearch}
-            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
-          />{" "}
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => handleSearch({ target: { value: "" } })} // Clear search
-              className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
-              aria-label="clear search"
-            >
-              &times;
-            </button>
-          )}
+  if (isSectionsSuccess)
+    content = (
+      <>
+        <Academics />
+        <div className="flex space-x-2 items-center ml-3">
+          <div className="relative h-10 mr-2 ">
+            <HiOutlineSearch
+              fontSize={20}
+              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+              aria-label="search sections"
+            />
+            <input
+              aria-label="search sections"
+              type="text"
+              value={searchQuery}
+              onChange={handleSearch}
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
+            />{" "}
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => handleSearch({ target: { value: "" } })} // Clear search
+                className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+                aria-label="clear search"
+              >
+                &times;
+              </button>
+            )}
+          </div>
+          <button
+          aria-label="current section filter"
+            onClick={() => setCurrentSectionsFilter((prev) => !prev)}
+            className="text-sm h-8 border border-gray-300  px-4"
+          >
+            {currentSectionsFilter
+              ? "Current Sections Shown"
+              : "All Sections Shown"}
+          </button>
         </div>
-        <button
-          onClick={() => setCurrentSectionsFilter((prev) => !prev)}
-          className="ml-2 p-2 bg-gray-200 rounded hover:text-blue-600"
-        >
-          {currentSectionsFilter
-            ? "Current Sections Shown"
-            : "All Sections Shown"}
-        </button>
-      </div>
-      <div className="dataTableContainer">
-        <div>
-          <DataTable
-            title={tableHeader}
-            columns={column}
-            data={filteredSchoolSections}
-            pagination
-            selectableRows
-            removableRows
-            pageSizeControl
-            onSelectedRowsChange={handleRowSelected}
-            selectableRowsHighlight
-            customStyles={{
-              headCells: {
-                style: {
-                  // Apply Tailwind style via a class-like syntax
-                  justifyContent: "center", // Align headers to the center
-                  textAlign: "center", // Center header text
-                  color: "black",
-                  fontSize: "14px", // Increase font size for header text
+        <div className="dataTableContainer">
+          <div>
+            <DataTable
+              title={tableHeader}
+              columns={column}
+              data={filteredSchoolSections}
+              pagination
+              //selectableRows
+              removableRows
+              pageSizeControl
+              // onSelectedRowsChange={handleRowSelected}
+              selectableRowsHighlight
+              customStyles={{
+                headCells: {
+                  style: {
+                    // Apply Tailwind style via a class-like syntax
+                    justifyContent: "center", // Align headers to the center
+                    textAlign: "center", // Center header text
+                    color: "black",
+                    fontSize: "14px", // Increase font size for header text
+                  },
                 },
-              },
 
-              cells: {
-                style: {
-                  justifyContent: "center", // Center cell content
-                  textAlign: "center",
-                  color: "black",
-                  fontSize: "14px", // Increase font size for cell text
+                cells: {
+                  style: {
+                    justifyContent: "center", // Center cell content
+                    textAlign: "center",
+                    color: "black",
+                    fontSize: "14px", // Increase font size for cell text
+                  },
                 },
-              },
-              pagination: {
-                style: {
-                  display: "flex",
-                  justifyContent: "center", // Center the pagination control
-                  alignItems: "center",
-                  padding: "10px 0", // Optional: Add padding for spacing
+                pagination: {
+                  style: {
+                    display: "flex",
+                    justifyContent: "center", // Center the pagination control
+                    alignItems: "center",
+                    padding: "10px 0", // Optional: Add padding for spacing
+                  },
                 },
-              },
-            }}
-          ></DataTable>
+              }}
+            ></DataTable>
+          </div>
         </div>
-      </div>
-    </>
-  );
+      </>
+    );
 
   return content;
 };

@@ -1,5 +1,4 @@
 import {
-  useUpdateSectionMutation,
   useGetSectionsByYearQuery,
   useDeleteSectionMutation,
 } from "./sectionsApiSlice";
@@ -10,7 +9,6 @@ import {
   selectAllAcademicYears,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
-import RegisterModal from "./RegisterModal";
 import Academics from "../Academics";
 import DataTable from "react-data-table-component";
 import { useOutletContext } from "react-router-dom";
@@ -19,7 +17,6 @@ import { useState } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import useAuth from "../../../hooks/useAuth";
@@ -118,56 +115,7 @@ const NurserySectionsList = () => {
     setSearchQuery(e.target.value);
   };
 
-  const [
-    updateSection,
-    {
-      isLoading: isUpdateLoading,
-      isSuccess: isUpdateSuccess,
-      isError: isUpdateError,
-      error: updateError,
-    },
-  ] = useUpdateSectionMutation(); //it will not execute the mutation nownow but when called
-  const [sectionObject, setSectionObject] = useState("");
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
-
-  //console.log(academicYears)
-  // Handler for registering selected row,
-  const [sectionYears, setSectionYears] = useState([]);
   const { triggerBanner } = useOutletContext(); // Access banner trigger
-  // This is called when saving the updated section years from the modal
-  const onUpdateSectionClicked = async (updatedYears) => {
-    //console.log("Updated sectionYears from modal:", updatedYears);
-
-    const updatedSectionObject = {
-      ...sectionObject,
-      sectionYears: updatedYears, // Merge updated sectionYears
-    };
-
-    //console.log("Saving updated section:", updatedSectionObject);
-
-    try {
-      const response = await updateSection(updatedSectionObject); // Save updated section to backend
-      if (response?.message) {
-        // Success response
-        triggerBanner(response?.message, "success");
-      } else if (response?.data?.message) {
-        // Success response
-        triggerBanner(response?.data?.message, "success");
-      } else if (response?.error?.data?.message) {
-        // Error response
-        triggerBanner(response?.error?.data?.message, "error");
-      } else if (isUpdateError) {
-        // In case of unexpected response format
-        triggerBanner(updateError?.data?.message, "error");
-      } else {
-        // In case of unexpected response format
-        triggerBanner("Unexpected response from server.", "error");
-      }
-    } catch (error) {
-      triggerBanner(error?.data?.message, "error");
-    }
-    setIsRegisterModalOpen(false); // Close modal
-  };
 
   //initialising the delete Mutation
   const [
@@ -412,125 +360,115 @@ const NurserySectionsList = () => {
         <LoadingStateIcon />
       </>
     );
+  if (isSectionsSuccess)
+    content = (
+      <>
+        <Academics />
+        <div className="flex space-x-2 items-center ml-3 ">
+          <div className="relative h-10 mr-2 ">
+            <HiOutlineSearch
+              fontSize={20}
+              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+              aria-label="search sections"
+            />
+            <input
+              aria-label="search sections"
+              id="searchFilter"
+              name="searchFilter"
+              type="text"
+              value={searchQuery}
+              onChange={handleSearch}
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
+            />{" "}
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => handleSearch({ target: { value: "" } })} // Clear search
+                className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+                aria-label="clear search"
+              >
+                &times;
+              </button>
+            )}
+          </div>
+          <button
+            aria-label="current section filter"
+            onClick={() => setCurrentSectionsFilter((prev) => !prev)}
+            className="text-sm h-8 border border-gray-300  px-4"
+          >
+            {currentSectionsFilter
+              ? "Current Sections Shown"
+              : "All Sections Shown"}
+          </button>
+        </div>
 
-  content = (
-    <>
-      <Academics />
-      <div className="flex space-x-2 items-center ml-3 ">
-        <div className="relative h-10 mr-2 ">
-          <HiOutlineSearch
-            fontSize={20}
-            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-            aria-label="search sections"
-          />
-          <input
-            aria-label="search sections"
-            id="searchFilter"
-            name="searchFilter"
-            type="text"
-            value={searchQuery}
-            onChange={handleSearch}
-            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
-          />{" "}
-          {searchQuery && (
+        <div className="dataTableContainer">
+          <div>
+            <DataTable
+              title={tableHeader}
+              columns={column}
+              data={filteredSections}
+              pagination
+              //selectableRows
+              removableRows
+              pageSizeControl
+              //onSelectedRowsChange={handleRowSelected}
+              selectableRowsHighlight
+              customStyles={{
+                table: {
+                  style: {
+                    tableLayout: "auto", // Allow dynamic resizing of columns
+                    width: "100%",
+                  },
+                },
+                headCells: {
+                  style: {
+                    // Apply Tailwind style via a class-like syntax
+                    justifyContent: "center", // Align headers to the center
+                    textAlign: "center", // Center header text
+                    color: "black",
+                    fontSize: "14px", // Increase font size for header text
+                  },
+                },
+
+                cells: {
+                  style: {
+                    justifyContent: "center", // Center cell content
+                    textAlign: "center",
+                    color: "black",
+                    fontSize: "14px", // Increase font size for cell text
+                  },
+                },
+                pagination: {
+                  style: {
+                    display: "flex",
+                    justifyContent: "center", // Center the pagination control
+                    alignItems: "center",
+                    padding: "10px 0", // Optional: Add padding for spacing
+                  },
+                },
+              }}
+            ></DataTable>
+          </div>
+
+          {isAdmin && (
             <button
-              type="button"
-              onClick={() => handleSearch({ target: { value: "" } })} // Clear search
-              className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
-              aria-label="clear search"
+              className="add-button"
+              onClick={() => navigate("/academics/sections/newSection/")}
+              //disabled={selectedRows.length !== 1} // Disable if no rows are selected
+              hidden={!canCreate}
             >
-              &times;
+              New Section
             </button>
           )}
         </div>
-        <button
-          aria-label="current section filter"
-          onClick={() => setCurrentSectionsFilter((prev) => !prev)}
-          className="text-sm h-8 border border-gray-300  px-4"
-        >
-          {currentSectionsFilter
-            ? "Current Sections Shown"
-            : "All Sections Shown"}
-        </button>
-      </div>
-
-      <div className="dataTableContainer">
-        <div>
-          <DataTable
-            title={tableHeader}
-            columns={column}
-            data={filteredSections}
-            pagination
-            //selectableRows
-            removableRows
-            pageSizeControl
-            //onSelectedRowsChange={handleRowSelected}
-            selectableRowsHighlight
-            customStyles={{
-              table: {
-                style: {
-                  tableLayout: "auto", // Allow dynamic resizing of columns
-                  width: "100%",
-                },
-              },
-              headCells: {
-                style: {
-                  // Apply Tailwind style via a class-like syntax
-                  justifyContent: "center", // Align headers to the center
-                  textAlign: "center", // Center header text
-                  color: "black",
-                  fontSize: "14px", // Increase font size for header text
-                },
-              },
-
-              cells: {
-                style: {
-                  justifyContent: "center", // Center cell content
-                  textAlign: "center",
-                  color: "black",
-                  fontSize: "14px", // Increase font size for cell text
-                },
-              },
-              pagination: {
-                style: {
-                  display: "flex",
-                  justifyContent: "center", // Center the pagination control
-                  alignItems: "center",
-                  padding: "10px 0", // Optional: Add padding for spacing
-                },
-              },
-            }}
-          ></DataTable>
-        </div>
-
-        {isAdmin && (
-          <button
-            className="add-button"
-            onClick={() => navigate("/academics/sections/newSection/")}
-            //disabled={selectedRows.length !== 1} // Disable if no rows are selected
-            hidden={!canCreate}
-          >
-            New Section
-          </button>
-        )}
-      </div>
-      <DeletionConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
-      />
-      <RegisterModal
-        isOpen={isRegisterModalOpen}
-        onClose={() => setIsRegisterModalOpen(false)}
-        sectionYears={sectionYears}
-        sectionObject={sectionObject}
-        setSectionObject={setSectionObject}
-        setSectionYears={setSectionYears}
-        academicYears={academicYears}
-        onSave={onUpdateSectionClicked}
-      />
-    </>
-  );
+        <DeletionConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+        />
+      </>
+    );
 
   return content;
 };

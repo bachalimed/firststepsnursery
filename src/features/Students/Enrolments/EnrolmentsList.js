@@ -12,15 +12,12 @@ import {
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import { useGetServicesByYearQuery } from "../../AppSettings/StudentsSet/NurseryServices/servicesApiSlice";
 import Students from "../Students";
-import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
 import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
 import { IoShieldCheckmarkOutline, IoShieldOutline } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
-
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
@@ -32,7 +29,6 @@ import { useOutletContext } from "react-router-dom";
 const EnrolmentsList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const { userId, canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
   const [selectedRows, setSelectedRows] = useState([]);
@@ -159,8 +155,6 @@ const EnrolmentsList = () => {
 
   //state to hold the search query
   const [searchQuery, setSearchQuery] = useState("");
-  //const [filteredEnrolments, setFilteredEnrolments] = useState([])
-  //we need to declare the variable outside of if statement to be able to use it outside later
   let enrolmentsList = [];
   let filteredEnrolments = [];
 
@@ -611,175 +605,175 @@ const EnrolmentsList = () => {
         <LoadingStateIcon />
       </>
     );
-
-  content = (
-    <>
-      <Students />
-      <div className="flex space-x-2 items-center ml-3">
-        {/* Search Bar */}
-        <div className="relative h-10 mr-2 ">
-          <HiOutlineSearch
-            fontSize={20}
-            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-            aria-label="search enrolments"
-          />
-          <input
-            aria-label="search enrolments"
-            type="text"
-            value={searchQuery}
-            onChange={handleSearch}
-            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
-          />{" "}
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => handleSearch({ target: { value: "" } })} // Clear search
-              className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
-              aria-label="clear search"
-            >
-              &times;
-            </button>
-          )}
-        </div>
-        {/* Enrolment Month Filter */}
-        <label htmlFor="monthFilter" className="formInputLabel">
-          <select
-            aria-label="monthFilter"
-            id="monthFilter"
-            value={selectedEnrolmentMonth}
-            onChange={(e) => setSelectedEnrolmentMonth(e.target.value)}
-            className="text-sm h-8 border border-gray-300  px-4"
-          >
-            {/* Default option is the current month */}
-            <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
-            {MONTHS.map(
-              (month, index) =>
-                month !== getCurrentMonth() && (
-                  <option key={index} value={month}>
-                    {month}
-                  </option>
-                )
+  if (isServicesSuccess)
+    content = (
+      <>
+        <Students />
+        <div className="flex space-x-2 items-center ml-3">
+          {/* Search Bar */}
+          <div className="relative h-10 mr-2 ">
+            <HiOutlineSearch
+              fontSize={20}
+              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+              aria-label="search enrolments"
+            />
+            <input
+              aria-label="search enrolments"
+              type="text"
+              value={searchQuery}
+              onChange={handleSearch}
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
+            />{" "}
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => handleSearch({ target: { value: "" } })} // Clear search
+                className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+                aria-label="clear search"
+              >
+                &times;
+              </button>
             )}
-          </select>
-        </label>
-        {/* Service Type Filter */}
-        <label htmlFor="serviceTypeFilter" className="formInputLabel">
-          <select
-            aria-label="serviceTypeFilter"
-            id="serviceTypeFilter"
-            value={selectedServiceType}
-            onChange={(e) => setSelectedServiceType(e.target.value)}
-            className="text-sm h-8 border border-gray-300  px-4"
-          >
-            <option value="">All Services</option>
-            {servicesList.map((service, index) => (
-              <option key={index} value={service.serviceType}>
-                {service.serviceType}
-              </option>
-            ))}
-          </select>
-        </label>
+          </div>
+          {/* Enrolment Month Filter */}
+          <label htmlFor="monthFilter" className="formInputLabel">
+            <select
+              aria-label="monthFilter"
+              id="monthFilter"
+              value={selectedEnrolmentMonth}
+              onChange={(e) => setSelectedEnrolmentMonth(e.target.value)}
+              className="text-sm h-8 border border-gray-300  px-4"
+            >
+              {/* Default option is the current month */}
+              <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
+              {MONTHS.map(
+                (month, index) =>
+                  month !== getCurrentMonth() && (
+                    <option key={index} value={month}>
+                      {month}
+                    </option>
+                  )
+              )}
+            </select>
+          </label>
+          {/* Service Type Filter */}
+          <label htmlFor="serviceTypeFilter" className="formInputLabel">
+            <select
+              aria-label="serviceTypeFilter"
+              id="serviceTypeFilter"
+              value={selectedServiceType}
+              onChange={(e) => setSelectedServiceType(e.target.value)}
+              className="text-sm h-8 border border-gray-300  px-4"
+            >
+              <option value="">All Services</option>
+              {servicesList.map((service, index) => (
+                <option key={index} value={service.serviceType}>
+                  {service.serviceType}
+                </option>
+              ))}
+            </select>
+          </label>
 
-        {/* Invoiced Filter */}
-        <label htmlFor="invoicedFilter" className="formInputLabel">
-          <select
-            aria-label="invoicedFilter"
-            id="invoicedFilter"
-            value={invoicedFilter}
-            onChange={(e) => setInvoicedFilter(e.target.value)}
-            className="text-sm h-8 border border-gray-300  px-4"
-          >
-            <option value="">All invoicing</option>
-            <option value="invoiced">Invoiced</option>
-            <option value="notInvoiced">Not Invoiced</option>
-          </select>
-        </label>
+          {/* Invoiced Filter */}
+          <label htmlFor="invoicedFilter" className="formInputLabel">
+            <select
+              aria-label="invoicedFilter"
+              id="invoicedFilter"
+              value={invoicedFilter}
+              onChange={(e) => setInvoicedFilter(e.target.value)}
+              className="text-sm h-8 border border-gray-300  px-4"
+            >
+              <option value="">All invoicing</option>
+              <option value="invoiced">Invoiced</option>
+              <option value="notInvoiced">Not Invoiced</option>
+            </select>
+          </label>
 
-        {/* Paid Filter */}
-        <label htmlFor="paidFilter" className="formInputLabel">
-          <select
-            aria-label="paidFilter"
-            id="paidFilter"
-            value={paidFilter}
-            onChange={(e) => setPaidFilter(e.target.value)}
-            className="text-sm h-8 border border-gray-300  px-4"
-          >
-            <option value="">All payment</option>
-            <option value="paid">Paid</option>
-            <option value="unpaid">Unpaid</option>
-          </select>
-        </label>
-      </div>
-      <div className="dataTableContainer">
-        <div>
-          <DataTable
-            title={tableHeader}
-            columns={column}
-            data={filteredEnrolments}
-            pagination
-            selectableRows
-            removableRows
-            pageSizeControl
-            onSelectedRowsChange={handleRowSelected}
-            selectableRowsHighlight
-            customStyles={{
-              headCells: {
-                style: {
-                  // Apply Tailwind style via a class-like syntax
-                  justifyContent: "center", // Align headers to the center
-                  textAlign: "center", // Center header text
-                  color: "black",
-                  fontSize: "14px", // Increase font size for header text
-                },
-              },
-
-              cells: {
-                style: {
-                  justifyContent: "center", // Center cell content
-                  textAlign: "center",
-                  color: "black",
-                  fontSize: "14px", // Increase font size for cell text
-                },
-              },
-              pagination: {
-                style: {
-                  display: "flex",
-                  justifyContent: "center", // Center the pagination control
-                  alignItems: "center",
-                  padding: "10px 0", // Optional: Add padding for spacing
-                },
-              },
-            }}
-          ></DataTable>
+          {/* Paid Filter */}
+          <label htmlFor="paidFilter" className="formInputLabel">
+            <select
+              aria-label="paidFilter"
+              id="paidFilter"
+              value={paidFilter}
+              onChange={(e) => setPaidFilter(e.target.value)}
+              className="text-sm h-8 border border-gray-300  px-4"
+            >
+              <option value="">All payment</option>
+              <option value="paid">Paid</option>
+              <option value="unpaid">Unpaid</option>
+            </select>
+          </label>
         </div>
+        <div className="dataTableContainer">
+          <div>
+            <DataTable
+              title={tableHeader}
+              columns={column}
+              data={filteredEnrolments}
+              pagination
+              selectableRows
+              removableRows
+              pageSizeControl
+              onSelectedRowsChange={handleRowSelected}
+              selectableRowsHighlight
+              customStyles={{
+                headCells: {
+                  style: {
+                    // Apply Tailwind style via a class-like syntax
+                    justifyContent: "center", // Align headers to the center
+                    textAlign: "center", // Center header text
+                    color: "black",
+                    fontSize: "14px", // Increase font size for header text
+                  },
+                },
 
-        <div className="cancelSavebuttonsDiv">
-          <button
-            className="add-button"
-            onClick={() => navigate("/students/enrolments/newEnrolment/")}
-            hidden={!canCreate}
-          >
-            New Enrolment
-          </button>
-          <button
-            className={`px-4 py-2 ${
-              selectedRows?.length > 0 ? "add-button" : "bg-gray-300"
-            } text-white rounded`}
-            onClick={handleGenerateInvoice}
-            hidden={!canCreate}
-            disabled={selectedRows?.length > 20 || selectedRows?.length < 1}
-          >
-            Generate {selectedRows?.length} Invoices
-          </button>
+                cells: {
+                  style: {
+                    justifyContent: "center", // Center cell content
+                    textAlign: "center",
+                    color: "black",
+                    fontSize: "14px", // Increase font size for cell text
+                  },
+                },
+                pagination: {
+                  style: {
+                    display: "flex",
+                    justifyContent: "center", // Center the pagination control
+                    alignItems: "center",
+                    padding: "10px 0", // Optional: Add padding for spacing
+                  },
+                },
+              }}
+            ></DataTable>
+          </div>
+
+          <div className="cancelSavebuttonsDiv">
+            <button
+              className="add-button"
+              onClick={() => navigate("/students/enrolments/newEnrolment/")}
+              hidden={!canCreate}
+            >
+              New Enrolment
+            </button>
+            <button
+              className={`px-4 py-2 ${
+                selectedRows?.length > 0 ? "add-button" : "bg-gray-300"
+              } text-white rounded`}
+              onClick={handleGenerateInvoice}
+              hidden={!canCreate}
+              disabled={selectedRows?.length > 20 || selectedRows?.length < 1}
+            >
+              Generate {selectedRows?.length} Invoices
+            </button>
+          </div>
         </div>
-      </div>
-      <DeletionConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
-      />
-    </>
-  );
+        <DeletionConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+        />
+      </>
+    );
 
   return content;
 };

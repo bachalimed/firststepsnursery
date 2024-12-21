@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 import {
   useGetEmployeeDocumentsListsQuery,
@@ -21,11 +21,11 @@ const EmployeeDocumentsListsList = () => {
 
   const { canEdit, isAdmin, isManager, canDelete, canCreate, status2 } =
     useAuth();
-  const [employeeDocumentsLists, setEmployeeDocumentsListsState] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [deleteModalOpen, setDeleteModalOpen] = useState(false); // State for modal
   const [idDocToDelete, setIdDocToDelete] = useState(null); // State to track which document to delete
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
 
   //RTK query employeeDocumentsLists import
   const {
@@ -39,7 +39,7 @@ const EmployeeDocumentsListsList = () => {
   //initialising the delete Mutation
   const [
     deleteEmployeeDocumentsList,
-    { isSuccess: isDelSuccess, isError: isDelError, error: delerror },
+    { isSuccess: isDelSuccess, isError: isDelError, error: delError },
   ] = useDeleteEmployeeDocumentsListMutation();
 
   //handler for deleting a studetnDocumentsList
@@ -52,8 +52,28 @@ const EmployeeDocumentsListsList = () => {
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    await deleteEmployeeDocumentsList({ id: idDocToDelete });
-    setDeleteModalOpen(false); // Close the modal
+    try {
+      const response = await deleteEmployeeDocumentsList({ id: idDocToDelete });
+      setDeleteModalOpen(false); // Close the modal
+      if (response?.message) {
+        // Success response
+        triggerBanner(response?.message, "success");
+      } else if (response?.data?.message) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isDelError) {
+        // In case of unexpected response format
+        triggerBanner(delError?.data?.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner(error?.data?.message, "error");
+    }
   };
 
   // Function to close the modal without deleting
@@ -65,12 +85,6 @@ const EmployeeDocumentsListsList = () => {
   //handler for search
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
-  };
-
-  // Handler for selecting rows
-  const handleRowSelected = (state) => {
-    setSelectedRows(state.selectedRows);
-    //console.log('selectedRows', selectedRows)
   };
 
   //console.log(employeeDocumentsListsData)
@@ -192,7 +206,7 @@ const EmployeeDocumentsListsList = () => {
     },
 
     {
-      name: "Actions",
+      name: "Actionss",
       cell: (row) => (
         <div className="space-x-1">
           {canEdit ? (
@@ -233,94 +247,94 @@ const EmployeeDocumentsListsList = () => {
         <LoadingStateIcon />
       </>
     );
-
-  content = (
-    <>
-      <EmployeesSet />
-      <div className="flex space-x-2 items-center ml-3">
-        <div className="relative h-10 mr-2">
-          <HiOutlineSearch
-            fontSize={20}
-            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-            aria-label="search documents"
-          />
-          <input
-            aria-label="search documents"
-            type="text"
-            value={searchQuery}
-            onChange={handleSearch}
-            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
-          />{" "}
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => handleSearch({ target: { value: "" } })} // Clear search
-              className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
-              aria-label="clear search"
-            >
-              &times;
-            </button>
-          )}
+  if (isDocumentsListsSuccess)
+    content = (
+      <>
+        <EmployeesSet />
+        <div className="flex space-x-2 items-center ml-3">
+          <div className="relative h-10 mr-2">
+            <HiOutlineSearch
+              fontSize={20}
+              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+              aria-label="search documents"
+            />
+            <input
+              aria-label="search documents"
+              type="text"
+              value={searchQuery}
+              onChange={handleSearch}
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
+            />{" "}
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => handleSearch({ target: { value: "" } })} // Clear search
+                className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+                aria-label="clear search"
+              >
+                &times;
+              </button>
+            )}
+          </div>
         </div>
-      </div>
-      <div className="dataTableContainer">
-        <div>
-          <DataTable
-            columns={column}
-            data={filteredEmployeeDocumentsLists}
-            pagination
-            //selectableRows
-            removableRows
-            onSelectedRowsChange={handleRowSelected}
-            selectableRowsHighlight
-            customStyles={{
-              headCells: {
-                style: {
-                  // Apply Tailwind style via a class-like syntax
-                  justifyContent: "center", // Align headers to the center
-                  textAlign: "center", // Center header text
-                  color: "black",
-                  fontSize: "14px", // Increase font size for header text
+        <div className="dataTableContainer">
+          <div>
+            <DataTable
+              columns={column}
+              data={filteredEmployeeDocumentsLists}
+              pagination
+              //selectableRows
+              removableRows
+              //onSelectedRowsChange={handleRowSelected}
+              selectableRowsHighlight
+              customStyles={{
+                headCells: {
+                  style: {
+                    // Apply Tailwind style via a class-like syntax
+                    justifyContent: "center", // Align headers to the center
+                    textAlign: "center", // Center header text
+                    color: "black",
+                    fontSize: "14px", // Increase font size for header text
+                  },
                 },
-              },
 
-              cells: {
-                style: {
-                  justifyContent: "center", // Center cell content
-                  textAlign: "center",
-                  color: "black",
-                  fontSize: "14px", // Increase font size for cell text
+                cells: {
+                  style: {
+                    justifyContent: "center", // Center cell content
+                    textAlign: "center",
+                    color: "black",
+                    fontSize: "14px", // Increase font size for cell text
+                  },
                 },
-              },
-              pagination: {
-                style: {
-                  display: "flex",
-                  justifyContent: "center", // Center the pagination control
-                  alignItems: "center",
-                  padding: "10px 0", // Optional: Add padding for spacing
+                pagination: {
+                  style: {
+                    display: "flex",
+                    justifyContent: "center", // Center the pagination control
+                    alignItems: "center",
+                    padding: "10px 0", // Optional: Add padding for spacing
+                  },
                 },
-              },
-            }}
-          ></DataTable>
+              }}
+            ></DataTable>
+          </div>
+          {/* <div className="cancelSavebuttonsDiv"> */}
+          <button
+            className="add-button"
+            onClick={() => Navigate("/settings/hrSet/newEmployeeDocumentsList")}
+            disabled={selectedRows.length !== 0}
+            hidden={!canCreate}
+          >
+            New Documents List
+          </button>
+          {/* </div> */}
         </div>
-        {/* <div className="cancelSavebuttonsDiv"> */}
-        <button
-          className="add-button"
-          onClick={() => Navigate("/settings/hrSet/newEmployeeDocumentsList")}
-          disabled={selectedRows.length !== 0}
-          hidden={!canCreate}
-        >
-          New Documents List
-        </button>
-        {/* </div> */}
-      </div>
-      <DeletionConfirmModal
-        isOpen={deleteModalOpen}
-        onClose={handleCloseModal}
-        onConfirm={handleConfirmDelete}
-      />
-    </>
-  );
+        <DeletionConfirmModal
+          isOpen={deleteModalOpen}
+          onClose={handleCloseModal}
+          onConfirm={handleConfirmDelete}
+        />
+      </>
+    );
 
   return content;
 };

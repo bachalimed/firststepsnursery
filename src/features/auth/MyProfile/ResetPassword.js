@@ -33,7 +33,7 @@ const ResetPassword = () => {
   refetchOnMountOrArgChange: true, //refetch when we remount the component
 });
 const user = isUserSuccess
-? Object.values(userToEdit.entities)[0]
+? Object.values(userToEdit.entities)
 : [];
 //console.log(user,'user')
   //call the edit user form and pass the user details
@@ -41,7 +41,7 @@ const user = isUserSuccess
     <>
       
      
-      <ResetPasswordForm user={user} />
+      <ResetPasswordForm user={user[0]} />
     </>
   ) : (
     <>

@@ -1,28 +1,22 @@
 import {
   useGetUsersQuery,
   useDeleteUserMutation,
-  selectAllUsers,
-} from "./usersApiSlice";
+  } from "./usersApiSlice";
 import DataTable from "react-data-table-component";
 import { useState } from "react";
-import { useSelector } from "react-redux";
 import useAuth from "../../../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
 import UsersManagement from "../UsersManagement";
-import { IoDocumentAttachOutline } from "react-icons/io5";
 import { HiOutlineSearch } from "react-icons/hi";
 import { FiEdit, FiDelete } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { ImProfile } from "react-icons/im";
-import { setUsers } from "./usersSlice";
 import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
 import { IoShieldCheckmarkOutline, IoShieldOutline } from "react-icons/io5";
-import { useDispatch } from "react-redux";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import { ROLES } from "../../../config/UserRoles";
 import { ACTIONS } from "../../../config/UserActions";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
-
 import { useOutletContext } from "react-router-dom";
 const UsersList = () => {
   //initialise state variables and hooks
@@ -30,8 +24,7 @@ const UsersList = () => {
   //const dispatch = useDispatch();
   const { canEdit, canDelete, canView, canAdd, canCreate, isParent, status2 } =
     useAuth();
-  const [selectedRows, setSelectedRows] = useState([]);
-
+ 
   //import users using RTK query
   const {
     data: users, //deconstructing data into users
@@ -109,11 +102,7 @@ const UsersList = () => {
   const handleRoleChange = (e) => setSelectedUserRoles(e.target.value);
   const handleActionChange = (e) => setSelectedUserActions(e.target.value);
 
-  // Handler for selecting rows
-  const handleRowSelected = (state) => {
-    setSelectedRows(state.selectedRows);
-    //console.log('selectedRows', selectedRows)
-  };
+ 
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idUserToDelete, setIdUserToDelete] = useState(null); // State to track which document to delete
@@ -376,7 +365,7 @@ const UsersList = () => {
         <LoadingStateIcon />
       </>
     );
-
+    if (isUsersSuccess)
   content = (
     <>
       <UsersManagement />
@@ -447,7 +436,7 @@ const UsersList = () => {
             //selectableRows
             removableRows
             pageSizeControl
-            onSelectedRowsChange={handleRowSelected}
+           // onSelectedRowsChange={handleRowSelected}
             selectableRowsHighlight
             customStyles={{
               headCells: {

@@ -9,23 +9,18 @@ import {
   selectAllAcademicYears,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
-import { useGetServicesByYearQuery } from "../../AppSettings/StudentsSet/NurseryServices/servicesApiSlice";
 import Finances from "../Finances";
 import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
 import { useSelector } from "react-redux";
-
 import { useEffect, useState } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { ImProfile } from "react-icons/im";
-import { FiEdit } from "react-icons/fi";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { RiDeleteBin6Line } from "react-icons/ri";
-
 import useAuth from "../../../hooks/useAuth";
 import { MONTHS } from "../../../config/Months";
-import { MdPaid, MdOutlinePaid } from "react-icons/md";
+
 const PaymentsList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
@@ -43,6 +38,7 @@ const PaymentsList = () => {
   const [idPaymentToDelete, setIdPaymentToDelete] = useState(null); // State to track which document to delete
   const PaymentTypes = ["Cash", "Cheque", "Bank Transfer", "Online Payment"];
   const [selectedPaymentType, setSelectedPaymentType] = useState(""); // "paid" or "unpaid"
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
 
   //function to return curent month for month selection
   const getCurrentMonth = () => {
@@ -74,22 +70,6 @@ const PaymentsList = () => {
     }
   );
 
-  const {
-    data: services,
-    isLoading: isServicesLoading,
-    isSuccess: isServicesSuccess,
-    isError: isServicesError,
-    error: servicesError,
-  } = useGetServicesByYearQuery(
-    {
-      selectedYear: selectedAcademicYear?.title,
-      endpointName: "PaymentsList",
-    } || {},
-    {
-      refetchOnFocus: true,
-      refetchOnMountOrArgChange: true,
-    }
-  );
   //initialising the delete Mutation
   const [
     deletePayment,
@@ -97,7 +77,7 @@ const PaymentsList = () => {
       isLoading: isDelLoading,
       isSuccess: isDelSuccess,
       isError: isDelError,
-      error: delerror,
+      error: delError,
     },
   ] = useDeletePaymentMutation();
 
@@ -109,8 +89,28 @@ const PaymentsList = () => {
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    await deletePayment({ id: idPaymentToDelete });
-    setIsDeleteModalOpen(false); // Close the modal
+    try {
+      const response = await deletePayment({ id: idPaymentToDelete });
+      setIsDeleteModalOpen(false); // Close the modal
+      if (response?.message) {
+        // Success response
+        triggerBanner(response?.message, "success");
+      } else if (response?.data?.message) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isDelError) {
+        // In case of unexpected response format
+        triggerBanner(delError?.data?.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner(error?.data?.message, "error");
+    }
   };
 
   // Function to close the modal without deleting
@@ -118,13 +118,12 @@ const PaymentsList = () => {
     setIsDeleteModalOpen(false);
     setIdPaymentToDelete(null);
   };
-  const servicesList = isServicesSuccess
-    ? Object.values(services.entities)
-    : [];
-  // State to hold selected rows
-  const [selectedRows, setSelectedRows] = useState([]);
+
   //state to hold the search query
   const [searchQuery, setSearchQuery] = useState("");
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+  };
   //const [filteredPayments, setFilteredPayments] = useState([])
   //we need to declare the variable outside of if statement to be able to use it outside later
   let paymentsList = [];
@@ -174,15 +173,6 @@ const PaymentsList = () => {
       );
     });
   }
-
-  const handleSearch = (e) => {
-    setSearchQuery(e.target.value);
-  };
-  // Handler for selecting rows
-  const handleRowSelected = (state) => {
-    setSelectedRows(state.selectedRows);
-    //console.log('selectedRows', selectedRows)
-  };
 
   const column = [
     {
@@ -356,7 +346,7 @@ const PaymentsList = () => {
   );
 
   let content;
-  if (isPaymentsLoading || isServicesLoading)
+  if (isPaymentsLoading)
     content = (
       <>
         <Finances />
@@ -364,6 +354,7 @@ const PaymentsList = () => {
       </>
     );
 
+  //ispaymentsuccesspaymentsin the filter will prevent other filter choices if failed
   content = (
     <>
       <Finances />
@@ -371,15 +362,27 @@ const PaymentsList = () => {
         {/* Search Bar */}
         <div className="relative h-10 mr-2 ">
           <HiOutlineSearch
+            aria-label="search payments"
             fontSize={20}
             className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
           />
           <input
+            aria-label="search payments"
             type="text"
             value={searchQuery}
             onChange={handleSearch}
             className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
-          />
+          />{" "}
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => handleSearch({ target: { value: "" } })} // Clear search
+              className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+              aria-label="clear search"
+            >
+              &times;
+            </button>
+          )}
         </div>
         {/* Payment Month Filter */}
         <label htmlFor="monthFilter" className="formInputLabel">
@@ -440,7 +443,7 @@ const PaymentsList = () => {
             //selectableRows
             removableRows
             pageSizeControl
-            onSelectedRowsChange={handleRowSelected}
+            //onSelectedRowsChange={handleRowSelected}
             selectableRowsHighlight
             customStyles={{
               headCells: {
@@ -473,13 +476,13 @@ const PaymentsList = () => {
           ></DataTable>
         </div>
         {/* <div className="cancelSavebuttonsDiv"> */}
-          <button
-            className="add-button"
-            onClick={() => navigate("/finances/payments/newPayment/")}
-            hidden={!canCreate}
-          >
-            New Payment
-          </button>
+        <button
+          className="add-button"
+          onClick={() => navigate("/finances/payments/newPayment/")}
+          hidden={!canCreate}
+        >
+          New Payment
+        </button>
         {/* </div> */}
       </div>
       <DeletionConfirmModal

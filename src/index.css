@@ -624,3 +624,30 @@ header .bg-blue-600 p {
 .dataTableContainer {
   @apply flex flex-col items-center bg-white px-4  pb-4 rounded-sm;
 }
+
+
+/* ////////////style for moving circles*/
+@keyframes gentleMotion {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(50px, -50px);
+  }
+  50% {
+    transform: translate(-50px, 50px);
+  }
+  75% {
+    transform: translate(50px, 50px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+.animate-gentle-motion {
+  animation-name: gentleMotion;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+/*  ////////////////end of moving circles*/

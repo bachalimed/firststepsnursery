@@ -3,26 +3,19 @@ import { GiMoneyStack } from "react-icons/gi";
 import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
 import { IoShieldCheckmarkOutline, IoShieldOutline } from "react-icons/io5";
-import { IoDocumentAttachOutline } from "react-icons/io5";
-import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
-
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
 // import RegisterModal from './RegisterModal'
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate,useOutletContext } from "react-router-dom";
 import {
   useGetPayslipsByYearQuery,
-  useUpdatePayslipMutation,
-  useDeletePayslipMutation,
+    useDeletePayslipMutation,
 } from "./payslipsApiSlice";
-
 import HR from "../HR";
 import {
-  setAcademicYears,
   selectAllAcademicYears,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import useAuth from "../../../hooks/useAuth";
@@ -35,11 +28,8 @@ import { MONTHS } from "../../../config/Months";
 const PayslipsList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-
+ 
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
-  const [requiredDocNumber, setRequiredDocNumber] = useState("");
-  const [payslipDocNumber, setPayslipDocNumber] = useState("");
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idPayslipToDelete, setIdPayslipToDelete] = useState(null); // State to track which document to delete
@@ -103,8 +93,6 @@ const PayslipsList = () => {
     setIdPayslipToDelete(null);
   };
 
-  // State to hold selected rows
-  const [selectedRows, setSelectedRows] = useState([]);
   //state to hold the search query
   const [searchQuery, setSearchQuery] = useState("");
   //const [filteredPayslips, setFilteredPayslips] = useState([])
@@ -153,84 +141,7 @@ const PayslipsList = () => {
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
-  // Handler for selecting rows
-  const handleRowSelected = (state) => {
-    setSelectedRows(state.selectedRows);
-    //console.log('selectedRows', selectedRows)
-  };
 
-  // Handler for duplicating selected rows,
-  const handleDuplicateSelected = () => {
-    //console.log('Selected Rows to duplicate:', selectedRows);
-    // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
-    //ensure only one can be selected: the last one
-    const toDuplicate = selectedRows[-1];
-
-    setSelectedRows([]); // Clear selection after delete
-  };
-
-  const [
-    updatePayslip,
-    {
-      isLoading: isUpdateLoading,
-      isSuccess: isUpdateSuccess,
-      isError: isUpdateError,
-      error: updateError,
-    },
-  ] = useUpdatePayslipMutation(); //it will not execute the mutation nownow but when called
-  const [payslipObject, setPayslipObject] = useState("");
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
-
-  //console.log(academicYears)
-  // Handler for registering selected row,
-  const [payslipYears, setPayslipYears] = useState([]);
-  const handleRegisterSelected = () => {
-    //we already allowed only one to be selected in the button options
-    //console.log('Selected Rows to detail:', selectedRows)
-
-    setPayslipObject(selectedRows[0]);
-    //console.log(payslipObject, "payslipObject");
-    //const {payslipYears}= (payslipObject)
-
-    setPayslipYears(payslipObject?.payslipYears);
-    //console.log("payslip years and id", payslipYears);
-    setIsRegisterModalOpen(true);
-
-    //setSelectedRows([]); // Clear selection after process
-  };
-  //console.log(filteredPayslips, "filteredPayslips");
-  // This is called when saving the updated payslip years from the modal
-  const onUpdatePayslipClicked = async (updatedYears) => {
-    console.log("Updated payslipYears from modal:", updatedYears);
-
-    const updatedPayslipObject = {
-      ...payslipObject,
-      payslipYears: updatedYears, // Merge updated payslipYears
-    };
-
-    console.log("Saving updated payslip:", updatedPayslipObject);
-
-    try {
-      await updatePayslip(updatedPayslipObject); // Save updated payslip to backend
-      console.log("Payslip updated successfully");
-    } catch (payslipsError) {
-      console.log("payslipsError saving payslip:", payslipsError);
-    }
-
-    setIsRegisterModalOpen(false); // Close modal
-  };
-
-  //   const [payslipYears, setPayslipYears] = useState([])
-  // //adds to the previous entries in arrays for gardien, schools...
-  //       const onPayslipYearsChanged = (e, selectedYear) => {
-  //         if (e.target.checked) {
-  //           // Add the selectedYear to payslipYears if it's checked
-  //           setPayslipYears([...payslipYears, selectedYear]);
-  //         } else {
-  //           // Remove the selectedYear from payslipYears if it's unchecked
-  //           setPayslipYears(payslipYears.filter(year => year !== selectedYear))
-  //         }
-  //       }
 
   const column = [
     {
@@ -450,7 +361,7 @@ const PayslipsList = () => {
         <LoadingStateIcon />
       </>
     );
-
+    if (isPayslipsSuccess)
   content = (
     <>
       <HR />
@@ -512,10 +423,10 @@ const PayslipsList = () => {
             columns={column}
             data={filteredPayslips}
             pagination
-            selectableRows
+           // selectableRows
             removableRows
             pageSizeControl
-            onSelectedRowsChange={handleRowSelected}
+            //onSelectedRowsChange={handleRowSelected}
             selectableRowsHighlight
             customStyles={{
               headCells: {
@@ -574,13 +485,7 @@ const PayslipsList = () => {
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
       />
-      {/* <RegisterModal 
-        isOpen={isRegisterModalOpen}
-        onClose={() => setIsRegisterModalOpen(false)}
-        payslipYears={payslipYears}
-        academicYears={academicYears}
-        onSave={onUpdatePayslipClicked}
-      /> */}
+    
     </>
   );
 

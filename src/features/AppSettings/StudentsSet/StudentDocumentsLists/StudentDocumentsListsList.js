@@ -262,97 +262,97 @@ const StudentDocumentsListsList = () => {
         <LoadingStateIcon />
       </>
     );
-
-  content = (
-    <>
-      <StudentsSet />
-      <div className="flex space-x-2 items-center ml-3">
-        <div className="relative h-10 mr-2">
-          <HiOutlineSearch
-            fontSize={20}
-            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-            aria-label="search documents"
-          />
-          <input
-            aria-label="search documents"
-            type="text"
-            value={searchQuery}
-            onChange={handleSearch}
-            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
-          />{" "}
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => handleSearch({ target: { value: "" } })} // Clear search
-              className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
-              aria-label="clear search"
-            >
-              &times;
-            </button>
-          )}
+  if (isDocumentsListsSuccess)
+    content = (
+      <>
+        <StudentsSet />
+        <div className="flex space-x-2 items-center ml-3">
+          <div className="relative h-10 mr-2">
+            <HiOutlineSearch
+              fontSize={20}
+              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+              aria-label="search documents"
+            />
+            <input
+              aria-label="search documents"
+              type="text"
+              value={searchQuery}
+              onChange={handleSearch}
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
+            />{" "}
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => handleSearch({ target: { value: "" } })} // Clear search
+                className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+                aria-label="clear search"
+              >
+                &times;
+              </button>
+            )}
+          </div>
         </div>
-      </div>
-      <div className="dataTableContainer">
-        <div>
-          <DataTable
-            columns={column}
-            data={filteredStudentDocumentsLists}
-            pagination
-            //selectableRows
-            removableRows
-            onSelectedRowsChange={handleRowSelected}
-            selectableRowsHighlight
-            customStyles={{
-              headCells: {
-                style: {
-                  // Apply Tailwind style via a class-like syntax
-                  justifyContent: "center", // Align headers to the center
-                  textAlign: "center", // Center header text
-                  color: "black",
-                  fontSize: "14px", // Increase font size for header text
+        <div className="dataTableContainer">
+          <div>
+            <DataTable
+              columns={column}
+              data={filteredStudentDocumentsLists}
+              pagination
+              //selectableRows
+              removableRows
+              onSelectedRowsChange={handleRowSelected}
+              selectableRowsHighlight
+              customStyles={{
+                headCells: {
+                  style: {
+                    // Apply Tailwind style via a class-like syntax
+                    justifyContent: "center", // Align headers to the center
+                    textAlign: "center", // Center header text
+                    color: "black",
+                    fontSize: "14px", // Increase font size for header text
+                  },
                 },
-              },
 
-              cells: {
-                style: {
-                  justifyContent: "center", // Center cell content
-                  textAlign: "center",
-                  color: "black",
-                  fontSize: "14px", // Increase font size for cell text
+                cells: {
+                  style: {
+                    justifyContent: "center", // Center cell content
+                    textAlign: "center",
+                    color: "black",
+                    fontSize: "14px", // Increase font size for cell text
+                  },
                 },
-              },
-              pagination: {
-                style: {
-                  display: "flex",
-                  justifyContent: "center", // Center the pagination control
-                  alignItems: "center",
-                  padding: "10px 0", // Optional: Add padding for spacing
+                pagination: {
+                  style: {
+                    display: "flex",
+                    justifyContent: "center", // Center the pagination control
+                    alignItems: "center",
+                    padding: "10px 0", // Optional: Add padding for spacing
+                  },
                 },
-              },
-            }}
-          ></DataTable>
+              }}
+            ></DataTable>
+          </div>
+          {/* <div className="cancelSavebuttonsDiv"> */}
+          <button
+            aria-label="add new list"
+            className="add-button"
+            onClick={() =>
+              Navigate("/settings/studentsSet/newStudentDocumentsList")
+            }
+            disabled={selectedRows.length !== 0}
+            hidden={!canCreate}
+          >
+            New Documents List
+          </button>
+          {/* </div> */}
         </div>
-        {/* <div className="cancelSavebuttonsDiv"> */}
-        <button
-          aria-label="add new list"
-          className="add-button"
-          onClick={() =>
-            Navigate("/settings/studentsSet/newStudentDocumentsList")
-          }
-          disabled={selectedRows.length !== 0}
-          hidden={!canCreate}
-        >
-          New Documents List
-        </button>
-        {/* </div> */}
-      </div>
-      <DeletionConfirmModal
-        isOpen={deleteModalOpen}
-        onClose={handleCloseModal}
-        onConfirm={handleConfirmDelete}
-      />
-    </>
-  );
+        <DeletionConfirmModal
+          isOpen={deleteModalOpen}
+          onClose={handleCloseModal}
+          onConfirm={handleConfirmDelete}
+        />
+      </>
+    );
 
   return content;
 };

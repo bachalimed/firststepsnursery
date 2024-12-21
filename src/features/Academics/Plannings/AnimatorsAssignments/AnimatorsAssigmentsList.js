@@ -2,8 +2,7 @@ import { useGetEmployeesByYearQuery } from "../../../HR/Employees/employeesApiSl
 import DataTable from "react-data-table-component";
 import { useState } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
@@ -18,9 +17,7 @@ import {
   useGetAnimatorsAssignmentsByYearQuery,
   useDeleteAnimatorsAssignmentMutation,
 } from "./animatorsAssignmentsApiSlice";
-import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
-import { useOutletContext } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import Academics from "../../Academics";
 import { MONTHS } from "../../../../config/Months";
 const AnimatorsAssignmentsList = () => {
@@ -74,14 +71,6 @@ const AnimatorsAssignmentsList = () => {
       refetchOnMountOrArgChange: true,
     }
   );
-  const {
-    data: schools, //the data is renamed schools
-    isLoading: isSchoolsLoading,
-    isSuccess: isSchoolsSuccess,
-    isError: isSchoolsError,
-    error: schoolsError,
-  } = useGetAttendedSchoolsQuery({ endpointName: "AnimatorsAssignmentList" }) ||
-  {}; //this should match the endpoint defined in your API slice.!! what does it mean?
 
   const [
     deleteAssignment,
@@ -102,7 +91,7 @@ const AnimatorsAssignmentsList = () => {
     useState(null); // State to track which document to delete
 
   //initialising the delete Mutation
-  let schoolsList = isSchoolsSuccess ? Object.values(schools.entities) : [];
+
   let employeesList = isEmployeesSuccess
     ? Object.values(employees.entities)
     : [];
@@ -121,6 +110,7 @@ const AnimatorsAssignmentsList = () => {
   const handleConfirmDelete = async () => {
     try {
       const response = await deleteAssignment({ id: idAttendedSchoolToDelete });
+      setIsDeleteModalOpen(false); // Close the modal
       if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
@@ -140,7 +130,6 @@ const AnimatorsAssignmentsList = () => {
     } catch (error) {
       triggerBanner(error?.data?.message, "error");
     }
-    setIsDeleteModalOpen(false); // Close the modal
   };
 
   // Function to close the modal without deleting
@@ -236,7 +225,6 @@ const AnimatorsAssignmentsList = () => {
       style: {
         justifyContent: "left",
         textAlign: "left",
-      
       },
       width: "110px",
     },
@@ -337,7 +325,7 @@ const AnimatorsAssignmentsList = () => {
   );
   let content;
 
-  if (isSchoolsLoading)
+  if (isAssignmentsLoading || isEmployeesLoading)
     content = (
       <>
         <Academics />
@@ -345,141 +333,144 @@ const AnimatorsAssignmentsList = () => {
       </>
     );
 
-  return (
-    <>
-      <Academics />
+  if (isAssignmentsSuccess && isEmployeesSuccess)
+    content = (
+      <>
+        <Academics />
 
-      <div className="flex space-x-2 items-center ml-3">
-        {/* Search Bar */}
-        <div className="relative h-10 mr-2 ">
-          <HiOutlineSearch
-            fontSize={20}
-            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-            aria-label="search animators"
-          />
-          <input
-            aria-label="search animators"
-            type="text"
-            value={searchQuery}
-            onChange={handleSearch}
-            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
-          /> {searchQuery && (
-            <button
-              type="button"
-              onClick={() => handleSearch({ target: { value: "" } })} // Clear search
-              className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
-              aria-label="clear search"
+        <div className="flex space-x-2 items-center ml-3">
+          {/* Search Bar */}
+          <div className="relative h-10 mr-2 ">
+            <HiOutlineSearch
+              fontSize={20}
+              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+              aria-label="search animators"
+            />
+            <input
+              aria-label="search animators"
+              type="text"
+              value={searchQuery}
+              onChange={handleSearch}
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
+            />{" "}
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => handleSearch({ target: { value: "" } })} // Clear search
+                className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+                aria-label="clear search"
+              >
+                &times;
+              </button>
+            )}
+          </div>
+          {/* Months Filter Dropdown */}
+          <label htmlFor="monthFilter" className="formInputLabel">
+            <select
+              aria-label="monthFilter"
+              id="monthFilter"
+              value={monthFilter}
+              onChange={(e) => setMonthFilter(e.target.value)}
+              className="text-sm h-8 border  border-gray-300  px-4"
             >
-              &times;
+              {/* Default option is the current month */}
+              <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
+
+              {/* Render the rest of the months, excluding the current month */}
+              {MONTHS.map(
+                (month, index) =>
+                  month !== getCurrentMonth() && (
+                    <option key={index} value={month}>
+                      {month}
+                    </option>
+                  )
+              )}
+            </select>
+          </label>
+          {/* date Filter  */}
+          <input
+            aria-label="dateFilter"
+            type="date"
+            value={dateFilter || ""}
+            onChange={(e) => setDateFilter(e.target.value)}
+            className="text-sm h-8 border   border-gray-300  px-4"
+            placeholder="Select a date"
+          />
+          {/* Clear Button */}
+          {dateFilter && (
+            <button
+              onClick={() => setDateFilter("")}
+              className="text-sm h-8 border px-4  border-gray-300 hover:text-red-600 focus:outline-none"
+            >
+              Clear Filters
             </button>
           )}
         </div>
-        {/* Months Filter Dropdown */}
-        <label htmlFor="monthFilter" className="formInputLabel">
-          <select
-            aria-label="monthFilter"
-            id="monthFilter"
-            value={monthFilter}
-            onChange={(e) => setMonthFilter(e.target.value)}
-            className="text-sm h-8 border  border-gray-300  px-4"
-          >
-            {/* Default option is the current month */}
-            <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
 
-            {/* Render the rest of the months, excluding the current month */}
-            {MONTHS.map(
-              (month, index) =>
-                month !== getCurrentMonth() && (
-                  <option key={index} value={month}>
-                    {month}
-                  </option>
-                )
-            )}
-          </select>
-        </label>
-        {/* date Filter  */}
-        <input
-          aria-label="dateFilter"
-          type="date"
-          value={dateFilter || ""}
-          onChange={(e) => setDateFilter(e.target.value)}
-          className="text-sm h-8 border   border-gray-300  px-4"
-          placeholder="Select a date"
-        />
-        {/* Clear Button */}
-        {dateFilter && (
-          <button
-            onClick={() => setDateFilter("")}
-            className="text-sm h-8 border px-4  border-gray-300 hover:text-red-600 focus:outline-none"
-          >
-            Clear Filters
-          </button>
-        )}
-      </div>
+        <div className="dataTableContainer">
+          <div>
+            <DataTable
+              title={tableHeader}
+              columns={column}
+              data={filteredAssignments}
+              pagination
+              removableRows
+              pageSizeControl
+              customStyles={{
+                table: {
+                  style: {
+                    tableLayout: "auto", // Allow dynamic resizing of columns
+                    width: "100%",
+                  },
+                },
+                headCells: {
+                  style: {
+                    justifyContent: "center",
+                    textAlign: "center",
+                    color: "black",
+                    fontSize: "14px",
+                  },
+                },
+                cells: {
+                  style: {
+                    color: "black",
+                    fontSize: "14px",
+                  },
+                },
+                pagination: {
+                  style: {
+                    display: "flex",
+                    justifyContent: "center", // Center the pagination control
+                    alignItems: "center",
+                    padding: "10px 0", // Optional: Add padding for spacing
+                  },
+                },
+              }}
+            />
+          </div>
 
-      <div className="dataTableContainer">
-        <div>
-          <DataTable
-            title={tableHeader}
-            columns={column}
-            data={filteredAssignments}
-            pagination
-            removableRows
-            pageSizeControl
-            customStyles={{
-              table: {
-                style: {
-                  tableLayout: "auto", // Allow dynamic resizing of columns
-                  width: "100%",
-                },
-              },
-              headCells: {
-                style: {
-                  justifyContent: "center",
-                  textAlign: "center",
-                  color: "black",
-                  fontSize: "14px",
-                },
-              },
-              cells: {
-                style: {
-                  color: "black",
-                  fontSize: "14px",
-                },
-              },
-              pagination: {
-                style: {
-                  display: "flex",
-                  justifyContent: "center", // Center the pagination control
-                  alignItems: "center",
-                  padding: "10px 0", // Optional: Add padding for spacing
-                },
-              },
-            }}
+          {/* Center the Buttons */}
+          {(isAdmin || isDirector || isManager || isAcademic) && (
+            <button
+              className="add-button "
+              onClick={() =>
+                navigate("/academics/plannings/NewAnimatorsAssignmentForm/")
+              }
+              hidden={!canCreate}
+            >
+              New Assignment
+            </button>
+          )}
+
+          {/* Deletion Modal */}
+          <DeletionConfirmModal
+            isOpen={isDeleteModalOpen}
+            onClose={handleCloseDeleteModal}
+            onConfirm={handleConfirmDelete}
           />
         </div>
-
-        {/* Center the Buttons */}
-        {(isAdmin || isDirector || isManager || isAcademic) && (
-          <button
-            className="add-button "
-            onClick={() =>
-              navigate("/academics/plannings/NewAnimatorsAssignmentForm/")
-            }
-            hidden={!canCreate}
-          >
-            New Assignment
-          </button>
-        )}
-
-        {/* Deletion Modal */}
-        <DeletionConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
-          onConfirm={handleConfirmDelete}
-        />
-      </div>
-    </>
-  );
+      </>
+    );
+  return content;
 };
 export default AnimatorsAssignmentsList;

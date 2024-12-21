@@ -2,7 +2,6 @@ import { useParams } from "react-router-dom"; //because we will get the userId f
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
-import EmployeeDocumentsList from "./EmployeeDocumentsList";
 import useAuth from "../../../../hooks/useAuth";
 import React from "react";
 import axios from "axios";
@@ -32,7 +31,7 @@ import {
 const EmployeeDocuments = () => {
   const { id: userId } = useParams(); //pull the id from use params from the url
   const Navigate = useNavigate();
-  const Dispatch = useDispatch();
+
 
   //console.log(userId,'the id in teh list')
   const { triggerBanner } = useOutletContext(); // Access banner trigger
@@ -50,8 +49,7 @@ const EmployeeDocuments = () => {
     selectedAcademicYear?.title || ""
   );
   const [employeeDocumentLabel, setEmployeeDocumentLabel] = useState("");
-  const [validEmployeeDocumentLabel, setValidEmployeeDocumentLabel] =
-    useState("");
+
   const [employeeDocumentReference, setEmployeeDocumentReference] =
     useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
@@ -104,9 +102,9 @@ const EmployeeDocuments = () => {
   //console.log(id,employeeDocumentYear)
   const {
     data: employeeDocumentsListing,
-    isLoading: listIsLoading,
-    isSuccess: listIsSuccess,
-    isError: listIsError,
+    isLoading: isListLoading,
+    isSuccess: isListSuccess,
+    isError: isListError,
     error: listError,
   } = useGetEmployeeDocumentsByYearByIdQuery(
     {
@@ -122,13 +120,6 @@ const EmployeeDocuments = () => {
     }
   );
 
-  //console.log('employeeDocumentsListing',employeeDocumentsListing )
-
-  //         //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
-  //const errClass = isError ? "errmsg" : "offscreen"
-  //       //const validEmployeeClass = !validEmployeeName ? 'form__input--incomplete' : ''
-  //       //const validPwdClass = !validPassword ? 'form__input--incomplete' : ''
-  //       //const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
 
   // Function to handle the delete button click
   const onDeleteEmployeeDocumentClicked = (docId) => {
@@ -398,7 +389,7 @@ const EmployeeDocuments = () => {
     },
   ];
   let content;
-  if (listIsLoading)
+  if (isListLoading)
     content = (
       <>
         <HR />
@@ -407,87 +398,90 @@ const EmployeeDocuments = () => {
     );
 
   //console.log(employeeDocumentsListing)
-  content = (
-    <>
-      {/* {" "}
+  if (isListSuccess)
+    content = (
+      <>
+        {/* {" "}
       {isDelSuccess && <p>Document deleted successfully!</p>} */}
-      <HR />
-      <div className="dataTableContainer">
-        <div>
-          <DataTable
-            columns={column}
-            data={employeeDocumentsListing}
-            pagination
-            selectableRows
-            removableRows
-            pageSizeControl
-            customStyles={{
-              headCells: {
-                style: {
-                  // Apply Tailwind style via a class-like syntax
-                  justifyContent: "center", // Align headers to the center
-                  textAlign: "center", // Center header text
-                  color: "black",
-                  fontSize: "14px", // Increase font size for header text
+        <HR />
+        <div className="dataTableContainer">
+          <div>
+            <DataTable
+              columns={column}
+              data={employeeDocumentsListing}
+              pagination
+              selectableRows
+              removableRows
+              pageSizeControl
+              customStyles={{
+                headCells: {
+                  style: {
+                    // Apply Tailwind style via a class-like syntax
+                    justifyContent: "center", // Align headers to the center
+                    textAlign: "center", // Center header text
+                    color: "black",
+                    fontSize: "14px", // Increase font size for header text
+                  },
                 },
-              },
 
-              cells: {
-                style: {
-                  justifyContent: "center", // Center cell content
-                  textAlign: "center",
-                  color: "black",
-                  fontSize: "14px", // Increase font size for cell text
+                cells: {
+                  style: {
+                    justifyContent: "center", // Center cell content
+                    textAlign: "center",
+                    color: "black",
+                    fontSize: "14px", // Increase font size for cell text
+                  },
                 },
-              },
-              pagination: {
-                style: {
-                  display: "flex",
-                  justifyContent: "center", // Center the pagination control
-                  alignItems: "center",
-                  padding: "10px 0", // Optional: Add padding for spacing
+                pagination: {
+                  style: {
+                    display: "flex",
+                    justifyContent: "center", // Center the pagination control
+                    alignItems: "center",
+                    padding: "10px 0", // Optional: Add padding for spacing
+                  },
                 },
-              },
-            }}
-          ></DataTable>
-        </div>
+              }}
+            ></DataTable>
+          </div>
 
-        <div className="cancelSavebuttonsDiv">
-          <button
-            className="cancel-button"
-            onClick={() => Navigate(`/hr/employees/employeesList/`)}
-          >
-            Back to List
-          </button>
-          <button
-            className=" px-4 py-2 bg-sky-700 text-white rounded"
-            onClick={() => Navigate(`/hr/employees/employeeDetails/${userId}`)}
-          >
-            Employee Details
-          </button>
+          <div className="cancelSavebuttonsDiv">
+            <button
+              className="cancel-button"
+              onClick={() => Navigate(`/hr/employees/employeesList/`)}
+            >
+              Back to List
+            </button>
+            <button
+              className=" px-4 py-2 bg-sky-700 text-white rounded"
+              onClick={() =>
+                Navigate(`/hr/employees/employeeDetails/${userId}`)
+              }
+            >
+              Employee Details
+            </button>
+          </div>
         </div>
-      </div>
-      <UploadDocumentFormModal
-        isOpen={isUploadModalOpen}
-        onRequestClose={() => setIsUploadModalOpen(false)}
-        userId={userId}
-        year={employeeDocumentYear}
-        documentTitle={documentTitle}
-        employeeDocumentReference={employeeDocumentReference}
-        onUpload={handleUpload}
-      />
-      <ViewDocumentModal
-        isOpen={isViewModalOpen}
-        onRequestClose={() => setIsViewModalOpen(false)}
-        documentUrl={documentToView}
-      />
-      <DeletionConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
-      />
-    </>
-  );
+        <UploadDocumentFormModal
+          isOpen={isUploadModalOpen}
+          onRequestClose={() => setIsUploadModalOpen(false)}
+          userId={userId}
+          year={employeeDocumentYear}
+          documentTitle={documentTitle}
+          employeeDocumentReference={employeeDocumentReference}
+          onUpload={handleUpload}
+        />
+        <ViewDocumentModal
+          isOpen={isViewModalOpen}
+          onRequestClose={() => setIsViewModalOpen(false)}
+          documentUrl={documentToView}
+        />
+        <DeletionConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+        />
+      </>
+    );
 
   return content;
 };

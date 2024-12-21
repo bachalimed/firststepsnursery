@@ -30,7 +30,6 @@ import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/at
 import useAuth from "../../../../hooks/useAuth";
 import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
 import { setStudents } from "./studentsSlice";
-
 import { gradeOptions } from "../../../../config/Constants";
 
 const StudentsList = () => {
@@ -55,7 +54,6 @@ const StudentsList = () => {
     isManager,
     isAdmin,
   } = useAuth();
-
   //filter states
   const [selectedGrade, setSelectedGrade] = useState("");
   const [selectedSchoolName, setSelectedSchoolName] = useState("");
@@ -490,156 +488,158 @@ const StudentsList = () => {
         <LoadingStateIcon />
       </>
     );
+  if (isStudentsSuccess && isSchoolsSuccess)
+    content = (
+      <>
+        <Students />
+        <div className="flex space-x-2 items-center ml-3">
+          {/* Search Bar */}
+          <div className="relative h-10 mr-2">
+            <HiOutlineSearch
+              fontSize={20}
+              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+              aria-label="search students"
+            />
+            <input
+              aria-label="search students"
+              type="text"
+              value={searchQuery}
+              onChange={handleSearch}
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300 px-4 pl-11 pr-4"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => handleSearch({ target: { value: "" } })} // Clear search
+                className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+                aria-label="clear search"
+              >
+                &times;
+              </button>
+            )}
+          </div>
 
-  content = (
-    <>
-      <Students />
-      <div className="flex space-x-2 items-center ml-3">
-        {/* Search Bar */}
-        <div className="relative h-10 mr-2">
-          <HiOutlineSearch
-            fontSize={20}
-            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-            aria-label="search students"
-          />
-          <input
-            aria-label="search students"
-            type="text"
-            value={searchQuery}
-            onChange={handleSearch}
-            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300 px-4 pl-11 pr-4"
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => handleSearch({ target: { value: "" } })} // Clear search
-              className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
-              aria-label="clear search"
+          {/* Grade Filter Dropdown */}
+          <label htmlFor="gradeFilter" className="formInputLabel">
+            <select
+              aria-label="gradeFilter"
+              id="gradeFilter"
+              value={selectedGrade}
+              onChange={handleGradeChange}
+              className="text-sm h-8 border border-gray-300  px-4"
             >
-              &times;
-            </button>
+              <option value="">All Grades</option>
+              {gradeOptions.map((grade) => (
+                <option key={grade} value={grade}>
+                  Grade {grade}
+                </option>
+              ))}
+            </select>
+          </label>
+          {/* Attended school selection dropdown */}
+          <label htmlFor="schoolFilter" className="formInputLabel">
+            <select
+              aria-label="schoolFilter"
+              id="schoolFilter"
+              value={selectedSchoolName}
+              onChange={handleSchoolChange}
+              className="text-sm h-8 border border-gray-300  px-4"
+            >
+              <option value="">All Schools</option>
+              {attendedSchools?.map(
+                (school) =>
+                  school.schoolName !== "First Steps" && (
+                    <option key={school.id} value={school.schoolName}>
+                      {school.schoolName}
+                    </option>
+                  )
+              )}
+            </select>
+          </label>
+        </div>
+
+        <div className="dataTableContainer">
+          <div>
+            <DataTable
+              title={tableHeader}
+              columns={column}
+              data={filteredStudents}
+              pagination
+              selectableRows
+              removableRows
+              pageSizeControl
+              onSelectedRowsChange={handleRowSelected}
+              selectableRowsHighlight
+              customStyles={{
+                headCells: {
+                  style: {
+                    justifyContent: "center",
+                    textAlign: "center",
+                    color: "black",
+                    fontSize: "14px",
+                  },
+                },
+                cells: {
+                  style: {
+                    color: "black",
+                    fontSize: "14px",
+                  },
+                },
+                pagination: {
+                  style: {
+                    display: "flex",
+                    justifyContent: "center", // Center the pagination control
+                    alignItems: "center",
+                    padding: "10px 0", // Optional: Add padding for spacing
+                  },
+                },
+              }}
+            ></DataTable>
+          </div>
+          {(isAcademic || isDesk || isDirector || isManager || isAdmin) && (
+            <div className="cancelSavebuttonsDiv">
+              <button
+                className="add-button"
+                onClick={() =>
+                  navigate("/students/studentsParents/newStudent/")
+                }
+                // disabled={selectedRows.length !== 1} // Disable if no rows are selected
+                hidden={!canCreate}
+                aria-label="add student"
+              >
+                New Student
+              </button>
+              <button
+                className={`px-4 py-2 ${
+                  selectedRows?.length === 1 ? "add-button" : "bg-gray-300"
+                } text-white rounded`}
+                onClick={handleRegisterSelected}
+                disabled={selectedRows?.length !== 1} // Disable if no rows are selected
+                hidden={!canCreate}
+                aria-label="register student"
+              >
+                Register
+              </button>
+            </div>
           )}
         </div>
-
-        {/* Grade Filter Dropdown */}
-        <label htmlFor="gradeFilter" className="formInputLabel">
-          <select
-            aria-label="gradeFilter"
-            id="gradeFilter"
-            value={selectedGrade}
-            onChange={handleGradeChange}
-            className="text-sm h-8 border border-gray-300  px-4"
-          >
-            <option value="">All Grades</option>
-            {gradeOptions.map((grade) => (
-              <option key={grade} value={grade}>
-                Grade {grade}
-              </option>
-            ))}
-          </select>
-        </label>
-        {/* Attended school selection dropdown */}
-        <label htmlFor="schoolFilter" className="formInputLabel">
-          <select
-            aria-label="schoolFilter"
-            id="schoolFilter"
-            value={selectedSchoolName}
-            onChange={handleSchoolChange}
-            className="text-sm h-8 border border-gray-300  px-4"
-          >
-            <option value="">All Schools</option>
-            {attendedSchools?.map(
-              (school) =>
-                school.schoolName !== "First Steps" && (
-                  <option key={school.id} value={school.schoolName}>
-                    {school.schoolName}
-                  </option>
-                )
-            )}
-          </select>
-        </label>
-      </div>
-
-      <div className="dataTableContainer">
-        <div>
-          <DataTable
-            title={tableHeader}
-            columns={column}
-            data={filteredStudents}
-            pagination
-            selectableRows
-            removableRows
-            pageSizeControl
-            onSelectedRowsChange={handleRowSelected}
-            selectableRowsHighlight
-            customStyles={{
-              headCells: {
-                style: {
-                  justifyContent: "center",
-                  textAlign: "center",
-                  color: "black",
-                  fontSize: "14px",
-                },
-              },
-              cells: {
-                style: {
-                  color: "black",
-                  fontSize: "14px",
-                },
-              },
-              pagination: {
-                style: {
-                  display: "flex",
-                  justifyContent: "center", // Center the pagination control
-                  alignItems: "center",
-                  padding: "10px 0", // Optional: Add padding for spacing
-                },
-              },
-            }}
-          ></DataTable>
-        </div>
-        {(isAcademic || isDesk || isDirector || isManager || isAdmin) && (
-          <div className="cancelSavebuttonsDiv">
-            <button
-              className="add-button"
-              onClick={() => navigate("/students/studentsParents/newStudent/")}
-              // disabled={selectedRows.length !== 1} // Disable if no rows are selected
-              hidden={!canCreate}
-              aria-label="add student"
-            >
-              New Student
-            </button>
-            <button
-              className={`px-4 py-2 ${
-                selectedRows?.length === 1 ? "add-button" : "bg-gray-300"
-              } text-white rounded`}
-              onClick={handleRegisterSelected}
-              disabled={selectedRows?.length !== 1} // Disable if no rows are selected
-              hidden={!canCreate}
-              aria-label="register student"
-            >
-              Register
-            </button>
-          </div>
-        )}
-      </div>
-      <DeletionConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
-      />
-      <RegisterModal //will allow to add or remove studetnYEars
-        isOpen={isRegisterModalOpen}
-        onClose={() => setIsRegisterModalOpen(false)}
-        studentYears={studentYears}
-        studentObject={studentObject}
-        setStudentObject={setStudentObject}
-        setStudentYears={setStudentYears}
-        academicYears={academicYears}
-        onSave={onUpdateStudentClicked}
-      />
-    </>
-  );
+        <DeletionConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+        />
+        <RegisterModal //will allow to add or remove studetnYEars
+          isOpen={isRegisterModalOpen}
+          onClose={() => setIsRegisterModalOpen(false)}
+          studentYears={studentYears}
+          studentObject={studentObject}
+          setStudentObject={setStudentObject}
+          setStudentYears={setStudentYears}
+          academicYears={academicYears}
+          onSave={onUpdateStudentClicked}
+        />
+      </>
+    );
 
   return content;
 };

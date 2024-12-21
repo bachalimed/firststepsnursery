@@ -281,7 +281,7 @@ const PayeesList = () => {
         <LoadingStateIcon />
       </>
     );
-
+    if (isPayeesSuccess)
   content = (
     <>
       <FinancesSet />

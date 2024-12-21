@@ -119,8 +119,6 @@ const LeavesList = () => {
     setIdLeaveToDelete(null);
   };
 
-  // State to hold selected rows
-  const [selectedRows, setSelectedRows] = useState([]);
   //state to hold the search query
   const [searchQuery, setSearchQuery] = useState("");
   //const [filteredLeaves, setFilteredLeaves] = useState([])
@@ -442,7 +440,7 @@ const LeavesList = () => {
         <LoadingStateIcon />
       </>
     );
-
+    if (isLeavesSuccess)
   content = (
     <>
       <HR />

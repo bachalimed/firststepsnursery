@@ -104,9 +104,9 @@ const StudentDocuments = () => {
 
   const {
     data: studentDocumentsListing,
-    isLoading: listIsLoading,
-    isSuccess: listIsSuccess,
-    isError: listIsError,
+    isLoading: isListLoading,
+    isSuccess: isListSuccess,
+    isError: isListError,
     error: listError,
   } = useGetStudentDocumentsByYearByIdQuery(
     {
@@ -395,7 +395,7 @@ const StudentDocuments = () => {
     },
   ];
   let content;
-  if (listIsLoading)
+  if (isListLoading)
     content = (
       <>
         <Students />
@@ -404,86 +404,87 @@ const StudentDocuments = () => {
     );
 
   //console.log(studentDocumentsListing)
-  content = (
-    <>
-      <Students />
-      <div className="dataTableContainer">
-        <div>
-          <DataTable
-            columns={column}
-            data={studentDocumentsListing}
-            pagination
-            //selectableRows
-            removableRows
-            pageSizeControl
-            customStyles={{
-              headCells: {
-                style: {
-                  // Apply Tailwind style via a class-like syntax
-                  justifyContent: "center", // Align headers to the center
-                  textAlign: "center", // Center header text
-                  color: "black",
-                  fontSize: "14px", // Increase font size for header text
+  if (isListSuccess)
+    content = (
+      <>
+        <Students />
+        <div className="dataTableContainer">
+          <div>
+            <DataTable
+              columns={column}
+              data={studentDocumentsListing}
+              pagination
+              //selectableRows
+              removableRows
+              pageSizeControl
+              customStyles={{
+                headCells: {
+                  style: {
+                    // Apply Tailwind style via a class-like syntax
+                    justifyContent: "center", // Align headers to the center
+                    textAlign: "center", // Center header text
+                    color: "black",
+                    fontSize: "14px", // Increase font size for header text
+                  },
                 },
-              },
 
-              cells: {
-                style: {
-                  justifyContent: "center", // Center cell content
-                  textAlign: "center",
-                  color: "black",
-                  fontSize: "14px", // Increase font size for cell text
+                cells: {
+                  style: {
+                    justifyContent: "center", // Center cell content
+                    textAlign: "center",
+                    color: "black",
+                    fontSize: "14px", // Increase font size for cell text
+                  },
                 },
-              },
-              pagination: {
-                style: {
-                  display: "flex",
-                  justifyContent: "center", // Center the pagination control
-                  alignItems: "center",
-                  padding: "10px 0", // Optional: Add padding for spacing
+                pagination: {
+                  style: {
+                    display: "flex",
+                    justifyContent: "center", // Center the pagination control
+                    alignItems: "center",
+                    padding: "10px 0", // Optional: Add padding for spacing
+                  },
                 },
-              },
-            }}
-          ></DataTable>
+              }}
+            ></DataTable>
+          </div>
+          <div className="cancelSavebuttonsDiv">
+            <button
+              className="cancel-button"
+              onClick={() => Navigate(`/students/studentsParents/students`)}
+            >
+              Back to List
+            </button>
+            <button
+              className=" px-4 py-2 bg-sky-700 text-white rounded"
+              onClick={() =>
+                Navigate(`/students/studentsParents/studentDetails/${id}`)
+              }
+            >
+              Student Details
+            </button>
+          </div>
         </div>
-        <div className="cancelSavebuttonsDiv">
-          <button
-            className="cancel-button"
-            onClick={() => Navigate(`/students/studentsParents/students`)}
-          >
-            Back to List
-          </button>
-          <button
-            className=" px-4 py-2 bg-sky-700 text-white rounded"
-            onClick={() =>
-              Navigate(`/students/studentsParents/studentDetails/${id}`)
-            }
-          >
-            Student Details
-          </button>
-        </div>
-      </div>
-      <UploadDocumentFormModal
-        isOpen={isUploadModalOpen}
-        onRequestClose={() => setIsUploadModalOpen(false)}
-        studentId={studentId}
-        year={studentDocumentYear}
-        documentTitle={documentTitle}
-        studentDocumentReference={studentDocumentReference}
-        onUpload={handleUpload}
-      />
-      <ViewDocumentModal
-        isOpen={isViewModalOpen}
-        onRequestClose={() => setIsViewModalOpen(false)}
-        documentUrl={documentToView}
-      />
-      <DeletionConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
-      />
-    </>
-  );
+        <UploadDocumentFormModal
+          isOpen={isUploadModalOpen}
+          onRequestClose={() => setIsUploadModalOpen(false)}
+          studentId={studentId}
+          year={studentDocumentYear}
+          documentTitle={documentTitle}
+          studentDocumentReference={studentDocumentReference}
+          onUpload={handleUpload}
+        />
+        <ViewDocumentModal
+          isOpen={isViewModalOpen}
+          onRequestClose={() => setIsViewModalOpen(false)}
+          documentUrl={documentToView}
+        />
+        <DeletionConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+        />
+      </>
+    );
 
   return content;
 };

@@ -3,22 +3,33 @@ import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
 import useAuth from "../../hooks/useAuth";
 import { useLocation, Link } from "react-router-dom";
 
-
 const MyProfile = () => {
   const location = useLocation();
-  const { isEmployee ,isParent,isContentManager,isAnimator,isAcademic,isFinance,isHR,isDesk , isDirector ,isManager , isAdmin  } = useAuth();
+  const {
+    isEmployee,
+    isParent,
+    isContentManager,
+    isAnimator,
+    isAcademic,
+    isFinance,
+    isHR,
+    isDesk,
+    isDirector,
+    isManager,
+    isAdmin,
+  } = useAuth();
 
   // Define the tab data with paths and labels
   const tabs = [
-  //   { label: "MyProfile", path: "/myProfile/resetPassword/" },
-  //   { label: "Families", path: "/myProfile/myProfileParents/families/" },
-  //   { label: "Admissions", path: "/myProfile/admissions/admissions/" },
-  //   { label: "Enrolments", path: "/myProfile/enrolments/enrolments/" },
-  //   (isAdmin || isManager) && {
-  //     label: "Unenrolled MyProfile",
-  //     path: "/myProfile/enrolments/unenrolments/",
-  //   },
-  //   //{ label: "New Admission", path: "/myProfile/admissions/newAdmission/" },
+    //   { label: "MyProfile", path: "/myProfile/resetPassword/" },
+    //   { label: "Families", path: "/myProfile/myProfileParents/families/" },
+    //   { label: "Admissions", path: "/myProfile/admissions/admissions/" },
+    //   { label: "Enrolments", path: "/myProfile/enrolments/enrolments/" },
+    //   (isAdmin || isManager) && {
+    //     label: "Unenrolled MyProfile",
+    //     path: "/myProfile/enrolments/unenrolments/",
+    //   },
+    //   //{ label: "New Admission", path: "/myProfile/admissions/newAdmission/" },
   ];
 
   // Function to determine if a tab is active based on the current path
@@ -27,7 +38,7 @@ const MyProfile = () => {
   // Render the component content
   return (
     <div className="flex bg-gray-300 p-3 px-4 md:px-4 items-center justify-start space-x-4">
-      <AcademicYearsSelection style={{ display: isDirector || isManager || isAdmin ? 'block' : 'none' }} />
+      {(isAdmin || isManager || isDirector) && <AcademicYearsSelection />}
       {tabs.map((tab) => (
         <Link key={tab.path} to={tab.path}>
           <li

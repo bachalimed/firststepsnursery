@@ -216,7 +216,7 @@ const ServicesList = () => {
         <LoadingStateIcon />
       </>
     );
-
+if(isServicesSuccess)
   content = (
     <>
       <StudentsSet />

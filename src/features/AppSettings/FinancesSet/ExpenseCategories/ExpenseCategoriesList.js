@@ -1,30 +1,20 @@
 import {
   useGetExpenseCategoriesByYearQuery,
-  useUpdateExpenseCategoryMutation,
   useDeleteExpenseCategoryMutation,
 } from "./expenseCategoriesApiSlice";
 import { HiOutlineSearch } from "react-icons/hi";
 import FinancesSet from "../../FinancesSet";
-import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
-
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import {
-  setAcademicYears,
-  selectAllAcademicYears,
-} from "../../AcademicsSet/AcademicYears/academicYearsSlice";
+import { selectAllAcademicYears } from "../../AcademicsSet/AcademicYears/academicYearsSlice";
 import useAuth from "../../../../hooks/useAuth";
-import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
 import { IoShieldCheckmarkOutline, IoShieldOutline } from "react-icons/io5";
-import { useOutletContext } from "react-router-dom";
-import { IoDocumentAttachOutline } from "react-icons/io5";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
@@ -33,7 +23,6 @@ import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 const ExpenseCategoriesList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
   const [requiredDocNumber, setRequiredDocNumber] = useState("");
@@ -294,78 +283,79 @@ const ExpenseCategoriesList = () => {
         <LoadingStateIcon />
       </>
     );
-
-  content = (
-    <>
-      <FinancesSet />
-      <div className="flex space-x-2 items-center ml-3">
-      <div className="relative h-10 mr-2 ">
-        <HiOutlineSearch
-          fontSize={20}
-          className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-          aria-label="search students"/>
-        <input
-          aria-label="search students"
-          type="text"
-          value={searchQuery}
-          onChange={handleSearch}
-          className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
-        />
-        {searchQuery && (
-            <button
-              type="button"
-              onClick={() => handleSearch({ target: { value: "" } })} // Clear search
-              className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
-              aria-label="clear search"
-            >
-              &times;
-            </button>
-          )}
-      </div>
-      </div>
-      <div className="dataTableContainer">
-        <div>
-          <DataTable
-            title={tableHeader}
-            columns={column}
-            data={filteredExpenseCategories}
-            pagination
-            //selectableRows
-            removableRows
-            pageSizeControl
-            // onSelectedRowsChange={handleRowSelected}
-            selectableRowsHighlight
-            customStyles={{
-              headCells: {
-                style: {
-                  // Apply Tailwind style via a class-like syntax
-                  justifyContent: "center", // Align headers to the center
-                  textAlign: "center", // Center header text
-                  color: "black",
-                  fontSize: "14px", // Increase font size for header text
-                },
-              },
-
-              cells: {
-                style: {
-                  justifyContent: "center", // Center cell content
-                  textAlign: "center",
-                  color: "black",
-                  fontSize: "14px", // Increase font size for cell text
-                },
-              },
-              pagination: {
-                style: {
-                  display: "flex",
-                  justifyContent: "center", // Center the pagination control
-                  alignItems: "center",
-                  padding: "10px 0", // Optional: Add padding for spacing
-                },
-              },
-            }}
-          ></DataTable>
+  if (isExpenseCategoriesSuccess)
+    content = (
+      <>
+        <FinancesSet />
+        <div className="flex space-x-2 items-center ml-3">
+          <div className="relative h-10 mr-2 ">
+            <HiOutlineSearch
+              fontSize={20}
+              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+              aria-label="search students"
+            />
+            <input
+              aria-label="search students"
+              type="text"
+              value={searchQuery}
+              onChange={handleSearch}
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => handleSearch({ target: { value: "" } })} // Clear search
+                className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+                aria-label="clear search"
+              >
+                &times;
+              </button>
+            )}
+          </div>
         </div>
-        {/* <div className="cancelSavebuttonsDiv"> */}
+        <div className="dataTableContainer">
+          <div>
+            <DataTable
+              title={tableHeader}
+              columns={column}
+              data={filteredExpenseCategories}
+              pagination
+              //selectableRows
+              removableRows
+              pageSizeControl
+              // onSelectedRowsChange={handleRowSelected}
+              selectableRowsHighlight
+              customStyles={{
+                headCells: {
+                  style: {
+                    // Apply Tailwind style via a class-like syntax
+                    justifyContent: "center", // Align headers to the center
+                    textAlign: "center", // Center header text
+                    color: "black",
+                    fontSize: "14px", // Increase font size for header text
+                  },
+                },
+
+                cells: {
+                  style: {
+                    justifyContent: "center", // Center cell content
+                    textAlign: "center",
+                    color: "black",
+                    fontSize: "14px", // Increase font size for cell text
+                  },
+                },
+                pagination: {
+                  style: {
+                    display: "flex",
+                    justifyContent: "center", // Center the pagination control
+                    alignItems: "center",
+                    padding: "10px 0", // Optional: Add padding for spacing
+                  },
+                },
+              }}
+            ></DataTable>
+          </div>
+          {/* <div className="cancelSavebuttonsDiv"> */}
           <button
             className="add-button"
             onClick={() =>
@@ -377,16 +367,15 @@ const ExpenseCategoriesList = () => {
             New Category
           </button>
 
-         
-        {/* </div> */}
-      </div>
-      <DeletionConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
-      />
-    </>
-  );
+          {/* </div> */}
+        </div>
+        <DeletionConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+        />
+      </>
+    );
 
   return content;
 };
