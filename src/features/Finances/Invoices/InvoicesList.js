@@ -21,9 +21,11 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { MONTHS } from "../../../config/Months";
 import useAuth from "../../../hooks/useAuth";
 import { MdPaid, MdOutlinePaid } from "react-icons/md";
+import { useOutletContext } from "react-router-dom";
 const InvoicesList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
 
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
 
@@ -92,7 +94,7 @@ const InvoicesList = () => {
       isLoading: isDelLoading,
       isSuccess: isDelSuccess,
       isError: isDelError,
-      error: delerror,
+      error: delError,
     },
   ] = useDeleteInvoiceMutation();
 
@@ -104,8 +106,28 @@ const InvoicesList = () => {
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    await deleteInvoice({ id: idInvoiceToDelete });
-    setIsDeleteModalOpen(false); // Close the modal
+    try {
+      const response = await deleteInvoice({ id: idInvoiceToDelete });
+      setIsDeleteModalOpen(false); // Close the modal
+      if (response?.message) {
+        // Success response
+        triggerBanner(response?.message, "success");
+      } else if (response?.data?.message) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isDelError) {
+        // In case of unexpected response format
+        triggerBanner(delError?.data?.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner(error?.data?.message, "error");
+    }
   };
 
   // Function to close the modal without deleting

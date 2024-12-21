@@ -235,6 +235,13 @@ const EnrolmentsList = () => {
 
   // Handler for generating an invoice
   const handleGenerateInvoice = async () => {
+    // // check if any finalfee is <authorised fee and remove the object from formdata
+    // const filteredRows = selectedRows.filter(
+    //   (row) => row.serviceFinalFee >= row.serviceAuthorisedFee
+    // );
+    // if (selectedRows.length !== filteredRows.length) {
+    //   alert("Some enrolments were not processed because their final fee is not authorised.");
+    // }
     try {
       const response = await addNewInvoice({
         formData: selectedRows,
@@ -348,7 +355,7 @@ const EnrolmentsList = () => {
         <span
           style={{
             color:
-              row?.serviceFinalFee < row?.serviceAuthorisedFee
+              row?.serviceFinalFee < row?.serviceAuthorisedFee //means final fee edited
                 ? "red"
                 : "black",
           }}
@@ -365,10 +372,20 @@ const EnrolmentsList = () => {
     },
     {
       name: "Authorised", //means authorised
-      selector: (row) =>
-        `${row?.serviceAuthorisedFee} / ${
-          row?.admission?.agreedServices?.isAuthorised ? "Yes" : "No"
-        }`,
+      selector: (row) => (
+        <span
+          style={{
+            color:
+              row?.serviceFinalFee < row?.serviceAuthorisedFee //means final fee edited
+                ? "red"
+                : "black",
+          }}
+        >
+          {`${row?.serviceAuthorisedFee} / ${
+            row?.admission?.agreedServices?.isAuthorised ? "Yes" : "No"
+          }`}{" "}
+        </span>
+      ),
 
       sortable: true,
       width: "120px",
@@ -606,7 +623,7 @@ const EnrolmentsList = () => {
             className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
           />
           <input
-          aria-label="search"
+            aria-label="search"
             type="text"
             value={searchQuery}
             onChange={handleSearch}
@@ -735,9 +752,8 @@ const EnrolmentsList = () => {
           </button>
           <button
             className={`px-4 py-2 ${
-              selectedRows?.length >0 ? "add-button" : "bg-gray-300"
+              selectedRows?.length > 0 ? "add-button" : "bg-gray-300"
             } text-white rounded`}
-           
             onClick={handleGenerateInvoice}
             hidden={!canCreate}
             disabled={selectedRows?.length > 20 || selectedRows?.length < 1}

@@ -22,3 +22,8 @@ academic years "1000" use as criteria to query all years data instead of only on
  14. enrollments that weere invoiced will not be editable on the list.
  15. for new enrolment, the list of studetn is for any studetn that has any service that have (some) month in one of the services that corresponds to the month selected.
  so for new admissions, select only one month for admission service and other months for any service.
+ 16. only the manager can edit or delte admission, to keep conttrol of what happens later
+ 17. once fee is under the anchor value , a flag is raised and it should be authorised by manger, this agreed value will be eth one to invoice
+ 18. when we admit with less fee than anchor, a flag is generated, and enrolment will take new value even if not authorised, this will be in red in enrolment list
+ 19. we can change fee during enrolment, or enrolment edit and we consider the final fee a commnet is nneeded in that case.
+ 

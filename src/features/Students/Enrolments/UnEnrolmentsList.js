@@ -175,15 +175,15 @@ const UnenrolmentsList = () => {
     },
     //show this column only if user is a parent and not employee
 
-    isAdmin && {
-      name: "student ID",
-      selector: (row) => row?.student?._id,
+    // isAdmin && {
+    //   name: "student ID",
+    //   selector: (row) => row?.student?._id,
 
-      sortable: true,
-      width: "200px",
-    },
+    //   sortable: true,
+    //   width: "200px",
+    // },
     {
-      name: " Active Student",
+      name: " Active",
       selector: (row) => row?.student?.studentIsActive,
       cell: (row) => (
         <span>
@@ -207,10 +207,10 @@ const UnenrolmentsList = () => {
         " " +
         row?.student?.studentName?.lastName,
       sortable: true,
-      width: "160px",
+      width: "180px",
     },
     {
-      name: "Admission Service",
+      name: "Service",
       selector: (row) => (
         <div>
           {row?.agreedServices.map((feeObj, index) => (
@@ -223,17 +223,43 @@ const UnenrolmentsList = () => {
       width: "150px",
     },
     {
-      name: "Admission Month",
+      name: "Months",
       selector: (row) => (
-        <div>
+        <div style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
           {row?.agreedServices.map((feeObj, index) => (
-            <div key={index}>{feeObj?.feeMonths}</div>
+            <div key={index}>
+              {feeObj?.feeMonths?.length > 0
+                ? `${feeObj.feeMonths.length} - ${feeObj.feeMonths.join(", ")}`
+                : "---"}
+              {index < row.agreedServices.length - 1 && (
+                <hr className="my-2 border-gray-300" />
+              )}
+            </div>
           ))}
         </div>
       ),
+      cell: (row) => (
+        <div style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
+          {row?.agreedServices.map((feeObj, index) => (
+            <div key={index}>
+              {feeObj?.feeMonths?.length > 0
+                ? `${feeObj.feeMonths.length} - ${feeObj.feeMonths.join(", ")}`
+                : "---"}
+              {index < row.agreedServices.length - 1 && (
+                <hr className="my-2 border-gray-300" />
+              )}
+            </div>
+          ))}
+        </div>
+      ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       sortable: true,
-      width: "150px",
+      width: "230px",
     },
+    
 
     // {
     //   name: "Authorised", //means authorised
@@ -293,6 +319,7 @@ const UnenrolmentsList = () => {
             className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
           />
           <input
+            aria-label="search"
             type="text"
             value={searchQuery}
             onChange={handleSearch}

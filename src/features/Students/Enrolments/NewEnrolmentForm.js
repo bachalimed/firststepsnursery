@@ -9,19 +9,12 @@ import {
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 import { useAddNewEnrolmentMutation } from "./enrolmentsApiSlice";
-
 import useAuth from "../../../hooks/useAuth";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import { useOutletContext } from "react-router-dom";
 import { selectAllAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { MONTHS } from "../../../config/Months";
-import {
-  FEE_REGEX,
-  DATE_REGEX,
-  COMMENT_REGEX,
-  OBJECTID_REGEX,
-} from "../../../config/REGEX";
-import { SERVICETYPES } from "../../../config/SchedulerConsts";
+import { COMMENT_REGEX, OBJECTID_REGEX } from "../../../config/REGEX";
 import { CurrencySymbol } from "../../../config/Currency";
 //import { MONTHS } from "../../../config/Months";
 const NewEnrolmentForm = () => {
@@ -32,10 +25,10 @@ const NewEnrolmentForm = () => {
   const [
     addNewEnrolment,
     {
-     isLoading:isAddLoading,
-     isSuccess: isAddSuccess,
-      isError:isAddError,
-      error:addError,
+      isLoading: isAddLoading,
+      isSuccess: isAddSuccess,
+      isError: isAddError,
+      error: addError,
     },
   ] = useAddNewEnrolmentMutation();
 
@@ -93,7 +86,7 @@ const NewEnrolmentForm = () => {
     student: "",
     admission: "",
     enrolmentYear: selectedAcademicYear?.title || "",
-    enrolmentMonth: getCurrentMonthName() || "",
+    enrolmentMonth: "",
     enrolmentNote: "",
 
     enrolmentCreator: userId,
@@ -160,7 +153,7 @@ const NewEnrolmentForm = () => {
         enrolmentOperator: "",
         enrolments: [],
       });
-   
+
       // Navigate to the enrolments page
       navigate("/students/enrolments/enrolments/");
     }
@@ -180,7 +173,15 @@ const NewEnrolmentForm = () => {
       //validServiceFinalFee: formData?.serviceFinalFee !== "",
       validEnrolmentYear: formData?.enrolmentYear !== "",
       validEnrolmentMonth: formData?.enrolmentMonth !== "",
-      validEnrolmentNote: COMMENT_REGEX.test(formData?.enrolmentNote),
+      validEnrolmentNote :
+      COMMENT_REGEX.test(formData?.enrolmentNote) &&
+      formData.enrolments.every((enrolment) => {
+        if (enrolment?.serviceFinalFee < enrolment?.serviceAuthorisedFee) {
+          // If finalFee < authorisedFee, enrolmentNote must not be empty and must pass regex
+          return formData?.enrolmentNote.trim() !== "";
+        }
+        return true; // Otherwise, it's valid
+      }),
       //validEnrolmentDuration: formData?.enrolmentDuration !== "",
       //validEnrolmentStartDate: DATE_REGEX.test(formData?.enrolmentStartDate),
       //validEnrolmentEndDate: DATE_REGEX.test(formData?.enrolmentEndDate),
@@ -211,7 +212,8 @@ const NewEnrolmentForm = () => {
 
     //update teh list so we only have studetn with no enrolment for that selected enrolment month
     const filteredList = noEnrolmentStudentsList.filter((student) =>
-      student.agreedServices.some(// some means if any service has a month similar to the one selcted, the whole student will be in the list
+      student.agreedServices.some(
+        // some means if any service has a month similar to the one selcted, the whole student will be in the list
         (
           service /////put .some to make sure if any of the agredservice has the month, it will not be excluded
         ) => service.feeMonths.includes(formData.enrolmentMonth)
@@ -281,7 +283,7 @@ const NewEnrolmentForm = () => {
       setShowConfirmation(true);
     }
   };
-  
+
   // This function handles the confirmed save action
   const handleConfirmSave = async () => {
     // Close the confirmation modal
@@ -289,11 +291,10 @@ const NewEnrolmentForm = () => {
 
     try {
       const response = await addNewEnrolment(formData);
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -386,7 +387,7 @@ const NewEnrolmentForm = () => {
                     required
                     disabled={!formData?.enrolmentYear}
                   >
-                    {/* <option value="">Select Enrolment Month</option> */}
+                    <option value="">Select Month</option>
                     {MONTHS.map((month, index) => (
                       <option key={index} value={month}>
                         {month}
@@ -511,7 +512,6 @@ const NewEnrolmentForm = () => {
                         className="formInputLabel"
                         htmlFor={`serviceFinalFee-${service?.service}`}
                       >
-                      
                         <input
                           aria-label={`Final fee for ${service?.serviceType}`}
                           id={`serviceFinalFee-${service?.service}`}

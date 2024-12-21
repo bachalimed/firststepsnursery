@@ -524,7 +524,9 @@ const AdmissionsList = () => {
         <div style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
           {row?.agreedServices.map((feeObj, index) => (
             <div key={index}>
-              {feeObj?.feeMonths?.join(", ") || "---"}
+              {feeObj?.feeMonths?.length > 0
+                ? `${feeObj.feeMonths.length} - ${feeObj.feeMonths.join(", ")}`
+                : "---"}
               {index < row.agreedServices.length - 1 && (
                 <hr className="my-2 border-gray-300" />
               )}
@@ -536,7 +538,9 @@ const AdmissionsList = () => {
         <div style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
           {row?.agreedServices.map((feeObj, index) => (
             <div key={index}>
-              {feeObj?.feeMonths?.join(", ") || "---"}
+              {feeObj?.feeMonths?.length > 0
+                ? `${feeObj.feeMonths.length} - ${feeObj.feeMonths.join(", ")}`
+                : "---"}
               {index < row.agreedServices.length - 1 && (
                 <hr className="my-2 border-gray-300" />
               )}
@@ -551,6 +555,7 @@ const AdmissionsList = () => {
       sortable: true,
       width: "230px",
     },
+    
 
     {
       name: "Actions",
@@ -577,6 +582,7 @@ const AdmissionsList = () => {
             <button
               aria-label="edit admission"
               className="text-amber-300"
+              disabled={!isManager||!isAdmin}
               onClick={() =>
                 navigate(`/students/admissions/editAdmission/${row.id}`)
               }
@@ -588,6 +594,7 @@ const AdmissionsList = () => {
             <button
               aria-label="delet admission"
               className="text-red-600"
+              disabled={!isManager||!isAdmin}
               onClick={() => onDeleteAdmissionClicked(row.id)}
             >
               <RiDeleteBin6Line className="text-2xl" />
