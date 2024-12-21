@@ -20,7 +20,7 @@ const EmployeeDocumentsListsList = () => {
   //initialise state variables and hooks
   const Navigate = useNavigate();
   const dispatch = useDispatch();
-  const { canEdit, isAdmin,isManager canDelete, canCreate, status2 } = useAuth();
+  const { canEdit, isAdmin,isManager ,canDelete, canCreate, status2 } = useAuth();
   const [employeeDocumentsLists, setEmployeeDocumentsListsState] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
