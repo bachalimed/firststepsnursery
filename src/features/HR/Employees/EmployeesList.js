@@ -111,6 +111,13 @@ const EmployeesList = () => {
     setIdEmployeeToDelete(null);
   };
 
+  // State for the selected year
+  const [selectedYear, setSelectedYear] = useState("");
+
+  // Handler for year change
+  const handleYearChange = (event) => {
+    setSelectedYear(event.target.value);
+  };
   // State to hold selected rows
   const [selectedRows, setSelectedRows] = useState([]);
   //state to hold the search query
@@ -131,6 +138,8 @@ const EmployeesList = () => {
 
     //the serach result data
     filteredEmployees = employeesList?.filter((item) => {
+      //year filter
+
       //the nested objects need extra logic to separate them
       const firstNameMatch = item?.userFullName?.userFirstName
         .toLowerCase()
@@ -222,18 +231,6 @@ const EmployeesList = () => {
 
     setIsRegisterModalOpen(false); // Close modal
   };
-
-  //   const [employeeYears, setEmployeeYears] = useState([])
-  // //adds to the previous entries in arrays for gardien, schools...
-  //       const onEmployeeYearsChanged = (e, selectedYear) => {
-  //         if (e.target.checked) {
-  //           // Add the selectedYear to employeeYears if it's checked
-  //           setEmployeeYears([...employeeYears, selectedYear]);
-  //         } else {
-  //           // Remove the selectedYear from employeeYears if it's unchecked
-  //           setEmployeeYears(employeeYears.filter(year => year !== selectedYear))
-  //         }
-  //       }
 
   const column = [
     {
@@ -495,6 +492,26 @@ const EmployeesList = () => {
             </button>
           )}
         </div>
+        {/* Year Filter Dropdown */}
+        {/* not implemented becasue we only query the selected eyar */}
+        {/* <label htmlFor="yearFilter" className="relative">
+          <select
+            aria-label="yearFilter"
+            id="yearFilter"
+            value={selectedYear}
+            onChange={handleYearChange}
+            className="text-sm h-8 border border-gray-300 px-4"
+          >
+            <option value="">All Years</option>
+            {academicYears
+              .filter((year) => year?.title !== "1000") // Exclude the year with title "1000"
+              .map((year) => (
+                <option key={year?.title} value={year?.title}>
+                  {year?.title}
+                </option>
+              ))}
+          </select>
+        </label> */}
       </div>
       <div className="dataTableContainer">
         <div>
