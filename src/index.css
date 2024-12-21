@@ -171,6 +171,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1050; /* Higher than the table highlight */
 }
 
 .modal-actions {
@@ -194,6 +195,7 @@
   border-radius: 4px;
   width: 80%;
   max-width: 600px;
+  z-index: 1100; /* Higher than the overlay */
 }
 
 /* New styles for document viewing */

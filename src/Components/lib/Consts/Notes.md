@@ -26,4 +26,8 @@ academic years "1000" use as criteria to query all years data instead of only on
  17. once fee is under the anchor value , a flag is raised and it should be authorised by manger, this agreed value will be eth one to invoice
  18. when we admit with less fee than anchor, a flag is generated, and enrolment will take new value even if not authorised, this will be in red in enrolment list
  19. we can change fee during enrolment, or enrolment edit and we consider the final fee a commnet is nneeded in that case.
+ 20. add faq: if i need to change fee after enrtolment...
+ 21. a student not enrolled can appear on the sectin list.
+ 22. when editing a section, if we change studetn a changeflag will be send and a new sectin will be created and the previous have a to date. 
+ if an invoice is paid it cannot be edited or deleted (hidden)
  

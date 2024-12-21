@@ -259,7 +259,6 @@ const UnenrolmentsList = () => {
       sortable: true,
       width: "230px",
     },
-    
 
     // {
     //   name: "Authorised", //means authorised
@@ -270,34 +269,34 @@ const UnenrolmentsList = () => {
     //   width: "140px",
     // },
 
-    {
-      name: "Actions",
-      cell: (row) => (
-        <div className="space-x-1">
-          {/* <button
-            className="text-green-500"
-            fontSize={20}
-            onClick={() => handleAddServiceToEnrolment(row.agreedServices)}
-          >
-            <IoMdAddCircleOutline className="text-2xl" />
-          </button> */}
+    // {
+    //   name: "Actions",
+    //   cell: (row) => (
+    //     <div className="space-x-1">
+    //       {/* <button
+    //         className="text-green-500"
+    //         fontSize={20}
+    //         onClick={() => handleAddServiceToEnrolment(row.agreedServices)}
+    //       >
+    //         <IoMdAddCircleOutline className="text-2xl" />
+    //       </button> */}
 
-          {canCreate ? (
-            <button
-              aria-label="new Enrolment"
-              className="text-green-500"
-              onClick={() => navigate("/students/enrolments/newEnrolment/")}
-            >
-              <IoAddCircleOutline className="text-2xl" />
-            </button>
-          ) : null}
-        </div>
-      ),
-      ignoreRowClick: true,
+    //       {canCreate ? (
+    //         <button
+    //           aria-label="new Enrolment"
+    //           className="text-green-500"
+    //           onClick={() => navigate("/students/enrolments/newEnrolment/")}
+    //         >
+    //           <IoAddCircleOutline className="text-2xl" />
+    //         </button>
+    //       ) : null}
+    //     </div>
+    //   ),
+    //   ignoreRowClick: true,
 
-      button: true,
-      width: "120px",
-    },
+    //   button: true,
+    //   width: "120px",
+    // },
   ].filter(Boolean); // Filter out falsy values like `false` or `undefined`
   let content;
   if (isAdmissionsLoading || isServicesLoading)
@@ -370,7 +369,7 @@ const UnenrolmentsList = () => {
             columns={column}
             data={filteredAdmissions}
             pagination
-            selectableRows
+            //selectableRows
             removableRows
             pageSizeControl
             onSelectedRowsChange={handleRowSelected}
@@ -405,26 +404,15 @@ const UnenrolmentsList = () => {
             }}
           ></DataTable>
         </div>
-        <div className="cancelSavebuttonsDiv">
+       
           <button
-            className=" px-4 py-2 bg-green-600 text-white rounded"
-            disabled={selectedRows.length !== 1} // Disable if no rows are selected
+            className="add-button"
+            onClick={() => navigate("/students/enrolments/newEnrolment/")}
             hidden={!canCreate}
           >
-            tobechanged
+            New Enrolment
           </button>
-
-          {isAdmin && (
-            <button
-              className="px-3 py-2 bg-gray-400 text-white rounded"
-              onClick={handleDuplicateSelected}
-              disabled={selectedRows.length !== 1} // Disable if no rows are selected
-              hidden={!canCreate}
-            >
-              All
-            </button>
-          )}
-        </div>
+        
       </div>
     </>
   );

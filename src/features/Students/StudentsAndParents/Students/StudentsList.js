@@ -424,7 +424,7 @@ const StudentsList = () => {
           <IoDocumentAttachOutline className="text-fuchsia-500 text-2xl " />
         </Link>
       ),
-      sortable: true,
+     
       removableRows: true,
       style: {
         justifyContent: "center",

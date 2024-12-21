@@ -127,10 +127,10 @@ const StudentDocumentsListsList = () => {
     // sortable:true
     //  },
     {
-      name: "School Year",
+      name: "Year",
       selector: (row) => row.documentsAcademicYear,
       sortable: true,
-      width: "120px",
+      width: "100px",
     },
 
     {
@@ -145,7 +145,7 @@ const StudentDocumentsListsList = () => {
       ),
       sortable: true,
       removableRows: true,
-      width: "200px",
+      width: "210px",
     },
     {
       name: "Document Title",
@@ -157,6 +157,11 @@ const StudentDocumentsListsList = () => {
           ))}
         </div>
       ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+        
+      },
       sortable: true,
       removableRows: true,
       width: "200px",
@@ -175,7 +180,7 @@ const StudentDocumentsListsList = () => {
       ),
       sortable: true,
       removableRows: true,
-      width: "100px",
+      width: "110px",
     },
     {
       name: "Legalised",
@@ -191,7 +196,7 @@ const StudentDocumentsListsList = () => {
       ),
       sortable: true,
       removableRows: true,
-      width: "100px",
+      width: "110px",
     },
 
     {
@@ -246,7 +251,7 @@ const StudentDocumentsListsList = () => {
           fontSize={20}
           className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
         />
-        <input
+        <input aria-label="search"
           type="text"
           value={searchQuery}
           onChange={handleSearch}
@@ -259,7 +264,7 @@ const StudentDocumentsListsList = () => {
             columns={column}
             data={filteredStudentDocumentsLists}
             pagination
-            selectableRows
+            //selectableRows
             removableRows
             onSelectedRowsChange={handleRowSelected}
             selectableRowsHighlight

@@ -703,8 +703,12 @@ const EditEmployeeForm = ({ employee }) => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2 mt-1 max-h-80 overflow-y-auto">
               {academicYears &&
                 academicYears.length > 0 &&
-                academicYears.map((year, index) => {
-                  const isChecked = formData.employeeYears.some(
+                academicYears
+                .filter((year) => year?.title !== "1000") // Exclude the year with title "1000"
+
+                .map((year, index) => {
+                  const isChecked = formData.employeeYears
+                  .some(
                     (empYear) => empYear.academicYear === year.title
                   );
 

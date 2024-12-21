@@ -256,6 +256,11 @@ const InvoicesList = () => {
         " " +
         row?.enrolments[0]?.student?.studentName?.lastName,
       sortable: true,
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+        
+      },
       width: "160px",
     },
     {
@@ -381,6 +386,7 @@ const InvoicesList = () => {
             <button
               aria-label="edit invoice"
               className="text-amber-300"
+              hidden={row?.invoiceIsFullyPaid}
               onClick={() =>
                 navigate(`/finances/invoices/editInvoice/${row.id}`)
               }
@@ -390,6 +396,7 @@ const InvoicesList = () => {
           ) : null}
           {canDelete && !isDelLoading && (
             <button
+            hidden={row?.invoiceIsFullyPaid}
               aria-label="delete invoice"
               className="text-red-600"
               onClick={() => onDeleteInvoiceClicked(row.id)}
@@ -437,6 +444,7 @@ const InvoicesList = () => {
             className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
           />
           <input
+          aria-label="search"
             type="text"
             value={searchQuery}
             onChange={handleSearch}

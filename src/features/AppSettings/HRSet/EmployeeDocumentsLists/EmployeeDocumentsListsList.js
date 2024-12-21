@@ -237,7 +237,7 @@ const EmployeeDocumentsListsList = () => {
           fontSize={20}
           className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
         />
-        <input
+        <input aria-label="search"
           type="text"
           value={searchQuery}
           onChange={handleSearch}

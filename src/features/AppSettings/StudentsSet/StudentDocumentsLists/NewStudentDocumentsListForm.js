@@ -65,12 +65,13 @@ const NewStudentDocumentsListForm = () => {
     );
   }
 
+
   // Confirmation Modal states
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   // Initialization of states for each input
   const [studentDocumentsList, setStudentDocumentsList] = useState([
-    { documentTitle: "Student Photo", isRequired: false, isLegalised: false },
+    { documentTitle: "Student Photo", isRequired: true, isLegalised: false },
     { documentTitle: "Father Photo", isRequired: false, isLegalised: false },
     { documentTitle: "Mother Photo", isRequired: false, isLegalised: false },
   ]);

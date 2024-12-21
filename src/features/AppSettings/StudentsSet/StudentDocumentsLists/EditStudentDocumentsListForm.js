@@ -19,6 +19,7 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
   const [studentDocumentsList, setStudentDocumentsList] = useState(
     listToEdit.documentsList || []
   );
+  console.log(listToEdit.documentsList)
   const [documentTitle, setDocumentTitle] = useState("");
   const [validDocumentTitle, setValidDocumentTitle] = useState(false);
   const { triggerBanner } = useOutletContext(); // Access banner trigger
@@ -55,14 +56,31 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
   }, [isUpdateSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success
 
   // Ensure that the first three documents cannot be removed
-  const isRemovable = (index) => index >= 2; //the first threea reprpedefined(stud photo, father photo, mother photo)
+ // const isRemovable = (index) => index >= 2; //the first threea reprpedefined(stud photo, father photo, mother photo)
+ const isRemovable = (index) => {
+  const nonRemovableTitles = ["Student Photo", "Father Photo", "Mother Photo"];
+  return !nonRemovableTitles.includes(studentDocumentsList[index]?.documentTitle);
+};
 
-  // Handler to update an entry field
-  const handleFieldChange = (index, field, value) => {
-    const updatedEntries = [...studentDocumentsList];
-    updatedEntries[index][field] = value;
-    setStudentDocumentsList(updatedEntries);
-  };
+
+const handleFieldChange = (index, field, value) => {
+  const updatedEntries = studentDocumentsList.map((entry, i) =>
+    i === index
+      ? {
+          ...entry,
+          [field]: value, // Update the specific field
+        }
+      : entry
+  );
+  setStudentDocumentsList(updatedEntries);
+};
+
+  // // Handler to update an entry field
+  // const handleFieldChange = (index, field, value) => {
+  //   const updatedEntries = [...studentDocumentsList];
+  //   updatedEntries[index][field] = value;
+  //   setStudentDocumentsList(updatedEntries);
+  // };
   const handleActionChange = (index, action) => {
     setStudentDocumentsList((prevList) =>
       prevList.map((entry, i) =>
@@ -173,7 +191,7 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
                       handleFieldChange(index, "documentTitle", e.target.value)
                     }
                     className={`formInputText`}
-                    disabled={index < 3} // Disable editing for the first three elements if needed
+                    disabled={!isRemovable(index)} // Disable editing for the  three elements if needed
                   />
                 </label>
                 <div className="grid grid-cols-1 md:grid-cols-1 gap-2 mb-2 mt-1 max-h-80 overflow-y-auto">
