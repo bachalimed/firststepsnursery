@@ -8,8 +8,7 @@ import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link , useNavigate,useOutletContext} from "react-router-dom";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import {
@@ -21,7 +20,7 @@ import StudentsSet from "../../StudentsSet";
 const ServicesList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
-  const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
+  const { canEdit, isAdmin, isManager, canDelete, canCreate, status2 } = useAuth();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idServiceToDelete, setIdServiceToDelete] = useState(null); // State to track which document to delete
@@ -55,7 +54,7 @@ const ServicesList = () => {
       isLoading: isDelLoading,
       isSuccess: isDelSuccess,
       isError: isDelError,
-      error: delerror,
+      error: delError,
     },
   ] = useDeleteServiceMutation();
 
@@ -67,15 +66,36 @@ const ServicesList = () => {
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    await deleteService({ id: idServiceToDelete });
+    try {
+      const response = await deleteService({ id: idServiceToDelete });
     setIsDeleteModalOpen(false); // Close the modal
-  };
+    if (response?.message) {
+      // Success response
+      triggerBanner(response?.message, "success");
+    } else if (response?.data?.message) {
+      // Success response
+      triggerBanner(response?.data?.message, "success");
+    } else if (response?.error?.data?.message) {
+      // Error response
+      triggerBanner(response?.error?.data?.message, "error");
+    } else if (isDelError) {
+      // In case of unexpected response format
+      triggerBanner(delError?.data?.message, "error");
+    } else {
+      // In case of unexpected response format
+      triggerBanner("Unexpected response from server.", "error");
+    }
+  } catch (error) {
+    triggerBanner(error?.data?.message, "error");
+  }
+};
 
   // Function to close the modal without deleting
   const handleCloseDeleteModal = () => {
     setIsDeleteModalOpen(false);
     setIdServiceToDelete(null);
   };
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
 
   //state to hold the search query
   const [searchQuery, setSearchQuery] = useState("");
@@ -110,18 +130,23 @@ const ServicesList = () => {
       cell: (_, index) => index + 1,
       width: "50px",
     },
-    isAdmin && {
-      name: "ID",
-      selector: (row) => (
-        <Link to={`/settings/studentsSet/services/serviceDetails/${row.id}`}>
-          {row.id}
-        </Link>
-      ),
-      width: "210px",
-    },
+    // isAdmin && {
+    //   name: "ID",
+    //   selector: (row) => (
+    //     <Link to={`/settings/studentsSet/services/serviceDetails/${row.id}`}>
+    //       {row.id}
+    //     </Link>
+    //   ),
+    //   width: "210px",
+    // },
     {
       name: "Service",
       cell: (row) => <div> {row.serviceType}</div>,
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+        
+      },
       width: "120px",
     },
     {
@@ -139,7 +164,12 @@ const ServicesList = () => {
           )}
         </>
       ),
-      width: "130px",
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+        
+      },
+      width: "160px",
     },
     {
       name: "Actions",
@@ -148,6 +178,7 @@ const ServicesList = () => {
           {canEdit && (
             <button
               aria-label="edit service"
+              hidden={!isManager||!isAdmin}
               onClick={() =>
                 navigate(`/settings/studentsSet/editService/${row.id}`)
               }
@@ -157,6 +188,7 @@ const ServicesList = () => {
           )}
           {canDelete && (
             <button
+            hidden={!isManager||!isAdmin}
               aria-label="delete service"
               onClick={() => onDeleteServiceClicked(row.id)}
             >

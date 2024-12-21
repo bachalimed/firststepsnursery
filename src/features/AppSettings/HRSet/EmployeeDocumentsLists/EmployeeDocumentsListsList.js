@@ -20,7 +20,7 @@ const EmployeeDocumentsListsList = () => {
   //initialise state variables and hooks
   const Navigate = useNavigate();
   const dispatch = useDispatch();
-  const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
+  const { canEdit, isAdmin,isManager canDelete, canCreate, status2 } = useAuth();
   const [employeeDocumentsLists, setEmployeeDocumentsListsState] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -123,7 +123,7 @@ const EmployeeDocumentsListsList = () => {
       name: "School Year",
       selector: (row) => row.documentsAcademicYear,
       sortable: true,
-      width: "120px",
+      width: "130px",
     },
 
     {
@@ -138,7 +138,7 @@ const EmployeeDocumentsListsList = () => {
       ),
       sortable: true,
       removableRows: true,
-      width: "200px",
+      width: "220px",
     },
     {
       name: "Document Title",
@@ -152,6 +152,10 @@ const EmployeeDocumentsListsList = () => {
       ),
       sortable: true,
       removableRows: true,
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       width: "200px",
     },
     {
@@ -168,7 +172,7 @@ const EmployeeDocumentsListsList = () => {
       ),
       sortable: true,
       removableRows: true,
-      width: "100px",
+      width: "110px",
     },
     {
       name: "Legalised",
@@ -184,7 +188,7 @@ const EmployeeDocumentsListsList = () => {
       ),
       sortable: true,
       removableRows: true,
-      width: "100px",
+      width: "110px",
     },
 
     {
@@ -193,6 +197,7 @@ const EmployeeDocumentsListsList = () => {
         <div className="space-x-1">
           {canEdit ? (
             <button
+            hidden={!isAdmin||!isManager}
               aria-label="edit list"
               className="text-amber-300"
               onClick={() =>
@@ -205,9 +210,10 @@ const EmployeeDocumentsListsList = () => {
           {canDelete ? (
             <button
               aria-label="delete list"
+              hidden={!isAdmin||!isManager}
               className="text-red-600"
               onClick={() => onDeleteEmployeeDocumentsListClicked(row.id)}
-              hidden={!canDelete}
+              
             >
               <RiDeleteBin6Line fontSize={20} />
             </button>
@@ -237,7 +243,8 @@ const EmployeeDocumentsListsList = () => {
           fontSize={20}
           className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
         />
-        <input aria-label="search"
+        <input
+          aria-label="search"
           type="text"
           value={searchQuery}
           onChange={handleSearch}
@@ -250,7 +257,7 @@ const EmployeeDocumentsListsList = () => {
             columns={column}
             data={filteredEmployeeDocumentsLists}
             pagination
-            selectableRows
+            //selectableRows
             removableRows
             onSelectedRowsChange={handleRowSelected}
             selectableRowsHighlight
@@ -284,7 +291,7 @@ const EmployeeDocumentsListsList = () => {
             }}
           ></DataTable>
         </div>
-        <div className="cancelSavebuttonsDiv">
+        {/* <div className="cancelSavebuttonsDiv"> */}
           <button
             className="add-button"
             onClick={() => Navigate("/settings/hrSet/newEmployeeDocumentsList")}
@@ -293,7 +300,7 @@ const EmployeeDocumentsListsList = () => {
           >
             New Documents List
           </button>
-        </div>
+        {/* </div> */}
       </div>
       <DeletionConfirmModal
         isOpen={deleteModalOpen}

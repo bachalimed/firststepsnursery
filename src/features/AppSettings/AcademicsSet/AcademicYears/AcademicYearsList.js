@@ -18,17 +18,12 @@ import { useOutletContext } from "react-router-dom";
 
 const AcademicYearsList = () => {
   const Navigate = useNavigate();
-  const dispatch = useDispatch();
+
   //get several things from the query
 
   //we do not want to import from state but from DB
   const [selectedRows, setSelectedRows] = useState([]);
 
-  // Handler for selecting rows
-  const handleRowSelected = (state) => {
-    setSelectedRows(state.selectedRows);
-    //console.log('selectedRows', selectedRows)
-  };
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
@@ -89,26 +84,17 @@ const AcademicYearsList = () => {
     setIdYearToDelete(null);
   };
 
-  const handleNextSelected = () => {
-    console.log("Selected Rows to duplicate forward:", selectedRows);
-    // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
-    //ensure only one can be selected: the last one
-    const toDuplicate = selectedRows[-1];
-
-    setSelectedRows([]); // Clear selection after delete
-  };
-
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
   //console.log(academicYears)
 
   //define the content to be conditionally rendered
   const column = [
-    isAdmin && {
-      name: "ID",
-      selector: (row) => row.id,
-      sortable: true,
-      width: "200px",
-    },
+    // isAdmin && {
+    //   name: "ID",
+    //   selector: (row) => row.id,
+    //   sortable: true,
+    //   width: "200px",
+    // },
     {
       name: "Title",
       selector: (row) => row?.title,
@@ -137,16 +123,20 @@ const AcademicYearsList = () => {
           </div>
         </div>
       ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       sortable: true,
       width: "140px", // Adjust the width as needed to fit both dates
     },
 
-    {
-      name: "Creator",
-      selector: (row) => row?.academicYearCreator,
-      sortable: true,
-      width: "200px",
-    },
+    // {
+    //   name: "Creator",
+    //   selector: (row) => row?.academicYearCreator,
+    //   sortable: true,
+    //   width: "200px",
+    // },
 
     {
       name: "Actions",
@@ -156,6 +146,7 @@ const AcademicYearsList = () => {
             <button
               aria-label="edit year"
               className="text-amber-300"
+              hidden={!isAdmin}
               onClick={() =>
                 Navigate(`/settings/academicsSet/editAcademicYear/${row.id}`)
               }
@@ -166,6 +157,7 @@ const AcademicYearsList = () => {
           {canDelete ? (
             <button
               aria-label="delete year"
+              hidden={!isAdmin}
               className="text-red-600"
               onClick={() => handleDelete(row.id)}
             >
@@ -202,7 +194,7 @@ const AcademicYearsList = () => {
             columns={column}
             data={academicYears}
             pagination
-            selectableRows
+            //selectableRows
             removableRows
             pageSizeControl
             customStyles={{
@@ -235,16 +227,16 @@ const AcademicYearsList = () => {
             }}
           ></DataTable>
         </div>
-        <div className="cancelSavebuttonsDiv">
-          <button
-            className="add-button"
-            onClick={() => Navigate("/settings/academicsSet/newAcademicYear")}
-            disabled={selectedRows.length !== 0} // Disable if no rows are selected
-            hidden={!canCreate}
-          >
-            New academic Year
-          </button>
-        </div>
+        {/* <div className="cancelSavebuttonsDiv"> */}
+        <button
+          className="add-button"
+          onClick={() => Navigate("/settings/academicsSet/newAcademicYear")}
+          disabled={selectedRows.length !== 0} // Disable if no rows are selected
+          hidden={!canCreate}
+        >
+          New academic Year
+        </button>
+        {/* </div> */}
       </div>
 
       <DeletionConfirmModal

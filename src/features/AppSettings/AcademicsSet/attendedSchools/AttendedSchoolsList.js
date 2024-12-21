@@ -1,24 +1,18 @@
-import { HiOutlineSearch } from "react-icons/hi";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 import DataTable from "react-data-table-component";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { setAttendedSchools } from "./attendedSchoolsSlice";
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
 import useAuth from "../../../../hooks/useAuth";
 import { useOutletContext } from "react-router-dom";
-
 import {
   useGetAttendedSchoolsQuery,
   useDeleteAttendedSchoolMutation,
 } from "./attendedSchoolsApiSlice";
-
 import { useSelector, useDispatch } from "react-redux";
-
 import AcademicsSet from "../../AcademicsSet";
 
 const AttendedSchoolsList = () => {
@@ -90,20 +84,10 @@ const AttendedSchoolsList = () => {
     setIdAttendedSchoolToDelete(null);
   };
 
-  // Handler for selecting rows
-  const handleRowSelected = (state) => {
-    setSelectedRows(state.selectedRows);
-    //console.log('selectedRows', selectedRows)
-  };
-
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
   //console.log(attendedSchoolsData)
   const [attendedSchools, setAttendedSchoolsState] = useState([]);
   useEffect(() => {
-    // console.log('isLoading:', isLoading)
-    // console.log('isSuccess:', isSuccess)
-    // console.log('isError:', isError)
-
     if (isSchoolsSuccess) {
       //console.log('attendedSchoolsData',attendedSchoolsData)
       //transform into an array
@@ -124,12 +108,12 @@ const AttendedSchoolsList = () => {
 
   //define the content to be conditionally rendered
   const column = [
-    isAdmin && {
-      name: "ID",
-      selector: (row) => row.id,
-      sortable: true,
-      width: "210px",
-    },
+    // isAdmin && {
+    //   name: "ID",
+    //   selector: (row) => row.id,
+    //   sortable: true,
+    //   width: "210px",
+    // },
     {
       name: "Color",
       selector: (row) => (
@@ -150,19 +134,31 @@ const AttendedSchoolsList = () => {
       name: "School Name",
       selector: (row) => row.schoolName,
       sortable: true,
-      width: "150px",
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
+      width: "180px",
     },
     {
       name: "School Type",
       selector: (row) => row.schoolType,
       sortable: true,
-      width: "160px",
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
+      width: "200px",
     },
     {
       name: "School City",
       selector: (row) => row.schoolCity,
       sortable: true,
-      width: "160px",
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
+      width: "200px",
     },
 
     {
@@ -207,14 +203,14 @@ const AttendedSchoolsList = () => {
   let content;
 
   if (isSchoolsLoading)
-    content = (
+    content =  (
       <>
         <AcademicsSet />
         <LoadingStateIcon />
       </>
     );
 
-  return (
+ content =  (
     <>
       <AcademicsSet />
 
@@ -225,7 +221,7 @@ const AttendedSchoolsList = () => {
             columns={column}
             data={attendedSchools}
             pagination
-            selectableRows
+            // selectableRows
             removableRows
             pageSizeControl
             customStyles={{
@@ -276,5 +272,6 @@ const AttendedSchoolsList = () => {
       />
     </>
   );
+  return content
 };
 export default AttendedSchoolsList;

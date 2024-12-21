@@ -161,36 +161,19 @@ const PayeesList = () => {
     },
     //show this column only if user is a parent and not payee
 
-    isAdmin && {
-      name: "ID",
-      selector: (row) => (
-        <div>
-          <Link to={`/settings/financesSet/payeeDetails/${row.id}`}>
-            <div>{row.id} </div>
-          </Link>
-        </div>
-      ),
+    // isAdmin && {
+    //   name: "ID",
+    //   selector: (row) => (
+    //     <div>
+    //       <Link to={`/settings/financesSet/payeeDetails/${row.id}`}>
+    //         <div>{row.id} </div>
+    //       </Link>
+    //     </div>
+    //   ),
 
-      sortable: true,
-      width: "240px",
-    },
-
-    {
-      name: "Years",
-
-      selector: (row) => (
-        <div>
-          {(row?.payeeYears).map((year) => (
-            <div key={year}>{year}</div>
-          ))}
-        </div>
-      ),
-
-      sortable: true,
-      removableRows: true,
-      width: "120px",
-    },
-
+    //   sortable: true,
+    //   width: "240px",
+    // },
     {
       name: "Active",
       selector: (row) => row.payeeData?.payeeIsActive,
@@ -204,12 +187,17 @@ const PayeesList = () => {
         </span>
       ),
       sortable: true,
-      width: "80px",
+      width: "90px",
     },
+
     {
       name: "Label",
       selector: (row) => row?.payeeLabel,
       sortable: true,
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       width: "150px",
     },
     // {
@@ -227,13 +215,31 @@ const PayeesList = () => {
     //   removableRows: true,
     //   width: "140px",
     // },
+    {
+      name: "Years",
 
+      selector: (row) => (
+        <div>
+          {(row?.payeeYears).map((year) => (
+            <div key={year}>{year}</div>
+          ))}
+        </div>
+      ),
+
+      sortable: true,
+      removableRows: true,
+      width: "120px",
+    },
     {
       name: "Phone",
       selector: (row) => row?.payeePhone,
 
       sortable: true,
-      width: "110px",
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
+      width: "120px",
     },
 
     {
@@ -241,7 +247,11 @@ const PayeesList = () => {
       selector: (row) => row?.payeeNotes,
       sortable: true,
       removableRows: true,
-      width: "130px",
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
+      width: "140px",
     },
 
     {
@@ -310,7 +320,8 @@ const PayeesList = () => {
           fontSize={20}
           className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
         />
-        <input aria-label="search"
+        <input
+          aria-label="search"
           type="text"
           value={searchQuery}
           onChange={handleSearch}
@@ -324,7 +335,7 @@ const PayeesList = () => {
             columns={column}
             data={filteredPayees}
             pagination
-            selectableRows
+            // selectableRows
             removableRows
             pageSizeControl
             onSelectedRowsChange={handleRowSelected}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate,useOutletContext } from "react-router-dom";
 import { setStudentDocumentsLists } from "./studentDocumentsListsSlice";
 import {
   useGetStudentDocumentsListsQuery,
@@ -46,7 +46,7 @@ const StudentDocumentsListsList = () => {
   //initialising the delete Mutation
   const [
     deleteStudentDocumentsList,
-    { isSuccess: isDelSuccess, isError: isDelError, error: delerror },
+    { isSuccess: isDelSuccess, isError: isDelError, error: delError },
   ] = useDeleteStudentDocumentsListMutation();
 
   //handler for deleting a studetnDocumentsList
@@ -59,9 +59,29 @@ const StudentDocumentsListsList = () => {
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    await deleteStudentDocumentsList({ id: idDocToDelete });
+    try {
+      const response = await deleteStudentDocumentsList({ id: idDocToDelete });
     setDeleteModalOpen(false); // Close the modal
-  };
+    if (response?.message) {
+      // Success response
+      triggerBanner(response?.message, "success");
+    } else if (response?.data?.message) {
+      // Success response
+      triggerBanner(response?.data?.message, "success");
+    } else if (response?.error?.data?.message) {
+      // Error response
+      triggerBanner(response?.error?.data?.message, "error");
+    } else if (isDelError) {
+      // In case of unexpected response format
+      triggerBanner(delError?.data?.message, "error");
+    } else {
+      // In case of unexpected response format
+      triggerBanner("Unexpected response from server.", "error");
+    }
+  } catch (error) {
+    triggerBanner(error?.data?.message, "error");
+  }
+};
 
   // Function to close the modal without deleting
   const handleCloseModal = () => {
@@ -79,6 +99,7 @@ const StudentDocumentsListsList = () => {
     setSelectedRows(state.selectedRows);
     //console.log('selectedRows', selectedRows)
   };
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
 
   //console.log(studentDocumentsListsData)
   let filteredStudentDocumentsLists;

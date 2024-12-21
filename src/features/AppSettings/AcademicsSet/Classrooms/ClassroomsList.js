@@ -99,7 +99,7 @@ const ClassroomsList = () => {
     console.log("deleting");
   };
 
-  const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
+  const { canEdit, isAdmin,isManager, canDelete, canCreate, status2 } = useAuth();
   //console.log(classroomsData)
   //const [classrooms, setClassroomsState] = useState([])
 
@@ -117,12 +117,12 @@ const ClassroomsList = () => {
 
   //define the content to be conditionally rendered
   const column = [
-    isAdmin && {
-      name: "ID",
-      selector: (row) => row.id,
-      sortable: true,
-      width: "210px",
-    },
+    // isAdmin && {
+    //   name: "ID",
+    //   selector: (row) => row.id,
+    //   sortable: true,
+    //   width: "210px",
+    // },
     {
       name: "Color",
       selector: (row) => (
@@ -143,25 +143,30 @@ const ClassroomsList = () => {
       name: "Number",
       selector: (row) => row.classroomNumber,
       sortable: true,
-      width: "100px",
+      width: "110px",
     },
     {
       name: "Label",
       selector: (row) => row.classroomLabel,
       sortable: true,
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+        
+      },
       width: "140px",
     },
     {
       name: "Capacity",
       selector: (row) => row.classroomCapacity,
       sortable: true,
-      width: "100px",
+      width: "110px",
     },
     {
       name: "Max Capacity",
       selector: (row) => row.classroomMaxCapacity,
       sortable: true,
-      width: "120px",
+      width: "130px",
     },
 
     {
@@ -170,6 +175,7 @@ const ClassroomsList = () => {
         <div className="space-x-1">
           {canEdit ? (
             <button
+            hidden={!isAdmin||!isManager}
               aria-label="edit classroom"
               className="text-amber-300"
               onClick={() =>
@@ -227,7 +233,7 @@ const ClassroomsList = () => {
             columns={column}
             data={classroomsList}
             pagination
-            selectableRows
+           // selectableRows
             removableRows
             pageSizeControl
             customStyles={{
@@ -260,7 +266,7 @@ const ClassroomsList = () => {
             }}
           ></DataTable>
         </div>
-        <div className="cancelSavebuttonsDiv">
+        {/* <div className="cancelSavebuttonsDiv"> */}
           <button
             className="add-button"
             onClick={() => Navigate("/settings/academicsSet/newClassroom")}
@@ -269,7 +275,7 @@ const ClassroomsList = () => {
           >
             New Classroom
           </button>
-        </div>
+        {/* </div> */}
       </div>
       <DeletionConfirmModal
         isOpen={isDeleteModalOpen}

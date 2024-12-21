@@ -117,8 +117,6 @@ const ExpenseCategoriesList = () => {
     setIdExpenseCategoryToDelete(null);
   };
 
-  // State to hold selected rows
-  const [selectedRows, setSelectedRows] = useState([]);
   //state to hold the search query
   const [searchQuery, setSearchQuery] = useState("");
   //const [filteredExpenseCategories, setFilteredExpenseCategories] = useState([])
@@ -147,11 +145,6 @@ const ExpenseCategoriesList = () => {
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
-  // Handler for selecting rows
-  const handleRowSelected = (state) => {
-    setSelectedRows(state.selectedRows);
-    //console.log('selectedRows', selectedRows)
-  };
 
   //console.log(filteredExpenseCategories, "filteredExpenseCategories");
 
@@ -164,19 +157,19 @@ const ExpenseCategoriesList = () => {
     },
     //show this column only if user is a parent and not expenseCategory
 
-    isAdmin && {
-      name: "ID",
-      selector: (row) => (
-        <div>
-          <Link to={`/settings/financesSet/expenseCategoryDetails/${row.id}`}>
-            <div>{row.id} </div>
-          </Link>
-        </div>
-      ),
+    // isAdmin && {
+    //   name: "ID",
+    //   selector: (row) => (
+    //     <div>
+    //       <Link to={`/settings/financesSet/expenseCategoryDetails/${row.id}`}>
+    //         <div>{row.id} </div>
+    //       </Link>
+    //     </div>
+    //   ),
 
-      sortable: true,
-      width: "240px",
-    },
+    //   sortable: true,
+    //   width: "240px",
+    // },
 
     {
       name: "Active",
@@ -191,7 +184,7 @@ const ExpenseCategoriesList = () => {
         </span>
       ),
       sortable: true,
-      width: "80px",
+      width: "90px",
     },
     // {
     //   name: "Service",
@@ -203,7 +196,11 @@ const ExpenseCategoriesList = () => {
       name: "Label",
       selector: (row) => row?.expenseCategoryLabel,
       sortable: true,
-      width: "150px",
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
+      width: "160px",
     },
     {
       name: "Items",
@@ -218,7 +215,11 @@ const ExpenseCategoriesList = () => {
 
       sortable: true,
       removableRows: true,
-      width: "150px",
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
+      width: "160px",
     },
     {
       name: "Years",
@@ -303,7 +304,8 @@ const ExpenseCategoriesList = () => {
           fontSize={20}
           className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
         />
-        <input aria-label="search"
+        <input
+          aria-label="search"
           type="text"
           value={searchQuery}
           onChange={handleSearch}
@@ -317,10 +319,10 @@ const ExpenseCategoriesList = () => {
             columns={column}
             data={filteredExpenseCategories}
             pagination
-            selectableRows
+            //selectableRows
             removableRows
             pageSizeControl
-            onSelectedRowsChange={handleRowSelected}
+            // onSelectedRowsChange={handleRowSelected}
             selectableRowsHighlight
             customStyles={{
               headCells: {
@@ -352,7 +354,7 @@ const ExpenseCategoriesList = () => {
             }}
           ></DataTable>
         </div>
-        <div className="cancelSavebuttonsDiv">
+        {/* <div className="cancelSavebuttonsDiv"> */}
           <button
             className="add-button"
             onClick={() =>
@@ -364,17 +366,8 @@ const ExpenseCategoriesList = () => {
             New Category
           </button>
 
-          {/* {isAdmin && (
-            <button
-              className="px-3 py-2 bg-gray-400 text-white rounded"
-              onClick={handleDuplicateSelected}
-              disabled={selectedRows.length !== 1} // Disable if no rows are selected
-              hidden={!canCreate}
-            >
-              optional button
-            </button>
-          )} */}
-        </div>
+         
+        {/* </div> */}
       </div>
       <DeletionConfirmModal
         isOpen={isDeleteModalOpen}
