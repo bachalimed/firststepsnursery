@@ -1,9 +1,8 @@
 import { useParams } from "react-router-dom"; //because we will get the userId from the url
-
 import React from "react";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useNavigate,useOutletContext } from "react-router-dom";
 import Students from "../../../Students";
 import { useState, useEffect } from "react";
 import {
@@ -12,8 +11,6 @@ import {
 } from "./studentDocumentsApiSlice";
 import { useGetStudentDocumentsByYearByIdQuery } from "../../../../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice";
 import { selectCurrentToken } from "../../../../auth/authSlice";
-import { ROLES } from "../../../../../config/UserRoles";
-import { ACTIONS } from "../../../../../config/UserActions";
 import useAuth from "../../../../../hooks/useAuth";
 import UploadDocumentFormModal from "../UploadDocumentFormModal";
 import LoadingStateIcon from "../../../../../Components/LoadingStateIcon";
@@ -36,7 +33,6 @@ const StudentDocuments = () => {
   //const studentToEdit = useSelector((state) => state.student?.entities[id]);
   //)
   const Navigate = useNavigate();
-  const Dispatch = useDispatch();
 
   const [studentId, setStudentId] = useState(id); // we get from previous page
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -66,6 +62,8 @@ const StudentDocuments = () => {
     canDelete,
     canAdd,
     canView,
+    isManager,
+    isDirector,
     canCreate,
     isParent,
     isAdmin,
@@ -78,7 +76,7 @@ const StudentDocuments = () => {
       isLoading: isDelLoading,
       isSuccess: isDelSuccess,
       isError: isDelError,
-      error: delerror,
+      error: delError,
     },
   ] = useDeleteStudentDocumentMutation();
   const [selectedDocument, setSelectedDocument] = useState(null);
@@ -121,14 +119,9 @@ const StudentDocuments = () => {
       refetchOnMountOrArgChange: true,
     }
   );
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
 
   //console.log('studentDocumentsListing',studentDocumentsListing )
-
-  //         //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
-  //const errClass = isError ? "errmsg" : "offscreen"
-  //       //const validStudentClass = !validStudentName ? 'form__input--incomplete' : ''
-  //       //const validPwdClass = !validPassword ? 'form__input--incomplete' : ''
-  //       //const validRolesClass = !Boolean(userRoles.length) ? 'form__input--incomplete' : ''
 
   // Function to handle the delete button click
   const onDeleteStudentDocumentClicked = (docId) => {
@@ -139,12 +132,34 @@ const StudentDocuments = () => {
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    console.log(
-      "id of the document when confirmed delete",
-      idStudentDocumentToDelete
-    );
-    await deleteStudentDocument({ id: idStudentDocumentToDelete });
-    setIsDeleteModalOpen(false); // Close the modal
+    // console.log(
+    //   "id of the document when confirmed delete",
+    //   idStudentDocumentToDelete
+    // );
+    try {
+      const response = await deleteStudentDocument({
+        id: idStudentDocumentToDelete,
+      });
+      setIsDeleteModalOpen(false); // Close the modal
+      if (response?.message) {
+        // Success response
+        triggerBanner(response?.message, "success");
+      } else if (response?.data?.message) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isDelError) {
+        // In case of unexpected response format
+        triggerBanner(delError?.data?.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner(error?.data?.message, "error");
+    }
   };
 
   // Function to close the modal without deleting
@@ -263,6 +278,11 @@ const StudentDocuments = () => {
 
       sortable: true,
       removableRows: true,
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+        
+      },
       width: "170px",
     },
     {
@@ -278,7 +298,7 @@ const StudentDocuments = () => {
         </span>
       ),
       sortable: true,
-      width: "100px",
+      width: "120px",
     },
     {
       name: "Required",
@@ -293,7 +313,7 @@ const StudentDocuments = () => {
         </span>
       ),
       sortable: true,
-      width: "100px",
+      width: "110px",
     },
     {
       name: "Legalised",
@@ -308,7 +328,7 @@ const StudentDocuments = () => {
           )}
         </span>
       ),
-      width: "100px",
+      width: "110px",
     },
 
     {
@@ -367,7 +387,6 @@ const StudentDocuments = () => {
   //console.log(studentDocumentsListing)
   content = (
     <>
-      
       <Students />
       <div className="dataTableContainer">
         <div>

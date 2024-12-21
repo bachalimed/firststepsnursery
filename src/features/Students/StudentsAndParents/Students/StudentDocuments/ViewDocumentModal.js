@@ -1,6 +1,6 @@
 import React from "react";
 import Modal from "react-modal";
-import handleDownloadDocument from "./StudentDocumentsList";
+import handleDownloadDocument from "./StudentDocuments";
 
 const ViewDocumentModal = ({ isOpen, onRequestClose, documentUrl }) => {
   return (

@@ -386,13 +386,23 @@ const UsersList = () => {
           <HiOutlineSearch
             fontSize={20}
             className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-          />
+            aria-label="search users"/>
           <input
+          aria-label="search users"
             type="text"
             value={searchQuery}
             onChange={handleSearchChange}
-            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
-          />
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
+          />{searchQuery && (
+            <button
+              type="button"
+              onClick={() => handleSearchChange({ target: { value: "" } })} // Clear search
+              className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+              aria-label="clear search"
+            >
+              &times;
+            </button>
+          )}
         </div>
         {/* User Roles Filter */}
         <label htmlFor="userRolesFilter" className="formInputLabel">

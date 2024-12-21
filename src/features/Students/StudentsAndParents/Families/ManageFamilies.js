@@ -227,7 +227,7 @@
 //   <StudentsParents/>
 //   <div className='relative h-10 mr-2 '>
 // 				<HiOutlineSearch fontSize={20} className='text-gray-400 absolute top-1/2 -translate-y-1/2 left-3'/>
-// 				<input type='text'  value={searchQuery} onChange= {handleSearch} className='text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300 rounded-md px-4 pl-11 pr-4'/>
+// 				<input type='text'  value={searchQuery} onChange= {handleSearch} className='text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300 rounded-md px-4 pl-11 pr-4'/>
 // 			</div>
 //   <div className=' flex-1 bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200' >
 //      {/* <div>

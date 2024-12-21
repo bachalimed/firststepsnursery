@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { Link, useNavigate,useOutletContext } from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import { setStudentDocumentsLists } from "./studentDocumentsListsSlice";
 import {
   useGetStudentDocumentsListsQuery,
@@ -61,27 +61,27 @@ const StudentDocumentsListsList = () => {
   const handleConfirmDelete = async () => {
     try {
       const response = await deleteStudentDocumentsList({ id: idDocToDelete });
-    setDeleteModalOpen(false); // Close the modal
-    if (response?.message) {
-      // Success response
-      triggerBanner(response?.message, "success");
-    } else if (response?.data?.message) {
-      // Success response
-      triggerBanner(response?.data?.message, "success");
-    } else if (response?.error?.data?.message) {
-      // Error response
-      triggerBanner(response?.error?.data?.message, "error");
-    } else if (isDelError) {
-      // In case of unexpected response format
-      triggerBanner(delError?.data?.message, "error");
-    } else {
-      // In case of unexpected response format
-      triggerBanner("Unexpected response from server.", "error");
+      setDeleteModalOpen(false); // Close the modal
+      if (response?.message) {
+        // Success response
+        triggerBanner(response?.message, "success");
+      } else if (response?.data?.message) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isDelError) {
+        // In case of unexpected response format
+        triggerBanner(delError?.data?.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner(error?.data?.message, "error");
     }
-  } catch (error) {
-    triggerBanner(error?.data?.message, "error");
-  }
-};
+  };
 
   // Function to close the modal without deleting
   const handleCloseModal = () => {
@@ -181,7 +181,6 @@ const StudentDocumentsListsList = () => {
       style: {
         justifyContent: "left",
         textAlign: "left",
-        
       },
       sortable: true,
       removableRows: true,
@@ -267,17 +266,31 @@ const StudentDocumentsListsList = () => {
   content = (
     <>
       <StudentsSet />
-      <div className="relative h-10 mr-2">
-        <HiOutlineSearch
-          fontSize={20}
-          className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-        />
-        <input aria-label="search"
-          type="text"
-          value={searchQuery}
-          onChange={handleSearch}
-          className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
-        />
+      <div className="flex space-x-2 items-center ml-3">
+        <div className="relative h-10 mr-2">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+            aria-label="search documents"
+          />
+          <input
+            aria-label="search documents"
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
+          />{" "}
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => handleSearch({ target: { value: "" } })} // Clear search
+              className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+              aria-label="clear search"
+            >
+              &times;
+            </button>
+          )}
+        </div>
       </div>
       <div className="dataTableContainer">
         <div>

@@ -209,8 +209,6 @@ const AdmissionsList = () => {
     //console.log('selectedRows', selectedRows)
   };
 
- 
-
   const [
     updateAdmission,
     {
@@ -226,7 +224,6 @@ const AdmissionsList = () => {
   //console.log(academicYears)
   // Handler for registering selected row,
   const [admissionYears, setAdmissionYears] = useState([]);
- 
 
   const handleUpdateAdmission = (admission, index, agreedService) => {
     //console.log(admission, "admissionnnnnnnnnnn");
@@ -261,14 +258,10 @@ const AdmissionsList = () => {
         // Handle errors if the update fails
         console.error("Failed to update admission:", error);
       });
-      if (isUpdateError) {
-        // In case of unexpected response format
-        triggerBanner(updateError?.data?.message, "error");
-      }
-
-
-
-      
+    if (isUpdateError) {
+      // In case of unexpected response format
+      triggerBanner(updateError?.data?.message, "error");
+    }
   };
 
   const column = [
@@ -555,7 +548,6 @@ const AdmissionsList = () => {
       sortable: true,
       width: "230px",
     },
-    
 
     {
       name: "Actions",
@@ -582,7 +574,7 @@ const AdmissionsList = () => {
             <button
               aria-label="edit admission"
               className="text-amber-300"
-              disabled={!isManager||!isAdmin}
+              disabled={!isManager || !isAdmin}
               onClick={() =>
                 navigate(`/students/admissions/editAdmission/${row.id}`)
               }
@@ -594,7 +586,7 @@ const AdmissionsList = () => {
             <button
               aria-label="delet admission"
               className="text-red-600"
-              disabled={!isManager||!isAdmin}
+              disabled={!isManager || !isAdmin}
               onClick={() => onDeleteAdmissionClicked(row.id)}
             >
               <RiDeleteBin6Line className="text-2xl" />
@@ -635,15 +627,25 @@ const AdmissionsList = () => {
           <HiOutlineSearch
             fontSize={20}
             className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+            aria-label="search admissions"
           />
-
           <input
-            aria-label="search"
+            aria-label="search admissions"
             type="text"
             value={searchQuery}
             onChange={handleSearch}
-            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
-          />
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
+          />{" "}
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => handleSearch({ target: { value: "" } })} // Clear search
+              className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+              aria-label="clear search"
+            >
+              &times;
+            </button>
+          )}
         </div>
         {/* feeMonths Filter Dropdown */}
         {/* Month Filter Dropdown */}

@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
-import { Link , useNavigate,useOutletContext} from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import {
@@ -20,7 +20,8 @@ import StudentsSet from "../../StudentsSet";
 const ServicesList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
-  const { canEdit, isAdmin, isManager, canDelete, canCreate, status2 } = useAuth();
+  const { canEdit, isAdmin, isManager, canDelete, canCreate, status2 } =
+    useAuth();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idServiceToDelete, setIdServiceToDelete] = useState(null); // State to track which document to delete
@@ -68,27 +69,27 @@ const ServicesList = () => {
   const handleConfirmDelete = async () => {
     try {
       const response = await deleteService({ id: idServiceToDelete });
-    setIsDeleteModalOpen(false); // Close the modal
-    if (response?.message) {
-      // Success response
-      triggerBanner(response?.message, "success");
-    } else if (response?.data?.message) {
-      // Success response
-      triggerBanner(response?.data?.message, "success");
-    } else if (response?.error?.data?.message) {
-      // Error response
-      triggerBanner(response?.error?.data?.message, "error");
-    } else if (isDelError) {
-      // In case of unexpected response format
-      triggerBanner(delError?.data?.message, "error");
-    } else {
-      // In case of unexpected response format
-      triggerBanner("Unexpected response from server.", "error");
+      setIsDeleteModalOpen(false); // Close the modal
+      if (response?.message) {
+        // Success response
+        triggerBanner(response?.message, "success");
+      } else if (response?.data?.message) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isDelError) {
+        // In case of unexpected response format
+        triggerBanner(delError?.data?.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner(error?.data?.message, "error");
     }
-  } catch (error) {
-    triggerBanner(error?.data?.message, "error");
-  }
-};
+  };
 
   // Function to close the modal without deleting
   const handleCloseDeleteModal = () => {
@@ -145,7 +146,6 @@ const ServicesList = () => {
       style: {
         justifyContent: "left",
         textAlign: "left",
-        
       },
       width: "120px",
     },
@@ -167,7 +167,6 @@ const ServicesList = () => {
       style: {
         justifyContent: "left",
         textAlign: "left",
-        
       },
       width: "160px",
     },
@@ -178,7 +177,7 @@ const ServicesList = () => {
           {canEdit && (
             <button
               aria-label="edit service"
-              hidden={!isManager||!isAdmin}
+              hidden={!isManager || !isAdmin}
               onClick={() =>
                 navigate(`/settings/studentsSet/editService/${row.id}`)
               }
@@ -188,7 +187,7 @@ const ServicesList = () => {
           )}
           {canDelete && (
             <button
-            hidden={!isManager||!isAdmin}
+              hidden={!isManager || !isAdmin}
               aria-label="delete service"
               onClick={() => onDeleteServiceClicked(row.id)}
             >
@@ -221,19 +220,31 @@ const ServicesList = () => {
   content = (
     <>
       <StudentsSet />
-      <div className="relative h-10 mr-2 ">
-        <HiOutlineSearch
-          fontSize={20}
-          className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-          aria-label="search students"
-        />
-        <input
-          aria-label="search students"
-          type="text"
-          value={searchQuery}
-          onChange={handleSearch}
-          className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
-        />
+      <div className="flex space-x-2 items-center ml-3">
+        <div className="relative h-10 mr-2 ">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+            aria-label="search services"
+          />
+          <input
+            aria-label="search services"
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
+          />{" "}
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => handleSearch({ target: { value: "" } })} // Clear search
+              className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+              aria-label="clear search"
+            >
+              &times;
+            </button>
+          )}
+        </div>
       </div>
       <div className="dataTableContainer">
         <div>

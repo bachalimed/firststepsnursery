@@ -5,30 +5,20 @@ import {
 } from "./employeesApiSlice";
 import { HiOutlineSearch } from "react-icons/hi";
 import HR from "../HR";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import DataTable from "react-data-table-component";
-//import { useGetEmployeeDocumentsByYearByIdQuery } from "../../../AppSettings/EmployeesSet/EmployeeDocumentsLists/employeeDocumentsListsApiSlice"
-import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
 // import RegisterModal from './RegisterModal'
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import {
-  setAcademicYears,
-  selectAllAcademicYears,
-} from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
+import { selectAllAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import useAuth from "../../../hooks/useAuth";
 import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
 import { IoShieldCheckmarkOutline, IoShieldOutline } from "react-icons/io5";
-import {
-  setSomeEmployees,
-  setEmployees,
-  currentEmployeesList,
-} from "./employeesSlice";
 import { IoDocumentAttachOutline } from "react-icons/io5";
 import {
   selectCurrentAcademicYearId,
@@ -40,12 +30,14 @@ const EmployeesList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
+  const { canEdit, isAdmin, isManager, canDelete, canCreate, status2 } =
+    useAuth();
   const [requiredDocNumber, setRequiredDocNumber] = useState("");
   const [employeeDocNumber, setEmployeeDocNumber] = useState("");
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idEmployeeToDelete, setIdEmployeeToDelete] = useState(null); // State to track which document to delete
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
 
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
@@ -77,7 +69,7 @@ const EmployeesList = () => {
       isLoading: isDelLoading,
       isSuccess: isDelSuccess,
       isError: isDelError,
-      error: delerror,
+      error: delError,
     },
   ] = useDeleteEmployeeMutation();
 
@@ -89,8 +81,28 @@ const EmployeesList = () => {
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    await deleteEmployee({ id: idEmployeeToDelete });
-    setIsDeleteModalOpen(false); // Close the modal
+    try {
+      const response = await deleteEmployee({ id: idEmployeeToDelete });
+      setIsDeleteModalOpen(false); // Close the modal
+      if (response?.message) {
+        // Success response
+        triggerBanner(response?.message, "success");
+      } else if (response?.data?.message) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isDelError) {
+        // In case of unexpected response format
+        triggerBanner(delError?.data?.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner(error?.data?.message, "error");
+    }
   };
 
   // Function to close the modal without deleting
@@ -232,24 +244,24 @@ const EmployeesList = () => {
     },
     //show this column only if user is a parent and not employee
 
-    isAdmin && {
-      name: "ID",
-      selector: (row) => (
-        <div>
-          <Link to={`/admin/users/userManagement/userDetails/${row.id}`}>
-            <div>User {row.id} </div>
-          </Link>
-          <Link to={`/hr/employees/employeeDetails/${row.id}`}>
-            {" "}
-            {/* the employee details use the user Id and not employeeId */}{" "}
-            {row.employeeId && <div>Emp {row.employeeId} </div>}
-          </Link>
-        </div>
-      ),
+    // isAdmin && {
+    //   name: "ID",
+    //   selector: (row) => (
+    //     <div>
+    //       <Link to={`/admin/users/userManagement/userDetails/${row.id}`}>
+    //         <div>User {row.id} </div>
+    //       </Link>
+    //       <Link to={`/hr/employees/employeeDetails/${row.id}`}>
+    //         {" "}
+    //         {/* the employee details use the user Id and not employeeId */}{" "}
+    //         {row.employeeId && <div>Emp {row.employeeId} </div>}
+    //       </Link>
+    //     </div>
+    //   ),
 
-      sortable: true,
-      width: "240px",
-    },
+    //   sortable: true,
+    //   width: "240px",
+    // },
     //  (isAdmin)&&{
     // name: "Employee ID",
     // selector:row=>( <Link to={`/hr/employees/employeeDetails/${row.employeeId}`} >{row.employeeId} </Link> ),
@@ -269,7 +281,7 @@ const EmployeesList = () => {
         </span>
       ),
       sortable: true,
-      width: "80px",
+      width: "90px",
     },
     {
       name: "Employee Name",
@@ -278,13 +290,16 @@ const EmployeesList = () => {
           row.userFullName?.userMiddleName || ""
         } ${row.userFullName?.userLastName || ""}`,
       sortable: true,
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       width: "200px",
-      cell: (row) => (
-        <Link to={`/hr/employees/employeeDetails/${row.id}`}>
-          {row.userFullName?.userFirstName} {row.userFullName?.userMiddleName}{" "}
-          {row.userFullName?.userLastName}
-        </Link>
-      ),
+      cell: (row) =>
+        `${row.userFullName?.userFirstName}${" "}${
+          row.userFullName?.userMiddleName
+        }${" "}
+          ${row.userFullName?.userLastName}`,
     },
     {
       name: "Sex",
@@ -300,7 +315,7 @@ const EmployeesList = () => {
       ),
       sortable: true,
       removableRows: true,
-      width: "70px",
+      width: "80px",
     },
 
     // {name: "DOB",
@@ -336,6 +351,10 @@ const EmployeesList = () => {
         </div>
       ),
       sortable: true,
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       width: "110px",
     },
 
@@ -349,6 +368,10 @@ const EmployeesList = () => {
         </div>
       ),
       sortable: true,
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       removableRows: true,
       width: "130px",
     },
@@ -368,6 +391,10 @@ const EmployeesList = () => {
         </div>
       ),
       sortable: true,
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       removableRows: true,
       width: "150px",
     },
@@ -375,14 +402,17 @@ const EmployeesList = () => {
     {
       name: "Documents",
       selector: (row) => (
-        <Link to={`/hr/employees/employeeDocumentsList/${row.id}`}>
+        <Link
+          to={`/hr/employees/employeeDocumentsList/${row.id}`}
+          aria-label={`employee document-${row?.id}`}
+        >
           {" "}
-          <IoDocumentAttachOutline className="text-slate-800 text-2xl" />
+          <IoDocumentAttachOutline className="text-fuchsia-500 text-2xl " />
         </Link>
       ),
       sortable: true,
       removableRows: true,
-      width: "120px",
+      width: "130px",
     },
 
     {
@@ -441,18 +471,30 @@ const EmployeesList = () => {
   content = (
     <>
       <HR />
-
-      <div className="relative h-10 mr-2 ">
-        <HiOutlineSearch
-          fontSize={20}
-          className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-        />
-        <input aria-label="search"
-          type="text"
-          value={searchQuery}
-          onChange={handleSearch}
-          className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
-        />
+      <div className="flex space-x-2 items-center ml-3">
+        <div className="relative h-10 mr-2 ">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+          />
+          <input
+            aria-label="search"
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => handleSearch({ target: { value: "" } })} // Clear search
+              className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+              aria-label="clear search"
+            >
+              &times;
+            </button>
+          )}
+        </div>
       </div>
       <div className="dataTableContainer">
         <div>
@@ -461,7 +503,7 @@ const EmployeesList = () => {
             columns={column}
             data={filteredEmployees}
             pagination
-            selectableRows
+            //selectableRows
             removableRows
             pageSizeControl
             onSelectedRowsChange={handleRowSelected}
@@ -523,13 +565,6 @@ const EmployeesList = () => {
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
       />
-      {/* <RegisterModal 
-        isOpen={isRegisterModalOpen}
-        onClose={() => setIsRegisterModalOpen(false)}
-        employeeYears={employeeYears}
-        academicYears={academicYears}
-        onSave={onUpdateEmployeeClicked}
-      /> */}
     </>
   );
 

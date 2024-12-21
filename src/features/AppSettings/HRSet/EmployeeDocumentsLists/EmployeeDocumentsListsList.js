@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { Link, useNavigate } from "react-router-dom";
-import { setEmployeeDocumentsLists } from "./EmployeeDocumentsListsSlice";
+import { useNavigate } from "react-router-dom";
+
 import {
   useGetEmployeeDocumentsListsQuery,
   useDeleteEmployeeDocumentsListMutation,
 } from "./employeeDocumentsListsApiSlice";
-import { useSelector, useDispatch } from "react-redux";
 import useAuth from "../../../../hooks/useAuth";
 import { FiEdit } from "react-icons/fi";
 import EmployeesSet from "../../HRSet";
@@ -19,8 +18,9 @@ import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 const EmployeeDocumentsListsList = () => {
   //initialise state variables and hooks
   const Navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { canEdit, isAdmin,isManager ,canDelete, canCreate, status2 } = useAuth();
+
+  const { canEdit, isAdmin, isManager, canDelete, canCreate, status2 } =
+    useAuth();
   const [employeeDocumentsLists, setEmployeeDocumentsListsState] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -197,7 +197,7 @@ const EmployeeDocumentsListsList = () => {
         <div className="space-x-1">
           {canEdit ? (
             <button
-            hidden={!isAdmin||!isManager}
+              hidden={!isAdmin || !isManager}
               aria-label="edit list"
               className="text-amber-300"
               onClick={() =>
@@ -210,10 +210,9 @@ const EmployeeDocumentsListsList = () => {
           {canDelete ? (
             <button
               aria-label="delete list"
-              hidden={!isAdmin||!isManager}
+              hidden={!isAdmin || !isManager}
               className="text-red-600"
               onClick={() => onDeleteEmployeeDocumentsListClicked(row.id)}
-              
             >
               <RiDeleteBin6Line fontSize={20} />
             </button>
@@ -238,18 +237,31 @@ const EmployeeDocumentsListsList = () => {
   content = (
     <>
       <EmployeesSet />
-      <div className="relative h-10 mr-2">
-        <HiOutlineSearch
-          fontSize={20}
-          className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-        />
-        <input
-          aria-label="search"
-          type="text"
-          value={searchQuery}
-          onChange={handleSearch}
-          className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[24rem] border border-gray-300  px-4 pl-11 pr-4"
-        />
+      <div className="flex space-x-2 items-center ml-3">
+        <div className="relative h-10 mr-2">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+            aria-label="search documents"
+          />
+          <input
+            aria-label="search documents"
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
+          />{" "}
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => handleSearch({ target: { value: "" } })} // Clear search
+              className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+              aria-label="clear search"
+            >
+              &times;
+            </button>
+          )}
+        </div>
       </div>
       <div className="dataTableContainer">
         <div>
@@ -292,14 +304,14 @@ const EmployeeDocumentsListsList = () => {
           ></DataTable>
         </div>
         {/* <div className="cancelSavebuttonsDiv"> */}
-          <button
-            className="add-button"
-            onClick={() => Navigate("/settings/hrSet/newEmployeeDocumentsList")}
-            disabled={selectedRows.length !== 0}
-            hidden={!canCreate}
-          >
-            New Documents List
-          </button>
+        <button
+          className="add-button"
+          onClick={() => Navigate("/settings/hrSet/newEmployeeDocumentsList")}
+          disabled={selectedRows.length !== 0}
+          hidden={!canCreate}
+        >
+          New Documents List
+        </button>
         {/* </div> */}
       </div>
       <DeletionConfirmModal
