@@ -286,17 +286,17 @@ const ServicesList = () => {
             }}
           ></DataTable>
         </div>
-        <div className="cancelSavebuttonsDiv">
-          {canCreate && (
-            <button
-              className="add-button"
-              onClick={() => navigate("/settings/studentsSet/newService")}
-              // disabled={selectedRows.length !== 1}
-            >
-              New Service
-            </button>
-          )}
-        </div>
+        {/* <div className="cancelSavebuttonsDiv"> */}
+        {canCreate && (
+          <button
+            className="add-button"
+            onClick={() => navigate("/settings/studentsSet/newService")}
+            // disabled={selectedRows.length !== 1}
+          >
+            New Service
+          </button>
+        )}
+        {/* </div> */}
       </div>
       <DeletionConfirmModal
         isOpen={isDeleteModalOpen}

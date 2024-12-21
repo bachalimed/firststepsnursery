@@ -539,7 +539,7 @@ const LeavesList = () => {
             }}
           ></DataTable>
         </div>
-        <div className="cancelSavebuttonsDiv">
+        {/* <div className="cancelSavebuttonsDiv"> */}
           <button
             className="add-button"
             onClick={() => navigate("/hr/leaves/newLeave")}
@@ -559,7 +559,7 @@ const LeavesList = () => {
               optional button
             </button>
           )} */}
-        </div>
+        {/* </div> */}
       </div>
       <DeletionConfirmModal
         isOpen={isDeleteModalOpen}

@@ -547,7 +547,7 @@ const PayslipsList = () => {
             }}
           ></DataTable>
         </div>
-        <div className="cancelSavebuttonsDiv">
+        {/* <div className="cancelSavebuttonsDiv"> */}
           <button
             className="add-button"
             onClick={() => navigate("/hr/payslips/newPayslip")}
@@ -567,7 +567,7 @@ const PayslipsList = () => {
               optional button
             </button>
           )} */}
-        </div>
+        {/* </div> */}
       </div>
       <DeletionConfirmModal
         isOpen={isDeleteModalOpen}

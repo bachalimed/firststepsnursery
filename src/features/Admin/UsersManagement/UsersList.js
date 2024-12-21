@@ -479,7 +479,7 @@ const UsersList = () => {
             }}
           ></DataTable>
         </div>
-        <div className="cancelSavebuttonsDiv">
+        {/* <div className="cancelSavebuttonsDiv"> */}
           <button
             className="add-button"
             onClick={() => navigate("/admin/usersManagement/newUser/")}
@@ -496,7 +496,7 @@ const UsersList = () => {
             >
               Duplicate Selected
             </button> */}
-        </div>
+        {/* </div> */}
       </div>
 
       <DeletionConfirmModal

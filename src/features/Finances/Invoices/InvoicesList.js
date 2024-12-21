@@ -577,7 +577,7 @@ const InvoicesList = () => {
           ></DataTable>
         </div>
 
-        <div className="cancelSavebuttonsDiv">
+        {/* <div className="cancelSavebuttonsDiv"> */}
           <button
             className="add-button"
             onClick={() => navigate("/students/enrolments/enrolments/")}
@@ -585,7 +585,7 @@ const InvoicesList = () => {
           >
             Invoice from Enrolment
           </button>
-        </div>
+        {/* </div> */}
       </div>
       <DeletionConfirmModal
         isOpen={isDeleteModalOpen}

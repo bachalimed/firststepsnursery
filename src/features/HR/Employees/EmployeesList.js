@@ -476,7 +476,7 @@ const EmployeesList = () => {
               }}
             ></DataTable>
           </div>
-          <div className="cancelSavebuttonsDiv">
+          {/* <div className="cancelSavebuttonsDiv"> */}
             <button
               className="add-button"
               onClick={() => navigate("/hr/employees/newEmployee")}
@@ -496,7 +496,7 @@ const EmployeesList = () => {
               optional button
             </button>
           )} */}
-          </div>
+          {/* </div> */}
         </div>
         <DeletionConfirmModal
           isOpen={isDeleteModalOpen}

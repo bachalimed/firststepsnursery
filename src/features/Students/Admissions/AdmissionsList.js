@@ -756,7 +756,7 @@ const AdmissionsList = () => {
           ></DataTable>
         </div>
 
-        <div className="cancelSavebuttonsDiv">
+        {/* <div className="cancelSavebuttonsDiv"> */}
           <button
             className="add-button"
             onClick={() => navigate("/students/admissions/newAdmission/")}
@@ -764,7 +764,7 @@ const AdmissionsList = () => {
           >
             New Admission
           </button>
-        </div>
+        {/* </div> */}
       </div>
       <DeletionConfirmModal
         isOpen={isDeleteModalOpen}

@@ -332,19 +332,19 @@ const StudentDocumentsListsList = () => {
             }}
           ></DataTable>
         </div>
-        <div className="cancelSavebuttonsDiv">
-          <button
-            aria-label="add new list"
-            className="add-button"
-            onClick={() =>
-              Navigate("/settings/studentsSet/newStudentDocumentsList")
-            }
-            disabled={selectedRows.length !== 0}
-            hidden={!canCreate}
-          >
-            New Documents List
-          </button>
-        </div>
+        {/* <div className="cancelSavebuttonsDiv"> */}
+        <button
+          aria-label="add new list"
+          className="add-button"
+          onClick={() =>
+            Navigate("/settings/studentsSet/newStudentDocumentsList")
+          }
+          disabled={selectedRows.length !== 0}
+          hidden={!canCreate}
+        >
+          New Documents List
+        </button>
+        {/* </div> */}
       </div>
       <DeletionConfirmModal
         isOpen={deleteModalOpen}

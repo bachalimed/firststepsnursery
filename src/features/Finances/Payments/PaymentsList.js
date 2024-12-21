@@ -472,7 +472,7 @@ const PaymentsList = () => {
             }}
           ></DataTable>
         </div>
-        <div className="cancelSavebuttonsDiv">
+        {/* <div className="cancelSavebuttonsDiv"> */}
           <button
             className="add-button"
             onClick={() => navigate("/finances/payments/newPayment/")}
@@ -480,7 +480,7 @@ const PaymentsList = () => {
           >
             New Payment
           </button>
-        </div>
+        {/* </div> */}
       </div>
       <DeletionConfirmModal
         isOpen={isDeleteModalOpen}

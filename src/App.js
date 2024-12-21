@@ -112,7 +112,7 @@ import FinancesSet from "./features/AppSettings/FinancesSet";
 import PayeesList from "./features/AppSettings/FinancesSet/Payees/PayeesList";
 import NewPayeeForm from "./features/AppSettings/FinancesSet/Payees/NewPayeeForm";
 import EditPayee from "./features/AppSettings/FinancesSet/Payees/EditPayee";
-import PayeeDetails from "./features/AppSettings/FinancesSet/Payees/PayeeDetails";
+//import PayeeDetails from "./features/AppSettings/FinancesSet/Payees/PayeeDetails";
 import ExpenseCategoriesList from "./features/AppSettings/FinancesSet/ExpenseCategories/ExpenseCategoriesList";
 import NewExpenseCategoryForm from "./features/AppSettings/FinancesSet/ExpenseCategories/NewExpenseCategoryForm";
 import EditExpenseCategory from "./features/AppSettings/FinancesSet/ExpenseCategories/EditExpenseCategory";
@@ -545,10 +545,10 @@ const App = () => {
                     path="editPayee/:id/"
                     element={<EditPayee />}
                   />
-                  <Route
+                  {/* <Route
                     path="payeeDetails/:id/"
                     element={<PayeeDetails />}
-                  />
+                  /> */}
                   <Route
                     path="expenseCategoriesList/"
                     element={<ExpenseCategoriesList />}

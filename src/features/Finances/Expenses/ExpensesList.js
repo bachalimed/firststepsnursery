@@ -372,7 +372,7 @@ const ExpensesList = () => {
             }}
           ></DataTable>
         </div>
-        <div className="cancelSavebuttonsDiv">
+        {/* <div className="cancelSavebuttonsDiv"> */}
           <button
             className="add-button"
             onClick={() => navigate("/finances/expenses/newExpense/")}
@@ -381,7 +381,7 @@ const ExpensesList = () => {
           >
             New Expense
           </button>
-        </div>
+        {/* </div> */}
       </div>
 
       <DeletionConfirmModal

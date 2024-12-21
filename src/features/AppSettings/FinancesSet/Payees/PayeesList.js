@@ -1,31 +1,20 @@
 import {
   useGetPayeesByYearQuery,
-  useUpdatePayeeMutation,
   useDeletePayeeMutation,
 } from "./payeesApiSlice";
 import { HiOutlineSearch } from "react-icons/hi";
 import FinancesSet from "../../FinancesSet";
 import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
-//import { useGetPayeeDocumentsByYearByIdQuery } from "../../../AppSettings/PayeesSet/PayeeDocumentsLists/payeeDocumentsListsApiSlice"
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
-// import RegisterModal from './RegisterModal'
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import {
-  setAcademicYears,
-  selectAllAcademicYears,
-} from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
+import { selectAllAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import useAuth from "../../../../hooks/useAuth";
-import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
 import { IoShieldCheckmarkOutline, IoShieldOutline } from "react-icons/io5";
-import { setSomePayees, setPayees, currentPayeesList } from "./payeesSlice";
-import { IoDocumentAttachOutline } from "react-icons/io5";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
@@ -35,7 +24,6 @@ import { useOutletContext } from "react-router-dom";
 const PayeesList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
 
@@ -114,8 +102,6 @@ const PayeesList = () => {
     setIdPayeeToDelete(null);
   };
 
-  // State to hold selected rows
-  const [selectedRows, setSelectedRows] = useState([]);
   //state to hold the search query
   const [searchQuery, setSearchQuery] = useState("");
   //const [filteredPayees, setFilteredPayees] = useState([])
@@ -143,11 +129,6 @@ const PayeesList = () => {
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
-  };
-  // Handler for selecting rows
-  const handleRowSelected = (state) => {
-    setSelectedRows(state.selectedRows);
-    //console.log('selectedRows', selectedRows)
   };
 
   //console.log(filteredPayees, "filteredPayees");
@@ -258,16 +239,6 @@ const PayeesList = () => {
       name: "Actions",
       cell: (row) => (
         <div className="space-x-1">
-          <button
-            aria-label="payee details"
-            className="text-sky-700"
-            fontSize={20}
-            onClick={() =>
-              navigate(`/settings/financesSet/payeeDetails/${row.id}`)
-            }
-          >
-            <ImProfile className="text-2xl" />
-          </button>
           {canEdit ? (
             <button
               aria-label="edit payee"
@@ -349,7 +320,7 @@ const PayeesList = () => {
             // selectableRows
             removableRows
             pageSizeControl
-            onSelectedRowsChange={handleRowSelected}
+            //onSelectedRowsChange={handleRowSelected}
             selectableRowsHighlight
             customStyles={{
               headCells: {
@@ -381,7 +352,7 @@ const PayeesList = () => {
             }}
           ></DataTable>
         </div>
-        <div className="cancelSavebuttonsDiv">
+        {/* <div className="cancelSavebuttonsDiv"> */}
           <button
             className="add-button"
             onClick={() => navigate("/settings/financesSet/newPayee/")}
@@ -401,7 +372,7 @@ const PayeesList = () => {
               optional button
             </button>
           )} */}
-        </div>
+        {/* </div> */}
       </div>
       <DeletionConfirmModal
         isOpen={isDeleteModalOpen}

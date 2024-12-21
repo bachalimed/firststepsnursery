@@ -474,7 +474,7 @@ const FamiliesList = () => {
             }}
           ></DataTable>
         </div>
-        <div className="cancelSavebuttonsDiv">
+        {/* <div className="cancelSavebuttonsDiv"> */}
           <button
             className="add-button"
             onClick={() => navigate("/students/studentsParents/newFamily/")}
@@ -482,7 +482,7 @@ const FamiliesList = () => {
           >
             New Family
           </button>
-        </div>
+        {/* </div> */}
       </div>
       <DeletionConfirmModal
         isOpen={isDeleteModalOpen}

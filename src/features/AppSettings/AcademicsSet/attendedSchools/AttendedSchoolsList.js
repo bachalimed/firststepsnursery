@@ -254,7 +254,7 @@ const AttendedSchoolsList = () => {
             }}
           ></DataTable>
         </div>
-        <div className="cancelSavebuttonsDiv">
+        {/* <div className="cancelSavebuttonsDiv"> */}
           <button
             className="add-button"
             onClick={() => Navigate("/settings/academicsSet/newSchool")}
@@ -263,7 +263,7 @@ const AttendedSchoolsList = () => {
           >
             New School
           </button>
-        </div>
+        {/* </div> */}
       </div>
       <DeletionConfirmModal
         isOpen={isDeleteModalOpen}
