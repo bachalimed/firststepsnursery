@@ -52,7 +52,7 @@ const EditLeaveForm = ({ leave }) => {
     leaveYear: leave?.leaveYear,
     leaveMonth: leave?.leaveMonth,
     leaveEmployee: leave?.leaveEmployee,
-    leaveIsApproved: leave?.leaveIsApproved,
+    leaveIsGiven: leave?.leaveIsGiven,
     leaveIsPaidLeave: leave?.leaveIsPaidLeave,
     leaveIsSickLeave: leave?.leaveIsSickLeave,
     leaveIsPartDay: leave?.leaveIsPartDay,
@@ -134,7 +134,7 @@ const EditLeaveForm = ({ leave }) => {
         leaveYear: "",
         leaveMonth: "",
         leaveEmployee: "",
-        leaveIsApproved: "",
+        leaveIsGiven: "",
         leaveIsPaidLeave: "",
         leaveIsSickLeave: "",
         leaveIsPartDay: "",
@@ -228,24 +228,24 @@ const EditLeaveForm = ({ leave }) => {
           <h3 className="formSectionTitle">Leave details</h3>
           <div className="formSection">
             <div className="formLineDiv">
-              {/* Leave Is Approved */}
+              {/* Leave Is Given */}
 
               <label className="formInputLabel">
-                Approved leave?
+                Given leave?
                 <div className="formCheckboxItemsDiv">
                   <label
-                    htmlFor="leaveIsApproved"
+                    htmlFor="leaveIsGiven"
                     className="formCheckboxChoice"
                   >
                     <input
                       type="checkbox"
-                      id="leaveIsApproved"
-                      name="leaveIsApproved"
-                      checked={formData.leaveIsApproved}
+                      id="leaveIsGiven"
+                      name="leaveIsGiven"
+                      checked={formData.leaveIsGiven}
                       onChange={handleInputChange}
                       className="formCheckbox"
                     />
-                    Leave is approved
+                    Leave is given
                   </label>
                 </div>
               </label>

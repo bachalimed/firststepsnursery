@@ -18,13 +18,13 @@ export const store = configureStore({
     [apiSlice.reducerPath]: apiSlice.reducer, //what ever we name in the reducerpath will be given the name to this apislice, the default is 'api'
     auth: authReducer,//keep
     user: usersReducer,
-    academicYear: academicYearsReducer,
+    academicYear: academicYearsReducer,//keeeeeeeeep
     student: studentsReducer,//keep
-    family: familiesReducer,//keep
+    //family: familiesReducer,
     //studentDocument: studentDocumentsReducer,
     //employeeDocument:employeeDocumentsListReducer,
-    employee: employeeReducer,
-    session: sessionsReducer,
+    //employee: employeeReducer,
+    //session: sessionsReducer,
 
     //studentDocumentsList:studentDocumentsListReducer,
     //task: tasksReducer,

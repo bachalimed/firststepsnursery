@@ -30,4 +30,7 @@ academic years "1000" use as criteria to query all years data instead of only on
  21. a student not enrolled can appear on the sectin list.
  22. when editing a section, if we change studetn a changeflag will be send and a new sectin will be created and the previous have a to date. 
  if an invoice is paid it cannot be edited or deleted (hidden)
+ 23. payslip can be generated for non active employee because he can be finished and getting paid.
+ 24. payment of leave is decided and recorded on the leave itself and will not be changed in the payslip
+ 25. leave given days are given by the nursery and are paid normally, 
  

@@ -24,6 +24,7 @@ import {
   DATE_REGEX,
   YEAR_REGEX,
   OBJECTID_REGEX,
+  COMMENT_REGEX,
 } from "../../../config/REGEX";
 import useAuth from "../../../hooks/useAuth";
 import { MONTHS } from "../../../config/Months";
@@ -92,6 +93,9 @@ const NewPayslipForm = () => {
   const [formData, setFormData] = useState({
     payslipYear: selectedAcademicYear?.title,
     payslipMonth: "",
+    payslipFinancialYear: "",
+    payslipWorkdays: [],
+    payslipNote: "",
     payslipEmployee: "",
     payslipIsApproved: false,
     payslipPaymentDate: "",
@@ -108,14 +112,13 @@ const NewPayslipForm = () => {
   });
 
   const [validity, setValidity] = useState({
-    validPayslipYear: selectedAcademicYear?.title,
+    validPayslipYear: false,
     validPayslipMonth: false,
+    validPayslipNote: false,
     validPayslipEmployee: false,
     validPayslipPaymentDate: false,
     validPayslipLeaveDays: false,
     validPayslipSalaryComponents: false,
-    validPayslipOperator: userId,
-    validPayslipCreator: userId,
   });
 
   // Validate inputs using regex patterns
@@ -124,6 +127,7 @@ const NewPayslipForm = () => {
       ...prev,
       validPayslipYear: YEAR_REGEX.test(formData?.payslipYear),
       validPayslipMonth: NAME_REGEX.test(formData?.payslipMonth),
+      validPayslipNote: COMMENT_REGEX.test(formData?.payslipNote),
       validPayslipEmployee: OBJECTID_REGEX.test(formData?.payslipEmployee),
       validPayslipPaymentDate: DATE_REGEX.test(formData?.payslipPaymentDate),
       validPayslipLeaveDays: formData?.payslipLeaveDays?.length > 0,
@@ -137,6 +141,7 @@ const NewPayslipForm = () => {
       setFormData({
         payslipYear: "",
         payslipMonth: "",
+        payslipNote: "",
         payslipEmployee: "",
         payslipIsApproved: "",
         payslipPaymentDate: "",
@@ -159,30 +164,166 @@ const NewPayslipForm = () => {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
+  //get the moonth in number from string
 
-  //to retrive the leave days of teh employee selected
+  function getMonthDetails(yearRange, month) {
+    // Split the year range into start and end years
+    const [startYear, endYear] = yearRange.split("/").map(Number);
+
+    // Define months falling into each financial year
+    const monthsInFirstYear = [
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    const monthsInSecondYear = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+    ];
+
+    // Determine the year associated with the given month
+    let year;
+    if (monthsInFirstYear.includes(month)) {
+      year = startYear; // Months from July to December count for the first year
+    } else if (monthsInSecondYear.includes(month)) {
+      year = endYear; // Months from January to June count for the second year
+    } else {
+      throw new Error("Invalid month provided.");
+    }
+
+    // Convert month name to zero-based index
+    const monthIndex = MONTHS.indexOf(month);
+    if (monthIndex === -1) throw new Error("Invalid month name.");
+
+    // Get the number of days in the month
+    const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+
+    return {
+      days: daysInMonth,
+      monthNumber: monthIndex + 1, // Convert to 1-based index
+      year,
+    };
+  }
+
+  // Utility function to format a date as YYYY-MM-DD without time zone interference
+  function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Add leading zero for single-digit months
+    const day = String(date.getDate()).padStart(2, "0"); // Add leading zero for single-digit days
+    return `${year}-${month}-${day}`;
+  }
   useEffect(() => {
     if (
       formData?.payslipEmployee !== "" &&
       formData?.payslipMonth !== "" &&
       isLeavesSuccess
     ) {
-      // Filter the leavesList for the specific employee and get only the 'id' values
-      const leaveDays = leavesList
-        .filter(
+      const {
+        days: daysInMonth,
+        monthNumber: month,
+        year,
+      } = getMonthDetails(selectedAcademicYear?.title, formData?.payslipMonth);
+
+      if (!year || !month || !daysInMonth) return;
+
+      // Utility function to check if a date is a Sunday
+      function isSunday(date) {
+        return date.getDay() === 0; // 0 represents Sunday
+      }
+
+      // Generate an array for all days in the specified month
+      const payslipDays = Array.from({ length: daysInMonth }, (_, index) => {
+        const dayDate = new Date(year, month - 1, index + 1); // Correctly calculate the day for the given month
+        const formattedDay = formatDate(dayDate); // Use the utility function to format the day
+
+        // Check if the day is a Sunday
+        const isWeekend = isSunday(dayDate);
+
+        // Find if there's a leave for this day
+        const leave = leavesList.find(
           (day) =>
             day?.leaveEmployee._id === formData?.payslipEmployee &&
-            day?.leaveMonth === formData?.payslipMonth
-        ) // Also filter by leaveMonth
-        .map((day) => day?.id); // Extract only the ids of matching leave days
+            day?.leaveMonth === formData?.payslipMonth &&
+            formatDate(new Date(day?.leaveStartDate)) === formattedDay // Use the same formatDate function
+        );
 
-      // Update the formData with the filtered leave day ids
+        // Generate the object for each day
+        // Generate the object for each day
+        return {
+          day: formattedDay,
+          isWeekend: isWeekend, // True for weekends
+          isSickLeave: leave?.leaveIsSickLeave && !isWeekend, // Sick leave if it's not a weekend
+          isPaid: leave?.leaveIsPaidLeave !== false, // Paid leave indicator only if the value is explicitly fasle
+          isGiven: leave?.leaveIsGiven, //
+          isPartDay: leave?.leaveIsPartDay,
+          partdayDuration:
+            (new Date(leave?.leaveEndDate) - new Date(leave?.leaveStartDate)) /
+            (1000 * 60 * 60),
+          dayType: (() => {
+            // Determine the type of day
+            if (isWeekend) {
+              return "weekend"; // If it's a weekend (Saturday or Sunday)
+            }
+
+            if (leave?.leaveIsSickLeave) {
+              return "sick-leave"; // If it's sick leave and not a weekend
+            }
+            if (leave?.leaveIsGiven) {
+              return "Given day"; // If it's sick leave and not a weekend
+            }
+
+            if (
+              !leave?.leaveStartDate ||
+              (leave?.leaveStartDate !== "" && leave?.leaveIsPartDay)
+            ) {
+              return "WorkDay"; // Off-day if leaveStartDate is empty or if it's a partial day
+            }
+
+            return "off-day"; // Otherwise, it's a workday
+          })(),
+        };
+      });
+
+      console.log(payslipDays);
+
+      // Update the formData with the generated payslip days array
       setFormData((prev) => ({
         ...prev,
-        payslipLeaveDays: leaveDays, // Directly assign the array of ids
+        payslipWorkdays: payslipDays, // Assign the array of day objects
       }));
     }
-  }, [formData?.payslipEmployee, formData?.payslipMonth]);
+  }, [formData?.payslipEmployee, formData?.payslipMonth, isLeavesSuccess]);
+
+  //to retrive the leave days of teh employee selected
+  // useEffect(() => {
+  //   if (
+  //     formData?.payslipEmployee !== "" &&
+  //     formData?.payslipMonth !== "" &&
+  //     isLeavesSuccess
+  //   ) {
+  //     // Filter the leavesList for the specific employee and get only the 'id' values
+  //     const leaveDays = leavesList
+  //       .filter(
+  //         (day) =>
+  //           day?.leaveEmployee._id === formData?.payslipEmployee &&
+  //           day?.leaveMonth === formData?.payslipMonth
+  //       ) // Also filter by leaveMonth
+  //       .map((day) => day?.id); // Extract only the ids of matching leave days
+
+  //     // Update the formData with the filtered leave day ids
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       payslipLeaveDays: leaveDays, // Directly assign the array of ids
+  //     }));
+  //   }
+  // }, [formData?.payslipEmployee, formData?.payslipMonth]);
   // to compute the salary of the emolyee selcted
   useEffect(() => {
     if (
@@ -260,11 +401,10 @@ const NewPayslipForm = () => {
 
     try {
       const response = await addNewPayslip(formData);
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -368,7 +508,7 @@ const NewPayslipForm = () => {
                 </label>
 
                 {/* payslip Is Approved  beeter only done inediting for the manger to approve after creation*/}
-{/* 
+                {/* 
                 <label className="formInputLabel">
                   payslip is Approved ? (leave for edit form or to approve nin
                   the list)
@@ -399,50 +539,146 @@ const NewPayslipForm = () => {
                   />{" "}
                 </label>
               </div>
-
-              {/* Payslip Leave Days */}
-              {formData?.payslipLeaveDays?.length > 0 && (
-                <label htmlFor="payslipLeaveDays" className="formInputLabel">
-                  Leave days
-                  <select
-                    multiple
-                    id="payslipLeaveDays"
-                    name="payslipLeaveDays"
-                    value={formData.payslipLeaveDays}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        payslipLeaveDays: Array.from(
-                          e.target.selectedOptions,
-                          (option) => option.value
-                        ),
-                      })
-                    }
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                  >
-                    {leavesList.map(
-                      (leave) =>
-                        leave?.leaveEmployee?._id ===
-                          formData?.payslipEmployee &&
-                        leave?.leaveMonth === formData?.payslipMonth && (
-                          <option key={leave.id} value={leave.id}>
-                            From: {leave?.leaveStartDate} to:{" "}
-                            {leave?.leaveEndDate}{" "}
-                            {leave?.leaveIsPaidLeave ? "Paid" : "Unpaid"},{" "}
-                            {leave?.leaveIsApproved
-                              ? "Approved"
-                              : "Not approved"}
-                            ,{" "}
-                            {leave?.leaveIsSickLeave
-                              ? "Sick Leave"
-                              : "Sick Leave"}
-                          </option>
-                        )
-                    )}
-                  </select>{" "}
-                </label>
-              )}
             </div>
+            {/* Payslip Leave Days */}
+
+            <h3 className="formSectionTitle">Summary of days</h3>
+            <div className="formSection">
+              <div className="overflow-x-auto">
+                <table className="min-w-full table-auto">
+                  <thead>
+                    <tr className="bg-gray-200">
+                      <th className="px-4 py-2 text-left">Day</th>
+                      <th className="px-4 py-2 text-left">Paid</th>
+                      <th className="px-4 py-2 text-left">Type</th>
+                      <th className="px-4 py-2 text-left">Leave Duration</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {formData?.payslipWorkdays.map((dayObj, index) => (
+                      <tr
+                        key={index}
+                        className={`border-t ${
+                          dayObj.isWeekend ? "bg-yellow-200" : "bg-white"
+                        }`}
+                      >
+                        <td className="px-4  text-sm">{dayObj.day}</td>
+                        <td className="px-4 ">
+                          <label
+                            htmlFor={`isPaid-${index}`}
+                            className="flex items-center space-x-2"
+                          >
+                            <input
+                              id={`isPaid-${index}`}
+                              name={`isPaid-${index}`}
+                              type="checkbox"
+                              checked={dayObj.isPaid} // Preselected based on isPaid value
+                              onChange={(e) => {
+                                const updatedWorkdays = [
+                                  ...formData.payslipWorkdays,
+                                ];
+                                updatedWorkdays[index] = {
+                                  ...dayObj,
+                                  isPaid: e.target.checked, // Update isPaid value
+                                };
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  payslipWorkdays: updatedWorkdays, // Update formData with modified workdays
+                                }));
+                              }}
+                              className="text-blue-500"
+                            />
+                            <span className="text-xs text-gray-600">
+                              {dayObj.isPaid ? "Paid" : "Unpaid"}
+                            </span>
+                          </label>
+                        </td>
+                        <td className="px-4  text-xs text-gray-600">
+                          {dayObj.dayType}
+                        </td>
+                        <td className="px-4 py-1">
+                          {dayObj?.isPartDay && (
+                            <span className="text-xs text-red-600">
+                              {dayObj?.partdayDuration} Hours leave
+                            </span>
+                          )}
+                          {dayObj?.dayType === "off-day"&& (
+                              <span className="text-xs text-red-600">
+                                1 day leave
+                              </span>
+                            )}
+                          {dayObj?.dayType === "Given day"&& (
+                              <span className="text-xs text-red-600">
+                                1 day leave
+                              </span>
+                            )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                {/* Totals Section */}
+                <div className="mt-4 p-4 bg-gray-100 rounded-md">
+                  <p className="text-lg font-semibold">Summary</p>
+                  <div className="flex justify-between text-sm mt-2">
+                    <p className="font-medium">Total Open Days:</p>
+                    <p>
+                      {
+                        formData?.payslipWorkdays.filter(
+                          (day) => !day.isWeekend
+                        ).length
+                      }
+                    </p>
+                  </div>
+                  <div className="flex justify-between text-sm mt-2">
+                    <p className="font-medium">Total Work Days:</p>
+                    <p>
+                      {
+                        formData?.payslipWorkdays.filter(
+                          (day) =>
+                            day?.dayType === "WorkDay" ||
+                            day?.dayType === "Given day"
+                        ).length
+                      }
+                    </p>
+                  </div>
+                  <div className="flex justify-between text-sm mt-2">
+                    <p className="font-medium">Total Sick Leave:</p>
+                    <p>
+                      {
+                        formData?.payslipWorkdays.filter(
+                          (day) => day.isSickLeave
+                        ).length
+                      }
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <label htmlFor={`payslipNote`} className="formInputLabel">
+              Note
+              {!validity?.validPayslipNote && (
+                <span className="text-red-600"> check your input</span>
+              )}
+              <textarea
+                aria-invalid={!validity?.validPayslipNote}
+                type="text"
+                id={`payslipNote`}
+                name="comment"
+                placeholder="[1-150 characters]"
+                value={formData.payslipNote}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    payslipNote: e.target.value,
+                  })
+                }
+                className={`formInputText text-wrap`}
+                maxLength="150"
+              ></textarea>
+            </label>
           </div>
           {/* Payslip Salary Components */}
 

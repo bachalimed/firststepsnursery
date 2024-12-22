@@ -173,6 +173,22 @@ const NurserySectionsList = () => {
       sortable: false,
       width: "40px",
     },
+    {
+      name: "Color",
+      selector: (row) => (
+        <div
+          style={{
+            width: "20px",
+            height: "20px",
+            backgroundColor: row.sectionColor,
+            borderRadius: "4px",
+            border: "1px solid #ccc",
+          }}
+        ></div>
+      ),
+      sortable: true,
+      width: "90px",
+    },
     //show this column only if user is a parent and not employee
 
     // isAdmin && {
@@ -430,7 +446,6 @@ const NurserySectionsList = () => {
                     fontSize: "14px", // Increase font size for header text
                   },
                 },
-
                 cells: {
                   style: {
                     justifyContent: "center", // Center cell content

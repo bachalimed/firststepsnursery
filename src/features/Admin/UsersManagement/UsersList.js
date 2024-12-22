@@ -1,7 +1,4 @@
-import {
-  useGetUsersQuery,
-  useDeleteUserMutation,
-  } from "./usersApiSlice";
+import { useGetUsersQuery, useDeleteUserMutation } from "./usersApiSlice";
 import DataTable from "react-data-table-component";
 import { useState } from "react";
 import useAuth from "../../../hooks/useAuth";
@@ -24,7 +21,7 @@ const UsersList = () => {
   //const dispatch = useDispatch();
   const { canEdit, canDelete, canView, canAdd, canCreate, isParent, status2 } =
     useAuth();
- 
+
   //import users using RTK query
   const {
     data: users, //deconstructing data into users
@@ -101,8 +98,6 @@ const UsersList = () => {
 
   const handleRoleChange = (e) => setSelectedUserRoles(e.target.value);
   const handleActionChange = (e) => setSelectedUserActions(e.target.value);
-
- 
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idUserToDelete, setIdUserToDelete] = useState(null); // State to track which document to delete
@@ -182,7 +177,7 @@ const UsersList = () => {
         </span>
       ),
       sortable: true,
-      width: "70px",
+      width: "80px",
     },
     {
       name: "ID",
@@ -205,6 +200,10 @@ const UsersList = () => {
           )}
         </div>
       ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       sortable: true,
       width: "260px",
     },
@@ -216,19 +215,23 @@ const UsersList = () => {
         </Link>
       ),
       sortable: true,
-      width: "120px",
-      sortFunction: (rowA, rowB) => {
-        const usernameA = rowA.username.toLowerCase();
-        const usernameB = rowB.username.toLowerCase();
-
-        if (usernameA < usernameB) {
-          return -1;
-        }
-        if (usernameA > usernameB) {
-          return 1;
-        }
-        return 0;
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
       },
+      width: "120px",
+      // sortFunction: (rowA, rowB) => {
+      //   const usernameA = rowA.username.toLowerCase();
+      //   const usernameB = rowB.username.toLowerCase();
+
+      //   if (usernameA < usernameB) {
+      //     return -1;
+      //   }
+      //   if (usernameA > usernameB) {
+      //     return 1;
+      //   }
+      //   return 0;
+      // },
     },
     // {
     //   name: "Full Name",
@@ -251,21 +254,25 @@ const UsersList = () => {
         </Link>
       ),
       sortable: true,
-      width: "210px",
-      sortFunction: (rowA, rowB) => {
-        const fullNameA =
-          `${rowA.userFullName.userFirstName} ${rowA.userFullName.userMiddleName} ${rowA.userFullName.userLastName}`.toLowerCase();
-        const fullNameB =
-          `${rowB.userFullName.userFirstName} ${rowB.userFullName.userMiddleName} ${rowB.userFullName.userLastName}`.toLowerCase();
-
-        if (fullNameA < fullNameB) {
-          return -1;
-        }
-        if (fullNameA > fullNameB) {
-          return 1;
-        }
-        return 0;
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
       },
+      width: "210px",
+      // sortFunction: (rowA, rowB) => {
+      //   const fullNameA =
+      //     `${rowA.userFullName.userFirstName} ${rowA.userFullName.userMiddleName} ${rowA.userFullName.userLastName}`.toLowerCase();
+      //   const fullNameB =
+      //     `${rowB.userFullName.userFirstName} ${rowB.userFullName.userMiddleName} ${rowB.userFullName.userLastName}`.toLowerCase();
+
+      //   if (fullNameA < fullNameB) {
+      //     return -1;
+      //   }
+      //   if (fullNameA > fullNameB) {
+      //     return 1;
+      //   }
+      //   return 0;
+      // },
     },
     // {
     //   name: "DOB",
@@ -290,6 +297,10 @@ const UsersList = () => {
       ),
       sortable: true,
       removableRows: true,
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       width: "130px",
     },
     {
@@ -303,6 +314,10 @@ const UsersList = () => {
       ),
       sortable: true,
       removableRows: true,
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
       width: "120px",
     },
 
@@ -365,110 +380,112 @@ const UsersList = () => {
         <LoadingStateIcon />
       </>
     );
-    if (isUsersSuccess)
-  content = (
-    <>
-      <UsersManagement />
-      <div className="flex space-x-2 items-center ml-3">
-        {/* Search Bar */}
-        <div className="relative h-10 mr-2 ">
-          <HiOutlineSearch
-            fontSize={20}
-            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-            aria-label="search users"/>
-          <input
-          aria-label="search users"
-            type="text"
-            value={searchQuery}
-            onChange={handleSearchChange}
-            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
-          />{searchQuery && (
-            <button
-              type="button"
-              onClick={() => handleSearchChange({ target: { value: "" } })} // Clear search
-              className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
-              aria-label="clear search"
+  if (isUsersSuccess)
+    content = (
+      <>
+        <UsersManagement />
+        <div className="flex space-x-2 items-center ml-3">
+          {/* Search Bar */}
+          <div className="relative h-10 mr-2 ">
+            <HiOutlineSearch
+              fontSize={20}
+              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+              aria-label="search users"
+            />
+            <input
+              aria-label="search users"
+              type="text"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => handleSearchChange({ target: { value: "" } })} // Clear search
+                className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+                aria-label="clear search"
+              >
+                &times;
+              </button>
+            )}
+          </div>
+          {/* User Roles Filter */}
+          <label htmlFor="userRolesFilter" className="formInputLabel">
+            <select
+              id="userRolesFilter"
+              value={selectedUserRoles}
+              onChange={handleRoleChange}
+              className="text-sm h-8 border border-gray-300  px-4"
             >
-              &times;
-            </button>
-          )}
+              <option value="">All Roles</option>
+              {Object.values(ROLES).map((role) => (
+                <option key={role} value={role}>
+                  {role}
+                </option>
+              ))}
+            </select>
+          </label>
+          {/* User Actions Filter */}
+          <label htmlFor="userActionsFilter" className="formInputLabel">
+            <select
+              id="userActionsFilter"
+              value={selectedUserActions}
+              onChange={handleActionChange}
+              className="text-sm h-8 border border-gray-300  px-4"
+            >
+              <option value="">All Actions</option>
+              {Object.values(ACTIONS).map((action) => (
+                <option key={action} value={action}>
+                  {action}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
-        {/* User Roles Filter */}
-        <label htmlFor="userRolesFilter" className="formInputLabel">
-          <select
-            id="userRolesFilter"
-            value={selectedUserRoles}
-            onChange={handleRoleChange}
-            className="text-sm h-8 border border-gray-300  px-4"
-          >
-            <option value="">All Roles</option>
-            {Object.values(ROLES).map((role) => (
-              <option key={role} value={role}>
-                {role}
-              </option>
-            ))}
-          </select>
-        </label>
-        {/* User Actions Filter */}
-        <label htmlFor="userActionsFilter" className="formInputLabel">
-          <select
-            id="userActionsFilter"
-            value={selectedUserActions}
-            onChange={handleActionChange}
-            className="text-sm h-8 border border-gray-300  px-4"
-          >
-            <option value="">All Actions</option>
-            {Object.values(ACTIONS).map((action) => (
-              <option key={action} value={action}>
-                {action}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-      <div className="dataTableContainer">
-        <div>
-          <DataTable
-            title={tableHeader}
-            columns={column}
-            data={filteredUsers}
-            pagination
-            //selectableRows
-            removableRows
-            pageSizeControl
-           // onSelectedRowsChange={handleRowSelected}
-            selectableRowsHighlight
-            customStyles={{
-              headCells: {
-                style: {
-                  // Apply Tailwind style via a class-like syntax
-                  justifyContent: "center", // Align headers to the center
-                  textAlign: "center", // Center header text
-                  color: "black",
-                  fontSize: "14px", // Increase font size for header text
+        <div className="dataTableContainer">
+          <div>
+            <DataTable
+              title={tableHeader}
+              columns={column}
+              data={filteredUsers}
+              pagination
+              //selectableRows
+              removableRows
+              pageSizeControl
+              // onSelectedRowsChange={handleRowSelected}
+              selectableRowsHighlight
+              customStyles={{
+                headCells: {
+                  style: {
+                    // Apply Tailwind style via a class-like syntax
+                    justifyContent: "center", // Align headers to the center
+                    textAlign: "center", // Center header text
+                    color: "black",
+                    fontSize: "14px", // Increase font size for header text
+                  },
                 },
-              },
 
-              cells: {
-                style: {
-                  justifyContent: "center", // Center cell content
-                  textAlign: "center",
-                  color: "black",
-                  fontSize: "14px", // Increase font size for cell text
+                cells: {
+                  style: {
+                    justifyContent: "center", // Center cell content
+                    textAlign: "center",
+                    color: "black",
+                    fontSize: "14px", // Increase font size for cell text
+                  },
                 },
-              },
-              pagination: {
-                style: {
-                  display: "flex",
-                  justifyContent: "center", // Center the pagination control
-                  alignItems: "center",
-                  padding: "10px 0", // Optional: Add padding for spacing
+                pagination: {
+                  style: {
+                    display: "flex",
+                    justifyContent: "center", // Center the pagination control
+                    alignItems: "center",
+                    padding: "10px 0", // Optional: Add padding for spacing
+                  },
                 },
-              },
-            }}
-          ></DataTable>
-        </div>
-        {/* <div className="cancelSavebuttonsDiv"> */}
+              }}
+            ></DataTable>
+          </div>
+          {/* <div className="cancelSavebuttonsDiv"> */}
           <button
             className="add-button"
             onClick={() => navigate("/admin/usersManagement/newUser/")}
@@ -485,16 +502,16 @@ const UsersList = () => {
             >
               Duplicate Selected
             </button> */}
-        {/* </div> */}
-      </div>
+          {/* </div> */}
+        </div>
 
-      <DeletionConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
-      />
-    </>
-  );
+        <DeletionConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+        />
+      </>
+    );
 
   return content;
 };

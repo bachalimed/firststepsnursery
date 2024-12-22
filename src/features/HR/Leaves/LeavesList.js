@@ -171,7 +171,7 @@ const LeavesList = () => {
       name: "#", // New column for entry number
       cell: (row, index) => index + 1, // Display the index + 1 (for 1-based numbering)
       sortable: false,
-      width: "40px",
+      width: "50px",
     },
     {
       name: "Month", // New column for entry number
@@ -205,11 +205,11 @@ const LeavesList = () => {
     // },
 
     {
-      name: "Approved",
-      selector: (row) => row?.leaveIsApproved,
+      name: "Given",
+      selector: (row) => row?.leaveIsGiven,
       cell: (row) => (
         <span>
-          {row?.leaveIsApproved ? (
+          {row?.leaveIsGiven ? (
             <IoMdCheckboxOutline className="text-green-500 text-2xl" />
           ) : (
             <MdCheckBoxOutlineBlank className="text-red-400 text-2xl" />
@@ -217,7 +217,7 @@ const LeavesList = () => {
         </span>
       ),
       sortable: true,
-      width: "120px",
+      width: "100px",
     },
     {
       name: "Paid",

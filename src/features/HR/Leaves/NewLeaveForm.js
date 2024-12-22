@@ -65,7 +65,7 @@ const NewLeaveForm = () => {
     leaveYear: selectedAcademicYear?.title,
     leaveMonth: "",
     leaveEmployee: "",
-    leaveIsApproved: false,
+    leaveIsGiven: false,
     leaveIsPaidLeave: false,
     leaveIsSickLeave: false,
     leaveIsPartDay: false,
@@ -137,7 +137,7 @@ const NewLeaveForm = () => {
         leaveYear: "",
         leaveMonth: "",
         leaveEmployee: "",
-        leaveIsApproved: "",
+        leaveIsGiven: "",
         leaveIsPaidLeave: "",
         leaveIsSickLeave: "",
         leaveIsPartDay: "",
@@ -298,23 +298,23 @@ const NewLeaveForm = () => {
                     ))}
                   </select>{" "}
                 </label>
-                {/* Leave Is Approved */}
+                {/* Leave Is Given */}
                 <label className="formInputLabel">
-                  Approved leave?
+                  Given leave?
                   <div className="formCheckboxItemsDiv">
                     <label
-                      htmlFor="leaveIsApproved"
+                      htmlFor="leaveIsGiven"
                       className="formCheckboxChoice"
                     >
                       <input
                         type="checkbox"
-                        id="leaveIsApproved"
-                        name="leaveIsApproved"
-                        checked={formData.leaveIsApproved}
+                        id="leaveIsGiven"
+                        name="leaveIsGiven"
+                        checked={formData.leaveIsGiven}
                         onChange={handleInputChange}
                         className="formCheckbox"
                       />
-                      Leave is approved
+                      Leave is given
                     </label>
                   </div>
                 </label>
