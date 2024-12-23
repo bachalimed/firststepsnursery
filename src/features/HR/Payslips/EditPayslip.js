@@ -34,17 +34,17 @@ const EditPayslip = () => {
 
   let payslipToEdit;
   if (isPayslipSuccess) {
-    console.log(payslip, "employe");
+    console.log(payslip, "payslip");
     payslipToEdit = payslip;
   }
 
-  console.log(payslipToEdit, "employeToedit");
+  console.log(payslipToEdit, "payslipToedit");
 
   let content;
   if (isPayslipSuccess) {
     content = 
       <>
-        <EditPayslipForm payslip={payslipToEdit} />
+        <EditPayslipForm payslip={payslipToEdit[0]} />
       </>
     
   } 

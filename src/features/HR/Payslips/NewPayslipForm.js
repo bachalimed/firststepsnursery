@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import { useAddNewPayslipMutation } from "./payslipsApiSlice";
 import { useNavigate } from "react-router-dom";
 import { CurrencySymbol } from "../../../config/Currency";
-import {
-  useGetLeavesByYearQuery,
-} from "../Leaves/leavesApiSlice";
+import { useGetLeavesByYearQuery } from "../Leaves/leavesApiSlice";
 import HR from "../HR";
 import { useGetEmployeesByYearQuery } from "../Employees/employeesApiSlice";
 import { useSelector } from "react-redux";
@@ -92,6 +90,7 @@ const NewPayslipForm = () => {
     payslipWorkdays: [],
     payslipNote: "",
     payslipEmployee: "",
+    payslipEmployeeName: "",
     payslipIsApproved: false,
     payslipPaymentDate: "",
     payslipLeaveDays: [],
@@ -102,7 +101,6 @@ const NewPayslipForm = () => {
       totalAmount: "",
     },
 
-   
     payslipCreator: userId,
   });
 
@@ -138,12 +136,13 @@ const NewPayslipForm = () => {
         payslipYear: "",
         payslipMonth: "",
         payslipNote: "",
+        payslipEmployeeName: "",
         payslipEmployee: "",
         payslipIsApproved: "",
         payslipPaymentDate: "",
         payslipLeaveDays: [],
         payslipSalaryComponents: {},
-      
+
         payslipCreator: "",
       });
       navigate("/hr/payslips/payslipsList");
@@ -288,7 +287,7 @@ const NewPayslipForm = () => {
         };
       });
 
-      console.log(payslipDays);
+      console.log(payslipDays, "payslipDays1111111111");
 
       // Calculate totals
       const totalOpenDays = payslipDays.filter((day) => !day.isWeekend).length;
@@ -298,9 +297,9 @@ const NewPayslipForm = () => {
       const totalWorkDays = payslipDays.filter(
         (day) => day?.dayType === "Work day" || day?.dayType === "Given day"
       ).length;
-      console.log(totalPaidDays, "totalPaidDays");
-      console.log(totalOpenDays, "totalOpenDays");
-      console.log(totalWorkDays, "totalWorkDays");
+      //console.log(totalPaidDays, "totalPaidDays");
+      //console.log(totalOpenDays, "totalOpenDays");
+      //console.log(totalWorkDays, "totalWorkDays");
       // Fetch basic salary for the selected employee
       const basicSalary =
         employeesList.find(
@@ -318,6 +317,7 @@ const NewPayslipForm = () => {
       // Calculate total amount (payable basic + allowance)
       const totalAmount = (Number(payableBasic) + Number(allowance)).toFixed(2);
       // Update formData with calculated values
+      console.log(payslipDays, "payslipDays22222222222");
       console.log(totalAmount, "totalAmount");
       setFormData((prev) => ({
         ...prev,
@@ -421,7 +421,7 @@ const NewPayslipForm = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, payslipMonth: e.target.value })
                     }
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                    className="formInputText"
                     required
                   >
                     <option value="">Select Month</option>
@@ -444,23 +444,31 @@ const NewPayslipForm = () => {
                     value={formData.payslipEmployee}
                     onChange={(e) => {
                       const selectedEmployeeId = e.target.value;
-
-                      // Find leave days for the selected employee and extract their IDs
+                      // Find the employee whose ID matches the selectedEmployeeId
+                      const selectedEmployee = employeesList?.find(
+                        (employee) =>
+                          employee?.employeeId === selectedEmployeeId
+                      );
+                      // Extract the leave days of the selected employee
                       const employeeLeaveDays = leavesList
                         .filter(
                           (leave) =>
                             leave?.leaveEmployee?._id === selectedEmployeeId
                         )
                         .map((leave) => leave?.id); // Extract only the leave IDs
-
+                      // Extract the full name from the selected employee
+                      const employeeFullName = selectedEmployee
+                        ? `${selectedEmployee?.userFullName?.userFirstName} ${selectedEmployee?.userFullName?.userMiddleName} ${selectedEmployee?.userFullName?.userLastName}`
+                        : "";
                       // Update formData with selected employee and their leave days
                       setFormData({
                         ...formData,
                         payslipEmployee: selectedEmployeeId,
-                        payslipLeaveDays: employeeLeaveDays, // Assign the filtered leave days
+                        payslipLeaveDays: employeeLeaveDays,
+                        payslipEmployeeName: employeeFullName,
                       });
                     }}
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                    className="formInputText"
                     required
                   >
                     <option value="">Select Employee</option>
@@ -534,7 +542,7 @@ const NewPayslipForm = () => {
                       >
                         <td className="px-4  text-sm">{dayObj.day}</td>
                         <td className="px-4 ">
-                          <label
+                          {/* {!dayObj?.isWeekend&& <label
                             htmlFor={`isPaid-${index}`}
                             className="flex items-center space-x-2"
                           >
@@ -561,7 +569,12 @@ const NewPayslipForm = () => {
                             <span className="text-xs text-gray-600">
                               {dayObj.isPaid ? "Paid" : "Unpaid"}
                             </span>
-                          </label>
+                          </label>} */}
+                          {!dayObj?.isWeekend && (
+                            <div className="text-xs text-gray-600">
+                              {dayObj.isPaid ? "Paid" : "Unpaid"}
+                            </div>
+                          )}
                         </td>
                         <td className="px-4  text-xs text-gray-600">
                           {dayObj.dayType}

@@ -38,6 +38,7 @@ const PayslipsList = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
 
   const [selectedPayslipMonth, setSelectedPayslipMonth] = useState(""); // invoice month
   //function to return curent month for month selection
@@ -70,7 +71,7 @@ const PayslipsList = () => {
       isLoading: isDelLoading,
       isSuccess: isDelSuccess,
       isError: isDelError,
-      error: delerror,
+      error: delError,
     },
   ] = useDeletePayslipMutation();
 
@@ -82,9 +83,29 @@ const PayslipsList = () => {
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    await deletePayslip({ id: idPayslipToDelete });
+    try {
+      const response = await deletePayslip({ id: idPayslipToDelete });
     setIsDeleteModalOpen(false); // Close the modal
-  };
+    if (response?.message) {
+      // Success response
+      triggerBanner(response?.message, "success");
+    } else if (response?.data?.message) {
+      // Success response
+      triggerBanner(response?.data?.message, "success");
+    } else if (response?.error?.data?.message) {
+      // Error response
+      triggerBanner(response?.error?.data?.message, "error");
+    } else if (isDelError) {
+      // In case of unexpected response format
+      triggerBanner(delError?.data?.message, "error");
+    } else {
+      // In case of unexpected response format
+      triggerBanner("Unexpected response from server.", "error");
+    }
+  } catch (error) {
+    triggerBanner(error?.data?.message, "error");
+  }
+};
 
   // Function to close the modal without deleting
   const handleCloseDeleteModal = () => {
@@ -186,7 +207,7 @@ const PayslipsList = () => {
       selector: (row) => row?.payslipPaymentDate,
       cell: (row) => (
         <span>
-          {row?.payslipPaymentDate ? (
+          {row?.payslipPaymentDate&&row?.payslipPaymentDate !== "" ? (
             <GiMoneyStack className="text-green-500 text-2xl" />
           ) : (
             <GiMoneyStack className="text-red-400 text-2xl" />
@@ -215,6 +236,19 @@ const PayslipsList = () => {
           {row?.payslipEmployee?.userFullName?.userLastName}
         </Link>
       ),
+    },
+    {
+      name: "PayDay",
+      selector: (row) =>
+        row?.payslipPaymentDate
+          ? new Date(row.payslipPaymentDate).toLocaleDateString("en-GB", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+            })
+          : "---", // Or any placeholder for empty dates
+      sortable: true,
+      width: "110px",
     },
 
     {
@@ -261,27 +295,6 @@ const PayslipsList = () => {
       },
       width: "180px",
     },
-    {
-      name: "Leave Days",
-      selector: (row) => (
-        <div>
-          {row?.payslipAbsentDays?.map((day, index) => (
-            <div key={index}>
-              {day?.dayIsPaid ? "paid: " : "unpaid: "}
-              {new Date(day?.absentDate).toLocaleDateString("en-GB", {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-              })}
-            </div>
-          ))}
-        </div>
-      ),
-
-      sortable: true,
-      removableRows: true,
-      width: "130px",
-    },
 
     // {
     //   name: "Documents",
@@ -313,6 +326,9 @@ const PayslipsList = () => {
               aria-label="edit payslip"
               className="text-amber-300"
               onClick={() => navigate(`/hr/payslips/editPayslip/${row.id}`)}
+              hidden={
+                row?.payslipPaymentDate && row.payslipPaymentDate !== "" || row?.payslipIsApproved === true
+              }
             >
               <FiEdit className="text-2xl" />
             </button>
@@ -322,6 +338,9 @@ const PayslipsList = () => {
               aria-label="delete payslip"
               className="text-red-600"
               onClick={() => onDeletePayslipClicked(row.id)}
+              hidden={
+                row?.payslipPaymentDate && row.payslipPaymentDate !== "" || row?.payslipIsApproved === true
+              }
             >
               <RiDeleteBin6Line className="text-2xl" />
             </button>

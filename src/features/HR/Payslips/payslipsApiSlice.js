@@ -55,9 +55,7 @@ export const payslipsApiSlice = apiSlice.injectEndpoints({
         return response.status === 200 && !result.isError;
       },
 
-      transformResponse: (responseData) => {
-        return responseData;
-      },
+    
       providesTags: ["payslip"],
     }),
     addNewPayslip: builder.mutation({
