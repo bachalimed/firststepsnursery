@@ -267,7 +267,7 @@ const StudentsList = () => {
       name: "#",
       cell: (row, index) => index + 1, // Display the index + 1 (for 1-based numbering)
       sortable: false,
-      width: "40px",
+      width: "50px",
     },
     {
       name: "Active",

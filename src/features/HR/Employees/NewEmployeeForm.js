@@ -83,7 +83,7 @@ const NewEmployeeForm = () => {
       contractType: "",
       salaryPackage: {
         basic: "",
-        cnss: "",
+        allowance: "",
         other: "",
         payment: "",
       },
@@ -214,7 +214,7 @@ const NewEmployeeForm = () => {
           contractType: "",
           salaryPackage: {
             basic: "",
-            cnss: "",
+            allowance: "",
             other: "",
             payment: "",
           },
@@ -927,19 +927,19 @@ const NewEmployeeForm = () => {
                 </label>
               </div>
               <div className="formLineDiv">
-                <label htmlFor="cnss" className="formInputLabel">
-                  CNSS{" "}
-                  {formData?.employeeCurrentEmployment?.salaryPackage?.cnss &&
+                <label htmlFor="allowance" className="formInputLabel">
+                  ALLOWANCE{" "}
+                  {formData?.employeeCurrentEmployment?.salaryPackage?.allowance &&
                     !NUMBER_REGEX.test(
-                      formData?.employeeCurrentEmployment?.salaryPackage?.cnss
+                      formData?.employeeCurrentEmployment?.salaryPackage?.allowance
                     ) && <span className="text-red-600">[$$$$.$$$]</span>}
                   <input
-                    aria-label="cnss"
+                    aria-label="allowance"
                     type="number"
-                    id="cnss"
-                    name="cnss"
+                    id="allowance"
+                    name="allowance"
                     value={
-                      formData.employeeCurrentEmployment.salaryPackage.cnss
+                      formData.employeeCurrentEmployment.salaryPackage.allowance
                     }
                     onChange={(e) =>
                       setFormData((prev) => ({
@@ -948,7 +948,7 @@ const NewEmployeeForm = () => {
                           ...prev.employeeCurrentEmployment,
                           salaryPackage: {
                             ...prev.employeeCurrentEmployment.salaryPackage,
-                            cnss: e.target.value,
+                            allowance: e.target.value,
                           },
                         },
                       }))

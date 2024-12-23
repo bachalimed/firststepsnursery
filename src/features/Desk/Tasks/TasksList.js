@@ -108,7 +108,7 @@ const TasksList = () => {
       name: "#", // New column for entry number
       cell: (row, index) => index + 1, // Display the index + 1 (for 1-based numbering)
       sortable: false,
-      width: "40px",
+      width: "50px",
     },
     //show this column only if user is a parent and not employee
 

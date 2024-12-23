@@ -927,18 +927,18 @@ const EditEmployeeForm = ({ employee }) => {
             </div>
 
             <div className="formLineDiv">
-              <label htmlFor="cnss" className="formInputLabel">
-                CNSS{" "}
-                {formData?.employeeCurrentEmployment?.salaryPackage?.cnss &&
+              <label htmlFor="allowance" className="formInputLabel">
+                ALLOWANCE{" "}
+                {formData?.employeeCurrentEmployment?.salaryPackage?.allowance &&
                   !NUMBER_REGEX.test(
-                    formData?.employeeCurrentEmployment?.salaryPackage?.cnss
+                    formData?.employeeCurrentEmployment?.salaryPackage?.allowance
                   ) && <span className="text-red-600">[$$$$.$$$]</span>}
                 <input
-                  aria-label="cnss"
+                  aria-label="allowance"
                   type="number"
-                  id="cnss"
-                  name="cnss"
-                  value={formData.employeeCurrentEmployment.salaryPackage.cnss}
+                  id="allowance"
+                  name="allowance"
+                  value={formData.employeeCurrentEmployment.salaryPackage.allowance}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
@@ -946,7 +946,7 @@ const EditEmployeeForm = ({ employee }) => {
                         ...prev.employeeCurrentEmployment,
                         salaryPackage: {
                           ...prev.employeeCurrentEmployment.salaryPackage,
-                          cnss: e.target.value,
+                          allowance: e.target.value,
                         },
                       },
                     }))

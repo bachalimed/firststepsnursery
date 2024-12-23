@@ -33,4 +33,5 @@ academic years "1000" use as criteria to query all years data instead of only on
  23. payslip can be generated for non active employee because he can be finished and getting paid.
  24. payment of leave is decided and recorded on the leave itself and will not be changed in the payslip
  25. leave given days are given by the nursery and are paid normally, 
+ 26. pay lsip generated without payday , and after it is approved, it can be paid and we fill the payment date.
  

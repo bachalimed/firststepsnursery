@@ -246,7 +246,7 @@ const NotificationsList = () => {
       name: "#", // New column for entry number
       cell: (row, index) => index + 1, // Display the index + 1 (for 1-based numbering)
       sortable: false,
-      width: "40px",
+      5,
     },
     //show this column only if user is a parent and not notification
 
