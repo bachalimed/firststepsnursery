@@ -2,6 +2,7 @@ import { useGetUsersQuery, useDeleteUserMutation } from "./usersApiSlice";
 import DataTable from "react-data-table-component";
 import { useState } from "react";
 import useAuth from "../../../hooks/useAuth";
+import { LuKeyRound } from "react-icons/lu";
 import { Link, useNavigate } from "react-router-dom";
 import UsersManagement from "../UsersManagement";
 import { HiOutlineSearch } from "react-icons/hi";
@@ -145,7 +146,7 @@ const UsersList = () => {
       name: "#", // New column for entry number
       cell: (row, index) => index + 1, // Display the index + 1 (for 1-based numbering)
       sortable: false,
-      width: "50px",
+      width: "0px",
     },
     //show this column only if user is a parent and not employee
 
@@ -173,6 +174,21 @@ const UsersList = () => {
             <LiaMaleSolid className="text-sky-700 text-2xl" />
           ) : (
             <LiaFemaleSolid className="text-red-600 text-2xl" />
+          )}
+        </span>
+      ),
+      sortable: true,
+      width: "80px",
+    },
+    {
+      name: "Password",
+      selector: (row) => row?.isForgotPassword,
+      cell: (row) => (
+        <span>
+          {row?.isForgotPassword === true ? (
+            <LuKeyRound className="text-gree-700 text-2xl" />
+          ) : (
+            <LuKeyRound className="text-red-600 text-2xl" />
           )}
         </span>
       ),

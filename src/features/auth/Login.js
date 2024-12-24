@@ -87,10 +87,10 @@ const Login = () => {
             <label
             aria-label="username"
               htmlFor="username"
-              className="block text-gray-700 text-sm font-bold mb-2"
+              className="formInputLabel"
             >
               Username:
-            </label>
+           
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               type="text"
@@ -100,17 +100,17 @@ const Login = () => {
               onChange={handleUserInput}
               autoComplete="off"
               required
-            />
+            /> </label>
           </div>
 
           <div className="mb-4 relative">
             <label
               htmlFor="password"
-              className="block text-gray-700 text-sm font-bold mb-2"
+              className="formInputLabel"
               aria-label="password"
             >
               Password:
-            </label>
+            
             <div className="flex items-center">
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -132,7 +132,7 @@ const Login = () => {
                   < PiEyeLight className="text-gray-500" aria-label="show password"/>
                 )}
               </button>
-          </div>
+          </div></label>
           </div>
           <div className="flex items-center justify-between">
             <label
@@ -152,7 +152,7 @@ const Login = () => {
 
           <div className="flex items-center justify-between mt-6">
             <button
-              className="bg-sky-700 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+              className="save-button w-full"
               type="submit"
             >
               Sign In
@@ -163,7 +163,7 @@ const Login = () => {
         {/* Forgot Password Link */}
         <div className="mt-4 text-center">
           <Link
-            to="/forgot-password"
+            to="/forgotPassword"
             className="text-sky-700 hover:text-sky-700 text-sm"
           >
             Forgot Password?

@@ -4,6 +4,7 @@ import PublicLayout from "./Components/PublicLayout";
 import DashboardLayout from "./Components/DashboardLayout";
 import Public from "./pages/Public";
 import Login from "./features/auth/Login";
+import ForgotPassword from "./features/auth/ForgotPassword";
 
 import Dashboard from "./features/Dashboard/Dashboard";
 import StudentsDash from "./features/Dashboard/Students/StudentsDash";
@@ -190,6 +191,7 @@ const App = () => {
         <Route index element={<Public />} />{" "}
         {/*  index will show as a default in the public layout*/}
         <Route path="login" element={<Login />} />
+        <Route path="forgotPassword" element={<ForgotPassword />} />
         {/*protected routes after this */}
         <Route element={<PersistLogin />}>
           {/*this wrapper will persist login  for all inside routes */}

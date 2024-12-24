@@ -485,37 +485,9 @@ const NewPayslipForm = () => {
                   </select>{" "}
                 </label>
 
-                {/* payslip Is Approved  beeter only done inediting for the manger to approve after creation*/}
-                {/* 
-                <label className="formInputLabel">
-                  payslip is Approved ? (leave for edit form or to approve nin
-                  the list)
-                  <input
-                    type="checkbox"
-                    name="payslipIsApproved"
-                    checked={formData.payslipIsApproved}
-                    onChange={handleInputChange}
-                    className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                  />{" "}
-                </label> */}
+               
 
-                {/* Payslip Payment Date */}
-                {/* done after approval of payslip */}
-                {/* <label htmlFor="payslipPaymentDate" className="formInputLabel">
-                  Payment Date{" "}
-                  {!validity.validPayslipPaymentDate && (
-                    <span className="text-red-600">*</span>
-                  )}
-                  <input
-                    type="date"
-                    id="payslipPaymentDate"
-                    name="payslipPaymentDate"
-                    value={formData.payslipPaymentDate}
-                    onChange={handleInputChange}
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                    required
-                  />{" "}
-                </label> */}
+              
               </div>
             </div>
             {/* Payslip Leave Days */}
@@ -542,34 +514,7 @@ const NewPayslipForm = () => {
                       >
                         <td className="px-4  text-sm">{dayObj.day}</td>
                         <td className="px-4 ">
-                          {/* {!dayObj?.isWeekend&& <label
-                            htmlFor={`isPaid-${index}`}
-                            className="flex items-center space-x-2"
-                          >
-                            <input
-                              id={`isPaid-${index}`}
-                              name={`isPaid-${index}`}
-                              type="checkbox"
-                              checked={dayObj.isPaid} // Preselected based on isPaid value
-                              onChange={(e) => {
-                                const updatedWorkdays = [
-                                  ...formData.payslipWorkdays,
-                                ];
-                                updatedWorkdays[index] = {
-                                  ...dayObj,
-                                  isPaid: e.target.checked, // Update isPaid value
-                                };
-                                setFormData((prev) => ({
-                                  ...prev,
-                                  payslipWorkdays: updatedWorkdays, // Update formData with modified workdays
-                                }));
-                              }}
-                              className="text-blue-500"
-                            />
-                            <span className="text-xs text-gray-600">
-                              {dayObj.isPaid ? "Paid" : "Unpaid"}
-                            </span>
-                          </label>} */}
+                         
                           {!dayObj?.isWeekend && (
                             <div className="text-xs text-gray-600">
                               {dayObj.isPaid ? "Paid" : "Unpaid"}
@@ -650,70 +595,59 @@ const NewPayslipForm = () => {
               </div>
             </div>
             <h3 className="formSectionTitle">Salary details</h3>
-            <div className="formSection">
-              {/* Payable Basic Salary */}
-              <div className="flex justify-between items-center mb-3">
-                <label className="font-medium text-gray-700">
-                  Basic Salary:
-                </label>
-                <span className="text-gray-800">
-                  {formData?.payslipSalaryComponents?.basic || 0}{" "}
-                  {CurrencySymbol}
-                </span>
-              </div>
-              {/* Payable Basic Salary */}
-              <div className="flex justify-between items-center mb-3">
-                <label className="font-medium text-gray-700">
-                  Payable Basic Salary:
-                </label>
-                <span className="text-gray-800">
-                  {formData?.payslipSalaryComponents?.payableBasic || 0}{" "}
-                  {CurrencySymbol}
-                </span>
-              </div>
+<div className="formSection">
+  {/* Payable Basic Salary */}
+  <div className="flex justify-between items-center mb-3">
+    <span className="formInputLabel">Basic Salary:</span>
+    <span className="text-gray-800">
+      {formData?.payslipSalaryComponents?.basic || 0} {CurrencySymbol}
+    </span>
+  </div>
 
-              {/* Allowance Input */}
-              <div className="flex justify-between items-center mb-3">
-                <label
-                  htmlFor="allowance"
-                  className="font-medium text-gray-700"
-                >
-                  Allowance:
-                </label>
-                <input
-                  id="allowance"
-                  type="number"
-                  value={formData?.payslipSalaryComponents?.allowance || ""}
-                  onChange={(e) => {
-                    const allowanceValue = Number(e.target.value) || 0;
-                    // Update formData with allowance and total salary
-                    setFormData((prev) => ({
-                      ...prev,
-                      payslipSalaryComponents: {
-                        ...prev.payslipSalaryComponents,
-                        allowance: allowanceValue,
-                        totalAmount:
-                          Number(
-                            prev.payslipSalaryComponents?.payableBasic || 0
-                          ) + allowanceValue,
-                      },
-                    }));
-                  }}
-                  className="border rounded-md px-2 py-1 w-28 text-right"
-                />
-              </div>
+  {/* Payable Basic Salary */}
+  <div className="flex justify-between items-center mb-3">
+    <span className="formInputLabel">Payable Basic Salary:</span>
+    <span className="text-gray-800">
+      {formData?.payslipSalaryComponents?.payableBasic || 0} {CurrencySymbol}
+    </span>
+  </div>
 
-              {/* Total Salary */}
-              <div className="flex justify-between items-center">
-                <label className="font-medium text-gray-700">
-                  Total Salary:
-                </label>
-                <span className="font-bold text-gray-900">
-                  {formData?.payslipSalaryComponents?.totalAmount || 0}{" "}
-                  {CurrencySymbol}
-                </span>
-              </div>
-            </div>
+  {/* Allowance Input */}
+  <div className="flex justify-between items-center mb-3">
+    <label htmlFor="allowance" className="formInputLabel">
+      Allowance:
+    </label>
+    <input
+      id="allowance"
+      type="number"
+      value={formData?.payslipSalaryComponents?.allowance || ""}
+      onChange={(e) => {
+        const allowanceValue = Number(e.target.value) || 0;
+        // Update formData with allowance and total salary
+        setFormData((prev) => ({
+          ...prev,
+          payslipSalaryComponents: {
+            ...prev.payslipSalaryComponents,
+            allowance: allowanceValue,
+            totalAmount:
+              Number(prev.payslipSalaryComponents?.payableBasic || 0) +
+              allowanceValue,
+          },
+        }));
+      }}
+      className="border rounded-md px-2 py-1 w-28 text-right"
+    />
+  </div>
+
+  {/* Total Salary */}
+  <div className="flex justify-between items-center">
+    <span className="formInputLabel">Total Salary:</span>
+    <span className="font-bold text-gray-900">
+      {formData?.payslipSalaryComponents?.totalAmount || 0} {CurrencySymbol}
+    </span>
+  </div>
+</div>
+
 
             <label htmlFor={`payslipNote`} className="formInputLabel">
               Note

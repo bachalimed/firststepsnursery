@@ -1,3 +1,5 @@
+
+//used in app.js for protected routes
 export const ROLES = {
   Employee: "Employee",
   Parent: "Parent",

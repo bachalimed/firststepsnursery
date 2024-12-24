@@ -109,7 +109,7 @@ const PublicHeader = () => {
               </MenuItem>
               <MenuItem>
                 <button
-                  onClick={() => navigate("/users/ForgotPassword/")}
+                  onClick={() => navigate("/ForgotPassword/")}
                   aria-label="forgot password"
                  className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
                 >
