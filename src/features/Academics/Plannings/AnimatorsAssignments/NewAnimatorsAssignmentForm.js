@@ -92,7 +92,7 @@ const NewAnimatorsAssignmentForm = () => {
     const { entities } = employees;
     employeesList = Object.values(entities);
     activeEmployeesList = employeesList.filter(
-      (employee) => employee.employeeData.employeeIsActive === true
+      (employee) => employee.employeeData.employeeIsActive === true &&employee.userRoles?.includes('Animator')////////
     );
   }
   let assignmentsList = isAssignmentsSuccess

@@ -9,7 +9,7 @@ const baseQuery = fetchBaseQuery({
     baseUrl: 'http://localhost:3500',
     credentials: 'include',//we will always send the cookie containing our refresh token
     prepareHeaders: (headers, { getState }) => {//destructured api.getState , prepareheaders is function that will be applied to every request we send maybe add the selected year here
-        const token = getState().auth.token//getting the token from the getStateAPI which is already defined
+        const token = getState().auth.token//getting the token from the state getStateAPI which is already defined
 
         if (token) {
             headers.set("authorization", `Bearer ${token}`)//setting the token in the headers preceded with Bearer 

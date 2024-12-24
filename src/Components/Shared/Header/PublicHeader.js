@@ -11,9 +11,9 @@ import useAuth from "../../../hooks/useAuth";
 import { LuKeyRound } from "react-icons/lu";
 import { Link } from "react-router-dom";
 import { PiUserCircleLight } from "react-icons/pi";
-import AnimatedColorText from '../../lib/Utils/AnimatedColorText'
+import AnimatedColorText from "../../lib/Utils/AnimatedColorText";
 import { RiLoginBoxLine } from "react-icons/ri";
-import GenerateCircles from '../../lib/Utils/GenerateCircles'
+import GenerateCircles from "../../lib/Utils/GenerateCircles";
 const PublicHeader = () => {
   const { username } = useAuth();
   const company = { label: "First Steps", type: "Nursery" };
@@ -22,9 +22,9 @@ const PublicHeader = () => {
   const [isBannerVisible, setIsBannerVisible] = useState(true);
   const [sendLogout, { isLoading, isSuccess, isError, error }] =
     useSendLogoutMutation();
-    const handleCloseBanner = () => {
-      setIsBannerVisible(false);
-    };
+  const handleCloseBanner = () => {
+    setIsBannerVisible(false);
+  };
   useEffect(() => {
     if (isSuccess) navigate("/");
   }, [isSuccess, navigate]);
@@ -38,7 +38,7 @@ const PublicHeader = () => {
       title="Logout"
       onClick={sendLogout}
     >
-      <TbLogout aria-label="Logout"  className=" text-2xl right" />
+      <TbLogout aria-label="Logout" className=" text-2xl right" />
       Logout
     </button>
   );
@@ -47,9 +47,7 @@ const PublicHeader = () => {
   const goDashButton =
     pathname !== "/dashboard/" ? (
       <button
-        className={`${
-          username ? "" : "hidden"
-        } text-white hover:text-gray-800`}
+        className={`text-3xl ${username ? "" : "hidden"} text-white hover:text-gray-800`}
         title="Dashboard"
         onClick={onGoDashClicked}
         aria-label="dashboard"
@@ -58,73 +56,76 @@ const PublicHeader = () => {
       </button>
     ) : null;
 
+  const circles = GenerateCircles(7); // Generate  random circles
 
-    const circles = GenerateCircles(7); // Generate  random circles
-
-
-   
   return (
-    <header  className= "bg-sky-700 text-white py-1 px-3 md:px-1 flex md:flex-row md:justify-between items-center shadow-md relative overflow-hidden">
+    <header className="bg-sky-700 text-white py-1 px-3 md:px-1 flex md:flex-row md:justify-between items-center shadow-md relative overflow-hidden">
       {/* Background circles */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
         {circles}
       </div>
       <div className={` "w-56" p-2 flex text-white  relative`}>
-        <Link to="/"><img src={logo} className="h-12 w-12 rounded " alt="first steps nursery logo" /></Link>
-       
-  <div className="flex items-center">
-      <AnimatedColorText company={company} />
-     
-    </div>
+        <Link to="/">
+          <img
+            src={logo}
+            className="h-12 w-12 rounded "
+            alt="first steps nursery logo"
+          />
+        </Link>
+
+        <div className="flex items-center">
+          <AnimatedColorText company={company} />
+        </div>
       </div>
       {/* Top Navigation */}
       <div className="flex flex-col md:flex-row items-center md:space-x-6 mb-2 md:mb-0">
-       
-
         {/* Dashboard Button */}
-        <div>{goDashButton}</div>
+        {goDashButton}
 
         {/* User Profile Menu */}
         <Menu>
-        
           <MenuButton className="focus:outline-none">
-            <PiUserCircleLight aria-label="manage profile" className="text-4xl text-white-500" />
+            <PiUserCircleLight
+              aria-label="manage profile"
+              className="text-4xl text-white-500"
+            />
           </MenuButton>
-         <MenuItems
-                 transition
-                 aria-label="manage profile"
-                 anchor="bottom end"
-                 className=" origin-top-right  border  w-40 bg-sky-100 p-1 text-sm/6 text-gray-800 transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
-               >
-                 <strong>Manage profile</strong>
-              <MenuItem>
-                <button
-                  onClick={() => navigate("/login/")}
-                  aria-label="login"
-                 className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
-                >
-                   <RiLoginBoxLine aria-label="user details" className="size-4 "/>
-                  Login
-                </button>
-              </MenuItem>
-              <MenuItem>
-                <button
-                  onClick={() => navigate("/ForgotPassword/")}
-                  aria-label="forgot password"
-                 className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
-                >
-                  <LuKeyRound aria-label="user details" className="size-4 fill-white/30  "/>
-                  Forgot Password
-                </button>
-              </MenuItem>
-              <div className="my-1 h-px bg-gray-500 "></div>
-              <MenuItem>{logoutButton}</MenuItem>
-           
+          <MenuItems
+            transition
+            aria-label="manage profile"
+            anchor="bottom end"
+            className=" origin-top-right  border  w-40 bg-sky-100 p-1 text-sm/6 text-gray-800 transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
+          >
+            <strong>Manage profile</strong>
+            <MenuItem>
+              <button
+                onClick={() => navigate("/login/")}
+                aria-label="login"
+                className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
+              >
+                <RiLoginBoxLine aria-label="user details" className="size-4 " />
+                Login
+              </button>
+            </MenuItem>
+            <MenuItem>
+              <button
+                onClick={() => navigate("/ForgotPassword/")}
+                aria-label="forgot password"
+                className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
+              >
+                <LuKeyRound
+                  aria-label="user details"
+                  className="size-4 fill-white/30  "
+                />
+                Forgot Password
+              </button>
+            </MenuItem>
+            <div className="my-1 h-px bg-gray-500 "></div>
+            <MenuItem>{logoutButton}</MenuItem>
           </MenuItems>
         </Menu>
       </div>
 
-     
       {/* Banner Section */}
       {/* {isBannerVisible && (
         <div className="relative bg-sky-600 text-white">
