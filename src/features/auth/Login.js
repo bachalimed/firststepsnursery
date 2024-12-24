@@ -18,7 +18,6 @@ const Login = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const [login, { isLoading }] = useLoginMutation(); //we will only need the isLoading state from this mutation
 
   useEffect(() => {

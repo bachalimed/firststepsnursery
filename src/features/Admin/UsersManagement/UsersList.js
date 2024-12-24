@@ -186,14 +186,14 @@ const UsersList = () => {
       cell: (row) => (
         <span>
           {row?.isForgotPassword === true ? (
-            <LuKeyRound className="text-gree-700 text-2xl" />
+            <LuKeyRound className="text-red-700 text-2xl" />
           ) : (
-            <LuKeyRound className="text-red-600 text-2xl" />
+            <LuKeyRound className="text-green-600 text-2xl" />
           )}
         </span>
       ),
       sortable: true,
-      width: "80px",
+      width: "110px",
     },
     {
       name: "ID",

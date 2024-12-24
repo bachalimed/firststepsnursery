@@ -2,8 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { useNavigate, Link, useOutletContext } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import ConfirmationModal from "../../Components/Shared/Modals/ConfirmationModal";
-import { useUpdateUserMutation } from "../Admin/UsersManagement/usersApiSlice"
-import PublicHeader from "../../Components/Shared/Header/PublicHeader";
+import { useLoginMutation } from "./authApiSlice";import PublicHeader from "../../Components/Shared/Header/PublicHeader";
 import PublicFooter from "../../Components/Shared/Footer/PublicFooter";
 import { USER_REGEX } from "../../config/REGEX";
 const ForgotPassword = () => {
@@ -20,7 +19,7 @@ const ForgotPassword = () => {
       isError: isUpdateError,
       error: updateError,
     },
-  ] = useUpdateUserMutation();
+  ] = useLoginMutation();
   //confirmation Modal states
   const [showConfirmation, setShowConfirmation] = useState(false);
   const navigate = useNavigate();
@@ -33,7 +32,7 @@ const ForgotPassword = () => {
 useEffect(()=>{
 if(isUpdateSuccess){
   setUsername("")
-  navigate("/ForgotPasswordConfirm")
+  navigate("/")
 }
 },[isUpdateSuccess])
 
