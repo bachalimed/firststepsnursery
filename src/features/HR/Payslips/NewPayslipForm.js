@@ -149,9 +149,20 @@ const NewPayslipForm = () => {
     }
   }, [isAddSuccess, navigate]);
 
-  const employeesList = isEmployeesSuccess
-    ? Object.values(employees.entities)
-    : [];
+  // const employeesList = isEmployeesSuccess
+  //   ? Object.values(employees.entities)
+  //   : [];
+
+  let employeesList=[]
+if (isEmployeesSuccess){
+const employeesRaw= Object.values(employees.entities)
+employeesList = employeesRaw.filter(
+  (employee) => employee?.employeeData?.employeeIsActive === true
+)
+}
+
+
+
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
