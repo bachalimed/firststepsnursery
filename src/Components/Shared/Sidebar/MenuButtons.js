@@ -49,7 +49,7 @@ const MenuButtons = () => {
     
       <header className="flex items-center md:px-1 bg-sky-700">
        
-      {(isDirector|| isManager || isAdmin ||isAcademic || isFinance || isHR) &&  <Link to="/dashboard/">
+      {(isDirector|| isManager || isAdmin ||isAcademic || isFinance || isHR) &&  <Link to="/dashboard/studentsDash/">
           <li
            className={`text-grey-300 text-sm flex text-white items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 ${
             location.pathname.startsWith("/dashboard/") ? "bg-gray-300 text-red-900" : ""
