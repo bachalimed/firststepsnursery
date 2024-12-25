@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import useAuth from "../../../../hooks/useAuth";
+
 import {
   TimelineViews,
   TimelineMonth,
@@ -17,6 +17,7 @@ import {
   DragAndDrop,
 } from "@syncfusion/ej2-react-schedule";
 import { RecurrenceEditorComponent } from "@syncfusion/ej2-react-schedule";
+import useAuth from "../../../../hooks/useAuth";
 import {
   DropDownListComponent,
   DateTimePickerComponent,
@@ -47,7 +48,7 @@ import {
   setAcademicYears,
   selectAllAcademicYears,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-
+import { useOutletContext, useNavigate } from "react-router-dom";
 import Academics from "../../Academics";
 import styled from "styled-components";
 import { CiInboxOut, CiInboxIn } from "react-icons/ci";
@@ -87,7 +88,8 @@ const SectionsPlannings = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-  const { userId } = useAuth();
+  const { userId, isAdmin, isManager, isAnimator,isDirector } = useAuth();
+
   const {
     data: sections, //the data is renamed sessions
     isLoading: isSectionsLoading,
@@ -235,14 +237,20 @@ const SectionsPlannings = () => {
   let employeesList = isEmployeesSuccess
     ? Object.values(employees.entities)
     : [];
+  //console.log(employeesList,'employeeList')
   let classroomsList = isClassroomsSuccess
     ? Object.values(classrooms.entities)
     : [];
+
+  console.log(employeesList, "employeesList");
+
   let schoolsList = isSchoolsSuccess ? Object.values(schools.entities) : [];
   let studentSections = isSectionsSuccess
     ? Object.values(sections.entities)
     : [];
   let studentsList = isStudentsSuccess ? Object.values(students.entities) : [];
+
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
 
   // if (isStudentsSuccess && !isStudentsLoading) {
   //   const { entities } = students;
@@ -264,8 +272,10 @@ const SectionsPlannings = () => {
   let filteredStudentsList = [];
   let filteredSessionsList = [];
   let filteredSectionsList = [];
-  const [selectedSchoolId, setSelectedSchoolId] = useState(""); //filter
   const [selectedSessionType, setSelectedSessionType] = useState(""); //filter
+  const [selectedSchoolId, setSelectedSchoolId] = useState(""); //filter
+  const [selectedAnimatorId, setSelectedAnimatorId] = useState(""); //filter
+  const [selectedClassroomId, setSelectedClassroomId] = useState(""); //filter
   // Handle change event for school selection
   const handleSchoolChange = (e) => {
     // console.log(selectedSchoolId,'selectedSchoolId')
@@ -273,8 +283,16 @@ const SectionsPlannings = () => {
   };
   // Handle change event for sessiontype selection
   const handleSessionTypeChange = (e) => {
-    // console.log(selectedSessionType,'selectedSessionType')
     setSelectedSessionType(e.target.value);
+  };
+  // Handle change event for sessiontype selection
+  const handleAnimatorChange = (e) => {
+    setSelectedAnimatorId(e.target.value);
+    console.log(selectedAnimatorId, "selectedAnimatorId");
+  };
+  // Handle change event for sessiontype selection
+  const handleClassroomChange = (e) => {
+    setSelectedClassroomId(e.target.value);
   };
 
   if (isSessionsSuccess && isSectionsSuccess && isStudentsSuccess) {
@@ -283,19 +301,31 @@ const SectionsPlannings = () => {
     filteredSessionsList = sessionsList;
     filteredSectionsList = studentSections;
     filteredStudentsList = studentsList;
-
-    if (selectedSchoolId !== "" || selectedSessionType) {
+    //now we will stat the filtering
+    if (
+      selectedSchoolId !== "" ||
+      selectedSessionType ||
+      selectedAnimatorId !== "" ||
+      selectedClassroomId !== ""
+    ) {
       // Filter sessions by selectedSchoolId and selectedSessionType if provided
       filteredSessionsList = sessionsList.filter((session) => {
         const schoolMatch = selectedSchoolId
-          ? session.school?._id === selectedSchoolId
+          ? session?.school?._id === selectedSchoolId
+          : true;
+        const animatorMatch = selectedAnimatorId
+          ? session?.animator === selectedAnimatorId //////there is also session.section.sectionanimator._id
+          : true;
+        const classroomMatch = selectedClassroomId
+          ? session?.classroom === selectedClassroomId
           : true;
         const typeMatch = selectedSessionType
           ? ["Drop", "Collect", "Nursery", "School"].includes(
               session.sessionType
             ) && session.sessionType === selectedSessionType
           : true;
-        return schoolMatch && typeMatch;
+
+        return schoolMatch && animatorMatch && classroomMatch && typeMatch;
       });
 
       // Filter sections to only include students corresponding to the filtered sessions
@@ -682,11 +712,34 @@ const SectionsPlannings = () => {
   };
 
   const handleCreateSession = async (sessObj) => {
-    await addNewSession(sessObj);
-    if (isAddSessionError) {
-      alert("error saving session");
+    try {
+      const response = await addNewSession(sessObj);
+      if (response?.message) {
+        // Success response
+        triggerBanner(response?.message, "success");
+      } else if (response?.data?.message) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isAddSessionError) {
+        // In case of unexpected response format
+        triggerBanner(addSessionError?.data?.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner(error?.data?.message, "error");
     }
   };
+  // const handleCreateSession = async (sessObj) => {
+  //   await addNewSession(sessObj);
+  //   if (isAddSessionError) {
+  //     alert("error saving session");
+  //   }
+  // };
 
   //Convert a Date object to RecurrenceException format (yyyymmddThhmmssZ).
   function formatToRecurrenceException(date) {
@@ -705,15 +758,50 @@ const SectionsPlannings = () => {
   }
 
   const handleDeleteSession = async (id, extraException, operationType) => {
-    await deleteSession(id, extraException, operationType);
-    if (isDeleteSessionError) {
-      alert("error deleting session");
+    try {
+      const response = await deleteSession(id, extraException, operationType);
+      if (response?.message) {
+        // Success response
+        triggerBanner(response?.message, "success");
+      } else if (response?.data?.message) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isDeleteSessionError) {
+        // In case of unexpected response format
+        triggerBanner(deleteSessionError?.data?.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner(error?.data?.message, "error");
     }
   };
+
   const handleUpdateSession = async (obj) => {
-    await updateSession(obj);
-    if (isDeleteSessionError) {
-      alert("error updating session");
+    try {
+      const response = await updateSession(obj);
+      if (response?.message) {
+        // Success response
+        triggerBanner(response?.message, "success");
+      } else if (response?.data?.message) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isUpdateSessionError) {
+        // In case of unexpected response format
+        triggerBanner(updateSessionError?.data?.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner(error?.data?.message, "error");
     }
   };
 
@@ -1135,38 +1223,83 @@ const SectionsPlannings = () => {
         <LoadingStateIcon />
       </>
     );
-  }
-
-  else {
-    content= (
+  } else {
+    content = (
       <>
         <Academics />
         <div className="flex space-x-2 items-center ml-3">
           Displayed Students: {filteredStudentsList?.length}
-          <select
-            value={selectedSchoolId}
-            onChange={handleSchoolChange}
-            className="text-sm h-8 border border-gray-300  px-4"
-          >
-            <option value="">All Schools</option>
-            {schoolsList?.map((school) => (
-              // school.schoolName !== "First Steps" &&
-              <option key={school.id} value={school.id}>
-                {school.schoolName}
-              </option>
-            ))}
-          </select>
-          <select
-            value={selectedSessionType}
-            onChange={handleSessionTypeChange}
-            className="text-sm h-8 border border-gray-300  px-4"
-          >
-            <option value="">All Types</option>
-            <option value="Drop">Drop</option>
-            <option value="Collect">Collect</option>
-            <option value="Nursery">Nursery</option>
-            <option value="School">School</option>
-          </select>
+          <label htmlFor="schoolFilter" className="formInputLabel">
+            <select
+              id="schoolfilter"
+              name="schoolfilter"
+              value={selectedSchoolId}
+              onChange={handleSchoolChange}
+              className="text-sm h-8 border border-gray-300 ml-2 my-2 px-4"
+            >
+              <option value="">All Schools</option>
+              {schoolsList?.map((school) => (
+                // school.schoolName !== "First Steps" &&
+                <option key={school.id} value={school.id}>
+                  {school.schoolName}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label htmlFor="sessionType" className="formInputLabel">
+            {" "}
+            <select
+              id="sessionType"
+              name="sessionType"
+              value={selectedSessionType}
+              onChange={handleSessionTypeChange}
+              className="text-sm h-8 border border-gray-300 my-2 px-4"
+            >
+              <option value="">All Types</option>
+              <option value="Drop">Drop</option>
+              <option value="Collect">Collect</option>
+              <option value="Nursery">Nursery</option>
+              <option value="School">School</option>
+            </select>
+          </label>
+          <label htmlFor="sessionAnimator" className="formInputLabel">
+            {" "}
+            <select
+              id="sessionAnimator"
+              name="sessionAnimator"
+              value={selectedAnimatorId}
+              onChange={handleAnimatorChange}
+              className="text-sm h-8 border border-gray-300 my-2 px-4"
+            >
+              <option value="">All Animators</option>
+              {employeesList
+               
+                .map((animat) => (
+                  // school.schoolName !== "First Steps" &&
+                  <option key={animat.employeeId} value={animat.employeeId}>
+                    {animat?.userFullName}
+                  </option>
+                ))}
+            </select>
+          </label>
+          <label htmlFor="sessionClassroom" className="formInputLabel">
+            {" "}
+            <select
+              id="sessionClassroom"
+              name="sessionClassroom"
+              value={selectedClassroomId}
+              onChange={handleClassroomChange}
+              className="text-sm h-8 border border-gray-300 my-2 px-4"
+            >
+              <option value="">All Classrooms</option>
+              {classroomsList?.map((classroom) => (
+                // school.schoolName !== "First Steps" &&
+                <option key={classroom.id} value={classroom.id}>
+                  {classroom.classroomLabel}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
         <TimelineResourceGrouping className="timeline-resource-grouping e-schedule">
           <div className="schedule-control-section">

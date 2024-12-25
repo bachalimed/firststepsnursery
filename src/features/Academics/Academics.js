@@ -60,7 +60,8 @@ const Sections = () => {
   // Render the component content
   return (
     <div className="flex bg-gray-300 p-3 px-4 md:px-4 items-center justify-start space-x-4">
-      {(isAdmin || isManager || isDirector) && <AcademicYearsSelection />}
+      {/* {(isAdmin || isManager || isDirector) && <AcademicYearsSelection />} */}
+      <AcademicYearsSelection />
       {tabs
         .filter(Boolean) // Filter out null or undefined tabs
         .map((tab) => (
