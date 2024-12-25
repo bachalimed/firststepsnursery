@@ -394,6 +394,15 @@ const StudentDocuments = () => {
       button: true,
     },
   ];
+// Custom header to include the row count
+const tableHeader = (
+  <h2>
+    Documents List:
+    <span> {studentDocumentsListing?.length} documents</span>
+  </h2>
+);
+
+
   let content;
   if (isListLoading)
     content = (
@@ -411,6 +420,7 @@ const StudentDocuments = () => {
         <div className="dataTableContainer">
           <div>
             <DataTable
+             title={tableHeader}
               columns={column}
               data={studentDocumentsListing}
               pagination

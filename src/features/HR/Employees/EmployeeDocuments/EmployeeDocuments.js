@@ -388,6 +388,15 @@ const EmployeeDocuments = () => {
       button: true,
     },
   ];
+  const tableHeader = (
+    <h2>
+      Documents List:
+      <span> {employeeDocumentsListing?.length} documents</span>
+    </h2>
+  );
+  
+
+
   let content;
   if (isListLoading)
     content = (
@@ -407,6 +416,7 @@ const EmployeeDocuments = () => {
         <div className="dataTableContainer">
           <div>
             <DataTable
+            title={tableHeader}
               columns={column}
               data={employeeDocumentsListing}
               pagination
