@@ -9,6 +9,7 @@ import ForgotPassword from "./features/auth/ForgotPassword";
 import Dashboard from "./features/Dashboard/Dashboard";
 import StudentsDash from "./features/Dashboard/Students/StudentsDash";
 import FinancesDash from "./features/Dashboard/FinancesDash/FinancesDash";
+import HRDash from "./features/Dashboard/HRDashboard/HRDash";
 
 import ResetPassword from "./features/auth/MyProfile/ResetPassword";
 import MyProfile from "./features/auth/MyProfile";

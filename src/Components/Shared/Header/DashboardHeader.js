@@ -36,7 +36,7 @@ const DashboardHeader = () => {
     second: "2-digit",
   });
 
-  //const circles = GenerateCircles(8); // Generate 10 random circles
+  const circles = GenerateCircles(8); // Generate 10 random circles
   const content = (
     <header className="bg-sky-700 text-white py-1 px-3 md:px-1 flex md:flex-row md:justify-between items-center  relative overflow-hidden">
       {/* Background circles */}
@@ -58,9 +58,9 @@ const DashboardHeader = () => {
       />
     </a>
   </noscript>
-        {/* <div className="flex items-center">
+        <div className="flex items-center">
           <AnimatedColorText company={company} />
-        </div> */}
+        </div>
       </div>
       <div className="flex flex-col md:flex-row items-center md:space-x-6 mb-2 md:mb-0">
         <h1 className="text-lg font-semibold text-center md:text-left">

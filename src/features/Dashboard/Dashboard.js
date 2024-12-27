@@ -25,21 +25,26 @@ const Dashboard = () => {
   const tabs = [
     //{ label: 'New Assignment', path: '/academics/expenses/NewAnimatorsAssignmentForm' },
     (isAcademic || isDirector || isManager || isAdmin) && {
-      label: "students",
+      label: "Students",
       path: "/dashboard/studentsDash/",
-    },
-    (isAcademic || isDirector || isManager || isAdmin) && {
-      label: "Admissions",
-      path: "/dashboard/admissions/",
-    },
-    (isFinance || isAcademic || isDirector || isManager || isAdmin) && {
-      label: "enrolments",
-      path: "/dashboard/enrolments/",
     },
     (isFinance || isDirector || isManager || isAdmin) && {
       label: "Finances",
       path: "/dashboard/financesDash/",
     },
+    (isHR || isDirector || isManager || isAdmin) && {
+      label: "HR",
+      path: "/dashboard/hrDash/",
+    },
+    // (isAcademic || isDirector || isManager || isAdmin) && {
+    //   label: "Admissions",
+    //   path: "/dashboard/admissions/",
+    // },
+    // (isFinance || isAcademic || isDirector || isManager || isAdmin) && {
+    //   label: "enrolments",
+    //   path: "/dashboard/enrolments/",
+    // },
+    
   ];
   // Function to determine if a tab is active based on the current path
   const isActive = (path) => location.pathname === path;
