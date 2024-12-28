@@ -410,7 +410,7 @@ const NurserySectionsList = () => {
           <button
             aria-label="current section filter"
             onClick={() => setCurrentSectionsFilter((prev) => !prev)}
-            className="text-sm h-8 border border-gray-300  px-4"
+            className=" h-8 border border-gray-300  px-4"
           >
             {currentSectionsFilter
               ? "Current Sections Shown"

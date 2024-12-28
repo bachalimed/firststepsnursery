@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import { Outlet } from "react-router-dom";
-import DashboardSidebar from "./Shared/Sidebar/DashboardSidebar";
+//import DashboardSidebar from "./Shared/Sidebar/DashboardSidebar";
 import DashboardHeader from "./Shared/Header/DashboardHeader";
 import DashboardFooter from "./Shared/Footer/DashboardFooter";
 import ResultBanner from "./ResultBanner";

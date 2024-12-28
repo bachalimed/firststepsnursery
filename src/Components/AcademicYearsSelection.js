@@ -50,19 +50,20 @@ const AcademicYearsSelection = () => {
   //const sortedList = academicYears.sort((a, b) => b.title.localeCompare(a.title))//will sort the selection options with topo most recent
 
   const content = (
-    <Field className="flex items-center space-x-4">
+    <div className="flex items-center space-x-2">
       <div className="inline-flex relative">
-        <BsChevronDown
-          className="absolute right-2 top-3 pointer-events-none text-gray-300"
+        {/* <BsChevronDown
+          className="absolute right-1 top-3 pointer-events-none text-gray-300"
           aria-hidden="true"
-        />
-        <Label hidden={!( isAdmin || isManager || isDirector)} className="text-sm font-medium text-black ">
+        /> */}
+        <label htmlFor="SelectedAcademicYear" hidden={!( isAdmin || isManager || isDirector)} className="formInputLabel">
           Academic Year
-          <Select
+          <select
+            id="SelectedAcademicYear"
             name="SelectedAcademicYear"
             onChange={handleSelectedAcademicYear}
             value={selectedAcademicYearId} // Set the value to the currently selected academic year
-            className="relative  h-10 ml-2 w-36 pl-3 pr-8 py-2 text-md bg-gray-300 text-gray-900  border border-gray-400  shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-700 focus:border-sky-700"
+            className="relative   ml-2  pl-3  py-2 text-md bg-gray-300 text-gray-900  border border-gray-400  shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-700 focus:border-sky-700"
             hidden={!( isAdmin || isManager || isDirector)}
           >
             {academicYears.map(
@@ -80,10 +81,10 @@ const AcademicYearsSelection = () => {
                   </option>
                 )
             )}
-          </Select>
-        </Label>
+          </select>
+        </label>
       </div>
-    </Field>
+    </div>
   );
   return content;
 };

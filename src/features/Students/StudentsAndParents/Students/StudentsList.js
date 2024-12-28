@@ -518,7 +518,6 @@ const StudentsList = () => {
               </button>
             )}
           </div>
-
           {/* Grade Filter Dropdown */}
           <label htmlFor="gradeFilter" className="formInputLabel">
             <select
