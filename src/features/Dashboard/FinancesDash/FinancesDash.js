@@ -3,10 +3,8 @@ import React from "react";
  import DashboardFinancesTotalPaymentsModule from "./DashboardModules/DashboardFinancesTotalPaymentsModule";
 import DashboardFinancesTotalExpensesModule from "./DashboardModules/DashboardFinancesTotalExpensesModule";
  import DashboardFinancesMonthlyPaymentsExpensesInvoicesModule from "./DashboardModules/DashboardFinancesMonthlyPaymentsExpensesInvoicesModule";
-// import DashboardfinancesPerSchoolModule from "./DashboardModules/DashboardfinancesPerSchoolModule";
-// import DashboardEnrolmentsPerMonthModule from "./DashboardModules/DashboardEnrolmentsPerMonthModule";
-// import DashboardFamiliesTotalNumberModule from "./DashboardModules/DashboardFamiliesTotalNumberModule";
-// import DashboardfinancesPerFamilyModule from "./DashboardModules/DashboardfinancesPerFamilyModule";
+ import DashboardFinancesMonthlyExpenseCategoriesModule from "./DashboardModules/DashboardFinancesMonthlyExpenseCategoriesModule";
+
 import Dashboard from "../Dashboard";
 //a wrapper to format the stats
 // const BoxWrapper=({children})=> {
@@ -49,6 +47,10 @@ const DashboardStatsGrid = () => {
       </div>
       <div className="flex gap-4 mt-4 mb-4 ml-4 mr-4 w-full">
         <DashboardFinancesMonthlyPaymentsExpensesInvoicesModule />
+       
+      </div>
+      <div className="flex gap-4 mt-4 mb-4 ml-4 mr-4 w-full">
+        <DashboardFinancesMonthlyExpenseCategoriesModule />
        
       </div>
       </div>
