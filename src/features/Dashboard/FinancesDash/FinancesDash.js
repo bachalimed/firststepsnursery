@@ -2,7 +2,7 @@ import React from "react";
 // import { GrUserExpert } from "react-icons/gr";
  import DashboardFinancesTotalPaymentsModule from "./DashboardModules/DashboardFinancesTotalPaymentsModule";
 import DashboardFinancesTotalExpensesModule from "./DashboardModules/DashboardFinancesTotalExpensesModule";
-// import DashboardfinancesPerGradeModule from "./DashboardModules/DashboardfinancesPerGradeModule";
+ import DashboardFinancesMonthlyPaymentsExpensesInvoicesModule from "./DashboardModules/DashboardFinancesMonthlyPaymentsExpensesInvoicesModule";
 // import DashboardfinancesPerSchoolModule from "./DashboardModules/DashboardfinancesPerSchoolModule";
 // import DashboardEnrolmentsPerMonthModule from "./DashboardModules/DashboardEnrolmentsPerMonthModule";
 // import DashboardFamiliesTotalNumberModule from "./DashboardModules/DashboardFamiliesTotalNumberModule";
@@ -18,7 +18,6 @@ const DashboardStatsGrid = () => {
 
 
 
-
   return (
     <>
       <Dashboard />
@@ -27,7 +26,7 @@ const DashboardStatsGrid = () => {
       <div className="flex gap-4 mt-4 mb-4 ml-4 mr-4 w-full">
         <DashboardFinancesTotalPaymentsModule />
         <DashboardFinancesTotalExpensesModule />
-        {/* <DashboardFamiliesTotalNumberModule /> */}
+        {/* <DashboardFinancesMonthlyInvoicesModule /> */}
        
         {/* <DashboardfinancesNumberStats /> */}
 
@@ -49,7 +48,7 @@ const DashboardStatsGrid = () => {
        <BoxWrapper >element of stats</BoxWrapper> */}
       </div>
       <div className="flex gap-4 mt-4 mb-4 ml-4 mr-4 w-full">
-        {/* <DashboardEnrolmentsPerMonthModule /> */}
+        <DashboardFinancesMonthlyPaymentsExpensesInvoicesModule />
        
       </div>
       </div>

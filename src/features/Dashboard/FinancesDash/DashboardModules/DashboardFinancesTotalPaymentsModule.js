@@ -11,14 +11,14 @@ const DashboardFinancesTotalPaymentsModule = () => {
 
   // Destructure the required stats from studentsStats
   const {
-    totalPayments = 0,
+    totalPaymentsAmount = 0,
     
    // studentsWithAdmission = 0,
    // studentGrades = {},
   } = paymentsStats;
   const {
    
-    totalInvoicedAmount = 0,
+    totalInvoicesAmount, monthlyInvoices,
    // studentsWithAdmission = 0,
    // studentGrades = {},
   } = invoicesStats;
@@ -39,10 +39,10 @@ const DashboardFinancesTotalPaymentsModule = () => {
         <div className="flex items-center">
           <strong className="text-xl text-gray-900 font-semi-bold">
             {" "}
-            {totalPayments}
+            {totalPaymentsAmount}
           </strong>
           <span className="pl-2 text-sm text-sky-700">
-            {totalInvoicedAmount} invoiced{" "}
+            {totalInvoicesAmount} invoiced{" "}
           </span>
         </div>
       </div>
