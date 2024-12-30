@@ -12,7 +12,6 @@ const PersistLogin = () => {
   const effectRan = useRef(false);
   const navigate = useNavigate();
   const [trueSuccess, setTrueSuccess] = useState(false);
-
   const [
     refresh,
     {

@@ -20,29 +20,13 @@ const PublicHeader = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [isBannerVisible, setIsBannerVisible] = useState(true);
-  const [sendLogout, { isLoading, isSuccess, isError, error }] =
-    useSendLogoutMutation();
+
   const handleCloseBanner = () => {
     setIsBannerVisible(false);
   };
-  useEffect(() => {
-    if (isSuccess) navigate("/");
-  }, [isSuccess, navigate]);
 
-  if (isLoading) return <p>Logging Out...</p>;
-  if (isError) return <p>Error: {error.data?.message}</p>;
 
-  const logoutButton = (
-    <button
-      className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
-      title="Logout"
-      onClick={sendLogout}
-    >
-      <TbLogout aria-label="Logout" className=" text-2xl right" />
-      Logout
-    </button>
-  );
-
+ 
   const onGoDashClicked = () => navigate("/dashboard/studentsDash/");
   const goDashButton =
     pathname !== "/dashboard/" ? (
@@ -94,7 +78,7 @@ const PublicHeader = () => {
             transition
             aria-label="manage profile"
             anchor="bottom end"
-            className=" origin-top-right  border  w-40 bg-sky-100 p-1 text-sm/6 text-gray-800 transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
+            className=" origin-top-right  border   bg-sky-100 p-1 text-sm/6 text-gray-800 transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"//w-42
           >
             <strong>Manage profile</strong>
             <MenuItem>
@@ -120,8 +104,8 @@ const PublicHeader = () => {
                 Forgot Password
               </button>
             </MenuItem>
-            <div className="my-1 h-px bg-gray-500 "></div>
-            <MenuItem>{logoutButton}</MenuItem>
+          
+           
           </MenuItems>
         </Menu>
       </div>
