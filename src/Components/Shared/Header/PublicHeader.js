@@ -5,17 +5,19 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import logo from "../../../Data/logo.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { FaRegUser } from "react-icons/fa";
+import { FiSettings } from "react-icons/fi";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSendLogoutMutation } from "../../../features/auth/authApiSlice";
-import useAuth from "../../../hooks/useAuth";
 import { LuKeyRound } from "react-icons/lu";
 import { Link } from "react-router-dom";
 import { PiUserCircleLight } from "react-icons/pi";
 import AnimatedColorText from "../../lib/Utils/AnimatedColorText";
+import useAuth from "../../../hooks/useAuth";
 import { RiLoginBoxLine } from "react-icons/ri";
 import GenerateCircles from "../../lib/Utils/GenerateCircles";
 const PublicHeader = () => {
-  const { username } = useAuth();
+  const { username, userId } = useAuth();
   const company = { label: "First Steps", type: "Nursery" };
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -24,14 +26,34 @@ const PublicHeader = () => {
   const handleCloseBanner = () => {
     setIsBannerVisible(false);
   };
+  const [sendLogout, { isLoading, isSuccess, isError, error }] =
+    useSendLogoutMutation();
 
+  useEffect(() => {
+    if (isSuccess) navigate("/");
+  }, [isSuccess, navigate]);
 
- 
+  if (isLoading) return <p>Logging Out...</p>;
+  if (isError) return <p>Error: {error.data?.message}</p>;
+
+  const logoutButton = (
+    <button
+      className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
+      title="Logout"
+      onClick={sendLogout}
+    >
+      <TbLogout aria-label="Logout" className=" text-2xl right" />
+      Logout
+    </button>
+  );
+
   const onGoDashClicked = () => navigate("/dashboard/studentsDash/");
   const goDashButton =
     pathname !== "/dashboard/" ? (
       <button
-        className={`text-3xl ${username ? "" : "hidden"} text-white hover:text-gray-800`}
+        className={`text-3xl ${
+          username ? "" : "hidden"
+        } text-white hover:text-gray-800`}
         title="Dashboard"
         onClick={onGoDashClicked}
         aria-label="dashboard"
@@ -78,19 +100,53 @@ const PublicHeader = () => {
             transition
             aria-label="manage profile"
             anchor="bottom end"
-            className=" origin-top-right  border   bg-sky-100 p-1 text-sm/6 text-gray-800 transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"//w-42
+            className=" origin-top-right  border   bg-sky-100 p-1 text-sm/6 text-gray-800 transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0" //w-42
           >
             <strong>Manage profile</strong>
-            <MenuItem>
-              <button
-                onClick={() => navigate("/login/")}
-                aria-label="login"
-                className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
-              >
-                <RiLoginBoxLine aria-label="user details" className="size-4 " />
-                Login
-              </button>
-            </MenuItem>
+            {!userId && (
+              <MenuItem>
+                <button
+                  onClick={() => navigate("/login/")}
+                  aria-label="login"
+                  className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
+                >
+                  <RiLoginBoxLine
+                    aria-label="user details"
+                    className="size-4 "
+                  />
+                  Login
+                </button>
+              </MenuItem>
+            )}
+
+            {userId && (
+              <MenuItem>
+                <button
+                  onClick={() => navigate(`/myProfile/myDetails/${userId}`)}
+                  className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
+                  aria-label="user details"
+                >
+                  <FaRegUser aria-label="user details" className="size-4 " />
+                  My Profile
+                </button>
+              </MenuItem>
+            )}
+            {userId && (
+              <MenuItem>
+                <button
+                  onClick={() => navigate(`/myProfile/editMyProfile/${userId}`)}
+                  className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
+                  aria-label="edit my details"
+                >
+                  <FiSettings
+                    aria-label="edit my details"
+                    className="size-4 "
+                  />
+                  Edit Profile
+                </button>
+              </MenuItem>
+            )}
+
             <MenuItem>
               <button
                 onClick={() => navigate("/ForgotPassword/")}
@@ -104,8 +160,8 @@ const PublicHeader = () => {
                 Forgot Password
               </button>
             </MenuItem>
-          
-           
+            {userId && <div className="my-1 h-px bg-gray-500 "></div>}
+            {userId && <MenuItem>{logoutButton}</MenuItem>}
           </MenuItems>
         </Menu>
       </div>
