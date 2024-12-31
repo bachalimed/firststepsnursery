@@ -3,29 +3,13 @@
 import React from "react";
 import { PiStudent } from "react-icons/pi";
 import { useFinancesStats } from "../../../../hooks/useFinancesStats";
-import { useSelector } from "react-redux";
-
 
 const DashboardFinancesTotalExpensesModule = () => {
-  const { paymentsStats, invoicesStats, expensesStats } = useFinancesStats();
+  const { expensesStats } = useFinancesStats();
 
   // Destructure the required stats from studentsStats
-  const {
-    totalPayments = 0,
- 
-  } = paymentsStats;
-  const {
-   
-    totalInvoicedAmount = 0,
 
-    
-  } = invoicesStats;
-  const {
-   
-    totalExpensesAmount = 0,
-
-    
-  } = expensesStats;
+  const { totalExpensesAmount = 0 } = expensesStats;
 
   return (
     <div

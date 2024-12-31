@@ -24,7 +24,7 @@ const DashboardStudentsPerFamilyModule = () => {
     
    
   } = familiesStats;
-console.log(familiesStats,'familiesStats')
+//console.log(familiesStats,'familiesStats')
 
 
   const COLORS = [

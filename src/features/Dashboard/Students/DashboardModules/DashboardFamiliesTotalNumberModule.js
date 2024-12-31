@@ -15,7 +15,7 @@ const DashboardFamiliesTotalNumberModule = () => {
     familiesWithStudentsInYear
    
   } = familiesStats;
-console.log(familiesStats,'familiesStats')
+//console.log(familiesStats,'familiesStats')
 
 
   return (
