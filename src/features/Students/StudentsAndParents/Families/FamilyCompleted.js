@@ -4,11 +4,11 @@ import { Link } from "react-router-dom";
 
 const FamilyCompleted = () => {
   return (
-    <div className="container md:mt-10">
-      <div className="flex flex-col items-center">
-        <IoCheckbox className="text-green-700 w-24 h-24" />
+    <div className="container flex flex-col md:mt-10 items-center justify-center ">
+      <div className="flex flex-col ">
+        <IoCheckbox className="text-green-700 w-24 h-24 " />
       </div>
-      <div className="mt-3 text-xl font-semibold uppercase text-green-700">
+      <div className="mt-3 text-xl font-semibold uppercase text-green-700 items-center ">
         Family Details Saved
       </div>
       <Link to="/students/studentsParents/families/">

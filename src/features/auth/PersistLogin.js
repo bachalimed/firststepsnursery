@@ -48,12 +48,12 @@ const PersistLogin = () => {
 
 
 //added this to automatically redirect to home not working apparently
-  // useEffect(() => {
-  //   if (isError) {
-  //     // Automatically redirect to the login page on error
-  //     navigate("/");
-  //   }
-  // }, [isError, navigate]);
+  useEffect(() => {
+    if (isError) {
+      // Automatically redirect to the login page on error
+      navigate("/login/");
+    }
+  }, [isError, navigate]);
 
   let content;
   if (!persist) {

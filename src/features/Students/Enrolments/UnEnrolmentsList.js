@@ -293,11 +293,20 @@ const UnenrolmentsList = () => {
     //     </div>
     //   ),
     //   ignoreRowClick: true,
-
     //   button: true,
     //   width: "120px",
     // },
   ].filter(Boolean); // Filter out falsy values like `false` or `undefined`
+  
+   // Custom header to include the row count
+   const tableHeader = (
+    <h2>
+      Unenrolled students List:
+      <span> {filteredAdmissions?.length} students</span>
+    </h2>
+  );
+  
+  
   let content;
   if (isAdmissionsLoading || isServicesLoading)
     content = (
@@ -377,6 +386,7 @@ const UnenrolmentsList = () => {
         <div className="dataTableContainer">
           <div>
             <DataTable
+             title={tableHeader}
               columns={column}
               data={filteredAdmissions}
               pagination
@@ -384,7 +394,7 @@ const UnenrolmentsList = () => {
               removableRows
               pageSizeControl
               onSelectedRowsChange={handleRowSelected}
-              selectableRowsHighlight
+             // selectableRowsHighlight
               customStyles={{
                 headCells: {
                   style: {

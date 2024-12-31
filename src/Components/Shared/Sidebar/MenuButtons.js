@@ -49,6 +49,16 @@ const MenuButtons = () => {
     
       <header className="flex items-center md:px-1 bg-sky-700">
        
+
+       <Link to="/">
+          <li
+           className={`text-grey-300 text-sm flex text-white items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  `}
+          >
+            <BiHome className="text-2xl" aria-label="home tab"/>
+            <span className="flex-1 hidden md:block">Home</span>
+          </li>
+        </Link>
+
       {(isDirector|| isManager || isAdmin ||isAcademic || isFinance || isHR) &&  <Link to="/dashboard/studentsDash/">
           <li
            className={`text-grey-300 text-sm flex text-white items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 ${
@@ -59,6 +69,7 @@ const MenuButtons = () => {
             <span className="flex-1 hidden md:block">Dashboard</span>
           </li>
         </Link>}
+
        
         {(isAcademic|| isDesk ||isDirector||isManager || isAdmin) && <div className="relative">
           <Link to="/students/studentsParents/students/" >

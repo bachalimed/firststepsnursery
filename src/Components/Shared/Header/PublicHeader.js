@@ -48,19 +48,6 @@ const PublicHeader = () => {
   );
 
   const onGoDashClicked = () => navigate("/dashboard/studentsDash/");
-  const goDashButton =
-    pathname !== "/dashboard/" ? (
-      <button
-        className={`text-3xl ${
-          username ? "" : "hidden"
-        } text-white hover:text-gray-800`}
-        title="Dashboard"
-        onClick={onGoDashClicked}
-        aria-label="dashboard"
-      >
-        <VscDashboard aria-label="Dashboard" className="text-3xl" />
-      </button>
-    ) : null;
 
   const circles = GenerateCircles(7); // Generate  random circles
 
@@ -84,16 +71,28 @@ const PublicHeader = () => {
         </div>
       </div>
       {/* Top Navigation */}
-      <div className="flex flex-col md:flex-row items-center md:space-x-6 mb-2 md:mb-0">
+      <div className="flex flex-col md:flex-row items-center md:space-x-2  md:mb-0 mr-2">
         {/* Dashboard Button */}
-        {goDashButton}
+
+        {pathname !== "/dashboard/" && (
+          <button
+            className={` ${
+              username ? "" : "hidden"
+            } text-white hover:text-gray-100 `}
+            title="Dashboard"
+            onClick={onGoDashClicked}
+            aria-label="dashboard"
+          >
+            <VscDashboard aria-label="Dashboard" className="text-4xl" />
+          </button>
+        )}
 
         {/* User Profile Menu */}
         <Menu>
-          <MenuButton className="focus:outline-none">
+          <MenuButton className="focus:outline-none ">
             <PiUserCircleLight
               aria-label="manage profile"
-              className="text-4xl text-white-500"
+              className="text-4xl  text-white hover:text-gray-100"
             />
           </MenuButton>
           <MenuItems
