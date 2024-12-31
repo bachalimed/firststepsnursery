@@ -217,6 +217,20 @@ const MenuButtons = () => {
                   HR
                 </li>
               </Link>}
+              {( isHR||isFinance|| isDirector||isManager || isAdmin)&& <Link
+                to="/settings/documentation/"
+                className={
+                  location.pathname.startsWith("/settings/")
+                    ? "bg-sky-100"
+                    : ""
+                }
+              >
+                <li
+                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 `}
+                >
+                  Documentation
+                </li>
+              </Link>}
             </ul>
           )}
         </div>

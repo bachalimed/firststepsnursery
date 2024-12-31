@@ -13,10 +13,11 @@ import { LuKeyRound } from "react-icons/lu";
 import { PiUserCircleLight } from "react-icons/pi";
 import { FaRegUser } from "react-icons/fa";
 import { FiSettings } from "react-icons/fi";
-
+import usePersist from "../../../hooks/usePersist"
 const HeaderUserProfile = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const [persist] = usePersist();
   const { userId } = useAuth();
   const [sendLogout, { isLoading, isSuccess, isError, error }] =
     useSendLogoutMutation();
@@ -53,7 +54,8 @@ const HeaderUserProfile = () => {
         <PiUserCircleLight
           aria-label="manage profile"
           fontSize={24}
-          className="text-4xl text-white-500"
+          className={`text-4xl text-white-500 ${persist ? "text-green-300" : ""}`}///////////////////////////////////
+
         />
       </MenuButton>
 

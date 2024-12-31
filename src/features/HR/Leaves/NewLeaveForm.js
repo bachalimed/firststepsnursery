@@ -239,7 +239,7 @@ const NewLeaveForm = () => {
         <HR />
 
         <form onSubmit={onSaveLeaveClicked} className="form-container">
-          <h2 className="formTitle ">Add Leave</h2>
+          <h2 className="formTitle ">New Leave</h2>
           <div className="formSectionContainer">
             <h3 className="formSectionTitle">Leave details</h3>
             <div className="formSection">

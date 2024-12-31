@@ -128,6 +128,12 @@ import NewEmployeeDocumentsListForm from "./features/AppSettings/HRSet/EmployeeD
 import EditEmployeeDocumentsList from "./features/AppSettings/HRSet/EmployeeDocumentsLists/EditEmployeeDocumentsList";
 import DeskSet from "./features/AppSettings/DeskSet";
 
+import Documentation from "./features/AppSettings/Documentation";
+import GettingStarted from "./features/AppSettings/Documentation/GettingStarted";
+import KeyTasks from "./features/AppSettings/Documentation/KeyTasks";
+import Faqs from "./features/AppSettings/Documentation/Faqs";
+
+
 import UsersManagement from "./features/Admin/UsersManagement";
 import UsersList from "./features/Admin/UsersManagement/UsersList";
 import EditUser from "./features/Admin/UsersManagement/EditUser";
@@ -596,6 +602,32 @@ const App = () => {
                     element={<EditEmployeeDocumentsList />}
                   />
                 </Route>{" "}
+
+
+
+                <Route path="documentation">
+                  <Route index element={<Documentation />} />
+                  <Route
+                    path="documentation/"
+                    element={<StudentDocumentsListsList />}
+                  />
+                 
+                 
+
+                  <Route path="gettingStarted/" element={<GettingStarted />} />
+                  <Route path="keyTasks/" element={<KeyTasks />} />
+                  <Route path="faqs" element={<Faqs />} />
+                </Route>{" "}
+                {/* end of documentation route */}
+
+
+
+
+
+
+
+
+                
                 {/* end of HRSet route */}
                 <Route path="deskSet">
                   <Route index element={<DeskSet />} />
