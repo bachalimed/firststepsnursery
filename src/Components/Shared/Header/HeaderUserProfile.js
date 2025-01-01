@@ -22,9 +22,10 @@ const HeaderUserProfile = () => {
   const [sendLogout, { isLoading, isSuccess, isError, error }] =
     useSendLogoutMutation();
 
+
   useEffect(() => {
     if (isSuccess) {
-      navigate("/");
+      navigate("/login/");
     }
   }, [isSuccess, navigate]);
 
@@ -54,7 +55,8 @@ const HeaderUserProfile = () => {
         <PiUserCircleLight
           aria-label="manage profile"
           fontSize={24}
-          className={`text-4xl text-white-500 ${persist ? "text-green-300" : ""}`}///////////////////////////////////
+          className={`text-4xl text-white-500 `}///////////////////////////////////
+          // className={`text-4xl text-white-500 ${persist ? "text-green-300" : ""}`}///////////////////////////////////
 
         />
       </MenuButton>

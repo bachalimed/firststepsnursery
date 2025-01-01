@@ -29,8 +29,9 @@ const PublicHeader = () => {
   const [sendLogout, { isLoading, isSuccess, isError, error }] =
     useSendLogoutMutation();
 
+
   useEffect(() => {
-    if (isSuccess) navigate("/");
+    if (isSuccess) navigate("/login/");
   }, [isSuccess, navigate]);
 
   if (isLoading) return <p>Logging Out...</p>;
