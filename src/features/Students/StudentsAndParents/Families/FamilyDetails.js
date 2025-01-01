@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectFamilyById } from "./familiesSlice";
 import { useParams } from "react-router";
-import { useGetEmployeeDocumentsByYearByIdQuery } from "../../../AppSettings/HRSet/EmployeeDocumentsLists/employeeDocumentsListsApiSlice";
 import { useGetStudentDocumentsByYearByIdQuery } from "../../../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice";
 import Students from "../../Students";
 import {
@@ -14,6 +13,8 @@ import { useNavigate } from "react-router";
 import useFetchPhoto from "../../../../hooks/useFetchPhoto";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 import useAuth from "../../../../hooks/useAuth";
+import { useGetFamilyByIdQuery } from "./familiesApiSlice";
+
 
 const FamilyDetails = () => {
   const { id } = useParams();
@@ -23,7 +24,33 @@ const {canEdit}=useAuth()
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-  const family = useSelector((state) => selectFamilyById(state, id));
+  // const family = useSelector((state) => selectFamilyById(state, id));
+  const [family, setFamily] = useState({});
+
+ const {
+    data: familyToEdit, //the data is renamed families
+    isLoading: isFamilyLoading, //monitor several situations
+    isSuccess: isFamilySuccess,
+    isError: isFamilyError,
+    error: familyError,
+  } = useGetFamilyByIdQuery(
+    { id: id, criteria: "Dry", endpointName: "EditFamily" } || {},
+    {
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
+    }
+  );
+
+  useEffect(() => {
+    if (isFamilySuccess) {
+      const { entities } = familyToEdit;
+      //const familyInit = Object.values(entities)
+      setFamily(Object.values(entities)[0]); // Set family state to the first object
+    }
+  }, [isFamilySuccess, familyToEdit]);
+
+
+
   const {
     father = {},
     mother = {},

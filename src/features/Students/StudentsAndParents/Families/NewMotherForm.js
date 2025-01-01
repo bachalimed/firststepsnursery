@@ -1,17 +1,8 @@
 import { useState, useEffect } from "react";
-import { useAddNewFamilyMutation } from "./familiesApiSlice";
 import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { ROLES } from "../../../../config/UserRoles";
-import { ACTIONS } from "../../../../config/UserActions";
-import Students from "../../Students";
-import { useGetFamiliesByYearQuery } from "./familiesApiSlice";
-import { useGetStudentsByYearQuery } from "../Students/studentsApiSlice";
 import { useContext } from "react";
 import { StepperContext } from "../../../../contexts/StepperContext";
-import {USER_REGEX,PWD_REGEX,NAME_REGEX,PHONE_REGEX,DATE_REGEX} from '../../../../config/REGEX'
-
+import { NAME_REGEX, PHONE_REGEX, DATE_REGEX } from "../../../../config/REGEX";
 
 export default function NewMotherForm() {
   //an add parent function that can be called inside the component
@@ -223,13 +214,12 @@ export default function NewMotherForm() {
               className="text-gray-700 font-semibold"
               htmlFor="userFirstName"
             >
-              Mother First Name{" "}{!validUserFirstName && (
-                <span className="text-red-600">*</span>
-              )}
+              Mother First Name{" "}
+              {!validUserFirstName && <span className="text-red-600">*</span>}
               <span className="text-sm text-gray-500">[3-25 letters]</span>
             </label>
             <input
-               className={`formInputText`}
+              className={`formInputText`}
               id="userFirstName"
               name="userFirstName"
               type="text"
@@ -248,7 +238,7 @@ export default function NewMotherForm() {
               Mother Middle Name
             </label>
             <input
-               className={`formInputText`}
+              className={`formInputText`}
               id="userMiddleName"
               name="userMiddleName"
               type="text"
@@ -263,13 +253,12 @@ export default function NewMotherForm() {
               className="text-gray-700 font-semibold"
               htmlFor="userLastName"
             >
-              Mother Last Name{" "}{!validUserLastName && (
-                <span className="text-red-600">*</span>
-              )}
+              Mother Last Name{" "}
+              {!validUserLastName && <span className="text-red-600">*</span>}
               <span className="text-sm text-gray-500">[3-25 letters]</span>
             </label>
             <input
-               className={`formInputText`}
+              className={`formInputText`}
               id="userLastName"
               name="userLastName"
               type="text"
@@ -282,13 +271,12 @@ export default function NewMotherForm() {
 
           <div>
             <label className="text-gray-700 font-semibold" htmlFor="userDob">
-              Date of Birth{" "}{!validUserDob && (
-                <span className="text-red-600">*</span>
-              )}
+              Date of Birth{" "}
+              {!validUserDob && <span className="text-red-600">*</span>}
               <span className="text-sm text-gray-500">[dd/mm/yyyy]</span>
             </label>
             <input
-               className={`formInputText`}
+              className={`formInputText`}
               id="userDob"
               name="userDob"
               type="date"
@@ -302,13 +290,11 @@ export default function NewMotherForm() {
           {/* Address Section */}
           <div>
             <label className="text-gray-700 font-semibold" htmlFor="house">
-              House{" "}{!validHouse && (
-                <span className="text-red-600">*</span>
-              )}
+              House {!validHouse && <span className="text-red-600">*</span>}
               <span className="text-sm text-gray-500">[3-25 letters]</span>
             </label>
             <input
-               className={`formInputText`}
+              className={`formInputText`}
               id="house"
               name="house"
               type="text"
@@ -321,13 +307,11 @@ export default function NewMotherForm() {
 
           <div>
             <label className="text-gray-700 font-semibold" htmlFor="street">
-              Street{" "}{!validStreet && (
-                <span className="text-red-600">*</span>
-              )}
+              Street {!validStreet && <span className="text-red-600">*</span>}
               <span className="text-sm text-gray-500">[3-25 letters]</span>
             </label>
             <input
-               className={`formInputText`}
+              className={`formInputText`}
               id="street"
               name="street"
               type="text"
@@ -343,7 +327,7 @@ export default function NewMotherForm() {
               Area
             </label>
             <input
-               className={`formInputText`}
+              className={`formInputText`}
               id="area"
               name="area"
               type="text"
@@ -355,13 +339,11 @@ export default function NewMotherForm() {
 
           <div>
             <label className="text-gray-700 font-semibold" htmlFor="city">
-              City{" "}{!validCity && (
-                <span className="text-red-600">*</span>
-              )}
+              City {!validCity && <span className="text-red-600">*</span>}
               <span className="text-sm text-gray-500">[3-25 letters]</span>
             </label>
             <input
-               className={`formInputText`}
+              className={`formInputText`}
               id="city"
               name="city"
               type="text"
@@ -377,7 +359,7 @@ export default function NewMotherForm() {
               Post Code
             </label>
             <input
-               className={`formInputText`}
+              className={`formInputText`}
               id="postCode"
               name="postCode"
               type="text"
@@ -392,13 +374,12 @@ export default function NewMotherForm() {
               className="text-gray-700 font-semibold"
               htmlFor="primaryPhone"
             >
-              Primary Phone{" "}{!validPrimaryPhone && (
-                <span className="text-red-600">*</span>
-              )}
+              Primary Phone{" "}
+              {!validPrimaryPhone && <span className="text-red-600">*</span>}
               <span className="text-sm text-gray-500">[6 to 15 digits]</span>
             </label>
             <input
-               className={`formInputText`}
+              className={`formInputText`}
               id="primaryPhone"
               name="primaryPhone"
               type="tel"
@@ -417,7 +398,7 @@ export default function NewMotherForm() {
               Secondary Phone
             </label>
             <input
-               className={`formInputText`}
+              className={`formInputText`}
               id="secondaryPhone"
               name="secondaryPhone"
               type="tel"
@@ -432,7 +413,7 @@ export default function NewMotherForm() {
               Email
             </label>
             <input
-               className={`formInputText`}
+              className={`formInputText`}
               id="email"
               name="email"
               type="email"

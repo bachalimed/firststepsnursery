@@ -14,19 +14,19 @@ import {
   OBJECTID_REGEX,
 } from "../../../config/REGEX";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
-import useAuth from "../../../hooks/useAuth";
+// import useAuth from "../../../hooks/useAuth";
 
 const EditMyProfileForm = ({ user }) => {
   //user was passed as prop in editUser
   const navigate = useNavigate();
-  const { isManager, isAdmin, isDirector } = useAuth();
+  // const { isManager, isAdmin, isDirector } = useAuth();
   //initialise the mutation to be used later
   const [
     updateUser,
     {
       isLoading: isUpdateLoading,
       isSuccess: isUpdateSuccess,
-      isError: isUpdateError,
+       isError: isUpdateError,
       error: updateError,
     },
   ] = useUpdateUserMutation();
@@ -202,7 +202,7 @@ const EditMyProfileForm = ({ user }) => {
       } else if (response?.error?.data?.message) {
         // Error response
         triggerBanner(response?.error?.data?.message, "error");
-      } else if (isUpdateLoading) {
+      } else if (isUpdateError) {
         // In case of unexpected response format
         triggerBanner(updateError?.data?.message, "error");
       } else {

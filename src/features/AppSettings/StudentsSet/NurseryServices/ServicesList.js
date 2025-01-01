@@ -35,8 +35,8 @@ const ServicesList = () => {
     data: services, //the data is renamed services
     isLoading: isServicesLoading,
     isSuccess: isServicesSuccess,
-    isError: isServicesError,
-    error: servicesError,
+    // isError: isServicesError,
+    // error: servicesError,
   } = useGetServicesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -52,8 +52,8 @@ const ServicesList = () => {
   const [
     deleteService,
     {
-      isLoading: isDelLoading,
-      isSuccess: isDelSuccess,
+      // isLoading: isDelLoading,
+      // isSuccess: isDelSuccess,
       isError: isDelError,
       error: delError,
     },
@@ -216,95 +216,95 @@ const ServicesList = () => {
         <LoadingStateIcon />
       </>
     );
-if(isServicesSuccess)
-  content = (
-    <>
-      <StudentsSet />
-      <div className="flex space-x-2 items-center ml-3">
-        <div className="relative h-10 mr-2 ">
-          <HiOutlineSearch
-            fontSize={20}
-            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-            aria-label="search services"
-          />
-          <input
-            aria-label="search services"
-            type="text"
-            value={searchQuery}
-            onChange={handleSearch}
-            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
-          />{" "}
-          {searchQuery && (
+  if (isServicesSuccess)
+    content = (
+      <>
+        <StudentsSet />
+        <div className="flex space-x-2 items-center ml-3">
+          <div className="relative h-10 mr-2 ">
+            <HiOutlineSearch
+              fontSize={20}
+              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+              aria-label="search services"
+            />
+            <input
+              aria-label="search services"
+              type="text"
+              value={searchQuery}
+              onChange={handleSearch}
+              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
+            />{" "}
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => handleSearch({ target: { value: "" } })} // Clear search
+                className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+                aria-label="clear search"
+              >
+                &times;
+              </button>
+            )}
+          </div>
+        </div>
+        <div className="dataTableContainer">
+          <div>
+            <DataTable
+              title={tableHeader}
+              columns={columns}
+              data={filteredServices}
+              pagination
+              //selectableRows
+              //onSelectedRowsChange={handleRowSelected}
+              selectableRowsHighlight
+              customStyles={{
+                headCells: {
+                  style: {
+                    // Apply Tailwind style via a class-like syntax
+                    justifyContent: "center", // Align headers to the center
+                    textAlign: "center", // Center header text
+                    color: "black",
+                    fontSize: "14px", // Increase font size for header text
+                  },
+                },
+
+                cells: {
+                  style: {
+                    justifyContent: "center", // Center cell content
+                    textAlign: "center",
+                    color: "black",
+                    fontSize: "14px", // Increase font size for cell text
+                  },
+                },
+                pagination: {
+                  style: {
+                    display: "flex",
+                    justifyContent: "center", // Center the pagination control
+                    alignItems: "center",
+                    padding: "10px 0", // Optional: Add padding for spacing
+                  },
+                },
+              }}
+            ></DataTable>
+          </div>
+          {/* <div className="cancelSavebuttonsDiv"> */}
+          {canCreate && (
             <button
-              type="button"
-              onClick={() => handleSearch({ target: { value: "" } })} // Clear search
-              className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
-              aria-label="clear search"
+              className="add-button"
+              onClick={() => navigate("/settings/studentsSet/newService")}
+              // disabled={selectedRows.length !== 1}
             >
-              &times;
+              New Service
             </button>
           )}
+          {/* </div> */}
         </div>
-      </div>
-      <div className="dataTableContainer">
-        <div>
-          <DataTable
-            title={tableHeader}
-            columns={columns}
-            data={filteredServices}
-            pagination
-            //selectableRows
-            //onSelectedRowsChange={handleRowSelected}
-            selectableRowsHighlight
-            customStyles={{
-              headCells: {
-                style: {
-                  // Apply Tailwind style via a class-like syntax
-                  justifyContent: "center", // Align headers to the center
-                  textAlign: "center", // Center header text
-                  color: "black",
-                  fontSize: "14px", // Increase font size for header text
-                },
-              },
-
-              cells: {
-                style: {
-                  justifyContent: "center", // Center cell content
-                  textAlign: "center",
-                  color: "black",
-                  fontSize: "14px", // Increase font size for cell text
-                },
-              },
-              pagination: {
-                style: {
-                  display: "flex",
-                  justifyContent: "center", // Center the pagination control
-                  alignItems: "center",
-                  padding: "10px 0", // Optional: Add padding for spacing
-                },
-              },
-            }}
-          ></DataTable>
-        </div>
-        {/* <div className="cancelSavebuttonsDiv"> */}
-        {canCreate && (
-          <button
-            className="add-button"
-            onClick={() => navigate("/settings/studentsSet/newService")}
-            // disabled={selectedRows.length !== 1}
-          >
-            New Service
-          </button>
-        )}
-        {/* </div> */}
-      </div>
-      <DeletionConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
-      />
-    </>
-  );
+        <DeletionConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+        />
+      </>
+    );
 
   return <>{content}</>;
 };

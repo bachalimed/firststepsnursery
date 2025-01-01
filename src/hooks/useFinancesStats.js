@@ -17,10 +17,10 @@ export const useFinancesStats = () => {
   // Query the finances stats for the selected academic year
   const {
     data: payments, //the data is renamed finances
-    isLoading: isPaymentsLoading,
+    // isLoading: isPaymentsLoading,
     isSuccess: isPaymentsSuccess,
-    isError: isPaymentsError,
-    error: paymentsError,
+    // isError: isPaymentsError,
+    // error: paymentsError,
   } = useGetPaymentsStatsByYearQuery(
     {
       criteria: "DashFinancesTotalPaymentsStats",
@@ -35,10 +35,10 @@ export const useFinancesStats = () => {
   );
   const {
     data: invoices, //the data is renamed finances
-    isLoading: isInvoicesLoading,
+    // isLoading: isInvoicesLoading,
     isSuccess: isInvoicesSuccess,
-    isError: isInvoicesError,
-    error: invoicesError,
+    // isError: isInvoicesError,
+    // error: invoicesError,
   } = useGetInvoicesStatsByYearQuery(
     {
       criteria: "invoicesTotalStats",
@@ -53,10 +53,10 @@ export const useFinancesStats = () => {
   );
   const {
     data: expenses, //the data is renamed finances
-    isLoading: isExpensesLoading,
+    // isLoading: isExpensesLoading,
     isSuccess: isExpensesSuccess,
-    isError: isExpensesError,
-    error: expensesError,
+    // isError: isExpensesError,
+    // error: expensesError,
   } = useGetExpensesStatsByYearQuery(
     {
       criteria: "expensesTotalStats",

@@ -15,7 +15,7 @@ import Students from "../Students";
 import DataTable from "react-data-table-component";
 import { useSelector, useDispatch } from "react-redux";
 import { IoFlagSharp } from "react-icons/io5";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
 import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
@@ -24,7 +24,7 @@ import useAuth from "../../../hooks/useAuth";
 import { setAdmissions } from "./admissionsSlice";
 import { useOutletContext, useNavigate } from "react-router-dom";
 import { MONTHS } from "../../../config/Months";
-import { CurrencySymbol } from "../../../config/Constants";
+// import { CurrencySymbol } from "../../../config/Constants";
 const AdmissionsList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
@@ -100,24 +100,24 @@ const AdmissionsList = () => {
     try {
       const response = await deleteAdmission({ id: idAdmissionToDelete });
       setIsDeleteModalOpen(false); // Close the modal
-      if (response.data && response.data.message) {
+      if (response?.message) {
         // Success response
-        triggerBanner(response.data.message, "success");
-      } else if (
-        response?.error &&
-        response?.error?.data &&
-        response?.error?.data?.message
-      ) {
+        triggerBanner(response?.message, "success");
+      } else if (response?.data?.message) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
         // Error response
-        triggerBanner(response.error.data.message, "error");
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isDelError) {
+        // In case of unexpected response format
+        triggerBanner(delerror?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      triggerBanner("Failed to delete admission. Please try again.", "error");
-
-      console.error("Error deleting admission:", error);
+      triggerBanner(error?.data?.message, "error");
     }
   };
 

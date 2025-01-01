@@ -41,15 +41,15 @@ const NewStudentForm = () => {
   ] = useAddNewStudentMutation(); //it will not execute the mutation nownow but when called
 
   //prepare the permission variables
-  const { userId, canEdit, canDelete, canAdd, canCreate, isParent, status2 } =
+  const { userId, } =
     useAuth();
 
   const {
     data: attendedSchoolsList,
     isLoading: isSchoolLoading,
     isSuccess: isSchoolSuccess,
-    isError: isSchoolIsError,
-    error: schoolError,
+    // isError: isSchoolIsError,
+    // error: schoolError,
   } = useGetAttendedSchoolsQuery({ endpointName: "NewStudentForm" } || {}, {
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
@@ -78,11 +78,11 @@ const NewStudentForm = () => {
 
   //const [validStudentGrade, setValidStudentGrade] = useState(false);
   //const [studentGrade, setStudentGrade] = useState(null);
-  const [academicYear, setAcademicYear] = useState(null);
+  // const [academicYear, setAcademicYear] = useState(null);
   const [studentYears, setStudentYears] = useState([]);
   //const [studentJointFamily, setStudentJointFamily] = useState(true)
   const [studentGardien, setStudentGardien] = useState([]);
-  const [gardienYear, setGardienYear] = useState("");
+  // const [gardienYear, setGardienYear] = useState("");
   const [gardienFirstName, setGardienFirstName] = useState("");
   const [gardienMiddleName, setgardienMiddleName] = useState("");
   const [gardienLastName, setGardienLastName] = useState("");

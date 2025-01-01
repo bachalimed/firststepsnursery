@@ -1,15 +1,8 @@
 //this is to create an active subscription to the DB to use the data instaed of the data from the state values, so we will not  refresh loading after the 60seconds default
 
 import { store } from "../../app/store";
-//import { notesApiSlice } from '../notes/notesApiSlice'
-import { usersApiSlice } from "../Admin/UsersManagement/usersApiSlice";
-import { employeesApiSlice } from "../HR/Employees/employeesApiSlice";
-import { studentsApiSlice } from "../Students/StudentsAndParents/Students/studentsApiSlice";
-import { familiesApiSlice } from "../Students/StudentsAndParents/Families/familiesApiSlice";
-import { tasksApiSlice } from "../Desk/Tasks/tasksApiSlice";
 import { academicYearsApiSlice } from "../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
-import { studentDocumentsListsApiSlice } from "../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice";
-import { useEffect, useState } from "react";
+import { useEffect,  } from "react";
 import { Outlet } from "react-router-dom";
 
 const Prefetch = () => {

@@ -3,10 +3,10 @@ import StudentsSet from "../../StudentsSet";
 import { useState, useEffect } from "react";
 import { useUpdateStudentDocumentsListMutation } from "./studentDocumentsListsApiSlice";
 import { useNavigate } from "react-router-dom";
-import useAuth from "../../../../hooks/useAuth";
+// import useAuth from "../../../../hooks/useAuth";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 import { useOutletContext } from "react-router-dom";
-import { TITLE_REGEX, NAME_REGEX } from "../../../../config/REGEX";
+import { NAME_REGEX } from "../../../../config/REGEX";
 
 const EditStudentDocumentsListForm = ({ listToEdit }) => {
   //console.log(listToEdit.documentsAcademicYear,'lllllyear')
@@ -19,12 +19,12 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
   const [studentDocumentsList, setStudentDocumentsList] = useState(
     listToEdit.documentsList || []
   );
-  console.log(listToEdit.documentsList)
+  console.log(listToEdit.documentsList);
   const [documentTitle, setDocumentTitle] = useState("");
   const [validDocumentTitle, setValidDocumentTitle] = useState(false);
   const { triggerBanner } = useOutletContext(); // Access banner trigger
-  const { userId, canEdit, canDelete, canAdd, canCreate, isParent, status2 } =
-    useAuth();
+  // const { userId, canEdit, canDelete, canAdd, canCreate, isParent, status2 } =
+  //   useAuth();
   // Confirmation Modal states
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [
@@ -56,24 +56,29 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
   }, [isUpdateSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success
 
   // Ensure that the first three documents cannot be removed
- // const isRemovable = (index) => index >= 2; //the first threea reprpedefined(stud photo, father photo, mother photo)
- const isRemovable = (index) => {
-  const nonRemovableTitles = ["Student Photo", "Father Photo", "Mother Photo"];
-  return !nonRemovableTitles.includes(studentDocumentsList[index]?.documentTitle);
-};
+  // const isRemovable = (index) => index >= 2; //the first threea reprpedefined(stud photo, father photo, mother photo)
+  const isRemovable = (index) => {
+    const nonRemovableTitles = [
+      "Student Photo",
+      "Father Photo",
+      "Mother Photo",
+    ];
+    return !nonRemovableTitles.includes(
+      studentDocumentsList[index]?.documentTitle
+    );
+  };
 
-
-const handleFieldChange = (index, field, value) => {
-  const updatedEntries = studentDocumentsList.map((entry, i) =>
-    i === index
-      ? {
-          ...entry,
-          [field]: value, // Update the specific field
-        }
-      : entry
-  );
-  setStudentDocumentsList(updatedEntries);
-};
+  const handleFieldChange = (index, field, value) => {
+    const updatedEntries = studentDocumentsList.map((entry, i) =>
+      i === index
+        ? {
+            ...entry,
+            [field]: value, // Update the specific field
+          }
+        : entry
+    );
+    setStudentDocumentsList(updatedEntries);
+  };
 
   // // Handler to update an entry field
   // const handleFieldChange = (index, field, value) => {
@@ -126,11 +131,10 @@ const handleFieldChange = (index, field, value) => {
         documentsList: studentDocumentsList,
         documentsAcademicYear,
       });
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {

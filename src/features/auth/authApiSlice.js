@@ -19,7 +19,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         //auery called inside the endpoint
         try {
           const { data } = await queryFulfilled;
-          //console.log(data)
+          console.log(data);
           dispatch(logOut());
           setTimeout(() => {
             //this will let the time to unsubscribe the components when it unmounts but if we logout from users page it takes time compared to othe rpages so we give it time to do it
@@ -34,6 +34,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
       query: () => ({
         url: "/auth/refresh",
         method: "GET",
+       
       }),
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {

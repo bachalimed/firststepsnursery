@@ -1,11 +1,10 @@
 //a page that will prepare params for the edit form by passing the id of the user to be edited
 
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
 
 import EditUserForm from "./EditMyProfileForm";
-import LoadingStateIcon from "../../../Components/LoadingStateIcon";
-import MyProfile from "../MyProfile";
+// import LoadingStateIcon from "../../../Components/LoadingStateIcon";
+// import MyProfile from "../MyProfile";
 import { useGetUserByIdQuery } from "../../Admin/UsersManagement/usersApiSlice";
 const EditMyProfile = () => {
   //get the userId from the url
@@ -17,10 +16,10 @@ const EditMyProfile = () => {
   //import users using RTK query
   const {
     data: userToEdit, //deconstructing data into users
-    isLoading: isUserLoading,
+    // isLoading: isUserLoading,
     isSuccess: isUserSuccess,
-    isError: isUserError,
-    error: userError,
+    // isError: isUserError,
+    // error: userError,
   } = useGetUserByIdQuery(
     {
       id: id,

@@ -40,7 +40,7 @@ const StudentDocuments = () => {
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
-  const academicYears = useSelector(selectAllAcademicYears);
+  // const academicYears = useSelector(selectAllAcademicYears);
   const [idStudentDocumentToDelete, setIdStudentDocumentToDelete] =
     useState(null); // State to track which document to delete
   const [documents, setDocuments] = useState([]);
@@ -58,35 +58,27 @@ const StudentDocuments = () => {
   const [documentToView, setDocumentToView] = useState(null);
 
   const {
-    userId,
     canEdit,
     canDelete,
-    canAdd,
+
     canView,
-    isManager,
-    isDirector,
-    canCreate,
-    isParent,
-    isAdmin,
-    status2,
   } = useAuth();
 
   const [
     deleteStudentDocument,
     {
       isLoading: isDelLoading,
-      isSuccess: isDelSuccess,
+      // isSuccess: isDelSuccess,
       isError: isDelError,
       error: delError,
     },
   ] = useDeleteStudentDocumentMutation();
-  const [selectedDocument, setSelectedDocument] = useState(null);
 
   const [
     addStudentDocuments,
     {
       //an object that calls the status when we execute the newUserForm function
-      isLoading: uploadIsLoading,
+      // isLoading: uploadIsLoading,
       isSuccess: uploadIsSuccess,
       isError: uploadIsError,
       error: uploadError,
@@ -106,8 +98,8 @@ const StudentDocuments = () => {
     data: studentDocumentsListing,
     isLoading: isListLoading,
     isSuccess: isListSuccess,
-    isError: isListError,
-    error: listError,
+    // isError: isListError,
+    // error: listError,
   } = useGetStudentDocumentsByYearByIdQuery(
     {
       studentId: id,
@@ -394,14 +386,13 @@ const StudentDocuments = () => {
       button: true,
     },
   ];
-// Custom header to include the row count
-const tableHeader = (
-  <h2>
-    Documents List:
-    <span> {studentDocumentsListing?.length} documents</span>
-  </h2>
-);
-
+  // Custom header to include the row count
+  const tableHeader = (
+    <h2>
+      Documents List:
+      <span> {studentDocumentsListing?.length} documents</span>
+    </h2>
+  );
 
   let content;
   if (isListLoading)
@@ -420,7 +411,7 @@ const tableHeader = (
         <div className="dataTableContainer">
           <div>
             <DataTable
-             title={tableHeader}
+              title={tableHeader}
               columns={column}
               data={studentDocumentsListing}
               pagination

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useNavigate ,useOutletContext} from "react-router-dom";
+import {  useSelector } from "react-redux";
 import { useAddNewPaymentMutation } from "./paymentsApiSlice"; // Redux API action
 import { CurrencySymbol } from "../../../config/Currency";
 import Finances from "../Finances";
@@ -10,7 +10,6 @@ import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
-  selectAllAcademicYears,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import {
   NAME_REGEX,
@@ -30,7 +29,8 @@ const NewPaymentForm = () => {
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
-  const academicYears = useSelector(selectAllAcademicYears);
+  // const academicYears = useSelector(selectAllAcademicYears);
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
 
   const PaymentTypes = ["Cash", "Cheque", "Bank Transfer", "Online Payment"];
 
@@ -38,8 +38,8 @@ const NewPaymentForm = () => {
     data: studentsEnrolments, //the enrolments are retirved and transformed as students with arrays of enrolments
     isLoading: isEnrolmentsLoading,
     isSuccess: isEnrolmentsSuccess,
-    isError: isEnrolmentsError,
-    error: enrolmentsError,
+    // isError: isEnrolmentsError,
+    // error: enrolmentsError,
   } = useGetEnrolmentsByYearQuery(
     {
       criteria: "UnpaidInvoices",
@@ -72,8 +72,6 @@ const NewPaymentForm = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [selectedInvoices, setSelectedInvoices] = useState([]);
   const [totalInvoiceAmount, setTotalInvoiceAmount] = useState(0);
-  // State to track the selected invoice
-  const [selectedInvoiceId, setSelectedInvoiceId] = useState(null);
   const [validity, setValidity] = useState({
     validPaymentYear: false,
     validPaymentAmount: false,
@@ -86,16 +84,15 @@ const NewPaymentForm = () => {
   });
   console.log(validity);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   // Redux mutation for adding the attended school
   const [
     addNewPayment,
     {
       isLoading: isAddLoading,
+      isSuccess: isAddSuccess,
       isError: isAddError,
       error: addError,
-      isSuccess: isAddSuccess,
     },
   ] = useAddNewPaymentMutation();
 
@@ -153,7 +150,7 @@ const NewPaymentForm = () => {
 
   // Check if all fields are valid and enable the submit button
   const canSubmit = Object.values(validity).every(Boolean) && !isAddLoading;
-console.log(validity)
+  console.log(validity);
   // Handle form submission
 
   const handleSubmit = async (e) => {
@@ -168,9 +165,25 @@ console.log(validity)
     // Close the confirmation modal
     setShowConfirmation(false);
     try {
-      await addNewPayment(formData).unwrap();
-    } catch (err) {
-      console.error("Failed to add the payment.", err);
+      const response = await addNewPayment(formData).unwrap();
+      if (response?.message) {
+        // Success response
+        triggerBanner(response?.message, "success");
+      } else if (response?.data?.message) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isAddError) {
+        // In case of unexpected response format
+        triggerBanner(addError?.data?.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner(error?.data?.message, "error");
     }
   };
   // Close the modal without saving
@@ -237,24 +250,7 @@ console.log(validity)
     }
   };
 
-  const handleRemoveInvoice = (invoice) => {
-    const updatedInvoices = formData.paymentInvoices.filter(
-      (id) => id !== invoice._id
-    );
-    const updatedSelectedInvoices = selectedInvoices.filter(
-      (i) => i._id !== invoice._id
-    );
 
-    const newTotal = updatedSelectedInvoices.reduce(
-      (total, selectedInvoice) =>
-        total + parseFloat(selectedInvoice.invoiceAmount),
-      0
-    );
-
-    setFormData({ ...formData, paymentInvoices: updatedInvoices });
-    setSelectedInvoices(updatedSelectedInvoices);
-    setTotalInvoiceAmount(newTotal);
-  };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -278,7 +274,9 @@ console.log(validity)
         <Finances />
 
         <form onSubmit={handleSubmit} className="form-container">
-          <h2 className="formTitle ">Add Payment {selectedAcademicYear?.title}</h2>
+          <h2 className="formTitle ">
+            Add Payment {selectedAcademicYear?.title}
+          </h2>
           {/* Student Selection */}
           <div className="formSectionContainer">
             <h3 className="formSectionTitle">Invoices</h3>
@@ -545,7 +543,8 @@ console.log(validity)
               aria-label="submit form"
               className="save-button"
               disabled={!canSubmit || isAddLoading}
-            >save
+            >
+              save
               {/* {isAddLoading ? "Submitting..." : "Submit Payment"} */}
             </button>
           </div>

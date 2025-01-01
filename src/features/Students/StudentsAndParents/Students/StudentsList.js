@@ -42,13 +42,7 @@ const StudentsList = () => {
     canView,
     canDelete,
     canCreate,
-    isEmployee,
-    isParent,
-    isContentManager,
-    isAnimator,
     isAcademic,
-    isFinance,
-    isHR,
     isDesk,
     isDirector,
     isManager,
@@ -70,8 +64,8 @@ const StudentsList = () => {
     data: students, //the data is renamed students
     isLoading: isStudentsLoading,
     isSuccess: isStudentsSuccess,
-    isError: isStudentsError,
-    error: studentsError,
+    // isError: isStudentsError,
+    // error: studentsError,
   } = useGetStudentsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -87,8 +81,8 @@ const StudentsList = () => {
     data: attendedSchoolsList,
     isLoading: isSchoolsLoading,
     isSuccess: isSchoolsSuccess,
-    isError: isSchoolsError,
-    error: schoolsError,
+    // isError: isSchoolsError,
+    // error: schoolsError,
   } = useGetAttendedSchoolsQuery({ endpointName: "StudentsList" } || {}, {
     //pollingInterval: 60000
     refetchOnFocus: true,
@@ -100,7 +94,7 @@ const StudentsList = () => {
     deleteStudent,
     {
       isLoading: isDelLoading,
-      isSuccess: isDelSuccess,
+      // isSuccess: isDelSuccess,
       isError: isDelError,
       error: delError,
     },
@@ -211,8 +205,8 @@ const StudentsList = () => {
   const [
     updateStudent,
     {
-      isLoading: isUpdateLoading,
-      isSuccess: isUpdateSuccess,
+      // isLoading: isUpdateLoading,
+      // isSuccess: isUpdateSuccess,
       isError: isUpdateError,
       error: updateError,
     },

@@ -1,23 +1,10 @@
-import { IoFileTrayStackedOutline } from "react-icons/io5";
 import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
 import useAuth from "../../hooks/useAuth";
 import { useLocation, Link } from "react-router-dom";
 
 const MyProfile = () => {
   const location = useLocation();
-  const {
-    isEmployee,
-    isParent,
-    isContentManager,
-    isAnimator,
-    isAcademic,
-    isFinance,
-    isHR,
-    isDesk,
-    isDirector,
-    isManager,
-    isAdmin,
-  } = useAuth();
+  const { isDirector, isManager, isAdmin } = useAuth();
 
   // Define the tab data with paths and labels
   const tabs = [

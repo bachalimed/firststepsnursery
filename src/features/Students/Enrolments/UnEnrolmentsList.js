@@ -9,39 +9,24 @@ import { useGetServicesByYearQuery } from "../../AppSettings/StudentsSet/Nursery
 import Students from "../Students";
 import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
-
 import { IoShieldCheckmarkOutline, IoShieldOutline } from "react-icons/io5";
 import { useSelector } from "react-redux";
-
 import { useEffect, useState } from "react";
-import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
-import { IoAddCircleOutline } from "react-icons/io5";
-
-import {
-  useGetAdmissionsByYearQuery,
-  useDeleteAdmissionMutation,
-} from "../Admissions/admissionsApiSlice";
-import { Link } from "react-router-dom";
+import { useGetAdmissionsByYearQuery } from "../Admissions/admissionsApiSlice";
 import { useNavigate } from "react-router-dom";
-
 import useAuth from "../../../hooks/useAuth";
 import { MONTHS } from "../../../config/Months";
 
 const UnenrolmentsList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
+  const { canCreate } = useAuth();
 
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
-  const academicYears = useSelector(selectAllAcademicYears);
-
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
-  const [idEnrolmentToDelete, setIdEnrolmentToDelete] = useState(null); // State to track which document to delete
+  // const academicYears = useSelector(selectAllAcademicYears);
 
   //function to return curent month for month selection
   const getCurrentMonth = () => {
@@ -54,8 +39,6 @@ const UnenrolmentsList = () => {
     data: admissions, //the data is renamed admissions
     isLoading: isAdmissionsLoading,
     isSuccess: isAdmissionsSuccess,
-    isError: isAdmissionsError,
-    error: admissionsError,
   } = useGetAdmissionsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -73,8 +56,6 @@ const UnenrolmentsList = () => {
     data: services,
     isLoading: isServicesLoading,
     isSuccess: isServicesSuccess,
-    isError: isServicesError,
-    error: servicesError,
   } = useGetServicesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -95,9 +76,6 @@ const UnenrolmentsList = () => {
   let admissionsList = [];
   let filteredAdmissions = [];
 
-  const [billedFilter, setBilledFilter] = useState(""); // "billed" or "unbilled"
-  const [invoicedFilter, setInvoicedFilter] = useState(""); // "invoiced" or "notInvoiced"
-  const [paidFilter, setPaidFilter] = useState(""); // "paid" or "unpaid"
   const [selectedServiceType, setSelectedServiceType] = useState(""); // service type from servicesList
   const [selectedFeeMonth, setSelectedFeeMonth] = useState(getCurrentMonth()); // enrolment month
   const servicesList = isServicesSuccess
@@ -154,16 +132,6 @@ const UnenrolmentsList = () => {
   const handleRowSelected = (state) => {
     setSelectedRows(state.selectedRows);
     //console.log('selectedRows', selectedRows)
-  };
-
-  // Handler for duplicating selected rows,
-  const handleDuplicateSelected = () => {
-    //console.log('Selected Rows to duplicate:', selectedRows);
-    // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
-    //ensure only one can be selected: the last one
-    const toDuplicate = selectedRows[-1];
-
-    setSelectedRows([]); // Clear selection after delete
   };
 
   const column = [
@@ -297,15 +265,15 @@ const UnenrolmentsList = () => {
     //   width: "120px",
     // },
   ].filter(Boolean); // Filter out falsy values like `false` or `undefined`
-  
-   // Custom header to include the row count
-   const tableHeader = (
+
+  // Custom header to include the row count
+  const tableHeader = (
     <h2>
       Unenrolled students List:
       <span> {filteredAdmissions?.length} students</span>
     </h2>
   );
-  
+
   
   let content;
   if (isAdmissionsLoading || isServicesLoading)
@@ -386,7 +354,7 @@ const UnenrolmentsList = () => {
         <div className="dataTableContainer">
           <div>
             <DataTable
-             title={tableHeader}
+              title={tableHeader}
               columns={column}
               data={filteredAdmissions}
               pagination
@@ -394,7 +362,7 @@ const UnenrolmentsList = () => {
               removableRows
               pageSizeControl
               onSelectedRowsChange={handleRowSelected}
-             // selectableRowsHighlight
+              // selectableRowsHighlight
               customStyles={{
                 headCells: {
                   style: {

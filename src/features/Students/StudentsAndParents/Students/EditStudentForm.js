@@ -26,8 +26,7 @@ const EditStudentForm = ({ student }) => {
   const navigate = useNavigate();
 
   const [id, setId] = useState(student.id);
-  const { userId, canEdit, canDelete, canAdd, canCreate, isParent, status2 } =
-    useAuth();
+  const { userId } = useAuth();
 
   //confirmation Modal states
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -51,8 +50,8 @@ const EditStudentForm = ({ student }) => {
     data: attendedSchoolsList,
     isLoading: isSchoolLoading,
     isSuccess: isSchoolSuccess,
-    isError: isSchoolError,
-    error: schoolError,
+    // isError: isSchoolError,
+    // error: schoolError,
   } = useGetAttendedSchoolsQuery({ endpointName: "EditStudentForm" } || {}, {
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
@@ -146,7 +145,7 @@ const EditStudentForm = ({ student }) => {
   useEffect(() => {
     if (isUpdateSuccess) {
       //if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
-      
+
       setId(student.id);
       setFirstName("");
       setValidFirstName(false);
@@ -367,11 +366,10 @@ const EditStudentForm = ({ student }) => {
         studentGardien,
         operator,
       }); //we call the add new user mutation and set the arguments to be saved
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -664,12 +662,12 @@ const EditStudentForm = ({ student }) => {
                         >
                           <option value="">Select Year</option>
                           {academicYears
-                           .filter((year) => year?.title !== "1000")
-                          .map((year, i) => (
-                            <option key={year?.title} value={year?.title}>
-                              {year?.title}
-                            </option>
-                          ))}
+                            .filter((year) => year?.title !== "1000")
+                            .map((year, i) => (
+                              <option key={year?.title} value={year?.title}>
+                                {year?.title}
+                              </option>
+                            ))}
                         </select>{" "}
                       </label>
                     </div>
@@ -771,15 +769,15 @@ const EditStudentForm = ({ student }) => {
                         >
                           <option value="">Select Year</option>
                           {academicYears
-                           .filter((year) => year?.title !== "1000")
-                          .map(
-                            (year, i) =>
-                              year.title !== "1000" && (
-                                <option key={year.title} value={year.title}>
-                                  {year.title}
-                                </option>
-                              )
-                          )}
+                            .filter((year) => year?.title !== "1000")
+                            .map(
+                              (year, i) =>
+                                year.title !== "1000" && (
+                                  <option key={year.title} value={year.title}>
+                                    {year.title}
+                                  </option>
+                                )
+                            )}
                         </select>{" "}
                       </label>
 

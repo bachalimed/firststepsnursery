@@ -17,10 +17,10 @@ export const useStudentsStats = () => {
   // Query the students stats for the selected academic year
   const {
     data: students, //the data is renamed students
-    isLoading: isStudentsLoading,
+    // isLoading: isStudentsLoading,
     isSuccess: isStudentsSuccess,
-    isError: isStudentsError,
-    error: studentsError,
+    // isError: isStudentsError,
+    // error: studentsError,
   } = useGetStudentsStatsByYearQuery(
     {
       criteria: "DashStudentsTotalNumberStats",
@@ -35,10 +35,10 @@ export const useStudentsStats = () => {
   );
   const {
     data: enrolments, //the data is renamed students
-    isLoading: isEnrolmentsLoading,
+    // isLoading: isEnrolmentsLoading,
     isSuccess: isEnrolmentsSuccess,
-    isError: isEnrolmentsError,
-    error: enrolmentsError,
+    // isError: isEnrolmentsError,
+    // error: enrolmentsError,
   } = useGetEnrolmentsStatsByYearQuery(
     {
       criteria: "enrolmentsTotalStats",
@@ -53,10 +53,10 @@ export const useStudentsStats = () => {
   );
   const {
     data: families, //the data is renamed students
-    isLoading: isFamiliesLoading,
+    // isLoading: isFamiliesLoading,
     isSuccess: isFamiliesSuccess,
-    isError: isFamiliesError,
-    error: familiesError,
+    // isError: isFamiliesError,
+    // error: familiesError,
   } = useGetFamiliesStatsByYearQuery(
     {
       criteria: "familiesTotalStats",

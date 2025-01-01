@@ -4,14 +4,8 @@ import useAuth from "../../hooks/useAuth";
 const StudentsSet = () => {
   const location = useLocation();
   const {
-    isEmployee,
-    isParent,
-    isContentManager,
-    isAnimator,
-    isAcademic,
     isFinance,
-    isHR,
-    isDesk,
+
     isDirector,
     isManager,
     isAdmin,
