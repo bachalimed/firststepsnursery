@@ -6,7 +6,7 @@ import { setCredentials } from '../../features/auth/authSlice'
 
 //basequery to use jwx and refresh tokens
 const baseQuery = fetchBaseQuery({
-   // baseUrl: 'http://localhost:3500',
+    //baseUrl: 'http://localhost:3500',
    baseUrl: 'https://firststepsnursery-api.onrender.com',//the api address
     credentials: 'include',//we will always send the cookie containing our refresh token
     prepareHeaders: (headers, { getState }) => {//destructured api.getState , prepareheaders is function that will be applied to every request we send maybe add the selected year here

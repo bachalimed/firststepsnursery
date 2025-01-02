@@ -21,7 +21,7 @@ const DashboardStatsGrid = () => {
       <Dashboard />
       
       <div className=" gap-4 ">
-      <div className="flex gap-4 mt-4 mb-4 ml-4 mr-4 w-full">
+      <div className="flex flex-col sm:flex-row gap-4 mt-4 mb-4 ml-4 mr-4 w-full">
         <DashboardFinancesTotalPaymentsModule />
         <DashboardFinancesTotalExpensesModule />
         {/* <DashboardFinancesMonthlyInvoicesModule /> */}
@@ -33,7 +33,7 @@ const DashboardStatsGrid = () => {
        <BoxWrapper >element of stats</BoxWrapper> */}
       </div>
       
-      <div className="flex gap-4 mt-4 mb-4 ml-4 mr-4 w-full">
+      <div className="flex flex-col sm:flex-row gap-4 mt-4 mb-4 ml-4 mr-4 w-full">
         {/* <DashboardfinancesPerGradeModule />
         <DashboardfinancesPerSchoolModule />
         
@@ -45,11 +45,11 @@ const DashboardStatsGrid = () => {
        <BoxWrapper >element of stats</BoxWrapper>
        <BoxWrapper >element of stats</BoxWrapper> */}
       </div>
-      <div className="flex gap-4 mt-4 mb-4 ml-4 mr-4 w-full">
+      <div className="flex flex-col sm:flex-row gap-4 mt-4 mb-4 ml-4 mr-4 w-full">
         <DashboardFinancesMonthlyPaymentsExpensesInvoicesModule />
        
       </div>
-      <div className="flex gap-4 mt-4 mb-4 ml-4 mr-4 w-full">
+      <div className="flex flex-col sm:flex-row gap-4 mt-4 mb-4 ml-4 mr-4 w-full">
         <DashboardFinancesMonthlyExpenseCategoriesModule />
        
       </div>

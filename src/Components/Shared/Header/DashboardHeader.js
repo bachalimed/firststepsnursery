@@ -1,17 +1,13 @@
 import NavbarHeader from "./NavbarHeader";
 import { Link } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
-import AcademicYearsSelection from "../../AcademicYearsSelection";
-// import { useNavigate, useLocation } from "react-router"
 import { useState, useEffect } from "react";
 import logo from "./../../../Data/logo.jpg";
-import { IoMenuOutline } from "react-icons/io5";
 import AnimatedColorText from "../../lib/Utils/AnimatedColorText";
-import GenerateCircles from "../../lib/Utils/GenerateCircles";
 const DashboardHeader = () => {
   const { username } = useAuth();
   const [currentTime, setCurrentTime] = useState(new Date());
-  const company = { label: "First Steps", type: "Nursery" };
+  const company = { label: "First Steps", type: " Nursery" };
 
   // Update the time every second
   useEffect(() => {
@@ -36,33 +32,32 @@ const DashboardHeader = () => {
     second: "2-digit",
   });
 
-  const circles = GenerateCircles(8); // Generate 10 random circles
   const content = (
-    <header className="bg-sky-700 text-white py-1 px-3 md:px-1 flex md:flex-row md:justify-between items-center  relative overflow-hidden">
-      {/* Background circles */}
-      {/* <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-        {circles}
-      </div> */}
-      <div className={` "w-56" p-2 flex text-white  relative`}>
+    <header className="bg-sky-700 text-white py-1 px-3 md:px-1 flex flex-col md:flex-row md:justify-between items-center relative overflow-hidden">
+      
+      {/* Logo and Colored Text Section */}
+      <div className=" p-2 flex flex-col items-center md:items-start text-white relative">
         <Link to="/">
-          <img src={logo} className="h-12 w-12 rounded " alt="2 mascots" />
+          <img src={logo} className="h-12 w-12 rounded" alt="logo" />
         </Link>
-
-  {/* Fallback for non-JavaScript environments */}
-  <noscript>
-    <a href="/">
-      <img
-        src="./../../../Data/logo.jpg"
-        className="h-12 w-12 rounded"
-        alt="2 mascots"
-      />
-    </a>
-  </noscript>
-        <div className="flex items-center">
-          <AnimatedColorText company={company} />
-        </div>
+  
+        {/* Fallback for non-JavaScript environments */}
+        <noscript>
+          <a href="/">
+            <img
+              src="./../../../Data/logo.jpg"
+              className="h-12 w-12 rounded"
+              alt="logo"
+            />
+          </a>
+        </noscript>
+      
+        
       </div>
-      <div className="flex flex-col md:flex-row items-center md:space-x-6 mb-2 md:mb-0">
+          <AnimatedColorText company={company} />
+  
+      {/* Welcome Message and Date/Time */}
+     
         <h1 className="text-lg font-semibold text-center md:text-left">
           Welcome back, {username}!
         </h1>
@@ -70,11 +65,15 @@ const DashboardHeader = () => {
           <p>{formattedDate}</p>
           <p>{formattedTime}</p>
         </div>
+      
+  
+      {/* Navbar Header */}
+      <div className="flex-shrink-0 mt-4 md:mt-0 md:ml-6 md:relative md:bottom-auto md:right-auto absolute bottom-4 right-4">
+        <NavbarHeader />
       </div>
-      <NavbarHeader />
     </header>
   );
-
+  
   return content;
 };
 

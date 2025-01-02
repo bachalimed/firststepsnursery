@@ -24,7 +24,7 @@ const DashboardStatsGrid = () => {
       <Dashboard />
       
       <div className=" gap-4 ">
-      <div className="flex gap-4 mt-4 mb-4 ml-4 mr-4 w-full">
+      <div className="flex flex-col sm:flex-row gap-4 mt-4 mb-4 ml-4 mr-4 w-full">
         <DashboardStudentsTotalNumberModule />
         <DashboardStudentsAdmissionNumberModule />
         <DashboardFamiliesTotalNumberModule />
@@ -36,7 +36,7 @@ const DashboardStatsGrid = () => {
        <BoxWrapper >element of stats</BoxWrapper> */}
       </div>
       
-      <div className="flex gap-4 mt-4 mb-4 ml-4 mr-4 w-full">
+      <div className="flex flex-col sm:flex-row gap-4 mt-4 mb-4 ml-4 mr-4 w-full">
         <DashboardStudentsPerGradeModule />
         <DashboardStudentsPerSchoolModule />
         
@@ -48,7 +48,7 @@ const DashboardStatsGrid = () => {
        <BoxWrapper >element of stats</BoxWrapper>
        <BoxWrapper >element of stats</BoxWrapper> */}
       </div>
-      <div className="flex gap-4 mt-4 mb-4 ml-4 mr-4 w-full">
+      <div className="flex flex-col sm:flex-row gap-4 mt-4 mb-4 ml-4 mr-4 w-full">
         <DashboardEnrolmentsPerMonthModule />
        
       </div>
