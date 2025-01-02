@@ -3,8 +3,6 @@ import { VscDashboard } from "react-icons/vsc";
 import { TbLogout } from "react-icons/tb";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import logo from "../../../Data/logo.jpg";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FaRegUser } from "react-icons/fa";
 import { FiSettings } from "react-icons/fi";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -15,7 +13,7 @@ import { PiUserCircleLight } from "react-icons/pi";
 import AnimatedColorText from "../../lib/Utils/AnimatedColorText";
 import useAuth from "../../../hooks/useAuth";
 import { RiLoginBoxLine } from "react-icons/ri";
-import GenerateCircles from "../../lib/Utils/GenerateCircles";
+//import GenerateCircles from "../../lib/Utils/GenerateCircles";
 const PublicHeader = () => {
   const { username, userId } = useAuth();
   const company = { label: "First Steps", type: "Nursery" };
@@ -50,14 +48,14 @@ const PublicHeader = () => {
 
   const onGoDashClicked = () => navigate("/dashboard/studentsDash/");
 
-  const circles = GenerateCircles(7); // Generate  random circles
+  //const circles = GenerateCircles(8); // Generate  random circles
 
   return (
     <header className="bg-sky-700 text-white py-1 px-3 md:px-1 flex md:flex-row md:justify-between items-center shadow-md relative overflow-hidden">
       {/* Background circles */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+      {/* <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
         {circles}
-      </div>
+      </div> */}
       <div className={` "w-56" p-2 flex text-white  relative`}>
         <Link to="/">
           <img

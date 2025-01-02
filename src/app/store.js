@@ -35,6 +35,6 @@ export const store = configureStore({
   // and other useful features of `rtk-query`.
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware), //apislice.middleeware manages cache lifitimes and expirations
-  devTools: true,
+  devTools: false,////////////////changed to true for production
 });
 setupListeners(store.dispatch); //to allow refresh of data if using multiple computers so we don't use old deleted data
