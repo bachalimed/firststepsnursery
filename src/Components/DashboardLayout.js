@@ -5,6 +5,7 @@ import DashboardHeader from "./Shared/Header/DashboardHeader";
 import DashboardFooter from "./Shared/Footer/DashboardFooter";
 import ResultBanner from "./ResultBanner";
 import MenuButtons from "./Shared/Sidebar/MenuButtons"
+import CookieConsentBanner from "./CookieConsentBanner";
 
 // the layout contains all persistant elements that exist in all pagesm the outlet element is the vaiable content
 
@@ -21,6 +22,7 @@ const DashboardLayout = () => {
 
   return (
     <div className="flex bg-neutral-100 min-h-screen w-full">
+      <CookieConsentBanner/>
       <div className="overflow-hidden lg:overflow-visible h-screen ">
         {/* <DashboardSidebar /> */}
       </div>

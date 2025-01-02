@@ -5,12 +5,11 @@ import DashboardLayout from "./Components/DashboardLayout";
 import Public from "./pages/Public";
 import Login from "./features/auth/Login";
 import ForgotPassword from "./features/auth/ForgotPassword";
-
 import Dashboard from "./features/Dashboard/Dashboard";
 import StudentsDash from "./features/Dashboard/Students/StudentsDash";
 import FinancesDash from "./features/Dashboard/FinancesDash/FinancesDash";
 // import HRDash from "./features/Dashboard/HRDashboard/HRDash";
-
+import CookiePolicy from "./Components/CookiePolicy";
 import ResetPassword from "./features/auth/MyProfile/ResetPassword";
 import MyProfile from "./features/auth/MyProfile";
 import EditMyProfile from "./features/auth/MyProfile/EditMyProfile";
@@ -196,6 +195,7 @@ const App = () => {
         {/*the parent of all the other routes*/}
         <Route index element={<Public />} />{" "}
         {/*  index will show as a default in the public layout*/}
+        <Route path="cookiePolicy" element={<CookiePolicy />} />
         <Route path="login" element={<Login />} />
         <Route path="forgotPassword" element={<ForgotPassword />} />
         {/*protected routes after this */}
