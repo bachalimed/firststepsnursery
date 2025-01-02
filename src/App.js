@@ -44,7 +44,7 @@ import NewAdmissionForm from "./features/Students/Admissions/NewAdmissionForm";
 import AdmissionDetails from "./features/Students/Admissions/AdmissionDetails";
 
 import EnrolmentsList from "./features/Students/Enrolments/EnrolmentsList";
-import UnenrolmentsList from "./features/Students/Enrolments/UnenrolmentsList";
+import UnEnrolmentsList from "./features/Students/Enrolments/UnEnrolmentsList";
 import EditEnrolment from "./features/Students/Enrolments/EditEnrolment";
 import NewEnrolmentForm from "./features/Students/Enrolments/NewEnrolmentForm";
 import EnrolmentDetails from "./features/Students/Enrolments/EnrolmentDetails";
@@ -276,7 +276,7 @@ const App = () => {
                   <Route index element={<Students />} />
 
                   <Route path="enrolments/" element={<EnrolmentsList />} />
-                  <Route path="unenrolments/" element={<UnenrolmentsList />} />
+                  <Route path="unenrolments/" element={<UnEnrolmentsList />} />
                   <Route path="newEnrolment/" element={<NewEnrolmentForm />} />
                   <Route path="editEnrolment/:id" element={<EditEnrolment />} />
                   <Route path="enrolmentDetails/:id" element={<EnrolmentDetails />} />
