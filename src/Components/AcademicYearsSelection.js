@@ -1,19 +1,13 @@
 import React from "react";
-
-import { Field, Label, Select } from "@headlessui/react";
-// import { Description } from '@headlessui/react';
 import { selectAllAcademicYears } from "../features/AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
 import { createSelector } from "@reduxjs/toolkit";
-
-import { BsChevronDown } from "react-icons/bs";
 import { useSelector, useDispatch } from "react-redux";
 import {
   academicYearSelected,
   setAcademicYears,
   selectCurrentAcademicYearId,
 } from "../features/AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import { useState, useEffect } from "react";
-
+import { useEffect } from "react";
 import useAuth from "../hooks/useAuth";
 
 //we could include permissions to only allow some users to select
