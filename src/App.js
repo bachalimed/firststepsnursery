@@ -9,7 +9,7 @@ import ForgotPassword from "./features/auth/ForgotPassword";
 import Dashboard from "./features/Dashboard/Dashboard";
 import StudentsDash from "./features/Dashboard/Students/StudentsDash";
 import FinancesDash from "./features/Dashboard/FinancesDash/FinancesDash";
-import HRDash from "./features/Dashboard/HRDashboard/HRDash";
+// import HRDash from "./features/Dashboard/HRDashboard/HRDash";
 
 import ResetPassword from "./features/auth/MyProfile/ResetPassword";
 import MyProfile from "./features/auth/MyProfile";
@@ -69,14 +69,14 @@ import ClassroomsPlannings from "./features/Academics/Plannings/ClassroomsPlanni
 import Finances from "./features/Finances/Finances"; //main tab
 
 import InvoicesList from "./features/Finances/Invoices/InvoicesList";
-import NewInvoiceForm from "./features/Finances/Invoices/NewInvoiceForm";
+// import NewInvoiceForm from "./features/Finances/Invoices/NewInvoiceForm";
 import EditInvoice from "./features/Finances/Invoices/EditInvoice";
 import InvoiceDetails from "./features/Finances/Invoices/InvoiceDetails";
 
 import PaymentsList from "./features/Finances/Payments/PaymentsList";
 import NewPaymentForm from "./features/Finances/Payments/NewPaymentForm";
 import EditPayment from "./features/Finances/Payments/EditPayment";
-import PaymentDetails from "./features/Finances/Payments/PaymentDetails";
+// import PaymentDetails from "./features/Finances/Payments/PaymentDetails";
 
 import ExpensesList from "./features/Finances/Expenses/ExpensesList";
 import NewExpenseForm from "./features/Finances/Expenses/NewExpenseForm";
@@ -358,7 +358,7 @@ const App = () => {
                 <Route path="invoices">
                   <Route index element={<Finances />} />
                   <Route path="invoicesList/" element={<InvoicesList />} />
-                  <Route path="newInvoice/" element={<NewInvoiceForm />} />
+                  {/* <Route path="newInvoice/" element={<NewInvoiceForm />} /> */}
                   <Route path="editInvoice/:id" element={<EditInvoice />} />
                   <Route
                     path="invoiceDetails/:id"

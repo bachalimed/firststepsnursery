@@ -27,7 +27,7 @@ const useAuth = () => {
   if (token) {
     const decoded = jwtDecode(token);
     const { userId, username, userRoles, userAllowedActions } =
-      decoded.UserInfo; //coming from the backend in the token.userInfo
+      decoded.userInfo; //coming from the backend in the token.userInfo
 
     isEmployee = userRoles.includes("Employee"); //this will return a boolean
     isParent = userRoles.includes("Parent");

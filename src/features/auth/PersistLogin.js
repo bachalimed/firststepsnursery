@@ -2,6 +2,7 @@
 import { Outlet, Link ,useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { useRefreshMutation } from "./authApiSlice";
+import { useLayoutEffect } from "react";
 import usePersist from "../../hooks/usePersist";
 import { useSelector } from "react-redux";
 import { selectCurrentToken } from "./authSlice";
@@ -12,6 +13,7 @@ const PersistLogin = () => {
   const effectRan = useRef(false);
   const navigate = useNavigate();
   const [trueSuccess, setTrueSuccess] = useState(false);
+  
   const [
     refresh,
     {

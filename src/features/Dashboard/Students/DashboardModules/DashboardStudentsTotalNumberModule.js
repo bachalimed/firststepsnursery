@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 
 
 const DashboardStudentsTotalNumberModule = () => {
-  const { studentsStats } = useStudentsStats();
+  const { studentsStats={} } = useStudentsStats();
 
   // Destructure the required stats from studentsStats
   const {
