@@ -2,16 +2,14 @@ import { HiOutlineSearch } from "react-icons/hi";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
-  selectAllAcademicYears,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import { useGetServicesByYearQuery } from "../../AppSettings/StudentsSet/NurseryServices/servicesApiSlice";
 import Students from "../Students";
-import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
 import { IoShieldCheckmarkOutline, IoShieldOutline } from "react-icons/io5";
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { useGetAdmissionsByYearQuery } from "../Admissions/admissionsApiSlice";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
@@ -68,7 +66,7 @@ const UnenrolmentsList = () => {
   );
 
   // State to hold selected rows
-  const [selectedRows, setSelectedRows] = useState([]);
+  // const [selectedRows, setSelectedRows] = useState([]);
   //state to hold the search query
   const [searchQuery, setSearchQuery] = useState("");
   //const [filteredEnrolments, setFilteredEnrolments] = useState([])
@@ -128,11 +126,11 @@ const UnenrolmentsList = () => {
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
-  // Handler for selecting rows
-  const handleRowSelected = (state) => {
-    setSelectedRows(state.selectedRows);
-    //console.log('selectedRows', selectedRows)
-  };
+  // // Handler for selecting rows
+  // const handleRowSelected = (state) => {
+  //   setSelectedRows(state.selectedRows);
+  //   //console.log('selectedRows', selectedRows)
+  // };
 
   const column = [
     {
@@ -274,7 +272,6 @@ const UnenrolmentsList = () => {
     </h2>
   );
 
-  
   let content;
   if (isAdmissionsLoading || isServicesLoading)
     content = (
@@ -361,7 +358,7 @@ const UnenrolmentsList = () => {
               //selectableRows
               removableRows
               pageSizeControl
-              onSelectedRowsChange={handleRowSelected}
+              //onSelectedRowsChange={handleRowSelected}
               // selectableRowsHighlight
               customStyles={{
                 headCells: {
