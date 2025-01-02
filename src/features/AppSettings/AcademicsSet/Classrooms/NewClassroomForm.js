@@ -2,7 +2,6 @@ import ConfirmationModal from "../../../../Components/Shared/Modals/Confirmation
 import { useState, useEffect } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { useAddNewClassroomMutation } from "./classroomsApiSlice"; // Redux API action
-
 import AcademicsSet from "../../AcademicsSet";
 import {
   NAME_REGEX,
@@ -121,7 +120,7 @@ const NewClassroomForm = () => {
     }));
   };
 
-  console.log(formData, "formdata");
+  // console.log(formData, "formdata");
 
   return (
     <>

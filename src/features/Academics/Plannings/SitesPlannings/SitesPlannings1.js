@@ -127,7 +127,7 @@ const SitesPlannings = () => {
     const { entities } = sessions;
     sessionsList = Object.values(entities); //we are using entity adapter in this query
 
-    console.log(sessionsList, "sessionsList");
+    //(sessionsList, "sessionsList");
   }
 
   if (isSchoolsSuccess && !isSchoolsLoading) {
@@ -138,7 +138,7 @@ const SitesPlannings = () => {
     const { entities } = sections;
     studentSections = Object.values(entities);
   }
-console.log(studentSections,'studentSections')
+//console.log(studentSections,'studentSections')
   //ensure to avoid the capital issue of the fileds to work with scheduler
   const fields = {
     id: { name: "id" }, // Mapping your custom `id` field to `Id`

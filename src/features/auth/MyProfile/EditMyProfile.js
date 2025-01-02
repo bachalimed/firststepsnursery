@@ -9,7 +9,7 @@ import { useGetUserByIdQuery } from "../../Admin/UsersManagement/usersApiSlice";
 const EditMyProfile = () => {
   //get the userId from the url
   const { id } = useParams();
-  console.log(id, "idddddddd");
+  // console.log(id, "idddddddd");
   //get the user details from the state using a memoised selctor
   //const userToEdit = useSelector((state) => state.user?.entities[id]);
   //const user = useSelector((state) => selectUserById(state, id)); //selectUserById is a memoized selector created in the user API

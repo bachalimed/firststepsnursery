@@ -103,8 +103,8 @@ const isYearFound = student?.studentYears?.some(
 
   
   let content;
-  console.log(studentOrg,'studentOrg')
-  console.log(student,'student')
+  // console.log(studentOrg,'studentOrg')
+  // console.log(student,'student')
   
   if(!isYearFound) return <p>Student not registered for that Year</p> 
 

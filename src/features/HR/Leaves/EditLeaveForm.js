@@ -32,7 +32,7 @@ const EditLeaveForm = ({ leave }) => {
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
-  console.log(leave, "leave");
+  // console.log(leave, "leave");
 
   const [
     updateLeave,
@@ -211,8 +211,8 @@ const EditLeaveForm = ({ leave }) => {
   const handleCloseModal = () => {
     setShowConfirmation(false);
   };
-  console.log(formData, "formdata");
-  console.log(validity, "validity");
+  // console.log(formData, "formdata");
+  // console.log(validity, "validity");
   const content = (
     <>
       <HR />

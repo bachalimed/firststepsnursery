@@ -152,7 +152,7 @@ const NewExpenseForm = () => {
     if (isValidDate) {
       const date = new Date(expenseDate);
       const monthName = date.toLocaleString("en-US", { month: "long" }); // Get the full month name (e.g., "January")
-      console.log(monthName)
+      // console.log(monthName)
       return monthName === expenseMonth;
     }
 
@@ -299,8 +299,8 @@ const NewExpenseForm = () => {
     });
   };
 
-  console.log(formData, "formdata");
-  console.log(validity, "validity");
+  // console.log(formData, "formdata");
+  // console.log(validity, "validity");
 
   let content;
   if (isExpenseCategoriesLoading || isPayeesLoading || isServicesLoading) {

@@ -12,7 +12,7 @@ import { GiConsoleController } from "react-icons/gi";
 import Students from'../Students'
 const EditAdmission = () => {
   const { id } = useParams(); //pull the id from use params from the url
-  console.log(id, "idddddddd");
+  // console.log(id, "idddddddd");
   const {
     data: admToEdit, //the data is renamed families
     isLoading: isAdmissionLoading, //monitor several situations

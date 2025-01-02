@@ -233,8 +233,8 @@ const NewUserForm = () => {
     setShowConfirmation(false);
   };
 
-  console.log(validity, "validity");
-  console.log(formData, "formData");
+  // console.log(validity, "validity");
+  // console.log(formData, "formData");
   const content = (
     <>
       <UsersManagement />

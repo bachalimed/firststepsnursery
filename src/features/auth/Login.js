@@ -15,7 +15,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const [persist, setPersist] = usePersist();
-  console.log(persist, "persist");
+  //console.log(persist, "persist");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [login, { isLoading }] = useLoginMutation(); //we will only need the isLoading state from this mutation

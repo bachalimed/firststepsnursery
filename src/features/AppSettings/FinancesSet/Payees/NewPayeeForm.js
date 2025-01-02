@@ -150,9 +150,9 @@ const NewPayeeForm = () => {
   const handleCloseModal = () => {
     setShowConfirmation(false);
   };
-  console.log(validity, "valisty");
+  // console.log(validity, "valisty");
 
-  console.log(formData, "formData");
+  // console.log(formData, "formData");
   const content = (
     <>
       <FinancesSet />

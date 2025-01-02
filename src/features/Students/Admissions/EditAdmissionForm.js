@@ -190,7 +190,7 @@ const EditAdmissionForm = ({ admission }) => {
     }
   }, [debouncedFeeValue, formData.agreedServices]);
 
-  console.log(admissionValidity, "admissionValidity2");
+  // console.log(admissionValidity, "admissionValidity2");
   const [primaryValidity, setPrimaryValidity] = useState({
     validStudent: false,
     validAdmissionYear: false,
@@ -206,7 +206,7 @@ const EditAdmissionForm = ({ admission }) => {
     }));
   }, [formData.student, formData.admissionYear, formData.admissionDate]); // run whenever formData changes
 
-  console.log(primaryValidity, "primaryValidity");
+  // console.log(primaryValidity, "primaryValidity");
   // Modify handleAgreedServicesChange
   const handleAgreedServicesChange = (index, e) => {
     const { name, value, type, options } = e.target;
@@ -459,7 +459,7 @@ const EditAdmissionForm = ({ admission }) => {
   const handleCancel = () => {
     navigate("/students/admissions/admissions/");
   };
-  console.log(formData, "formData");
+  // console.log(formData, "formData");
   let content;
   if (isServicesLoading) {
     content = (

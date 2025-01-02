@@ -25,7 +25,7 @@ const AdmissionDetails = () => {
   const admissionToView = isAdmissionSuccess
     ? Object.values(admissionOrg.entities)[0]
     : [];
-  console.log(admissionToView, "admissionToView");
+  // console.log(admissionToView, "admissionToView");
   let content;
 
   if (isAdmissionLoading) {

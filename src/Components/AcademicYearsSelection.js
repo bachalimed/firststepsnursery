@@ -37,7 +37,7 @@ const AcademicYearsSelection = () => {
   //update the state when we select a year using the reducer from slice
   const handleSelectedAcademicYear = (e) => {
     const id = e.target.value;
-    console.log(selectedAcademicYearId);
+    //console.log(selectedAcademicYearId);
     //this will publish the curretn selectiont ob eused by other components
     dispatch(academicYearSelected({ id }));
   };

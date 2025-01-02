@@ -42,7 +42,7 @@ const PayslipDetails = () => {
     payslip = payslipOrg[0];
   }
 
-  console.log(payslip, "payslip");
+  // console.log(payslip, "payslip");
   let content;
   if (isPayslipLoading) {
     content = (

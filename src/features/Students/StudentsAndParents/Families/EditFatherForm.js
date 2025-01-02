@@ -144,7 +144,7 @@ export default function EditFatherForm() {
       validPrimaryPhone,
     ].every(Boolean)
   );
-  console.log("cansavefatehr", canSaveFather);
+  // console.log("cansavefatehr", canSaveFather);
 
   const content = (
     <div className="flex flex-col p-6 space-y-6 max-w-2xl mx-auto bg-white shadow-lg rounded-lg">

@@ -202,7 +202,7 @@ const NewStudentDocumentsListForm = () => {
       triggerBanner(error?.data?.message, "error");
     }
   };
-  console.log(studentDocumentsList, "studentDocumentsList");
+  // console.log(studentDocumentsList, "studentDocumentsList");
 
   // Close the modal without saving
   const handleCloseModal = () => {

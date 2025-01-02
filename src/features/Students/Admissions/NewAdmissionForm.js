@@ -163,7 +163,7 @@ const NewAdmissionForm = () => {
       )
     );
   }, [isStudentsSuccess, isAdmissionSuccess]);
-  console.log(noAdmissionStudents, "noAdmissionStudents");
+  // console.log(noAdmissionStudents, "noAdmissionStudents");
   const servicesList = isServicesSuccess
     ? Object.values(services.entities)
     : [];
@@ -409,7 +409,7 @@ const NewAdmissionForm = () => {
       navigate("/students/admissions/admissions"); //will navigate here after saving
     }
   }, [isAddSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success
-console.log(validFirstAdmission,'validFirstAdmission')
+  // console.log(validFirstAdmission,'validFirstAdmission')
   // Function to filter available services based on previous selections
 
   const getAvailableServices = (index) => {
@@ -492,7 +492,7 @@ console.log(validFirstAdmission,'validFirstAdmission')
   const handleCancel = () => {
     navigate("/students/admissions/admissions/");
   };
-  console.log(formData, "formData");
+  // console.log(formData, "formData");
   let content;
   if (isStudentsLoading || isServicesLoading || isAdmissionLoading) {
     content = (
@@ -749,7 +749,9 @@ console.log(validFirstAdmission,'validFirstAdmission')
                         <span className="text-red-600">*</span>
                       )}
                       {!validFirstAdmission && index === 0 && (
-                        <span className="text-red-600">one-time-off service</span>
+                        <span className="text-red-600">
+                          one-time-off service
+                        </span>
                       )}
                       <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-2">
                         {MONTHS?.map((month) => (

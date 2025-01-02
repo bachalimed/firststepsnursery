@@ -159,8 +159,8 @@ const EditEmployeeForm = ({ employee }) => {
     }));
   }, [formData]);
 
-  console.log(validity);
-  console.log(formData, "formData");
+  // console.log(validity);
+  // console.log(formData, "formData");
 
   useEffect(() => {
     if (isUpdateSuccess) {
@@ -170,7 +170,7 @@ const EditEmployeeForm = ({ employee }) => {
     }
   }, [isUpdateSuccess, navigate]);
   const handleInputChange = (e) => {
-    console.log(e.target.name, e.target.value); // Debugging line
+    // console.log(e.target.name, e.target.value); // Debugging line
     const { name, value } = e.target;
 
     // Handle nested object updates
@@ -291,7 +291,7 @@ const EditEmployeeForm = ({ employee }) => {
     formData?.userRoles?.length > 0 &&
     !isUpdateLoading;
 
-  console.log(canSave, "canSave");
+  // console.log(canSave, "canSave");
 
   const onSaveEmployeeClicked = async (e) => {
     e.preventDefault();

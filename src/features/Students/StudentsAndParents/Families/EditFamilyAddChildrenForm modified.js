@@ -108,8 +108,8 @@ export default function EditFamilyAddChildrenForm() {
     setAllStudents(updatedStudents);
     setChildren(updatedChildren);
   };
-  console.log(children, "children");
-  console.log(allStudents, "allStudents");
+  // console.log(children, "children");
+  // console.log(allStudents, "allStudents");
 
   let content;
   if (isStudentListSuccess && !isUpdatingChildren) {

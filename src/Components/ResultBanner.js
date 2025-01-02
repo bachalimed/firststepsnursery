@@ -10,7 +10,7 @@ const ResultBanner = ({ message, type }) => {
     
   };
 
-  console.log("in the trigger  banner","message:", message,  "type:",type);
+  //console.log("in the trigger  banner","message:", message,  "type:",type);
 
 return (
   <div

@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { selectSectionById } from "./sectionsApiSlice"; //we will pull the user  data from the state and not use query
 import EditSectionForm from "./EditSectionForm";
 import {
-  
   useUpdateSectionMutation,
   useGetSectionByIdQuery,
   useDeleteSectionMutation,
@@ -25,9 +24,8 @@ const EditSection = () => {
   } = useGetSectionByIdQuery(
     { id: id, endpointName: "EditSection" }, ////in the backend we populate studetn to get his name
     {
-     
       //pollingInterval: 60000,//will refetch data every 60seconds
-      refetchOnFocus: true, 
+      refetchOnFocus: true,
       refetchOnMountOrArgChange: true,
     }
   );
@@ -36,10 +34,10 @@ const EditSection = () => {
   const sectionToEdit = isSectionSuccess
     ? Object.values(secToEdit.entities)
     : [];
-    
-    if (sectionToEdit.length===1) {
-    console.log(sectionToEdit, "sectionToEdit ");
-const section=sectionToEdit[0][0]
+
+  if (sectionToEdit.length === 1) {
+    //console.log(sectionToEdit, "sectionToEdit ");
+    const section = sectionToEdit[0][0];
     content = (
       <>
         <EditSectionForm section={section} />;

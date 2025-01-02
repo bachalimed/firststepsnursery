@@ -159,7 +159,7 @@ const NewEnrolmentForm = () => {
     }
   }, [isAddSuccess, navigate]);
 
-  console.log(studentServicesList, "studentServicesList");
+  // console.log(studentServicesList, "studentServicesList");
   // Form Validation using regex
   useEffect(() => {
     setValidity({
@@ -220,7 +220,7 @@ const NewEnrolmentForm = () => {
       )
     );
     setNoEnrolmentMonthStudentsList(filteredList);
-    console.log(noEnrolmentMonthStudentsList, "noEnrolmentMonthStudentsList");
+    // console.log(noEnrolmentMonthStudentsList, "noEnrolmentMonthStudentsList");
   }, [formData.student, formData.enrolmentMonth, isAddSuccess]);
 
   // Handle toggling services in the form
@@ -316,8 +316,8 @@ const NewEnrolmentForm = () => {
   const handleCloseModal = () => {
     setShowConfirmation(false);
   };
-  console.log(formData, "formData");
-  console.log(noEnrolmentStudentsList[0], "noEnrolmentStudentsList[0]");
+  // console.log(formData, "formData");
+  // console.log(noEnrolmentStudentsList[0], "noEnrolmentStudentsList[0]");
   let content;
   if (isAdmissionLoading) {
     content = (

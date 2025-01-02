@@ -22,7 +22,7 @@ const LeaveDetails = () => {
     }
   );
 
-  console.log(leaveOrg, "leaveOrg");
+  // console.log(leaveOrg, "leaveOrg");
  
   let content;
 

@@ -298,7 +298,7 @@ employeesList = employeesRaw.filter(
         };
       });
 
-      console.log(payslipDays, "payslipDays1111111111");
+      // console.log(payslipDays, "payslipDays1111111111");
 
       // Calculate totals
       const totalOpenDays = payslipDays.filter((day) => !day.isWeekend).length;
@@ -328,8 +328,8 @@ employeesList = employeesRaw.filter(
       // Calculate total amount (payable basic + allowance)
       const totalAmount = (Number(payableBasic) + Number(allowance)).toFixed(2);
       // Update formData with calculated values
-      console.log(payslipDays, "payslipDays22222222222");
-      console.log(totalAmount, "totalAmount");
+      // console.log(payslipDays, "payslipDays22222222222");
+      // console.log(totalAmount, "totalAmount");
       setFormData((prev) => ({
         ...prev,
         payslipWorkdays: payslipDays, // Assign the array of day objects
@@ -395,8 +395,8 @@ employeesList = employeesRaw.filter(
   const handleCloseModal = () => {
     setShowConfirmation(false);
   };
-  console.log(validity, "validity");
-  console.log(formData, "formData");
+  // console.log(validity, "validity");
+  // console.log(formData, "formData");
   let content;
   if (isEmployeesLoading || isLeavesLoading) {
     content = (

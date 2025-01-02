@@ -215,13 +215,13 @@ const SessionsList = () => {
       sessionYears: updatedYears, // Merge updated sessionYears
     };
 
-    console.log("Saving updated session:", updatedSessionObject);
+    //console.log("Saving updated session:", updatedSessionObject);
 
     try {
       await updateSession(updatedSessionObject); // Save updated session to backend
       console.log("Session updated successfully");
     } catch (sessionsError) {
-      console.log("sessionsError saving session:", sessionsError);
+      //console.log("sessionsError saving session:", sessionsError);
     }
 
     setIsRegisterModalOpen(false); // Close modal

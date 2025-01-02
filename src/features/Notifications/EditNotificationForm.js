@@ -59,7 +59,7 @@ const EditNotificationForm = ({ employee }) => {
       },
     },
   });
-  console.log(formData.userRoles);
+  // console.log(formData.userRoles);
   const [validity, setValidity] = useState({
     validFirstName: false,
     validLastName: false,
@@ -112,22 +112,7 @@ const EditNotificationForm = ({ employee }) => {
     }));
   }, [formData]);
 
-  console.log(
-    validity.validFirstName,
-    validity.validLastName,
-    validity.validDob,
-    validity.validUserSex,
-    validity.validHouse,
-    validity.validStreet,
-    validity.validCity,
-    validity.validPrimaryPhone,
-    validity.validCurrentPosition,
-    validity.validJoinDate,
-    validity.validContractType,
-    validity.validBasic,
-    validity.validPayment,
-    validity.validNotificationYear
-  );
+
   useEffect(() => {
     if (isSuccess) {
       setFormData({});
@@ -136,7 +121,7 @@ const EditNotificationForm = ({ employee }) => {
     }
   }, [isSuccess, navigate]);
   const handleInputChange = (e) => {
-    console.log(e.target.name, e.target.value); // Debugging line
+    // console.log(e.target.name, e.target.value); // Debugging line
     const { name, value } = e.target;
 
     // Handle nested object updates
@@ -261,8 +246,8 @@ const EditNotificationForm = ({ employee }) => {
     formData?.userRoles?.length > 0 &&
     !isLoading;
 
-  console.log(formData, "formData");
-  console.log(canSave, "canSave");
+  // console.log(formData, "formData");
+  // console.log(canSave, "canSave");
   const onSaveNotificationClicked = async (e) => {
     e.preventDefault();
     if (canSave) {

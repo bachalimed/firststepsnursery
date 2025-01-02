@@ -290,7 +290,7 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
     }));
   };
 
-  console.log(formData, "formdata");
+  // console.log(formData, "formdata");
 
   let content;
   if (isSchoolsLoading || isEmployeesLoading || isAssignmentsLoading) {

@@ -112,7 +112,7 @@ const {canEdit}=useAuth()
       setChild1PhotoId(familyDocumentsListing?.child1PhotoId)
       setChild2PhotoId(familyDocumentsListing?.child2PhotoId)
       setChild3PhotoId(familyDocumentsListing?.child3PhotoId)
-console.log(child1PhotoId,'child1PhotoId',fatherPhotoId,'fatherPhotoId')
+// console.log(child1PhotoId,'child1PhotoId',fatherPhotoId,'fatherPhotoId')
   //      const updateChildrenPhotoIds = () => {
   //   // Assuming `familyDocumentsListing.children` is an array of children objects
   //   const photoIds = familyDocumentsListing.children.map((child) => {

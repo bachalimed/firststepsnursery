@@ -75,7 +75,7 @@ const NewFamily = () => {
       // Remove the last element using slice
       setChildren(children.slice(0, -1));
     }
-    console.log("children", children);
+    // console.log("children", children);
 
     try {
       const response = await addNewFamily({
@@ -86,7 +86,7 @@ const NewFamily = () => {
     }); 
     //we call the add new user mutation and set the arguments to be saved
     //added this to confirm save
-    console.log(response,'response')
+    // console.log(response,'response')
     if (response?.data?.message ) {
         // Success response
         triggerBanner(response?.data?.message, "success");

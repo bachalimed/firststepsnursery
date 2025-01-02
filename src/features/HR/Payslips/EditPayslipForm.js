@@ -26,7 +26,7 @@ import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationMod
 
 const EditPayslipForm = ({ payslip }) => {
   const navigate = useNavigate();
-  console.log(payslip, "in teh form anoonowwww");
+  // console.log(payslip, "in teh form anoonowwww");
   const { isAdmin, isManager, userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
@@ -104,7 +104,7 @@ const EditPayslipForm = ({ payslip }) => {
         FEE_REGEX.test(formData?.payslipSalaryComponents?.totalAmount),
     }));
   }, [formData]);
-  console.log(validity);
+  // console.log(validity);
 
   useEffect(() => {
     if (isUpdateSuccess) {
@@ -177,8 +177,8 @@ const EditPayslipForm = ({ payslip }) => {
   const handleCloseModal = () => {
     setShowConfirmation(false);
   };
-  console.log(validity, "validity");
-  console.log(formData, "formData");
+  // console.log(validity, "validity");
+  // console.log(formData, "formData");
   const content = (
     <>
       <HR />

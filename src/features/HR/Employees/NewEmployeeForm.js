@@ -278,8 +278,8 @@ const NewEmployeeForm = () => {
     }));
   };
   const canSave = Object.values(validity).every(Boolean) && !isAddLoading;
-  console.log(validity, "validity");
-  console.log(formData, "formData");
+  // console.log(validity, "validity");
+  // console.log(formData, "formData");
 
   const onSaveEmployeeClicked = async (e) => {
     e.preventDefault();

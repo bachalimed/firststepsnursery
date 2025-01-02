@@ -13,13 +13,13 @@ import Academics from "../../Academics";
 const EditAnimatorsAssignment = () => {
   const { id } = useParams(); //pull the id from use params from the url
   //console.log(id,'id')
-  const [assignment, setAssignment] = useState("");
+ 
   const {
     data: assignmentToEdit, //the data is renamed families
-    isLoading: isAssignmentLoading, //monitor several situations
-    isSuccess: isAssignmentSuccess,
-    isError: isAssignmentError,
-    error: assignmentError,
+    // isLoading: isAssignmentLoading, //monitor several situations
+    // isSuccess: isAssignmentSuccess,
+    // isError: isAssignmentError,
+    // error: assignmentError,
   } = useGetAnimatorsAssignmentByIdQuery({ id: id, endpointName: "EditAnimatorsAssignment" } || {}, {
     // "dry" will not ppoulate children fully
     
@@ -27,18 +27,7 @@ const EditAnimatorsAssignment = () => {
     refetchOnFocus: true, 
     refetchOnMountOrArgChange: true, 
   });
-  console.log('hiiiiiiiiiiii')
-  // useEffect(() => {
-  //   if (isAssignmentSuccess) {
-       console.log('helllllow',assignmentToEdit, 'mystu')
-  //     //const assignmentInit = Object.values(assignmentToEdit.entities)
-  //     // setAssignment(assignmentToEdit); // Set assignment state to the first object
-  //     //console.log('helllllow',assignment, 'mystu')
-  //   }
-  // // }, [isAssignmentSuccess, assignmentToEdit]);
-  // let assignmentTE = isAssignmentSuccess
-  // ? Object.values(assignmentToEdit.entities)
-  // : null;
+ 
   let content;
 
   content = assignmentToEdit ? (

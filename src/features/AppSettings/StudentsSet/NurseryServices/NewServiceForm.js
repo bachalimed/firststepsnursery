@@ -88,8 +88,8 @@ const NewServiceForm = () => {
   // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log(formData, "formdata");
-    console.log(validity, "valdity");
+    // console.log(formData, "formdata");
+    // console.log(validity, "valdity");
     // Check for service anchor fields and update nested object
     if (["monthlyAnchor", "weeklyAnchor", "oneTimeOffAnchor"].includes(name)) {
       setFormData((prev) => ({

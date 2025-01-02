@@ -247,7 +247,7 @@ const EditSectionForm = ({ section }) => {
     setShowConfirmation(false);
   };
 
-  console.log(formData, "formData");
+  //console.log(formData, "formData");
   let content;
   if (isStudentLoading || isEmployeesLoading || isClassroomsLoading) {
     content = (

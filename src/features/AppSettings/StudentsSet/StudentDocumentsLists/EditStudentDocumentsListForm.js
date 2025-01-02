@@ -19,7 +19,7 @@ const EditStudentDocumentsListForm = ({ listToEdit }) => {
   const [studentDocumentsList, setStudentDocumentsList] = useState(
     listToEdit.documentsList || []
   );
-  console.log(listToEdit.documentsList);
+  // console.log(listToEdit.documentsList);
   const [documentTitle, setDocumentTitle] = useState("");
   const [validDocumentTitle, setValidDocumentTitle] = useState(false);
   const { triggerBanner } = useOutletContext(); // Access banner trigger

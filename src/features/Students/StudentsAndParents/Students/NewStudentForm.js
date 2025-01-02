@@ -329,7 +329,7 @@ const NewStudentForm = () => {
         studentGardien,
         operator,
       });
-      console.log(response, "response");
+      // console.log(response, "response");
       if ( response?.message) {
         // Success response
         triggerBanner(response?.message, "success");

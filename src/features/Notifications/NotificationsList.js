@@ -207,18 +207,18 @@ const NotificationsList = () => {
   //console.log(filteredNotifications, "filteredNotifications");
   // This is called when saving the updated notification years from the modal
   const onUpdateNotificationClicked = async (updatedYears) => {
-    console.log("Updated notificationYears from modal:", updatedYears);
+    // console.log("Updated notificationYears from modal:", updatedYears);
 
     const updatedNotificationObject = {
       ...notificationObject,
       notificationYears: updatedYears, // Merge updated notificationYears
     };
 
-    console.log("Saving updated notification:", updatedNotificationObject);
+    // console.log("Saving updated notification:", updatedNotificationObject);
 
     try {
       await updateNotification(updatedNotificationObject); // Save updated notification to backend
-      console.log("Notification updated successfully");
+      // console.log("Notification updated successfully");
     } catch (notificationsError) {
       console.log(
         "notificationsError saving notification:",

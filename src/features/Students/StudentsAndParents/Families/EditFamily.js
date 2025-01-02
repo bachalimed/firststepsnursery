@@ -154,7 +154,7 @@ const EditFamily = () => {
   };
   const handleSubmit = async () => {
     // Check if the last element of children is empty and remove it
-    console.log("children to submit after cleanup:", children);
+    // console.log("children to submit after cleanup:", children);
     if (children[children.length - 1]?.child === "") {
       // Remove the last element using slice
       setChildren((prevChildren) => prevChildren.slice(0, -1));

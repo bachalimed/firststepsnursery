@@ -41,7 +41,7 @@ const EmployeeDetails = () => {
     }
   );
   const [photoId, setPhotoId] = useState(null);
-  console.log(employee, "employee");
+  // console.log(employee, "employee");
 
   const {
     data: employeeDocumentsListing,

@@ -78,10 +78,10 @@ export default function EditFamilyAddChildrenForm() {
       setUnselectedStudents(unselectedStu());
     }
   }, [students, children, isStudentListSuccess]);
-  console.log(allStudents, "allStudents");
-  console.log(children, "children");
-  console.log(selectedStudents, "selectedStudents");
-  console.log(unselectedStudents, "unselectedStudents");
+  // console.log(allStudents, "allStudents");
+  // console.log(children, "children");
+  // console.log(selectedStudents, "selectedStudents");
+  // console.log(unselectedStudents, "unselectedStudents");
 
   const handleChildChange = (id) => {
     // Handle changes in the child dropdown selection
@@ -132,7 +132,7 @@ export default function EditFamilyAddChildrenForm() {
     }
   };
 
-  console.log(firstAvailableStudent);
+  // console.log(firstAvailableStudent);
 
   // Refactored removeChildDropdown function
   // remove from children and set isselected to false and it will update inthe useeffect
@@ -168,7 +168,7 @@ export default function EditFamilyAddChildrenForm() {
         children[0]?.child !== ""
     );
   }, [children, setCanSaveChildren]);
-  console.log(canSaveChildren, "canSaveChildren");
+  // console.log(canSaveChildren, "canSaveChildren");
   let content;
   if (isStudentListSuccess && !isUpdatingChildren) {
     content = (
@@ -184,7 +184,7 @@ export default function EditFamilyAddChildrenForm() {
           const selectedChild = allStudents.find(
             (student) => student._id === childObj.child._id
           );
-          console.log(selectedChild, "selectedChild");
+          // console.log(selectedChild, "selectedChild");
           return (
             <div
               key={childObj.child._id}

@@ -153,7 +153,7 @@ const ClassroomsPlannings = () => {
     const { entities } = sessions;
     sessionsList = Object.values(entities); //we are using entity adapter in this query
 
-    console.log(sessionsList, "sessionsList");
+    // console.log(sessionsList, "sessionsList");
   }
 
   if (isClassroomsSuccess && !isClassroomsLoading) {
@@ -168,8 +168,8 @@ const ClassroomsPlannings = () => {
     const { entities } = students;
     studentsList = Object.values(entities);
   }
-  console.log(classroomsList, "classroomsList");
-  console.log(studentSections, "studentSections");
+  // console.log(classroomsList, "classroomsList");
+  // console.log(studentSections, "studentSections");
   //ensure to avoid the capital issue of the fileds to work with scheduler
 
   const fields = {

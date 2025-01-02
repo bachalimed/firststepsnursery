@@ -100,7 +100,7 @@ const EditInvoiceForm = ({ invoice }) => {
       ),
     }));
   }, [formData]);
-  console.log(validity);
+  // console.log(validity);
 
   // Update invoiceAmount dynamically based on authorised and discount amounts
   useEffect(() => {

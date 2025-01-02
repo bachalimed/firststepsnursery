@@ -137,7 +137,7 @@ const SchoolSectionsList = () => {
       return (schoolNameMatches || studentMatches) && sectionToIsValid;
     });
   }
-  console.log(filteredSchoolSections, "filteredSchoolSections");
+  //console.log(filteredSchoolSections, "filteredSchoolSections");
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };

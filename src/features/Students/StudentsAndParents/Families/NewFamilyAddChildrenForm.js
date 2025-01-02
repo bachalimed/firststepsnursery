@@ -70,7 +70,7 @@ const NewFamilyAddChildrenForm = () => {
   if (isStudentListSuccess) {
     setCanSaveChildren(Array.isArray(children) && children[0] !== ""); //will ensure children is not an empty array or with only an emptry value
     //console.log(canSaveChildren,'canSaveChildren')
-    console.log(children, "children array");
+    // console.log(children, "children array");
     content = (
       <>
         <form className="form-container">

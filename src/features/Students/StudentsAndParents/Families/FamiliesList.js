@@ -141,7 +141,7 @@ const FamiliesList = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idFamilyToDelete, setIdFamilyToDelete] = useState(null);
   const onDeleteFamilyClicked = (id) => {
-    console.log(id, "idtodelete");
+    // console.log(id, "idtodelete");
     setIdFamilyToDelete(id);
     setIsDeleteModalOpen(true);
   };

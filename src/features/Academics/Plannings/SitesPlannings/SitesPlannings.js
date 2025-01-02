@@ -156,7 +156,7 @@ const SitesPlannings = () => {
     const { entities } = sessions;
     sessionsList = Object.values(entities); //we are using entity adapter in this query
 
-    console.log(sessionsList, "sessionsList");
+    //console.log(sessionsList, "sessionsList");
   }
 
   if (isSchoolsSuccess && !isSchoolsLoading) {
@@ -171,8 +171,8 @@ const SitesPlannings = () => {
     const { entities } = students;
     studentsList = Object.values(entities);
   }
-  console.log(schoolsList, "schoolsList");
-  console.log(studentSections, "studentSections");
+  // console.log(schoolsList, "schoolsList");
+  // console.log(studentSections, "studentSections");
   //ensure to avoid the capital issue of the fileds to work with scheduler
 
   const fields = {
@@ -334,7 +334,7 @@ const SitesPlannings = () => {
 
  // Event handler for customizing the popup window
  const onPopupOpen = (args) => {
-  console.log('args printed here', args.type, args)
+  //console.log('args printed here', args.type, args)
   if (args.type === "QuickInfo" && !args.data.Subject) {
     args.cancel = true;
   }

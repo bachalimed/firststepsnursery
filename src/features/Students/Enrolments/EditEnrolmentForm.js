@@ -20,7 +20,7 @@ import { CurrencySymbol } from "../../../config/Currency";
 import { useOutletContext } from "react-router-dom";
 
 const EditEnrolmentForm = ({ enrolment }) => {
-  console.log(enrolment, "enrolment");
+  // console.log(enrolment, "enrolment");
   // initialising states
   const { isAdmin, userId } = useAuth();
   const navigate = useNavigate();
@@ -149,7 +149,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
   const handleCloseModal = () => {
     setShowConfirmation(false);
   };
-  console.log(formData, "formData");
+  // console.log(formData, "formData");
   const content = (
     <>
       <Students />

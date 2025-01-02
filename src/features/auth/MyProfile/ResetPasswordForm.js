@@ -108,7 +108,7 @@ const ResetPasswordForm = ({ user }) => {
   const handleCancel = () => {
     navigate(`/myProfile/myDetails/${user?.id}/`);
   };
-  console.log(formData, "formData");
+  // console.log(formData, "formData");
 
   const togglePasswordVisibility = (field) => {
     setPasswordVisibility((prev) => ({

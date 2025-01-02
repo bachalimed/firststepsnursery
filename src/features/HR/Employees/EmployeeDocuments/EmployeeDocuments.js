@@ -123,7 +123,7 @@ const EmployeeDocuments = () => {
 
   // Function to handle the delete button click
   const onDeleteEmployeeDocumentClicked = (docId) => {
-    console.log("id of the document when clicked", docId);
+    // console.log("id of the document when clicked", docId);
     setIdEmployeeDocumentToDelete(docId); // Set the document to delete
     setIsDeleteModalOpen(true); // Open the modal
   };
@@ -195,7 +195,7 @@ const EmployeeDocuments = () => {
 
     try {
       const response = await addEmployeeDocuments(formData); //.unwrap()
-      console.log("response :", response);
+      // console.log("response :", response);
       // if (!response.ok) {
       //   throw new Error("Something went wrong!");
       // }

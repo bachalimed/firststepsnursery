@@ -77,7 +77,7 @@ const TasksList = () => {
   };
   // Handler for deleting selected rows
   const handleDeleteSelected = () => {
-    console.log("Selected Rows to delete:", selectedRows);
+    // console.log("Selected Rows to delete:", selectedRows);
     // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
 
     setSelectedRows([]); // Clear selection after delete
@@ -85,7 +85,7 @@ const TasksList = () => {
 
   // Handler for duplicating selected rows,
   const handleDuplicateSelected = () => {
-    console.log("Selected Rows to duplicate:", selectedRows);
+    // console.log("Selected Rows to duplicate:", selectedRows);
     // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
     //ensure only one can be selected: the last one
     const toDuplicate = selectedRows[-1];
@@ -95,7 +95,7 @@ const TasksList = () => {
 
   // Handler for duplicating selected rows,
   const handleDetailsSelected = () => {
-    console.log("Selected Rows to detail:", selectedRows);
+    // console.log("Selected Rows to detail:", selectedRows);
     // Add  delete logic here (e.g., dispatching a Redux action or calling an API)
     //ensure only one can be selected: the last one
     const toDuplicate = selectedRows[-1];

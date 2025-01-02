@@ -13,14 +13,14 @@ const EditEmployee = () => {
   const { id } = useParams(); //pull the id from use params from the url
   //will get hte student from the state
   //const employeeToEdit = useSelector((state) => state.employee?.entities[id]);
-  console.log("helllllow employeeToEdit", "mystu", id);
-  console.log(id, "id");
+  // console.log("helllllow employeeToEdit", "mystu", id);
+  // console.log(id, "id");
   const {
     data: employee, //the data is renamed employees
-    isLoading: isEmployeeLoading, 
+    // isLoading: isEmployeeLoading, 
     isSuccess: isEmployeeSuccess,
-    isError: isEmployeeError,
-    error: employeeError,
+    // isError: isEmployeeError,
+    // error: employeeError,
   } = useGetEmployeeByIdQuery(
     {
       id: id,
@@ -34,11 +34,11 @@ const EditEmployee = () => {
 
   let employeeToEdit;
   if (isEmployeeSuccess) {
-    console.log(employee, "employe");
+    // console.log(employee, "employe");
     employeeToEdit = employee;
   }
 
-  console.log(employeeToEdit, "employeToedit");
+  // console.log(employeeToEdit, "employeToedit");
 
   let content;
   if (isEmployeeSuccess) {

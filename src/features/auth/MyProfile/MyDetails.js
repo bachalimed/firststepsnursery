@@ -32,7 +32,7 @@ const MyDetails = () => {
 
   const user = isUserSuccess ? Object.values(userToEdit.entities)[0] : [];
 
-  console.log(user, "user");
+  // console.log(user, "user");
 
   return (
     <>

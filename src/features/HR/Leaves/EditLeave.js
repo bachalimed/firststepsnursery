@@ -17,10 +17,10 @@ const EditLeave = () => {
   //console.log(id, "id");
   const {
     data: leave, //the data is renamed leaves
-    isLoading: isLeaveLoading, 
+    // isLoading: isLeaveLoading, 
     isSuccess: isLeaveSuccess,
-    isError: isLeaveError,
-    error: leaveError,
+    // isError: isLeaveError,
+    // error: leaveError,
   } = useGetLeaveByIdQuery(
     {
       id: id,
@@ -34,11 +34,11 @@ const EditLeave = () => {
 
   let leaveToEdit;
   if (isLeaveSuccess) {
-    console.log(leave, "leave");
+    // console.log(leave, "leave");
     leaveToEdit = leave[0];
   }
 
-  console.log(leaveToEdit, "leaveToedit");
+  // console.log(leaveToEdit, "leaveToedit");
 
   let content;
   if (isLeaveSuccess) {

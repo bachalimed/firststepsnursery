@@ -13,7 +13,7 @@ const RegisterModal = ({
   const [modifiedYears, setModifiedYears] = useState([]);
   useEffect(() => {
     if (isOpen && Array.isArray(admissionYears)) {
-      console.log(admissionYears, "studtnyears", academicYears, "academicyears");
+      // console.log(admissionYears, "studtnyears", academicYears, "academicyears");
       // Initialize the modifiedYears array with selected flag based on admissionYears
       const updatedYears = academicYears.map((year) => {
         const isSelected = admissionYears.some(
@@ -45,7 +45,7 @@ const RegisterModal = ({
       .map((year) => ({ academicYear: year.title })); // Map to the desired format
     setYears(updatedAdmissionYears);
     setModifiedYears(updatedYears);
-    console.log("updatedAdmissionYears", updatedAdmissionYears);
+    // console.log("updatedAdmissionYears", updatedAdmissionYears);
     setAdmissionObject({...admissionObject, admissionYears:updatedAdmissionYears})//added this ////////////
   };
   const handleSave = () => {

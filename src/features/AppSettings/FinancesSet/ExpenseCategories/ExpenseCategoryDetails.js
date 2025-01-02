@@ -1,6 +1,5 @@
 import { useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
-import { selectExpenseCategoryById } from "./expenseCategoriesApiSlice";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
@@ -28,10 +27,10 @@ const ExpenseCategoryDetails = () => {
   const academicYears = useSelector(selectAllAcademicYears);
   const {
     data: expenseCategory, //the data is renamed expenseCategories
-    isLoading: isExpenseCategoryLoading, 
+    // isLoading: isExpenseCategoryLoading, 
     isSuccess: isExpenseCategorySuccess,
-    isError: isExpenseCategoryError,
-    error: expenseCategoryError,
+    // isError: isExpenseCategoryError,
+    // error: expenseCategoryError,
   } = useGetExpenseCategoryByIdQuery(
     {
       id: id,
@@ -43,7 +42,7 @@ const ExpenseCategoryDetails = () => {
     }
   );
   const [photoId, setPhotoId] = useState(null);
-  console.log(expenseCategory, "expenseCategory");
+  // console.log(expenseCategory, "expenseCategory");
 
  
 

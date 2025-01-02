@@ -12,7 +12,7 @@ import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import Finances from "../Finances";
 const EditInvoice = () => {
   const { id } = useParams(); //pull the id from use params from the url
-  console.log(id,'id')
+  // console.log(id,'id')
   const [invoice, setInvoice] = useState("");
   const {
     data: invoiceToEdit, //the data is renamed families

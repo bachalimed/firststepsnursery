@@ -215,7 +215,7 @@ const EnrolmentsList = () => {
       // Clear the selected rows in the state
       setSelectedRows([]);
 
-      console.log("Rows unselected after successful addition");
+      // console.log("Rows unselected after successful addition");
     }
   }, [isAddSuccess]);
 
@@ -224,7 +224,7 @@ const EnrolmentsList = () => {
   const handleRowSelected = (state) => {
     // Update state with the newly selected rows
     setSelectedRows(state.selectedRows);
-    console.log("selectedRows:", state.selectedRows);
+    // console.log("selectedRows:", state.selectedRows);
   };
 
   // Handler for generating an invoice

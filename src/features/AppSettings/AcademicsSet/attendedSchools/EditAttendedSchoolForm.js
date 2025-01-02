@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { useUpdateAttendedSchoolMutation } from "./attendedSchoolsApiSlice";
-import { attendedSchoolAdded } from "./attendedSchoolsSlice";
 import AcademicsSet from "../../AcademicsSet";
 import { NAME_REGEX } from "../../../../config/REGEX";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
@@ -22,9 +21,9 @@ const EditAttendedSchoolForm = ({ attendedSchool }) => {
     validSchoolCity: false,
     validSchoolType: false,
   });
-  console.log(attendedSchool,'attendedSchool')
-  console.log(validity,'validity')
-  console.log(formData,'formdata')
+  // console.log(attendedSchool,'attendedSchool')
+  // console.log(validity,'validity')
+  // console.log(formData,'formdata')
   
   const navigate = useNavigate();
 

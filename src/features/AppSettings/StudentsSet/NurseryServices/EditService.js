@@ -9,14 +9,14 @@ import LoadingStateIcon from "react-loading-icons";
 import StudentsSet from "../../StudentsSet";
 const EditService = () => {
   const { id } = useParams(); //pull the id from use params from the url
-  console.log("id", id)
+  //console.log("id", id)
 
   const {
     data: service, //the data is renamed services
-    isLoading: isServiceLoading, 
+    // isLoading: isServiceLoading, 
     isSuccess: isServiceSuccess,
-    isError: isServiceError,
-    error: serviceError,
+    // isError: isServiceError,
+    // error: serviceError,
   } = useGetServicesByIdQuery(
     {
       id: id,
@@ -28,7 +28,7 @@ const EditService = () => {
    
     serviceToEdit = service[0];
   }
-  console.log('helllllow',serviceToEdit, 'mystu', id)
+  // console.log('helllllow',serviceToEdit, 'mystu', id)
 
   let content;
 

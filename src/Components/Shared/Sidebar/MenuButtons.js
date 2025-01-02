@@ -50,7 +50,8 @@ const MenuButtons = () => {
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
-    <header className="flex items-center justify-start max-sm:justify-center md:px-1 bg-sky-700">
+    // <header className="flex items-center justify-start max-sm:justify-center md:px-1 bg-sky-700">
+    <header className="flex items-center justify-start  md:px-1 bg-sky-700">
       
       <Link to="/">
         <li

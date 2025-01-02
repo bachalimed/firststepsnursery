@@ -27,7 +27,7 @@ const EnrolmentDetails = () => {
   const enrolmentToView = isEnrolmentSuccess
     ? Object.values(enrolmentOrg.entities)[0]
     : [];
-  console.log(enrolmentToView, "enrolmentToView");
+  // console.log(enrolmentToView, "enrolmentToView");
   let content;
 
   if (isEnrolmentLoading) {

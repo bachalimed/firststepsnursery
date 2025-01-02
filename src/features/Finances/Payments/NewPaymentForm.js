@@ -82,7 +82,7 @@ const NewPaymentForm = () => {
     validPaymentReference: false,
     validPaymentDate: false,
   });
-  console.log(validity);
+  // console.log(validity);
   const navigate = useNavigate();
 
   // Redux mutation for adding the attended school
@@ -101,7 +101,7 @@ const NewPaymentForm = () => {
   if (isEnrolmentsSuccess) {
     const { entities } = studentsEnrolments;
     studentsEnrolmentsList = Object.values(entities);
-    console.log(studentsEnrolmentsList, "studentsEnrolmentsList");
+    // console.log(studentsEnrolmentsList, "studentsEnrolmentsList");
   }
 
   useEffect(() => {
@@ -121,7 +121,7 @@ const NewPaymentForm = () => {
         SHORTCOMMENT_REGEX.test(formData?.paymentReference),
       validPaymentDate: DATE_REGEX.test(formData?.paymentDate),
     }));
-    console.log(validity);
+    // console.log(validity);
   }, [formData, totalInvoiceAmount]);
 
   // Clear form and errors on success
@@ -150,7 +150,7 @@ const NewPaymentForm = () => {
 
   // Check if all fields are valid and enable the submit button
   const canSubmit = Object.values(validity).every(Boolean) && !isAddLoading;
-  console.log(validity);
+  // console.log(validity);
   // Handle form submission
 
   const handleSubmit = async (e) => {
@@ -257,7 +257,7 @@ const NewPaymentForm = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  console.log(formData, "formdata");
+  // console.log(formData, "formdata");
 
   let content;
   if (isEnrolmentsLoading) {

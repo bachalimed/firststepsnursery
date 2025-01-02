@@ -242,7 +242,7 @@ const SectionsPlannings = () => {
     ? Object.values(classrooms.entities)
     : [];
 
-  console.log(employeesList, "employeesList");
+  //console.log(employeesList, "employeesList");
 
   let schoolsList = isSchoolsSuccess ? Object.values(schools.entities) : [];
   let studentSections = isSectionsSuccess
@@ -288,7 +288,7 @@ const SectionsPlannings = () => {
   // Handle change event for sessiontype selection
   const handleAnimatorChange = (e) => {
     setSelectedAnimatorId(e.target.value);
-    console.log(selectedAnimatorId, "selectedAnimatorId");
+    //console.log(selectedAnimatorId, "selectedAnimatorId");
   };
   // Handle change event for sessiontype selection
   const handleClassroomChange = (e) => {
@@ -355,9 +355,9 @@ const SectionsPlannings = () => {
     }
 
     // Debugging logs
-    console.log(filteredSessionsList, "filteredSessionsList");
-    console.log(filteredSectionsList, "filteredSectionsList");
-    console.log(filteredStudentsList, "filteredStudentsList");
+    // console.log(filteredSessionsList, "filteredSessionsList");
+    // console.log(filteredSectionsList, "filteredSectionsList");
+    // console.log(filteredStudentsList, "filteredStudentsList");
   }
 
   // if (isSessionsSuccess && isSectionsSuccess && isStudentsSuccess) {
@@ -415,9 +415,9 @@ const SectionsPlannings = () => {
   //console.log(sessionsList, "sessionsList");
   //console.log(studentsList, "studentsList");
   //console.log(studentsList[0], "studentsList[0]");
-  console.log(studentSections, "studentSections");
+  //console.log(studentSections, "studentSections");
   //console.log(schoolsList, "schoolsList");
-  console.log(filteredSessionsList, "filteredSessionsList");
+ // console.log(filteredSessionsList, "filteredSessionsList");
   const fields = {
     //the current case is working with old db
     id: { name: "id" }, // Mapping your custom `id` field to `Id`
@@ -530,16 +530,16 @@ const SectionsPlannings = () => {
     }
 
     //setParentId(scheduleObj.activeEventData.event.id)// not working
-    console.log(eventType, "  eventType popupopen");
+    //console.log(eventType, "  eventType popupopen");
     //console.log(scheduleObj, "scheduleobj  popup open");
-    console.log(scheduleObj.current, "scheduleobj cureent popup open");
-    console.log(args, "  argsgggsss popupopen");
+    //console.log(scheduleObj.current, "scheduleobj cureent popup open");
+    //console.log(args, "  argsgggsss popupopen");
     //capture the parent id to be used later   for updates, deletions...
     //capture the start date of the event to be used in teh exception
     parentId = args.data?.id; // we selected an event an d not an empty
     eventStartTime = args.data.StartTime;
-    console.log("args.data?.id:", args.data?.id);
-    console.log("parentId captured:", parentId);
+    //console.log("args.data?.id:", args.data?.id);
+   //console.log("parentId captured:", parentId);
 
     if (args.type === "Editor") {
       const formElement = args.element.querySelector(".e-schedule-form");
@@ -807,11 +807,11 @@ const SectionsPlannings = () => {
 
   const onPopupClose = (args) => {
     //we can check here the choice we made on the popup and decide of the action
-    console.log(
-      "Current Action is':",
-      scheduleObj.current.currentAction,
-      "'on close"
-    );
+    // console.log(
+    //   "Current Action is':",
+    //   scheduleObj.current.currentAction,
+    //   "'on close"
+    // );
     // console.log(scheduleObj.current, "scheduleobj cureent onPopupClose ");
     // console.log(args, "  argsgggsss onPopupClose ");
 
@@ -821,7 +821,8 @@ const SectionsPlannings = () => {
     // }
 
     if (args.type === "Editor") {
-      console.log("args popupclose", args);
+      console.log(" popupclose");
+      //console.log("args popupclose", args);
       // setSessionObject({
       //   sessionYear: selectedAcademicYear?.title,
       //   animator: args.data?.animator,//for school sessionType we have no animator
@@ -848,7 +849,7 @@ const SectionsPlannings = () => {
   const onActionBegin = (args) => {
     //console.log(scheduleObj, "scheduleobj  onActionBegin ");
 
-    console.log(args, "  argsgggsss onActionBegin ");
+    //console.log(args, "  argsgggsss onActionBegin ");
     // occurenceAction = scheduleObj.current.currentAction; // for show a difference between single (occurence) or series (whole series or standealone seession)
     //capture save, update, delete//////////////////////
     switch (args.requestType) {

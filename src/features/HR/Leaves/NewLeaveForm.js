@@ -221,8 +221,8 @@ const NewLeaveForm = () => {
   const handleCloseModal = () => {
     setShowConfirmation(false);
   };
-  console.log(formData, "formdata");
-  console.log(validity, "validity");
+  // console.log(formData, "formdata");
+  // console.log(validity, "validity");
   let content;
   if (isEmployeesLoading) {
     content = (

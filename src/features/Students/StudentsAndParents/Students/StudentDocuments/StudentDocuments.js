@@ -118,7 +118,7 @@ const StudentDocuments = () => {
 
   // Function to handle the delete button click
   const onDeleteStudentDocumentClicked = (docId) => {
-    console.log("id of the document when clicked", docId);
+    // console.log("id of the document when clicked", docId);
     setIdStudentDocumentToDelete(docId); // Set the document to delete
     setIsDeleteModalOpen(true); // Open the modal
   };
@@ -190,7 +190,7 @@ const StudentDocuments = () => {
 
     try {
       const response = await addStudentDocuments(formData); //.unwrap()
-      console.log("response :", response);
+      // console.log("response :", response);
 
       // if (!response.ok) {
       //   throw new Error("Something went wrong!");

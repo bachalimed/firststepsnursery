@@ -272,8 +272,8 @@ const EditStudentForm = ({ student }) => {
       )
     );
   };
-  console.log(studentGardien, "stduetgardien");
-  console.log(studentEducation, "stdueteducation");
+  // console.log(studentGardien, "stduetgardien");
+  // console.log(studentEducation, "stdueteducation");
   useEffect(() => {
     setValidStudentGardien(
       studentGardien.every(
@@ -318,19 +318,7 @@ const EditStudentForm = ({ student }) => {
       validStudentDob,
       studentSex,
     ].every(Boolean) && !isUpdateLoading;
-  console.log(
-    validStudentEducation,
-    validStudentGardien,
-    validCurrentEducation,
-    validFirstName,
-    validMiddleName,
-    validLastName,
-    validStudentDob,
-    studentSex,
-    canSave,
-    validCurrentEducation,
-    validStudentGardien
-  );
+  
   const { triggerBanner } = useOutletContext(); // Access banner trigger
 
   const onUpdateStudentClicked = async (e) => {
@@ -348,7 +336,7 @@ const EditStudentForm = ({ student }) => {
     studentGardien,
     operator,
   };
-  console.log(toSave, "toSave");
+  // console.log(toSave, "toSave");
   const handleConfirmSave = async () => {
     // Close the confirmation modal
     setShowConfirmation(false);

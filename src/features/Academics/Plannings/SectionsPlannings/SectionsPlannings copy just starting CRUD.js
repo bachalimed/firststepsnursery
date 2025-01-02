@@ -234,7 +234,7 @@ const SectionsPlannings = () => {
     const { entities } = sessions;
     sessionsList = Object.values(entities); //we are using entity adapter in this query
 
-    console.log(sessionsList, "sessionsList");
+    //console.log(sessionsList, "sessionsList");
   }
   //console.log(studentsList, "studentsList");
   //console.log(studentSections, "studentSections");

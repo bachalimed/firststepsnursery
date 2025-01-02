@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import { useUpdateClassroomMutation } from "./classroomsApiSlice";
 import AcademicsSet from "../../AcademicsSet";
 import { NAME_REGEX, SMALLNUMBER_REGEX } from "../../../../config/REGEX";
@@ -30,7 +29,6 @@ const EditClassroomForm = ({ classroom }) => {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const [updateClassroom, { isLoading:isUpdateLoading, isError:isUpdateError, error: updateError, isSuccess:isUpdateSuccess }] =
     useUpdateClassroomMutation();
@@ -119,7 +117,7 @@ const EditClassroomForm = ({ classroom }) => {
       [name]: value,
     }));
   };
-  console.log(validity, "validity");
+  // console.log(validity, "validity");
   return (
     <>
       <AcademicsSet />

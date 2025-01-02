@@ -19,21 +19,21 @@ const tasksSlice = createSlice({
         filterTasks: (state, action) => {
             const { userId } = action.payload
             
-            console.log('userId', userId)
-            console.log('state.entities', state.entities)
+            //console.log('userId', userId)
+            //console.log('state.entities', state.entities)
             // Filter the entities based on taskCreator or taskResponsible
             const newTasks = Object.values(state.entities).filter(item => 
                 item.taskCreator === userId || item.taskResponsible === userId
             );
-            console.log('newTasks', newTasks)
+           // console.log('newTasks', newTasks)
         
             // Rebuild the entities object
             const newEntities = {}
             newTasks.forEach(item => {
                 newEntities[item.id] = item
             })
-            console.log('state.entities:', state.entities);
-            console.log('userId:', userId);
+            //console.log('state.entities:', state.entities);
+            //console.log('userId:', userId);
             // Update the state with the new entities and ids
             state.entities = newEntities;
             state.ids = Object.keys(newEntities)

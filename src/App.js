@@ -15,7 +15,6 @@ import ResetPassword from "./features/auth/MyProfile/ResetPassword";
 import MyProfile from "./features/auth/MyProfile";
 import EditMyProfile from "./features/auth/MyProfile/EditMyProfile";
 import MyDetails from "./features/auth/MyProfile/MyDetails";
-import Elements from "./Components/Shared/Elements";
 
 import Students from "./features/Students/Students"; //main tab
 import StudentsList from "./features/Students/StudentsAndParents/Students/StudentsList";
@@ -227,7 +226,6 @@ const App = () => {
                 <Route path="resetPassword/" element={<ResetPassword />} />
                 <Route path="myDetails/:id/" element={<MyDetails />} />
                 <Route path="editMyProfile/:id/" element={<EditMyProfile />} />
-                <Route path="elements/" element={<Elements />} />
                 
 
               </Route>{" "}

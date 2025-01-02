@@ -114,7 +114,7 @@ const EditServiceForm = ({ service }) => {
 
   // Check if the form can be submitted
   const canSave = Object.values(validity).every(Boolean) && !isUpdateLoading;
-  console.log(formData, "formData");
+  // console.log(formData, "formData");
   // Handle form submission
   const onSaveServiceClicked = async (e) => {
     e.preventDefault();
