@@ -1,13 +1,9 @@
 import { useState, useEffect } from "react";
 import { useUpdateFamilyMutation } from "./familiesApiSlice";
-import { useNavigate, useParams } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { ROLES } from "../../../../config/UserRoles";
-import { ACTIONS } from "../../../../config/UserActions";
+import {  useParams } from "react-router-dom";
+
 import Students from "../../Students";
 import { useGetFamilyByIdQuery } from "./familiesApiSlice";
-import { useGetStudentsByYearQuery } from "../Students/studentsApiSlice";
 import Stepper from "./Stepper";
 import StepperControl from "./StepperControl";
 import EditFatherForm from "./EditFatherForm";
@@ -15,8 +11,6 @@ import EditMotherForm from "./EditMotherForm";
 import EditFamilyAddChildrenForm from "./EditFamilyAddChildrenForm";
 import FamilyCompleted from "./FamilyCompleted";
 import { StepperContext } from "../../../../contexts/StepperContext";
-
-import { useSelector } from "react-redux";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 const EditFamily = () => {
   //an add parent function that can be called inside the component

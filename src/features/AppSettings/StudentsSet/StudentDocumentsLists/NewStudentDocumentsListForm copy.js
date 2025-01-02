@@ -4,12 +4,7 @@ import StudentsSet from "../../StudentsSet";
 import { useState, useEffect } from "react";
 import { useAddNewStudentDocumentsListMutation } from "./studentDocumentsListsApiSlice";
 import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { ROLES } from "../../../../config/UserRoles";
-import { ACTIONS } from "../../../../config/UserActions";
 import useAuth from "../../../../hooks/useAuth";
-
 import { useSelector } from "react-redux";
 import {
   selectAllAcademicYears,

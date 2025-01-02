@@ -1,12 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAddNewNotificationMutation } from "./notificationsApiSlice";
 import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { ROLES } from "../../../config/UserRoles";
-import { ACTIONS } from "../../../config/UserActions";
 import Notifications from "../Notifications";
-
 import { useSelector } from "react-redux";
 import {
   selectAllAcademicYears,

@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAddNewTaskMutation } from "./tasksApiSlice";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
+
 import Tasks from "../Tasks";
-import useAuth from "../../../hooks/useAuth";
-import { selectUserById } from "../../Admin/UsersManagement/usersApiSlice";
+
 
 const NewTaskForm = ({ users }) => {
   const [addNewTask, { isLoading, isSuccess, isError, error }] =
@@ -61,7 +59,7 @@ const NewTaskForm = ({ users }) => {
           <h2>New Task</h2>
           <div className="form__action-buttons">
             <button className="icon-button" title="Save" disabled={!canSave}>
-              <FontAwesomeIcon icon={faSave} />
+             
             </button>
           </div>
         </div>

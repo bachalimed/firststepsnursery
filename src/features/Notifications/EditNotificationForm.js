@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { useUpdateNotificationMutation } from "./notificationsApiSlice";
 import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
+
 import { ROLES } from "../../../config/UserRoles";
 import { ACTIONS } from "../../../config/UserActions";
 import useAuth from "../../../hooks/useAuth";
@@ -14,7 +13,6 @@ import {
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { useSelector } from "react-redux";
 
-import { useGetAcademicYearsQuery } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsApiSlice";
 //constrains on inputs when creating new user
 const USER_REGEX = /^[A-z 0-9]{6,20}$/;
 const NAME_REGEX = /^[A-z 0-9]{3,18}$/;

@@ -3,10 +3,7 @@
 import { useState, useEffect } from "react";
 import { useUpdateUserPhotoMutation } from "./usersApiSlice";
 import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { ROLES } from "../../../config/UserRoles";
-import { ACTIONS } from "../../../config/UserActions";
+
 import { useParams } from "react-router-dom";
 
 const NewUserPhotoForm = () => {

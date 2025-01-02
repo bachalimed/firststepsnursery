@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { useUpdateTaskMutation, useDeleteTaskMutation } from "./tasksApiSlice";
 import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+
 import Tasks from "../Tasks";
 import useAuth from "../../../hooks/useAuth";
 
@@ -92,7 +91,7 @@ const EditTaskForm = ({ task, users }) => {
         title="Delete"
         onClick={onDeleteTaskClicked}
       >
-        <FontAwesomeIcon icon={faTrashCan} />
+        
       </button>
     );
   }
@@ -111,7 +110,7 @@ const EditTaskForm = ({ task, users }) => {
               onClick={onSaveTaskClicked}
               disabled={!canSave || isLoading}
             >
-              <FontAwesomeIcon icon={faSave} />
+             
             </button>
             {deleteButton}
           </div>

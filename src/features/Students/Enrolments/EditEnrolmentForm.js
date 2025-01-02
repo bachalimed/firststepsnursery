@@ -7,20 +7,13 @@ import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-
 import { useUpdateEnrolmentMutation } from "./enrolmentsApiSlice";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
-
 import useAuth from "../../../hooks/useAuth";
-import LoadingStateIcon from "../../../Components/LoadingStateIcon";
-
+// import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import { selectAllAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import {
   FEE_REGEX,
-  DATE_REGEX,
   COMMENT_REGEX,
-  OBJECTID_REGEX,
 } from "../../../config/REGEX";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 import { CurrencySymbol } from "../../../config/Currency";

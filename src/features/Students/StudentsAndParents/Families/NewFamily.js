@@ -1,13 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState,  } from "react";
 import { useAddNewFamilyMutation } from "./familiesApiSlice";
-import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { ROLES } from "../../../../config/UserRoles";
-import { ACTIONS } from "../../../../config/UserActions";
 import Students from "../../Students";
-import { useGetFamiliesByYearQuery } from "./familiesApiSlice";
-import { useGetStudentsByYearQuery } from "../Students/studentsApiSlice";
 import Stepper from "./Stepper";
 import StepperControl from "./StepperControl";
 import NewFatherForm from "./NewFatherForm";
@@ -15,7 +8,6 @@ import NewMotherForm from "./NewMotherForm";
 import NewFamilyAddChildrenForm from "./NewFamilyAddChildrenForm";
 import FamilyCompleted from "./FamilyCompleted";
 import { StepperContext } from "../../../../contexts/StepperContext";
-import { selectAllAcademicYears } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice"
 import { useOutletContext } from "react-router-dom";
 
 const NewFamily = () => {

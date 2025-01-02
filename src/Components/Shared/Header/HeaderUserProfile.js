@@ -1,23 +1,17 @@
 import React from "react";
-import { LuUserCircle2 } from "react-icons/lu";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TbLogout } from "react-icons/tb";
-import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useNavigate,  useLocation } from "react-router-dom";
 import { useSendLogoutMutation } from "../../../features/auth/authApiSlice";
 import useAuth from "../../../hooks/useAuth";
-import { PiUserSquare } from "react-icons/pi";
 import { LuKeyRound } from "react-icons/lu";
 import { PiUserCircleLight } from "react-icons/pi";
 import { FaRegUser } from "react-icons/fa";
 import { FiSettings } from "react-icons/fi";
-import usePersist from "../../../hooks/usePersist"
 const HeaderUserProfile = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const [persist] = usePersist();
   const { userId } = useAuth();
   const [sendLogout, { isLoading, isSuccess, isError, error }] =
     useSendLogoutMutation();
@@ -55,8 +49,8 @@ const HeaderUserProfile = () => {
         <PiUserCircleLight
           aria-label="manage profile"
           fontSize={24}
-          className={`text-4xl text-white-500 `}///////////////////////////////////
-          // className={`text-4xl text-white-500 ${persist ? "text-green-300" : ""}`}///////////////////////////////////
+          className={`text-4xl text-white-500 `}
+      
 
         />
       </MenuButton>

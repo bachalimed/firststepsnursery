@@ -1,16 +1,8 @@
 import { useState, useEffect } from "react";
 
-import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { ROLES } from "../../../../config/UserRoles";
-import { ACTIONS } from "../../../../config/UserActions";
-import Students from "../../Students";
-import { useGetFamiliesByYearQuery } from "./familiesApiSlice";
-import { useGetStudentsByYearQuery } from "../Students/studentsApiSlice";
 import { useContext } from "react";
 import { StepperContext } from "../../../../contexts/StepperContext";
-import {USER_REGEX,PWD_REGEX,NAME_REGEX,PHONE_REGEX,DATE_REGEX} from '../../../../config/REGEX'
+import {NAME_REGEX,PHONE_REGEX,DATE_REGEX} from '../../../../config/REGEX'
 
 export default function EditMotherForm() {
   //an add parent function that can be called inside the component

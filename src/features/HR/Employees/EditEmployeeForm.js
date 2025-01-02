@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
 import { useUpdateEmployeeMutation } from "./employeesApiSlice";
 import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { ROLES } from "../../../config/UserRoles";
-import { ACTIONS } from "../../../config/UserActions";
 import useAuth from "../../../hooks/useAuth";
 import HR from "../HR";
 import {

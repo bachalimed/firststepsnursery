@@ -1,21 +1,18 @@
 import { useState, useEffect } from "react";
 import { useUpdateExpenseCategoryMutation } from "./expenseCategoriesApiSlice";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FinancesSet from "../../FinancesSet";
 import useAuth from "../../../../hooks/useAuth";
 import { useSelector } from "react-redux";
-import { useGetServicesByYearQuery } from "../../StudentsSet/NurseryServices/servicesApiSlice";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { RiAddLargeLine } from "react-icons/ri";
 import {
   selectAllAcademicYears,
   selectCurrentAcademicYearId,
   selectAcademicYearById,
 } from "../../AcademicsSet/AcademicYears/academicYearsSlice";
-import { OBJECTID_REGEX, NAME_REGEX } from "../../../../config/REGEX";
+import {  NAME_REGEX } from "../../../../config/REGEX";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
-import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
+// import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 
 
 const EditExpenseCategoryForm = ({ expenseCategory }) => {
