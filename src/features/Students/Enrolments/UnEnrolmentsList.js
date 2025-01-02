@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import { MONTHS } from "../../../config/Months";
 
-const UnenrolmentsList = () => {
+const UnEnrolmentsList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
   const { canCreate } = useAuth();
@@ -404,4 +404,4 @@ const UnenrolmentsList = () => {
 
   return content;
 };
-export default UnenrolmentsList;
+export default UnEnrolmentsList;
