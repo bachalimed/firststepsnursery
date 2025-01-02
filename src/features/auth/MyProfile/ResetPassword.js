@@ -5,7 +5,11 @@ import ResetPasswordForm from "./ResetPasswordForm";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import MyProfile from "../MyProfile";
 import { useGetUserByIdQuery } from "../../Admin/UsersManagement/usersApiSlice"
+import { useEffect } from "react";
+
 const ResetPassword = () => {
+  useEffect(()=>{document.title="Reset Password"})
+
   //get the userId from the url
   const {userId} = useAuth()
   //console.log(userId, 'idddddddd')

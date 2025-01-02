@@ -21,6 +21,9 @@ import { useSelector } from "react-redux";
 import Finances from "../Finances";
 
 const ExpensesList = () => {
+  useEffect(() => {
+    document.title = "Expenses List";
+  });
   const navigate = useNavigate();
 
   //get several things from the query

@@ -1,25 +1,24 @@
 import { useParams } from "react-router-dom"; //because we will get the userId from the url
-import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import {
-  selectInvoiceById,
   useGetInvoiceByIdQuery,
 } from "./invoicesApiSlice"; //we will pull the user  data from the state and not use query
 import EditInvoiceForm from "./EditInvoiceForm";
-import useAuth from "../../../hooks/useAuth";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
-//import { currentInvoicesList } from "./invoicesSlice";
 import Finances from "../Finances";
 const EditInvoice = () => {
+  useEffect(() => {
+    document.title = "Edit invoice";
+  });
   const { id } = useParams(); //pull the id from use params from the url
   // console.log(id,'id')
-  const [invoice, setInvoice] = useState("");
+  
   const {
     data: invoiceToEdit, //the data is renamed families
-    isLoading: isInvoiceLoading, //monitor several situations
-    isSuccess: isInvoiceSuccess,
-    isError: isInvoiceError,
-    error: invoiceError,
+    // isLoading: isInvoiceLoading, //monitor several situations
+    // isSuccess: isInvoiceSuccess,
+    // isError: isInvoiceError,
+    // error: invoiceError,
   } = useGetInvoiceByIdQuery({ id: id, endpointName: "EditInvoice" } || {}, {
    
     refetchOnFocus: true, 

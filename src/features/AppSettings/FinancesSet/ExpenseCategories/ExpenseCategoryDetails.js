@@ -6,16 +6,14 @@ import {
   selectAllAcademicYears,
 } from "../../AcademicsSet/AcademicYears/academicYearsSlice";
 import { useGetExpenseCategoryByIdQuery } from "./expenseCategoriesApiSlice";
-
-
 import {useState, useEffect} from "react"
 import FinancesSet from "../../FinancesSet";
-
 import useAuth from "../../../../hooks/useAuth";
 
 const ExpenseCategoryDetails = () => {
-  const { id } = useParams();
+  useEffect(()=>{document.title="Expense Category Details"})
 
+  const { id } = useParams();
 
   const {canEdit}=useAuth()
   //const expenseCategory = useSelector((state) => state.expenseCategory?.entities[id]);
@@ -43,9 +41,6 @@ const ExpenseCategoryDetails = () => {
   );
   const [photoId, setPhotoId] = useState(null);
   // console.log(expenseCategory, "expenseCategory");
-
- 
-
 
   // const expenseCategoryToview = isExpenseCategorySuccess ? expenseCategory : [];
   let content;

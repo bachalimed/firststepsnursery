@@ -13,6 +13,9 @@ import FamilyCompleted from "./FamilyCompleted";
 import { StepperContext } from "../../../../contexts/StepperContext";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 const EditFamily = () => {
+  useEffect(() => {
+    document.title = "Edit Family";
+  });
   //an add parent function that can be called inside the component
   const { id } = useParams();
   //console.log(id, "id");
@@ -32,8 +35,8 @@ const EditFamily = () => {
     data: familyToEdit, //the data is renamed families
     isLoading: isFamilyLoading, //monitor several situations
     isSuccess: isFamilySuccess,
-    isError: isFamilyError,
-    error: familyError,
+    // isError: isFamilyError,
+    // error: familyError,
   } = useGetFamilyByIdQuery(
     { id: id, criteria: "Dry", endpointName: "EditFamily" } || {},
     {

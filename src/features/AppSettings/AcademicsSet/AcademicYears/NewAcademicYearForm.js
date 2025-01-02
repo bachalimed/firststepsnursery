@@ -14,6 +14,8 @@ import ConfirmationModal from "../../../../Components/Shared/Modals/Confirmation
 import { useOutletContext } from "react-router-dom";
 
 const NewAcademicYearForm = () => {
+  useEffect(()=>{document.title="New Academic Year"})
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isAdmin, userId: academicYearCreator } = useAuth();

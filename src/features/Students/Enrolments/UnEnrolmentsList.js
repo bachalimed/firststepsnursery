@@ -9,13 +9,16 @@ import Students from "../Students";
 import DataTable from "react-data-table-component";
 import { IoShieldCheckmarkOutline, IoShieldOutline } from "react-icons/io5";
 import { useSelector } from "react-redux";
-import {  useState } from "react";
+import {  useState,useEffect } from "react";
 import { useGetAdmissionsByYearQuery } from "../Admissions/admissionsApiSlice";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import { MONTHS } from "../../../config/Months";
 
 const UnEnrolmentsList = () => {
+  useEffect(() => {
+    document.title = "Unenrolment List";
+  });
   //this is for the academic year selection
   const navigate = useNavigate();
   const { canCreate } = useAuth();

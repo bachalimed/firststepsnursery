@@ -2,10 +2,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useGetEnrolmentByIdQuery } from "./enrolmentsApiSlice";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import useAuth from "../../../hooks/useAuth";
-
 import Students from "../Students";
+import { useEffect } from "react";
 
 const EnrolmentDetails = () => {
+  useEffect(() => {
+    document.title = "Enrolment Details";
+  });
   const { id } = useParams();
   const navigate = useNavigate();
   const { canEdit } = useAuth();
@@ -14,7 +17,7 @@ const EnrolmentDetails = () => {
     data: enrolmentOrg,
     isLoading: isEnrolmentLoading,
     isSuccess: isEnrolmentSuccess,
-    isError: enrolmentError,
+    // isError: enrolmentError,
   } = useGetEnrolmentByIdQuery(
     { id: id, endpointName: "enrolmentDetails" },
     {

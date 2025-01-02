@@ -15,9 +15,11 @@ import { FEE_REGEX } from "../../../../config/REGEX";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 
 const EditServiceForm = ({ service }) => {
+  useEffect(()=>{document.title="Edit Service"})
+
   const navigate = useNavigate();
 
-  const { isAdmin, isManager } = useAuth();
+  
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
@@ -77,17 +79,7 @@ const EditServiceForm = ({ service }) => {
   // If the service is added successfully, reset the form and navigate
   useEffect(() => {
     if (isUpdateSuccess) {
-      setFormData({
-        serviceType: "",
-        serviceYear: "",
-        serviceAnchor: {
-          monthly: 0,
-          weekly: 0,
-          oneTimeOff: 0,
-        },
-
-        serviceOperator: "",
-      });
+      setFormData({});
       navigate("/settings/studentsSet/services");
     }
   }, [isUpdateSuccess, navigate]);

@@ -1,12 +1,12 @@
 import { useParams } from "react-router-dom"; //because we will get the userId from the url
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
 import EditStudentDocumentsListForm from "./EditStudentDocumentsListForm";
 import { useGetStudentDocumentsListByIdQuery } from "./studentDocumentsListsApiSlice";
-import useAuth from "../../../../hooks/useAuth";
-import { Puff } from "react-loading-icons";
 import StudentsSet from "../../StudentsSet";
 import LoadingStateIcon from "react-loading-icons";
 const EditStudentDocumentsList = () => {
+  useEffect(()=>{document.title="Edit Student Documents"})
+
   //pull the id from use params from the url
   const { id } = useParams();
   //console.log(id,'idddd')
@@ -22,10 +22,10 @@ const EditStudentDocumentsList = () => {
 
   const {
     data: studentDocumentsListToEdit,
-    isLoading,
+    // isLoading,
     isSuccess,
-    isError,
-    error,
+    // isError,
+    // error,
   } = useGetStudentDocumentsListByIdQuery(
     {
       id: id,

@@ -19,6 +19,8 @@ import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationMod
 import { useOutletContext } from "react-router-dom";
 
 const EditSectionForm = ({ section }) => {
+  useEffect(()=>{document.title="Edit Section"})
+
   const navigate = useNavigate();
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -40,8 +42,8 @@ const EditSectionForm = ({ section }) => {
     data: employees, //the data is renamed employees
     isLoading: isEmployeesLoading,
     isSuccess: isEmployeesSuccess,
-    isError: isEmployeesError,
-    error: employeesError,
+    // isError: isEmployeesError,
+    // error: employeesError,
   } = useGetEmployeesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -58,8 +60,8 @@ const EditSectionForm = ({ section }) => {
     data: classrooms, //the data is renamed sessions
     isLoading: isClassroomsLoading,
     isSuccess: isClassroomsSuccess,
-    isError: isClassroomsError,
-    error: classroomsError,
+    // isError: isClassroomsError,
+    // error: classroomsError,
   } = useGetClassroomsQuery(
     {
       endpointName: "EditSectionForm",
@@ -74,8 +76,8 @@ const EditSectionForm = ({ section }) => {
     data: students, //the data is renamed students
     isLoading: isStudentLoading,
     isSuccess: isStudentSuccess,
-    isError: isStudentError,
-    error: studentError,
+    // isError: isStudentError,
+    // error: studentError,
   } = useGetStudentsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -154,20 +156,7 @@ const EditSectionForm = ({ section }) => {
 
   useEffect(() => {
     if (isUpdateSectionSuccess) {
-      setFormData({
-        id: "",
-        sectionLabel: "",
-        sectionYear: "",
-        students: [],
-        sectionColor: "",
-        sectionAnimator: "",
-        sectionType: "",
-        sectionFrom: "",
-        //sectionTo: "",
-        sectionLocation: "",
-        operator: "",
-        isChangeFlag: false,
-      });
+      setFormData({});
       navigate("/academics/sections/nurserySectionsList");
     }
   }, [isUpdateSectionSuccess, navigate]);

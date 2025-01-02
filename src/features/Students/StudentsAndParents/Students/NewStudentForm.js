@@ -23,6 +23,9 @@ import {
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 
 const NewStudentForm = () => {
+  useEffect(() => {
+    document.title = "New Student";
+  });
   const naviagte = useNavigate();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>

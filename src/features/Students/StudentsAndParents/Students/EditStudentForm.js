@@ -22,6 +22,9 @@ import {
 } from "../../../../config/REGEX";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 const EditStudentForm = ({ student }) => {
+  useEffect(() => {
+    document.title = "Edit Student";
+  });
   //initialising state variables and hooks
   const navigate = useNavigate();
 

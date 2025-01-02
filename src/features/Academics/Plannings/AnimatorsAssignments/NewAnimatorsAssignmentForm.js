@@ -23,6 +23,7 @@ import {
 import { useOutletContext } from "react-router-dom";
 
 const NewAnimatorsAssignmentForm = () => {
+  useEffect(()=>{document.title="New Animator Assignment"})
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
@@ -161,18 +162,7 @@ const NewAnimatorsAssignmentForm = () => {
   // Clear form and errors on success
   useEffect(() => {
     if (isAddSuccess) {
-      setFormData({
-        assignments: [
-          {
-            animator: "",
-            schools: [],
-          },
-        ],
-        assignedFrom: "",
-        assignedTo: "",
-        creator: "",
-        operator: "",
-      });
+      setFormData({});
 
       navigate("/academics/plannings/animatorsAssignments");
     }

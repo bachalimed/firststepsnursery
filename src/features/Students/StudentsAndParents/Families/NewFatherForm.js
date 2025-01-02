@@ -5,6 +5,9 @@ import { StepperContext } from "../../../../contexts/StepperContext";
 import {NAME_REGEX,PHONE_REGEX,DATE_REGEX} from '../../../../config/REGEX'
 
 export default function NewFatherForm() {
+  useEffect(() => {
+    document.title = "New Father";
+  });
   //an add parent function that can be called inside the component
   //const {userData, setUserData} = useContext(StepperContext)
   const { father, setFather } = useContext(StepperContext);

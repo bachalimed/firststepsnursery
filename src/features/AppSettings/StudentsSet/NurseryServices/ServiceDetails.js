@@ -1,15 +1,14 @@
 import { useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
-import { selectServiceById } from "./servicesApiSlice";
-
+import { useEffect } from "react";
 const ServiceDetails = () => {
+  useEffect(()=>{document.title="Service Details"})
+
   const { id } = useParams();
   const service = useSelector((state) => state.service?.entities[id]);
   const navigate = useNavigate();
 
-  const handleBack = () => {
-    navigate("/hr/services/");
-  };
+ 
 
   return (
     <div className="max-w-4xl mx-auto mt-8 bg-white p-8 shadow-lg rounded-lg">

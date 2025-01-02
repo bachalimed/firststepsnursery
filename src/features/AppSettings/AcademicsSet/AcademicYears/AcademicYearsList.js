@@ -17,6 +17,8 @@ import AcademicsSet from "../../AcademicsSet";
 import { useOutletContext } from "react-router-dom";
 
 const AcademicYearsList = () => {
+  useEffect(()=>{document.title="Acedemic Years List"})
+
   const Navigate = useNavigate();
 
   //get several things from the query

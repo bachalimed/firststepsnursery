@@ -29,6 +29,9 @@ import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationMod
 
 import { useOutletContext } from "react-router-dom";
 const EditEmployeeForm = ({ employee }) => {
+  useEffect(() => {
+    document.title = "Edit Employee";
+  });
   const navigate = useNavigate();
 
   const { isAdmin, isManager, isDirector } = useAuth();

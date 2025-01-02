@@ -1,15 +1,15 @@
 import { useParams } from "react-router-dom"; //because we will get the userId from the url
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
 import {
-  selectLeaveById,
   useGetLeaveByIdQuery,
 } from "./leavesApiSlice"; //we will pull the user  data from the state and not use query
 import EditLeaveForm from "./EditLeaveForm";
-import useAuth from "../../../hooks/useAuth";
-
 import HR from "../HR";
 import LoadingStateIcon from "react-loading-icons";
 const EditLeave = () => {
+  useEffect(() => {
+    document.title = "Edit Leave";
+  });
   const { id } = useParams(); //pull the id from use params from the url
   //will get hte student from the state
   //const leaveToEdit = useSelector((state) => state.leave?.entities[id]);

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useUpdateUserMutation } from "../../Admin/UsersManagement/usersApiSlice";
 import { useNavigate ,useOutletContext} from "react-router-dom";
-
 import MyProfile from "../MyProfile";
 import {
   SHORTCOMMENT_REGEX,
@@ -17,6 +16,8 @@ import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationMod
 // import useAuth from "../../../hooks/useAuth";
 
 const EditMyProfileForm = ({ user }) => {
+  useEffect(()=>{document.title="Edit My Profile"})
+
   //user was passed as prop in editUser
   const navigate = useNavigate();
   // const { isManager, isAdmin, isDirector } = useAuth();
@@ -128,35 +129,7 @@ const EditMyProfileForm = ({ user }) => {
 
   useEffect(() => {
     if (isUpdateSuccess) {
-      setFormData({
-        username: "",
-        password: undefined,
-        userRoles: [],
-        userAllowedActions: [],
-        userFullName: {
-          userFirstName: "",
-          userMiddleName: "",
-          userLastName: "",
-        },
-        userDob: "",
-        userSex: "",
-        userIsActive: false,
-        userPhoto: "",
-        userAddress: {
-          house: "",
-          street: "",
-          area: "",
-          postCode: "",
-          city: "",
-        },
-        userContact: {
-          primaryPhone: "",
-          secondaryPhone: "",
-          email: "",
-        },
-        familyId: undefined,
-        employeeId: undefined,
-      });
+      setFormData({});
       navigate(`/myProfile/myDetails/${user?.id}/`);
     }
   }, [isUpdateSuccess, navigate]);

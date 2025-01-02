@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate, useOutletContext } from "react-router-dom";
-
 import {
   useGetEmployeeDocumentsListsQuery,
   useDeleteEmployeeDocumentsListMutation,
@@ -10,12 +9,15 @@ import useAuth from "../../../../hooks/useAuth";
 import { FiEdit } from "react-icons/fi";
 import EmployeesSet from "../../HRSet";
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
-
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { HiOutlineSearch } from "react-icons/hi";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 
 const EmployeeDocumentsListsList = () => {
+  useEffect(() => {
+    document.title = "Employee Documents List";
+  });
+
   //initialise state variables and hooks
   const Navigate = useNavigate();
 
@@ -32,14 +34,19 @@ const EmployeeDocumentsListsList = () => {
     data: employeeDocumentsListsData,
     isLoading: isDocumentsListsLoading,
     isSuccess: isDocumentsListsSuccess,
-    isError: isDocumentsListsError,
-    error: documentsListsError,
+    // isError: isDocumentsListsError,
+    // error: documentsListsError,
   } = useGetEmployeeDocumentsListsQuery("employeeDocumentsListsList") || {};
 
   //initialising the delete Mutation
   const [
     deleteEmployeeDocumentsList,
-    { isSuccess: isDelSuccess, isError: isDelError, error: delError },
+    {
+      // isSuccess: isDelSuccess,
+      // isLoading: isDelLoading,
+      isError: isDelError,
+      error: delError,
+    },
   ] = useDeleteEmployeeDocumentsListMutation();
 
   //handler for deleting a studetnDocumentsList

@@ -3,8 +3,12 @@ import { useGetAdmissionByIdQuery } from "./admissionsApiSlice";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import useAuth from "../../../hooks/useAuth";
 import Students from "../Students";
+import { useEffect } from "react";
 
 const AdmissionDetails = () => {
+  useEffect(() => {
+    document.title = "Admission Details";
+  });
   const { id } = useParams();
   const navigate = useNavigate();
   const { canEdit } = useAuth();
@@ -12,7 +16,7 @@ const AdmissionDetails = () => {
     data: admissionOrg,
     isLoading: isAdmissionLoading,
     isSuccess: isAdmissionSuccess,
-    isError: admissionError,
+    // isError: admissionError,
   } = useGetAdmissionByIdQuery(
     { id: id, endpointName: "admissionDetails" },
     {

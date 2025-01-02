@@ -1,4 +1,4 @@
-import { useState,  } from "react";
+import { useState, useEffect } from "react";
 import { useAddNewFamilyMutation } from "./familiesApiSlice";
 import Students from "../../Students";
 import Stepper from "./Stepper";
@@ -11,6 +11,9 @@ import { StepperContext } from "../../../../contexts/StepperContext";
 import { useOutletContext } from "react-router-dom";
 
 const NewFamily = () => {
+  useEffect(() => {
+    document.title = "LogNew Familyin";
+  });
   //an add parent function that can be called inside the component
 
   const [currentStep, setCurrentStep] = useState(1);

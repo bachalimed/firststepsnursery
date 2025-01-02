@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import StudentsSet from "../../StudentsSet";
 import { useAddNewStudentDocumentsListMutation } from "./studentDocumentsListsApiSlice";
 import { useNavigate } from "react-router-dom";
-
-import useAuth from "../../../../hooks/useAuth";
 import { useGetStudentDocumentsListsQuery } from "./studentDocumentsListsApiSlice";
 import { useSelector } from "react-redux";
 import {
@@ -16,6 +14,8 @@ import ConfirmationModal from "../../../../Components/Shared/Modals/Confirmation
 import { useOutletContext } from "react-router-dom";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 const NewStudentDocumentsListForm = () => {
+  useEffect(()=>{document.title="New Student Documents List"})
+
   const navigate = useNavigate();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
@@ -26,8 +26,8 @@ const NewStudentDocumentsListForm = () => {
     data: studentDocumentsListsData,
     isLoading: isDocsListLoading,
     isSuccess: isDocsListSucess,
-    isError: isDocsListError,
-    error: docsListError,
+    // isError: isDocsListError,
+    // error: docsListError,
   } = useGetStudentDocumentsListsQuery(
     {
       endpointName: "NewStudentDocumentsListForm",
@@ -47,9 +47,7 @@ const NewStudentDocumentsListForm = () => {
     },
   ] = useAddNewStudentDocumentsListMutation();
 
-  // Prepare the permission variables
-  const { userId, canEdit, canDelete, canAdd, canCreate, isParent, status2 } =
-    useAuth();
+
   let filteredAcademicYearsList = [];
   if (isDocsListSucess) {
     // Extract entities and convert to an array

@@ -22,6 +22,9 @@ import useAuth from "../../../hooks/useAuth";
 import { MONTHS } from "../../../config/Months";
 
 const PaymentsList = () => {
+  useEffect(() => {
+    document.title = "Payments List";
+  });
   //this is for the academic year selection
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -53,8 +56,8 @@ const PaymentsList = () => {
     data: payments, //the data is renamed payments
     isLoading: isPaymentsLoading,
     isSuccess: isPaymentsSuccess,
-    isError: isPaymentsError,
-    error: paymentsError,
+    // isError: isPaymentsError,
+    // error: paymentsError,
   } = useGetPaymentsByYearQuery(
     {
       selectedMonth: selectedPaymentMonth
@@ -75,7 +78,7 @@ const PaymentsList = () => {
     deletePayment,
     {
       isLoading: isDelLoading,
-      isSuccess: isDelSuccess,
+      // isSuccess: isDelSuccess,
       isError: isDelError,
       error: delError,
     },

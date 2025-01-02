@@ -1,8 +1,11 @@
-import React from "react";
+import React,{useEffect} from "react";
 import { IoCheckbox } from "react-icons/io5";
 import { Link } from "react-router-dom";
 
 const FamilyCompleted = () => {
+  useEffect(() => {
+    document.title = "Completed";
+  });
   return (
     <div className="container flex flex-col md:mt-10 items-center justify-center ">
       <div className="flex flex-col ">

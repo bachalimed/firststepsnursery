@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect} from "react";
 // import { GrUserExpert } from "react-icons/gr";
 import DashboardStudentsTotalNumberModule from "./DashboardModules/DashboardStudentsTotalNumberModule";
 import DashboardStudentsAdmissionNumberModule from "./DashboardModules/DashboardStudentsAdmissionNumberModule";
@@ -16,7 +16,9 @@ import Dashboard from "../Dashboard";
 
 const DashboardStatsGrid = () => {
 
-
+ useEffect(() => {
+    document.title = "Students Dashboard";
+  });
 
 
   return (

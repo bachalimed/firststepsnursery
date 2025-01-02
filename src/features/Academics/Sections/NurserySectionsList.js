@@ -13,7 +13,7 @@ import Academics from "../Academics";
 import DataTable from "react-data-table-component";
 import { useOutletContext } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useState , useEffect} from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -22,6 +22,8 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import useAuth from "../../../hooks/useAuth";
 
 const NurserySectionsList = () => {
+  useEffect(()=>{document.title="Nursery Sections List"})
+
   //this is for the academic year selection
   const navigate = useNavigate();
 
@@ -40,8 +42,8 @@ const NurserySectionsList = () => {
     data: sections, //the data is renamed sections
     isLoading: isSectionsLoading,
     isSuccess: isSectionsSuccess,
-    isError: isSectionsError,
-    error: sectionsError,
+    // isError: isSectionsError,
+    // error: sectionsError,
   } = useGetSectionsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,

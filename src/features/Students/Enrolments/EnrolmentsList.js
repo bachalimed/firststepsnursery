@@ -27,6 +27,9 @@ import { MONTHS } from "../../../config/Months";
 import { useOutletContext } from "react-router-dom";
 
 const EnrolmentsList = () => {
+  useEffect(() => {
+    document.title = "Enrolments List";
+  });
   //this is for the academic year selection
   const navigate = useNavigate();
 
@@ -55,8 +58,8 @@ const EnrolmentsList = () => {
     data: enrolments, //the data is renamed enrolments
     isLoading: isEnrolmentsLoading,
     isSuccess: isEnrolmentsSuccess,
-    isError: isEnrolmentsError,
-    error: enrolmentsError,
+    // isError: isEnrolmentsError,
+    // error: enrolmentsError,
   } = useGetEnrolmentsByYearQuery(
     {
       // selectedMonth: getCurrentMonth(),
@@ -76,7 +79,7 @@ const EnrolmentsList = () => {
   const [
     addNewInvoice,
     {
-      isLoading: isAddLoading,
+      // isLoading: isAddLoading,
       isError: isAddError,
       error: addError,
       isSuccess: isAddSuccess,
@@ -87,8 +90,8 @@ const EnrolmentsList = () => {
     data: services,
     isLoading: isServicesLoading,
     isSuccess: isServicesSuccess,
-    isError: isServicesError,
-    error: servicesError,
+    // isError: isServicesError,
+    // error: servicesError,
   } = useGetServicesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -106,7 +109,7 @@ const EnrolmentsList = () => {
     deleteEnrolment,
     {
       isLoading: isDelLoading,
-      isSuccess: isDelSuccess,
+      // isSuccess: isDelSuccess,
       isError: isDelError,
       error: delError,
     },

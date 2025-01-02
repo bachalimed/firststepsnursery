@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
 import Documentation from "../Documentation";
 
 const KeyTasks = () => {
+  useEffect(()=>{document.title="Key Tasks"})
+
   const [openTask, setOpenTask] = useState(1); // Track the currently open task
 
   const toggleTask = (task) => {

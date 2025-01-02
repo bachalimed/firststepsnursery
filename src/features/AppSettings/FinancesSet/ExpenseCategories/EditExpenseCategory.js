@@ -3,10 +3,11 @@ import {
   useGetExpenseCategoryByIdQuery,
 } from "./expenseCategoriesApiSlice"; //we will pull the user  data from the state and not use query
 import EditExpenseCategoryForm from "./EditExpenseCategoryForm";
-
-import FinancesSet from "../../FinancesSet";
 import LoadingStateIcon from "react-loading-icons";
+import { useEffect } from "react";
 const EditExpenseCategory = () => {
+  useEffect(()=>{document.title="Edit Expense Category"})
+
   const { id } = useParams(); //pull the id from use params from the url
   //will get hte student from the state
   //const expenseCategoryToEdit = useSelector((state) => state.expenseCategory?.entities[id]);

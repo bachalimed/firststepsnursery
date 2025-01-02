@@ -17,6 +17,8 @@ import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationMod
 import { useOutletContext } from "react-router-dom";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 const NewSectionForm = () => {
+  useEffect(()=>{document.title="New Section"})
+
   const navigate = useNavigate();
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -151,19 +153,7 @@ const NewSectionForm = () => {
 
   useEffect(() => {
     if (isAddSectionSuccess) {
-      setFormData({
-        sectionLabel: "",
-        sectionYear: "",
-        students: [],
-        sectionColor: "",
-        sectionAnimator: "",
-        sectionType: "",
-        sectionFrom: "",
-        //sectionTo: "",
-        sectionLocation: "",
-        operator: "",
-        creator: "",
-      });
+      setFormData({});
       navigate("/academics/sections/nurserySectionsList");
     }
   }, [isAddSectionSuccess, navigate]);

@@ -2,14 +2,14 @@ import { useParams } from "react-router-dom"; //because we will get the userId f
 import { useSelector } from "react-redux";
 import {
   selectAcademicYearById,
-  useGetAcademicYearByIdQuery,
 } from "./academicYearsApiSlice"; //we will pull the user  data from the state and not use query
 import EditAcademicYearForm from "./EditAcademicYearForm";
-import useAuth from "../../../../hooks/useAuth";
+import { useEffect } from "react";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
-import { currentAcademicYearsList } from "./academicYearsSlice";
 import AcademicsSet from "../../AcademicsSet";
 const EditAcademicYear = () => {
+  useEffect(()=>{document.title="Edit Academic Year"})
+
   const { id } = useParams(); //pull the id from use params from the url
 
   //will get hte academicYear from the state

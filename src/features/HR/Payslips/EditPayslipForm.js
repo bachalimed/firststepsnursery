@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { useUpdatePayslipMutation } from "./payslipsApiSlice";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { MONTHS } from "../../../config/Months";
-import { useGetEmployeesByYearQuery } from "../Employees/employeesApiSlice";
-import { useGetLeavesByYearQuery } from "../Leaves/leavesApiSlice";
 import useAuth from "../../../hooks/useAuth";
 import { CurrencySymbol } from "../../../config/Currency";
 import HR from "../HR";
@@ -25,6 +23,9 @@ import { useSelector } from "react-redux";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 
 const EditPayslipForm = ({ payslip }) => {
+  useEffect(() => {
+    document.title = "Edit Payslip";
+  });
   const navigate = useNavigate();
   // console.log(payslip, "in teh form anoonowwww");
   const { isAdmin, isManager, userId } = useAuth();
@@ -108,19 +109,7 @@ const EditPayslipForm = ({ payslip }) => {
 
   useEffect(() => {
     if (isUpdateSuccess) {
-      setFormData({
-        _id: "",
-        payslipYear: "",
-        payslipMonth: "",
-        payslipNote: "",
-        payslipEmployee: "",
-        payslipEmployeeName: "",
-        payslipIsApproved: "",
-        payslipPaymentDate: "",
-        payslipLeaveDays: [],
-        payslipSalaryComponents: {},
-        payslipOprator: "",
-      });
+      setFormData({});
       navigate("/hr/payslips/payslipsList");
     }
   }, [isUpdateSuccess, navigate]);

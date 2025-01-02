@@ -9,6 +9,8 @@ import { useOutletContext } from "react-router-dom";
 import { NAME_REGEX } from "../../../../config/REGEX";
 
 const EditStudentDocumentsListForm = ({ listToEdit }) => {
+  useEffect(()=>{document.title="Edit Student Documents List"})
+
   //console.log(listToEdit.documentsAcademicYear,'lllllyear')
   const navigate = useNavigate();
   const { _id } = listToEdit;

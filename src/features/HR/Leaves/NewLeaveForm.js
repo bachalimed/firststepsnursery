@@ -13,8 +13,6 @@ import {
 import {
   NAME_REGEX,
   OBJECTID_REGEX,
-  USER_REGEX,
-  PHONE_REGEX,
   DATE_REGEX,
   YEAR_REGEX,
   COMMENT_REGEX,
@@ -25,6 +23,9 @@ import { useOutletContext } from "react-router-dom";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 
 const NewLeaveForm = () => {
+  useEffect(() => {
+    document.title = "New Leave";
+  });
   const navigate = useNavigate();
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID

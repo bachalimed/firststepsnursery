@@ -27,6 +27,9 @@ import {
 import { useOutletContext } from "react-router-dom";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 const NewEmployeeForm = () => {
+  useEffect(() => {
+    document.title = "New Employee";
+  });
   const navigate = useNavigate();
 
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -179,47 +182,7 @@ const NewEmployeeForm = () => {
 
   useEffect(() => {
     if (isAddSuccess) {
-      setFormData({
-        username: generateRandomUsername(),
-        password: "12345678",
-        userRoles: ["Employee"],
-        userAllowedActions: [],
-        userFullName: {
-          userFirstName: "",
-          userMiddleName: "",
-          userLastName: "",
-        },
-        userDob: "",
-        userSex: "",
-        userIsActive: false,
-        userAddress: {
-          house: "",
-          street: "",
-          area: "",
-          postCode: "",
-          city: "",
-        },
-        userContact: {
-          primaryPhone: "",
-          secondaryPhone: "",
-          email: "",
-        },
-        employeeAssessment: [],
-        employeeWorkHistory: [],
-        employeeIsActive: false,
-        employeeYears: [{ academicYear: "" }],
-        employeeCurrentEmployment: {
-          position: "",
-          joinDate: "",
-          contractType: "",
-          salaryPackage: {
-            basic: "",
-            allowance: "",
-            other: "",
-            payment: "",
-          },
-        },
-      });
+      setFormData({});
       navigate("/hr/employees/employeesList/");
     }
   }, [isAddSuccess, navigate]);

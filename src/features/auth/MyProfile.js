@@ -1,8 +1,11 @@
+import { useEffect } from "react";
 import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
 import useAuth from "../../hooks/useAuth";
 import { useLocation, Link } from "react-router-dom";
-
 const MyProfile = () => {
+  useEffect(() => {
+    document.title = "My Profile";
+  });
   const location = useLocation();
   const { isDirector, isManager, isAdmin } = useAuth();
 

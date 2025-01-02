@@ -24,6 +24,9 @@ import {
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 
 const NewPaymentForm = () => {
+  useEffect(() => {
+    document.title = "New Payment";
+  });
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
@@ -127,19 +130,7 @@ const NewPaymentForm = () => {
   // Clear form and errors on success
   useEffect(() => {
     if (isAddSuccess) {
-      setFormData({
-        paymentYear: selectedAcademicYear?.title || "",
-        paymentAmount: "",
-        paymentStudent: "",
-        paymentInvoices: [],
-        paymentNote: "",
-        paymentType: "",
-        paymentReference: "",
-        paymentDate: "",
-        paymentRecordDate: new Date().toISOString().split("T")[0],
-        paymentCreator: userId,
-        paymentOperator: userId,
-      });
+      setFormData({});
       setSelectedStudent(null);
       setSelectedInvoices([]);
       setTotalInvoiceAmount(0);

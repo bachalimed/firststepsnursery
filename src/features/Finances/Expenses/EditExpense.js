@@ -1,25 +1,25 @@
 import { useParams } from "react-router-dom"; //because we will get the userId from the url
-import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import {
-  selectExpenseById,
   useGetExpenseByIdQuery,
 } from "./expensesApiSlice"; //we will pull the user  data from the state and not use query
 import EditExpenseForm from "./EditExpenseForm";
-import useAuth from "../../../hooks/useAuth";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 //import { currentExpensesList } from "./expensesSlice";
 import Finances from "../Finances";
 const EditExpense = () => {
+  useEffect(() => {
+    document.title = "Edit Expense";
+  });
   const { id } = useParams(); //pull the id from use params from the url
   //console.log(id,'id')
   const [expense, setExpense] = useState("");
   const {
     data: expenseToEdit, //the data is renamed families
-    isLoading: isExpenseLoading, //monitor several situations
-    isSuccess: isExpenseSuccess,
-    isError: isExpenseError,
-    error: expenseError,
+    // isLoading: isExpenseLoading, //monitor several situations
+    // isSuccess: isExpenseSuccess,
+    // isError: isExpenseError,
+    // error: expenseError,
   } = useGetExpenseByIdQuery({ id: id, endpointName: "EditExpense" } || {}, {
 
     //pollingInterval: 60000,

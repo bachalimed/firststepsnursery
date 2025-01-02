@@ -2,8 +2,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import {  useGetUserByIdQuery } from "./usersApiSlice";
 import useAuth from "../../../hooks/useAuth";
 import UsersManagement from "../UsersManagement";
-
+import { useEffect } from "react";
 const UserDetails = () => {
+ useEffect(()=>{document.title="User Details"})
+
   const { id } = useParams();
   //const user = useSelector((state) => state.user?.entities[id]);
 

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { selectFamilyById } from "./familiesSlice";
 import { useParams } from "react-router";
 import { useGetStudentDocumentsByYearByIdQuery } from "../../../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice";
 import Students from "../../Students";
@@ -17,6 +16,9 @@ import { useGetFamilyByIdQuery } from "./familiesApiSlice";
 
 
 const FamilyDetails = () => {
+  useEffect(() => {
+    document.title = "Family Details";
+  });
   const { id } = useParams();
 const {canEdit}=useAuth()
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -29,10 +31,10 @@ const {canEdit}=useAuth()
 
  const {
     data: familyToEdit, //the data is renamed families
-    isLoading: isFamilyLoading, //monitor several situations
+    // isLoading: isFamilyLoading, //monitor several situations
     isSuccess: isFamilySuccess,
-    isError: isFamilyError,
-    error: familyError,
+    // isError: isFamilyError,
+    // error: familyError,
   } = useGetFamilyByIdQuery(
     { id: id, criteria: "Dry", endpointName: "EditFamily" } || {},
     {

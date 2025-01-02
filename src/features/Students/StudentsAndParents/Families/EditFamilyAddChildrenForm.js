@@ -6,6 +6,9 @@ import { StepperContext } from "../../../../contexts/StepperContext";
 //constrains on inputs when creating new parent
 
 export default function EditFamilyAddChildrenForm() {
+  useEffect(() => {
+    document.title = "Add Children";
+  });
   //an add parent function that can be called inside the component
   const { children, setChildren, canSaveChildren, setCanSaveChildren } =
     useContext(StepperContext);

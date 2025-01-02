@@ -21,6 +21,9 @@ import { ImProfile } from "react-icons/im";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 
 const FamiliesList = () => {
+  useEffect(() => {
+    document.title = "Families List";
+  });
   //this is for the academic year selection
 
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -37,8 +40,8 @@ const FamiliesList = () => {
     data: families, //the data is renamed families
     isLoading: isFamiliesLoading, //monitor several situations
     isSuccess: isFamiliesSuccess,
-    isError: isFamiliesError,
-    error: familiesError,
+    // isError: isFamiliesError,
+    // error: familiesError,
   } = useGetFamiliesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -62,7 +65,7 @@ const FamiliesList = () => {
     const { entities } = families;
     //we need to change into array to be read??
     familiesList = Object.values(entities); //we are using entity adapter in this query
-    Dispatch(setFamilies(familiesList)); //timing issue to update the state and use it the same time
+    //Dispatch(setFamilies(familiesList)); //timing issue to update the state and use it the same time
     //console.log(entities)
     //the serach result data
     filteredFamilies = familiesList?.filter((item) => {

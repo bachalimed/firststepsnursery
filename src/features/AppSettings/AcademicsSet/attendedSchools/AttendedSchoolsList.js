@@ -14,6 +14,8 @@ import {
 import AcademicsSet from "../../AcademicsSet";
 
 const AttendedSchoolsList = () => {
+  useEffect(()=>{document.title="Attended Schools List"})
+
   const Navigate = useNavigate();
    //get several things from the query
   const {

@@ -3,8 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useUpdateAcademicYearMutation } from "./academicYearsApiSlice"; // Redux API action for updating
 import {
-  selectCurrentAcademicYearId,
-  selectAcademicYearById,
   selectAllAcademicYears,
 } from "./academicYearsSlice";
 import AcademicsSet from "../../AcademicsSet";
@@ -13,9 +11,11 @@ import ConfirmationModal from "../../../../Components/Shared/Modals/Confirmation
 import { useOutletContext } from "react-router-dom";
 
 const EditAcademicYearForm = ({ academicYear }) => {
+  useEffect(()=>{document.title="Edit Academic Year"})
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isAdmin, userId: academicYearCreator } = useAuth();
+  const {  userId: academicYearCreator } = useAuth();
 
   // Initialize state with passed academicYear props
   const [title, setTitle] = useState(academicYear?.title || "");

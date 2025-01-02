@@ -8,6 +8,8 @@ import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationMod
 import { useOutletContext } from "react-router-dom";
 
 const ResetPasswordForm = ({ user }) => {
+  useEffect(()=>{document.title="Reset Password"})
+
   //user was passed as prop in editUser
   const navigate = useNavigate();
 
@@ -50,13 +52,7 @@ const ResetPasswordForm = ({ user }) => {
 
   useEffect(() => {
     if (isUpdateSuccess) {
-      setFormData({
-        id: "",
-        oldPassword: "",
-        newPassword1: "",
-        newPassword2: "",
-        criteria: "",
-      });
+      setFormData({});
       triggerBanner("Password updated successfully.", "success");
       navigate(`/myProfile/myDetails/${user?.id}/`);
     }

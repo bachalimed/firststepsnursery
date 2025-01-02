@@ -18,6 +18,8 @@ import {
 import useAuth from "../../../../hooks/useAuth";
 import StudentsSet from "../../StudentsSet";
 const ServicesList = () => {
+  useEffect(()=>{document.title="Service List"})
+
   //this is for the academic year selection
   const navigate = useNavigate();
   const { canEdit, isAdmin, isManager, canDelete, canCreate, status2 } =

@@ -1,63 +1,33 @@
 import {
-  useGetSectionsQuery,
-  useUpdateSectionMutation,
   useGetSectionsByYearQuery,
-  useDeleteSectionMutation,
 } from "./sectionsApiSlice";
 import { HiOutlineSearch } from "react-icons/hi";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
-  selectAllAcademicYears,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
-
 import Academics from "../Academics";
-import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
-
 import { useSelector } from "react-redux";
-import { selectAllSectionsByYear, selectAllSections } from "./sectionsApiSlice"; //use the memoized selector
 import { useEffect, useState } from "react";
-import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
 //import RegisterModal from "./RegisterModal";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { ImProfile } from "react-icons/im";
-import { FiEdit } from "react-icons/fi";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { setAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-
-import useAuth from "../../../hooks/useAuth";
-
-import { LiaMaleSolid, LiaFemaleSolid } from "react-icons/lia";
-import {
-  setSomeSections,
-  setSections,
-  currentSectionsList,
-} from "./sectionsSlice";
-import { IoDocumentAttachOutline } from "react-icons/io5";
 
 const SchoolSectionsList = () => {
-  //this is for the academic year selection
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  useEffect(()=>{document.title="School Sections List"})
 
-  const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
 
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
-  const academicYears = useSelector(selectAllAcademicYears);
 
-  //console.log("Fetch sections for academic year:", selectedAcademicYear);
   const {
     data: sections, //the data is renamed sections
     isLoading: isSectionsLoading,
     isSuccess: isSectionsSuccess,
-    isError: isSectionsError,
-    error: sectionsError,
+    // isError: isSectionsError,
+    // error: sectionsError,
   } = useGetSectionsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,

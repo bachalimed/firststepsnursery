@@ -24,10 +24,12 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
-  selectAllAcademicYears,
 } from "../../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 
 const StudentDocuments = () => {
+  useEffect(() => {
+    document.title = "Students Documents";
+  });
   const { id } = useParams(); //pull the id from use params from the url
   //console.log(id,'in the parent before form')
   //will get hte student from the state
@@ -49,8 +51,6 @@ const StudentDocuments = () => {
     selectedAcademicYear?.title || ""
   );
   const [studentDocumentLabel, setStudentDocumentLabel] = useState("");
-  const [validStudentDocumentLabel, setValidStudentDocumentLabel] =
-    useState("");
   const [studentDocumentReference, setStudentDocumentReference] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);

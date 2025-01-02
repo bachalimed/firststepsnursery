@@ -4,7 +4,6 @@ import {
 } from "./payeesApiSlice";
 import { HiOutlineSearch } from "react-icons/hi";
 import FinancesSet from "../../FinancesSet";
-import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -22,6 +21,8 @@ import {
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 import { useOutletContext } from "react-router-dom";
 const PayeesList = () => {
+  useEffect(()=>{document.title="Payees List"})
+
   //this is for the academic year selection
   const navigate = useNavigate();
 
@@ -40,8 +41,8 @@ const PayeesList = () => {
     data: payees, //the data is renamed payees
     isLoading: isPayeesLoading,
     isSuccess: isPayeesSuccess,
-    isError: isPayeesError,
-    error: payeesError,
+    // isError: isPayeesError,
+    // error: payeesError,
   } = useGetPayeesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -58,7 +59,7 @@ const PayeesList = () => {
     deletePayee,
     {
       isLoading: isDelLoading,
-      isSuccess: isDelSuccess,
+      // isSuccess: isDelSuccess,
       isError: isDelError,
       error: delError,
     },

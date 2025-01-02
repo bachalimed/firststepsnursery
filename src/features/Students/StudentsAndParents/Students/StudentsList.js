@@ -25,6 +25,7 @@ import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionC
 import { useNavigate, useOutletContext, Link } from "react-router-dom";
 import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
+import { useEffect } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useGetAttendedSchoolsQuery } from "../../../AppSettings/AcademicsSet/attendedSchools/attendedSchoolsApiSlice";
 import useAuth from "../../../../hooks/useAuth";
@@ -33,6 +34,7 @@ import { setStudents } from "./studentsSlice";
 import { gradeOptions } from "../../../../config/Constants";
 
 const StudentsList = () => {
+  useEffect(()=>{document.title="Students List"})
   //this is for the academic year selection
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -154,7 +156,7 @@ const StudentsList = () => {
     const { entities } = students;
 
     studentsList = Object.values(entities);
-    dispatch(setStudents(studentsList)); //timing issue to update the state and use it the same time
+    //dispatch(setStudents(studentsList)); //timing issue to update the state and use it the same time
 
     // Apply filters to the students list
     filteredStudents = studentsList.filter((student) => {

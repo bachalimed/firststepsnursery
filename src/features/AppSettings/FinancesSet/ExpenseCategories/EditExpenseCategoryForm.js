@@ -16,6 +16,8 @@ import ConfirmationModal from "../../../../Components/Shared/Modals/Confirmation
 
 
 const EditExpenseCategoryForm = ({ expenseCategory }) => {
+  useEffect(()=>{document.title="Edit Expense Category"})
+
   const navigate = useNavigate();
   const { userId, isAdmin } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -78,16 +80,7 @@ const EditExpenseCategoryForm = ({ expenseCategory }) => {
 
   useEffect(() => {
     if (isUpdateSuccess) {
-      setFormData({
-        id: "",
-        expenseCategoryLabel: "",
-        expenseCategoryYears: [],
-        expenseCategoryItems: [],
-        expenseCategoryIsActive: "",
-        // expenseCategoryService:"",
-        expenseCategoryOperator: "",
-        expenseCategoryCreator: "",
-      });
+      setFormData({});
       navigate("/settings/financesSet/expenseCategoriesList/");
     }
   }, [isUpdateSuccess, navigate]);

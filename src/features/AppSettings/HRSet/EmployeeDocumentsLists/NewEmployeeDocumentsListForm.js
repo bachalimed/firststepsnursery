@@ -16,6 +16,8 @@ import ConfirmationModal from "../../../../Components/Shared/Modals/Confirmation
 import { useOutletContext } from "react-router-dom";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 const NewEmployeeDocumentsListForm = () => {
+  useEffect(()=>{document.title="New Employee Documents List"})
+
   const Navigate = useNavigate();
 
   const [

@@ -19,6 +19,7 @@ import useAuth from "../../../hooks/useAuth";
 import { useOutletContext } from "react-router-dom";
 
 const EditUserForm = ({ user }) => {
+  useEffect(()=>{document.title="Edit User"})
   //user was passed as prop in editUser
   const navigate = useNavigate();
   const { isManager, isAdmin, isDirector } = useAuth();
@@ -123,35 +124,7 @@ const EditUserForm = ({ user }) => {
 
   useEffect(() => {
     if (isUpdateSuccess) {
-      setFormData({
-        username: "",
-        password: undefined,
-        userRoles: [],
-        userAllowedActions: [],
-        userFullName: {
-          userFirstName: "",
-          userMiddleName: "",
-          userLastName: "",
-        },
-        userDob: "",
-        userSex: "",
-        userIsActive: false,
-        userPhoto: "",
-        userAddress: {
-          house: "",
-          street: "",
-          area: "",
-          postCode: "",
-          city: "",
-        },
-        userContact: {
-          primaryPhone: "",
-          secondaryPhone: "",
-          email: "",
-        },
-        familyId: undefined,
-        employeeId: undefined,
-      });
+      setFormData({});
       navigate("/admin/usersManagement/users/");
     }
   }, [isUpdateSuccess, navigate]);

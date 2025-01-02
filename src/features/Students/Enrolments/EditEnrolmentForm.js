@@ -20,6 +20,9 @@ import { CurrencySymbol } from "../../../config/Currency";
 import { useOutletContext } from "react-router-dom";
 
 const EditEnrolmentForm = ({ enrolment }) => {
+  useEffect(() => {
+    document.title = "Edit Enrolment";
+  });
   // console.log(enrolment, "enrolment");
   // initialising states
   const { isAdmin, userId } = useAuth();
@@ -83,23 +86,7 @@ const EditEnrolmentForm = ({ enrolment }) => {
   useEffect(() => {
     if (isUpdateSuccess) {
       //if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
-      setFormData({
-        enrolmentId: "",
-        student: "",
-        enrolmentYear: "",
-        enrolmentMonth: "",
-
-        service: "",
-        serviceType: "",
-        servicePeriod: "",
-        servicePeriod: "",
-        serviceAuthorisedFee: "",
-        serviceFinalFee: "",
-        enrolmentNote: "",
-        enrolmentSuspension: "",
-        enrolmentInvoice: "",
-        enrolmentOperator: "", // Set to the operator id
-      });
+      setFormData({});
       navigate("/students/enrolments/enrolments"); //will navigate here after saving
     }
   }, [isUpdateSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success

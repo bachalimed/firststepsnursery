@@ -15,6 +15,9 @@ import useAuth from "../../../hooks/useAuth";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 
 const PayslipDetails = () => {
+  useEffect(() => {
+    document.title = "Payslip Details";
+  });
   const { id } = useParams();
 
   const { canEdit } = useAuth();
@@ -25,8 +28,8 @@ const PayslipDetails = () => {
     data: payslipOrg, //the data is renamed payslips
     isLoading: isPayslipLoading,
     isSuccess: isPayslipSuccess,
-    isError: isPayslipError,
-    error: payslipError,
+    // isError: isPayslipError,
+    // error: payslipError,
   } = useGetPayslipByIdQuery(
     {
       id: id,

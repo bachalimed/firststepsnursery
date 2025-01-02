@@ -1,6 +1,6 @@
 import { useGetEmployeesByYearQuery } from "../../../HR/Employees/employeesApiSlice";
 import DataTable from "react-data-table-component";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { FiEdit } from "react-icons/fi";
@@ -21,6 +21,7 @@ import { useSelector } from "react-redux";
 import Academics from "../../Academics";
 import { MONTHS } from "../../../../config/Months";
 const AnimatorsAssignmentsList = () => {
+  useEffect(()=>{document.title="Animators Assignments List"})
   const navigate = useNavigate();
 
   //get several things from the query

@@ -1,23 +1,23 @@
 import { useState, useEffect } from "react";
-import { useAddNewFamilyMutation } from "./familiesApiSlice";
-import { ROLES } from "../../../../config/UserRoles";
-import { ACTIONS } from "../../../../config/UserActions";
 import { useGetStudentsByYearQuery } from "../Students/studentsApiSlice";
 import { useContext } from "react";
 import { StepperContext } from "../../../../contexts/StepperContext";
 //constrains on inputs when creating new parent
 
 const NewFamilyAddChildrenForm = () => {
+  useEffect(() => {
+    document.title = "Add Children";
+  });
   //an add parent function that can be called inside the component
   const { children, setChildren, canSaveChildren, setCanSaveChildren } =
     useContext(StepperContext);
 
   const {
     data: students, 
-    isLoading: isStudentListLoading, 
+    // isLoading: isStudentListLoading, 
     isSuccess: isStudentListSuccess,
-    isError: isStudentListError,
-    error: studentListError,
+    // isError: isStudentListError,
+    // error: studentListError,
   } = useGetStudentsByYearQuery(
     {
       selectedYear: "1000",

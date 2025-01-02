@@ -27,6 +27,9 @@ import { CurrencySymbol } from "../../../config/Currency";
 import { useOutletContext } from "react-router-dom";
 
 const NewExpenseForm = () => {
+  useEffect(() => {
+    document.title = "New Expense";
+  });
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
@@ -195,21 +198,7 @@ const NewExpenseForm = () => {
   // Clear form and errors on success
   useEffect(() => {
     if (isAddSuccess) {
-      setFormData({
-        expenseYear: "",
-        expenseMonth: "",
-        expenseAmount: "",
-        expenseNote: "",
-        expenseCategory: "",
-        expenseItems: [],
-        expensePayee: "",
-        expenseDate: "",
-        expensePaymentDate: "",
-
-        expenseMethod: "",
-        expenseOperator: "",
-        expenseCreator: "",
-      });
+      setFormData({});
 
       navigate("/finances/expenses/expensesList/");
     }

@@ -62,6 +62,7 @@ const PropertyPane = ({ title, children }) => {
 
 
 const ClassroomsPlannings = () => {
+  useEffect(()=>{document.title="Classroom Plannings List"})
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)

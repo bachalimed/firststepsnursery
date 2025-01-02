@@ -83,6 +83,7 @@ const TimelineResourceGrouping = styled.div`
  * elaborates teh events and we can assign the animators according to their assignemtn
  */
 const SectionsPlannings = () => {
+  useEffect(()=>{document.title="Sections Planning"})
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)

@@ -18,6 +18,9 @@ import { COMMENT_REGEX, OBJECTID_REGEX } from "../../../config/REGEX";
 import { CurrencySymbol } from "../../../config/Currency";
 //import { MONTHS } from "../../../config/Months";
 const NewEnrolmentForm = () => {
+  useEffect(() => {
+    document.title = "New Enrolment";
+  });
   // State and hooks initialization
   const { isAdmin, userId } = useAuth();
   const navigate = useNavigate();
@@ -44,8 +47,8 @@ const NewEnrolmentForm = () => {
     data: admissions, //the data is renamed admissions
     isLoading: isAdmissionLoading,
     isSuccess: isAdmissionSuccess,
-    isError: isAdmissionError,
-    error: admissionError,
+    // isError: isAdmissionError,
+    // error: admissionError,
   } = useGetAdmissionsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -143,16 +146,7 @@ const NewEnrolmentForm = () => {
   useEffect(() => {
     if (isAddSuccess) {
       // Reset the form data
-      setFormData({
-        student: "",
-        admission: "",
-        enrolmentYear: "",
-        enrolmentMonth: "",
-        enrolmentNote: "",
-        enrolmentCreator: "",
-        enrolmentOperator: "",
-        enrolments: [],
-      });
+      setFormData({});
 
       // Navigate to the enrolments page
       navigate("/students/enrolments/enrolments/");

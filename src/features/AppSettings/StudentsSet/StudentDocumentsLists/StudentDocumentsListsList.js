@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { Link, useNavigate, useOutletContext } from "react-router-dom";
-import { setStudentDocumentsLists } from "./studentDocumentsListsSlice";
+import {  useNavigate, useOutletContext } from "react-router-dom";
 import {
   useGetStudentDocumentsListsQuery,
   useDeleteStudentDocumentsListMutation,
@@ -11,12 +10,15 @@ import useAuth from "../../../../hooks/useAuth";
 import { FiEdit } from "react-icons/fi";
 import StudentsSet from "../../StudentsSet";
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
-
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { HiOutlineSearch } from "react-icons/hi";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 
 const StudentDocumentsListsList = () => {
+  useEffect(() => {
+    document.title = "Student Documents List";
+  });
+
   //initialise state variables and hooks
   const Navigate = useNavigate();
   const dispatch = useDispatch();
@@ -32,8 +34,8 @@ const StudentDocumentsListsList = () => {
     data: studentDocumentsListsData,
     isLoading: isDocumentsListsLoading,
     isSuccess: isDocumentsListsSuccess,
-    isError: isDocumentsListsError,
-    error: documentsListsError,
+    // isError: isDocumentsListsError,
+    // error: documentsListsError,
   } = useGetStudentDocumentsListsQuery(
     {
       endpointName: "StudentDocumentsListsList",
@@ -46,7 +48,12 @@ const StudentDocumentsListsList = () => {
   //initialising the delete Mutation
   const [
     deleteStudentDocumentsList,
-    { isSuccess: isDelSuccess, isError: isDelError, error: delError },
+    {
+      // isSuccess: isDelSuccess,
+      // isLoading: isDelLoading,
+      isError: isDelError,
+      error: delError,
+    },
   ] = useDeleteStudentDocumentsListMutation();
 
   //handler for deleting a studetnDocumentsList

@@ -1,26 +1,21 @@
 import { useParams } from "react-router-dom"; //because we will get the userId from the url
-import { useSelector } from "react-redux";
-import { selectSectionById } from "./sectionsApiSlice"; //we will pull the user  data from the state and not use query
+import {  useEffect } from "react";
 import EditSectionForm from "./EditSectionForm";
 import {
-  useUpdateSectionMutation,
   useGetSectionByIdQuery,
-  useDeleteSectionMutation,
 } from "./sectionsApiSlice";
-import useAuth from "../../../hooks/useAuth";
-import { currentSectionsList } from "./sectionsSlice";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
-import { GiConsoleController } from "react-icons/gi";
 import Academics from "../Academics";
 const EditSection = () => {
+  useEffect(()=>{document.title="Edit Section"})
   const { id } = useParams(); //pull the id from use params from the url
   //console.log(id, "idddddddd");
   const {
     data: secToEdit, //the data is renamed families
-    isLoading: isSectionLoading, //monitor several situations
+    // isLoading: isSectionLoading, //monitor several situations
     isSuccess: isSectionSuccess,
-    isError: isSectionError,
-    error: sectionError,
+    // isError: isSectionError,
+    // error: sectionError,
   } = useGetSectionByIdQuery(
     { id: id, endpointName: "EditSection" }, ////in the backend we populate studetn to get his name
     {

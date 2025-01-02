@@ -14,7 +14,9 @@ import Students from "../../Students";
 import useFetchPhoto from "../../../../hooks/useFetchPhoto";
 import useAuth from "../../../../hooks/useAuth";
 const StudentDetails = () => {
-
+  useEffect(() => {
+    document.title = "Student Details";
+  });
   const {canEdit}=useAuth()
   const { id } = useParams();
   const navigate = useNavigate();
@@ -28,7 +30,7 @@ const StudentDetails = () => {
     data: studentOrg,
     isLoading: studentOrgIsLoading,
     isSuccess: studentOrgIsSuccess,
-    isError: studentOrgIsError,
+    // isError: studentOrgIsError,
   } = useGetStudentByIdQuery(
     { id: id, endpointName: "StudentDetails" },
     {

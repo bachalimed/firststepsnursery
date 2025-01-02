@@ -9,6 +9,8 @@ import {
 } from "../../../../config/REGEX";
 
 const NewClassroomForm = () => {
+  useEffect(()=>{document.title="New Classroom"})
+
   const [formData, setFormData] = useState({
     classroomNumber: "",
     classroomLabel: "",
@@ -50,14 +52,7 @@ const NewClassroomForm = () => {
   // Clear form and errors on success
   useEffect(() => {
     if (isAddSuccess) {
-      setFormData({
-        classroomNumber: "",
-        classroomLabel: "",
-        classroomCapacity: "",
-        classroomMaxCapacity: "",
-
-        classroomColor: "#FF5733", // Reset to default color
-      });
+      setFormData({});
 
       navigate("/settings/academicsSet/classrooms/");
     }

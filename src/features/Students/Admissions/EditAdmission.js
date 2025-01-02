@@ -1,24 +1,24 @@
 import { useParams } from "react-router-dom"; //because we will get the userId from the url
-import { useSelector } from "react-redux";
 import {
-  selectAdmissionById,
   useGetAdmissionByIdQuery,
 } from "./admissionsApiSlice"; //we will pull the user  data from the state and not use query
 import EditAdmissionForm from "./EditAdmissionForm";
-import useAuth from "../../../hooks/useAuth";
-import { currentAdmissionsList } from "./admissionsSlice";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
-import { GiConsoleController } from "react-icons/gi";
 import Students from'../Students'
+import { useEffect } from "react";
+
 const EditAdmission = () => {
+  useEffect(() => {
+    document.title = "Edit Admission";
+  });
   const { id } = useParams(); //pull the id from use params from the url
   // console.log(id, "idddddddd");
   const {
     data: admToEdit, //the data is renamed families
-    isLoading: isAdmissionLoading, //monitor several situations
+    // isLoading: isAdmissionLoading, //monitor several situations
     isSuccess: isAdmissionSuccess,
-    isError: isAdmissionError,
-    error: admissionError,
+    // isError: isAdmissionError,
+    // error: admissionError,
   } = useGetAdmissionByIdQuery(
     { id: id, endpointName: "EditAdmission" },
     {

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAddNewUserMutation } from "./usersApiSlice";
 import { useNavigate } from "react-router-dom";
-
 import { ROLES } from "../../../config/UserRoles";
 import { ACTIONS } from "../../../config/UserActions";
 import UsersManagement from "../UsersManagement";
@@ -19,6 +18,7 @@ import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationMod
 import { useOutletContext } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 const NewUserForm = () => {
+  useEffect(()=>{document.title="New User"})
   //an add user function that can be called inside the component
   const [
     addNewUser,
@@ -127,34 +127,7 @@ const NewUserForm = () => {
 
   useEffect(() => {
     if (isAddSuccess) {
-      setFormData({
-        username: "",
-        password: "",
-        userRoles: [],
-        userAllowedActions: [],
-        userFullName: {
-          userFirstName: "",
-          userMiddleName: "",
-          userLastName: "",
-        },
-        userDob: "",
-        userSex: "",
-        userIsActive: false,
-        userAddress: {
-          house: "",
-          street: "",
-          area: "",
-          postCode: "",
-          city: "",
-        },
-        userContact: {
-          primaryPhone: "",
-          secondaryPhone: "",
-          email: "",
-        },
-        familyId: undefined,
-        employeeId: undefined,
-      });
+      setFormData({});
       navigate("/admin/usersManagement/users/");
     }
   }, [isAddSuccess, navigate]);

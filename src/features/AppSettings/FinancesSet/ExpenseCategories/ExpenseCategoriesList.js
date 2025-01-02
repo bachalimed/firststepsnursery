@@ -6,7 +6,7 @@ import { HiOutlineSearch } from "react-icons/hi";
 import FinancesSet from "../../FinancesSet";
 import DataTable from "react-data-table-component";
 import { useSelector } from "react-redux";
-import {  useState } from "react";
+import {  useState, useEffect } from "react";
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { ImProfile } from "react-icons/im";
@@ -21,12 +21,13 @@ import {
 } from "../../AcademicsSet/AcademicYears/academicYearsSlice";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 const ExpenseCategoriesList = () => {
+  useEffect(()=>{document.title="Expense Categories List"})
+
   //this is for the academic year selection
   const navigate = useNavigate();
 
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
-  const [requiredDocNumber, setRequiredDocNumber] = useState("");
-  const [expenseCategoryDocNumber, setExpenseCategoryDocNumber] = useState("");
+ 
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idExpenseCategoryToDelete, setIdExpenseCategoryToDelete] =
@@ -42,8 +43,8 @@ const ExpenseCategoriesList = () => {
     data: expenseCategories, //the data is renamed expenseCategories
     isLoading: isExpenseCategoriesLoading,
     isSuccess: isExpenseCategoriesSuccess,
-    isError: isExpenseCategoriesError,
-    error: expenseCategoriesError,
+    // isError: isExpenseCategoriesError,
+    // error: expenseCategoriesError,
   } = useGetExpenseCategoriesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -60,7 +61,7 @@ const ExpenseCategoriesList = () => {
     deleteExpenseCategory,
     {
       isLoading: isDelLoading,
-      isSuccess: isDelSuccess,
+      // isSuccess: isDelSuccess,
       isError: isDelError,
       error: delError,
     },

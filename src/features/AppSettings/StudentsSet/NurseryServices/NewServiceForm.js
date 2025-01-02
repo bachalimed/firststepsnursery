@@ -15,6 +15,10 @@ import { FEE_REGEX } from "../../../../config/REGEX";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 
 const NewServiceForm = () => {
+  useEffect(() => {
+    document.title = "New Service";
+  });
+
   const navigate = useNavigate();
   const { isAdmin, userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -23,8 +27,15 @@ const NewServiceForm = () => {
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
   //console.log(selectedAcademicYear?.title, "selectedAcademicYear");
-  const [addNewService, { isLoading:isAddLoading, isSuccess:isAddSuccess, isError:isAddError, error:addError }] =
-    useAddNewServiceMutation();
+  const [
+    addNewService,
+    {
+      isLoading: isAddLoading,
+      isSuccess: isAddSuccess,
+      isError: isAddError,
+      error: addError,
+    },
+  ] = useAddNewServiceMutation();
 
   // Consolidated form state
   const [formData, setFormData] = useState({
@@ -69,17 +80,7 @@ const NewServiceForm = () => {
   // If the service is added successfully, reset the form and navigate
   useEffect(() => {
     if (isAddSuccess) {
-      setFormData({
-        serviceType: "",
-        serviceYear: "",
-        serviceAnchor: {
-          monthly: 0,
-          weekly: 0,
-          oneTimeOff: 0,
-        },
-        serviceCreator: "",
-        serviceOperator: "",
-      });
+      setFormData({});
       navigate("/settings/studentsSet/services");
     }
   }, [isAddSuccess, navigate]);
@@ -125,11 +126,10 @@ const NewServiceForm = () => {
 
     try {
       const response = await addNewService(formData);
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {

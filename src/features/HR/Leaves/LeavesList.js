@@ -3,11 +3,10 @@ import { GiMoneyStack } from "react-icons/gi";
 import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
 import { IoMdCheckboxOutline } from "react-icons/io";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
 // import RegisterModal from './RegisterModal'
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
@@ -30,9 +29,11 @@ import {
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { MONTHS } from "../../../config/Months";
 const LeavesList = () => {
+  useEffect(() => {
+    document.title = "Leaves List";
+  });
   //this is for the academic year selection
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
 
@@ -57,8 +58,8 @@ const LeavesList = () => {
     data: leaves, //the data is renamed leaves
     isLoading: isLeavesLoading,
     isSuccess: isLeavesSuccess,
-    isError: isLeavesError,
-    error: leavesError,
+    // isError: isLeavesError,
+    // error: leavesError,
   } = useGetLeavesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -75,7 +76,7 @@ const LeavesList = () => {
     deleteLeave,
     {
       isLoading: isDelLoading,
-      isSuccess: isDelSuccess,
+      // isSuccess: isDelSuccess,
       isError: isDelError,
       error: delError,
     },

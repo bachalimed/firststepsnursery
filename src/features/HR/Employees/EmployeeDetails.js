@@ -13,6 +13,9 @@ import HR from "../HR";
 import useAuth from "../../../hooks/useAuth";
 
 const EmployeeDetails = () => {
+  useEffect(() => {
+    document.title = "Employee Details";
+  });
   const { id } = useParams();
 
 
@@ -26,10 +29,10 @@ const EmployeeDetails = () => {
   const academicYears = useSelector(selectAllAcademicYears);
   const {
     data: employee, //the data is renamed employees
-    isLoading: isEmployeeLoading, 
+    // isLoading: isEmployeeLoading, 
     isSuccess: isEmployeeSuccess,
-    isError: isEmployeeError,
-    error: employeeError,
+    // isError: isEmployeeError,
+    // error: employeeError,
   } = useGetEmployeeByIdQuery(
     {
       id: id,

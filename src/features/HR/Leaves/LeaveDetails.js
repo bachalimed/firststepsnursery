@@ -3,8 +3,12 @@ import { useGetLeaveByIdQuery } from "./leavesApiSlice";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import useAuth from "../../../hooks/useAuth";
 import HR from "../HR";
+import { useEffect } from "react";
 
 const LeaveDetails = () => {
+  useEffect(() => {
+    document.title = "Leave Details";
+  });
   const { id } = useParams();
   const navigate = useNavigate();
   const { canEdit } = useAuth();

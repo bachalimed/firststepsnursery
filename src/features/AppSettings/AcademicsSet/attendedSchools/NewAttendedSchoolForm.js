@@ -8,6 +8,8 @@ import { NAME_REGEX } from "../../../../config/REGEX";
 import { SchoolTypeOptions } from "../../../../config/Constants";
 
 const NewAttendedSchoolForm = () => {
+  useEffect(()=>{document.title="New Attended School"})
+
   const [formData, setFormData] = useState({
     schoolName: "",
     schoolCity: "",
@@ -44,12 +46,7 @@ const NewAttendedSchoolForm = () => {
   // Clear form and errors on success
   useEffect(() => {
     if (isAddSuccess) {
-      setFormData({
-        schoolName: "",
-        schoolCity: "",
-        schoolType: "",
-        schoolColor: "#FF5733", // Reset to default color
-      });
+      setFormData({});
       setError("");
       navigate("/settings/academicsSet/attendedSchools/");
     }

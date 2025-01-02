@@ -11,22 +11,22 @@ import {
 import {
   NAME_REGEX,
   OBJECTID_REGEX,
-  USER_REGEX,
-  PHONE_REGEX,
   DATE_REGEX,
   YEAR_REGEX,
   COMMENT_REGEX,
 } from "../../../config/REGEX";
 import useAuth from "../../../hooks/useAuth";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
-import { MONTHS } from "../../../config/Months";
 import { useOutletContext } from "react-router-dom";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 
 const EditLeaveForm = ({ leave }) => {
+  useEffect(() => {
+    document.title = "Edit Leave";
+  });
   const navigate = useNavigate();
   const { userId } = useAuth();
-  const { isAdmin, isManager } = useAuth();
+ 
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
@@ -130,21 +130,7 @@ const EditLeaveForm = ({ leave }) => {
   }, [formData]);
   useEffect(() => {
     if (isUpdateSuccess) {
-      setFormData({
-        leaveYear: "",
-        leaveMonth: "",
-        leaveEmployee: "",
-        leaveIsGiven: "",
-        leaveIsPaidLeave: "",
-        leaveIsSickLeave: "",
-        leaveIsPartDay: "",
-        leaveStartDate: "",
-        leaveEndDate: "",
-        leaveStartTime: "",
-        leaveEndTime: "",
-        leaveComment: "",
-        leaveOperator: "",
-      });
+      setFormData({});
       navigate("/hr/leaves/leavesList/");
     }
   }, [isUpdateSuccess, navigate]);

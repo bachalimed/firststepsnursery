@@ -1,17 +1,16 @@
 import { useState, useEffect } from "react";
-import { ROLES } from "../../../../config/UserRoles";
-import { ACTIONS } from "../../../../config/UserActions";
 import { useContext } from "react";
 import { StepperContext } from "../../../../contexts/StepperContext";
 import {
-  USER_REGEX,
-  PWD_REGEX,
   NAME_REGEX,
   PHONE_REGEX,
   DATE_REGEX,
 } from "../../../../config/REGEX";
 
 export default function EditFatherForm() {
+  useEffect(() => {
+    document.title = "Edit Father";
+  });
   //an add parent function that can be called inside the component
   //const {userData, setUserData} = useContext(StepperContext)
   const {

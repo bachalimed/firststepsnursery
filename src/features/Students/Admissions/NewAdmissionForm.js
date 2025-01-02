@@ -41,6 +41,9 @@ const useDebounce = (value, delay) => {
 };
 
 const NewAdmissionForm = () => {
+  useEffect(() => {
+    document.title = "New Admission";
+  });
   // initialising states
   const { isAdmin, userId } = useAuth();
   const navigate = useNavigate();

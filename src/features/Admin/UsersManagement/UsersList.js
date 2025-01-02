@@ -1,6 +1,6 @@
 import { useGetUsersQuery, useDeleteUserMutation } from "./usersApiSlice";
 import DataTable from "react-data-table-component";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useAuth from "../../../hooks/useAuth";
 import { LuKeyRound } from "react-icons/lu";
 import { Link, useNavigate } from "react-router-dom";
@@ -17,6 +17,9 @@ import { ACTIONS } from "../../../config/UserActions";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
 import { useOutletContext } from "react-router-dom";
 const UsersList = () => {
+  useEffect(() => {
+    document.title = "Users List";
+  });
   //initialise state variables and hooks
   const navigate = useNavigate();
   //const dispatch = useDispatch();
@@ -28,8 +31,8 @@ const UsersList = () => {
     data: users, //deconstructing data into users
     isLoading: isUsersLoading,
     isSuccess: isUsersSuccess,
-    isError: isUsersError,
-    error: usersError,
+    // isError: isUsersError,
+    // error: usersError,
   } = useGetUsersQuery("usersList", {
     pollingInterval: 60000, //will refetch data every 60seconds
     refetchOnFocus: true,
@@ -38,7 +41,12 @@ const UsersList = () => {
 
   const [
     deleteUser,
-    { isSuccess: isDelSuccess, isError: isDelError, error: delError },
+    {
+      // isSuccess: isDelSuccess,
+      // isLoading: isDelLoading,
+      isError: isDelError,
+      error: delError,
+    },
   ] = useDeleteUserMutation();
 
   // State for search query and selected filters

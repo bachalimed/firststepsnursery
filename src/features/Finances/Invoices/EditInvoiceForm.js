@@ -11,15 +11,15 @@ import {
   selectAllAcademicYears,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import {
-  NAME_REGEX,
-  DATE_REGEX,
-  OBJECTID_REGEX,
-  YEAR_REGEX,
+    DATE_REGEX,
   NUMBER_REGEX,
   COMMENT_REGEX,
 } from "../../../config/REGEX";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 const EditInvoiceForm = ({ invoice }) => {
+  useEffect(() => {
+    document.title = "Edit invoice";
+  });
   const { userId, isManager,isAdmin } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
@@ -113,21 +113,7 @@ const EditInvoiceForm = ({ invoice }) => {
   // Clear form and navigate on success
   useEffect(() => {
     if (isUpdateSuccess) {
-      setFormData({
-        id: "",
-        invoiceYear: "",
-        invoiceMonth: "",
-        invoiceEnrolment: "",
-        invoiceDueDate: "",
-        invoiceIssueDate: "",
-        invoiceIsFullyPaid: "",
-        invoiceAmount: 0,
-        invoiceAuthorisedAmount: 0,
-        invoiceDiscountAmount: 0,
-        invoiceDiscountType: "",
-        invoiceDiscountNote: "",
-        invoiceOperator: "",
-      });
+      setFormData({});
 
       navigate("/finances/invoices/invoicesList");
     }

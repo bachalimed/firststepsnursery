@@ -23,6 +23,9 @@ import useAuth from "../../../hooks/useAuth";
 import { MdPaid, MdOutlinePaid } from "react-icons/md";
 import { useOutletContext } from "react-router-dom";
 const InvoicesList = () => {
+  useEffect(() => {
+    document.title = "Invoices List";
+  });
   //this is for the academic year selection
   const navigate = useNavigate();
   const { triggerBanner } = useOutletContext(); // Access banner trigger

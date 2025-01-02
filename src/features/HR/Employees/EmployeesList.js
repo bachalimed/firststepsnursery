@@ -25,6 +25,9 @@ import {
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 const EmployeesList = () => {
+  useEffect(() => {
+    document.title = "Employees List";
+  });
   //this is for the academic year selection
   const navigate = useNavigate();
 

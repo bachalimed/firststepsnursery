@@ -9,7 +9,6 @@ import {
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { useGetServicesByYearQuery } from "../../AppSettings/StudentsSet/NurseryServices/servicesApiSlice";
 import { useUpdateAdmissionMutation } from "./admissionsApiSlice";
-
 import useAuth from "../../../hooks/useAuth";
 import { selectAllAcademicYears } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import {
@@ -20,26 +19,28 @@ import {
 } from "../../../config/REGEX";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 import { useOutletContext } from "react-router-dom";
-
 import { MONTHS } from "../../../config/Months";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
-
+  
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedValue(value);
     }, delay);
-
+    
     return () => {
       clearTimeout(handler);
     };
   }, [value, delay]);
-
+  
   return debouncedValue;
 };
 
 const EditAdmissionForm = ({ admission }) => {
+  useEffect(() => {
+    document.title = "Edit Admission";
+  });
   // console.log(admission, "admission");
   // initialising states
   const { isAdmin, userId } = useAuth();
@@ -255,27 +256,7 @@ const EditAdmissionForm = ({ admission }) => {
   useEffect(() => {
     if (isUpdateSuccess) {
       //if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
-      setFormData({
-        admissionId: "",
-        student: "",
-        admissionYear: "",
-        admissionDate: "",
-        agreedServices: [
-          {
-            service: "",
-            feeValue: "",
-            feePeriod: "",
-            feeStartDate: "",
-            feeMonths: [],
-            feeEndDate: "",
-            isFlagged: false,
-            //authorisedBy:"", it will generate error in mongo if ""
-            comment: "",
-          },
-        ],
-        admissionCreator: "", // Set to the logged-in user id
-        admissionOperator: "", // Set to the operator id
-      });
+      setFormData({});
       navigate("/students/admissions/admissions"); //will navigate here after saving
     }
   }, [isUpdateSuccess, navigate]); //even if no success it will navigate and not show any warning if failed or success

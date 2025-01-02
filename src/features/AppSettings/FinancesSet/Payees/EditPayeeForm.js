@@ -17,6 +17,8 @@ import {
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 
 const EditPayeeForm = ({ payee }) => {
+  useEffect(()=>{document.title="Edit Payee"})
+
   const navigate = useNavigate();
   const { userId,isAdmin } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -71,16 +73,7 @@ const EditPayeeForm = ({ payee }) => {
 
   useEffect(() => {
     if (isUpdateSuccess) {
-      setFormData({
-        payeeLabel: "",
-        payeePhone: "",
-        payeeAddress: "",
-        payeeNotes: "",
-        payeeIsActive: "",
-        payeeYears: [],
-        //payeeCategories: [],
-        payeeOperator: "",
-      });
+      setFormData({});
       navigate("/settings/financesSet/payeesList/");
     }
   }, [isUpdateSuccess, navigate]);

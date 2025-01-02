@@ -29,6 +29,9 @@ import {
 //constrains on inputs when creating new user
 
 const EmployeeDocuments = () => {
+  useEffect(() => {
+    document.title = "Employee Documnets List";
+  });
   const { id: userId } = useParams(); //pull the id from use params from the url
   const Navigate = useNavigate();
 

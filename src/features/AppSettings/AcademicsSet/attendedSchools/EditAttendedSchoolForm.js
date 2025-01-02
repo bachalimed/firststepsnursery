@@ -6,6 +6,8 @@ import { NAME_REGEX } from "../../../../config/REGEX";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 import { SchoolTypeOptions } from "../../../../config/Constants";
 const EditAttendedSchoolForm = ({ attendedSchool }) => {
+  useEffect(()=>{document.title="Edit Attended School"})
+
   //confirmation Modal states
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [formData, setFormData] = useState({
@@ -44,6 +46,7 @@ const EditAttendedSchoolForm = ({ attendedSchool }) => {
   // Redirect on success
   useEffect(() => {
     if (isUpdateSuccess) {
+      setFormData({})
       navigate("/settings/academicsSet/attendedSchools/");
     }
   }, [isUpdateSuccess, navigate]);

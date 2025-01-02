@@ -1,12 +1,13 @@
 import { useParams } from "react-router-dom"; //because we will get the userId from the url
 import { useSelector } from "react-redux";
-import { selectStudentById, useGetStudentByIdQuery } from "./studentsApiSlice"; //we will pull the user  data from the state and not use query
 import EditStudentForm from "./EditStudentForm";
-import useAuth from "../../../../hooks/useAuth";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
-import { currentStudentsList } from "./studentsSlice";
 import Students from "../../Students";
+import { useEffect } from "react";
 const EditStudent = () => {
+  useEffect(() => {
+    document.title = "Edit Student";
+  });
   const { id } = useParams(); //pull the id from use params from the url
 
   //will get hte student from the state

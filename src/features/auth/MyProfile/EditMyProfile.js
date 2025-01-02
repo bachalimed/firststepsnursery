@@ -1,12 +1,14 @@
 //a page that will prepare params for the edit form by passing the id of the user to be edited
 
 import { useParams } from "react-router-dom";
-
+import { useEffect } from "react";
 import EditUserForm from "./EditMyProfileForm";
 // import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 // import MyProfile from "../MyProfile";
 import { useGetUserByIdQuery } from "../../Admin/UsersManagement/usersApiSlice";
 const EditMyProfile = () => {
+  useEffect(()=>{document.title="Edit Profile"})
+
   //get the userId from the url
   const { id } = useParams();
   // console.log(id, "idddddddd");

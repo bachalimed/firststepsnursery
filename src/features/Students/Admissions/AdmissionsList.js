@@ -4,6 +4,7 @@ import {
   useDeleteAdmissionMutation,
 } from "./admissionsApiSlice";
 import { HiOutlineSearch } from "react-icons/hi";
+import { useEffect } from "react";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
@@ -26,6 +27,9 @@ import { useOutletContext, useNavigate } from "react-router-dom";
 import { MONTHS } from "../../../config/Months";
 // import { CurrencySymbol } from "../../../config/Constants";
 const AdmissionsList = () => {
+  useEffect(() => {
+    document.title = "Admissions List";
+  });
   //this is for the academic year selection
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -47,8 +51,8 @@ const AdmissionsList = () => {
     data: admissions, //the data is renamed admissions
     isLoading: isAdmissionsLoading,
     isSuccess: isAdmissionsSuccess,
-    isError: isAdmissionsError,
-    error: admissionsError,
+    // isError: isAdmissionsError,
+    // error: admissionsError,
   } = useGetAdmissionsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -64,8 +68,8 @@ const AdmissionsList = () => {
     data: services,
     isLoading: isServicesLoading,
     isSuccess: isServicesSuccess,
-    isError: isServicesError,
-    error: servicesError,
+    // isError: isServicesError,
+    // error: servicesError,
   } = useGetServicesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -83,7 +87,7 @@ const AdmissionsList = () => {
     deleteAdmission,
     {
       isLoading: isDelLoading,
-      isSuccess: isDelSuccess,
+      // isSuccess: isDelSuccess,
       isError: isDelError,
       error: delerror,
     },
@@ -148,7 +152,7 @@ const AdmissionsList = () => {
 
     //we need to change into array to be read??
     admissionsList = Object.values(entities); //we are using entity adapter in this query
-    dispatch(setAdmissions(admissionsList)); //timing issue to update the state and use it the same time
+    //dispatch(setAdmissions(admissionsList)); //timing issue to update the state and use it the same time
 
     // Apply filters for search, month, and service type with both conditions required
     filteredAdmissions = admissionsList.filter((item) => {

@@ -9,6 +9,9 @@ import usePersist from "../../hooks/usePersist";
 import PublicHeader from "../../Components/Shared/Header/PublicHeader";
 import PublicFooter from "../../Components/Shared/Footer/PublicFooter";
 const Login = () => {
+  useEffect(() => {
+    document.title = "Login";
+  });
   const userRef = useRef(); //to set the focus on user input
   const errRef = useRef(); //to set the focus if there is an error
   const [username, setUsername] = useState("");

@@ -25,6 +25,9 @@ import { useOutletContext } from "react-router-dom";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 
 const NewPayslipForm = () => {
+  useEffect(() => {
+    document.title = "New Payslip";
+  });
   const navigate = useNavigate();
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -48,8 +51,8 @@ const NewPayslipForm = () => {
     data: employees, //the data is renamed employees
     isLoading: isEmployeesLoading,
     isSuccess: isEmployeesSuccess,
-    isError: isEmployeesError,
-    error: employeesError,
+    // isError: isEmployeesError,
+    // error: employeesError,
   } = useGetEmployeesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -65,8 +68,8 @@ const NewPayslipForm = () => {
     data: leaves, //the data is renamed leaves
     isLoading: isLeavesLoading,
     isSuccess: isLeavesSuccess,
-    isError: isLeavesError,
-    error: leavesError,
+    // isError: isLeavesError,
+    // error: leavesError,
   } = useGetLeavesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -132,19 +135,7 @@ const NewPayslipForm = () => {
 
   useEffect(() => {
     if (isAddSuccess) {
-      setFormData({
-        payslipYear: "",
-        payslipMonth: "",
-        payslipNote: "",
-        payslipEmployeeName: "",
-        payslipEmployee: "",
-        payslipIsApproved: "",
-        payslipPaymentDate: "",
-        payslipLeaveDays: [],
-        payslipSalaryComponents: {},
-
-        payslipCreator: "",
-      });
+      setFormData({});
       navigate("/hr/payslips/payslipsList");
     }
   }, [isAddSuccess, navigate]);

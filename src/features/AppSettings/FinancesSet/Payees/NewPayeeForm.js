@@ -18,6 +18,8 @@ import ConfirmationModal from "../../../../Components/Shared/Modals/Confirmation
 
 
 const NewPayeeForm = () => {
+  useEffect(()=>{document.title="New Payee"})
+
   const navigate = useNavigate();
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -72,17 +74,7 @@ const NewPayeeForm = () => {
 
   useEffect(() => {
     if (isAddSuccess) {
-      setFormData({
-        payeeLabel: "",
-        payeePhone: "",
-        payeeAddress: "",
-        payeeNotes: "",
-        payeeIsActive: false,
-        payeeYears: [],
-        //payeeCategories: [],
-        payeeOperator: "",
-        payeeCreator: "",
-      });
+      setFormData({});
       navigate("/settings/financesSet/payeesList/");
     }
   }, [isAddSuccess, navigate]);

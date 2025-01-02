@@ -4,7 +4,6 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import FinancesSet from "../../FinancesSet";
 import useAuth from "../../../../hooks/useAuth";
 import { useSelector } from "react-redux";
-import { useGetServicesByYearQuery } from "../../StudentsSet/NurseryServices/servicesApiSlice";
 import { RiAddLargeLine } from "react-icons/ri";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 import {
@@ -12,10 +11,12 @@ import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
 } from "../../AcademicsSet/AcademicYears/academicYearsSlice";
-import { OBJECTID_REGEX, NAME_REGEX } from "../../../../config/REGEX";
+import {  NAME_REGEX } from "../../../../config/REGEX";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 
 const NewExpenseCategoryForm = () => {
+  useEffect(()=>{document.title="New Expense Category"})
+
   const navigate = useNavigate();
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -78,15 +79,7 @@ const NewExpenseCategoryForm = () => {
 
   useEffect(() => {
     if (isAddSuccess) {
-      setFormData({
-        expenseCategoryLabel: "",
-        expenseCategoryYears: [],
-        expenseCategoryItems: [],
-        expenseCategoryIsActive: "",
-        //  expenseCategoryService:"",
-        expenseCategoryOperator: "",
-        expenseCategoryCreator: "",
-      });
+      setFormData({});
       navigate("/settings/financesSet/expenseCategoriesList/");
     }
   }, [isAddSuccess, navigate]);

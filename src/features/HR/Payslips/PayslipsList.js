@@ -25,6 +25,9 @@ import {
 import { MONTHS } from "../../../config/Months";
 import { CurrencySymbol } from "../../../config/Currency";
 const PayslipsList = () => {
+  useEffect(() => {
+    document.title = "Payslips List";
+  });
   //this is for the academic year selection
   const navigate = useNavigate();
 
@@ -51,8 +54,8 @@ const PayslipsList = () => {
     data: payslips, //the data is renamed payslips
     isLoading: isPayslipsLoading,
     isSuccess: isPayslipsSuccess,
-    isError: isPayslipsError,
-    error: payslipsError,
+    // isError: isPayslipsError,
+    // error: payslipsError,
   } = useGetPayslipsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -69,7 +72,7 @@ const PayslipsList = () => {
     deletePayslip,
     {
       isLoading: isDelLoading,
-      isSuccess: isDelSuccess,
+      // isSuccess: isDelSuccess,
       isError: isDelError,
       error: delError,
     },

@@ -20,12 +20,14 @@ import { OBJECTID_REGEX, DATE_REGEX } from "../../../../config/REGEX";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 
 const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
+  useEffect(()=>{document.title="Edit Animator Assignment"})
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
+  const navigate = useNavigate();
 
   const {
     data: employees, //the data is renamed employees
@@ -48,8 +50,8 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
     data: schools, //the data is renamed schools
     isLoading: isSchoolsLoading,
     isSuccess: isSchoolsSuccess,
-    isError: isSchoolsError,
-    error: schoolsError,
+    // isError: isSchoolsError,
+    // error: schoolsError,
   } = useGetAttendedSchoolsQuery({
     endpointName: "EditAnimatorsAssignmentForm",
   }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
@@ -58,8 +60,8 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
     data: assignments, //the data is renamed schools
     isLoading: isAssignmentsLoading,
     isSuccess: isAssignmentsSuccess,
-    isError: isAssignmentsError,
-    error: assignmentsError,
+    // isError: isAssignmentsError,
+    // error: assignmentsError,
   } = useGetAnimatorsAssignmentsQuery({
     endpointName: "EditAnimatorsAssignmentForm",
   }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
@@ -115,8 +117,6 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
     noOverlap: true, // New validity check for date overlap
   });
 
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   // Check if any dates overlap with existing assignments, excluding the current one
   const checkNoOverlap = (from, to, excludeId = null) => {
@@ -156,19 +156,7 @@ const EditAnimatorsAssignmentForm = ({ animatorsAssignment }) => {
   // Clear form and errors on success
   useEffect(() => {
     if (isUpdateSuccess) {
-      setFormData({
-        id: "",
-        assignments: [
-          {
-            animator: "",
-            schools: [],
-          },
-        ],
-        assignedFrom: "",
-        assignedTo: "",
-
-        operator: "",
-      });
+      setFormData({});
 
       navigate("/academics/plannings/animatorsAssignments");
     }

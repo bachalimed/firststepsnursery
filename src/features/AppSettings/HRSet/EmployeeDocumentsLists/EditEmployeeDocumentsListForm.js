@@ -3,12 +3,15 @@ import HRSet from "../../HRSet";
 import { useState, useEffect } from "react";
 import { useUpdateEmployeeDocumentsListMutation } from "./employeeDocumentsListsApiSlice";
 import { useNavigate } from "react-router-dom";
-import useAuth from "../../../../hooks/useAuth";
-import { NAME_REGEX, TITLE_REGEX } from "../../../../config/REGEX";
+import { TITLE_REGEX } from "../../../../config/REGEX";
 import ConfirmationModal from "../../../../Components/Shared/Modals/ConfirmationModal";
 import { useOutletContext } from "react-router-dom";
 
 const EditEmployeeDocumentsListForm = ({ listToEdit }) => {
+  useEffect(() => {
+    document.title = "Edit Employee Documents List";
+  });
+
   //console.log(listToEdit.documentsAcademicYear,'lllllyear')
   const navigate = useNavigate();
   const { _id: id } = listToEdit;
@@ -24,8 +27,6 @@ const EditEmployeeDocumentsListForm = ({ listToEdit }) => {
   //confirmation Modal states
   const [showConfirmation, setShowConfirmation] = useState(false);
   const { triggerBanner } = useOutletContext(); // Access banner trigger
-  const { userId, canEdit, canDelete, canAdd, canCreate, isParent, status2 } =
-    useAuth();
 
   const [
     updateEmployeeDocumentsList,
@@ -99,11 +100,10 @@ const EditEmployeeDocumentsListForm = ({ listToEdit }) => {
         documentsList: employeeDocumentsList,
         documentsAcademicYear,
       });
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -129,19 +129,7 @@ const EditEmployeeDocumentsListForm = ({ listToEdit }) => {
     navigate("/settings/employeesSet/employeeDocumentsListsList/");
   };
 
-  // const [isRequired, setIsRequired] = useState(false)
-  // const [isLegalised, setIsLegalised] = useState(false)
-  // const [documentsList, setDocumentsList] = useState([])
-  // //use effect is used to validate the inputs against the defined REGEX above
-  // //the previous constrains have to be verified on the form for teh user to know
-  // //handlers to get the individual states from the input
-
-  // //const onDocumentReferenceChanged = e => setDocumentReference(e.target.value)
-  // const onDocumentTitleChanged = e => setDocumentTitle(e.target.value)
-  // const onIsRequiredChanged = e => setIsRequired(e.target.value)
-  // const onIsLegalisedChanged = e => setIsLegalised(e.target.value)
-
-  //the error messages to be displayed in every case according to the class we put in like 'form input incomplete... which will underline and highlight the field in that cass
+  
 
   const content = (
     <>
@@ -238,7 +226,9 @@ const EditEmployeeDocumentsListForm = ({ listToEdit }) => {
           <button
             aria-label="cancel edit list"
             className="cancel-button"
-            onClick={()=>navigate('/settings/HRSet/EmployeeDocumentsListsList')}
+            onClick={() =>
+              navigate("/settings/HRSet/EmployeeDocumentsListsList")
+            }
           >
             Cancel
           </button>

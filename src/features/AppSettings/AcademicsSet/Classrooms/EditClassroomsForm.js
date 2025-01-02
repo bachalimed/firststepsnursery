@@ -7,6 +7,8 @@ import ConfirmationModal from "../../../../Components/Shared/Modals/Confirmation
 import { useOutletContext } from "react-router-dom";
 
 const EditClassroomForm = ({ classroom }) => {
+  useEffect(()=>{document.title="Edit Classroom"})
+
   //confirmation Modal states
   const [showConfirmation, setShowConfirmation] = useState(false);
 
@@ -52,14 +54,7 @@ const EditClassroomForm = ({ classroom }) => {
   // Redirect on success
   useEffect(() => {
     if (isUpdateSuccess) {
-      setFormData({
-        classroomNumber: "",
-        classroomLabel: "",
-        classroomCapacity: "",
-        classroomMaxCapacity: "",
-
-        classroomColor: "#FF5733", // Reset to default color
-      });
+      setFormData({});
       setError("");
       navigate("/settings/academicsSet/classrooms/");
     }

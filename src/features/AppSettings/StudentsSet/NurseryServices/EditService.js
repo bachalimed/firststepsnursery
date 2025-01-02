@@ -1,13 +1,14 @@
 import { useParams } from "react-router-dom"; //because we will get the userId from the url
-
+import { useEffect } from "react";
 import EditServiceForm from "./EditServiceForm";
 import {
   useGetServicesByIdQuery,
 
 } from "./servicesApiSlice";
 import LoadingStateIcon from "react-loading-icons";
-import StudentsSet from "../../StudentsSet";
 const EditService = () => {
+  useEffect(()=>{document.title="Edit Service"})
+
   const { id } = useParams(); //pull the id from use params from the url
   //console.log("id", id)
 

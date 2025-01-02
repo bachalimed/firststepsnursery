@@ -27,6 +27,9 @@ import { useGetExpenseCategoriesByYearQuery } from "../../AppSettings/FinancesSe
 import { useOutletContext } from "react-router-dom";
 
 const EditExpenseForm = ({ expense }) => {
+  useEffect(() => {
+    document.title = "Edit Expense";
+  });
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
@@ -173,21 +176,7 @@ const EditExpenseForm = ({ expense }) => {
   // Clear form and errors on success
   useEffect(() => {
     if (isUpdateSuccess) {
-      setFormData({
-        id: "",
-        expenseYear: "",
-        expenseMonth: "",
-        expenseAmount: "",
-        expenseNote: "",
-        expenseCategory: "",
-        expenseItems: [],
-        expensePayee: "",
-        expenseDate: "",
-        expensePaymentDate: "",
-        expenseService: "",
-        expenseMethod: "",
-        expenseOperator: "",
-      });
+      setFormData({});
 
       navigate("/finances/expenses/expensesList/");
     }

@@ -19,7 +19,7 @@ export const store = configureStore({
     auth: authReducer,//keep
     //user: usersReducer,
     academicYear: academicYearsReducer,//keeeeeeeeep
-    student: studentsReducer,//keep
+    //student: studentsReducer,//keep
     //family: familiesReducer,
     //studentDocument: studentDocumentsReducer,
     //employeeDocument:employeeDocumentsListReducer,

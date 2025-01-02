@@ -1,13 +1,9 @@
-import { HiOutlineSearch } from "react-icons/hi";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 import DataTable from "react-data-table-component";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { setClassrooms } from "./classroomsSlice";
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
 import useAuth from "../../../../hooks/useAuth";
 import { useOutletContext } from "react-router-dom";
@@ -21,6 +17,8 @@ import { useSelector, useDispatch } from "react-redux";
 import AcademicsSet from "../../AcademicsSet";
 
 const ClassroomsList = () => {
+  useEffect(()=>{document.title="Classrooms List"})
+
   const Navigate = useNavigate();
   const dispatch = useDispatch();
   //get several things from the query
@@ -28,8 +26,8 @@ const ClassroomsList = () => {
     data: classrooms, //the data is renamed classroomsData
     isLoading: isClassroomsLoading,
     isSuccess: isClassroomsSuccess,
-    isError: isClassroomsError,
-    error: classroomsError,
+    // isError: isClassroomsError,
+    // error: classroomsError,
   } = useGetClassroomsQuery("classroomsList") || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
  
 
@@ -40,8 +38,8 @@ const ClassroomsList = () => {
   const [
     deleteClassroom,
     {
-      isLoading: isDelLoading,
-      isSuccess: isDelSuccess,
+      // isLoading: isDelLoading,
+      // isSuccess: isDelSuccess,
       isError: isDelError,
       error: delError,
     },
