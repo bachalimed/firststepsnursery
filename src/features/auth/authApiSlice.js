@@ -23,9 +23,9 @@ export const authApiSlice = apiSlice.injectEndpoints({
           dispatch(logOut());
 
           //this will let the time to unsubscribe the components when it unmounts but if we logout from users page it takes time compared to othe rpages so we give it time to do it
-          //setTimeout(() => {
+          setTimeout(() => {
             dispatch(apiSlice.util.resetApiState()); //clear the cache and query subscriptions
-         // }, 1000);
+          }, 1000);
         } catch (err) {
           console.log(err);
         }

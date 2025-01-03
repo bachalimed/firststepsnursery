@@ -32,12 +32,12 @@ const PersistLogin = () => {
       const verifyRefreshToken = async () => {
         console.log('verifying refresh token')
         try {
-          await refresh();
+          const response = await refresh();
+          console.log('Refresh success:', response);
           //const { accessToken } = response.data
           setTrueSuccess(true);
         } catch (err) {
-          console.error(err);
-        }
+          console.error('Refresh failed:', err);        }
       };
 
       if (!token && persist) verifyRefreshToken();
@@ -48,14 +48,18 @@ const PersistLogin = () => {
     // eslint-disable-next-line
   }, []);
 
-
+  console.log(isUninitialized, //refresh function not called yet
+  isLoading,
+  isSuccess,
+  isError,
+  error,)
 //added this to automatically redirect to home not working apparently
-  useEffect(() => {
-    if (isError) {
-      // Automatically redirect to the login page on error
-      navigate("/login/");
-    }
-  }, [isError, navigate]);
+  // useEffect(() => {
+  //   if (isError) {
+  //     // Automatically redirect to the login page on error
+  //     navigate("/login/");
+  //   }
+  // }, [isError, navigate]);
 
   let content;
   if (!persist) {

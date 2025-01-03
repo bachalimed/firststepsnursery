@@ -59,7 +59,8 @@ const PublicHeader = () => {
           />
         </Link>
 
-        <div className="flex items-center max-sm:hidden">
+        {/* <div className="flex items-center max-sm:hidden"> */}
+        <div className="flex items-center ">
           <AnimatedColorText company={company} />
         </div>
       {/* Top Navigation */}
