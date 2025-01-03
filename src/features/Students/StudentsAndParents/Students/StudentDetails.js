@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGetStudentByIdQuery } from "./studentsApiSlice";
-import { selectStudentById } from "./studentsSlice";
 import LoadingStateIcon from '../../../../Components/LoadingStateIcon'
 import {
   selectCurrentAcademicYearId,
@@ -23,9 +22,7 @@ const StudentDetails = () => {
   const [photoId, setPhotoId] = useState(null);
   const [student, setStudent] = useState(null);
 
-  const studentFromSelector = useSelector((state) =>
-    selectStudentById(state, id)
-  );
+  // 
   const {
     data: studentOrg,
     isLoading: studentOrgIsLoading,
@@ -68,15 +65,13 @@ const StudentDetails = () => {
 
   // Use effect to set student data
   useEffect(() => {
-    if (studentFromSelector) {
-      setStudent(studentFromSelector);
-    } else if (studentOrgIsSuccess && studentOrg) {
+    if (studentOrgIsSuccess && studentOrg) {
       const { entities } = studentOrg;
       //console.log(studentOrg, 'studentOrg');
       //console.log(entities[id], 'importedStudent');
       setStudent(entities[id]);
     }
-  }, [studentFromSelector, studentOrgIsSuccess, studentOrg]);
+  }, [studentOrgIsSuccess, studentOrg]);
 
   useEffect(() => {
     if (!listIsLoading && studentDocumentsListing) {

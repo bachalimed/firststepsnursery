@@ -33,7 +33,7 @@ const PersistLogin = () => {
         console.log('verifying refresh token')
         try {
           const response = await refresh();
-          console.log('Refresh success:', response);
+          console.log('Refresh result:', response);
           //const { accessToken } = response.data
           setTrueSuccess(true);
         } catch (err) {
@@ -53,13 +53,7 @@ const PersistLogin = () => {
   isSuccess,
   isError,
   error,)
-//added this to automatically redirect to home not working apparently
-  // useEffect(() => {
-  //   if (isError) {
-  //     // Automatically redirect to the login page on error
-  //     navigate("/login/");
-  //   }
-  // }, [isError, navigate]);
+
 
   let content;
   if (!persist) {
@@ -69,7 +63,7 @@ const PersistLogin = () => {
   } else if (isLoading) {
     //persist: yes, token: no
     console.log('loading in persist file')
-    content = <><LoadingStateIcon/></>
+    content = <LoadingStateIcon/>
   } else if (isError) {
     //persist: yes, token: no
     console.log('error in persist file')
