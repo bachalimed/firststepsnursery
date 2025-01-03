@@ -1,7 +1,7 @@
 import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
 import useAuth from "../../hooks/useAuth";
 import { useLocation, Link } from "react-router-dom";
-
+import logo from '../../Data/logo.jpg'
 const Students = () => {
   const location = useLocation();
   const {
@@ -43,15 +43,17 @@ const Students = () => {
     //{ label: "New Admission", path: "/students/admissions/newAdmission/" },
   ];
 
+
   // Function to determine if a tab is active based on the current path
   const isActive = (path) => location.pathname === path;
 
 
   // Render the component content
   return (
-    <div className="flex bg-gray-300 p-3 sm:gap-y-2  px-4 md:px-4 justify-start items-center  space-x-4 flex-wrap">
+    <>
+    <div className="flex bg-gray-300 p-3 px-4 md:px-4 items-center justify-start space-x-4">
       {(isAdmin || isManager || isDirector) && <AcademicYearsSelection />}
-      <ul className="flex flex-wrap gap-4  sm:gap-y-2  w-full  ">
+     
         {tabs
           .filter(Boolean) // Filter out null or undefined tabs
           .map((tab) => (
@@ -67,8 +69,17 @@ const Students = () => {
               </li>
             </Link>
           ))}
-      </ul>
-    </div>
+         </div>
+    {location.pathname === "/students/" &&
+    <div className="flex justify-center items-center bg-gray-300 py-4">
+      <img
+            src={logo}
+            className=" rounded "
+            alt="first steps nursery logo"
+            
+          />
+    </div>}
+    </>
   );
 };
 

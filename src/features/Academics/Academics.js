@@ -1,6 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
+import logo from "../../Data/logo.jpg";
+
 const Sections = () => {
   const location = useLocation();
 
@@ -59,27 +61,36 @@ const Sections = () => {
 
   // Render the component content
   return (
-    <div className="flex bg-gray-300 p-3 px-4 md:px-4 items-center justify-start space-x-4 flex-wrap">
-      {/* {(isAdmin || isManager || isDirector) && <AcademicYearsSelection />} */}
-      <AcademicYearsSelection />
-      <ul className="flex flex-wrap gap-4 sm:gap-x-4 sm:gap-y-0 w-full sm:w-auto ">
-        {tabs
-          .filter(Boolean) // Filter out null or undefined tabs
-          .map((tab) => (
-            <Link key={tab.path} to={tab.path}>
-              <li
-                className={`list-none cursor-pointer px-3 py-2 border border-gray-400  ${
-                  isActive(tab.path)
-                    ? "text-sky-700 border-sky-700 bg-gray-100"
-                    : "text-gray-800 hover:bg-gray-100"
-                }`}
-              >
-                {tab.label}
-              </li>
-            </Link>
-          ))}
-      </ul>
-    </div>
+    <>
+    <div className="flex bg-gray-300 p-3 px-4 md:px-4 items-center justify-start space-x-4">
+    {/* {(isAdmin || isManager || isDirector) && <AcademicYearsSelection />} */}
+        <AcademicYearsSelection />
+          {tabs
+            .filter(Boolean) // Filter out null or undefined tabs
+            .map((tab) => (
+              <Link key={tab.path} to={tab.path}>
+                <li
+                  className={`list-none cursor-pointer px-3 py-2 border border-gray-400  ${
+                    isActive(tab.path)
+                      ? "text-sky-700 border-sky-700 bg-gray-100"
+                      : "text-gray-800 hover:bg-gray-100"
+                  }`}
+                >
+                  {tab.label}
+                </li>
+              </Link>
+            ))}
+      </div>{" "}
+      {location.pathname === "/academics/" && (
+        <div className="flex justify-center items-center bg-gray-300 py-4">
+          <img
+            src={logo}
+            className=" rounded "
+            alt="first steps nursery logo"
+          />
+        </div>
+      )}
+    </>
   );
 };
 

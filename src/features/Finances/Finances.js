@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { MdOutlineBusinessCenter } from "react-icons/md";
+import logo from '../../Data/logo.jpg'
 import useAuth from "../../hooks/useAuth";
 import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
 const Finances = () => {
@@ -39,7 +39,7 @@ const Finances = () => {
   const isActive = (path) => location.pathname === path;
 
   // Render the component content
-  return (
+  return (<>
     <div className="flex bg-gray-300 p-3 px-4 md:px-4 items-center justify-start space-x-4">
       {(isAdmin || isManager || isDirector) && <AcademicYearsSelection />}
       {tabs
@@ -57,7 +57,16 @@ const Finances = () => {
             </li>
           </Link>
         ))}
-    </div>
+    </div> {location.pathname === "/finances/" &&
+    <div className="flex justify-center items-center bg-gray-300 py-4">
+      <img
+            src={logo}
+            className=" rounded "
+            alt="first steps nursery logo"
+            
+          />
+    </div>}
+    </>
   );
 };
 

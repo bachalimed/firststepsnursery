@@ -1,7 +1,8 @@
 import { useLocation, Link } from "react-router-dom";
 import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
 import useAuth from "../../hooks/useAuth";
-//we will  find the object corresponding to the page and extract the section tabs
+import logo from '../../Data/logo.jpg'
+
 const HR = () => {
   const location = useLocation();
   const {
@@ -39,7 +40,7 @@ const HR = () => {
   const isActive = (path) => location.pathname === path;
 
   // Render the component content
-  return (
+  return (<>
     <div className="flex bg-gray-300 p-3 px-4 md:px-4 items-center justify-start space-x-4">
       {(isAdmin || isManager || isDirector) && <AcademicYearsSelection />}
       {tabs
@@ -57,7 +58,16 @@ const HR = () => {
             </li>
           </Link>
         ))}
-    </div>
+    </div> {location.pathname === "/hr/" &&
+    <div className="flex justify-center items-center bg-gray-300 py-4">
+      <img
+            src={logo}
+            className=" rounded "
+            alt="first steps nursery logo"
+            
+          />
+    </div>}
+    </>
   );
 };
 

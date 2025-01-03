@@ -1,6 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
 import useAuth from "../../hooks/useAuth";
+import logo from '../../Data/logo.jpg'
+
 const StudentsSet = () => {
   const location = useLocation();
   const {
@@ -27,7 +29,7 @@ const StudentsSet = () => {
   // Function to determine if the tab is active based on the current path
   const isActive = (path) => location.pathname === path;
 
-  return (
+  return (<>
     <div className="flex bg-gray-300 p-3 px-4 md:px-4 items-center justify-start space-x-4">
       {(isAdmin || isManager || isDirector) && <AcademicYearsSelection />}
       {tabs
@@ -45,7 +47,16 @@ const StudentsSet = () => {
             </li>
           </Link>
         ))}
-    </div>
+    </div> {location.pathname === "/settings/setudentsSet/" &&
+    <div className="flex justify-center items-center bg-gray-300 py-4">
+      <img
+            src={logo}
+            className=" rounded "
+            alt="first steps nursery logo"
+            
+          />
+    </div>}
+    </>
   );
 };
 

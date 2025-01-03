@@ -1,4 +1,5 @@
 import React from "react";
+import logo from '../../Data/logo.jpg'
 
 import { Link, useLocation } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
@@ -51,6 +52,7 @@ const Dashboard = () => {
 
   // Render the component content
   return (
+    <>
     <div className="flex bg-gray-300 p-3 px-4 md:px-4 items-center justify-start space-x-4">
       {(isAdmin || isManager || isDirector) && <AcademicYearsSelection />}
       {tabs
@@ -69,6 +71,16 @@ const Dashboard = () => {
           </Link>
         ))}
     </div>
+    {location.pathname === "/dashboard/" &&
+    <div className="flex justify-center items-center bg-gray-300 py-4">
+      <img
+            src={logo}
+            className=" rounded "
+            alt="first steps nursery logo"
+            
+          />
+    </div>}
+    </>
   );
 };
 

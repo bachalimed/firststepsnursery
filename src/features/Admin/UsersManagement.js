@@ -1,6 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
 import useAuth from "../../hooks/useAuth";
+import logo from '../../Data/logo.jpg'
+
 const UsersManagement = () => {
   const location = useLocation();
 
@@ -18,6 +20,7 @@ const UsersManagement = () => {
 
   // Render the component content
   return (
+    <>
     <div className="flex bg-gray-300 p-3 px-4 md:px-4  items-center justify-start space-x-4">
        {(isAdmin || isManager || isDirector) &&<AcademicYearsSelection  />}
       {tabs.filter(Boolean) // Filter out null or undefined tabs
@@ -35,6 +38,16 @@ const UsersManagement = () => {
         </Link>
       ))}
     </div>
+    {location.pathname === "/admin/" &&
+    <div className="flex justify-center items-center bg-gray-300 py-4">
+      <img
+            src={logo}
+            className=" rounded "
+            alt="first steps nursery logo"
+            
+          />
+    </div>}
+    </>
   );
 };
 

@@ -33,12 +33,11 @@ const DashboardHeader = () => {
   });
 
   const content = (
-    <header className="bg-sky-700 text-white py-1 px-3 md:px-1 flex flex-col md:flex-row md:justify-between items-center relative overflow-hidden">
+    <header className="bg-sky-700 text-white py-1 px-3 md:px-1 flex  justify-between items-center  overflow-hidden">
       
       {/* Logo and Colored Text Section */}
-      <div className=" p-2 flex flex-col items-center md:items-start text-white relative">
         <Link to="/">
-          <img src={logo} className="h-12 w-12 rounded" alt="logo" />
+          <img src={logo} className="h-12 w-12 rounded" alt="first steps nursery logo" />
         </Link>
   
         {/* Fallback for non-JavaScript environments */}
@@ -47,28 +46,29 @@ const DashboardHeader = () => {
             <img
               src="./../../../Data/logo.jpg"
               className="h-12 w-12 rounded"
-              alt="logo"
+              alt="first steps nursery logo"
             />
           </a>
         </noscript>
       
         
-      </div>
+        <div className="flex items-center max-sm:hidden">
           <AnimatedColorText company={company} />
+        </div>
   
       {/* Welcome Message and Date/Time */}
      
         <h1 className="text-lg font-semibold text-center md:text-left">
           Welcome back, {username}!
         </h1>
-        <div className="text-sm text-center md:text-left">
+        <div className="text-sm text-center md:text-left max-sm:hidden">
           <p>{formattedDate}</p>
           <p>{formattedTime}</p>
         </div>
       
   
       {/* Navbar Header */}
-      <div className="flex-shrink-0 mt-4 md:mt-0 md:ml-6 md:relative md:bottom-auto md:right-auto absolute bottom-4 right-4">
+      <div className="items-center justify-center mr-4 mt-1">
         <NavbarHeader />
       </div>
     </header>

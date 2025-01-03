@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { VscDashboard } from "react-icons/vsc";
+import { BiSolidSchool } from "react-icons/bi";
+import { LiaUserSolid } from "react-icons/lia";
+
 import { TbLogout } from "react-icons/tb";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import logo from "../../../Data/logo.jpg";
@@ -9,14 +11,13 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useSendLogoutMutation } from "../../../features/auth/authApiSlice";
 import { LuKeyRound } from "react-icons/lu";
 import { Link } from "react-router-dom";
-import { PiUserCircleLight } from "react-icons/pi";
 import AnimatedColorText from "../../lib/Utils/AnimatedColorText";
 import useAuth from "../../../hooks/useAuth";
 import { RiLoginBoxLine } from "react-icons/ri";
 //import GenerateCircles from "../../lib/Utils/GenerateCircles";
 const PublicHeader = () => {
   const { username, userId } = useAuth();
-  const company = { label: "First Steps", type: "Nursery" };
+  const company = { label: "First Steps", type: " Nursery" };
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [isBannerVisible, setIsBannerVisible] = useState(true);
@@ -26,7 +27,6 @@ const PublicHeader = () => {
   };
   const [sendLogout, { isLoading, isSuccess, isError, error }] =
     useSendLogoutMutation();
-
 
   useEffect(() => {
     if (isSuccess) navigate("/login/");
@@ -48,29 +48,22 @@ const PublicHeader = () => {
 
   const onGoDashClicked = () => navigate("/dashboard/studentsDash/");
 
-  //const circles = GenerateCircles(8); // Generate  random circles
-
   return (
-    <header className="bg-sky-700 text-white py-1 px-3 md:px-1 flex md:flex-row md:justify-between items-center shadow-md relative overflow-hidden">
-      {/* Background circles */}
-      {/* <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-        {circles}
-      </div> */}
-      <div className={` "w-56" p-2 flex text-white  relative`}>
+    <header className="bg-sky-700 text-white py-1 px-3 md:px-1 flex  justify-between items-center  overflow-hidden">
         <Link to="/">
           <img
             src={logo}
             className="h-12 w-12 rounded "
             alt="first steps nursery logo"
+            
           />
         </Link>
 
-        <div className="flex items-center">
+        <div className="flex items-center max-sm:hidden">
           <AnimatedColorText company={company} />
         </div>
-      </div>
       {/* Top Navigation */}
-      <div className="flex flex-col md:flex-row items-center md:space-x-2  md:mb-0 mr-2">
+      <div className="  items-center justify-center mr-4 mt-1 ">
         {/* Dashboard Button */}
 
         {pathname !== "/dashboard/" && (
@@ -82,14 +75,14 @@ const PublicHeader = () => {
             onClick={onGoDashClicked}
             aria-label="dashboard"
           >
-            <VscDashboard aria-label="Dashboard" className="text-4xl" />
+            <BiSolidSchool aria-label="Dashboard" className="text-4xl" />
           </button>
         )}
 
         {/* User Profile Menu */}
         <Menu>
           <MenuButton className="focus:outline-none ">
-            <PiUserCircleLight
+            <LiaUserSolid
               aria-label="manage profile"
               className="text-4xl  text-white hover:text-gray-100"
             />
