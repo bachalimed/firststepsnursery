@@ -13,7 +13,7 @@ const useFetchPhoto = (photoId) => {
       try {
         // console.log("Fetching photo with ID:", photoId);
         const response = await axios.get(
-          // `http://localhost:3500/students/studentsParents/studentDocuments/${photoId}`,
+           //`http://localhost:3500/students/studentsParents/studentDocuments/${photoId}`,
           `https://firststepsnursery-api.onrender.com/students/studentsParents/studentDocuments/${photoId}`,
           {
             headers: {

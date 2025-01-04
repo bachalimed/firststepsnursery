@@ -13,9 +13,8 @@ import {
 } from "./employeeDocumentsApiSlice";
 import { useGetEmployeeDocumentsByYearByIdQuery } from "../../../AppSettings/HRSet/EmployeeDocumentsLists/employeeDocumentsListsApiSlice"; //using the listslist to get the documents
 import { selectCurrentToken } from "../../../auth/authSlice";
-import UploadDocumentFormModal from "./UploadDocumentFormModal";
+import UploadDocumentFormModal from "../../../../Components/Shared/Modals/UploadDocumentFormModal"
 import ViewDocumentModal from "../../../../Components/Shared/Modals/ViewDocumentModal";
-// import ViewDocumentModal from "./ViewDocumentModal";
 import DataTable from "react-data-table-component";
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
 import { GrView } from "react-icons/gr";
@@ -179,10 +178,10 @@ const EmployeeDocuments = () => {
   // now that the modal has returned the required data:{ userId, employeeDocumentYear, employeeDocumentLabel, employeeDocumentType, file
 
   const handleUpload = async ({
-    userId,
-    employeeDocumentYear,
-    employeeDocumentLabel,
-    employeeDocumentReference,
+    entityId,
+    documentYear,
+    documentLabel,
+    documentReference,
     file,
   }) => {
     //console.log(userId, employeeDocumentYear, employeeDocumentLabel, employeeDocumentReference, file)
@@ -191,10 +190,10 @@ const EmployeeDocuments = () => {
 
     // Append each document to the FormData
 
-    formData.append("userId", userId);
-    formData.append("employeeDocumentYear", employeeDocumentYear);
-    formData.append("employeeDocumentReference", employeeDocumentReference); ///!!!must upload the id and not the title
-    formData.append("employeeDocumentLabel", employeeDocumentLabel);
+    formData.append("userId", entityId);
+    formData.append("employeeDocumentYear", documentYear);
+    formData.append("employeeDocumentReference", documentReference); ///!!!must upload the id and not the title
+    formData.append("employeeDocumentLabel", documentLabel);
     formData.append("file", file);
 
     try {
@@ -233,6 +232,7 @@ const EmployeeDocuments = () => {
 
   const apiClient = axios.create({
     baseURL: "https://firststepsnursery-api.onrender.com",
+    //baseURL: `http://localhost:3500`,
     credentials: 'include', 
     headers: {
       Authorization: `Bearer ${token}`,
@@ -479,16 +479,17 @@ const EmployeeDocuments = () => {
         <UploadDocumentFormModal
           isOpen={isUploadModalOpen}
           onRequestClose={() => setIsUploadModalOpen(false)}
-          userId={userId}
-          year={employeeDocumentYear}
+          entityId={userId}
+          documentYear={employeeDocumentYear}
           documentTitle={documentTitle}
-          employeeDocumentReference={employeeDocumentReference}
+          documentReference={employeeDocumentReference}
           onUpload={handleUpload}
+          entityType="employee"
         />
         <ViewDocumentModal
           isOpen={isViewModalOpen}
           onRequestClose={() => setIsViewModalOpen(false)}
-         //documentUrl={documentToView}
+         documentUrl={documentToView}
          // documentType="employee"
         />
         <DeletionConfirmModal

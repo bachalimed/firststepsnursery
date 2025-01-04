@@ -3,7 +3,7 @@ import Modal from "react-modal";
  //import handleDownloadDocument from "./EmployeeDocumentsList";
 
 
-const ViewDocumentModal = ({ isOpen, onRequestClose }) => {
+const ViewDocumentModal = ({ isOpen, onRequestClose,documentUrl  }) => {
  
  
     return (
@@ -31,6 +31,11 @@ const ViewDocumentModal = ({ isOpen, onRequestClose }) => {
           )}
         </>
       )} */}
+       <img
+              src={documentUrl}
+              alt="Document"
+              style={{ width: "100%", height: "auto" }}
+            />
     </Modal>
   );
 };

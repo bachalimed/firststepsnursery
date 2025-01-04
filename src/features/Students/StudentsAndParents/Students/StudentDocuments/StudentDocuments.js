@@ -12,10 +12,9 @@ import {
 import { useGetStudentDocumentsByYearByIdQuery } from "../../../../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice";
 import { selectCurrentToken } from "../../../../auth/authSlice";
 import useAuth from "../../../../../hooks/useAuth";
-import UploadDocumentFormModal from "../UploadDocumentFormModal";
+import UploadDocumentFormModal from "../../../../../Components/Shared/Modals/UploadDocumentFormModal"
 import LoadingStateIcon from "../../../../../Components/LoadingStateIcon";
 import ViewDocumentModal from "../../../../../Components/Shared/Modals/ViewDocumentModal"
-// import ViewDocumentModal from "./ViewDocumentModal";
 import DataTable from "react-data-table-component";
 import DeletionConfirmModal from "../../../../../Components/Shared/Modals/DeletionConfirmModal";
 import { GrView } from "react-icons/gr";
@@ -171,10 +170,10 @@ const StudentDocuments = () => {
   // now that the modal has returned the required data:{ studentId, studentDocumentYear, studentDocumentLabel, studentDocumentType, file
 
   const handleUpload = async ({
-    studentId,
-    studentDocumentYear,
-    studentDocumentLabel,
-    studentDocumentReference,
+    entityId,
+    documentYear,
+    documentLabel,
+    documentReference,
     file,
   }) => {
     //console.log(studentId, studentDocumentYear, studentDocumentLabel, studentDocumentReference, file)
@@ -183,10 +182,10 @@ const StudentDocuments = () => {
 
     // Append each document to the FormData
 
-    formData.append("studentId", studentId);
-    formData.append("studentDocumentYear", studentDocumentYear);
-    formData.append("studentDocumentReference", studentDocumentReference); ///!!!must upload the id and not the title
-    formData.append("studentDocumentLabel", studentDocumentLabel);
+    formData.append("studentId", entityId);
+    formData.append("studentDocumentYear", documentYear);
+    formData.append("studentDocumentReference", documentReference); ///!!!must upload the id and not the title
+    formData.append("studentDocumentLabel", documentLabel);
     formData.append("file", file);
 
     try {
@@ -222,8 +221,9 @@ const StudentDocuments = () => {
   const token = useSelector(selectCurrentToken);
   //console.log(token,'token')
   const apiClient = axios.create({
-    baseURL: "https://firststepsnursery-api.onrender.com",
-    credentials: 'include', 
+     baseURL: "https://firststepsnursery-api.onrender.com",
+    //baseURL: "http://localhost:3500",
+     credentials: 'include', 
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -469,17 +469,17 @@ const StudentDocuments = () => {
         <UploadDocumentFormModal
           isOpen={isUploadModalOpen}
           onRequestClose={() => setIsUploadModalOpen(false)}
-          studentId={studentId}
-          year={studentDocumentYear}
+          entityId={studentId}
+          documentYear={studentDocumentYear}
           documentTitle={documentTitle}
-          studentDocumentReference={studentDocumentReference}
+          documentReference={studentDocumentReference}
           onUpload={handleUpload}
+          entityType="student"
         />
         <ViewDocumentModal
           isOpen={isViewModalOpen}
           onRequestClose={() => setIsViewModalOpen(false)}
-          //documentUrl={documentToView}
-          //documentType="student"
+          documentUrl={documentToView}
         />
         <DeletionConfirmModal
           isOpen={isDeleteModalOpen}
