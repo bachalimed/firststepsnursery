@@ -14,7 +14,7 @@ import { selectCurrentToken } from "../../../../auth/authSlice";
 import useAuth from "../../../../../hooks/useAuth";
 import UploadDocumentFormModal from "../UploadDocumentFormModal";
 import LoadingStateIcon from "../../../../../Components/LoadingStateIcon";
-import ViewDocumentModal from "../../../../Components/Shared/Modals/ViewDocumentModal";
+import ViewDocumentModal from "../../../../../Components/Shared/Modals/ViewDocumentModal"
 // import ViewDocumentModal from "./ViewDocumentModal";
 import DataTable from "react-data-table-component";
 import DeletionConfirmModal from "../../../../../Components/Shared/Modals/DeletionConfirmModal";
@@ -478,7 +478,7 @@ const StudentDocuments = () => {
         <ViewDocumentModal
           isOpen={isViewModalOpen}
           onRequestClose={() => setIsViewModalOpen(false)}
-          documentUrl={documentToView}
+          //documentUrl={documentToView}
           //documentType="student"
         />
         <DeletionConfirmModal

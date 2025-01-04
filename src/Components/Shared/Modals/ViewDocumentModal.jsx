@@ -1,13 +1,9 @@
 import React from "react";
 import Modal from "react-modal";
- import handleDownloadDocument from "./EmployeeDocumentsList";
+ //import handleDownloadDocument from "./EmployeeDocumentsList";
 
 
-const ViewDocumentModal = ({ isOpen, onRequestClose, documentUrl }) => {
- 
- 
- 
- 
+const ViewDocumentModal = ({ isOpen, onRequestClose }) => {
  
  
     return (

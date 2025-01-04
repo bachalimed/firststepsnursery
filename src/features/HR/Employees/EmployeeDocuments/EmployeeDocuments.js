@@ -488,7 +488,7 @@ const EmployeeDocuments = () => {
         <ViewDocumentModal
           isOpen={isViewModalOpen}
           onRequestClose={() => setIsViewModalOpen(false)}
-          documentUrl={documentToView}
+         //documentUrl={documentToView}
          // documentType="employee"
         />
         <DeletionConfirmModal
