@@ -14,7 +14,8 @@ import {
 import { useGetEmployeeDocumentsByYearByIdQuery } from "../../../AppSettings/HRSet/EmployeeDocumentsLists/employeeDocumentsListsApiSlice"; //using the listslist to get the documents
 import { selectCurrentToken } from "../../../auth/authSlice";
 import UploadDocumentFormModal from "./UploadDocumentFormModal";
-import ViewDocumentModal from "./ViewDocumentModal";
+import ViewDocumentModal from "../../../../Components/Shared/Modals/ViewDocumentModal";
+// import ViewDocumentModal from "./ViewDocumentModal";
 import DataTable from "react-data-table-component";
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
 import { GrView } from "react-icons/gr";
@@ -488,6 +489,7 @@ const EmployeeDocuments = () => {
           isOpen={isViewModalOpen}
           onRequestClose={() => setIsViewModalOpen(false)}
           documentUrl={documentToView}
+         // documentType="employee"
         />
         <DeletionConfirmModal
           isOpen={isDeleteModalOpen}

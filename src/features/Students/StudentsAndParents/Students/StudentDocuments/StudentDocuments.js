@@ -14,7 +14,8 @@ import { selectCurrentToken } from "../../../../auth/authSlice";
 import useAuth from "../../../../../hooks/useAuth";
 import UploadDocumentFormModal from "../UploadDocumentFormModal";
 import LoadingStateIcon from "../../../../../Components/LoadingStateIcon";
-import ViewDocumentModal from "./ViewDocumentModal";
+import ViewDocumentModal from "../../../../Components/Shared/Modals/ViewDocumentModal";
+// import ViewDocumentModal from "./ViewDocumentModal";
 import DataTable from "react-data-table-component";
 import DeletionConfirmModal from "../../../../../Components/Shared/Modals/DeletionConfirmModal";
 import { GrView } from "react-icons/gr";
@@ -478,6 +479,7 @@ const StudentDocuments = () => {
           isOpen={isViewModalOpen}
           onRequestClose={() => setIsViewModalOpen(false)}
           documentUrl={documentToView}
+          //documentType="student"
         />
         <DeletionConfirmModal
           isOpen={isDeleteModalOpen}
