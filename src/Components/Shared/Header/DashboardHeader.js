@@ -4,10 +4,12 @@ import useAuth from "../../../hooks/useAuth";
 import { useState, useEffect } from "react";
 import logo from "./../../../Data/logo.jpg";
 import AnimatedColorText from "../../lib/Utils/AnimatedColorText";
+
 const DashboardHeader = () => {
   const { username } = useAuth();
   const [currentTime, setCurrentTime] = useState(new Date());
   const company = { label: "First Steps", type: " Nursery" };
+
 
   // Update the time every second
   useEffect(() => {

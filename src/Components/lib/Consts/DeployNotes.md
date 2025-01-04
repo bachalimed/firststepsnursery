@@ -7,4 +7,4 @@
 2. in teh apislice change to localhost address or website address.
 3. the photo fetch should be changed to the address of the back end also
 4. change base url in the studetn and user doucments files also
-5. 
+5. change teh url in hooks for photos

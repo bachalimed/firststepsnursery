@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BiSolidSchool } from "react-icons/bi";
 import { LiaUserSolid } from "react-icons/lia";
+import { useSelector } from "react-redux";
 
 import { TbLogout } from "react-icons/tb";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
@@ -21,7 +22,8 @@ const PublicHeader = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [isBannerVisible, setIsBannerVisible] = useState(true);
-
+ // check if user is logged in
+  const isLoggedIn = useSelector((state) => Boolean(state.auth.token));
   const handleCloseBanner = () => {
     setIsBannerVisible(false);
   };
@@ -83,10 +85,18 @@ const PublicHeader = () => {
         {/* User Profile Menu */}
         <Menu>
           <MenuButton className="focus:outline-none ">
-            <LiaUserSolid
-              aria-label="manage profile"
-              className="text-4xl  text-white hover:text-gray-100"
-            />
+            {/* User Icon */}
+                   <LiaUserSolid
+                     aria-label="manage profile"
+                     fontSize={24}
+                     className="text-4xl text-white-500"
+                   />
+                   {/* Green Circle */}
+                   {isLoggedIn && (
+                     <div
+                      className="absolute top-8 right-5 w-3 h-3 bg-green-500 rounded-full "
+                     ></div>
+                   )}
           </MenuButton>
           <MenuItems
             transition

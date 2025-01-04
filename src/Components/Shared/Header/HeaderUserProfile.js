@@ -2,13 +2,16 @@ import React from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { useEffect } from "react";
 import { TbLogout } from "react-icons/tb";
-import { useNavigate,  useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useSendLogoutMutation } from "../../../features/auth/authApiSlice";
 import useAuth from "../../../hooks/useAuth";
 import { LuKeyRound } from "react-icons/lu";
 import { PiUserCircleLight } from "react-icons/pi";
 import { FaRegUser } from "react-icons/fa";
 import { FiSettings } from "react-icons/fi";
+import { LiaUserSolid } from "react-icons/lia";
+import { useSelector } from "react-redux";
+
 const HeaderUserProfile = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -16,7 +19,8 @@ const HeaderUserProfile = () => {
   const [sendLogout, { isLoading, isSuccess, isError, error }] =
     useSendLogoutMutation();
 
-
+  // check if user is logged in
+  const isLoggedIn = useSelector((state) => Boolean(state.auth.token));
   useEffect(() => {
     if (isSuccess) {
       navigate("/login/");
@@ -45,21 +49,26 @@ const HeaderUserProfile = () => {
 
   const content = (
     <Menu>
-      <MenuButton>
-        <PiUserCircleLight
+      <MenuButton position="relative">
+        {/* User Icon */}
+        <LiaUserSolid
           aria-label="manage profile"
           fontSize={24}
-          className={`text-4xl text-white-500 `}
-      
-
+          className="text-4xl text-white-500"
         />
+        {/* Green Circle */}
+        {isLoggedIn && (
+          <div
+           className="absolute top-8 right-5 w-3 h-3 bg-green-500 rounded-full "
+          ></div>
+        )}
       </MenuButton>
 
       <MenuItems
         transition
         anchor="bottom end"
         aria-label="manage profile"
-        className=" origin-top-right  border    bg-sky-100 p-1 text-sm/6 text-gray-800 transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"//w-42
+        className=" origin-top-right  border    bg-sky-100 p-1 text-sm/6 text-gray-800 transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0" //w-42
       >
         <strong>Manage profile</strong>
         {/* <MenuItem>
