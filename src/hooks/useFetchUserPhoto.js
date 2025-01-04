@@ -18,6 +18,7 @@ const useFetchUserPhoto = (photoId) => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
+            credentials: "include",
             responseType: "blob",
           }
         );
