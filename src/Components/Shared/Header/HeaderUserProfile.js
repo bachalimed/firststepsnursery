@@ -21,6 +21,12 @@ const HeaderUserProfile = () => {
 
   // check if user is logged in
   const isLoggedIn = useSelector((state) => Boolean(state.auth.token));
+
+  const handleLogout =()=>{/////////////////added because we stay hanget in blanc page after logiout 
+    sendLogout()
+    navigate("/")
+
+  }
   useEffect(() => {
     if (isSuccess) {
       navigate("/login/");
@@ -40,7 +46,7 @@ const HeaderUserProfile = () => {
     <button
       className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
       title="Logout"
-      onClick={sendLogout}
+      onClick={handleLogout}
     >
       <TbLogout aria-label="Logout" className=" text-2xl right" />
       Logout

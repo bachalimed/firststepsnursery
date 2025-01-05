@@ -29,7 +29,11 @@ const PublicHeader = () => {
   };
   const [sendLogout, { isLoading, isSuccess, isError, error }] =
     useSendLogoutMutation();
-
+    const handleLogout =()=>{/////////////////added because we stay hanget in blanc page after logiout 
+      sendLogout()
+      navigate("/")
+  
+    }
   useEffect(() => {
     if (isSuccess) navigate("/login/");
   }, [isSuccess, navigate]);
@@ -41,7 +45,7 @@ const PublicHeader = () => {
     <button
       className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
       title="Logout"
-      onClick={sendLogout}
+      onClick={handleLogout}
     >
       <TbLogout aria-label="Logout" className=" text-2xl right" />
       Logout

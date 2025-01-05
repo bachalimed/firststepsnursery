@@ -47,7 +47,7 @@ const StudentsSet = () => {
             </li>
           </Link>
         ))}
-    </div> {location.pathname === "/settings/setudentsSet/" &&
+    </div> {location.pathname === "/settings/studentsSet/" &&
     <div className="flex justify-center items-center bg-gray-300 py-4">
       <img
             src={logo}
