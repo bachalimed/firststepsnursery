@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom"; //because we will get the userId f
 import { useGetEmployeeByIdQuery } from "./employeesApiSlice"; //we will pull the user  data from the state and not use query
 import EditEmployeeForm from "./EditEmployeeForm";
 import LoadingStateIcon from "react-loading-icons";
-import useEffect from "react";
+import {useEffect} from "react";
 const EditEmployee = () => {
   useEffect(() => {
     document.title = "Edit Employee";
@@ -34,7 +34,7 @@ const EditEmployee = () => {
     // console.log(employee, "employe");
     employeeToEdit = employee;
   }
-
+ 
   // console.log(employeeToEdit, "employeToedit");
 
   let content;

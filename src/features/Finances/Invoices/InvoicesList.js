@@ -476,7 +476,7 @@ const InvoicesList = () => {
             >
               {/* Default option is the current month */}
               <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
-              <option value="">All Months</option>
+              {/* <option value="">All Months</option> */}
               {/* Render the rest of the months, excluding the current month */}
               {MONTHS.map(
                 (month, index) =>

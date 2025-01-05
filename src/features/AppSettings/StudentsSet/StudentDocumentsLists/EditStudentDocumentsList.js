@@ -46,20 +46,7 @@ const EditStudentDocumentsList = () => {
 
   let content;
 
-  // if (studentDocumentsList != [] &&isSuccess) {
-  //   content = (
-  //     <>
-  //       <EditStudentDocumentsListForm listToEdit={studentDocumentsList} />
-  //     </>
-  //   );
-  // } else {
-  //   content = (
-  //     <>
-  //       <StudentsSet />
-  //       <LoadingStateIcon />
-  //     </>
-  //   );
-  // }
+ 
 
   content = (studentDocumentsList!={}) ? ( //sometimes isSuccess generates error
     <>

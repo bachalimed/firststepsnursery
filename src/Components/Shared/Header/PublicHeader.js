@@ -92,11 +92,11 @@ const PublicHeader = () => {
                      className="text-4xl text-white-500"
                    />
                    {/* Green Circle */}
-                   {isLoggedIn && (
+                   
                      <div
-                      className="absolute top-8 right-5 w-3 h-3 bg-green-500 rounded-full "
+                     className={`absolute top-8 right-5 w-3 h-3 ${isLoggedIn ? "bg-green-500" : "bg-red-500"} rounded-full border-2 border-white`}
                      ></div>
-                   )}
+                 
           </MenuButton>
           <MenuItems
             transition

@@ -1,7 +1,9 @@
 import {
   useGetEnrolmentsByYearQuery,
   useDeleteEnrolmentMutation,
+  useAddNewEnrolmentMutation,
 } from "./enrolmentsApiSlice";
+
 import { HiOutlineSearch } from "react-icons/hi";
 import { useAddNewInvoiceMutation } from "../../Finances/Invoices/invoicesApiSlice";
 import {
@@ -53,6 +55,10 @@ const EnrolmentsList = () => {
     const currentMonthIndex = new Date().getMonth(); // Get current month (0-11)
     return MONTHS[currentMonthIndex]; // Return the month name with the first letter capitalized
   };
+//to initialise a new query
+  const [queryTrigger, setQueryTrigger] = useState(0);
+
+
   //console.log("Fetch enrolments for academic year:", selectedAcademicYear);
   const {
     data: enrolments, //the data is renamed enrolments
@@ -68,6 +74,7 @@ const EnrolmentsList = () => {
         : getCurrentMonth(),
       selectedYear: selectedAcademicYear?.title,
       endpointName: "EnrolmentsList",
+      queryTrigger,
     } || {},
     {
       pollingInterval: 60000,
@@ -77,14 +84,24 @@ const EnrolmentsList = () => {
   );
   // Redux mutation for adding the attended school
   const [
-    addNewInvoice,
+    addNewInvoices,
     {
-      // isLoading: isAddLoading,
-      isError: isAddError,
-      error: addError,
-      isSuccess: isAddSuccess,
+      // isLoading: isAddInvoicesLoading,
+      isError: isAddInvoicesError,
+      error: addInvoicesError,
+      isSuccess: isAddInvoicesSuccess,
     },
   ] = useAddNewInvoiceMutation();
+  // Redux mutation for adding the attended school
+  const [
+    addNewEnrolments,
+    {
+      // isLoading: isAddEnrolmentsLoading,
+      isError: isAddEnrolmentsError,
+      error: addEnrolmentsError,
+      isSuccess: isAddEnrolmentsSuccess,
+    },
+  ] = useAddNewEnrolmentMutation();
 
   const {
     data: services,
@@ -207,22 +224,26 @@ const EnrolmentsList = () => {
       );
     });
   }
-
+// Trigger query refetch when isAddInvoicesSuccess is true
+useEffect(() => {
+  if (isAddInvoicesSuccess) {
+    setQueryTrigger((prev) => prev + 1); // Increment to trigger query
+  }
+}, [isAddInvoicesSuccess]);
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
 
   // Effect to clear the selection after successful addition
   useEffect(() => {
-    if (isAddSuccess) {
+    if (isAddInvoicesSuccess) {
       // Clear the selected rows in the state
       setSelectedRows([]);
 
       // console.log("Rows unselected after successful addition");
     }
-  }, [isAddSuccess]);
+  }, [isAddInvoicesSuccess]);
 
-  // Handler for selecting rows
   // Handler for selecting rows
   const handleRowSelected = (state) => {
     // Update state with the newly selected rows
@@ -230,8 +251,8 @@ const EnrolmentsList = () => {
     // console.log("selectedRows:", state.selectedRows);
   };
 
-  // Handler for generating an invoice
-  const handleGenerateInvoice = async () => {
+  // Handler for generating invoices
+  const handleGenerateInvoices = async () => {
     // // check if any finalfee is <authorised fee and remove the object from formdata
     // const filteredRows = selectedRows.filter(
     //   (row) => row.serviceFinalFee >= row.serviceAuthorisedFee
@@ -240,7 +261,7 @@ const EnrolmentsList = () => {
     //   alert("Some enrolments were not processed because their final fee is not authorised.");
     // }
     try {
-      const response = await addNewInvoice({
+      const response = await addNewInvoices({
         formData: selectedRows,
         operator: userId,
       });
@@ -253,9 +274,43 @@ const EnrolmentsList = () => {
       } else if (response?.error?.data?.message) {
         // Error response
         triggerBanner(response?.error?.data?.message, "error");
-      } else if (isAddError) {
+      } else if (isAddInvoicesError) {
         // In case of unexpected response format
-        triggerBanner(addError?.data?.message, "error");
+        triggerBanner(addInvoicesError?.data?.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner(error?.data?.message, "error");
+    }
+  };
+  // Handler for generating enrolments
+  const handleGenerateEnrolments = async () => {
+    // // check if any finalfee is <authorised fee and remove the object from formdata
+    // const filteredRows = selectedRows.filter(
+    //   (row) => row.serviceFinalFee >= row.serviceAuthorisedFee
+    // );
+    // if (selectedRows.length !== filteredRows.length) {
+    //   alert("Some enrolments were not processed because their final fee is not authorised.");
+    // }
+    try {
+      const response = await addNewEnrolments({
+        formData: selectedRows,
+        operator: userId,
+      });
+      if (response?.message) {
+        // Success response
+        triggerBanner(response?.message, "success");
+      } else if (response?.data?.message) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isAddEnrolmentsError) {
+        // In case of unexpected response format
+        triggerBanner(addEnrolmentsError?.data?.message, "error");
       } else {
         // In case of unexpected response format
         triggerBanner("Unexpected response from server.", "error");
@@ -289,10 +344,10 @@ const EnrolmentsList = () => {
 
     {
       name: " Active",
-      selector: (row) => row.student.studentIsActive,
+      selector: (row) => row.student?.studentIsActive,
       cell: (row) => (
         <span>
-          {row.student.studentIsActive ? (
+          {row.student?.studentIsActive ? (
             <IoShieldCheckmarkOutline className="text-green-500 text-2xl" />
           ) : (
             <IoShieldOutline className="text-amber-300 text-2xl" />
@@ -321,11 +376,11 @@ const EnrolmentsList = () => {
     {
       name: "Student Name",
       selector: (row) =>
-        row.student.studentName.firstName +
+        row.student?.studentName.firstName +
         " " +
-        row.student.studentName?.middleName +
+        row.student?.studentName?.middleName +
         " " +
-        row.student.studentName?.lastName,
+        row.student?.studentName?.lastName,
       sortable: true,
       style: {
         justifyContent: "left",
@@ -719,6 +774,7 @@ const EnrolmentsList = () => {
               pageSizeControl
               onSelectedRowsChange={handleRowSelected}
               selectableRowsHighlight
+              clearSelectedRows={isAddInvoicesSuccess}
               customStyles={{
                 headCells: {
                   style: {
@@ -750,7 +806,7 @@ const EnrolmentsList = () => {
             ></DataTable>
           </div>
 
-          <div className="cancelSavebuttonsDiv">
+          <div className="cancelSavebuttonsDiv ">
             <button
               className="add-button"
               onClick={() => navigate("/students/enrolments/newEnrolment/")}
@@ -762,12 +818,22 @@ const EnrolmentsList = () => {
               className={`px-4 py-2 ${
                 selectedRows?.length > 0 ? "add-button" : "bg-gray-300"
               } text-white rounded`}
-              onClick={handleGenerateInvoice}
+              onClick={handleGenerateInvoices}
               hidden={!canCreate}
               disabled={selectedRows?.length > 20 || selectedRows?.length < 1}
             >
               Generate {selectedRows?.length} Invoices
             </button>
+            {/* <button
+              className={`px-4 py-2 ${
+                selectedRows?.length > 0 ? "add-button" : "bg-gray-300"
+              } text-white rounded`}
+              onClick={handleGenerateEnrolments}
+              hidden={!canCreate}
+              disabled={selectedRows?.length > 20 || selectedRows?.length < 1}
+            >
+              Generate {selectedRows?.length} Enrolments
+            </button> */}
           </div>
         </div>
         <DeletionConfirmModal

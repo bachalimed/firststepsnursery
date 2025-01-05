@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom"; //because we will get the userId f
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
+import LoadingStateSmallIcon from "../../../../Components/LoadingStateSmallIcon";
 import useAuth from "../../../../hooks/useAuth";
 import React from "react";
 import axios from "axios";
@@ -13,7 +14,7 @@ import {
 } from "./employeeDocumentsApiSlice";
 import { useGetEmployeeDocumentsByYearByIdQuery } from "../../../AppSettings/HRSet/EmployeeDocumentsLists/employeeDocumentsListsApiSlice"; //using the listslist to get the documents
 import { selectCurrentToken } from "../../../auth/authSlice";
-import UploadDocumentFormModal from "../../../../Components/Shared/Modals/UploadDocumentFormModal"
+import UploadDocumentFormModal from "../../../../Components/Shared/Modals/UploadDocumentFormModal";
 import ViewDocumentModal from "../../../../Components/Shared/Modals/ViewDocumentModal";
 import DataTable from "react-data-table-component";
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
@@ -30,11 +31,10 @@ import {
 
 const EmployeeDocuments = () => {
   useEffect(() => {
-    document.title = "Employee Documnets List";
+    document.title = "Employee Documents List";
   });
   const { id: userId } = useParams(); //pull the id from use params from the url
   const Navigate = useNavigate();
-
 
   //console.log(userId,'the id in teh list')
   const { triggerBanner } = useOutletContext(); // Access banner trigger
@@ -59,7 +59,7 @@ const EmployeeDocuments = () => {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [documentToView, setDocumentToView] = useState(null);
-
+  const [loadingRowId, setLoadingRowId] = useState(null);
   const {
     canEdit,
     canDelete,
@@ -123,7 +123,6 @@ const EmployeeDocuments = () => {
     }
   );
 
-
   // Function to handle the delete button click
   const onDeleteEmployeeDocumentClicked = (docId) => {
     // console.log("id of the document when clicked", docId);
@@ -171,6 +170,7 @@ const EmployeeDocuments = () => {
   const [documentTitle, setDocumentTitle] = useState("");
   //modal to upload document
   const handleUploadClick = (documentTitle, documentReference) => {
+    setLoadingRowId(documentReference);
     setIsUploadModalOpen(true);
     setDocumentTitle(documentTitle);
     setEmployeeDocumentReference(documentReference);
@@ -224,6 +224,8 @@ const EmployeeDocuments = () => {
     } catch (error) {
       console.error("Error uploading documents:", error);
       triggerBanner(error?.data?.message, "error"); //////
+    } finally {
+      setLoadingRowId(null);
     }
   };
 
@@ -231,9 +233,12 @@ const EmployeeDocuments = () => {
   //console.log(token,'token')
 
   const apiClient = axios.create({
-    baseURL: "https://firststepsnursery-api.onrender.com",
+    baseURL:
+      process.env.NODE_ENV === "production"
+        ? "https://firststepsnursery-api.onrender.com"
+        : "http://localhost:3500",
     //baseURL: `http://localhost:3500`,
-    credentials: 'include', 
+    credentials: "include",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -305,18 +310,18 @@ const EmployeeDocuments = () => {
     },
     {
       name: "Uploaded",
-      selector: (row) => row.documentUploaded,
-      cell: (row) => (
-        <span>
-          {row.documentUploaded === true ? (
-            <IoCheckmarkDoneSharp className="text-green-500 text-2xl" />
-          ) : (
-            ""
-          )}
-        </span>
-      ),
+      selector: (row) => {
+        if (row.documentUpdatedAt) {
+          return new Date(row.documentUpdatedAt).toLocaleDateString("en-GB", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          });
+        }
+        return ""; // Return empty string if documentUpdatedAt is not available
+      },
       sortable: true,
-      width: "100px",
+      width: "120px",
     },
     {
       name: "Required",
@@ -365,15 +370,24 @@ const EmployeeDocuments = () => {
           )}
 
           {canEdit && !row.documentUploaded && (
-            <button
-              aria-label="upload document"
-              className="text-amber-300"
-              onClick={() =>
-                handleUploadClick(row.documentTitle, row.documentReference)
-              }
-            >
-              <GrDocumentUpload fontSize={20} />
-            </button>
+            <>
+              {" "}
+              <button
+                aria-label="upload document"
+                className="text-amber-300"
+                onClick={() =>
+                  handleUploadClick(row.documentTitle, row.documentReference)
+                }
+                hidden={
+                  loadingRowId === row.documentReference && uploadIsLoading
+                }
+              >
+                <GrDocumentUpload fontSize={20} />
+              </button>{" "}
+              {loadingRowId === row.documentReference && (
+                <LoadingStateSmallIcon />
+              )}
+            </>
           )}
           {canDelete && row.documentUploaded && !isDelLoading && (
             <button
@@ -399,8 +413,6 @@ const EmployeeDocuments = () => {
       <span> {employeeDocumentsListing?.length} documents</span>
     </h2>
   );
-  
-
 
   let content;
   if (isListLoading)
@@ -421,7 +433,7 @@ const EmployeeDocuments = () => {
         <div className="dataTableContainer">
           <div>
             <DataTable
-            title={tableHeader}
+              title={tableHeader}
               columns={column}
               data={employeeDocumentsListing}
               pagination
@@ -489,8 +501,8 @@ const EmployeeDocuments = () => {
         <ViewDocumentModal
           isOpen={isViewModalOpen}
           onRequestClose={() => setIsViewModalOpen(false)}
-         documentUrl={documentToView}
-         // documentType="employee"
+          documentUrl={documentToView}
+          // documentType="employee"
         />
         <DeletionConfirmModal
           isOpen={isDeleteModalOpen}

@@ -23,7 +23,7 @@ const CookieConsentBanner = () => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-sky-800 text-white p-4 flex flex-col sm:flex-row justify-between items-center z-50">
+    <div className="fixed bottom-0 left-0 right-0 bg-gray-700 text-white p-4 flex flex-col sm:flex-row justify-between items-center z-50">
       <p className="text-sm mb-2 sm:mb-0">
         This website uses cookies to enhance user experience. By continuing, you
         consent to our cookie policy.

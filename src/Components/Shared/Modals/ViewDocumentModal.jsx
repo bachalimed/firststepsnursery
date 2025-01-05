@@ -22,20 +22,16 @@ const ViewDocumentModal = ({ isOpen, onRequestClose,documentUrl  }) => {
           {/* Handling PDFs */}
           {/* {documentUrl.endsWith(".pdf") ? (
             handleDownloadDocument(documentUrl)
-          ) : (
+          ) : (*/}
             <img
               src={documentUrl}
               alt="Document"
-              style={{ width: "100%", height: "auto" }}
+              className="w-full h-auto max-h-[90vh] object-contain"
             />
-          )}
+         {/*  )}
         </>
       )} */}
-       <img
-              src={documentUrl}
-              alt="Document"
-              style={{ width: "100%", height: "auto" }}
-            />
+       
     </Modal>
   );
 };

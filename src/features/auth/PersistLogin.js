@@ -33,7 +33,7 @@ const PersistLogin = () => {
         console.log('verifying refresh token')
         try {
           const response = await refresh();
-          console.log('Refresh result:', response);
+          //console.log('Refresh result:', response);
           //const { accessToken } = response.data
           setTrueSuccess(true);
         } catch (err) {

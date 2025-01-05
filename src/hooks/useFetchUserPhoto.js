@@ -12,8 +12,10 @@ const useFetchUserPhoto = (photoId) => {
 
       try {
         const response = await axios.get(
-           //`http://localhost:3500/hr/employees/employeeDocuments/${photoId}`,
-          `https://firststepsnursery-api.onrender.com/hr/employees/employeeDocuments/${photoId}`,
+          //`http://localhost:3500/hr/employees/employeeDocuments/${photoId}`,
+          process.env.NODE_ENV === "production"
+            ? `https://firststepsnursery-api.onrender.com/hr/employees/employeeDocuments/${photoId}`
+            : `http://localhost:3500/hr/employees/employeeDocuments/${photoId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

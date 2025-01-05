@@ -12,9 +12,10 @@ import {
 import { useGetStudentDocumentsByYearByIdQuery } from "../../../../AppSettings/StudentsSet/StudentDocumentsLists/studentDocumentsListsApiSlice";
 import { selectCurrentToken } from "../../../../auth/authSlice";
 import useAuth from "../../../../../hooks/useAuth";
-import UploadDocumentFormModal from "../../../../../Components/Shared/Modals/UploadDocumentFormModal"
+import UploadDocumentFormModal from "../../../../../Components/Shared/Modals/UploadDocumentFormModal";
 import LoadingStateIcon from "../../../../../Components/LoadingStateIcon";
-import ViewDocumentModal from "../../../../../Components/Shared/Modals/ViewDocumentModal"
+import LoadingStateSmallIcon from "../../../../../Components/LoadingStateSmallIcon";
+import ViewDocumentModal from "../../../../../Components/Shared/Modals/ViewDocumentModal";
 import DataTable from "react-data-table-component";
 import DeletionConfirmModal from "../../../../../Components/Shared/Modals/DeletionConfirmModal";
 import { GrView } from "react-icons/gr";
@@ -25,6 +26,7 @@ import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
 } from "../../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
+import ManageDocumentModal from "../../../../../Components/Shared/Modals/ManageDocumentModal";
 
 const StudentDocuments = () => {
   useEffect(() => {
@@ -56,7 +58,9 @@ const StudentDocuments = () => {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [documentToView, setDocumentToView] = useState(null);
-
+  const [isManageModalOpen, setIsManageModalOpen] = useState(false);
+  const [documentToManage, setDocumentToManage] = useState(null);
+  const [loadingRowId, setLoadingRowId] = useState(null);
   const {
     canEdit,
     canDelete,
@@ -78,7 +82,7 @@ const StudentDocuments = () => {
     addStudentDocuments,
     {
       //an object that calls the status when we execute the newUserForm function
-      // isLoading: uploadIsLoading,
+      isLoading: uploadIsLoading,
       isSuccess: uploadIsSuccess,
       isError: uploadIsError,
       error: uploadError,
@@ -163,6 +167,7 @@ const StudentDocuments = () => {
   const [documentTitle, setDocumentTitle] = useState("");
   //modal to upload document
   const handleUploadClick = (documentTitle, documentReference) => {
+    setLoadingRowId(documentReference);
     setIsUploadModalOpen(true);
     setDocumentTitle(documentTitle);
     setStudentDocumentReference(documentReference);
@@ -216,14 +221,18 @@ const StudentDocuments = () => {
     } catch (error) {
       console.error("Error uploading documents:", error);
       triggerBanner(error?.data?.message, "error"); //////
+    } finally {
+      setLoadingRowId(null);
     }
   };
   const token = useSelector(selectCurrentToken);
   //console.log(token,'token')
   const apiClient = axios.create({
-     baseURL: "https://firststepsnursery-api.onrender.com",
-    //baseURL: "http://localhost:3500",
-     credentials: 'include', 
+    baseURL:
+      process.env.NODE_ENV === "production"
+        ? "https://firststepsnursery-api.onrender.com"
+        : "http://localhost:3500",
+    credentials: "include",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -233,23 +242,19 @@ const StudentDocuments = () => {
     try {
       const response = await apiClient.get(
         `/students/studentsParents/studentDocuments/${id}`,
-        {
-          responseType: "blob",
-        }
+        { responseType: "blob" }
       );
 
       const contentType = response.headers["content-type"];
       const blob = new Blob([response.data], { type: contentType });
       const url = window.URL.createObjectURL(blob);
+
       if (contentType === "application/pdf") {
-        // Handle PDF download
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", `document_${id}.pdf`);
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
+        // Set the URL to view in the modal
+        setDocumentToManage(url);
+        setIsManageModalOpen(true);
       } else {
+        // Handle non-PDF documents (e.g., images)
         setDocumentToView(url);
         setIsViewModalOpen(true);
       }
@@ -257,6 +262,35 @@ const StudentDocuments = () => {
       console.error("Error viewing the document:", error);
     }
   };
+
+  // const handleViewDocument = async (id) => {
+  //   try {
+  //     const response = await apiClient.get(
+  //       `/students/studentsParents/studentDocuments/${id}`,
+  //       {
+  //         responseType: "blob",
+  //       }
+  //     );
+
+  //     const contentType = response.headers["content-type"];
+  //     const blob = new Blob([response.data], { type: contentType });
+  //     const url = window.URL.createObjectURL(blob);
+  //     if (contentType === "application/pdf") {
+  //       // Handle PDF download
+  //       const link = document.createElement("a");
+  //       link.href = url;
+  //       link.setAttribute("download", `document_${id}.pdf`);
+  //       document.body.appendChild(link);
+  //       link.click();
+  //       link.remove();
+  //     } else {
+  //       setDocumentToView(url);
+  //       setIsViewModalOpen(true);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error viewing the document:", error);
+  //   }
+  // };
 
   useEffect(() => {
     if (uploadIsSuccess) {
@@ -269,7 +303,7 @@ const StudentDocuments = () => {
       Navigate(`/students/studentsParents/studentDocumentsList/${studentId}`); //will navigate here after saving
     }
   }, [uploadIsSuccess, Navigate]);
-
+  console.log(studentDocumentsListing, "studentDocumentsListing");
   const column = [
     {
       name: "#", // New column for entry number
@@ -299,19 +333,21 @@ const StudentDocuments = () => {
     },
     {
       name: "Uploaded",
-      selector: (row) => row.documentUploaded,
-      cell: (row) => (
-        <span>
-          {row.documentUploaded === true ? (
-            <IoCheckmarkDoneSharp className="text-green-500 text-2xl" />
-          ) : (
-            ""
-          )}
-        </span>
-      ),
+      selector: (row) => {
+        if (row.documentUpdatedAt) {
+          return new Date(row.documentUpdatedAt).toLocaleDateString("en-GB", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          });
+        }
+        return ""; // Return empty string if documentUpdatedAt is not available
+      },
       sortable: true,
       width: "120px",
     },
+    
+   
     {
       name: "Required",
       selector: (row) => row.isRequired,
@@ -359,15 +395,23 @@ const StudentDocuments = () => {
           )}
 
           {canEdit && !row.documentUploaded && (
-            <button
-              aria-label="upload document"
-              className="text-amber-300"
-              onClick={() =>
-                handleUploadClick(row.documentTitle, row.documentReference)
-              }
-            >
-              <GrDocumentUpload fontSize={20} />
-            </button>
+            <>
+              <button
+                aria-label="upload document"
+                className="text-amber-300"
+                onClick={() =>
+                  handleUploadClick(row.documentTitle, row.documentReference)
+                }
+                hidden={
+                  loadingRowId === row.documentReference && uploadIsLoading
+                }
+              >
+                <GrDocumentUpload fontSize={20} />
+              </button>
+              {loadingRowId === row.documentReference && (
+                <LoadingStateSmallIcon />
+              )}
+            </>
           )}
           {canDelete && row.documentUploaded && !isDelLoading && (
             <button
@@ -480,6 +524,12 @@ const StudentDocuments = () => {
           isOpen={isViewModalOpen}
           onRequestClose={() => setIsViewModalOpen(false)}
           documentUrl={documentToView}
+        />
+        <ManageDocumentModal
+          isOpen={isViewModalOpen}
+          onRequestClose={() => setIsManageModalOpen(false)}
+          documentUrl={documentToManage}
+          documentId
         />
         <DeletionConfirmModal
           isOpen={isDeleteModalOpen}

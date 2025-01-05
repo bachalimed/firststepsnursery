@@ -623,6 +623,7 @@ const StudentsList = () => {
           onClose={handleCloseDeleteModal}
           onConfirm={handleConfirmDelete}
         />
+        
         <RegisterModal //will allow to add or remove studetnYEars
           isOpen={isRegisterModalOpen}
           onClose={() => setIsRegisterModalOpen(false)}
