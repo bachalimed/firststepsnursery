@@ -16,14 +16,13 @@ import {
   selectAcademicYearById,
   selectAllAcademicYears,
 } from "../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import {
-  DATE_REGEX,
-  OBJECTID_REGEX,
-} from "../../../../config/REGEX";
+import { DATE_REGEX, OBJECTID_REGEX } from "../../../../config/REGEX";
 import { useOutletContext } from "react-router-dom";
 
 const NewAnimatorsAssignmentForm = () => {
-  useEffect(()=>{document.title="New Animator Assignment"})
+  useEffect(() => {
+    document.title = "New Animator Assignment";
+  });
   const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
@@ -35,8 +34,8 @@ const NewAnimatorsAssignmentForm = () => {
     data: employees, //the data is renamed employees
     isLoading: isEmployeesLoading,
     isSuccess: isEmployeesSuccess,
-    isError: isEmployeesError,
-    error: employeesError,
+    // isError: isEmployeesError,
+    // error: employeesError,
   } = useGetEmployeesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -52,8 +51,8 @@ const NewAnimatorsAssignmentForm = () => {
     data: schools, //the data is renamed schools
     isLoading: isSchoolsLoading,
     isSuccess: isSchoolsSuccess,
-    isError: isSchoolsError,
-    error: schoolsError,
+    // isError: isSchoolsError,
+    // error: schoolsError,
   } = useGetAttendedSchoolsQuery({
     endpointName: "NewAnimatorsAssignmentForm",
   }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
@@ -62,8 +61,8 @@ const NewAnimatorsAssignmentForm = () => {
     data: assignments, //the data is renamed schools
     isLoading: isAssignmentsLoading,
     isSuccess: isAssignmentsSuccess,
-    isError: isAssignmentsError,
-    error: assignmentsError,
+    // isError: isAssignmentsError,
+    // error: assignmentsError,
   } = useGetAnimatorsAssignmentsQuery({
     endpointName: "NewAnimatorsAssignmentForm",
   }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
@@ -93,7 +92,9 @@ const NewAnimatorsAssignmentForm = () => {
     const { entities } = employees;
     employeesList = Object.values(entities);
     activeEmployeesList = employeesList.filter(
-      (employee) => employee.employeeData.employeeIsActive === true &&employee.userRoles?.includes('Animator')////////
+      (employee) =>
+        employee.employeeData.employeeIsActive === true &&
+        employee.userRoles?.includes("Animator") ////////
     );
   }
   let assignmentsList = isAssignmentsSuccess
@@ -104,7 +105,7 @@ const NewAnimatorsAssignmentForm = () => {
     validAssignmentYear: false,
     validAssignments: false,
     validAssignedFrom: false,
-    validNonEmptyschools:false,
+    validNonEmptyschools: false,
     validAssignedTo: false,
     noOverlap: true, // New validity check for date overlap
   });
@@ -190,11 +191,10 @@ const NewAnimatorsAssignmentForm = () => {
 
     try {
       const response = await addNewAnimatorsAssignment(formData).unwrap();
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -309,82 +309,77 @@ const NewAnimatorsAssignmentForm = () => {
           <div className="formSectionContainer">
             <h3 className="formSectionTitle">Assignments Dates</h3>
             <div className="formSection">
-              
-                <label htmlFor="assignmentYear" className="formInputLabel">
-                  Assignment Year{" "}
-                  {!validity.validAssignmentYear && (
-                    <span className="text-red-600">*</span>
-                  )}
-                  <select
-                    aria-invalid={!validity.validAssignmentYear}
-                    required
-                    id="assignmentYear"
-                    name="assignmentYear"
-                    value={formData.assignmentYear}
-                    onChange={handleChange}
-                    className={`formInputText`}
+              <label htmlFor="assignmentYear" className="formInputLabel">
+                Assignment Year{" "}
+                {!validity.validAssignmentYear && (
+                  <span className="text-red-600">*</span>
+                )}
+                <select
+                  aria-invalid={!validity.validAssignmentYear}
+                  required
+                  id="assignmentYear"
+                  name="assignmentYear"
+                  value={formData.assignmentYear}
+                  onChange={handleChange}
+                  className={`formInputText`}
+                >
+                  <option
+                    key={selectedAcademicYear?.title}
+                    value={selectedAcademicYear?.title}
                   >
-                    <option
-                      key={selectedAcademicYear?.title}
-                      value={selectedAcademicYear?.title}
-                    >
-                      {selectedAcademicYear?.title}{" "}
-                    </option>
-                  </select>
-                </label>
-              
+                    {selectedAcademicYear?.title}{" "}
+                  </option>
+                </select>
+              </label>
 
               <div className="formLineDiv">
-              
-                  <label htmlFor="assignedFrom" className="formInputLabel">
-                    From{" "}
-                    {(!validity.validAssignedFrom || !validity.noOverlap) && (
-                      <span className="text-red-600">*</span>
+                <label htmlFor="assignedFrom" className="formInputLabel">
+                  From{" "}
+                  {(!validity.validAssignedFrom || !validity.noOverlap) && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <input
+                    aria-invalid={!validity.validAssignedFrom}
+                    required
+                    placeholder="[dd/mm/yyyy]"
+                    type="date"
+                    id="assignedFrom"
+                    name="assignedFrom"
+                    value={formData.assignedFrom}
+                    onChange={handleChange}
+                    className="formInputText"
+                  />{" "}
+                  {(!validity.validAssignedFrom || !validity.noOverlap) &&
+                    formData?.assignedFrom && (
+                      <span className="text-red-600">
+                        wrong format or date overlap
+                      </span>
                     )}
-                    <input
-                      aria-invalid={!validity.validAssignedFrom}
-                      required
-                      placeholder="[dd/mm/yyyy]"
-                      type="date"
-                      id="assignedFrom"
-                      name="assignedFrom"
-                      value={formData.assignedFrom}
-                      onChange={handleChange}
-                      className="formInputText"
-                    />{" "}
-                    {(!validity.validAssignedFrom || !validity.noOverlap) &&
-                      formData?.assignedFrom && (
-                        <span className="text-red-600">
-                          wrong format or date overlap
-                        </span>
-                      )}
-                  </label>
-                
-               
-                  <label htmlFor="assignedTo" className="formInputLabel">
-                    To{" "}
-                    {(!validity.validAssignedTo || !validity.noOverlap) && (
-                      <span className="text-red-600">*</span>
+                </label>
+
+                <label htmlFor="assignedTo" className="formInputLabel">
+                  To{" "}
+                  {(!validity.validAssignedTo || !validity.noOverlap) && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <input
+                    aria-invalid={!validity.validAssignedTo}
+                    required
+                    placeholder="[dd/mm/yyyy]"
+                    type="date"
+                    id="assignedTo"
+                    name="assignedTo"
+                    value={formData.assignedTo}
+                    onChange={handleChange}
+                    className="formInputText"
+                  />{" "}
+                  {(!validity.validAssignedTo || !validity.noOverlap) &&
+                    formData?.assignedTo && (
+                      <span className="text-red-600">
+                        wrong format or date overlap
+                      </span>
                     )}
-                    <input
-                      aria-invalid={!validity.validAssignedTo}
-                      required
-                      placeholder="[dd/mm/yyyy]"
-                      type="date"
-                      id="assignedTo"
-                      name="assignedTo"
-                      value={formData.assignedTo}
-                      onChange={handleChange}
-                      className="formInputText"
-                    />{" "}
-                    {(!validity.validAssignedTo || !validity.noOverlap) &&
-                      formData?.assignedTo && (
-                        <span className="text-red-600">
-                          wrong format or date overlap
-                        </span>
-                      )}
-                  </label>
-               
+                </label>
               </div>
             </div>
           </div>
@@ -392,13 +387,16 @@ const NewAnimatorsAssignmentForm = () => {
           <h3 className="formSectionTitle">Assignments</h3>
           {formData.assignments.map((assignment, index) => (
             <div key={index} className="mb-4 p-4 border rounded-md">
-              <label htmlFor={`assignmentAnimator-${index}`} className="formInputLabel">
+              <label
+                htmlFor={`assignmentAnimator-${index}`}
+                className="formInputLabel"
+              >
                 Animator{" "}
                 {!OBJECTID_REGEX.test(assignment?.animator) && (
                   <span className="text-red-600">*</span>
                 )}
                 <select
-                id={`assignmentAnimator-${index}`}
+                  id={`assignmentAnimator-${index}`}
                   value={assignment.animator}
                   onChange={(e) =>
                     handleAssignmentChange(index, "animator", e.target.value)
@@ -472,7 +470,6 @@ const NewAnimatorsAssignmentForm = () => {
           <div className="cancelSavebuttonsDiv">
             <button
               type="button"
-             
               className="cancel-button"
               aria-label="cancel assignments"
               onClick={() =>

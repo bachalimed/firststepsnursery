@@ -17,7 +17,9 @@ import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationMod
 import { useOutletContext } from "react-router-dom";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 const NewSectionForm = () => {
-  useEffect(()=>{document.title="New Section"})
+  useEffect(() => {
+    document.title = "New Section";
+  });
 
   const navigate = useNavigate();
   const { userId } = useAuth();
@@ -120,7 +122,9 @@ const NewSectionForm = () => {
     const { entities } = employees;
     employeesList = Object.values(entities);
     activeEmployeesList = employeesList.filter(
-      (employee) => employee.employeeData.employeeIsActive === true
+      (employee) =>
+        employee.employeeData.employeeIsActive === true &&
+        employee.userRoles?.includes("Animator")//////////added this
     );
   }
 
@@ -203,11 +207,10 @@ const NewSectionForm = () => {
     setShowConfirmation(false);
     try {
       const response = await addNewSection(formData);
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -456,23 +459,21 @@ const NewSectionForm = () => {
                   )?.grade || "N/A";
 
                 return (
-                
-                    <li
-                      id={studentId}
-                      name={studentId}
-                      key={studentId}
-                      onClick={() => handleRemoveStudent(studentId)}
-                      className="flex flex-col gap-2  hover:bg-gray-50 rounded-md items-center w-full"
-                    >
-                      <div className="flex flex-row w-full">
-                        <span className="flex-1 rounded-md border border-sky-700 px-3 py-1 text-sky-700 hover:bg-sky-700 hover:text-white transition-colors duration-200">
-                          {student?.studentName.firstName}{" "}
-                          {student?.studentName.middleName}{" "}
-                          {student?.studentName.lastName} - Grade: {grade}
-                        </span>
-                      </div>
-                    </li>
-                 
+                  <li
+                    id={studentId}
+                    name={studentId}
+                    key={studentId}
+                    onClick={() => handleRemoveStudent(studentId)}
+                    className="flex flex-col gap-2  hover:bg-gray-50 rounded-md items-center w-full"
+                  >
+                    <div className="flex flex-row w-full">
+                      <span className="flex-1 rounded-md border border-sky-700 px-3 py-1 text-sky-700 hover:bg-sky-700 hover:text-white transition-colors duration-200">
+                        {student?.studentName.firstName}{" "}
+                        {student?.studentName.middleName}{" "}
+                        {student?.studentName.lastName} - Grade: {grade}
+                      </span>
+                    </div>
+                  </li>
                 );
               })}
             </ul>{" "}

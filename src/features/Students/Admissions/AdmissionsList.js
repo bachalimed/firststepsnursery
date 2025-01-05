@@ -638,7 +638,7 @@ const AdmissionsList = () => {
               type="text"
               value={searchQuery}
               onChange={handleSearch}
-              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
+              className="serachQuery"
             />{" "}
             {searchQuery && (
               <button

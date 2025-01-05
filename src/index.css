@@ -667,3 +667,8 @@ header .bg-blue-600 p {
   animation-iteration-count: infinite;
 }
 /*  ////////////////end of moving circles*/
+
+
+.serachQuery{
+ @apply text-sm focus:outline-none active:outline-none mt-1 h-8 w-[14rem] border border-gray-300 px-4 pl-11 pr-4
+}

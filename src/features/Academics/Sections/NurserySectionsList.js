@@ -61,7 +61,7 @@ const NurserySectionsList = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   //we need to declare the variable outside of if statement to be able to use it outside later
-  const [currentSectionsFilter, setCurrentSectionsFilter] = useState(false);
+  const [currentSectionsFilter, setCurrentSectionsFilter] = useState(true);
   let sectionsList = [];
   let filteredSections = [];
   if (isSectionsSuccess) {
@@ -396,7 +396,7 @@ const NurserySectionsList = () => {
               type="text"
               value={searchQuery}
               onChange={handleSearch}
-              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
+              className="serachQuery"
             />{" "}
             {searchQuery && (
               <button

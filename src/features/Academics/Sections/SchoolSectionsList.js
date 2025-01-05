@@ -69,14 +69,14 @@ const SchoolSectionsList = () => {
         );
 
       // Check if the school's name matches the search query
-      const schoolNameMatches = school.schoolName
-        .toLowerCase()
+      const schoolNameMatches = school?.schoolName
+        ?.toLowerCase()
         .includes(searchQuery.toLowerCase());
 
       // Check if any student in the school matches the search query
       const studentMatches = school.students?.some((student) => {
         const firstNameMatch = student?.studentName?.firstName
-          .toLowerCase()
+          ?.toLowerCase()
           .includes(searchQuery.toLowerCase());
         const middleNameMatch = student?.studentName?.middleName
           ?.toLowerCase()
@@ -260,7 +260,7 @@ const SchoolSectionsList = () => {
               type="text"
               value={searchQuery}
               onChange={handleSearch}
-              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300  px-4 pl-11 pr-4"
+              className="serachQuery"
             />{" "}
             {searchQuery && (
               <button

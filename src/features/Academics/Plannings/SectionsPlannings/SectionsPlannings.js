@@ -1210,6 +1210,9 @@ const SectionsPlannings = () => {
   //     };
   //   }
   // }, [processedEvents]);
+
+
+  console.log(filteredSectionsList,'filteredSectionsList')
   let content;
   if (
     isSectionsLoading ||
