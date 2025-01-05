@@ -39,7 +39,7 @@ const Login = () => {
       dispatch(setCredentials({ accessToken }));
       setUsername("");
       setPassword("");
-      navigate("/dashboard/");
+      navigate("/academics/plannings/animatorsAssignments/");
     } catch (err) {
       if (!err.status) {
         setErrMsg("No Server Response");

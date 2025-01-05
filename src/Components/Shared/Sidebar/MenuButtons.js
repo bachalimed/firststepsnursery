@@ -100,7 +100,7 @@ const MenuButtons = () => {
       )}
       {(isAnimator || isAcademic || isDirector || isManager || isAdmin) && (
         <div className="relative">
-          <Link to="/academics/sections/nurserySectionsList/">
+          <Link to="/academics/plannings/animatorsAssignments/">
             <li
               className={`text-grey-300 text-sm flex    items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
                 location.pathname.startsWith("/academics/")

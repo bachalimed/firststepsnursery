@@ -48,7 +48,7 @@ const PublicHeader = () => {
     </button>
   );
 
-  const onGoDashClicked = () => navigate("/dashboard/studentsDash/");
+  const onGoDashClicked = () => navigate("/academics/plannings/animatorsAssignments/");
 
   return (
     <header className="bg-sky-700 text-white py-1 px-3 md:px-1 flex  justify-between items-center  overflow-hidden">
@@ -69,16 +69,16 @@ const PublicHeader = () => {
       <div className="  items-center justify-center mr-4 mt-1 ">
         {/* Dashboard Button */}
 
-        {pathname !== "/dashboard/" && (
+        {pathname !== "/dashboard/" && (//////////////////
           <button
             className={` ${
               username ? "" : "hidden"
             } text-white hover:text-gray-100 `}
-            title="Dashboard"
+            title="Academics"
             onClick={onGoDashClicked}
-            aria-label="dashboard"
+            aria-label="academics"
           >
-            <BiSolidSchool aria-label="Dashboard" className="text-4xl" />
+            <BiSolidSchool aria-label="academics" className="text-4xl" />
           </button>
         )}
 

@@ -61,12 +61,12 @@ const DashboardHeader = () => {
       {/* Welcome Message and Date/Time */}
      
         <h1 className="text-lg font-semibold text-center md:text-left">
-          Welcome back, {username}!
+          Welcome back, {username}{" "}!
         </h1>
-        <div className="text-sm text-center md:text-left max-sm:hidden">
+        {/* <div className="text-sm text-center md:text-left max-sm:hidden">
           <p>{formattedDate}</p>
           <p>{formattedTime}</p>
-        </div>
+        </div> */}
       
   
       {/* Navbar Header */}

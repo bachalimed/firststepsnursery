@@ -139,8 +139,11 @@ const AnimatorsAssignmentsList = () => {
     setIdAttendedSchoolToDelete(null);
   };
 
-  const [dateFilter, setDateFilter] = useState(""); // Initialize with empty string (for "All Months")
+  const [dateFilter, setDateFilter] = useState(new Date().toISOString().split("T")[0]);
   const [monthFilter, setMonthFilter] = useState(getCurrentMonth()); // Initialize with empty string (for "All Months")
+  
+  
+  
   let filteredAssignments = [];
   let assignmentsList = [];
   if (isAssignmentsSuccess) {
@@ -403,7 +406,7 @@ const AnimatorsAssignmentsList = () => {
               onClick={() => setDateFilter("")}
               className="text-sm h-8 border px-4  border-gray-300 hover:text-red-600 focus:outline-none"
             >
-              Clear Filters
+              Clear Date Filter
             </button>
           )}
         </div>
