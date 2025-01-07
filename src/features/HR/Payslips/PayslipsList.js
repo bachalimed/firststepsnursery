@@ -370,7 +370,7 @@ const PayslipsList = () => {
         <LoadingStateIcon />
       </>
     );
-  if (isPayslipsSuccess)
+  // if (isPayslipsSuccess)
     content = (
       <>
         <HR />

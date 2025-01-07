@@ -19,13 +19,22 @@ import useAuth from "../../../hooks/useAuth";
 import { useOutletContext } from "react-router-dom";
 
 const EditUserForm = ({ user }) => {
-  useEffect(()=>{document.title="Edit User"})
+  useEffect(() => {
+    document.title = "Edit User";
+  });
   //user was passed as prop in editUser
   const navigate = useNavigate();
   const { isManager, isAdmin, isDirector } = useAuth();
   //initialise the mutation to be used later
-  const [updateUser, { isLoading:isUpdateLoading, isSuccess:isUpdateSuccess, isError:isUpdateError, error:updateError }] =
-    useUpdateUserMutation();
+  const [
+    updateUser,
+    {
+      isLoading: isUpdateLoading,
+      isSuccess: isUpdateSuccess,
+      isError: isUpdateError,
+      error: updateError,
+    },
+  ] = useUpdateUserMutation();
 
   //confirmation Modal states
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -36,6 +45,7 @@ const EditUserForm = ({ user }) => {
     id: user.id,
     username: user.username,
     password: "",
+    cin: user.cin,
     userRoles: user.userRoles,
     userAllowedActions: user.userAllowedActions || [],
     userFullName: {
@@ -65,6 +75,7 @@ const EditUserForm = ({ user }) => {
   const [validity, setValidity] = useState({
     validUsername: false,
     validPassword: false,
+    validCin: false,
     validFirstName: false,
     validMiddleName: false,
     validLastName: false,
@@ -89,6 +100,7 @@ const EditUserForm = ({ user }) => {
       validPassword: formData.password
         ? PWD_REGEX.test(formData.password)
         : true, //if not changed, set to true
+      validCin: PHONE_REGEX.test(formData.cin),
       validFirstName: NAME_REGEX.test(formData.userFullName.userFirstName),
       validMiddleName:
         formData?.userFullName?.userMiddleName !== ""
@@ -182,11 +194,10 @@ const EditUserForm = ({ user }) => {
 
     try {
       const response = await updateUser({ formData });
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -379,6 +390,29 @@ const EditUserForm = ({ user }) => {
               {/* Sex Selection */}
             </div>
             <div className="formLineDiv">
+              {/* CIN */}
+
+              <label htmlFor="ID" className="ID">
+                ID{" "}
+                {!validity.validCin && <span className="text-red-600">*</span>}
+                <input
+                  aria-invalid={!validity.validCin}
+                  placeholder="[3-25 digits]"
+                  aria-label="ID"
+                  type="text"
+                  id="cin"
+                  name="cin"
+                  value={formData.cin}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      cin: e.target.value,
+                    }))
+                  }
+                  className={`formInputText`}
+                  required
+                />{" "}
+              </label>
               {/* Sex Selection */}
 
               <label className="formInputLabel">

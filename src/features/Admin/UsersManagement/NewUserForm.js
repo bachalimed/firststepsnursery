@@ -37,6 +37,7 @@ const NewUserForm = () => {
   const [formData, setFormData] = useState({
     username: `user${Math.random().toString(36).substring(2, 10)}`,
     password: "",
+    cin:"",
     userRoles: [],
     userAllowedActions: [],
     userFullName: {
@@ -69,6 +70,7 @@ const NewUserForm = () => {
     validUsername: false,
     validPassword: false,
     validFirstName: false,
+    validCin: false,
     validMiddleName: false,
     validLastName: false,
     validUserDob: false,
@@ -90,6 +92,7 @@ const NewUserForm = () => {
       ...prev,
       validUsername: USER_REGEX.test(formData.username),
       validPassword: PWD_REGEX.test(formData.password),
+      validCin: PHONE_REGEX.test(formData.cin),
       validFirstName: NAME_REGEX.test(formData.userFullName.userFirstName),
       validMiddleName:
         formData?.userFullName?.userMiddleName !== ""
@@ -375,6 +378,32 @@ const NewUserForm = () => {
               {/* Sex Selection */}
             </div>
             <div className="formLineDiv">
+               {/* CIN */}
+
+               <label htmlFor="ID" className="ID">
+                ID{" "}
+                {!validity.validCin && (
+                  <span className="text-red-600">*</span>
+                )}
+                <input
+                  aria-invalid={!validity.validCin}
+                  placeholder="[3-25 digits]"
+                  aria-label="ID"
+                  type="text"
+                  id="cin"
+                  name="cin"
+                  value={formData.cin}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      cin:  e.target.value,
+                      
+                    }))
+                  }
+                  className={`formInputText`}
+                  required
+                />{" "}
+              </label>
               {/* Sex Selection */}
 
               <label className="formInputLabel">
@@ -426,6 +455,7 @@ const NewUserForm = () => {
                   </label>
                 </div>
               </label>
+               
             </div>
           </div>
 

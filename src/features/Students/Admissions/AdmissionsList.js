@@ -621,7 +621,7 @@ const AdmissionsList = () => {
         <LoadingStateIcon />
       </>
     );
-  if (isAdmissionsSuccess && isServicesSuccess)
+  // if (isAdmissionsSuccess && isServicesSuccess)
     content = (
       <>
         <Students />

@@ -337,7 +337,7 @@ const AnimatorsAssignmentsList = () => {
       </>
     );
 
-  if (isAssignmentsSuccess && isEmployeesSuccess)
+  // if (isAssignmentsSuccess && isEmployeesSuccess)
     content = (
       <>
         <Academics />

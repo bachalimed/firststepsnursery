@@ -39,10 +39,10 @@ const Sections = () => {
       label: "Sites",
       path: "/academics/plannings/sitesPlannings/",
     },
-    (isAnimator || isAcademic || isDirector || isManager || isAdmin) && {
-      label: "Animators",
-      path: "/academics/plannings/animatorsPlannings/",
-    },
+    // (isAnimator || isAcademic || isDirector || isManager || isAdmin) && {
+    //   label: "Animators",
+    //   path: "/academics/plannings/animatorsPlannings/",
+    // },
     (isAnimator || isAcademic || isDirector || isManager || isAdmin) && {
       label: "Classrooms",
       path: "/academics/plannings/classroomsPlannings/",

@@ -128,8 +128,8 @@ const EmployeesList = () => {
 
     //the serach result data
     filteredEmployees = employeesList?.filter((item) => {
-      //year filter
 
+      
       //the nested objects need extra logic to separate them
       const firstNameMatch = item?.userFullName?.userFirstName
         .toLowerCase()
@@ -145,9 +145,7 @@ const EmployeesList = () => {
         Object.values(item).some((val) =>
           String(val).toLowerCase().includes(searchQuery.toLowerCase())
         ) ||
-        firstNameMatch ||
-        middleNameMatch ||
-        lastNameMatch
+        ((firstNameMatch || middleNameMatch || lastNameMatch) )
       );
     });
   }
@@ -203,6 +201,28 @@ const EmployeesList = () => {
       ),
       sortable: true,
       width: "90px",
+    },
+    {
+      name: "CIN",
+      selector: (row) => row?.cin || "",
+      sortable: true,
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
+      width: "100px",
+      // sortFunction: (rowA, rowB) => {
+      //   const usernameA = rowA.username.toLowerCase();
+      //   const usernameB = rowB.username.toLowerCase();
+
+      //   if (usernameA < usernameB) {
+      //     return -1;
+      //   }
+      //   if (usernameA > usernameB) {
+      //     return 1;
+      //   }
+      //   return 0;
+      // },
     },
     {
       name: "Employee Name",
@@ -388,37 +408,37 @@ const EmployeesList = () => {
         <LoadingStateIcon />
       </>
     );
-  if (isEmployeesSuccess) {
-    content = (
-      <>
-        <HR />
-        <div className="flex space-x-2 items-center ml-3">
-          <div className="relative h-10 mr-2 ">
-            <HiOutlineSearch
-              fontSize={20}
-              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-            />
-            <input
-              aria-label="search"
-              type="text"
-              value={searchQuery}
-              onChange={handleSearch}
-              className="serachQuery"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => handleSearch({ target: { value: "" } })} // Clear search
-                className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
-                aria-label="clear search"
-              >
-                &times;
-              </button>
-            )}
-          </div>
-          {/* Year Filter Dropdown */}
-          {/* not implemented becasue we only query the selected eyar */}
-          {/* <label htmlFor="yearFilter" className="relative">
+  // if (isEmployeesSuccess) {
+  content = (
+    <>
+      <HR />
+      <div className="flex space-x-2 items-center ml-3">
+        <div className="relative h-10 mr-2 ">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+          />
+          <input
+            aria-label="search"
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="serachQuery"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => handleSearch({ target: { value: "" } })} // Clear search
+              className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+              aria-label="clear search"
+            >
+              &times;
+            </button>
+          )}
+        </div>
+        {/* Year Filter Dropdown */}
+        {/* not implemented becasue we only query the selected eyar */}
+        {/* <label htmlFor="yearFilter" className="relative">
           <select
             aria-label="yearFilter"
             id="yearFilter"
@@ -436,60 +456,60 @@ const EmployeesList = () => {
               ))}
           </select>
         </label> */}
+      </div>
+      <div className="dataTableContainer">
+        <div>
+          <DataTable
+            title={tableHeader}
+            columns={column}
+            data={filteredEmployees}
+            pagination
+            //selectableRows
+            removableRows
+            pageSizeControl
+            //onSelectedRowsChange={handleRowSelected}
+            selectableRowsHighlight
+            customStyles={{
+              headCells: {
+                style: {
+                  // Apply Tailwind style via a class-like syntax
+                  justifyContent: "center", // Align headers to the center
+                  textAlign: "center", // Center header text
+                  color: "black",
+                  fontSize: "14px", // Increase font size for header text
+                },
+              },
+
+              cells: {
+                style: {
+                  justifyContent: "center", // Center cell content
+                  textAlign: "center",
+                  color: "black",
+                  fontSize: "14px", // Increase font size for cell text
+                },
+              },
+              pagination: {
+                style: {
+                  display: "flex",
+                  justifyContent: "center", // Center the pagination control
+                  alignItems: "center",
+                  padding: "10px 0", // Optional: Add padding for spacing
+                },
+              },
+            }}
+          ></DataTable>
         </div>
-        <div className="dataTableContainer">
-          <div>
-            <DataTable
-              title={tableHeader}
-              columns={column}
-              data={filteredEmployees}
-              pagination
-              //selectableRows
-              removableRows
-              pageSizeControl
-              //onSelectedRowsChange={handleRowSelected}
-              selectableRowsHighlight
-              customStyles={{
-                headCells: {
-                  style: {
-                    // Apply Tailwind style via a class-like syntax
-                    justifyContent: "center", // Align headers to the center
-                    textAlign: "center", // Center header text
-                    color: "black",
-                    fontSize: "14px", // Increase font size for header text
-                  },
-                },
+        {/* <div className="cancelSavebuttonsDiv"> */}
+        <button
+          className="add-button"
+          onClick={() => navigate("/hr/employees/newEmployee")}
+          // disabled={selectedRows.length !== 1} // Disable if no rows are selected
+          hidden={!canCreate}
+        >
+          New Employee
+        </button>
 
-                cells: {
-                  style: {
-                    justifyContent: "center", // Center cell content
-                    textAlign: "center",
-                    color: "black",
-                    fontSize: "14px", // Increase font size for cell text
-                  },
-                },
-                pagination: {
-                  style: {
-                    display: "flex",
-                    justifyContent: "center", // Center the pagination control
-                    alignItems: "center",
-                    padding: "10px 0", // Optional: Add padding for spacing
-                  },
-                },
-              }}
-            ></DataTable>
-          </div>
-          {/* <div className="cancelSavebuttonsDiv"> */}
-            <button
-              className="add-button"
-              onClick={() => navigate("/hr/employees/newEmployee")}
-              // disabled={selectedRows.length !== 1} // Disable if no rows are selected
-              hidden={!canCreate}
-            >
-              New Employee
-            </button>
-
-            {/* {isAdmin && (
+        {/* {isAdmin && (
             <button
               className="px-3 py-2 bg-gray-400 text-white rounded"
               onClick={handleDuplicateSelected}
@@ -499,16 +519,15 @@ const EmployeesList = () => {
               optional button
             </button>
           )} */}
-          {/* </div> */}
-        </div>
-        <DeletionConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
-          onConfirm={handleConfirmDelete}
-        />
-      </>
-    );
-  }
+        {/* </div> */}
+      </div>
+      <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
+    </>
+  );
 
   return content;
 };

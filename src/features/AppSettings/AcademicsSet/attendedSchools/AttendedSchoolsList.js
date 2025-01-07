@@ -192,7 +192,7 @@ const AttendedSchoolsList = () => {
         <LoadingStateIcon />
       </>
     );
-    if (isSchoolsSuccess)
+    // if (isSchoolsSuccess)
  content =  (
     <>
       <AcademicsSet />

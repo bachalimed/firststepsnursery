@@ -14,7 +14,9 @@ import ConfirmationModal from "../../../../Components/Shared/Modals/Confirmation
 import { useOutletContext } from "react-router-dom";
 import LoadingStateIcon from "../../../../Components/LoadingStateIcon";
 const NewStudentDocumentsListForm = () => {
-  useEffect(()=>{document.title="New Student Documents List"})
+  useEffect(() => {
+    document.title = "New Student Documents List";
+  });
 
   const navigate = useNavigate();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
@@ -47,7 +49,6 @@ const NewStudentDocumentsListForm = () => {
     },
   ] = useAddNewStudentDocumentsListMutation();
 
-
   let filteredAcademicYearsList = [];
   if (isDocsListSucess) {
     // Extract entities and convert to an array
@@ -62,7 +63,6 @@ const NewStudentDocumentsListForm = () => {
         )
     );
   }
-
 
   // Confirmation Modal states
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -179,11 +179,10 @@ const NewStudentDocumentsListForm = () => {
         documentsList: studentDocumentsList,
         documentsAcademicYear,
       });
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -200,7 +199,7 @@ const NewStudentDocumentsListForm = () => {
       triggerBanner(error?.data?.message, "error");
     }
   };
-  // console.log(studentDocumentsList, "studentDocumentsList");
+   //console.log(studentDocumentsList, "studentDocumentsList");
 
   // Close the modal without saving
   const handleCloseModal = () => {
@@ -246,12 +245,12 @@ const NewStudentDocumentsListForm = () => {
                 >
                   <option value="">Select Year</option>
                   {filteredAcademicYearsList
-                  .filter((year) => year.title !== "1000")
-                  .map((year) => (
-                    <option key={year.id} value={year.title}>
-                      {year.title}
-                    </option>
-                  ))}
+                    .filter((year) => year.title !== "1000")
+                    .map((year) => (
+                      <option key={year.id} value={year.title}>
+                        {year.title}
+                      </option>
+                    ))}
                 </select>
               </label>
             </div>

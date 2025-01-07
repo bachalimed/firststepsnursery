@@ -378,7 +378,7 @@ const NurserySectionsList = () => {
         <LoadingStateIcon />
       </>
     );
-  if (isSectionsSuccess)
+  // if (isSectionsSuccess)
     content = (
       <>
         <Academics />

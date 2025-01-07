@@ -441,7 +441,7 @@ const LeavesList = () => {
         <LoadingStateIcon />
       </>
     );
-    if (isLeavesSuccess)
+    // if (isLeavesSuccess)
   content = (
     <>
       <HR />

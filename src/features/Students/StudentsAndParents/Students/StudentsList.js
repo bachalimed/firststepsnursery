@@ -467,6 +467,7 @@ const StudentsList = () => {
     },
   ].filter(Boolean); // Filter out falsy values like `false` or `undefined`
 
+
   // Custom header to include the row count
   const tableHeader = (
     <h2>
@@ -484,7 +485,7 @@ const StudentsList = () => {
         <LoadingStateIcon />
       </>
     );
-  if (isStudentsSuccess && isSchoolsSuccess)
+  // if (isStudentsSuccess && isSchoolsSuccess)
     content = (
       <>
         <Students />

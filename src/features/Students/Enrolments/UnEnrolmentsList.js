@@ -283,7 +283,7 @@ const UnEnrolmentsList = () => {
         <LoadingStateIcon />
       </>
     );
-  if (isAdmissionsSuccess && isServicesSuccess)
+  // if (isAdmissionsSuccess && isServicesSuccess)
     content = (
       <>
         <Students />

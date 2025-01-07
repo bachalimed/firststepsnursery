@@ -38,11 +38,15 @@ const NewEmployeeForm = () => {
   ); // Get the full academic year object
   const academicYears = useSelector(selectAllAcademicYears);
   //console.log(selectedAcademicYear?.title, "selectedAcademicYear");
-  const [addNewEmployee, {  isLoading:isAddLoading,
-    isSuccess:isAddSuccess,
-    isError:isAddError,
-    error:addError }] =
-    useAddNewEmployeeMutation();
+  const [
+    addNewEmployee,
+    {
+      isLoading: isAddLoading,
+      isSuccess: isAddSuccess,
+      isError: isAddError,
+      error: addError,
+    },
+  ] = useAddNewEmployeeMutation();
 
   const generateRandomUsername = () =>
     `user${Math.random().toString(36).substring(2, 10)}`;
@@ -62,6 +66,7 @@ const NewEmployeeForm = () => {
 
     userDob: "",
     userSex: "",
+    cin: "",
     userIsActive: false,
     userAddress: {
       house: "",
@@ -100,6 +105,7 @@ const NewEmployeeForm = () => {
     validLastName: false,
     validDob: false,
     validUserSex: false,
+    validCin: false,
     validHouse: false,
     validStreet: false,
     validCity: false,
@@ -144,6 +150,7 @@ const NewEmployeeForm = () => {
       validLastName: NAME_REGEX.test(formData.userFullName.userLastName),
       validDob: DATE_REGEX.test(formData.userDob),
       validUserSex: NAME_REGEX.test(formData.userSex),
+      validCin: PHONE_REGEX.test(formData.cin),
       validHouse: NAME_REGEX.test(formData.userAddress.house),
       validStreet: NAME_REGEX.test(formData.userAddress.street),
       validCity: NAME_REGEX.test(formData.userAddress.city),
@@ -257,11 +264,10 @@ const NewEmployeeForm = () => {
 
     try {
       const response = await addNewEmployee(formData);
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -400,6 +406,32 @@ const NewEmployeeForm = () => {
               </label>
             </div>
             <div className="formLineDiv">
+              {/* CIN */}
+
+              <label htmlFor="ID" className="ID">
+                    ID{" "}
+                    {!validity.validCin && (
+                      <span className="text-red-600">*</span>
+                    )}
+                    <input
+                      aria-invalid={!validity.validCin}
+                      placeholder="[3-25 digits]"
+                      aria-label="ID"
+                      type="text"
+                      id="cin"
+                      name="cin"
+                      value={formData.cin}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          cin: e.target.value,
+                        }))
+                      }
+                      className={`formInputText`}
+                      required
+                    />{" "}
+                  </label>
+
               {/* Sex Selection */}
 
               <label className="formInputLabel">
@@ -408,6 +440,7 @@ const NewEmployeeForm = () => {
                   <span className="text-red-600">*</span>
                 )}
                 <div className="formCheckboxItemsDiv">
+                  
                   <label htmlFor="male" className="formCheckboxChoice">
                     <input
                       type="checkbox"
@@ -892,9 +925,11 @@ const NewEmployeeForm = () => {
               <div className="formLineDiv">
                 <label htmlFor="allowance" className="formInputLabel">
                   ALLOWANCE{" "}
-                  {formData?.employeeCurrentEmployment?.salaryPackage?.allowance &&
+                  {formData?.employeeCurrentEmployment?.salaryPackage
+                    ?.allowance &&
                     !NUMBER_REGEX.test(
-                      formData?.employeeCurrentEmployment?.salaryPackage?.allowance
+                      formData?.employeeCurrentEmployment?.salaryPackage
+                        ?.allowance
                     ) && <span className="text-red-600">[$$$$.$$$]</span>}
                   <input
                     aria-label="allowance"

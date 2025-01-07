@@ -109,7 +109,7 @@ const StudentDocumentsListsList = () => {
   const { triggerBanner } = useOutletContext(); // Access banner trigger
 
   //console.log(studentDocumentsListsData)
-  let filteredStudentDocumentsLists;
+  let filteredStudentDocumentsLists=[];
 
   if (isDocumentsListsSuccess) {
     //transform into an array
@@ -269,7 +269,7 @@ const StudentDocumentsListsList = () => {
         <LoadingStateIcon />
       </>
     );
-  if (isDocumentsListsSuccess)
+  // if (isDocumentsListsSuccess)
     content = (
       <>
         <StudentsSet />

@@ -69,6 +69,7 @@ const UsersList = () => {
 
     // Filtering Logic
     filteredUsers = usersList?.filter((item) => {
+    
       // Basic name search
       const firstNameMatch = item.userFullName.userFirstName
         .toLowerCase()
@@ -99,6 +100,7 @@ const UsersList = () => {
       return (
         (generalMatch || firstNameMatch || middleNameMatch || lastNameMatch) &&
         userRolesFilter &&
+      
         userActionsFilter
       );
     });
@@ -244,6 +246,28 @@ const UsersList = () => {
         textAlign: "left",
       },
       width: "120px",
+      // sortFunction: (rowA, rowB) => {
+      //   const usernameA = rowA.username.toLowerCase();
+      //   const usernameB = rowB.username.toLowerCase();
+
+      //   if (usernameA < usernameB) {
+      //     return -1;
+      //   }
+      //   if (usernameA > usernameB) {
+      //     return 1;
+      //   }
+      //   return 0;
+      // },
+    },
+    {
+      name: "CIN",
+      selector: (row) => row?.cin || "",
+      sortable: true,
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
+      width: "100px",
       // sortFunction: (rowA, rowB) => {
       //   const usernameA = rowA.username.toLowerCase();
       //   const usernameB = rowB.username.toLowerCase();
@@ -404,121 +428,121 @@ const UsersList = () => {
         <LoadingStateIcon />
       </>
     );
-  if (isUsersSuccess)
-    content = (
-      <>
-        <UsersManagement />
-        <div className="flex space-x-2 items-center ml-3">
-          {/* Search Bar */}
-          <div className="relative h-10 mr-2 ">
-            <HiOutlineSearch
-              fontSize={20}
-              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-              aria-label="search users"
-            />
-            <input
-              aria-label="search users"
-              type="text"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              className="serachQuery"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => handleSearchChange({ target: { value: "" } })} // Clear search
-                className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
-                aria-label="clear search"
-              >
-                &times;
-              </button>
-            )}
-          </div>
-          {/* User Roles Filter */}
-          <label htmlFor="userRolesFilter" className="formInputLabel">
-            <select
-              id="userRolesFilter"
-              value={selectedUserRoles}
-              onChange={handleRoleChange}
-              className="text-sm h-8 border border-gray-300  px-4"
+  // if (isUsersSuccess)
+  content = (
+    <>
+      <UsersManagement />
+      <div className="flex space-x-2 items-center ml-3">
+        {/* Search Bar */}
+        <div className="relative h-10 mr-2 ">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+            aria-label="search users"
+          />
+          <input
+            aria-label="search users"
+            type="text"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="serachQuery"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => handleSearchChange({ target: { value: "" } })} // Clear search
+              className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+              aria-label="clear search"
             >
-              <option value="">All Roles</option>
-              {Object.values(ROLES).map((role) => (
-                <option key={role} value={role}>
-                  {role}
-                </option>
-              ))}
-            </select>
-          </label>
-          {/* User Actions Filter */}
-          <label htmlFor="userActionsFilter" className="formInputLabel">
-            <select
-              id="userActionsFilter"
-              value={selectedUserActions}
-              onChange={handleActionChange}
-              className="text-sm h-8 border border-gray-300  px-4"
-            >
-              <option value="">All Actions</option>
-              {Object.values(ACTIONS).map((action) => (
-                <option key={action} value={action}>
-                  {action}
-                </option>
-              ))}
-            </select>
-          </label>
+              &times;
+            </button>
+          )}
         </div>
-        <div className="dataTableContainer">
-          <div>
-            <DataTable
-              title={tableHeader}
-              columns={column}
-              data={filteredUsers}
-              pagination
-              //selectableRows
-              removableRows
-              pageSizeControl
-              // onSelectedRowsChange={handleRowSelected}
-              selectableRowsHighlight
-              customStyles={{
-                headCells: {
-                  style: {
-                    // Apply Tailwind style via a class-like syntax
-                    justifyContent: "center", // Align headers to the center
-                    textAlign: "center", // Center header text
-                    color: "black",
-                    fontSize: "14px", // Increase font size for header text
-                  },
-                },
-
-                cells: {
-                  style: {
-                    justifyContent: "center", // Center cell content
-                    textAlign: "center",
-                    color: "black",
-                    fontSize: "14px", // Increase font size for cell text
-                  },
-                },
-                pagination: {
-                  style: {
-                    display: "flex",
-                    justifyContent: "center", // Center the pagination control
-                    alignItems: "center",
-                    padding: "10px 0", // Optional: Add padding for spacing
-                  },
-                },
-              }}
-            ></DataTable>
-          </div>
-          {/* <div className="cancelSavebuttonsDiv"> */}
-          <button
-            className="add-button"
-            onClick={() => navigate("/admin/usersManagement/newUser/")}
-            // disabled={selectedRows.length !== 1} // Disable if no rows are selected
+        {/* User Roles Filter */}
+        <label htmlFor="userRolesFilter" className="formInputLabel">
+          <select
+            id="userRolesFilter"
+            value={selectedUserRoles}
+            onChange={handleRoleChange}
+            className="text-sm h-8 border border-gray-300  px-4"
           >
-            New User
-          </button>
+            <option value="">All Roles</option>
+            {Object.values(ROLES).map((role) => (
+              <option key={role} value={role}>
+                {role}
+              </option>
+            ))}
+          </select>
+        </label>
+        {/* User Actions Filter */}
+        <label htmlFor="userActionsFilter" className="formInputLabel">
+          <select
+            id="userActionsFilter"
+            value={selectedUserActions}
+            onChange={handleActionChange}
+            className="text-sm h-8 border border-gray-300  px-4"
+          >
+            <option value="">All Actions</option>
+            {Object.values(ACTIONS).map((action) => (
+              <option key={action} value={action}>
+                {action}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+      <div className="dataTableContainer">
+        <div>
+          <DataTable
+            title={tableHeader}
+            columns={column}
+            data={filteredUsers}
+            pagination
+            //selectableRows
+            removableRows
+            pageSizeControl
+            // onSelectedRowsChange={handleRowSelected}
+            selectableRowsHighlight
+            customStyles={{
+              headCells: {
+                style: {
+                  // Apply Tailwind style via a class-like syntax
+                  justifyContent: "center", // Align headers to the center
+                  textAlign: "center", // Center header text
+                  color: "black",
+                  fontSize: "14px", // Increase font size for header text
+                },
+              },
 
-          {/* <button
+              cells: {
+                style: {
+                  justifyContent: "center", // Center cell content
+                  textAlign: "center",
+                  color: "black",
+                  fontSize: "14px", // Increase font size for cell text
+                },
+              },
+              pagination: {
+                style: {
+                  display: "flex",
+                  justifyContent: "center", // Center the pagination control
+                  alignItems: "center",
+                  padding: "10px 0", // Optional: Add padding for spacing
+                },
+              },
+            }}
+          ></DataTable>
+        </div>
+        {/* <div className="cancelSavebuttonsDiv"> */}
+        <button
+          className="add-button"
+          onClick={() => navigate("/admin/usersManagement/newUser/")}
+          // disabled={selectedRows.length !== 1} // Disable if no rows are selected
+        >
+          New User
+        </button>
+
+        {/* <button
               className="px-3 py-2 bg-amber-300 text-white rounded"
               onClick={handleDuplicateSelected}
               disabled={selectedRows.length !== 1} // Disable if no rows are selected
@@ -526,16 +550,16 @@ const UsersList = () => {
             >
               Duplicate Selected
             </button> */}
-          {/* </div> */}
-        </div>
+        {/* </div> */}
+      </div>
 
-        <DeletionConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
-          onConfirm={handleConfirmDelete}
-        />
-      </>
-    );
+      <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
+    </>
+  );
 
   return content;
 };

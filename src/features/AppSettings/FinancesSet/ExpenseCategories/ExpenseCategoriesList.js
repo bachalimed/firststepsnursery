@@ -284,7 +284,7 @@ const ExpenseCategoriesList = () => {
         <LoadingStateIcon />
       </>
     );
-  if (isExpenseCategoriesSuccess)
+  // if (isExpenseCategoriesSuccess)
     content = (
       <>
         <FinancesSet />

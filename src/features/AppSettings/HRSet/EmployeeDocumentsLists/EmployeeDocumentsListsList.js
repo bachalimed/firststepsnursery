@@ -254,7 +254,7 @@ const EmployeeDocumentsListsList = () => {
         <LoadingStateIcon />
       </>
     );
-  if (isDocumentsListsSuccess)
+  // if (isDocumentsListsSuccess)
     content = (
       <>
         <EmployeesSet />

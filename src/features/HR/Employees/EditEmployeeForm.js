@@ -57,6 +57,7 @@ const EditEmployeeForm = ({ employee }) => {
     userFullName: employee?.userFullName,
     userDob: employee?.userDob.split("T")[0],
     userSex: employee?.userSex,
+    cin: employee?.cin,
     userAddress: employee?.userAddress,
     userContact: employee?.userContact,
     userRoles: employee?.userRoles,
@@ -84,6 +85,7 @@ const EditEmployeeForm = ({ employee }) => {
     validLastName: false,
     validDob: false,
     validUserSex: false,
+    validCin: false,
     validHouse: false,
     validArea: false,
     validStreet: false,
@@ -125,6 +127,7 @@ const EditEmployeeForm = ({ employee }) => {
       validLastName: NAME_REGEX.test(formData.userFullName?.userLastName),
       validDob: DATE_REGEX.test(formData.userDob.split("T")[0]),
       validUserSex: NAME_REGEX.test(formData.userSex),
+      validCin: PHONE_REGEX.test(formData?.cin),
       validHouse: NAME_REGEX.test(formData.userAddress?.house),
       validStreet: NAME_REGEX.test(formData.userAddress?.street),
       validCity: NAME_REGEX.test(formData.userAddress?.city),
@@ -420,7 +423,29 @@ const EditEmployeeForm = ({ employee }) => {
               </label>
             </div>
             <div className="formLineDiv">
-              <div>
+               {/* CIN */}
+
+               <label htmlFor="ID" className="ID">
+                ID{" "}
+                {!validity.validCin && <span className="text-red-600">*</span>}
+                <input
+                  aria-invalid={!validity.validCin}
+                  placeholder="[3-25 digits]"
+                  aria-label="ID"
+                  type="text"
+                  id="cin"
+                  name="cin"
+                  value={formData.cin}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      cin: e.target.value,
+                    }))
+                  }
+                  className={`formInputText`}
+                  required
+                />{" "}
+              </label>
                 <label className="formInputLabel">
                   Sex{" "}
                   {!validity.validUserSex && (
@@ -470,7 +495,7 @@ const EditEmployeeForm = ({ employee }) => {
                     </label>
                   </div>
                 </label>
-              </div>
+             
             </div>
           </div>
         </div>

@@ -434,7 +434,7 @@ const InvoicesList = () => {
     );
   }
   //console.log(invoicesError, "invoicesError");
-  if (isServicesSuccess)
+  // if (isServicesSuccess)
     content = (
       <>
         <Finances />

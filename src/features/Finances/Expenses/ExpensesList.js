@@ -1,7 +1,7 @@
 import { HiOutlineSearch } from "react-icons/hi";
 import DataTable from "react-data-table-component";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate ,useOutletContext} from "react-router-dom";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
@@ -49,7 +49,7 @@ const ExpensesList = () => {
       isLoading: isDelLoading,
       isSuccess: isDelSuccess,
       isError: isDelError,
-      error: delerror,
+      error: delError,
     },
   ] = useDeleteExpenseMutation();
   // if (isSchoolsSuccess && !isSchoolsLoading) {
@@ -62,6 +62,7 @@ const ExpensesList = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idAttendedSchoolToDelete, setIdAttendedSchoolToDelete] =
     useState(null); // State to track which document to delete
+    const { triggerBanner } = useOutletContext(); // Access banner trigger
 
   //initialising the delete Mutation
 
@@ -76,9 +77,29 @@ const ExpensesList = () => {
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
-    await deleteExpense({ id: idAttendedSchoolToDelete });
+    try {
+      const response = await deleteExpense({ id: idAttendedSchoolToDelete });
     setIsDeleteModalOpen(false); // Close the modal
-  };
+    if (response?.message) {
+      // Success response
+      triggerBanner(response?.message, "success");
+    } else if (response?.data?.message) {
+      // Success response
+      triggerBanner(response?.data?.message, "success");
+    } else if (response?.error?.data?.message) {
+      // Error response
+      triggerBanner(response?.error?.data?.message, "error");
+    } else if (isDelError) {
+      // In case of unexpected response format
+      triggerBanner(delError?.data?.message, "error");
+    } else {
+      // In case of unexpected response format
+      triggerBanner("Unexpected response from server.", "error");
+    }
+  } catch (error) {
+    triggerBanner(error?.data?.message, "error");
+  }
+};
 
   // Function to close the modal without deleting
   const handleCloseDeleteModal = () => {

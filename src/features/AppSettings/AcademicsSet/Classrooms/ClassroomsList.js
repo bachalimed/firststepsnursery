@@ -203,7 +203,7 @@ const ClassroomsList = () => {
         <LoadingStateIcon />
       </>
     );
-  if (isClassroomsSuccess)
+  // if (isClassroomsSuccess)
     content = (
       <>
         <AcademicsSet />
