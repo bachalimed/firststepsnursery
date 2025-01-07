@@ -7,6 +7,7 @@ import usePersist from "../../hooks/usePersist";
 import { useSelector } from "react-redux";
 import { selectCurrentToken } from "./authSlice";
 import LoadingStateIcon from '../../Components/LoadingStateIcon'
+import PublicHeader from '../../Components/Shared/Header/PublicHeader'
 const PersistLogin = () => {
   const [persist] = usePersist();
   const token = useSelector(selectCurrentToken);
@@ -64,10 +65,11 @@ const PersistLogin = () => {
     //persist: yes, token: no
     //console.log('error in persist file')
     content = (
-      <p className="errmsg">
+      <>
+        <PublicHeader/>
         {`${error?.data?.message} - `}
         <Link to="/login/">Login again</Link>.
-      </p>
+      </>
     );
   } else if (isSuccess && trueSuccess) {
     //persist: yes, token: yes
