@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useUpdateFamilyMutation } from "./familiesApiSlice";
-import {  useParams } from "react-router-dom";
-
+import { useParams,useNavigate } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import Students from "../../Students";
 import { useGetFamilyByIdQuery } from "./familiesApiSlice";
 import Stepper from "./Stepper";
@@ -16,9 +16,12 @@ const EditFamily = () => {
   useEffect(() => {
     document.title = "Edit Family";
   });
+  const navigate = useNavigate();
+
   //an add parent function that can be called inside the component
   const { id } = useParams();
   //console.log(id, "id");
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
 
   const [family, setFamily] = useState({});
   const [father, setFather] = useState({});
@@ -139,6 +142,18 @@ const EditFamily = () => {
     }
   };
 
+  useEffect(() => {
+    if (isUpdateSuccess) {
+     
+        setFather({})
+        setMother({})
+        setChildren([])
+        setFamilySituation("")
+       navigate("/students/studentsParents/families/");
+    }
+  }, [isUpdateSuccess, navigate]);
+
+
   const handleClick = (direction) => {
     let newStep = currentStep;
     if (currentStep === 3) {
@@ -167,21 +182,33 @@ const EditFamily = () => {
 
     try {
       // Call the updateFamily function with the cleaned-up data
-      await updateFamily({
+      const response = await updateFamily({
         _id: id,
         father: father,
         mother: mother,
         children: children,
         familySituation: familySituation,
       });
-
-      // Handle the success state, e.g., move to the next step
-      if (isUpdateSuccess) {
+      if (response?.message) {
+        // Handle the success state, e.g., move to the next step
+        //if (isUpdateSuccess) {
         setCurrentStep(4); // Navigate to the next step
+        triggerBanner(response?.message, "success");
+      } else if (response?.data?.message) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isUpdateError) {
+        // In case of unexpected response format
+        triggerBanner(updateError?.data?.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
       }
     } catch (error) {
-      // Handle any errors during update
-      console.log("Error saving:", updateError);
+      triggerBanner(error?.data?.message, "error");
     }
   };
 

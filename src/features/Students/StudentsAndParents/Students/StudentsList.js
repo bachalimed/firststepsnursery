@@ -403,6 +403,32 @@ const StudentsList = () => {
       removableRows: true,
       width: "130px",
     },
+
+    {
+      name: "Comment", 
+      selector: (row) => (
+        <div>
+          {row?.studentEducation?.map((educ, index) => (
+            educ?.note&&<div
+              key={`${educ?.schoolYear}-${index}`} // Ensures a unique key
+              style={{
+                whiteSpace: "normal",
+                wordWrap: "break-word",
+                textAlign: "left", // Aligns the text properly
+              }}
+            >
+              {educ?.schoolYear} - {educ?.note}
+            </div>
+          ))}
+        </div>
+      ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
+      width: "160px",
+    },
+
     (isAcademic || isDesk || isDirector || isManager || isAdmin) && {
       name: "Documents",
       selector: (row) => (
@@ -623,6 +649,7 @@ const StudentsList = () => {
           isOpen={isDeleteModalOpen}
           onClose={handleCloseDeleteModal}
           onConfirm={handleConfirmDelete}
+          message="Deleting a student will also delete all his attached documents, this cannor be undone. Are you sure?"
         />
         
         <RegisterModal //will allow to add or remove studetnYEars

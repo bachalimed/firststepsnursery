@@ -340,6 +340,7 @@ const EditStudentForm = ({ student }) => {
     studentGardien,
     operator,
   };
+ // console.log(toSave)
   // console.log(toSave, "toSave");
   const handleConfirmSave = async () => {
     // Close the confirmation modal
@@ -780,7 +781,7 @@ const EditStudentForm = ({ student }) => {
                         Attended School:
                         <select
                           id={`attendedSchool-${index}`}
-                          value={entry?.attendedSchool}
+                          value={entry.attendedSchool}
                           onChange={(e) =>
                             handleFieldChange(
                               index,
@@ -791,7 +792,7 @@ const EditStudentForm = ({ student }) => {
                           className={`formInputText`}
                         >
                           {isSchoolSuccess &&
-                            attendedSchools.map((school) => (
+                            attendedSchools.map((school,i) => (
                               <option key={school.id} value={school.id}>
                                 {school.schoolName}
                               </option>

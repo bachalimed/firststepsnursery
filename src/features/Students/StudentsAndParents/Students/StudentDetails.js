@@ -214,10 +214,10 @@ const isYearFound = student?.studentYears?.some(
                     </p>
                     <p>
                       <strong>Attended School:</strong>{" "}
-                      {education?.attendedSchool.schoolName}
+                      {education?.attendedSchool?.schoolName}
                     </p>
                     <p>
-                      <strong>Note:</strong> {education?.attendedSchool?.note}
+                      <strong>Note:</strong> {education?.note}
                     </p>
                   </div>
                 ))

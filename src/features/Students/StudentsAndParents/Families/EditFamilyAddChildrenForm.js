@@ -25,7 +25,7 @@ export default function EditFamilyAddChildrenForm() {
     // error: studentListError,
   } = useGetStudentsByYearQuery(
     {
-      //selectedYear: "1000",
+      selectedYear: "1000",////why it was removed
       criteria: "No Family",
       endpointName: "EditFamilyAddChildrenForm",
     } || {},

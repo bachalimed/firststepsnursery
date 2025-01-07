@@ -22,20 +22,20 @@ const HeaderUserProfile = () => {
   // check if user is logged in
   const isLoggedIn = useSelector((state) => Boolean(state.auth.token));
 
-  const handleLogout =()=>{/////////////////added because we stay hanget in blanc page after logiout 
-    sendLogout()
-    navigate("/")
-
-  }
+  const handleLogout = () => {
+    /////////////////added because we stay hanget in blanc page after logiout
+    sendLogout();
+    navigate("/");
+  };
   useEffect(() => {
     if (isSuccess) {
       navigate("/login/");
     }
-  }, [isSuccess, navigate]);
+  }, [isSuccess, isError, navigate]);/////////added iserror
 
   if (isLoading) return <>Logging Out...</>;
 
-  if (isError) return <>Error: {error.data?.message}</>;
+  if (isError) console.alert( `${error.data?.message}`)
 
   // let dashClass = null
   // if (!DASH_REGEX.test(pathname) && !TASKS_REGEX.test(pathname) && !USERS_REGEX.test(pathname)) {
@@ -63,11 +63,12 @@ const HeaderUserProfile = () => {
           className="text-4xl text-white-500"
         />
         {/* Green Circle */}
-        
-          <div
-className={`absolute top-8 right-5 w-3 h-3 ${isLoggedIn ? "bg-green-500" : "bg-red-500"} rounded-full  border-2 border-white`}
-></div>
-       
+
+        <div
+          className={`absolute top-8 right-5 w-3 h-3 ${
+            isLoggedIn ? "bg-green-500" : "bg-red-500"
+          } rounded-full  border-2 border-white`}
+        ></div>
       </MenuButton>
 
       <MenuItems

@@ -87,7 +87,7 @@ export default function EditMotherForm() {
   }, [city]);
 
   useEffect(() => {
-    setCin(PHONE_REGEX.test(cin));
+    setValidCin(PHONE_REGEX.test(cin));
   }, [cin]);
   useEffect(() => {
     setValidPrimaryPhone(PHONE_REGEX.test(primaryPhone));
@@ -249,6 +249,21 @@ export default function EditMotherForm() {
                   autoComplete="off"
                   value={userDob}
                   onChange={onUserDobChanged}
+                  required
+                />{" "}
+              </label>
+              <label htmlFor="ID" className="ID">
+                ID {!validCin && <span className="text-red-600">*</span>}
+                <input
+                  aria-invalid={!validCin}
+                  placeholder="[3-25 digits]"
+                  aria-label="ID"
+                  type="text"
+                  id="cin"
+                  name="cin"
+                  value={cin}
+                  onChange={onCinChanged}
+                  className={`formInputText`}
                   required
                 />{" "}
               </label>

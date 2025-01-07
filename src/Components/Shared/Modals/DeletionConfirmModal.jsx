@@ -2,7 +2,7 @@ import React from "react";
 
 //Modal.setAppElement("#root");
 
-const DeleteConfirmModal = ({ isOpen, onClose, onConfirm }) => {
+const DeleteConfirmModal = ({ isOpen, onClose, onConfirm , message}) => {
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
@@ -20,9 +20,12 @@ const DeleteConfirmModal = ({ isOpen, onClose, onConfirm }) => {
 
         {/* Content section */}
         <div className="p-6">
-          <p className="text-gray-700 mb-6" data-testid="modal-message">
+          {message?
+          (<p className="text-gray-700 mb-6" data-testid="modal-message">
+            {message}.{" "}
+          </p>):(<p className="text-gray-700 mb-6" data-testid="modal-message">
             Are you sure you want to delete? This action cannot be undone.{" "}
-          </p>
+          </p>)}
           <div className="flex justify-end space-x-4">
             <button
               aria-label="cancel"

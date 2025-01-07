@@ -369,6 +369,19 @@ export default function NewFatherForm() {
                     />
                     <span className="ml-2">Separated</span>
                   </label>
+                  <label
+                    htmlFor="orphan"
+                    className="inline-flex items-center"
+                  >
+                    <input
+                      type="radio"
+                      value="Orphan"
+                      checked={familySituation === "Orphan"}
+                      onChange={onFamilySituationChanged}
+                      className="form-radio text-blue-600"
+                    />
+                    <span className="ml-2">Orphan</span>
+                  </label>
                 </div>
               </label>
             </div>
