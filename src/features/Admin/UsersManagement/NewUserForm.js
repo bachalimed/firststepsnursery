@@ -214,7 +214,6 @@ const NewUserForm = () => {
   const content = (
     <>
       <UsersManagement />
-
       <form onSubmit={onSaveUserClicked} className="form-container">
         <h2 className="formTitle">
           Add user{" "}

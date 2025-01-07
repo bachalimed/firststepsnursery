@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
 import { useContext } from "react";
 import { StepperContext } from "../../../../contexts/StepperContext";
-import {
-  NAME_REGEX,
-  PHONE_REGEX,
-  DATE_REGEX,
-} from "../../../../config/REGEX";
+import { NAME_REGEX, PHONE_REGEX, DATE_REGEX } from "../../../../config/REGEX";
 
 export default function EditFatherForm() {
   useEffect(() => {
@@ -35,6 +31,7 @@ export default function EditFatherForm() {
     father?.userFullName?.userLastName
   );
   const [userDob, setUserDob] = useState(father?.userDob?.split("T")[0]);
+  const [cin, setCin] = useState(father?.cin);
   const [house, setHouse] = useState(father?.userAddress?.house);
   const [street, setStreet] = useState(father?.userAddress?.street);
   const [area, setArea] = useState(father?.userAddress?.area);
@@ -51,6 +48,7 @@ export default function EditFatherForm() {
   const [validUserFirstName, setValidUserFirstName] = useState(false);
   const [validUserLastName, setValidUserLastName] = useState(false);
   const [validUserDob, setValidUserDob] = useState(false);
+  const [validCin, setValidCin] = useState(false);
   const [validHouse, setValidHouse] = useState(false);
   const [validStreet, setValidStreet] = useState(false);
   const [validCity, setValidCity] = useState(false);
@@ -62,6 +60,7 @@ export default function EditFatherForm() {
   const onUserMiddleNameChanged = (e) => setUserMiddleName(e.target.value);
   const onUserLastNameChanged = (e) => setUserLastName(e.target.value);
   const onUserDobChanged = (e) => setUserDob(e.target.value);
+  const onCinChanged = (e) => setCin(e.target.value);
   const onFamilySituationChanged = (e) => setFamilySituation(e.target.value);
   const onHouseChanged = (e) => setHouse(e.target.value);
   const onStreetChanged = (e) => setStreet(e.target.value);
@@ -95,6 +94,9 @@ export default function EditFatherForm() {
   }, [city]);
 
   useEffect(() => {
+    setValidCin(PHONE_REGEX.test(cin));
+  }, [cin]);
+  useEffect(() => {
     setValidPrimaryPhone(PHONE_REGEX.test(primaryPhone));
   }, [primaryPhone]);
 
@@ -107,6 +109,7 @@ export default function EditFatherForm() {
         userLastName,
       },
       userDob,
+      cin,
       userAddress: { house, street, area, postCode, city },
       userContact: { primaryPhone, secondaryPhone, email },
     }));
@@ -116,6 +119,7 @@ export default function EditFatherForm() {
     userLastName,
     userDob,
     house,
+    cin,
     street,
     area,
     postCode,
@@ -138,6 +142,7 @@ export default function EditFatherForm() {
       validUserLastName,
       validUserDob,
       validHouse,
+      validCin,
       validStreet,
       validCity,
       validPrimaryPhone,
@@ -151,251 +156,248 @@ export default function EditFatherForm() {
       {/* <p className={errClass}>{addFamilyError?.data?.message}</p> */}
 
       <form className="form-container">
-        <div className="mb-4">
-          <h2 className="text-2xl font-bold text-gray-800">Father Details</h2>
-        </div>
+        <h2 className="formTitle">Father Details</h2>
 
-        <div className="space-y-4">
-          <div>
-            <label
-              className="text-gray-700 font-semibold"
-              htmlFor="userFirstName"
-            >
-              Father First Name{" "}
-              {!validUserFirstName && <span className="text-red-600">*</span>}
-              <span className="text-sm text-gray-500">[3-25 letters]</span>
-            </label>
-            <input
-               className={`formInputText`}
-              id="userFirstName"
-              name="userFirstName"
-              type="text"
-              autoComplete="off"
-              value={userFirstName}
-              onChange={onUserFirstNameChanged}
-              required
-            />
-          </div>
-
-          <div>
-            <label
-              className="text-gray-700 font-semibold"
-              htmlFor="userMiddleName"
-            >
-              Father Middle Name
-            </label>
-            <input
-               className={`formInputText`}
-              id="userMiddleName"
-              name="userMiddleName"
-              type="text"
-              autoComplete="off"
-              value={userMiddleName}
-              onChange={onUserMiddleNameChanged}
-            />
-          </div>
-
-          <div>
-            <label
-              className="text-gray-700 font-semibold"
-              htmlFor="userLastName"
-            >
-              Father Last Name{" "}
-              {!validUserLastName && <span className="text-red-600">*</span>}
-              <span className="text-sm text-gray-500">[3-25 letters]</span>
-            </label>
-            <input
-               className={`formInputText`}
-              id="userLastName"
-              name="userLastName"
-              type="text"
-              autoComplete="off"
-              value={userLastName}
-              onChange={onUserLastNameChanged}
-              required
-            />
-          </div>
-
-          <div>
-            <label className="text-gray-700 font-semibold" htmlFor="userDob">
-              Date of Birth{" "}
-              {!validUserDob && <span className="text-red-600">*</span>}
-              <span className="text-sm text-gray-500">[dd/mm/yyyy]</span>
-            </label>
-            <input
-               className={`formInputText`}
-              id="userDob"
-              name="userDob"
-              type="date"
-              autoComplete="off"
-              value={userDob}
-              onChange={onUserDobChanged}
-              required
-            />
-          </div>
-
-          <div className="mt-4">
-            <label className="text-gray-700 font-semibold">
-              Family Situation
-            </label>
-            <div className="flex items-center space-x-4">
-              <label className="inline-flex items-center">
+        <div className="formSectionContainer">
+          <h3 className="formSectionTitle">Personal details</h3>
+          <div className="formSection">
+            <div className="formLineDiv">
+              <label
+                className="text-gray-700 font-semibold"
+                htmlFor="userFirstName"
+              >
+                Father First Name{" "}
+                {!validUserFirstName && <span className="text-red-600">*</span>}
+                <span className="text-sm text-gray-500">[3-25 letters]</span>
                 <input
-                  type="radio"
-                  value="Joint"
-                  checked={familySituation === "Joint"}
-                  onChange={onFamilySituationChanged}
-                  className="form-radio text-blue-600"
-                />
-                <span className="ml-2">Joint</span>
+                  className={`formInputText`}
+                  id="userFirstName"
+                  name="userFirstName"
+                  type="text"
+                  autoComplete="off"
+                  value={userFirstName}
+                  onChange={onUserFirstNameChanged}
+                  required
+                />{" "}
               </label>
-              <label className="inline-flex items-center">
+
+              <label
+                className="text-gray-700 font-semibold"
+                htmlFor="userMiddleName"
+              >
+                Father Middle Name
                 <input
-                  type="radio"
-                  value="Separated"
-                  checked={familySituation === "Separated"}
-                  onChange={onFamilySituationChanged}
-                  className="form-radio text-blue-600"
+                  className={`formInputText`}
+                  id="userMiddleName"
+                  name="userMiddleName"
+                  type="text"
+                  autoComplete="off"
+                  value={userMiddleName}
+                  onChange={onUserMiddleNameChanged}
                 />
-                <span className="ml-2">Separated</span>
+              </label>
+
+              <label
+                className="text-gray-700 font-semibold"
+                htmlFor="userLastName"
+              >
+                Father Last Name{" "}
+                {!validUserLastName && <span className="text-red-600">*</span>}
+                <span className="text-sm text-gray-500">[3-25 letters]</span>
+                <input
+                  className={`formInputText`}
+                  id="userLastName"
+                  name="userLastName"
+                  type="text"
+                  autoComplete="off"
+                  value={userLastName}
+                  onChange={onUserLastNameChanged}
+                  required
+                />{" "}
+              </label>
+
+              <label className="text-gray-700 font-semibold" htmlFor="userDob">
+                Date of Birth{" "}
+                {!validUserDob && <span className="text-red-600">*</span>}
+                <span className="text-sm text-gray-500">[dd/mm/yyyy]</span>
+                <input
+                  className={`formInputText`}
+                  id="userDob"
+                  name="userDob"
+                  type="date"
+                  autoComplete="off"
+                  value={userDob}
+                  onChange={onUserDobChanged}
+                  required
+                />{" "}
+              </label>
+              <label htmlFor="ID" className="ID">
+                ID {!validCin && <span className="text-red-600">*</span>}
+                <input
+                  aria-invalid={!validCin}
+                  placeholder="[3-25 digits]"
+                  aria-label="ID"
+                  type="text"
+                  id="cin"
+                  name="cin"
+                  value={cin}
+                  onChange={onCinChanged}
+                  className={`formInputText`}
+                  required
+                />{" "}
+              </label>
+              <label className="text-gray-700 font-semibold">
+                Family Situation
+                <div className="flex items-center space-x-4">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      value="Joint"
+                      checked={familySituation === "Joint"}
+                      onChange={onFamilySituationChanged}
+                      className="form-radio text-blue-600"
+                    />
+                    <span className="ml-2">Joint</span>
+                  </label>
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      value="Separated"
+                      checked={familySituation === "Separated"}
+                      onChange={onFamilySituationChanged}
+                      className="form-radio text-blue-600"
+                    />
+                    <span className="ml-2">Separated</span>
+                  </label>
+                </div>
               </label>
             </div>
           </div>
 
-          {/* Address Section */}
-          <div>
-            <label className="text-gray-700 font-semibold" htmlFor="house">
-              House {!validHouse && <span className="text-red-600">*</span>}
-              <span className="text-sm text-gray-500">[3-25 letters]</span>
-            </label>
-            <input
-               className={`formInputText`}
-              id="house"
-              name="house"
-              type="text"
-              autoComplete="off"
-              value={house}
-              onChange={onHouseChanged}
-              required
-            />
-          </div>
+          <h3 className="formSectionTitle">Contact details</h3>
+          <div className="formSection">
+            {/* Contact Information */}
 
-          <div>
-            <label className="text-gray-700 font-semibold" htmlFor="street">
-              Street {!validStreet && <span className="text-red-600">*</span>}
-              <span className="text-sm text-gray-500">[3-25 letters]</span>
-            </label>
-            <input
-               className={`formInputText`}
-              id="street"
-              name="street"
-              type="text"
-              autoComplete="off"
-              value={street}
-              onChange={onStreetChanged}
-              required
-            />
-          </div>
+            <div className="formLineDiv">
+              <label className="text-gray-700 font-semibold" htmlFor="house">
+                House {!validHouse && <span className="text-red-600">*</span>}
+                <span className="text-sm text-gray-500">[3-25 letters]</span>
+                <input
+                  className={`formInputText`}
+                  id="house"
+                  name="house"
+                  type="text"
+                  autoComplete="off"
+                  value={house}
+                  onChange={onHouseChanged}
+                  required
+                />
+              </label>
 
-          <div>
-            <label className="text-gray-700 font-semibold" htmlFor="area">
-              Area
-            </label>
-            <input
-               className={`formInputText`}
-              id="area"
-              name="area"
-              type="text"
-              autoComplete="off"
-              value={area}
-              onChange={onAreaChanged}
-            />
-          </div>
+              <label className="text-gray-700 font-semibold" htmlFor="street">
+                Street {!validStreet && <span className="text-red-600">*</span>}
+                <span className="text-sm text-gray-500">[3-25 letters]</span>
+                <input
+                  className={`formInputText`}
+                  id="street"
+                  name="street"
+                  type="text"
+                  autoComplete="off"
+                  value={street}
+                  onChange={onStreetChanged}
+                  required
+                />{" "}
+              </label>
 
-          <div>
-            <label className="text-gray-700 font-semibold" htmlFor="city">
-              City {!validCity && <span className="text-red-600">*</span>}
-              <span className="text-sm text-gray-500">[3-25 letters]</span>
-            </label>
-            <input
-               className={`formInputText`}
-              id="city"
-              name="city"
-              type="text"
-              autoComplete="off"
-              value={city}
-              onChange={onCityChanged}
-              required
-            />
-          </div>
+              <label className="text-gray-700 font-semibold" htmlFor="area">
+                Area
+                <input
+                  className={`formInputText`}
+                  id="area"
+                  name="area"
+                  type="text"
+                  autoComplete="off"
+                  value={area}
+                  onChange={onAreaChanged}
+                />{" "}
+              </label>
 
-          <div>
-            <label className="text-gray-700 font-semibold" htmlFor="postCode">
-              Post Code
-            </label>
-            <input
-               className={`formInputText`}
-              id="postCode"
-              name="postCode"
-              type="text"
-              autoComplete="off"
-              value={postCode}
-              onChange={onPostCodeChanged}
-            />
-          </div>
+              <label className="text-gray-700 font-semibold" htmlFor="city">
+                City {!validCity && <span className="text-red-600">*</span>}
+                <span className="text-sm text-gray-500">[3-25 letters]</span>
+                <input
+                  className={`formInputText`}
+                  id="city"
+                  name="city"
+                  type="text"
+                  autoComplete="off"
+                  value={city}
+                  onChange={onCityChanged}
+                  required
+                />{" "}
+              </label>
 
-          <div>
-            <label
-              className="text-gray-700 font-semibold"
-              htmlFor="primaryPhone"
-            >
-              Primary Phone{" "}
-              {!validPrimaryPhone && <span className="text-red-600">*</span>}
-              <span className="text-sm text-gray-500">[6 to 15 digits]</span>
-            </label>
-            <input
-               className={`formInputText`}
-              id="primaryPhone"
-              name="primaryPhone"
-              type="tel"
-              autoComplete="off"
-              value={primaryPhone}
-              onChange={onPrimaryPhoneChanged}
-              required
-            />
-          </div>
+              <label className="text-gray-700 font-semibold" htmlFor="postCode">
+                Post Code
+                <input
+                  className={`formInputText`}
+                  id="postCode"
+                  name="postCode"
+                  type="text"
+                  autoComplete="off"
+                  value={postCode}
+                  onChange={onPostCodeChanged}
+                />{" "}
+              </label>
 
-          <div>
-            <label
-              className="text-gray-700 font-semibold"
-              htmlFor="secondaryPhone"
-            >
-              Secondary Phone
-            </label>
-            <input
-               className={`formInputText`}
-              id="secondaryPhone"
-              name="secondaryPhone"
-              type="tel"
-              autoComplete="off"
-              value={secondaryPhone}
-              onChange={onSecondaryPhoneChanged}
-            />
-          </div>
+              <label
+                className="text-gray-700 font-semibold"
+                htmlFor="primaryPhone"
+              >
+                Primary Phone{" "}
+                {!validPrimaryPhone && <span className="text-red-600">*</span>}
+                <span className="text-sm text-gray-500">[6 to 15 digits]</span>
+                <input
+                  className={`formInputText`}
+                  id="primaryPhone"
+                  name="primaryPhone"
+                  type="tel"
+                  autoComplete="off"
+                  value={primaryPhone}
+                  onChange={onPrimaryPhoneChanged}
+                  required
+                />{" "}
+              </label>
 
-          <div>
-            <label className="text-gray-700 font-semibold" htmlFor="email">
-              Email
-            </label>
-            <input
-               className={`formInputText`}
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="off"
-              value={email}
-              onChange={onEmailChanged}
-            />
+              <label
+                className="text-gray-700 font-semibold"
+                htmlFor="secondaryPhone"
+              >
+                Secondary Phone
+                <input
+                  className={`formInputText`}
+                  id="secondaryPhone"
+                  name="secondaryPhone"
+                  type="tel"
+                  autoComplete="off"
+                  value={secondaryPhone}
+                  onChange={onSecondaryPhoneChanged}
+                />{" "}
+              </label>
+
+              <label className="text-gray-700 font-semibold" htmlFor="email">
+                Email
+                <input
+                  className={`formInputText`}
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="off"
+                  value={email}
+                  onChange={onEmailChanged}
+                />{" "}
+              </label>
+            </div>
           </div>
         </div>
 
