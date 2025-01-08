@@ -56,6 +56,7 @@ const PayslipsList = () => {
     isSuccess: isPayslipsSuccess,
     // isError: isPayslipsError,
     // error: payslipsError,
+    refetch,
   } = useGetPayslipsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -72,12 +73,16 @@ const PayslipsList = () => {
     deletePayslip,
     {
       isLoading: isDelLoading,
-      // isSuccess: isDelSuccess,
+       isSuccess: isDelSuccess,
       isError: isDelError,
       error: delError,
     },
   ] = useDeletePayslipMutation();
-
+  useEffect(() => {
+    if (isDelSuccess) {
+      refetch();
+    }
+  }, [isDelSuccess]);
   // Function to handle the delete button click
   const onDeletePayslipClicked = (id) => {
     setIdPayslipToDelete(id); // Set the document to delete

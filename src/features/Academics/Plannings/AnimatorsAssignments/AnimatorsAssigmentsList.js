@@ -44,6 +44,7 @@ const AnimatorsAssignmentsList = () => {
     isSuccess: isAssignmentsSuccess,
     isError: isAssignmentsError,
     error: assignmentsError,
+    refetch,
   } = useGetAnimatorsAssignmentsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -86,7 +87,14 @@ const AnimatorsAssignmentsList = () => {
   //   const { entities } = schools;
   //   schoolsList = Object.values(entities);
   // }
+  useEffect(() => {
+    
+    if(isDelSuccess){
+      refetch();
 
+
+    }
+  }, [isDelSuccess]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idAttendedSchoolToDelete, setIdAttendedSchoolToDelete] =
     useState(null); // State to track which document to delete

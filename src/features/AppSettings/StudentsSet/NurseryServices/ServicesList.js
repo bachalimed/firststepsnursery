@@ -39,6 +39,7 @@ const ServicesList = () => {
     isSuccess: isServicesSuccess,
     // isError: isServicesError,
     // error: servicesError,
+    refetch,
   } = useGetServicesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -55,12 +56,16 @@ const ServicesList = () => {
     deleteService,
     {
       // isLoading: isDelLoading,
-      // isSuccess: isDelSuccess,
+       isSuccess: isDelSuccess,
       isError: isDelError,
       error: delError,
     },
   ] = useDeleteServiceMutation();
-
+  useEffect(() => {
+    if (isDelSuccess) {
+      refetch();
+    }
+  }, [isDelSuccess]);
   // Function to handle the delete button click
   const onDeleteServiceClicked = (id) => {
     setIdServiceToDelete(id); // Set the document to delete

@@ -43,6 +43,7 @@ const PayeesList = () => {
     isSuccess: isPayeesSuccess,
     // isError: isPayeesError,
     // error: payeesError,
+    refetch,
   } = useGetPayeesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -59,11 +60,16 @@ const PayeesList = () => {
     deletePayee,
     {
       isLoading: isDelLoading,
-      // isSuccess: isDelSuccess,
+       isSuccess: isDelSuccess,
       isError: isDelError,
       error: delError,
     },
   ] = useDeletePayeeMutation();
+  useEffect(() => {
+    if (isDelSuccess) {
+      refetch();
+    }
+  }, [isDelSuccess]);
   const { triggerBanner } = useOutletContext(); // Access banner trigger
   // Function to handle the delete button click
   const onDeletePayeeClicked = (id) => {

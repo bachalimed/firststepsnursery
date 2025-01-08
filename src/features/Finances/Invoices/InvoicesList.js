@@ -59,6 +59,7 @@ const InvoicesList = () => {
     isSuccess: isInvoicesSuccess,
     isError: isInvoicesError,
     error: invoicesError,
+    refetch,
   } = useGetInvoicesByYearQuery(
     {
       selectedMonth: selectedInvoiceMonth
@@ -100,7 +101,11 @@ const InvoicesList = () => {
       error: delError,
     },
   ] = useDeleteInvoiceMutation();
-
+  useEffect(() => {
+    if (isDelSuccess) {
+      refetch();
+    }
+  }, [isDelSuccess]);
   // Function to handle the delete button click
   const onDeleteInvoiceClicked = (id) => {
     setIdInvoiceToDelete(id); // Set the document to delete

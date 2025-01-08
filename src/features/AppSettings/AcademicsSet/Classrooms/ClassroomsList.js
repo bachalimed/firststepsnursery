@@ -28,6 +28,7 @@ const ClassroomsList = () => {
     isSuccess: isClassroomsSuccess,
     // isError: isClassroomsError,
     // error: classroomsError,
+    refetch,
   } = useGetClassroomsQuery("classroomsList") || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
  
 
@@ -39,12 +40,16 @@ const ClassroomsList = () => {
     deleteClassroom,
     {
       // isLoading: isDelLoading,
-      // isSuccess: isDelSuccess,
+       isSuccess: isDelSuccess,
       isError: isDelError,
       error: delError,
     },
   ] = useDeleteClassroomMutation();
-
+  useEffect(() => {
+    if (isDelSuccess) {
+      refetch();
+    }
+  }, [isDelSuccess]);
   // Function to handle the delete button click
   const onDeleteClassroomClicked = (id) => {
     setIdClassroomToDelete(id); // Set the document to delete

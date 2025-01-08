@@ -24,6 +24,7 @@ const AttendedSchoolsList = () => {
     isSuccess: isSchoolsSuccess,
     isError: isSchoolsError,
     error: schoolsError,
+    refetch,
   } = useGetAttendedSchoolsQuery({ endpointName: "attendedSchoolsList" }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
   //we do not want to import from state but from DB
   
@@ -42,6 +43,11 @@ const AttendedSchoolsList = () => {
       error: delError,
     },
   ] = useDeleteAttendedSchoolMutation();
+  useEffect(() => {
+    if (isDelSuccess) {
+      refetch();
+    }
+  }, [isDelSuccess]);
   const { triggerBanner } = useOutletContext(); // Access banner trigger
   // Function to handle the delete button click
   const onDeleteAttendedSchoolClicked = (id) => {

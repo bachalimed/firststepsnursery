@@ -58,6 +58,7 @@ const PaymentsList = () => {
     isSuccess: isPaymentsSuccess,
     // isError: isPaymentsError,
     // error: paymentsError,
+    refetch,
   } = useGetPaymentsByYearQuery(
     {
       selectedMonth: selectedPaymentMonth
@@ -78,12 +79,16 @@ const PaymentsList = () => {
     deletePayment,
     {
       isLoading: isDelLoading,
-      // isSuccess: isDelSuccess,
+       isSuccess: isDelSuccess,
       isError: isDelError,
       error: delError,
     },
   ] = useDeletePaymentMutation();
-
+  useEffect(() => {
+    if (isDelSuccess) {
+      refetch();
+    }
+  }, [isDelSuccess]);
   // Function to handle the delete button click
   const onDeletePaymentClicked = (id) => {
     setIdPaymentToDelete(id); // Set the document to delete

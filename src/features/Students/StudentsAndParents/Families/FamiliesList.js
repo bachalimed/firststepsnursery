@@ -42,6 +42,7 @@ const FamiliesList = () => {
     isSuccess: isFamiliesSuccess,
     // isError: isFamiliesError,
     // error: familiesError,
+    refetch,
   } = useGetFamiliesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -130,7 +131,11 @@ const FamiliesList = () => {
     deleteFamily,
     { isSuccess: isDelSuccess, isError: isDelError, error: delError },
   ] = useDeleteFamilyMutation();
-
+  useEffect(() => {
+    if (isDelSuccess) {
+      refetch();
+    }
+  }, [isDelSuccess]);
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };

@@ -68,6 +68,7 @@ const StudentsList = () => {
     isSuccess: isStudentsSuccess,
     // isError: isStudentsError,
     // error: studentsError,
+    refetch,
   } = useGetStudentsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -96,7 +97,7 @@ const StudentsList = () => {
     deleteStudent,
     {
       isLoading: isDelLoading,
-      // isSuccess: isDelSuccess,
+       isSuccess: isDelSuccess,
       isError: isDelError,
       error: delError,
     },
@@ -107,6 +108,19 @@ const StudentsList = () => {
     setIdStudentToDelete(id);
     setIsDeleteModalOpen(true);
   };
+  useEffect(() => {
+    
+    if(isDelSuccess){
+      refetch();
+
+
+    }
+  }, [isDelSuccess]);
+
+
+
+
+
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {

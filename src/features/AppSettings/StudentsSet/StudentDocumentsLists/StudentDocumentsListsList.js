@@ -36,6 +36,7 @@ const StudentDocumentsListsList = () => {
     isSuccess: isDocumentsListsSuccess,
     // isError: isDocumentsListsError,
     // error: documentsListsError,
+    refetch,
   } = useGetStudentDocumentsListsQuery(
     {
       endpointName: "StudentDocumentsListsList",
@@ -49,13 +50,17 @@ const StudentDocumentsListsList = () => {
   const [
     deleteStudentDocumentsList,
     {
-      // isSuccess: isDelSuccess,
+       isSuccess: isDelSuccess,
       // isLoading: isDelLoading,
       isError: isDelError,
       error: delError,
     },
   ] = useDeleteStudentDocumentsListMutation();
-
+  useEffect(() => {
+    if (isDelSuccess) {
+      refetch();
+    }
+  }, [isDelSuccess]);
   //handler for deleting a studetnDocumentsList
 
   // Function to handle the delete button click

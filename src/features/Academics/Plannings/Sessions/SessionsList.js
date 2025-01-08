@@ -59,6 +59,7 @@ const SessionsList = () => {
     isSuccess: isSessionsSuccess,
     isError: isSessionsError,
     error: sessionsError,
+    refetch,
   } = useGetSessionsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -81,7 +82,14 @@ const SessionsList = () => {
       error: delerror,
     },
   ] = useDeleteSessionMutation();
+  useEffect(() => {
+    
+    if(isDelSuccess){
+      refetch();
 
+
+    }
+  }, [isDelSuccess]);
   // Function to handle the delete button click
   const onDeleteSessionClicked = (id) => {
     setIdSessionToDelete(id); // Set the document to delete

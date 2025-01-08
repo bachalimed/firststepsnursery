@@ -45,6 +45,7 @@ const ExpenseCategoriesList = () => {
     isSuccess: isExpenseCategoriesSuccess,
     // isError: isExpenseCategoriesError,
     // error: expenseCategoriesError,
+    refetch,
   } = useGetExpenseCategoriesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -61,12 +62,16 @@ const ExpenseCategoriesList = () => {
     deleteExpenseCategory,
     {
       isLoading: isDelLoading,
-      // isSuccess: isDelSuccess,
+       isSuccess: isDelSuccess,
       isError: isDelError,
       error: delError,
     },
   ] = useDeleteExpenseCategoryMutation();
-
+  useEffect(() => {
+    if (isDelSuccess) {
+      refetch();
+    }
+  }, [isDelSuccess]);
   // Function to handle the delete button click
   const onDeleteExpenseCategoryClicked = (id) => {
     setIdExpenseCategoryToDelete(id); // Set the document to delete

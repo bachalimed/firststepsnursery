@@ -60,6 +60,7 @@ const LeavesList = () => {
     isSuccess: isLeavesSuccess,
     // isError: isLeavesError,
     // error: leavesError,
+    refetch,
   } = useGetLeavesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -76,12 +77,16 @@ const LeavesList = () => {
     deleteLeave,
     {
       isLoading: isDelLoading,
-      // isSuccess: isDelSuccess,
+      isSuccess: isDelSuccess,
       isError: isDelError,
       error: delError,
     },
   ] = useDeleteLeaveMutation();
-
+  useEffect(() => {
+    if (isDelSuccess) {
+      refetch();
+    }
+  }, [isDelSuccess]);
   // Function to handle the delete button click
   const onDeleteLeaveClicked = (id) => {
     setIdLeaveToDelete(id); // Set the document to delete

@@ -42,6 +42,7 @@ const ExpensesList = () => {
     isSuccess: isExpensesSuccess,
     isError: isExpensesError,
     error: expensesError,
+    refetch,
   } = useGetExpensesQuery({ endpointName: "ExpenseList" }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
   const [
     deleteExpense,
@@ -52,6 +53,11 @@ const ExpensesList = () => {
       error: delError,
     },
   ] = useDeleteExpenseMutation();
+  useEffect(() => {
+    if (isDelSuccess) {
+      refetch();
+    }
+  }, [isDelSuccess]);
   // if (isSchoolsSuccess && !isSchoolsLoading) {
   //   const { entities } = schools;
   //   schoolsList = Object.values(entities);

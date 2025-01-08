@@ -36,19 +36,24 @@ const EmployeeDocumentsListsList = () => {
     isSuccess: isDocumentsListsSuccess,
     // isError: isDocumentsListsError,
     // error: documentsListsError,
+    refetch,
   } = useGetEmployeeDocumentsListsQuery("employeeDocumentsListsList") || {};
 
   //initialising the delete Mutation
   const [
     deleteEmployeeDocumentsList,
     {
-      // isSuccess: isDelSuccess,
+       isSuccess: isDelSuccess,
       // isLoading: isDelLoading,
       isError: isDelError,
       error: delError,
     },
   ] = useDeleteEmployeeDocumentsListMutation();
-
+  useEffect(() => {
+    if (isDelSuccess) {
+      refetch();
+    }
+  }, [isDelSuccess]);
   //handler for deleting a studetnDocumentsList
 
   // Function to handle the delete button click

@@ -33,23 +33,27 @@ const UsersList = () => {
     isSuccess: isUsersSuccess,
     // isError: isUsersError,
     // error: usersError,
+    refetch,
   } = useGetUsersQuery("usersList", {
     pollingInterval: 60000, //will refetch data every 60seconds
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true, //refetch when we remount the component
   });
 
-
   const [
     deleteUser,
     {
-      // isSuccess: isDelSuccess,
+       isSuccess: isDelSuccess,
       // isLoading: isDelLoading,
       isError: isDelError,
       error: delError,
     },
   ] = useDeleteUserMutation();
-
+  useEffect(() => {
+    if (isDelSuccess) {
+      refetch();
+    }
+  }, [isDelSuccess]);
   // State for search query and selected filters
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUserRoles, setSelectedUserRoles] = useState([]);
@@ -70,7 +74,6 @@ const UsersList = () => {
 
     // Filtering Logic
     filteredUsers = usersList?.filter((item) => {
-    
       // Basic name search
       const firstNameMatch = item.userFullName.userFirstName
         .toLowerCase()
@@ -101,7 +104,6 @@ const UsersList = () => {
       return (
         (generalMatch || firstNameMatch || middleNameMatch || lastNameMatch) &&
         userRolesFilter &&
-      
         userActionsFilter
       );
     });

@@ -66,6 +66,7 @@ const EnrolmentsList = () => {
     isSuccess: isEnrolmentsSuccess,
     // isError: isEnrolmentsError,
     // error: enrolmentsError,
+    refetch,
   } = useGetEnrolmentsByYearQuery(
     {
       // selectedMonth: getCurrentMonth(),
@@ -126,12 +127,16 @@ const EnrolmentsList = () => {
     deleteEnrolment,
     {
       isLoading: isDelLoading,
-      // isSuccess: isDelSuccess,
+       isSuccess: isDelSuccess,
       isError: isDelError,
       error: delError,
     },
   ] = useDeleteEnrolmentMutation();
-
+  useEffect(() => {
+    if (isDelSuccess) {
+      refetch();
+    }
+  }, [isDelSuccess]);
   // Function to handle the delete button click
   const onDeleteEnrolmentClicked = (id) => {
     setIdEnrolmentToDelete(id); // Set the document to delete

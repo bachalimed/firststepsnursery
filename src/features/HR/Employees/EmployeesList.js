@@ -50,6 +50,7 @@ const EmployeesList = () => {
     isSuccess: isEmployeesSuccess,
     isError: isEmployeesError,
     error: employeesError,
+    refetch,
   } = useGetEmployeesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -71,7 +72,11 @@ const EmployeesList = () => {
       error: delError,
     },
   ] = useDeleteEmployeeMutation();
-
+  useEffect(() => {
+    if (isDelSuccess) {
+      refetch();
+    }
+  }, [isDelSuccess]);
   // Function to handle the delete button click
   const onDeleteEmployeeClicked = (id) => {
     setIdEmployeeToDelete(id); // Set the document to delete

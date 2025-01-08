@@ -16,7 +16,7 @@ import Students from "../Students";
 import DataTable from "react-data-table-component";
 import { useSelector, useDispatch } from "react-redux";
 import { IoFlagSharp } from "react-icons/io5";
-import {  useState } from "react";
+import { useState } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
 import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
@@ -53,6 +53,7 @@ const AdmissionsList = () => {
     isSuccess: isAdmissionsSuccess,
     // isError: isAdmissionsError,
     // error: admissionsError,
+    refetch,
   } = useGetAdmissionsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -87,11 +88,16 @@ const AdmissionsList = () => {
     deleteAdmission,
     {
       isLoading: isDelLoading,
-      // isSuccess: isDelSuccess,
+      isSuccess: isDelSuccess,
       isError: isDelError,
       error: delerror,
     },
   ] = useDeleteAdmissionMutation();
+  useEffect(() => {
+    if (isDelSuccess) {
+      refetch();
+    }
+  }, [isDelSuccess]);
   const { triggerBanner } = useOutletContext(); // Access banner trigger
   // Function to handle the delete button click
   const onDeleteAdmissionClicked = (id) => {
@@ -622,161 +628,161 @@ const AdmissionsList = () => {
       </>
     );
   // if (isAdmissionsSuccess && isServicesSuccess)
-    content = (
-      <>
-        <Students />
-        <div className="flex space-x-2 items-center ml-3">
-          {/* Search Bar */}
-          <div className="relative h-10 mr-2 ">
-            <HiOutlineSearch
-              fontSize={20}
-              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-              aria-label="search admissions"
-            />
-            <input
-              aria-label="search admissions"
-              type="text"
-              value={searchQuery}
-              onChange={handleSearch}
-              className="serachQuery"
-            />{" "}
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => handleSearch({ target: { value: "" } })} // Clear search
-                className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
-                aria-label="clear search"
-              >
-                &times;
-              </button>
-            )}
-          </div>
-          {/* feeMonths Filter Dropdown */}
-          {/* Month Filter Dropdown */}
-          <label htmlFor="monthFilter" className="formInputLabel">
-            <select
-              aria-label="monthFilter"
-              id="monthFilter"
-              onChange={handleMonthFilterChange}
-              value={monthFilter}
-              className="text-sm h-8 border border-gray-300  px-4"
+  content = (
+    <>
+      <Students />
+      <div className="flex space-x-2 items-center ml-3">
+        {/* Search Bar */}
+        <div className="relative h-10 mr-2 ">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+            aria-label="search admissions"
+          />
+          <input
+            aria-label="search admissions"
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="serachQuery"
+          />{" "}
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => handleSearch({ target: { value: "" } })} // Clear search
+              className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+              aria-label="clear search"
             >
-              <option value="">All Months</option>
-              {MONTHS.map((month, index) => (
-                <option key={index} value={month}>
-                  {month}
-                </option>
-              ))}
-            </select>
-          </label>
-          {/* Service Type filter dropdown */}
-          <label htmlFor="serviceTypeFilter" className="formInputLabel">
-            <select
-              aria-label="serviceTypeFilter"
-              id="serviceTypeFilter"
-              onChange={handleServiceTypeFilterChange}
-              value={serviceTypeFilter}
-              className="text-sm h-8 border border-gray-300  px-4"
-            >
-              <option value="">All Services</option>
-              {/* Assuming serviceList contains unique serviceType values */}
-              {servicesList.map((service) => (
-                <option key={service.id} value={service.serviceType}>
-                  {service.serviceType}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label htmlFor="flaggedFilter" className="formInputLabel">
-            <select
-              aria-label="flaggedFilter"
-              id="flaggedFilter"
-              value={isFlaggedFilter}
-              onChange={(e) => setIsFlaggedFilter(e.target.value)}
-              className="text-sm h-8 border border-gray-300  px-4"
-            >
-              <option value="">Flag Status</option>
-              <option value="flagged">Flagged</option>
-              <option value="notflagged">Not Flagged</option>
-            </select>
-          </label>
-
-          <label htmlFor="authorisedFilter" className="formInputLabel">
-            <select
-              aria-label="authorisedFilter"
-              id="authorisedFilter"
-              value={isAuthorisedFilter}
-              onChange={(e) => setIsAuthorisedFilter(e.target.value)}
-              className="text-sm h-8 border border-gray-300  px-4"
-            >
-              <option value="">Authorisation Status</option>
-              <option value="authorised">Authorised</option>
-              <option value="notauthorised">Not Authorised</option>
-            </select>
-          </label>
+              &times;
+            </button>
+          )}
         </div>
-
-        <div className="dataTableContainer">
-          <div>
-            <DataTable
-              title={tableHeader}
-              columns={column}
-              data={filteredAdmissions}
-              pagination
-              // selectableRows
-              removableRows
-              pageSizeControl
-              onSelectedRowsChange={handleRowSelected}
-              selectableRowsHighlight
-              customStyles={{
-                headCells: {
-                  style: {
-                    // Apply Tailwind style via a class-like syntax
-                    justifyContent: "center", // Align headers to the center
-                    textAlign: "center", // Center header text
-                    color: "black",
-                    fontSize: "14px", // Increase font size for header text
-                  },
-                },
-
-                cells: {
-                  style: {
-                    justifyContent: "center", // Center cell content
-                    textAlign: "center",
-                    color: "black",
-                    fontSize: "14px", // Increase font size for cell text
-                  },
-                },
-                pagination: {
-                  style: {
-                    display: "flex",
-                    justifyContent: "center", // Center the pagination control
-                    alignItems: "center",
-                    padding: "10px 0", // Optional: Add padding for spacing
-                  },
-                },
-              }}
-            ></DataTable>
-          </div>
-
-          {/* <div className="cancelSavebuttonsDiv"> */}
-          <button
-            className="add-button"
-            onClick={() => navigate("/students/admissions/newAdmission/")}
-            hidden={!canCreate}
+        {/* feeMonths Filter Dropdown */}
+        {/* Month Filter Dropdown */}
+        <label htmlFor="monthFilter" className="formInputLabel">
+          <select
+            aria-label="monthFilter"
+            id="monthFilter"
+            onChange={handleMonthFilterChange}
+            value={monthFilter}
+            className="text-sm h-8 border border-gray-300  px-4"
           >
-            New Admission
-          </button>
-          {/* </div> */}
+            <option value="">All Months</option>
+            {MONTHS.map((month, index) => (
+              <option key={index} value={month}>
+                {month}
+              </option>
+            ))}
+          </select>
+        </label>
+        {/* Service Type filter dropdown */}
+        <label htmlFor="serviceTypeFilter" className="formInputLabel">
+          <select
+            aria-label="serviceTypeFilter"
+            id="serviceTypeFilter"
+            onChange={handleServiceTypeFilterChange}
+            value={serviceTypeFilter}
+            className="text-sm h-8 border border-gray-300  px-4"
+          >
+            <option value="">All Services</option>
+            {/* Assuming serviceList contains unique serviceType values */}
+            {servicesList.map((service) => (
+              <option key={service.id} value={service.serviceType}>
+                {service.serviceType}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label htmlFor="flaggedFilter" className="formInputLabel">
+          <select
+            aria-label="flaggedFilter"
+            id="flaggedFilter"
+            value={isFlaggedFilter}
+            onChange={(e) => setIsFlaggedFilter(e.target.value)}
+            className="text-sm h-8 border border-gray-300  px-4"
+          >
+            <option value="">Flag Status</option>
+            <option value="flagged">Flagged</option>
+            <option value="notflagged">Not Flagged</option>
+          </select>
+        </label>
+
+        <label htmlFor="authorisedFilter" className="formInputLabel">
+          <select
+            aria-label="authorisedFilter"
+            id="authorisedFilter"
+            value={isAuthorisedFilter}
+            onChange={(e) => setIsAuthorisedFilter(e.target.value)}
+            className="text-sm h-8 border border-gray-300  px-4"
+          >
+            <option value="">Authorisation Status</option>
+            <option value="authorised">Authorised</option>
+            <option value="notauthorised">Not Authorised</option>
+          </select>
+        </label>
+      </div>
+
+      <div className="dataTableContainer">
+        <div>
+          <DataTable
+            title={tableHeader}
+            columns={column}
+            data={filteredAdmissions}
+            pagination
+            // selectableRows
+            removableRows
+            pageSizeControl
+            onSelectedRowsChange={handleRowSelected}
+            selectableRowsHighlight
+            customStyles={{
+              headCells: {
+                style: {
+                  // Apply Tailwind style via a class-like syntax
+                  justifyContent: "center", // Align headers to the center
+                  textAlign: "center", // Center header text
+                  color: "black",
+                  fontSize: "14px", // Increase font size for header text
+                },
+              },
+
+              cells: {
+                style: {
+                  justifyContent: "center", // Center cell content
+                  textAlign: "center",
+                  color: "black",
+                  fontSize: "14px", // Increase font size for cell text
+                },
+              },
+              pagination: {
+                style: {
+                  display: "flex",
+                  justifyContent: "center", // Center the pagination control
+                  alignItems: "center",
+                  padding: "10px 0", // Optional: Add padding for spacing
+                },
+              },
+            }}
+          ></DataTable>
         </div>
-        <DeletionConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
-          onConfirm={handleConfirmDelete}
-        />
-      </>
-    );
+
+        {/* <div className="cancelSavebuttonsDiv"> */}
+        <button
+          className="add-button"
+          onClick={() => navigate("/students/admissions/newAdmission/")}
+          hidden={!canCreate}
+        >
+          New Admission
+        </button>
+        {/* </div> */}
+      </div>
+      <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
+    </>
+  );
 
   return content;
 };

@@ -43,7 +43,7 @@ const AcademicYearsList = () => {
       error: delError,
     },
   ] = useDeleteAcademicYearMutation();
-
+ 
   const { triggerBanner } = useOutletContext(); // Access banner trigger
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [idYearToDelete, setIdYearToDelete] = useState(null);

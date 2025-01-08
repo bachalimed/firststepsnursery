@@ -46,6 +46,7 @@ const NurserySectionsList = () => {
     isSuccess: isSectionsSuccess,
     // isError: isSectionsError,
     // error: sectionsError,
+    refetch,
   } = useGetSectionsByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -129,7 +130,14 @@ const NurserySectionsList = () => {
       error: delSectionError,
     },
   ] = useDeleteSectionMutation();
+  useEffect(() => {
+    
+    if(isDelSectionSuccess){
+      refetch();
 
+
+    }
+  }, [isDelSectionSuccess]);
   // Function to handle the delete button click
   const onDeleteStudentClicked = (id) => {
     setIdSectionToDelete(id); // Set the document to delete
