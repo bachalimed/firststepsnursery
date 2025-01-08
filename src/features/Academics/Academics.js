@@ -59,6 +59,7 @@ const Sections = () => {
   // Function to determine if a tab is active based on the current path
   const isActive = (path) => location.pathname === path;
 
+
   // Render the component content
   return (
     <>
@@ -70,8 +71,8 @@ const Sections = () => {
             .map((tab) => (
               <Link key={tab.path} to={tab.path}>
                 <li
-                  className={`list-none cursor-pointer px-3 py-2 border border-gray-400  ${
-                    isActive(tab.path)
+                className={`list-none flex-1 cursor-pointer px-3 py-2 border border-gray-400  ${
+                  isActive(tab.path)
                       ? "text-sky-700 border-sky-700 bg-gray-100"
                       : "text-gray-800 hover:bg-gray-100"
                   }`}

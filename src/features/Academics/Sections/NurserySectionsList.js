@@ -13,7 +13,7 @@ import Academics from "../Academics";
 import DataTable from "react-data-table-component";
 import { useOutletContext } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useState , useEffect} from "react";
+import { useState, useEffect } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -22,7 +22,9 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import useAuth from "../../../hooks/useAuth";
 
 const NurserySectionsList = () => {
-  useEffect(()=>{document.title="Nursery Sections List"})
+  useEffect(() => {
+    document.title = "Nursery Sections List";
+  });
 
   //this is for the academic year selection
   const navigate = useNavigate();
@@ -75,11 +77,9 @@ const NurserySectionsList = () => {
     // Filter sections based on search query, including student names
     filteredSections = sectionsList?.filter((section) => {
       // Apply filter for sectionTo if needed
-      const sectionToIsValid =
-        !currentSectionsFilter ||
-        section.sectionTo === undefined ||
-        section.sectionTo === null;
 
+      const sectionToIsValid =
+        !currentSectionsFilter || section.sectionTo === ""||section.sectionTo === null; //////because default is empty string
       // Check section fields for search query
       const sectionMatches = Object.values(section).some((val) =>
         String(val).toLowerCase().includes(searchQuery.toLowerCase())
@@ -379,113 +379,113 @@ const NurserySectionsList = () => {
       </>
     );
   // if (isSectionsSuccess)
-    content = (
-      <>
-        <Academics />
-        <div className="flex space-x-2 items-center ml-3 ">
-          <div className="relative h-10 mr-2 ">
-            <HiOutlineSearch
-              fontSize={20}
-              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-              aria-label="search sections"
-            />
-            <input
-              aria-label="search sections"
-              id="searchFilter"
-              name="searchFilter"
-              type="text"
-              value={searchQuery}
-              onChange={handleSearch}
-              className="serachQuery"
-            />{" "}
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => handleSearch({ target: { value: "" } })} // Clear search
-                className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
-                aria-label="clear search"
-              >
-                &times;
-              </button>
-            )}
-          </div>
-          <button
-            aria-label="current section filter"
-            onClick={() => setCurrentSectionsFilter((prev) => !prev)}
-            className=" h-8 border border-gray-300  px-4"
-          >
-            {currentSectionsFilter
-              ? "Current Sections Shown"
-              : "All Sections Shown"}
-          </button>
-        </div>
-
-        <div className="dataTableContainer">
-          <div>
-            <DataTable
-              title={tableHeader}
-              columns={column}
-              data={filteredSections}
-              pagination
-              //selectableRows
-              removableRows
-              pageSizeControl
-              //onSelectedRowsChange={handleRowSelected}
-              selectableRowsHighlight
-              customStyles={{
-                table: {
-                  style: {
-                    tableLayout: "auto", // Allow dynamic resizing of columns
-                    width: "100%",
-                  },
-                },
-                headCells: {
-                  style: {
-                    // Apply Tailwind style via a class-like syntax
-                    justifyContent: "center", // Align headers to the center
-                    textAlign: "center", // Center header text
-                    color: "black",
-                    fontSize: "14px", // Increase font size for header text
-                  },
-                },
-                cells: {
-                  style: {
-                    justifyContent: "center", // Center cell content
-                    textAlign: "center",
-                    color: "black",
-                    fontSize: "14px", // Increase font size for cell text
-                  },
-                },
-                pagination: {
-                  style: {
-                    display: "flex",
-                    justifyContent: "center", // Center the pagination control
-                    alignItems: "center",
-                    padding: "10px 0", // Optional: Add padding for spacing
-                  },
-                },
-              }}
-            ></DataTable>
-          </div>
-
-          {isAdmin && (
+  content = (
+    <>
+      <Academics />
+      <div className="flex space-x-2 items-center ml-3 ">
+        <div className="relative h-10 mr-2 ">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+            aria-label="search sections"
+          />
+          <input
+            aria-label="search sections"
+            id="searchFilter"
+            name="searchFilter"
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="serachQuery"
+          />{" "}
+          {searchQuery && (
             <button
-              className="add-button"
-              onClick={() => navigate("/academics/sections/newSection/")}
-              //disabled={selectedRows.length !== 1} // Disable if no rows are selected
-              hidden={!canCreate}
+              type="button"
+              onClick={() => handleSearch({ target: { value: "" } })} // Clear search
+              className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+              aria-label="clear search"
             >
-              New Section
+              &times;
             </button>
           )}
         </div>
-        <DeletionConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
-          onConfirm={handleConfirmDelete}
-        />
-      </>
-    );
+        <button
+          aria-label="current section filter"
+          onClick={() => setCurrentSectionsFilter((prev) => !prev)}
+          className=" h-8 border border-gray-300  px-4"
+        >
+          {currentSectionsFilter
+            ? "Current Sections Shown"
+            : "All Sections Shown"}
+        </button>
+      </div>
+
+      <div className="dataTableContainer">
+        <div>
+          <DataTable
+            title={tableHeader}
+            columns={column}
+            data={filteredSections}
+            pagination
+            //selectableRows
+            removableRows
+            pageSizeControl
+            //onSelectedRowsChange={handleRowSelected}
+            selectableRowsHighlight
+            customStyles={{
+              table: {
+                style: {
+                  tableLayout: "auto", // Allow dynamic resizing of columns
+                  width: "100%",
+                },
+              },
+              headCells: {
+                style: {
+                  // Apply Tailwind style via a class-like syntax
+                  justifyContent: "center", // Align headers to the center
+                  textAlign: "center", // Center header text
+                  color: "black",
+                  fontSize: "14px", // Increase font size for header text
+                },
+              },
+              cells: {
+                style: {
+                  justifyContent: "center", // Center cell content
+                  textAlign: "center",
+                  color: "black",
+                  fontSize: "14px", // Increase font size for cell text
+                },
+              },
+              pagination: {
+                style: {
+                  display: "flex",
+                  justifyContent: "center", // Center the pagination control
+                  alignItems: "center",
+                  padding: "10px 0", // Optional: Add padding for spacing
+                },
+              },
+            }}
+          ></DataTable>
+        </div>
+
+        {isAdmin && (
+          <button
+            className="add-button"
+            onClick={() => navigate("/academics/sections/newSection/")}
+            //disabled={selectedRows.length !== 1} // Disable if no rows are selected
+            hidden={!canCreate}
+          >
+            New Section
+          </button>
+        )}
+      </div>
+      <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
+    </>
+  );
 
   return content;
 };

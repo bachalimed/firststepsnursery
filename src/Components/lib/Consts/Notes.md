@@ -34,4 +34,8 @@ academic years "1000" use as criteria to query all years data instead of only on
  24. payment of leave is decided and recorded on the leave itself and will not be changed in the payslip
  25. leave given days are given by the nursery and are paid normally, 
  26. pay lsip generated without payday , and after it is approved, it can be paid and we fill the payment date.
- 
+ 27. sections flag is when we change animator, add ro remove a studetn, this will create a new sectiona dn give sectionTo to the old sectin
+ 28. sessins will import only one section inside thdata structure because if a studetn is in more than one section, it will be empty scheduler
+ 29. if studetn still have a section in his atttributes will still be impported insessions aeventhought ehsection is already does not contain him, maybe issue with updating section when we remove from section
+ 30. if studetnsection is empty for all studetn, the scheduler will have no rows
+ 31. now only active sections, the studetn will have studetn sections, we ll see the connsequences on other functions

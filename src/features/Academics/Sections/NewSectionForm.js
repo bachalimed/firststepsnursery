@@ -42,8 +42,8 @@ const NewSectionForm = () => {
     data: employees, //the data is renamed employees
     isLoading: isEmployeesLoading,
     isSuccess: isEmployeesSuccess,
-    isError: isEmployeesError,
-    error: employeesError,
+    // isError: isEmployeesError,
+    // error: employeesError,
   } = useGetEmployeesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -60,8 +60,8 @@ const NewSectionForm = () => {
     data: classrooms, //the data is renamed sessions
     isLoading: isClassroomsLoading,
     isSuccess: isClassroomsSuccess,
-    isError: isClassroomsError,
-    error: classroomsError,
+    // isError: isClassroomsError,
+    // error: classroomsError,
   } = useGetClassroomsQuery(
     {
       endpointName: "NewSectionForm",
@@ -76,8 +76,8 @@ const NewSectionForm = () => {
     data: students, //the data is renamed students
     isLoading: isStudentLoading,
     isSuccess: isStudentSuccess,
-    isError: isStudentError,
-    error: studentError,
+    // isError: isStudentError,
+    // error: studentError,
   } = useGetStudentsByYearQuery(
     {
       criteria: "activeStudents",
@@ -101,7 +101,7 @@ const NewSectionForm = () => {
     sectionColor: "#5978ee",
     sectionType: "Nursery",
     sectionFrom: "",
-    //sectionTo: "",
+    sectionTo: "",
     sectionAnimator: "",
     sectionLocation: "",
     operator: userId,
@@ -135,7 +135,6 @@ const NewSectionForm = () => {
     validSectionColor: false,
     validSectionType: false,
     validSectionAnimator: false,
-
     validSectionFrom: false,
     validSectionLocation: false,
   });
@@ -248,7 +247,6 @@ const NewSectionForm = () => {
     content = (
       <>
         <Academics />
-
         <form onSubmit={onSaveSectionClicked} className="form-container">
           <h2 className="formTitle ">
             New Section: {`${formData.sectionLabel}`}

@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { selectCurrentToken } from "./authSlice";
 import LoadingStateIcon from '../../Components/LoadingStateIcon'
 import PublicHeader from '../../Components/Shared/Header/PublicHeader'
+import PublicFooter from '../../Components/Shared/Footer/PublicFooter'
 const PersistLogin = () => {
   const [persist] = usePersist();
   const token = useSelector(selectCurrentToken);
@@ -69,6 +70,7 @@ const PersistLogin = () => {
         <PublicHeader/>
         {`${error?.data?.message} - `}
         <Link to="/login/">Login again</Link>.
+        <PublicFooter/>
       </>
     );
   } else if (isSuccess && trueSuccess) {
