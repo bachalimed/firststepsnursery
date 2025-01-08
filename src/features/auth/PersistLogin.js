@@ -66,12 +66,17 @@ const PersistLogin = () => {
     //persist: yes, token: no
     //console.log('error in persist file')
     content = (
-      <>
-        <PublicHeader/>
-        {`${error?.data?.message} - `}
-        <Link to="/login/">Login again</Link>.
-        <PublicFooter/>
-      </>
+      <div className="flex flex-col min-h-screen">
+      <PublicHeader />
+      <main className="flex-grow flex justify-center items-center text-center p-6">
+        <p className="text-lg text-red-500">
+          {`${error?.data?.message || "An unexpected error occurred"} - `}
+          <Link to="/login/" className="text-blue-500 hover:underline">Login again</Link>.
+        </p>
+      </main>
+      <PublicFooter />
+    </div>
+    
     );
   } else if (isSuccess && trueSuccess) {
     //persist: yes, token: yes

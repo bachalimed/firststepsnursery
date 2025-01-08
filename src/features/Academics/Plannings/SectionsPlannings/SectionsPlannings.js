@@ -1244,7 +1244,7 @@ const SectionsPlannings = () => {
             >
               <option value="">All Schools</option>
               {schoolsList?.map((school) => (
-                // school.schoolName !== "First Steps" &&
+                //school.schoolName !== "First Steps" &&//the nursery filter plays also the orle but we keep the filter
                 <option key={school.id} value={school.id}>
                   {school.schoolName}
                 </option>
