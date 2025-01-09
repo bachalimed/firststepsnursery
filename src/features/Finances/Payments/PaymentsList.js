@@ -191,18 +191,18 @@ const PaymentsList = () => {
     },
     //show this column only if user is a parent and not employee
 
-    isAdmin
-      ? {
-          name: "Payment ID",
-          selector: (row) => (
-            <Link to={`/payments/payments/paymentDetails/${row.id}`}>
-              {row.id}
-            </Link>
-          ),
-          sortable: true,
-          width: "200px",
-        }
-      : null,
+    // isAdmin
+    //   ? {
+    //       name: "Payment ID",
+    //       selector: (row) => (
+    //         <Link to={`/payments/payments/paymentDetails/${row.id}`}>
+    //           {row.id}
+    //         </Link>
+    //       ),
+    //       sortable: true,
+    //       width: "200px",
+    //     }
+    //   : null,
     {
       name: "Student Name",
       selector: (row) =>
@@ -215,10 +215,10 @@ const PaymentsList = () => {
       width: "160px",
     },
     {
-      name: "Payment Details",
+      name: "Details",
       selector: (row) => `${row?.paymentAmount} ${row?.paymentType}`,
       sortable: true,
-      width: "150px",
+      width: "120px",
     },
     {
       name: "Invoice Month",
@@ -255,7 +255,7 @@ const PaymentsList = () => {
         </div>
       ),
       sortable: true,
-      width: "100px",
+      width: "110px",
     },
 
     {
@@ -279,7 +279,7 @@ const PaymentsList = () => {
     },
 
     {
-      name: "Payment Date",
+      name: "Pay Date",
       cell: (row) => (
         <div>
           {new Date(row.paymentDate).toLocaleDateString("en-GB", {
@@ -291,7 +291,7 @@ const PaymentsList = () => {
       ),
 
       sortable: true,
-      width: "110px",
+      width: "120px",
     },
     {
       name: "Payment Note",

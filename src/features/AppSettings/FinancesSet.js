@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
 import useAuth from "../../hooks/useAuth";
-import logo from "../../Data/logo.jpg";
+import firststeps from "../../Data/firststeps.png";
 
 //we will  find the object corresponding to the page and extract the section tabs
 const FinancesSet = () => {
@@ -59,7 +59,7 @@ const FinancesSet = () => {
       {location.pathname === "/settings/financesSet/" && (
         <div className="flex justify-center items-center bg-gray-300 py-4">
           <img
-            src={logo}
+            src={firststeps}
             className=" rounded "
             alt="first steps nursery logo"
           />

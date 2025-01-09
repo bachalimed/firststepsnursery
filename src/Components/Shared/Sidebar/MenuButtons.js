@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { IoMenuOutline } from "react-icons/io5";
-import logo from "./../../../Data/logo.jpg";
+
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";

@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import logo from '../../Data/logo.jpg'
+import firststeps from '../../Data/firststeps.png'
 import useAuth from "../../hooks/useAuth";
 import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
 const Finances = () => {
@@ -60,7 +60,7 @@ const Finances = () => {
     </div> {location.pathname === "/finances/" &&
     <div className="flex justify-center items-center bg-gray-300 py-4">
       <img
-            src={logo}
+            src={firststeps}
             className=" rounded "
             alt="first steps nursery logo"
             

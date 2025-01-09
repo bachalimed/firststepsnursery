@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
-import logo from "../../Data/logo.jpg";
+import firststeps from "../../Data/firststeps.png";
 
 const Sections = () => {
   const location = useLocation();
@@ -85,7 +85,7 @@ const Sections = () => {
       {location.pathname === "/academics/" && (
         <div className="flex justify-center items-center bg-gray-300 py-4">
           <img
-            src={logo}
+            src={firststeps}
             className=" rounded "
             alt="first steps nursery logo"
           />

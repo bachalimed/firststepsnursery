@@ -222,18 +222,18 @@ const InvoicesList = () => {
     },
     //show this column only if user is a parent and not employee
 
-    isAdmin
-      ? {
-          name: "Invoice ID",
-          selector: (row) => (
-            <Link to={`/invoices/invoices/invoiceDetails/${row.id}`}>
-              {row.id}
-            </Link>
-          ),
-          sortable: true,
-          width: "200px",
-        }
-      : null,
+    // isAdmin
+    //   ? {
+    //       name: "Invoice ID",
+    //       selector: (row) => (
+    //         <Link to={`/invoices/invoices/invoiceDetails/${row.id}`}>
+    //           {row.id}
+    //         </Link>
+    //       ),
+    //       sortable: true,
+    //       width: "200px",
+    //     }
+    //   : null,
     {
       name: "Month",
       selector: (row) => row.invoiceMonth,

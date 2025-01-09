@@ -1,5 +1,5 @@
 import React from "react";
-import logo from '../../Data/logo.jpg'
+import firststeps from '../../Data/firststeps.png'
 
 import { Link, useLocation } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
@@ -74,7 +74,7 @@ const Dashboard = () => {
     {location.pathname === "/dashboard/" &&
     <div className="flex justify-center items-center bg-gray-300 py-4">
       <img
-            src={logo}
+            src={firststeps}
             className=" rounded "
             alt="first steps nursery logo"
             

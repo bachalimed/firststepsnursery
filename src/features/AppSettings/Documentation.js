@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
-import logo from '../../Data/logo.jpg'
+import firststeps from '../../Data/firststeps.png'
 
 const Documentation = () => {
   const location = useLocation();
@@ -23,15 +23,15 @@ const Documentation = () => {
   const tabs = [
     (isDirector || isManager || isAdmin || isHR || isFinance) && {
       title: "Getting-started",
-      path: "/settings/documentation/gettingStarted",
+      path: "/settings/documentation/gettingStarted/",
     },
     (isDirector || isManager || isAdmin || isHR || isFinance) && {
       title: "Key Tasks",
-      path: "/settings/documentation/keyTasks",
+      path: "/settings/documentation/keyTasks/",
     },
     (isDirector || isManager || isAdmin || isHR || isFinance) && {
       title: "FAQs",
-      path: "/settings/documentation/faqs",
+      path: "/settings/documentation/faqs/",
     },
     // { title: "Otherkjhhj", path: "/settings/studentsSet/" },
   ];
@@ -59,7 +59,7 @@ const Documentation = () => {
     </div> {location.pathname === "/settings/documentation/" &&
     <div className="flex justify-center items-center bg-gray-300 py-4">
       <img
-            src={logo}
+            src={firststeps}
             className=" rounded "
             alt="first steps nursery logo"
             

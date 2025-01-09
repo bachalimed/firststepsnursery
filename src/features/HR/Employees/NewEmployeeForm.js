@@ -88,14 +88,14 @@ const NewEmployeeForm = () => {
     employeeCurrentEmployment: {
       position: "",
       joinDate: "",
-      contractType: "",
+      contractType: "",},
       salaryPackage: {
         basic: "",
         allowance: "",
         other: "",
         payment: "",
       },
-    },
+    
   });
 
   const [validity, setValidity] = useState({

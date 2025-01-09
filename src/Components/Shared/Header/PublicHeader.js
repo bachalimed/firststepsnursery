@@ -5,7 +5,8 @@ import { useSelector } from "react-redux";
 
 import { TbLogout } from "react-icons/tb";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-import logo from "../../../Data/logo.jpg";
+// import logo from "../../../Data/logo.jpg";
+import firststeps from "../../../Data/firststeps.png";
 import { FaRegUser } from "react-icons/fa";
 import { FiSettings } from "react-icons/fi";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -52,23 +53,24 @@ const PublicHeader = () => {
     </button>
   );
 
+
   const onGoDashClicked = () => navigate("/academics/plannings/animatorsAssignments/");
 
   return (
     <header className="bg-sky-700 text-white py-1 px-3 md:px-1 flex  justify-between items-center  overflow-hidden">
         <Link to="/">
           <img
-            src={logo}
-            className="h-12 w-12 rounded "
+            src={firststeps}
+            className="h-12 w-40 rounded bg-white "
             alt="first steps nursery logo"
             
           />
         </Link>
 
         {/* <div className="flex items-center max-sm:hidden"> */}
-        <div className="flex items-center ">
+        {/* <div className="flex items-center ">
           <AnimatedColorText company={company} />
-        </div>
+        </div> */}
       {/* Top Navigation */}
       <div className="  items-center justify-center mr-4 mt-1 ">
         {/* Dashboard Button */}
