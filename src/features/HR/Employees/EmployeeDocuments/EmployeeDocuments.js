@@ -20,7 +20,7 @@ import DataTable from "react-data-table-component";
 import DeletionConfirmModal from "../../../../Components/Shared/Modals/DeletionConfirmModal";
 import { GrView } from "react-icons/gr";
 import { IoCheckmarkDoneSharp, IoCheckmarkSharp } from "react-icons/io5";
-import { GrDocumentUpload } from "react-icons/gr";
+import { GrDocumentUpload,GrDocumentDownload } from "react-icons/gr";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import {
   selectCurrentAcademicYearId,
@@ -107,8 +107,8 @@ const EmployeeDocuments = () => {
     data: employeeDocumentsListing,
     isLoading: isListLoading,
     isSuccess: isListSuccess,
-    isError: isListError,
-    error: listError,
+    // isError: isListError,
+    // error: listError,
   } = useGetEmployeeDocumentsByYearByIdQuery(
     {
       userId: userId,
@@ -244,35 +244,89 @@ const EmployeeDocuments = () => {
     },
   });
 
-  const handleViewDocument = async (id) => {
-    try {
-      const response = await apiClient.get(
-        `/hr/employees/employeeDocuments/${id}`,
-        {
-          responseType: "blob",
-        }
-      );
+  // const handleViewDocument = async (id) => {
+  //   try {
+  //     const response = await apiClient.get(
+  //       `/hr/employees/employeeDocuments/${id}`,
+  //       {
+  //         responseType: "blob",
+  //       }
+  //     );
 
-      const contentType = response.headers["content-type"];
-      const blob = new Blob([response.data], { type: contentType });
-      const url = window.URL.createObjectURL(blob);
-      if (contentType === "application/pdf") {
-        // Handle PDF download
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", `document_${id}.pdf`);
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-      } else {
-        setDocumentToView(url);
-        setIsViewModalOpen(true);
+  //     const contentType = response.headers["content-type"];
+  //     const blob = new Blob([response.data], { type: contentType });
+  //     const url = window.URL.createObjectURL(blob);
+  //     if (contentType === "application/pdf") {
+  //       // Handle PDF download
+  //       const link = document.createElement("a");
+  //       link.href = url;
+  //       link.setAttribute("download", `document_${id}.pdf`);
+  //       document.body.appendChild(link);
+  //       link.click();
+  //       link.remove();
+  //     } else {
+  //       setDocumentToView(url);
+  //       setIsViewModalOpen(true);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error viewing the document:", error);
+  //   }
+  // };
+// Handler for downloading the document
+const handleDownloadDocument = async (id) => {
+  try {
+    const response = await apiClient.get(
+      `/hr/employees/employeeDocuments/${id}`,
+      {
+        responseType: "blob",
       }
-    } catch (error) {
-      console.error("Error viewing the document:", error);
-    }
-  };
+    );
 
+    const contentType = response.headers["content-type"];
+    const blob = new Blob([response.data], { type: contentType });
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+
+    // Infer file extension from content type or default to `.bin`
+    const fileExtension = contentType.split("/")[1] || "bin";
+    link.setAttribute("download", `document_${id}.${fileExtension}`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (error) {
+    console.error("Error downloading the document:", error);
+  }
+};
+
+// Handler for viewing the document
+const handleViewDocument = async (id) => {
+  try {
+    const response = await apiClient.get(
+      `/hr/employees/employeeDocuments/${id}`,
+      {
+        responseType: "blob",
+      }
+    );
+
+    const contentType = response.headers["content-type"];
+    const blob = new Blob([response.data], { type: contentType });
+    const url = window.URL.createObjectURL(blob);
+
+    if ( contentType.startsWith("image/")) {
+      setDocumentToView(url);
+      setIsViewModalOpen(true);
+    } else if(contentType === "application/pdf" ){
+handleDownloadDocument(id)
+    }
+    else {
+      alert("Document format not supported for viewing.");
+    }
+  } catch (error) {
+    console.error("Error viewing the document:", error);
+  }
+};
   useEffect(() => {
     if (uploadIsSuccess) {
       //if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
@@ -367,7 +421,16 @@ const EmployeeDocuments = () => {
             >
               <GrView fontSize={20} />
             </button>
-          )}
+          )} {canView && row.documentUploaded && (
+                      <button
+                      aria-label="download document"
+                      className="text-green-700"
+                      onClick={() => handleDownloadDocument(row.employeeDocumentId)}
+                    >
+                      <GrDocumentDownload fontSize={20} />
+                    </button>
+                    )}
+          
 
           {canEdit && !row.documentUploaded && (
             <>

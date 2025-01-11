@@ -16,12 +16,13 @@ import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
 import { Link, useNavigate } from "react-router-dom";
-import { FiEdit } from "react-icons/fi";
+import { FiEdit ,FiPrinter } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MONTHS } from "../../../config/Months";
 import useAuth from "../../../hooks/useAuth";
 import { MdPaid, MdOutlinePaid } from "react-icons/md";
 import { useOutletContext } from "react-router-dom";
+
 const InvoicesList = () => {
   useEffect(() => {
     document.title = "Invoices List";
@@ -213,6 +214,12 @@ const InvoicesList = () => {
     //console.log('selectedRows', selectedRows)
   };
 
+ 
+
+
+
+
+
   const column = [
     {
       name: "#", // New column for entry number
@@ -380,15 +387,7 @@ const InvoicesList = () => {
       name: "Actions",
       cell: (row) => (
         <div className="space-x-1">
-          {/* {! row?.invoiceIsFullyPaid&& <button
-            className="text-teal-500"
-            fontSize={20}
-            onClick={() =>
-              navigate(`/finances/payments/newPayment/${row.id}`)
-            }
-              >
-             <MdOutlineAddBox className="text-2xl" />
-          </button>} */}
+          
           {canEdit ? (
             <button
               aria-label="edit invoice"
@@ -599,6 +598,7 @@ const InvoicesList = () => {
           onClose={handleCloseDeleteModal}
           onConfirm={handleConfirmDelete}
         />
+        
       </>
     );
 

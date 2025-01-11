@@ -24,6 +24,8 @@ import {
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { MONTHS } from "../../../config/Months";
 import { CurrencySymbol } from "../../../config/Currency";
+import { FiPrinter } from "react-icons/fi";
+import PayslipDocument from "./PayslipDocument";
 const PayslipsList = () => {
   useEffect(() => {
     document.title = "Payslips List";
@@ -73,7 +75,7 @@ const PayslipsList = () => {
     deletePayslip,
     {
       isLoading: isDelLoading,
-       isSuccess: isDelSuccess,
+      isSuccess: isDelSuccess,
       isError: isDelError,
       error: delError,
     },
@@ -93,27 +95,27 @@ const PayslipsList = () => {
   const handleConfirmDelete = async () => {
     try {
       const response = await deletePayslip({ id: idPayslipToDelete });
-    setIsDeleteModalOpen(false); // Close the modal
-    if (response?.message) {
-      // Success response
-      triggerBanner(response?.message, "success");
-    } else if (response?.data?.message) {
-      // Success response
-      triggerBanner(response?.data?.message, "success");
-    } else if (response?.error?.data?.message) {
-      // Error response
-      triggerBanner(response?.error?.data?.message, "error");
-    } else if (isDelError) {
-      // In case of unexpected response format
-      triggerBanner(delError?.data?.message, "error");
-    } else {
-      // In case of unexpected response format
-      triggerBanner("Unexpected response from server.", "error");
+      setIsDeleteModalOpen(false); // Close the modal
+      if (response?.message) {
+        // Success response
+        triggerBanner(response?.message, "success");
+      } else if (response?.data?.message) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isDelError) {
+        // In case of unexpected response format
+        triggerBanner(delError?.data?.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner(error?.data?.message, "error");
     }
-  } catch (error) {
-    triggerBanner(error?.data?.message, "error");
-  }
-};
+  };
 
   // Function to close the modal without deleting
   const handleCloseDeleteModal = () => {
@@ -169,6 +171,18 @@ const PayslipsList = () => {
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [payslipData, setPayslipData] = useState(null);
+  //console.log(filteredPayments,'filteredPayments')
+  const handleFetchPayslip = (payslipId) => {
+    const payslip = filteredPayslips.filter(
+      (payslip) => payslip.id === payslipId
+    );
+
+    console.log(payslip[0], "payslip");
+    setPayslipData(payslip[0]);
+    setIsPreviewOpen(true);
+  };
 
   const column = [
     {
@@ -215,7 +229,7 @@ const PayslipsList = () => {
       selector: (row) => row?.payslipPaymentDate,
       cell: (row) => (
         <span>
-          {row?.payslipPaymentDate&&row?.payslipPaymentDate !== "" ? (
+          {row?.payslipPaymentDate && row?.payslipPaymentDate !== "" ? (
             <GiMoneyStack className="text-green-500 text-2xl" />
           ) : (
             <GiMoneyStack className="text-red-400 text-2xl" />
@@ -321,6 +335,15 @@ const PayslipsList = () => {
       name: "Actions",
       cell: (row) => (
         <div className="space-x-1">
+          {row?.payslipIsApproved &&row?.payslipPaymentDate&& (
+            <button
+              className="text-teal-500"
+              fontSize={20}
+              onClick={() => handleFetchPayslip(row.id)}
+            >
+              <FiPrinter className="text-2xl" />
+            </button>
+          )}
           <button
             aria-label="payslip Details"
             className="text-sky-700"
@@ -335,7 +358,8 @@ const PayslipsList = () => {
               className="text-amber-300"
               onClick={() => navigate(`/hr/payslips/editPayslip/${row.id}`)}
               hidden={
-                row?.payslipPaymentDate && row.payslipPaymentDate !== "" || row?.payslipIsApproved === true
+                (row?.payslipPaymentDate &&row.payslipPaymentDate&& row.payslipPaymentDate !== "") &&
+                row?.payslipIsApproved === true
               }
             >
               <FiEdit className="text-2xl" />
@@ -347,7 +371,8 @@ const PayslipsList = () => {
               className="text-red-600"
               onClick={() => onDeletePayslipClicked(row.id)}
               hidden={
-                row?.payslipPaymentDate && row.payslipPaymentDate !== "" || row?.payslipIsApproved === true
+                (row?.payslipPaymentDate && row.payslipPaymentDate !== "") ||
+                row?.payslipIsApproved === true
               }
             >
               <RiDeleteBin6Line className="text-2xl" />
@@ -376,113 +401,112 @@ const PayslipsList = () => {
       </>
     );
   // if (isPayslipsSuccess)
-    content = (
-      <>
-        <HR />
-
-        <div className="flex space-x-2 items-center ml-3">
-          {/* Search Bar */}
-          <div className="relative h-10 mr-2 ">
-            <HiOutlineSearch
-              fontSize={20}
-              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-              aria-label="search payslips"
-            />
-            <input
-              aria-label="search payslips"
-              type="text"
-              value={searchQuery}
-              onChange={handleSearch}
-              className="serachQuery"
-            />{" "}
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => handleSearch({ target: { value: "" } })} // Clear search
-                className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
-                aria-label="clear search"
-              >
-                &times;
-              </button>
-            )}
-          </div>
-          {/*  Month Filter */}
-          <label htmlFor="monthFilter" className="formInputLabel">
-            <select
-              aria-label="monthFilter"
-              id="monthFilter"
-              value={selectedPayslipMonth}
-              onChange={(e) => setSelectedPayslipMonth(e.target.value)}
-              className="text-sm h-8 border border-gray-300  px-4"
+  content = (
+    <>
+      <HR />
+      <div className="flex space-x-2 items-center ml-3">
+        {/* Search Bar */}
+        <div className="relative h-10 mr-2 ">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+            aria-label="search payslips"
+          />
+          <input
+            aria-label="search payslips"
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="serachQuery"
+          />{" "}
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => handleSearch({ target: { value: "" } })} // Clear search
+              className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+              aria-label="clear search"
             >
-              {/* Default option is the current month */}
-              <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
-              <option value="">All Months</option>
-              {/* Render the rest of the months, excluding the current month */}
-              {MONTHS.map(
-                (month, index) =>
-                  month !== getCurrentMonth() && (
-                    <option key={index} value={month}>
-                      {month}
-                    </option>
-                  )
-              )}
-            </select>
-          </label>
+              &times;
+            </button>
+          )}
         </div>
-        <div className="dataTableContainer">
-          <div>
-            <DataTable
-              title={tableHeader}
-              columns={column}
-              data={filteredPayslips}
-              pagination
-              // selectableRows
-              removableRows
-              pageSizeControl
-              //onSelectedRowsChange={handleRowSelected}
-              selectableRowsHighlight
-              customStyles={{
-                headCells: {
-                  style: {
-                    // Apply Tailwind style via a class-like syntax
-                    justifyContent: "center", // Align headers to the center
-                    textAlign: "center", // Center header text
-                    color: "black",
-                    fontSize: "14px", // Increase font size for header text
-                  },
-                },
-
-                cells: {
-                  style: {
-                    justifyContent: "center", // Center cell content
-                    textAlign: "center",
-                    color: "black",
-                    fontSize: "14px", // Increase font size for cell text
-                  },
-                },
-                pagination: {
-                  style: {
-                    display: "flex",
-                    justifyContent: "center", // Center the pagination control
-                    alignItems: "center",
-                    padding: "10px 0", // Optional: Add padding for spacing
-                  },
-                },
-              }}
-            ></DataTable>
-          </div>
-          {/* <div className="cancelSavebuttonsDiv"> */}
-          <button
-            className="add-button"
-            onClick={() => navigate("/hr/payslips/newPayslip")}
-            // disabled={selectedRows.length !== 1} // Disable if no rows are selected
-            hidden={!canCreate}
+        {/*  Month Filter */}
+        <label htmlFor="monthFilter" className="formInputLabel">
+          <select
+            aria-label="monthFilter"
+            id="monthFilter"
+            value={selectedPayslipMonth}
+            onChange={(e) => setSelectedPayslipMonth(e.target.value)}
+            className="text-sm h-8 border border-gray-300  px-4"
           >
-            New Payslip
-          </button>
+            {/* Default option is the current month */}
+            <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
+            <option value="">All Months</option>
+            {/* Render the rest of the months, excluding the current month */}
+            {MONTHS.map(
+              (month, index) =>
+                month !== getCurrentMonth() && (
+                  <option key={index} value={month}>
+                    {month}
+                  </option>
+                )
+            )}
+          </select>
+        </label>
+      </div>
+      <div className="dataTableContainer">
+        <div>
+          <DataTable
+            title={tableHeader}
+            columns={column}
+            data={filteredPayslips}
+            pagination
+            // selectableRows
+            removableRows
+            pageSizeControl
+            //onSelectedRowsChange={handleRowSelected}
+            selectableRowsHighlight
+            customStyles={{
+              headCells: {
+                style: {
+                  // Apply Tailwind style via a class-like syntax
+                  justifyContent: "center", // Align headers to the center
+                  textAlign: "center", // Center header text
+                  color: "black",
+                  fontSize: "14px", // Increase font size for header text
+                },
+              },
 
-          {/* {isAdmin && (
+              cells: {
+                style: {
+                  justifyContent: "center", // Center cell content
+                  textAlign: "center",
+                  color: "black",
+                  fontSize: "14px", // Increase font size for cell text
+                },
+              },
+              pagination: {
+                style: {
+                  display: "flex",
+                  justifyContent: "center", // Center the pagination control
+                  alignItems: "center",
+                  padding: "10px 0", // Optional: Add padding for spacing
+                },
+              },
+            }}
+          ></DataTable>
+        </div>
+        {/* <div className="cancelSavebuttonsDiv"> */}
+        <button
+          className="add-button"
+          onClick={() => navigate("/hr/payslips/newPayslip")}
+          // disabled={selectedRows.length !== 1} // Disable if no rows are selected
+          hidden={!canCreate}
+        >
+          New Payslip
+        </button>
+
+        {/* {isAdmin && (
             <button
               className="px-3 py-2 bg-gray-400 text-white rounded"
               onClick={handleDuplicateSelected}
@@ -492,15 +516,21 @@ const PayslipsList = () => {
               optional button
             </button>
           )} */}
-          {/* </div> */}
-        </div>
-        <DeletionConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
-          onConfirm={handleConfirmDelete}
+        {/* </div> */}
+      </div>
+      <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />{" "}
+      {isPreviewOpen && payslipData && (
+        <PayslipDocument
+          payslipData={payslipData}
+          onClose={() => setIsPreviewOpen(false)}
         />
-      </>
-    );
+      )}
+    </>
+  );
 
   return content;
 };

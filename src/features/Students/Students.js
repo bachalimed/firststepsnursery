@@ -51,7 +51,7 @@ const Students = () => {
   // Render the component content
   return (
     <>
-    <div className="flex bg-gray-300 p-3 px-4 md:px-4 items-center justify-start space-x-4">
+    <div className="flex bg-gray-300 p-3 px-4 md:px-4 items-center justify-start space-x-4 ">
       {(isAdmin || isManager || isDirector) && <AcademicYearsSelection />}
      
         {tabs

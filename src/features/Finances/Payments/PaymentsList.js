@@ -20,7 +20,8 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import useAuth from "../../../hooks/useAuth";
 import { MONTHS } from "../../../config/Months";
-
+import { FiPrinter } from "react-icons/fi";
+import PaymentDocument from "./PaymentDocument";
 const PaymentsList = () => {
   useEffect(() => {
     document.title = "Payments List";
@@ -79,7 +80,7 @@ const PaymentsList = () => {
     deletePayment,
     {
       isLoading: isDelLoading,
-       isSuccess: isDelSuccess,
+      isSuccess: isDelSuccess,
       isError: isDelError,
       error: delError,
     },
@@ -169,7 +170,7 @@ const PaymentsList = () => {
       // Check if any of the payment's invoices have the selected payment month
       const meetsPaymentMonthCriteria =
         !selectedPaymentMonth ||
-        paymnt.paymentInvoices.some(
+        paymnt.paymentInvoices?.some(
           (invoice) => invoice.invoiceMonth === selectedPaymentMonth
         );
 
@@ -182,6 +183,18 @@ const PaymentsList = () => {
     });
   }
 
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [paymentData, setPaymentData] = useState(null);
+//console.log(filteredPayments,'filteredPayments')
+  const handleFetchPayment =  (paymentId) => {
+    const payment = filteredPayments.filter(
+      (payment) => payment.id === paymentId
+    );
+
+    console.log(payment[0], "payment");
+    setPaymentData(payment[0]);
+    setIsPreviewOpen(true);
+  };
   const column = [
     {
       name: "#", // New column for entry number
@@ -309,6 +322,13 @@ const PaymentsList = () => {
       name: "Actions",
       cell: (row) => (
         <div className="space-x-1">
+          <button
+            className="text-teal-500"
+            fontSize={20}
+            onClick={() => handleFetchPayment(row.id)}
+          >
+            <FiPrinter className="text-2xl" />
+          </button>
           {/* <button
             className="text-sky-700"
             fontSize={20}
@@ -497,7 +517,13 @@ const PaymentsList = () => {
         isOpen={isDeleteModalOpen}
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
-      />
+      />{" "}
+      {isPreviewOpen && paymentData && (
+        <PaymentDocument
+          paymentData={paymentData}
+          onClose={() => setIsPreviewOpen(false)}
+        />
+      )}
     </>
   );
 

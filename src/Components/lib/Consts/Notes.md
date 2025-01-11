@@ -39,3 +39,4 @@ academic years "1000" use as criteria to query all years data instead of only on
  29. if studetn still have a section in his atttributes will still be impported insessions aeventhought ehsection is already does not contain him, maybe issue with updating section when we remove from section
  30. if studetnsection is empty for all studetn, the scheduler will have no rows
  31. now only active sections, the studetn will have studetn sections, we ll see the connsequences on other functions
+ 32. payment month filter is the invoice month, we wil  query all the months and in hte list we filter

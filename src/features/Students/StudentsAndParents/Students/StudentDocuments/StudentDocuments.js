@@ -20,13 +20,12 @@ import DataTable from "react-data-table-component";
 import DeletionConfirmModal from "../../../../../Components/Shared/Modals/DeletionConfirmModal";
 import { GrView } from "react-icons/gr";
 import { IoCheckmarkDoneSharp, IoCheckmarkSharp } from "react-icons/io5";
-import { GrDocumentUpload } from "react-icons/gr";
+import { GrDocumentUpload, GrDocumentDownload  } from "react-icons/gr";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
 } from "../../../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
-import ManageDocumentModal from "../../../../../Components/Shared/Modals/ManageDocumentModal";
 
 const StudentDocuments = () => {
   useEffect(() => {
@@ -238,30 +237,61 @@ const StudentDocuments = () => {
     },
   });
 
-  const handleViewDocument = async (id) => {
-    try {
-      const response = await apiClient.get(
-        `/students/studentsParents/studentDocuments/${id}`,
-        { responseType: "blob" }
-      );
-
-      const contentType = response.headers["content-type"];
-      const blob = new Blob([response.data], { type: contentType });
-      const url = window.URL.createObjectURL(blob);
-
-      if (contentType === "application/pdf") {
-        // Set the URL to view in the modal
-        setDocumentToManage(url);
-        setIsManageModalOpen(true);
-      } else {
-        // Handle non-PDF documents (e.g., images)
-        setDocumentToView(url);
-        setIsViewModalOpen(true);
+// Handler for downloading the document
+const handleDownloadDocument = async (id) => {
+  try {
+    const response = await apiClient.get(
+      `/students/studentsParents/studentDocuments/${id}`,
+      {
+        responseType: "blob",
       }
-    } catch (error) {
-      console.error("Error viewing the document:", error);
+    );
+
+    const contentType = response.headers["content-type"];
+    const blob = new Blob([response.data], { type: contentType });
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+
+    // Infer file extension from content type or default to `.bin`
+    const fileExtension = contentType.split("/")[1] || "bin";
+    link.setAttribute("download", `document_${id}.${fileExtension}`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (error) {
+    console.error("Error downloading the document:", error);
+  }
+};
+
+// Handler for viewing the document
+const handleViewDocument = async (id) => {
+  try {
+    const response = await apiClient.get(
+      `/students/studentsParents/studentDocuments/${id}`,
+      {
+        responseType: "blob",
+      }
+    );
+
+    const contentType = response.headers["content-type"];
+    const blob = new Blob([response.data], { type: contentType });
+    const url = window.URL.createObjectURL(blob);
+
+    if ( contentType.startsWith("image/")) {
+      setDocumentToView(url);
+      setIsViewModalOpen(true);
+    } else if(contentType === "application/pdf" ){
+handleDownloadDocument(id)
     }
-  };
+    else {
+      alert("Document format not supported for viewing.");
+    }
+  } catch (error) {
+    console.error("Error viewing the document:", error);
+  }
+};
 
   // const handleViewDocument = async (id) => {
   //   try {
@@ -303,7 +333,7 @@ const StudentDocuments = () => {
       Navigate(`/students/studentsParents/studentDocumentsList/${studentId}`); //will navigate here after saving
     }
   }, [uploadIsSuccess, Navigate]);
-  console.log(studentDocumentsListing, "studentDocumentsListing");
+  //console.log(studentDocumentsListing, "studentDocumentsListing");
   const column = [
     {
       name: "#", // New column for entry number
@@ -393,6 +423,15 @@ const StudentDocuments = () => {
               <GrView fontSize={20} />
             </button>
           )}
+          {canView && row.documentUploaded && (
+            <button
+            aria-label="download document"
+            className="text-green-700"
+            onClick={() => handleDownloadDocument(row.studentDocumentId)}
+          >
+            <GrDocumentDownload fontSize={20} />
+          </button>
+          )}
 
           {canEdit && !row.documentUploaded && (
             <>
@@ -449,7 +488,7 @@ const StudentDocuments = () => {
     );
 
   //console.log(studentDocumentsListing)
-  if (isListSuccess)
+  //if (isListSuccess)
     content = (
       <>
         <Students />
@@ -525,12 +564,7 @@ const StudentDocuments = () => {
           onRequestClose={() => setIsViewModalOpen(false)}
           documentUrl={documentToView}
         />
-        <ManageDocumentModal
-          isOpen={isViewModalOpen}
-          onRequestClose={() => setIsManageModalOpen(false)}
-          documentUrl={documentToManage}
-          documentId
-        />
+       
         <DeletionConfirmModal
           isOpen={isDeleteModalOpen}
           onClose={handleCloseDeleteModal}
@@ -538,6 +572,7 @@ const StudentDocuments = () => {
         />
       </>
     );
+
 
   return content;
 };
