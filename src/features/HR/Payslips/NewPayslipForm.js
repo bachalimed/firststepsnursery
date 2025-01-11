@@ -93,6 +93,7 @@ const NewPayslipForm = () => {
     payslipWorkdays: [],
     payslipNote: "",
     payslipEmployee: "",
+    employeeJoinDate:"",
     payslipEmployeeName: "",
     payslipIsApproved: false,
     payslipPaymentDate: "",
@@ -446,6 +447,7 @@ employeesList = employeesRaw.filter(
                     value={formData.payslipEmployee}
                     onChange={(e) => {
                       const selectedEmployeeId = e.target.value;
+                      
                       // Find the employee whose ID matches the selectedEmployeeId
                       const selectedEmployee = employeesList?.find(
                         (employee) =>
@@ -462,12 +464,15 @@ employeesList = employeesRaw.filter(
                       const employeeFullName = selectedEmployee
                         ? `${selectedEmployee?.userFullName?.userFirstName} ${selectedEmployee?.userFullName?.userMiddleName} ${selectedEmployee?.userFullName?.userLastName}`
                         : "";
+                        //extract join date to be used in the back end to check the dates
+                        const employeeJointDate = selectedEmployee?.employeeData?.employeeCurrentEmployment?.joinDate
                       // Update formData with selected employee and their leave days
                       setFormData({
                         ...formData,
                         payslipEmployee: selectedEmployeeId,
                         payslipLeaveDays: employeeLeaveDays,
                         payslipEmployeeName: employeeFullName,
+                        employeeJoinDate:employeeJointDate
                       });
                     }}
                     className="formInputText"

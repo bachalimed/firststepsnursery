@@ -34,7 +34,7 @@ const DashboardHeader = () => {
   });
 
   const content = (
-    <header className="bg-sky-700 text-white py-1 px-3 md:px-1 flex  justify-between items-center  overflow-hidden">
+    <header className="bg-sky-700 text-white py-1 px-3 md:px-1 flex  justify-between items-center  overflow-visible z-60">
       {/* Logo and Colored Text Section */}
       <Link to="/">
         <img
@@ -70,7 +70,7 @@ const DashboardHeader = () => {
       </div>
 
       {/* Navbar Header */}
-      <div className="items-center justify-center mr-4 mt-1">
+      <div className="items-center justify-center mr-4 mt-1 overflow-visible z-60">
         <NavbarHeader />
       </div>
     </header>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { useNavigate ,useOutletContext} from "react-router-dom";
-import {  useSelector } from "react-redux";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { useAddNewPaymentMutation } from "./paymentsApiSlice"; // Redux API action
 import { CurrencySymbol } from "../../../config/Currency";
 import Finances from "../Finances";
@@ -241,8 +241,6 @@ const NewPaymentForm = () => {
     }
   };
 
-
-
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
@@ -260,94 +258,99 @@ const NewPaymentForm = () => {
     );
   }
   if (isEnrolmentsSuccess) {
-    content = (
-      <>
-        <Finances />
+    content =
+      studentsEnrolmentsList?.length > 0 ? (
+        <>
+          <Finances />
 
-        <form onSubmit={handleSubmit} className="form-container">
-          <h2 className="formTitle ">
-            Add Payment {selectedAcademicYear?.title}
-          </h2>
-          {/* Student Selection */}
-          <div className="formSectionContainer">
-            <h3 className="formSectionTitle">Invoices</h3>
-            <div className="formSection">
-              <label htmlFor="selectedStudent" className="formInputLabel">
-                Select Student{" "}
-                {!validity.validPaymentStudent && (
-                  <span className="text-red-600">*</span>
-                )}
-                <select
-                  aria-invalid={!validity.validPaymentStudent}
-                  required
-                  id="selectedStudent"
-                  value={selectedStudent?.id || ""}
-                  onChange={handleStudentChange}
-                  className={`formInputText`}
-                >
-                  <option value="">Select a Student</option>
-                  {studentsEnrolmentsList.map((student) => (
-                    <option key={student?.id} value={student?.id}>
-                      {`${student?.studentName?.firstName} ${student?.studentName?.middleName} ${student?.studentName?.lastName}`}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              {/* Invoices List */}
-              {selectedStudent && (
-                <h3 className="formSectionTitle">Select Invoices</h3>
-              )}
-              {selectedStudent && (
-                <div className="formInputLabel">
-                  Invoices{" "}
-                  {!validity.validPaymentInvoices && (
+          <form onSubmit={handleSubmit} className="form-container">
+            <h2 className="formTitle ">
+              Add Payment {selectedAcademicYear?.title}
+            </h2>
+            {/* Student Selection */}
+            <div className="formSectionContainer">
+              <h3 className="formSectionTitle">Invoices</h3>
+              <div className="formSection">
+                <label htmlFor="selectedStudent" className="formInputLabel">
+                  Select Student{" "}
+                  {!validity.validPaymentStudent && (
                     <span className="text-red-600">*</span>
                   )}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2 mt-1 max-h-80 overflow-y-auto">
-                    {selectedStudent.enrolments.map((enrolment) => {
-                      const isSelected = selectedInvoices.some(
-                        (selectedInvoice) =>
-                          selectedInvoice._id === enrolment.invoice._id
-                      );
-                      return (
-                        <button
-                          aria-label="paymentInvoice"
-                          key={enrolment.invoice._id}
-                          type="button"
-                          onClick={() => handleInvoiceClick(enrolment.invoice)}
-                          className={`px-3 py-2 text-left rounded-md ${
-                            isSelected
-                              ? "bg-sky-700 text-white hover:bg-sky-600"
-                              : "bg-gray-200 text-gray-700 hover:bg-sky-600 hover:text-white"
-                          }`}
-                        >
-                          <div className="font-semibold">
-                            {`${
-                              enrolment?.servicePeriod.charAt(0).toUpperCase() +
-                              enrolment?.servicePeriod.slice(1)
-                            } ${enrolment?.serviceType} for ${
-                              enrolment?.invoice?.invoiceMonth
+                  <select
+                    aria-invalid={!validity.validPaymentStudent}
+                    required
+                    id="selectedStudent"
+                    value={selectedStudent?.id || ""}
+                    onChange={handleStudentChange}
+                    className={`formInputText`}
+                  >
+                    <option value="">Select a Student</option>
+                    {studentsEnrolmentsList.map((student) => (
+                      <option key={student?.id} value={student?.id}>
+                        {`${student?.studentName?.firstName} ${student?.studentName?.middleName} ${student?.studentName?.lastName}`}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                {/* Invoices List */}
+                {selectedStudent && (
+                  <h3 className="formSectionTitle">Select Invoices</h3>
+                )}
+                {selectedStudent && (
+                  <div className="formInputLabel">
+                    Invoices{" "}
+                    {!validity.validPaymentInvoices && (
+                      <span className="text-red-600">*</span>
+                    )}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2 mt-1 max-h-80 overflow-y-auto">
+                      {selectedStudent.enrolments.map((enrolment) => {
+                        const isSelected = selectedInvoices.some(
+                          (selectedInvoice) =>
+                            selectedInvoice._id === enrolment.invoice._id
+                        );
+                        return (
+                          <button
+                            aria-label="paymentInvoice"
+                            key={enrolment.invoice._id}
+                            type="button"
+                            onClick={() =>
+                              handleInvoiceClick(enrolment.invoice)
+                            }
+                            className={`px-3 py-2 text-left rounded-md ${
+                              isSelected
+                                ? "bg-sky-700 text-white hover:bg-sky-600"
+                                : "bg-gray-200 text-gray-700 hover:bg-sky-600 hover:text-white"
                             }`}
-                          </div>
-                          <div className="text-sm">
-                            {`Amount: ${enrolment?.invoice?.invoiceAmount} ${CurrencySymbol} / ${enrolment?.invoice?.invoiceAuthorisedAmount} ${CurrencySymbol}`}
-                          </div>
-                          {enrolment?.invoice?.invoiceDiscountAmount !==
-                            "0" && (
-                            <div className="text-sm text-green-600">
-                              {`with ${enrolment?.invoice?.invoiceDiscountAmount} ${CurrencySymbol} discount`}
+                          >
+                            <div className="font-semibold">
+                              {`${
+                                enrolment?.servicePeriod
+                                  .charAt(0)
+                                  .toUpperCase() +
+                                enrolment?.servicePeriod.slice(1)
+                              } ${enrolment?.serviceType} for ${
+                                enrolment?.invoice?.invoiceMonth
+                              }`}
                             </div>
-                          )}
-                        </button>
-                      );
-                    })}
+                            <div className="text-sm">
+                              {`Amount: ${enrolment?.invoice?.invoiceAmount} ${CurrencySymbol} / ${enrolment?.invoice?.invoiceAuthorisedAmount} ${CurrencySymbol}`}
+                            </div>
+                            {enrolment?.invoice?.invoiceDiscountAmount !==
+                              "0" && (
+                              <div className="text-sm text-green-600">
+                                {`with ${enrolment?.invoice?.invoiceDiscountAmount} ${CurrencySymbol} discount`}
+                              </div>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
-          </div>
-          {/* {selectedStudent && (
+            {/* {selectedStudent && (
             <ul className="border rounded-md p-2 max-h-80 overflow-y-auto">
               {selectedStudent.enrolments.map((enrolment) => (
                 <li
@@ -378,8 +381,8 @@ const NewPaymentForm = () => {
               ))}
             </ul>
           )} */}
-          {/* Selected Invoices Summary */}
-          {/* {selectedInvoices.length > 0 && (
+            {/* Selected Invoices Summary */}
+            {/* {selectedInvoices.length > 0 && (
             <div className="mb-4">
               <h3 className="formSectionTitle">
                 Selected Invoices
@@ -402,155 +405,181 @@ const NewPaymentForm = () => {
               </div>
             </div>
           )} */}
-          <h3 className="formSectionTitle">Payment Details</h3>
-          <div className="formSection">
-            <div className="formLineDiv">
-              {/* Payment Amount */}
-              <label htmlFor="paymentAmount" className="formInputLabel">
-                Payment Amount{" "}
-                {!validity.validPaymentAmount && (
-                  <span className="text-red-600">*</span>
-                )}{" "}
-                ({CurrencySymbol})
-                <input
-                  aria-invalid={!validity.validPaymentAmount}
-                  type="number"
-                  id="paymentAmount"
-                  placeholder="[$$$.$$]"
-                  name="paymentAmount"
-                  value={formData.paymentAmount}
-                  onChange={handleInputChange}
-                  className={`formInputText ${
-                    validity.validPaymentAmount
-                      ? "focus:ring-sky-700"
-                      : "focus:ring-red-600"
-                  }`}
-                  required
-                />
-                {!validity.validPaymentAmount && (
-                  <p className="text-red-600 text-sm">
-                    Amount must be a valid number and equal to the total invoice
-                    amount.
-                  </p>
-                )}
-              </label>
+            <h3 className="formSectionTitle">Payment Details</h3>
+            <div className="formSection">
+              <div className="formLineDiv">
+                {/* Payment Amount */}
+                <label htmlFor="paymentAmount" className="formInputLabel">
+                  Payment Amount{" "}
+                  {!validity.validPaymentAmount && (
+                    <span className="text-red-600">*</span>
+                  )}{" "}
+                  ({CurrencySymbol})
+                  <input
+                    aria-invalid={!validity.validPaymentAmount}
+                    type="number"
+                    id="paymentAmount"
+                    placeholder="[$$$.$$]"
+                    name="paymentAmount"
+                    value={formData.paymentAmount}
+                    onChange={handleInputChange}
+                    className={`formInputText ${
+                      validity.validPaymentAmount
+                        ? "focus:ring-sky-700"
+                        : "focus:ring-red-600"
+                    }`}
+                    required
+                  />
+                  {!validity.validPaymentAmount && (
+                    <p className="text-red-600 text-sm">
+                      Amount must be a valid number and equal to the total
+                      invoice amount.
+                    </p>
+                  )}
+                </label>
 
-              {/* Payment Date */}
+                {/* Payment Date */}
 
-              <label htmlFor="paymentDate" className="formInputLabel">
-                Payment Date{" "}
-                {!validity.validPaymentDate && (
-                  <span className="text-red-600">*</span>
-                )}
-                <input
-                  aria-invalid={!validity.validPaymentDate}
-                  type="date"
-                  id="paymentDate"
-                  name="paymentDate"
-                  value={formData.paymentDate}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
-                  required
-                />{" "}
-              </label>
-            </div>
+                <label htmlFor="paymentDate" className="formInputLabel">
+                  Payment Date{" "}
+                  {!validity.validPaymentDate && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <input
+                    aria-invalid={!validity.validPaymentDate}
+                    type="date"
+                    id="paymentDate"
+                    name="paymentDate"
+                    value={formData.paymentDate}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-700"
+                    required
+                  />{" "}
+                </label>
+              </div>
 
-            {/* Payment Type */}
-            <div className="formLineDiv">
-              <label htmlFor="paymentType" className="formInputLabel">
-                Payment Type{" "}
-                {!validity.validPaymentType && (
-                  <span className="text-red-600">*</span>
-                )}
-                <select
-                  id="paymentType"
-                  name="paymentType"
-                  value={formData.paymentType}
-                  onChange={handleInputChange}
-                  className="formInputText"
-                  required
-                >
-                  <option value="" disabled>
-                    Select Payment Type
-                  </option>
-                  {PaymentTypes.map((type) => (
-                    <option key={type} value={type}>
-                      {type}
+              {/* Payment Type */}
+              <div className="formLineDiv">
+                <label htmlFor="paymentType" className="formInputLabel">
+                  Payment Type{" "}
+                  {!validity.validPaymentType && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <select
+                    id="paymentType"
+                    name="paymentType"
+                    value={formData.paymentType}
+                    onChange={handleInputChange}
+                    className="formInputText"
+                    required
+                  >
+                    <option value="" disabled>
+                      Select Payment Type
                     </option>
-                  ))}
-                </select>{" "}
-              </label>
+                    {PaymentTypes.map((type) => (
+                      <option key={type} value={type}>
+                        {type}
+                      </option>
+                    ))}
+                  </select>{" "}
+                </label>
 
-              {/* Payment Type Reference */}
+                {/* Payment Type Reference */}
 
-              <label htmlFor="paymentReference" className="formInputLabel">
-                Payment Reference{" "}
-                {!validity.validPaymentReference && (
+                <label htmlFor="paymentReference" className="formInputLabel">
+                  Payment Reference{" "}
+                  {!validity.validPaymentReference && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <input
+                    type="text"
+                    id="paymentReference"
+                    name="paymentReference"
+                    placeholder="[3-30 letters]"
+                    value={formData.paymentReference}
+                    onChange={handleInputChange}
+                    className="formInputText"
+                  />{" "}
+                </label>
+              </div>
+
+              {/* Payment Note */}
+
+              <label htmlFor="paymentNote" className="formInputLabel">
+                Payment Note
+                {!validity.validPaymentNote && (
                   <span className="text-red-600">*</span>
                 )}
-                <input
-                  type="text"
-                  id="paymentReference"
-                  name="paymentReference"
-                  placeholder="[3-30 letters]"
-                  value={formData.paymentReference}
+                <textarea
+                  id="paymentNote"
+                  name="paymentNote"
+                  placeholder="[1-150 letters]"
+                  value={formData.paymentNote}
                   onChange={handleInputChange}
-                  className="formInputText"
-                />{" "}
+                  className={`formInputText`}
+                  rows="2"
+                ></textarea>{" "}
               </label>
             </div>
 
-            {/* Payment Note */}
+            {/* Submit Button */}
+            <div className="cancelSavebuttonsDiv">
+              <button
+                aria-label="cancel payment"
+                type="button"
+                className="cancel-button"
+                onClick={() => navigate("/finances/payments/paymentsList/")}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                aria-label="submit form"
+                className="save-button"
+                disabled={!canSubmit || isAddLoading}
+              >
+                save
+                {/* {isAddLoading ? "Submitting..." : "Submit Payment"} */}
+              </button>
+            </div>
+          </form>
 
-            <label htmlFor="paymentNote" className="formInputLabel">
-              Payment Note
-              {!validity.validPaymentNote && (
-                <span className="text-red-600">*</span>
-              )}
-              <textarea
-                id="paymentNote"
-                name="paymentNote"
-                placeholder="[1-150 letters]"
-                value={formData.paymentNote}
-                onChange={handleInputChange}
-                className={`formInputText`}
-                rows="2"
-              ></textarea>{" "}
-            </label>
+          {/* Confirmation Modal */}
+          <ConfirmationModal
+            show={showConfirmation}
+            onClose={handleCloseModal}
+            onConfirm={handleConfirmSave}
+            title="Confirm Save"
+            message="Are you sure you want to save?"
+          />
+        </>
+      ) : (
+        <>
+          {/* Finances Component */}
+          <Finances />
+          <h2 className="formTitle ">
+            Add Payment {selectedAcademicYear?.title}
+          </h2>
+          {/* Message Section */}
+          <div className="mt-4 text-center">
+            <p className="text-red-600 text-sm">
+              No invoices available to create payment
+            </p>
           </div>
 
-          {/* Submit Button */}
-          <div className="cancelSavebuttonsDiv">
+          {/* Action Buttons */}
+          <div className="mt-6 flex justify-center">
             <button
               aria-label="cancel payment"
               type="button"
               className="cancel-button"
               onClick={() => navigate("/finances/payments/paymentsList/")}
             >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              aria-label="submit form"
-              className="save-button"
-              disabled={!canSubmit || isAddLoading}
-            >
-              save
-              {/* {isAddLoading ? "Submitting..." : "Submit Payment"} */}
+              Back
             </button>
           </div>
-        </form>
-
-        {/* Confirmation Modal */}
-        <ConfirmationModal
-          show={showConfirmation}
-          onClose={handleCloseModal}
-          onConfirm={handleConfirmSave}
-          title="Confirm Save"
-          message="Are you sure you want to save?"
-        />
-      </>
-    );
+        </>
+      );
   }
   return content;
 };

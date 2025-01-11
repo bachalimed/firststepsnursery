@@ -30,7 +30,8 @@ const PaymentsList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
+  const { canEdit, isAdmin, canDelete, canCreate, isManager, status2 } =
+    useAuth();
 
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
@@ -185,13 +186,13 @@ const PaymentsList = () => {
 
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [paymentData, setPaymentData] = useState(null);
-//console.log(filteredPayments,'filteredPayments')
-  const handleFetchPayment =  (paymentId) => {
+  //console.log(filteredPayments,'filteredPayments')
+  const handleFetchPayment = (paymentId) => {
     const payment = filteredPayments.filter(
       (payment) => payment.id === paymentId
     );
 
-    console.log(payment[0], "payment");
+    // console.log(payment[0], "payment");
     setPaymentData(payment[0]);
     setIsPreviewOpen(true);
   };
@@ -348,15 +349,19 @@ const PaymentsList = () => {
               <FiEdit className="text-2xl" />
             </button>
           ) : null} */}
-          {canDelete && !isDelLoading && (
-            <button
-              aria-label="delete payment"
-              className="text-red-600"
-              onClick={() => onDeletePaymentClicked(row.id)}
-            >
-              <RiDeleteBin6Line className="text-2xl" />
-            </button>
-          )}
+          {canDelete &&
+            !isDelLoading &&
+            row?.paymentDate &&
+            row?.paymentDate === "" && (
+              <button
+                aria-label="delete payment"
+                className="text-red-600"
+                onClick={() => onDeletePaymentClicked(row.id)}
+                hidden={!isManager || !isAdmin}
+              >
+                <RiDeleteBin6Line className="text-2xl" />
+              </button>
+            )}
         </div>
       ),
       ignoreRowClick: true,
