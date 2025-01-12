@@ -245,7 +245,7 @@ const FamiliesList = () => {
         textAlign: "left",
       },
       sortable: true,
-      width: "180px",
+      width: "200px",
     },
     {
       name: "Children",

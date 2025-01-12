@@ -11,6 +11,8 @@ import { SlSettings } from "react-icons/sl";
 import { BiHome } from "react-icons/bi";
 import { IoFileTrayStackedOutline, IoSchoolOutline } from "react-icons/io5";
 import { GrUserAdmin, GrTask } from "react-icons/gr";
+import { GoPaperclip } from "react-icons/go";
+
 // import { BsChevronDown } from "react-icons/bs";
 // import { FaMailBulk } from "react-icons/fa";
 // import { SiWebmoney } from "react-icons/si";
@@ -27,7 +29,6 @@ import { GrUserAdmin, GrTask } from "react-icons/gr";
 // import { sidebarMenuUp } from "../../lib/Consts/SidebarMenu";
 // import { LuChevronLeft } from "react-icons/lu";
 // import { CiViewList } from "react-icons/ci";
-
 
 const MenuButtons = () => {
   const { username } = useAuth();
@@ -48,11 +49,11 @@ const MenuButtons = () => {
 
   const location = useLocation();
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [reportsOpen, setReportsOpen] = useState(false);
 
   return (
     // <header className="flex items-center justify-start max-sm:justify-center md:px-1 bg-sky-700">
-    <header className="flex items-center justify-start  md:px-1 bg-sky-700 sticky top-0 z-50">
-      
+    <header className="flex items-center justify-start  md:px-1 bg-sky-700 sticky top-0 z-40" style={{ height: "auto" }}>
       <Link to="/">
         <li
           className={`text-grey-300 text-sm flex text-white items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  `}
@@ -152,6 +153,22 @@ const MenuButtons = () => {
           </Link>
         </div>
       )}
+      {/* {(isHR || isDirector || isManager || isAdmin) && (
+        <div className="relative">
+          <Link to="/reports/students/ageGroups/">
+            <li
+              className={`text-grey-300 text-sm flex   items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
+                location.pathname.startsWith("/reports/")
+                  ? "bg-gray-300 text-black"
+                  : "text-white "
+              }`}
+            >
+              <GoPaperclip  className="text-2xl " aria-label="reports tab" />
+              <span className="flex-1 hidden md:block">Reports</span>
+            </li>
+          </Link>
+        </div>
+      )} */}
       {isAdmin && (
         <div className="relative">
           <Link to="/admin/usersManagement/users/">
@@ -168,6 +185,89 @@ const MenuButtons = () => {
           </Link>
         </div>
       )}
+
+      {/* start of reports section */}
+      <div
+        className="relative"
+        onMouseEnter={() => setReportsOpen(true)}
+        onMouseLeave={() => setReportsOpen(false)}
+      >
+        {(isFinance || isHR || isDirector || isManager || isAdmin) && (
+          <Link to="/reports/studentsReports/ageGroupsReport/">
+            <li
+              className={`text-grey-300 text-sm flex    items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
+                location.pathname.startsWith("/reports/")
+                  ? "bg-gray-300 text-black"
+                  : "text-white"
+              }`}
+            >
+              <GoPaperclip className="text-2xl" aria-label="reports tab" />
+              <span className="flex-1 hidden md:block">Reports</span>
+            </li>
+          </Link>
+        )}
+        {reportsOpen && (
+          <ul className="absolute top-full left-0 bg-sky-700 text-white    shadow-md transition-all duration-300">
+            {(isFinance || isDirector || isManager || isAdmin) && (
+              <Link
+                to="/reports/studentsReports/ageGroupsReport/"
+                className={
+                  location.pathname.startsWith("/reports/") ? "bg-sky-100" : ""
+                }
+              >
+                <li
+                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 `}
+                >
+                  Students
+                </li>
+              </Link>
+            )}
+            {(isDirector || isManager || isAdmin) && (
+              <Link
+                to="/reports/academicsReports/"
+                className={
+                  location.pathname.startsWith("/reports/") ? "bg-sky-100" : ""
+                }
+              >
+                <li
+                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 `}
+                >
+                  Academics
+                </li>
+              </Link>
+            )}
+            {(isFinance || isDirector || isManager || isAdmin) && (
+              <Link
+                to="/reports/financesReports/unpaidInvoices/"
+                className={
+                  location.pathname.startsWith("/reports/") ? "bg-sky-100" : ""
+                }
+              >
+                <li
+                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 `}
+                >
+                  Finances
+                </li>
+              </Link>
+            )}
+            {(isHR || isDirector || isManager || isAdmin) && (
+              <Link
+                to="/reports/HRReports/"
+                className={
+                  location.pathname.startsWith("/reports/") ? "bg-sky-100" : ""
+                }
+              >
+                <li
+                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 `}
+                >
+                  HR
+                </li>
+              </Link>
+            )}
+          </ul>
+        )}
+      </div>
+      {/* end of reports section */}
       <div
         className="relative"
         onMouseEnter={() => setSettingsOpen(true)}

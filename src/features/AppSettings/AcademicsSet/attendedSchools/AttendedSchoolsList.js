@@ -170,6 +170,7 @@ const AttendedSchoolsList = () => {
               aria-label="delete school"
               className="text-red-600"
               onClick={() => onDeleteAttendedSchoolClicked(row.id)}
+              hidden={!isAdmin}
             >
               <RiDeleteBin6Line fontSize={20} />
             </button>

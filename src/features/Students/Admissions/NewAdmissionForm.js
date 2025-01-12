@@ -506,7 +506,8 @@ const NewAdmissionForm = () => {
       </>
     );
   }
-  if (isStudentsSuccess && isServicesSuccess && isAdmissionSuccess) {
+  if (isStudentsSuccess && isServicesSuccess )
+  {
     content = (
       <>
         <Students />
@@ -886,8 +887,7 @@ const NewAdmissionForm = () => {
     );
   }
 
-  //if (noAdmissionStudents.length === 0) return <LoadingStateIcon />;
-  //if (noAdmissionStudents.length) return content;
+  
   return content;
 };
 

@@ -75,7 +75,7 @@ const HeaderUserProfile = () => {
         transition
         anchor="bottom end"
         aria-label="manage profile"
-        className="absolute origin-top-right border bg-sky-100 p-1 text-sm/6 text-gray-800 transition duration-100 ease-out z-60 [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
+        className="absolute origin-top-right border bg-sky-100 p-1 text-sm/6 text-gray-800 transition duration-100 ease-out  [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
         >
         <strong>Manage profile</strong>
         {/* <MenuItem>

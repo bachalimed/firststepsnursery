@@ -15,6 +15,13 @@ import MyProfile from "./features/auth/MyProfile";
 import EditMyProfile from "./features/auth/MyProfile/EditMyProfile";
 import MyDetails from "./features/auth/MyProfile/MyDetails";
 
+import AgeGroupsReport from "./features/Reporting/StudentsReports/AgeGroupsReport"
+import StudentsReports from "./features/Reporting/StudentsReports"; 
+import AcademicsReports from "./features/Reporting/AcademicsReports"; 
+import HRReports from "./features/Reporting/HRReports"; 
+import FinancesReports from "./features/Reporting/FinancesReports";
+import UnpaidInvoices from "./features/Reporting/FinancesReports/UnpaidInvoices"
+
 import Students from "./features/Students/Students"; //main tab
 import StudentsList from "./features/Students/StudentsAndParents/Students/StudentsList";
 import FamiliesList from "./features/Students/StudentsAndParents/Families/FamiliesList";
@@ -81,7 +88,7 @@ import NewExpenseForm from "./features/Finances/Expenses/NewExpenseForm";
 import EditExpense from "./features/Finances/Expenses/EditExpense";
 // import ExpenseDetails from "./features/Finances/Expenses/ExpenseDetails";
 
-import HR from "./features/HR/HR";//main tab
+import HR from "./features/HR/HR"; //main tab
 import EmployeesList from "./features/HR/Employees/EmployeesList";
 import NewEmployeeForm from "./features/HR/Employees/NewEmployeeForm";
 import EmployeeDetails from "./features/HR/Employees/EmployeeDetails";
@@ -130,7 +137,6 @@ import Documentation from "./features/AppSettings/Documentation";
 import GettingStarted from "./features/AppSettings/Documentation/GettingStarted";
 import KeyTasks from "./features/AppSettings/Documentation/KeyTasks";
 import Faqs from "./features/AppSettings/Documentation/Faqs";
-
 
 import UsersManagement from "./features/Admin/UsersManagement";
 import UsersList from "./features/Admin/UsersManagement/UsersList";
@@ -207,8 +213,6 @@ const App = () => {
             {/*this wrapper will RequireAuth and protect all routes below, any role allowed to the protected routes */}
             <Route element={<Prefetch />}>
               {/*this wrapper will prefetch for all inside routes */}
-
-
               <Route path="dashboard" element={<DashboardLayout />}>
                 {" "}
                 {/*this will wrap around components that are protected by this route*/}
@@ -216,7 +220,6 @@ const App = () => {
                 {/*  index will show as a default in the dashboard layout*/}
                 <Route path="studentsDash/" element={<StudentsDash />} />
                 <Route path="financesDash/" element={<FinancesDash />} />
-
               </Route>{" "}
               <Route path="myProfile" element={<DashboardLayout />}>
                 {" "}
@@ -226,11 +229,7 @@ const App = () => {
                 <Route path="resetPassword/" element={<ResetPassword />} />
                 <Route path="myDetails/:id/" element={<MyDetails />} />
                 <Route path="editMyProfile/:id/" element={<EditMyProfile />} />
-                
-
               </Route>{" "}
-
-
               {/* end of dashboard route */}
               <Route path="students" element={<DashboardLayout />}>
                 <Route path="studentsParents">
@@ -267,7 +266,10 @@ const App = () => {
                   <Route path="admissions/" element={<AdmissionsList />} />
                   <Route path="newAdmission/" element={<NewAdmissionForm />} />
                   <Route path="editAdmission/:id" element={<EditAdmission />} />
-                  <Route path="admissionDetails/:id" element={<AdmissionDetails />} />
+                  <Route
+                    path="admissionDetails/:id"
+                    element={<AdmissionDetails />}
+                  />
                 </Route>{" "}
                 {/* end of Admissions route */}
                 <Route path="Enrolments">
@@ -277,7 +279,10 @@ const App = () => {
                   <Route path="unenrolments/" element={<UnEnrolmentsList />} />
                   <Route path="newEnrolment/" element={<NewEnrolmentForm />} />
                   <Route path="editEnrolment/:id" element={<EditEnrolment />} />
-                  <Route path="enrolmentDetails/:id" element={<EnrolmentDetails />} />
+                  <Route
+                    path="enrolmentDetails/:id"
+                    element={<EnrolmentDetails />}
+                  />
                 </Route>{" "}
                 {/* end of Enrolments route */}
               </Route>{" "}
@@ -350,7 +355,6 @@ const App = () => {
                   <Route path="expensesList/" element={<ExpensesList />} />
                   <Route path="newExpense/" element={<NewExpenseForm />} />
                   <Route path="editExpense/:id" element={<EditExpense />} />
-                 
                 </Route>{" "}
                 {/* end of expenses route */}
                 <Route path="invoices">
@@ -369,8 +373,6 @@ const App = () => {
                   <Route path="paymentsList/" element={<PaymentsList />} />
                   <Route path="newPayment/" element={<NewPaymentForm />} />
                   <Route path="editPayment/:id" element={<EditPayment />} />
-
-
                 </Route>{" "}
                 {/* end of payments route */}
               </Route>{" "}
@@ -391,7 +393,6 @@ const App = () => {
                   />
                 </Route>{" "}
                 {/* end of employees route */}
-
                 <Route path="payslips">
                   <Route path="payslipsList" element={<PayslipsList />} />
                   <Route path="newPayslip" element={<NewPayslipForm />} />
@@ -400,28 +401,15 @@ const App = () => {
                     path="payslipDetails/:id/"
                     element={<PayslipDetails />}
                   />
-                 
-                 
                 </Route>{" "}
                 {/* end of payslips route */}
                 <Route path="leaves">
                   <Route path="leavesList" element={<LeavesList />} />
                   <Route path="newLeave" element={<NewLeaveForm />} />
                   <Route path="editLeave/:id/" element={<EditLeave />} />
-                  <Route
-                    path="leaveDetails/:id/"
-                    element={<LeaveDetails />}
-                  />
-                 
-                 
+                  <Route path="leaveDetails/:id/" element={<LeaveDetails />} />
                 </Route>{" "}
                 {/* end of leaves route */}
-
-
-
-
-
-
                 <Route path="payroll">
                   <Route index element={<HR />} />
                 </Route>{" "}
@@ -522,36 +510,19 @@ const App = () => {
                     element={<EditAttendedSchool />}
                   />
                   <Route path="classrooms/" element={<ClassroomsList />} />
-                  <Route
-                    path="newClassroom/"
-                    element={<NewClassroomForm />}
-                  />
+                  <Route path="newClassroom/" element={<NewClassroomForm />} />
                   <Route
                     path="editClassroom/:id/"
                     element={<EditClassroom />}
                   />
                 </Route>{" "}
                 {/* end of academicsSet route */}
-
-
-
-
-
                 <Route path="financesSet">
                   <Route index element={<FinancesSet />} />
-                  <Route
-                    path="payeesList/"
-                    element={<PayeesList />}
-                  />
-                  <Route
-                    path="newPayee/"
-                    element={<NewPayeeForm />}
-                  />
-                
-                  <Route
-                    path="editPayee/:id/"
-                    element={<EditPayee />}
-                  />
+                  <Route path="payeesList/" element={<PayeesList />} />
+                  <Route path="newPayee/" element={<NewPayeeForm />} />
+
+                  <Route path="editPayee/:id/" element={<EditPayee />} />
                   {/* <Route
                     path="payeeDetails/:id/"
                     element={<PayeeDetails />}
@@ -564,7 +535,7 @@ const App = () => {
                     path="newExpenseCategory/"
                     element={<NewExpenseCategoryForm />}
                   />
-                
+
                   <Route
                     path="editExpenseCategory/:id/"
                     element={<EditExpenseCategory />}
@@ -573,18 +544,8 @@ const App = () => {
                     path="expenseCategoryDetails/:id/"
                     element={<ExpenseCategoryDetails />}
                   />
-
-
-
-
-
-
-
                 </Route>{" "}
                 {/* end of financesSet route */}
-
-
-
                 <Route path="HRSet">
                   <Route index element={<HRSet />} />
                   <Route
@@ -600,32 +561,18 @@ const App = () => {
                     element={<EditEmployeeDocumentsList />}
                   />
                 </Route>{" "}
-
-
-
                 <Route path="documentation">
                   <Route index element={<Documentation />} />
                   <Route
                     path="documentation/"
                     element={<StudentDocumentsListsList />}
                   />
-                 
-                 
 
                   <Route path="gettingStarted/" element={<GettingStarted />} />
                   <Route path="keyTasks/" element={<KeyTasks />} />
                   <Route path="faqs" element={<Faqs />} />
                 </Route>{" "}
                 {/* end of documentation route */}
-
-
-
-
-
-
-
-
-                
                 {/* end of HRSet route */}
                 <Route path="deskSet">
                   <Route index element={<DeskSet />} />
@@ -637,6 +584,82 @@ const App = () => {
                 {/* end of cmsSet route */}
               </Route>{" "}
               {/* end of settings route */}
+              {/* start of reports route */}
+              <Route path="reports" element={<DashboardLayout />}>
+                <Route index element={<StudentsReports />} />
+                <Route path="studentsReports">
+                  <Route index element={<StudentsReports />} />
+                  <Route path="ageGroupsReport/" element={<AgeGroupsReport />} />
+                  <Route
+                    path="newStudentDocumentsList/"
+                    element={<NewStudentDocumentsListForm />}
+                  />
+                  <Route
+                    path="studentDocumentsList/edit/:id/"
+                    element={<EditStudentDocumentsList />}
+                  />
+
+                  <Route path="services/" element={<ServicesList />} />
+                </Route>{" "}
+                {/* end of studentsReports route */}
+                <Route path="academicsReports">
+                  <Route index element={<AcademicsReports />} />{" "}
+                  {/*the path link is in sidebarmenu*/}
+                  <Route
+                    path="newAcademicYear/"
+                    element={<NewAcademicYearForm />}
+                  />
+                  <Route
+                    path="editAcademicYear/:id/"
+                    element={<EditAcademicYear />}
+                  />
+                  <Route
+                    path="attendedSchools/"
+                    element={<AttendedSchoolsList />}
+                  />
+                  <Route path="classrooms/" element={<ClassroomsList />} />
+                  <Route path="newClassroom/" element={<NewClassroomForm />} />
+                  <Route
+                    path="editClassroom/:id/"
+                    element={<EditClassroom />}
+                  />
+                </Route>{" "}
+                {/* end of academicsReports route */}
+                <Route path="financesReports">
+                  <Route index element={<FinancesReports />} />
+                  <Route path="unpaidInvoices/" element={<UnpaidInvoices />} />
+                  <Route path="newPayee/" element={<NewPayeeForm />} />
+
+                  <Route path="editPayee/:id/" element={<EditPayee />} />
+
+                  <Route
+                    path="editExpenseCategory/:id/"
+                    element={<EditExpenseCategory />}
+                  />
+                  <Route
+                    path="expenseCategoryDetails/:id/"
+                    element={<ExpenseCategoryDetails />}
+                  />
+                </Route>{" "}
+                {/* end of financesReports route */}
+                <Route path="HRReports">
+                  <Route index element={<HRReports />} />
+                  <Route
+                    path="employeeDocumentsListsList/"
+                    element={<EmployeeDocumentsListsList />}
+                  />
+                  <Route
+                    path="newEmployeeDocumentsList"
+                    element={<NewEmployeeDocumentsListForm />}
+                  />
+                  <Route
+                    path="employeeDocumentsList/edit/:id"
+                    element={<EditEmployeeDocumentsList />}
+                  />
+                </Route>{" "}
+                {/* end of HRRoutes route */}
+              </Route>{" "}
+              {/* end of reports route */}
               <Route
                 element={
                   <RequireAuth allowedRoles={[ROLES.Admin, ROLES.Manager]} />

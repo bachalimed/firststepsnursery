@@ -6,21 +6,21 @@ import { HeaderNotificationSample } from "../../lib/Consts/HeaderNotificationSam
 const HeaderNotifications = () => {
   return (
     <Menu>
-      <MenuButton className=" ">
+      <MenuButton >
         <HiOutlineBell fontSize={24} />
       </MenuButton>
 
       <MenuItems
         transition
         anchor="bottom end"
-        className=" origin-top-right  border bg-sky-100 p-1 text-sm/6 text-gray-800 transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
+        className=" origin-top-right border bg-sky-100 p-1 text-sm/6 text-gray-800 transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
       >
         <strong>Notifications</strong>
         {HeaderNotificationSample.slice(0, 10).map((Notif, index) => (
           <MenuItem>
             <button
               key={Notif.id}
-              className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
+              className="group flex w-full items-center  gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
               href="/target 1"
             >
               {Notif.type} {Notif.student}
