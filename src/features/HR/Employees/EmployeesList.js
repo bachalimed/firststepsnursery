@@ -324,27 +324,34 @@ const EmployeesList = () => {
 
     {
       name: "Package",
-      selector: (row) => (
-        <div>
-          <div>{`Basic:  ${row.employeeData?.employeeCurrentEmployment?.salaryPackage?.basic} ${row.employeeData?.employeeCurrentEmployment?.salaryPackage?.payment}`}</div>
-          {row.employeeData?.employeeCurrentEmployment?.salaryPackage?.cnss && (
-            <div>{`cnss: ${row.employeeData?.employeeCurrentEmployment?.salaryPackage?.cnss}`}</div>
-          )}
-          {row.employeeData?.employeeCurrentEmployment?.salaryPackage
-            ?.other && (
-            <div>{`other: ${row.employeeData?.employeeCurrentEmployment?.salaryPackage?.other}`}</div>
-          )}
-        </div>
-      ),
+      selector: (row) => {
+        const today = new Date();
+        const currentPackage = row.employeeData?.salaryPackage?.find((pkg) => {
+          const salaryFrom = new Date(pkg.salaryFrom);
+          const salaryTo = pkg.salaryTo ? new Date(pkg.salaryTo) : null;
+          return salaryFrom <= today && (!salaryTo || salaryTo >= today);
+        });
+    
+        return currentPackage ? (
+          <div>
+            <div>{`Basic: ${currentPackage.basicSalary} `}</div>
+            {currentPackage.allowances?.map((allowance, index) => (
+              <div key={index}>{`${allowance.allowanceLabel}: ${allowance.allowanceUnitValue}`}</div>
+            ))}
+          </div>
+        ) : (
+          <div>No Active Package</div>
+        );
+      },
       sortable: true,
       style: {
         justifyContent: "left",
         textAlign: "left",
       },
       removableRows: true,
-      width: "150px",
+      width: "250px",
     },
-
+    
     {
       name: "Documents",
       selector: (row) => (

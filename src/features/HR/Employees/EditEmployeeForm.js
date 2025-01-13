@@ -42,11 +42,15 @@ const EditEmployeeForm = ({ employee }) => {
   const academicYears = useSelector(selectAllAcademicYears);
   // console.log(employee,'employee')
 
-  const [updateEmployee, { isLoading: isUpdateLoading,
-    isSuccess: isUpdateSuccess,
-    isError: isUpdateError,
-    error: updateError, }] =
-    useUpdateEmployeeMutation();
+  const [
+    updateEmployee,
+    {
+      isLoading: isUpdateLoading,
+      isSuccess: isUpdateSuccess,
+      isError: isUpdateError,
+      error: updateError,
+    },
+  ] = useUpdateEmployeeMutation();
 
   //confirmation Modal states
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -70,11 +74,21 @@ const EditEmployeeForm = ({ employee }) => {
       position: "",
       joinDate: "",
       contractType: "",
-      salaryPackage: {
-        basic: "",
-        payment: "",
-      },
     },
+    salaryPackage: employee?.employeeId?.salaryPackage || [
+      {
+        salaryFrom: "",
+        salaryTo: "",
+        basicSalary: "",
+        allowances: [
+          {
+            allowanceLabel: "",
+            allowanceUnitValue: "",
+            allowancePeriodicity: "",
+          },
+        ],
+      },
+    ],
   });
 
   const { triggerBanner } = useOutletContext(); // Access banner trigger
@@ -97,10 +111,52 @@ const EditEmployeeForm = ({ employee }) => {
     validCurrentPosition: false,
     validJoinDate: false,
     validContractType: false,
-    validBasic: false,
-    validPayment: false,
+    validSalaryFrom: false,
+    validSalaryTo: false,
+    validBasicSalary: false,
+    validAllowances: true,
+    noOverlap: true,
     validEmployeeYear: false,
   });
+  const validateSalaryPackageDates = () => {
+    const packages = formData.salaryPackage;
+    for (let i = 0; i < packages.length; i++) {
+      for (let j = i + 1; j < packages.length; j++) {
+        const startA = new Date(packages[i].salaryFrom);
+        const endA = new Date(packages[i].salaryTo);
+        const startB = new Date(packages[j].salaryFrom);
+        const endB = new Date(packages[j].salaryTo);
+
+        if (
+          (startA <= endB && endA >= startB) || // Overlap check
+          (startB <= endA && endB >= startA)
+        ) {
+          return false;
+        }
+      }
+    }
+    return true;
+  };
+
+  useEffect(() => {
+    const packages = formData.salaryPackage;
+    setValidity({
+      validSalaryFrom: packages.every((pkg) => DATE_REGEX.test(pkg.salaryFrom)),
+      validSalaryTo: packages.every((pkg) => DATE_REGEX.test(pkg.salaryTo)),
+      validBasicSalary: packages.every((pkg) =>
+        NUMBER_REGEX.test(pkg.basicSalary)
+      ),
+      validAllowances: packages.every((pkg) =>
+        pkg.allowances.every(
+          (allowance) =>
+            NAME_REGEX.test(allowance.allowanceLabel) &&
+            NUMBER_REGEX.test(allowance.allowanceUnitValue) &&
+            SHORTCOMMENT_REGEX.test(allowance.allowancePeriodicity)
+        )
+      ),
+      noOverlap: validateSalaryPackageDates(),
+    });
+  }, [formData.salaryPackage]);
 
   //validation for workhjistory for non empty fields
   const validateWorkHistory = () => {
@@ -122,8 +178,9 @@ const EditEmployeeForm = ({ employee }) => {
 
       validFirstName: NAME_REGEX.test(formData.userFullName?.userFirstName),
       validMiddleName:
-        formData?.userFullName?.userMiddleName !== ""?
-        NAME_REGEX.test(formData.userFullName.userMiddleName):true,
+        formData?.userFullName?.userMiddleName !== ""
+          ? NAME_REGEX.test(formData.userFullName.userMiddleName)
+          : true,
       validLastName: NAME_REGEX.test(formData.userFullName?.userLastName),
       validDob: DATE_REGEX.test(formData.userDob.split("T")[0]),
       validUserSex: NAME_REGEX.test(formData.userSex),
@@ -152,11 +209,12 @@ const EditEmployeeForm = ({ employee }) => {
         formData.employeeCurrentEmployment?.contractType
       ),
 
-      validBasic: NUMBER_REGEX.test(
-        formData.employeeCurrentEmployment?.salaryPackage?.basic
+      validSalaryFrom: DATE_REGEX.test(
+        formData.salaryPackage[0]?.salaryFrom || ""
       ),
-      validPayment: NAME_REGEX.test(
-        formData.employeeCurrentEmployment?.salaryPackage?.payment
+      validSalaryTo: DATE_REGEX.test(formData.salaryPackage[0]?.salaryTo),
+      validBasicSalary: NUMBER_REGEX.test(
+        formData.salaryPackage[0]?.basicSalary || ""
       ),
       validEmployeeYear: YEAR_REGEX.test(
         formData.employeeYears[0]?.academicYear
@@ -196,6 +254,72 @@ const EditEmployeeForm = ({ employee }) => {
       }));
     }
   };
+
+  const handleSalaryPackageChange = (
+    pkgIndex,
+    field,
+    value,
+    allowanceIndex = null
+  ) => {
+    setFormData((prev) => {
+      const updatedPackages = [...prev.salaryPackage];
+      if (allowanceIndex !== null) {
+        updatedPackages[pkgIndex].allowances[allowanceIndex][field] = value;
+      } else {
+        updatedPackages[pkgIndex][field] = value;
+      }
+      return { ...prev, salaryPackage: updatedPackages };
+    });
+  };
+
+  const handleAddSalaryPackage = () => {
+    setFormData((prev) => ({
+      ...prev,
+      salaryPackage: [
+        ...prev.salaryPackage,
+        {
+          salaryFrom: "",
+          salaryTo: "",
+          basicSalary: "",
+          allowances: [
+            {
+              allowanceLabel: "",
+              allowanceUnitValue: "",
+              allowancePeriodicity: "",
+            },
+          ],
+        },
+      ],
+    }));
+  };
+
+  const handleRemoveSalaryPackage = (pkgIndex) => {
+    setFormData((prev) => ({
+      ...prev,
+      salaryPackage: prev.salaryPackage.filter((_, i) => i !== pkgIndex),
+    }));
+  };
+
+  const handleAddAllowance = (pkgIndex) => {
+    setFormData((prev) => {
+      const updatedPackages = [...prev.salaryPackage];
+      updatedPackages[pkgIndex].allowances.push({
+        allowanceLabel: "",
+        allowanceUnitValue: "",
+        allowancePeriodicity: "",
+      });
+      return { ...prev, salaryPackage: updatedPackages };
+    });
+  };
+
+  const handleRemoveAllowance = (pkgIndex, allowanceIndex) => {
+    setFormData((prev) => {
+      const updatedPackages = [...prev.salaryPackage];
+      updatedPackages[pkgIndex].allowances.splice(allowanceIndex, 1);
+      return { ...prev, salaryPackage: updatedPackages };
+    });
+  };
+
   const onAcademicYearChanged = (e, yearTitle) => {
     setFormData((prev) => {
       const updatedYears = [...prev.employeeYears];
@@ -312,11 +436,10 @@ const EditEmployeeForm = ({ employee }) => {
 
     try {
       const response = await updateEmployee(formData);
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -338,7 +461,7 @@ const EditEmployeeForm = ({ employee }) => {
   const handleCloseModal = () => {
     setShowConfirmation(false);
   };
-
+  console.log(formData, "formData");
   const content = (
     <>
       <HR />
@@ -423,9 +546,9 @@ const EditEmployeeForm = ({ employee }) => {
               </label>
             </div>
             <div className="formLineDiv">
-               {/* CIN */}
+              {/* CIN */}
 
-               <label htmlFor="ID" className="ID">
+              <label htmlFor="ID" className="ID">
                 ID{" "}
                 {!validity.validCin && <span className="text-red-600">*</span>}
                 <input
@@ -446,277 +569,271 @@ const EditEmployeeForm = ({ employee }) => {
                   required
                 />{" "}
               </label>
-                <label className="formInputLabel">
-                  Sex{" "}
-                  {!validity.validUserSex && (
-                    <span className="text-red-600">*</span>
-                  )}
-                  <div className="formCheckboxItemsDiv">
-                    <label htmlFor="male" className="formCheckboxChoice">
-                      <input
-                        type="checkbox"
-                        id="male"
-                        value="Male"
-                        checked={formData.userSex === "Male"}
-                        onChange={(e) => {
-                          setFormData((prev) => ({
-                            ...prev,
-                            userSex: e.target.checked
-                              ? "Male"
-                              : formData.userSex === "Male"
-                              ? ""
-                              : formData.userSex,
-                          }));
-                        }}
-                        className="formCheckbox"
-                      />
-                      Male
-                    </label>
+              <label className="formInputLabel">
+                Sex{" "}
+                {!validity.validUserSex && (
+                  <span className="text-red-600">*</span>
+                )}
+                <div className="formCheckboxItemsDiv">
+                  <label htmlFor="male" className="formCheckboxChoice">
+                    <input
+                      type="checkbox"
+                      id="male"
+                      value="Male"
+                      checked={formData.userSex === "Male"}
+                      onChange={(e) => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          userSex: e.target.checked
+                            ? "Male"
+                            : formData.userSex === "Male"
+                            ? ""
+                            : formData.userSex,
+                        }));
+                      }}
+                      className="formCheckbox"
+                    />
+                    Male
+                  </label>
 
-                    <label htmlFor="female" className="formCheckboxChoice">
-                      <input
-                        type="checkbox"
-                        id="female"
-                        value="Female"
-                        checked={formData.userSex === "Female"}
-                        onChange={(e) => {
-                          setFormData((prev) => ({
-                            ...prev,
-                            userSex: e.target.checked
-                              ? "Female"
-                              : formData.userSex === "Female"
-                              ? ""
-                              : formData.userSex,
-                          }));
-                        }}
-                        className="formCheckbox"
-                      />
-                      Female
-                    </label>
-                  </div>
-                </label>
-             
+                  <label htmlFor="female" className="formCheckboxChoice">
+                    <input
+                      type="checkbox"
+                      id="female"
+                      value="Female"
+                      checked={formData.userSex === "Female"}
+                      onChange={(e) => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          userSex: e.target.checked
+                            ? "Female"
+                            : formData.userSex === "Female"
+                            ? ""
+                            : formData.userSex,
+                        }));
+                      }}
+                      className="formCheckbox"
+                    />
+                    Female
+                  </label>
+                </div>
+              </label>
             </div>
           </div>
         </div>
         <h3 className="formSectionTitle">Contact details</h3>
-          <div className="formSection">
-            {/* Contact Information */}
+        <div className="formSection">
+          {/* Contact Information */}
 
-            <div className="formLineDiv">
-              {/* Address Information */}
-              <label htmlFor="house" className="formInputLabel">
-                House{" "}
-                {!validity.validHouse && (
-                  <span className="text-red-600">*</span>
-                )}
-                <input
-                  aria-label="house"
-                  aria-invalid={!validity.validHouse}
-                  type="text"
-                  id="house"
-                  name="house"
-                  value={formData.userAddress.house}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      userAddress: {
-                        ...prev.userAddress,
-                        house: e.target.value,
-                      },
-                    }))
-                  }
-                  className={`formInputText`}
-                  placeholder="[3-25] letters"
-                />{" "}
-              </label>
+          <div className="formLineDiv">
+            {/* Address Information */}
+            <label htmlFor="house" className="formInputLabel">
+              House{" "}
+              {!validity.validHouse && <span className="text-red-600">*</span>}
+              <input
+                aria-label="house"
+                aria-invalid={!validity.validHouse}
+                type="text"
+                id="house"
+                name="house"
+                value={formData.userAddress.house}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    userAddress: {
+                      ...prev.userAddress,
+                      house: e.target.value,
+                    },
+                  }))
+                }
+                className={`formInputText`}
+                placeholder="[3-25] letters"
+              />{" "}
+            </label>
 
-              <label htmlFor="street" className="formInputLabel">
-                Street{" "}
-                {!validity.validStreet && (
-                  <span className="text-red-600">*</span>
-                )}
-                <input
-                  aria-label="street"
-                  aria-invalid={!validity.validStreet}
-                  type="text"
-                  id="street"
-                  name="street"
-                  value={formData.street}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      userAddress: {
-                        ...prev.userAddress,
-                        street: e.target.value,
-                      },
-                    }))
-                  }
-                  className={`formInputText`}
-                  placeholder="[3-25] letters"
-                />{" "}
-              </label>
-            </div>
-            <div className="formLineDiv">
-              <label htmlFor="area" className="formInputLabel">
-                Area{" "}
-                {!validity?.validArea && formData?.userContact.area !== "" && (
-                  <span className="text-red-600 ">[0-15] letters</span>
-                )}
-                <input
-                  aria-label="area"
-                  type="text"
-                  id="area"
-                  name="area"
-                  value={formData.userAddress.area}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      userAddress: {
-                        ...prev.userAddress,
-                        area: e.target.value,
-                      },
-                    }))
-                  }
-                  className={`formInputText`}
-                  placeholder="[0-20] letters"
-                />{" "}
-              </label>
-
-              <label htmlFor="city" className="formInputLabel">
-                City{" "}
-                {!validity.validCity && <span className="text-red-600">*</span>}
-                <input
-                  aria-label="city"
-                  aria-invalid={!validity.validCity}
-                  type="text"
-                  id="city"
-                  name="city"
-                  value={formData.userAddress.city}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      userAddress: {
-                        ...prev.userAddress,
-                        city: e.target.value,
-                      },
-                    }))
-                  }
-                  className={`formInputText`}
-                  placeholder="[3-25] letters"
-                />{" "}
-              </label>
-            </div>
-            <div className="formLineDiv">
-              <label htmlFor="postCode" className="formInputLabel">
-                Post Code{" "}
-                {!validity?.validPostCode &&
-                  formData?.userContact.postCode !== "" && (
-                    <span className="text-red-600 ">[0-15] characters</span>
-                  )}
-                <input
-                  aria-label="postCode"
-                  type="text"
-                  id="postCode"
-                  name="postCode"
-                  value={formData.userAddress.postCode}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      userAddress: {
-                        ...prev.userAddress,
-                        postCode: e.target.value,
-                      },
-                    }))
-                  }
-                  className={`formInputText`}
-                  placeholder="[0-15] characters"
-                />{" "}
-              </label>
-
-              {/* Email */}
-
-              <label htmlFor="email" className="formInputLabel">
-                Email{" "}
-                {!validity?.validEmail &&
-                  formData?.userContact.email !== "" && (
-                    <span className="text-red-600 ">[6-25] characters</span>
-                  )}
-                <input
-                  aria-label="email"
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.userContact.email}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      userContact: {
-                        ...prev.userContact,
-                        email: e.target.value,
-                      },
-                    }))
-                  }
-                  className={`formInputText`}
-                  placeholder="[6-25] characters"
-                />{" "}
-              </label>
-            </div>
-            <div className="formLineDiv">
-              <label htmlFor="primaryPhone" className="formInputLabel">
-                Primary Phone{" "}
-                {!validity.validPrimaryPhone && (
-                  <span className="text-red-600">*</span>
-                )}
-                <input
-                  aria-label="primaryPhone"
-                  aria-invalid={!validity.validPrimaryPhone}
-                  type="text"
-                  id="primaryPhone"
-                  name="primaryPhone"
-                  value={formData.userContact.primaryPhone}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      userContact: {
-                        ...prev.userContact,
-                        primaryPhone: e.target.value,
-                      },
-                    }))
-                  }
-                  className={`formInputText`}
-                  placeholder="[6-15] digits"
-                  required
-                />{" "}
-              </label>
-
-              <label htmlFor="secondaryPhone" className="formInputLabel">
-                Secondary Phone
-                {!validity?.validSecondaryPhone &&
-                  formData?.userContact.secondaryPhone !== "" && (
-                    <span className="text-red-600 ">[6-15] digits</span>
-                  )}
-                <input
-                  aria-label="secondaryPhone"
-                  type="text"
-                  id="secondaryPhone"
-                  name="secondaryPhone"
-                  value={formData?.userContact?.secondaryPhone}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      userContact: {
-                        ...prev.userContact,
-                        secondaryPhone: e.target.value,
-                      },
-                    }))
-                  }
-                  className={`formInputText`}
-                  placeholder="[6-15] digits"
-                />{" "}
-              </label>
-            </div>
+            <label htmlFor="street" className="formInputLabel">
+              Street{" "}
+              {!validity.validStreet && <span className="text-red-600">*</span>}
+              <input
+                aria-label="street"
+                aria-invalid={!validity.validStreet}
+                type="text"
+                id="street"
+                name="street"
+                value={formData.street}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    userAddress: {
+                      ...prev.userAddress,
+                      street: e.target.value,
+                    },
+                  }))
+                }
+                className={`formInputText`}
+                placeholder="[3-25] letters"
+              />{" "}
+            </label>
           </div>
+          <div className="formLineDiv">
+            <label htmlFor="area" className="formInputLabel">
+              Area{" "}
+              {!validity?.validArea && formData?.userContact.area !== "" && (
+                <span className="text-red-600 ">[0-15] letters</span>
+              )}
+              <input
+                aria-label="area"
+                type="text"
+                id="area"
+                name="area"
+                value={formData.userAddress.area}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    userAddress: {
+                      ...prev.userAddress,
+                      area: e.target.value,
+                    },
+                  }))
+                }
+                className={`formInputText`}
+                placeholder="[0-20] letters"
+              />{" "}
+            </label>
+
+            <label htmlFor="city" className="formInputLabel">
+              City{" "}
+              {!validity.validCity && <span className="text-red-600">*</span>}
+              <input
+                aria-label="city"
+                aria-invalid={!validity.validCity}
+                type="text"
+                id="city"
+                name="city"
+                value={formData.userAddress.city}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    userAddress: {
+                      ...prev.userAddress,
+                      city: e.target.value,
+                    },
+                  }))
+                }
+                className={`formInputText`}
+                placeholder="[3-25] letters"
+              />{" "}
+            </label>
+          </div>
+          <div className="formLineDiv">
+            <label htmlFor="postCode" className="formInputLabel">
+              Post Code{" "}
+              {!validity?.validPostCode &&
+                formData?.userContact.postCode !== "" && (
+                  <span className="text-red-600 ">[0-15] characters</span>
+                )}
+              <input
+                aria-label="postCode"
+                type="text"
+                id="postCode"
+                name="postCode"
+                value={formData.userAddress.postCode}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    userAddress: {
+                      ...prev.userAddress,
+                      postCode: e.target.value,
+                    },
+                  }))
+                }
+                className={`formInputText`}
+                placeholder="[0-15] characters"
+              />{" "}
+            </label>
+
+            {/* Email */}
+
+            <label htmlFor="email" className="formInputLabel">
+              Email{" "}
+              {!validity?.validEmail && formData?.userContact.email !== "" && (
+                <span className="text-red-600 ">[6-25] characters</span>
+              )}
+              <input
+                aria-label="email"
+                type="email"
+                id="email"
+                name="email"
+                value={formData.userContact.email}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    userContact: {
+                      ...prev.userContact,
+                      email: e.target.value,
+                    },
+                  }))
+                }
+                className={`formInputText`}
+                placeholder="[6-25] characters"
+              />{" "}
+            </label>
+          </div>
+          <div className="formLineDiv">
+            <label htmlFor="primaryPhone" className="formInputLabel">
+              Primary Phone{" "}
+              {!validity.validPrimaryPhone && (
+                <span className="text-red-600">*</span>
+              )}
+              <input
+                aria-label="primaryPhone"
+                aria-invalid={!validity.validPrimaryPhone}
+                type="text"
+                id="primaryPhone"
+                name="primaryPhone"
+                value={formData.userContact.primaryPhone}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    userContact: {
+                      ...prev.userContact,
+                      primaryPhone: e.target.value,
+                    },
+                  }))
+                }
+                className={`formInputText`}
+                placeholder="[6-15] digits"
+                required
+              />{" "}
+            </label>
+
+            <label htmlFor="secondaryPhone" className="formInputLabel">
+              Secondary Phone
+              {!validity?.validSecondaryPhone &&
+                formData?.userContact.secondaryPhone !== "" && (
+                  <span className="text-red-600 ">[6-15] digits</span>
+                )}
+              <input
+                aria-label="secondaryPhone"
+                type="text"
+                id="secondaryPhone"
+                name="secondaryPhone"
+                value={formData?.userContact?.secondaryPhone}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    userContact: {
+                      ...prev.userContact,
+                      secondaryPhone: e.target.value,
+                    },
+                  }))
+                }
+                className={`formInputText`}
+                placeholder="[6-15] digits"
+              />{" "}
+            </label>
+          </div>
+        </div>
 
         {/* Current Employment */}
 
@@ -729,35 +846,34 @@ const EditEmployeeForm = ({ employee }) => {
               {academicYears &&
                 academicYears.length > 0 &&
                 academicYears
-                .filter((year) => year?.title !== "1000") // Exclude the year with title "1000"
+                  .filter((year) => year?.title !== "1000") // Exclude the year with title "1000"
 
-                .map((year, index) => {
-                  const isChecked = formData.employeeYears
-                  .some(
-                    (empYear) => empYear.academicYear === year.title
-                  );
+                  .map((year, index) => {
+                    const isChecked = formData.employeeYears.some(
+                      (empYear) => empYear.academicYear === year.title
+                    );
 
-                  return (
-                    <button
-                      aria-label="employee year"
-                      key={index}
-                      type="button"
-                      hidden={
-                        isManager
-                          ? false
-                          : year?.title !== selectedAcademicYear?.title
-                      }
-                      onClick={(e) => onAcademicYearChanged(e, year.title)}
-                      className={`px-3 py-2 text-left rounded-md ${
-                        isChecked
-                          ? "bg-sky-700 text-white hover:bg-sky-600"
-                          : "bg-gray-200 text-gray-700 hover:bg-sky-600 hover:text-white"
-                      }`}
-                    >
-                      <div className="font-semibold">{year.title}</div>
-                    </button>
-                  );
-                })}
+                    return (
+                      <button
+                        aria-label="employee year"
+                        key={index}
+                        type="button"
+                        hidden={
+                          isManager
+                            ? false
+                            : year?.title !== selectedAcademicYear?.title
+                        }
+                        onClick={(e) => onAcademicYearChanged(e, year.title)}
+                        className={`px-3 py-2 text-left rounded-md ${
+                          isChecked
+                            ? "bg-sky-700 text-white hover:bg-sky-600"
+                            : "bg-gray-200 text-gray-700 hover:bg-sky-600 hover:text-white"
+                        }`}
+                      >
+                        <div className="font-semibold">{year.title}</div>
+                      </button>
+                    );
+                  })}
             </div>
           </div>
 
@@ -879,167 +995,217 @@ const EditEmployeeForm = ({ employee }) => {
               </select>
             </label>
           </div>
-
-          <h4 className="formSectionTitle">Salary Package</h4>
-          <div className="formSection">
-            <div className="formLineDiv">
-              <label htmlFor="basic" className="formInputLabel">
-                Basic{" "}
-                {!validity.validBasic && (
-                  <span className="text-red-600">*</span>
-                )}
-                <input
-                  aria-label="basic"
-                  aria-invalid={!validity.validBasic}
-                  type="number"
-                  id="basic"
-                  name="basic"
-                  name="basic"
-                  value={formData.employeeCurrentEmployment.salaryPackage.basic}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      employeeCurrentEmployment: {
-                        ...prev.employeeCurrentEmployment,
-                        salaryPackage: {
-                          ...prev.employeeCurrentEmployment.salaryPackage,
-                          basic: e.target.value,
-                        },
-                      },
-                    }))
-                  }
-                  className={`formInputText`}
-                  placeholder="[$$$$.$$$]"
-                />{" "}
-              </label>
-
-              <label htmlFor="payment" className="formInputLabel">
-                Payment{" "}
-                {!validity.validPayment && (
-                  <span className="text-red-600">*</span>
-                )}
-                <select
-                  aria-label="payment"
-                  aria-invalid={!validity.validPayment}
-                  id="payment"
-                  name="payment"
-                  value={
-                    formData.employeeCurrentEmployment.salaryPackage.payment
-                  }
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      employeeCurrentEmployment: {
-                        ...prev.employeeCurrentEmployment,
-                        salaryPackage: {
-                          ...prev.employeeCurrentEmployment.salaryPackage,
-                          payment: e.target.value,
-                        },
-                      },
-                    }))
-                  }
-                  className={`formInputText`}
-                  required
-                >
-                  {/* <option value="">Select Payment Period</option> */}
-                  {PAYMENT_PERIODS.map((period) => (
-                    <option key={period} value={period}>
-                      {period}
-                    </option>
-                  ))}
-                </select>{" "}
-              </label>
-            </div>
-
-            <div className="formLineDiv">
-              <label htmlFor="allowance" className="formInputLabel">
-                ALLOWANCE{" "}
-                {formData?.employeeCurrentEmployment?.salaryPackage?.allowance &&
-                  !NUMBER_REGEX.test(
-                    formData?.employeeCurrentEmployment?.salaryPackage?.allowance
-                  ) && <span className="text-red-600">[$$$$.$$$]</span>}
-                <input
-                  aria-label="allowance"
-                  type="number"
-                  id="allowance"
-                  name="allowance"
-                  value={formData.employeeCurrentEmployment.salaryPackage.allowance}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      employeeCurrentEmployment: {
-                        ...prev.employeeCurrentEmployment,
-                        salaryPackage: {
-                          ...prev.employeeCurrentEmployment.salaryPackage,
-                          allowance: e.target.value,
-                        },
-                      },
-                    }))
-                  }
-                  className={`formInputText`}
-                  placeholder="[$$$$.$$$]"
-                />{" "}
-              </label>
-
-              <label htmlFor="other" className="formInputLabel">
-                Other
-                {formData?.employeeCurrentEmployment?.salaryPackage?.other &&
-                  !NUMBER_REGEX.test(
-                    formData?.employeeCurrentEmployment?.salaryPackage?.other
-                  ) && <span className="text-red-600">[$$$$.$$$]</span>}
-                <input
-                  aria-label="other"
-                  type="number"
-                  id="other"
-                  name="other"
-                  value={formData.employeeCurrentEmployment.salaryPackage.other}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      employeeCurrentEmployment: {
-                        ...prev.employeeCurrentEmployment,
-                        salaryPackage: {
-                          ...prev.employeeCurrentEmployment.salaryPackage,
-                          other: e.target.value,
-                        },
-                      },
-                    }))
-                  }
-                  className={`formInputText`}
-                  placeholder="[$$$$.$$$]"
-                />{" "}
-              </label>
-            </div>
-          </div>
         </div>
 
+        <h4 className="formSectionTitle">Salary Package</h4>
+
+        {formData.salaryPackage.map((pkg, pkgIndex) => (
+          <div key={pkgIndex} className="formSection border rounded p-2 mb-4">
+            <div className="formSection">
+              <h4 className="formSectionTitle">Package {pkgIndex + 1}</h4>
+
+              <div className="formLineDiv">
+                <label
+                  htmlFor={`fromDate-${pkgIndex}`}
+                  className="formInputLabel"
+                >
+                  Salary From:
+                  {!validity.validSalaryFrom && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <input
+                    id={`fromDate-${pkgIndex}`}
+                    type="date"
+                    value={pkg.salaryFrom}
+                    onChange={(e) =>
+                      handleSalaryPackageChange(
+                        pkgIndex,
+                        "salaryFrom",
+                        e.target.value
+                      )
+                    }
+                    className="formInputText"
+                  />
+                </label>
+                <label
+                  htmlFor={`toDate-${pkgIndex}`}
+                  className="formInputLabel"
+                >
+                  Salary To:
+                  {!validity.validSalaryTo && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <input
+                    id={`toDate-${pkgIndex}`}
+                    type="date"
+                    value={pkg.salaryTo}
+                    onChange={(e) =>
+                      handleSalaryPackageChange(
+                        pkgIndex,
+                        "salaryTo",
+                        e.target.value
+                      )
+                    }
+                    className="formInputText"
+                  />
+                </label>
+                <label
+                  id={`basicSalary-${pkgIndex}`}
+                  className="formInputLabel"
+                >
+                  Basic Salary:
+                  {!validity.validBasicSalary && (
+                    <span className="text-red-600">*</span>
+                  )}
+                  <input
+                    id={`basicSalary-${pkgIndex}`}
+                    type="number"
+                    value={pkg.basicSalary}
+                    onChange={(e) =>
+                      handleSalaryPackageChange(
+                        pkgIndex,
+                        "basicSalary",
+                        e.target.value
+                      )
+                    }
+                    className="formInputText"
+                  />
+                </label>
+              </div>
+              <h5 className="formSectionTitle">Allowances</h5>
+              {pkg.allowances.map((allowance, allowanceIndex) => (
+                <div className="formSection">
+                  <div key={allowanceIndex} className="formLineDiv">
+                    <label
+                      htmlFor={`allowanceLabel-${allowanceIndex}`}
+                      className="formInputLabel"
+                    >
+                      Label:
+                      {!NAME_REGEX.test(allowance.allowanceLabel) && (
+                        <span className="text-red-600">*</span>
+                      )}
+                      <input
+                        id={`allowanceLabel-${allowanceIndex}`}
+                        type="text"
+                        value={allowance.allowanceLabel}
+                        onChange={(e) =>
+                          handleSalaryPackageChange(
+                            pkgIndex,
+                            "allowanceLabel",
+                            e.target.value,
+                            allowanceIndex
+                          )
+                        }
+                        className="formInputText"
+                      />
+                    </label>
+                    <label
+                      htmlFor={`allowanceUnitValue-${allowanceIndex}`}
+                      className="formInputLabel"
+                    >
+                      Unit Value:
+                      {!NAME_REGEX.test(allowance.allowanceUnitValue) && (
+                        <span className="text-red-600">*</span>
+                      )}
+                      <input
+                        id={`allowanceUnitValue-${allowanceIndex}`}
+                        type="number"
+                        value={allowance.allowanceUnitValue}
+                        onChange={(e) =>
+                          handleSalaryPackageChange(
+                            pkgIndex,
+                            "allowanceUnitValue",
+                            e.target.value,
+                            allowanceIndex
+                          )
+                        }
+                        className="formInputText"
+                      />
+                    </label>
+                    <label
+                      htmlFor={`allowancePeriodicity-${allowanceIndex}`}
+                      className="formInputLabel"
+                    >
+                      Periodicity:
+                      {!NAME_REGEX.test(allowance?.allowancePeriodicity) && (
+                        <span className="text-red-600">*</span>
+                      )}
+                      <input
+                        id={`allowancePeriodicity-${allowanceIndex}`}
+                        type="text"
+                        value={allowance.allowancePeriodicity}
+                        onChange={(e) =>
+                          handleSalaryPackageChange(
+                            pkgIndex,
+                            "allowancePeriodicity",
+                            e.target.value,
+                            allowanceIndex
+                          )
+                        }
+                        className="formInputText"
+                      />
+                    </label>{" "}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleRemoveAllowance(pkgIndex, allowanceIndex)
+                    }
+                    className="delete-button w-full"
+                  >
+                    Remove Allowance
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => handleAddAllowance(pkgIndex)}
+                className="add-button w-full"
+              >
+                Add Allowance
+              </button>
+            </div>
+            <button
+              type="button"
+              onClick={() => handleRemoveSalaryPackage(pkgIndex)}
+              className="delete-button mt-2 w-full"
+            >
+              Remove Salary Package {pkgIndex + 1}
+            </button>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={handleAddSalaryPackage}
+          className="add-button w-full"
+        >
+          Add New Salary Package
+        </button>
         <h3 className="formSectionTitle">Employee roles</h3>
         {(isAdmin || isManager || isDirector) && (
           <div className="formSection">
-            
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2 mt-1 max-h-80 overflow-y-auto">
-                {Object.values(ROLES)
-                  .filter((role) => role !== "Employee" && role !== "Parent") // Filter out Employee and Parent
-                  .map((role, index) => {
-                    const checked = formData?.userRoles?.includes(role);
-                    return (
-                      <button
-                        aria-label="role"
-                        key={index}
-                        type="button"
-                        onClick={(e) => onUserRolesChanged(e, role)}
-                        className={`px-3 py-2 text-left rounded-md ${
-                          checked
-                            ? "bg-sky-700 text-white hover:bg-sky-600"
-                            : "bg-gray-200 text-gray-700 hover:bg-sky-600 hover:text-white"
-                        }`}
-                      >
-                        <div className="font-semibold">{role}</div>
-                      </button>
-                    );
-                  })}
-              </div>
-            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2 mt-1 max-h-80 overflow-y-auto">
+              {Object.values(ROLES)
+                .filter((role) => role !== "Employee" && role !== "Parent") // Filter out Employee and Parent
+                .map((role, index) => {
+                  const checked = formData?.userRoles?.includes(role);
+                  return (
+                    <button
+                      aria-label="role"
+                      key={index}
+                      type="button"
+                      onClick={(e) => onUserRolesChanged(e, role)}
+                      className={`px-3 py-2 text-left rounded-md ${
+                        checked
+                          ? "bg-sky-700 text-white hover:bg-sky-600"
+                          : "bg-gray-200 text-gray-700 hover:bg-sky-600 hover:text-white"
+                      }`}
+                    >
+                      <div className="font-semibold">{role}</div>
+                    </button>
+                  );
+                })}
+            </div>
           </div>
         )}
 
@@ -1132,7 +1298,10 @@ const EditEmployeeForm = ({ employee }) => {
 
                 {/* Contract Type */}
 
-                <label htmlFor={`contractType-${index}`} className="formInputLabel">
+                <label
+                  htmlFor={`contractType-${index}`}
+                  className="formInputLabel"
+                >
                   Contract Type{" "}
                   {!NAME_REGEX.test(
                     formData?.employeeWorkHistory?.[index]?.contractType

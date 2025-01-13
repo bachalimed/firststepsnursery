@@ -88,14 +88,22 @@ const NewEmployeeForm = () => {
     employeeCurrentEmployment: {
       position: "",
       joinDate: "",
-      contractType: "",},
-      salaryPackage: {
-        basic: "",
-        allowance: "",
-        other: "",
-        payment: "",
+      contractType: "",
+    },
+    salaryPackage: [
+      {
+        salaryFrom: "",
+        salaryTo: "",
+        basicSalary: "",
+        allowances: [
+          {
+            allowanceLabel: "",
+            allowanceUnitValue: "",
+            allowancePeriodicity: "",
+          },
+        ],
       },
-    
+    ],
   });
 
   const [validity, setValidity] = useState({
@@ -118,10 +126,9 @@ const NewEmployeeForm = () => {
     validCurrentPosition: false,
     validJoinDate: false,
     validContractType: false,
-    validBasic: false,
-    validPayment: false,
-    validEmployeeYear: false,
-    validWorkHistory: false,
+    validSalaryFrom: false,
+    //validSalaryTo: false,
+    validBasicSalary: false,
   });
 
   //validation for workhjistory for non empty fields
@@ -174,11 +181,14 @@ const NewEmployeeForm = () => {
       validContractType: USER_REGEX.test(
         formData.employeeCurrentEmployment.contractType
       ),
-      validBasic: NUMBER_REGEX.test(
-        formData.employeeCurrentEmployment.salaryPackage.basic
+      validSalaryFrom: DATE_REGEX.test(
+        formData.salaryPackage[0]?.salaryFrom || ""
       ),
-      validPayment: NAME_REGEX.test(
-        formData.employeeCurrentEmployment.salaryPackage.payment
+      // validSalaryTo:
+      //   formData.salaryPackage[0]?.salaryTo === "" ||
+      //   DATE_REGEX.test(formData.salaryPackage[0]?.salaryTo || ""),
+      validBasicSalary: NUMBER_REGEX.test(
+        formData.salaryPackage[0]?.basicSalary || ""
       ),
       validEmployeeYear: YEAR_REGEX.test(
         formData.employeeYears[0].academicYear
@@ -200,18 +210,37 @@ const NewEmployeeForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  //related to employee years ch3ckbox
-  // const onAcademicYearChanged = (e, index) => {
-  //   const { checked } = e.target;
-  //   setFormData((prev) => {
-  //     const updatedYears = [...prev.employeeYears];
-  //     // Update based on checked state
-  //     updatedYears[index].academicYear = checked
-  //       ? selectedAcademicYear?.title
-  //       : "";
-  //     return { ...prev, employeeYears: updatedYears };
-  //   });
-  // };
+  const handleSalaryPackageChange = (field, value, allowanceIndex = null) => {
+    setFormData((prev) => {
+      const updatedPackage = [...prev.salaryPackage];
+      if (allowanceIndex !== null) {
+        updatedPackage[0].allowances[allowanceIndex][field] = value;
+      } else {
+        updatedPackage[0][field] = value;
+      }
+      return { ...prev, salaryPackage: updatedPackage };
+    });
+  };
+
+  const handleAddAllowance = () => {
+    setFormData((prev) => {
+      const updatedPackage = [...prev.salaryPackage];
+      updatedPackage[0].allowances.push({
+        allowanceLabel: "",
+        allowanceUnitValue: "",
+        allowancePeriodicity: "",
+      });
+      return { ...prev, salaryPackage: updatedPackage };
+    });
+  };
+
+  const handleRemoveAllowance = (index) => {
+    setFormData((prev) => {
+      const updatedPackage = [...prev.salaryPackage];
+      updatedPackage[0].allowances.splice(index, 1);
+      return { ...prev, salaryPackage: updatedPackage };
+    });
+  };
 
   const handleWorkHistoryChange = (index, field, value) => {
     const updatedWorkHistory = [...formData.employeeWorkHistory];
@@ -289,7 +318,7 @@ const NewEmployeeForm = () => {
   const handleCloseModal = () => {
     setShowConfirmation(false);
   };
-
+  
   const content = (
     <>
       <HR />
@@ -409,28 +438,26 @@ const NewEmployeeForm = () => {
               {/* CIN */}
 
               <label htmlFor="ID" className="ID">
-                    ID{" "}
-                    {!validity.validCin && (
-                      <span className="text-red-600">*</span>
-                    )}
-                    <input
-                      aria-invalid={!validity.validCin}
-                      placeholder="[3-25 digits]"
-                      aria-label="ID"
-                      type="text"
-                      id="cin"
-                      name="cin"
-                      value={formData.cin}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          cin: e.target.value,
-                        }))
-                      }
-                      className={`formInputText`}
-                      required
-                    />{" "}
-                  </label>
+                ID{" "}
+                {!validity.validCin && <span className="text-red-600">*</span>}
+                <input
+                  aria-invalid={!validity.validCin}
+                  placeholder="[3-25 digits]"
+                  aria-label="ID"
+                  type="text"
+                  id="cin"
+                  name="cin"
+                  value={formData.cin}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      cin: e.target.value,
+                    }))
+                  }
+                  className={`formInputText`}
+                  required
+                />{" "}
+              </label>
 
               {/* Sex Selection */}
 
@@ -440,7 +467,6 @@ const NewEmployeeForm = () => {
                   <span className="text-red-600">*</span>
                 )}
                 <div className="formCheckboxItemsDiv">
-                  
                   <label htmlFor="male" className="formCheckboxChoice">
                     <input
                       type="checkbox"
@@ -851,142 +877,142 @@ const NewEmployeeForm = () => {
               </label>
             </div>
 
+            {/* Salary Package Section */}
             <h4 className="formSectionTitle">Salary Package</h4>
+
             <div className="formSection">
               <div className="formLineDiv">
-                <label htmlFor="basic" className="formInputLabel">
-                  Basic{" "}
-                  {!validity.validBasic && (
+                <label htmlFor="salaryFrom" className="formInputLabel">
+                  Salary From:
+                  {!validity.validSalaryFrom && (
                     <span className="text-red-600">*</span>
                   )}
                   <input
-                    aria-label="basic"
-                    aria-invalid={!validity.validBasic}
-                    type="number"
-                    id="basic"
-                    name="basic"
-                    value={
-                      formData.employeeCurrentEmployment.salaryPackage.basic
-                    }
+                    type="date"
+                    id="salaryFrom"
+                    name="salaryFrom"
+                    value={formData.salaryPackage[0]?.salaryFrom}
                     onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        employeeCurrentEmployment: {
-                          ...prev.employeeCurrentEmployment,
-                          salaryPackage: {
-                            ...prev.employeeCurrentEmployment.salaryPackage,
-                            basic: e.target.value,
-                          },
-                        },
-                      }))
+                      handleSalaryPackageChange("salaryFrom", e.target.value)
                     }
-                    className={`formInputText`}
-                    placeholder="[$$$$.$$$]"
-                  />{" "}
+                    className="formInputText"
+                  />
                 </label>
-
-                <label htmlFor="payment" className="formInputLabel">
-                  Payment{" "}
-                  {!validity.validPayment && (
+                {/* <label htmlFor="salaryTo" className="formInputLabel">
+                  Salary To:
+                  <input
+                    type="date"
+                    id="salaryTo"
+                    name="salaryTo"
+                    value={formData.salaryPackage[0]?.salaryTo}
+                    onChange={(e) =>
+                      handleSalaryPackageChange("salaryTo", e.target.value)
+                    }
+                    className="formInputText"
+                  />
+                </label> */}
+              {/* </div>
+              <div className="formLineDiv"> */}
+                <label htmlFor="basicSalary" className="formInputLabel">
+                  Basic Salary:
+                  {!validity.validBasicSalary && (
                     <span className="text-red-600">*</span>
                   )}
-                  <select
-                    aria-label="payment"
-                    aria-invalid={!validity.validPayment}
-                    id="payment"
-                    name="payment"
-                    value={
-                      formData.employeeCurrentEmployment.salaryPackage.payment
-                    }
+                  <input
+                    type="number"
+                    id="basicSalary"
+                    name="basicSalary"
+                    value={formData.salaryPackage[0]?.basicSalary}
                     onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        employeeCurrentEmployment: {
-                          ...prev.employeeCurrentEmployment,
-                          salaryPackage: {
-                            ...prev.employeeCurrentEmployment.salaryPackage,
-                            payment: e.target.value,
-                          },
-                        },
-                      }))
+                      handleSalaryPackageChange("basicSalary", e.target.value)
                     }
-                    className={`formInputText`}
-                    required
+                    className="formInputText"
+                    placeholder="e.g., 5000"
+                  />
+                </label>
+              </div>
+              {/* Allowances Section */}
+              <h4 className="formSectionTitle">Allowances</h4>
+              {formData.salaryPackage[0].allowances.map((allowance, index) => (
+                <div className="formSection">
+                  <div key={index} className="formLineDiv">
+                    <label
+                      htmlFor={`allowanceLabel-${index}`}
+                      className="formInputLabel"
+                    >
+                      Allowance Label:
+                      <input
+                        type="text"
+                        id={`allowanceLabel-${index}`}
+                        value={allowance.allowanceLabel}
+                        onChange={(e) =>
+                          handleSalaryPackageChange(
+                            "allowanceLabel",
+                            e.target.value,
+                            index
+                          )
+                        }
+                        className="formInputText"
+                      />
+                    </label>
+                    <label
+                      htmlFor={`allowanceUnitValue-${index}`}
+                      className="formInputLabel"
+                    >
+                      Unit Value:
+                      <input
+                        type="number"
+                        id={`allowanceUnitValue-${index}`}
+                        value={allowance.allowanceUnitValue}
+                        onChange={(e) =>
+                          handleSalaryPackageChange(
+                            "allowanceUnitValue",
+                            e.target.value,
+                            index
+                          )
+                        }
+                        className="formInputText"
+                      />
+                    </label>
+                  </div>
+                  <label
+                    htmlFor={`allowancePeriodicity-${index}`}
+                    className="formInputLabel"
                   >
-                    <option value="">Select Payment Period</option>
-                    {PAYMENT_PERIODS.map((period) => (
-                      <option key={period} value={period}>
-                        {period}
-                      </option>
-                    ))}
-                  </select>{" "}
-                </label>
-              </div>
-              <div className="formLineDiv">
-                <label htmlFor="allowance" className="formInputLabel">
-                  ALLOWANCE{" "}
-                  {formData?.employeeCurrentEmployment?.salaryPackage
-                    ?.allowance &&
-                    !NUMBER_REGEX.test(
-                      formData?.employeeCurrentEmployment?.salaryPackage
-                        ?.allowance
-                    ) && <span className="text-red-600">[$$$$.$$$]</span>}
-                  <input
-                    aria-label="allowance"
-                    type="number"
-                    id="allowance"
-                    name="allowance"
-                    value={
-                      formData.employeeCurrentEmployment.salaryPackage.allowance
-                    }
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        employeeCurrentEmployment: {
-                          ...prev.employeeCurrentEmployment,
-                          salaryPackage: {
-                            ...prev.employeeCurrentEmployment.salaryPackage,
-                            allowance: e.target.value,
-                          },
-                        },
-                      }))
-                    }
-                    className={`formInputText`}
-                    placeholder="[$$$$.$$$]"
-                  />{" "}
-                </label>
-
-                <label htmlFor="other" className="formInputLabel">
-                  Other{" "}
-                  {formData?.employeeCurrentEmployment?.salaryPackage?.other &&
-                    !NUMBER_REGEX.test(
-                      formData?.employeeCurrentEmployment?.salaryPackage?.other
-                    ) && <span className="text-red-600">[$$$$.$$$]</span>}
-                  <input
-                    aria-label="other"
-                    type="number"
-                    id="other"
-                    name="other"
-                    value={
-                      formData.employeeCurrentEmployment.salaryPackage.other
-                    }
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        employeeCurrentEmployment: {
-                          ...prev.employeeCurrentEmployment,
-                          salaryPackage: {
-                            ...prev.employeeCurrentEmployment.salaryPackage,
-                            other: e.target.value,
-                          },
-                        },
-                      }))
-                    }
-                    className={`formInputText`}
-                    placeholder="[$$$$.$$$]"
-                  />{" "}
-                </label>
-              </div>
+                    Periodicity:
+                    <input
+                      type="text"
+                      id={`allowancePeriodicity-${index}`}
+                      value={allowance.allowancePeriodicity}
+                      onChange={(e) =>
+                        handleSalaryPackageChange(
+                          "allowancePeriodicity",
+                          e.target.value,
+                          index
+                        )
+                      }
+                      className="formInputText"
+                      placeholder="e.g., Monthly"
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveAllowance(index)}
+                    className="delete-button w-full"
+                  >
+                    {" "}
+                    Remove Allowance{" "}
+                  </button>{" "}
+                </div>
+              ))}{" "}
+              <button
+                type="button"
+                onClick={handleAddAllowance}
+                className="add-button w-full"
+              >
+                {" "}
+                Add Allowance{" "}
+              </button>{" "}
             </div>
 
             <h3 className="formSectionTitle">Employement history</h3>
