@@ -273,14 +273,6 @@ const PayslipsList = () => {
       width: "110px",
     },
 
-    {
-      name: "Total",
-      selector: (row) =>
-        `${row?.payslipSalaryComponents?.totalAmount} ${" "}${CurrencySymbol}`,
-      sortable: true,
-      width: "130px",
-    },
-
     //  {name: "Worked hours",
     //   selector:row=>(row?.TBD),
 
@@ -288,34 +280,58 @@ const PayslipsList = () => {
     //   width:'100px'
     // },
     {
-      name: "Details",
+      name: `Salary Details (${CurrencySymbol})`,
       selector: (row) => (
         <div>
+          {/* Basic Salary */}
+          <div>{`Basic: ${row?.payslipSalaryComponents?.basic || 0} `}</div>
+          <div>{`Paid Basic: ${
+            row?.payslipSalaryComponents?.payableBasic || 0
+          } `}</div>
+
+          {/* Allowances */}
+          {row?.payslipSalaryComponents?.allowances?.length > 0 && (
+            <div>
+              <strong>Allowances:</strong>
+              {row.payslipSalaryComponents.allowances.map(
+                (allowance, index) => (
+                  <div key={index}>
+                    {`${allowance?.allowanceLabel || "N/A"}: ${
+                      allowance?.allowanceUnitValue || 0
+                    } x ${allowance?.allowanceNumber || 0} = ${
+                      allowance?.allowanceTotalValue || 0
+                    } `}
+                  </div>
+                )
+              )}
+            </div>
+          )}
+
+          {/* Deductions */}
+          {row?.payslipSalaryComponents?.deduction && (
+            <div>
+              <strong>Deductions:</strong>
+              <div>{`${
+                row.payslipSalaryComponents.deduction.deductionLabel || "N/A"
+              }: ${
+                row.payslipSalaryComponents.deduction.deductionAmount || 0
+              } `}</div>
+            </div>
+          )}
+
+          {/* Total Salary */}
           <div>
-            {`Basic${" "}${
-              row?.payslipSalaryComponents?.basic
-            }${" "}${CurrencySymbol}`}{" "}
-          </div>
-          <div>
-            {`Paid basic${" "}${
-              row?.payslipSalaryComponents?.payableBasic
-            }${" "}${CurrencySymbol}`}{" "}
-          </div>
-          <div>
-            {`Allowance${" "}${
-              row?.payslipSalaryComponents?.allowance
-            }${" "}${CurrencySymbol}`}{" "}
+            <strong>Total:</strong> {`${row?.payslipTotalAmount || 0} `}
           </div>
         </div>
       ),
-
       sortable: true,
       removableRows: true,
       style: {
         justifyContent: "left",
         textAlign: "left",
       },
-      width: "180px",
+      width: "260px",
     },
 
     // {
@@ -335,7 +351,7 @@ const PayslipsList = () => {
       name: "Actions",
       cell: (row) => (
         <div className="space-x-1">
-          {row?.payslipIsApproved &&row?.payslipPaymentDate&& (
+          {row?.payslipIsApproved && row?.payslipPaymentDate && (
             <button
               className="text-teal-500"
               fontSize={20}
@@ -358,7 +374,9 @@ const PayslipsList = () => {
               className="text-amber-300"
               onClick={() => navigate(`/hr/payslips/editPayslip/${row.id}`)}
               hidden={
-                (row?.payslipPaymentDate &&row.payslipPaymentDate&& row.payslipPaymentDate !== "") &&
+                row?.payslipPaymentDate &&
+                row.payslipPaymentDate &&
+                row.payslipPaymentDate !== "" &&
                 row?.payslipIsApproved === true
               }
             >

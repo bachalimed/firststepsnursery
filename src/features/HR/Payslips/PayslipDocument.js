@@ -11,7 +11,7 @@ const PayslipDocument = ({ payslipData, onClose }) => {
   const handleDownload = () => {
     const element = document.getElementById("payslip-document-content");
     const opt = {
-      margin: [0, 0, 0, 0], // Remove all default margins
+      margin: [0, 0, 0, 0],
       filename: `payslip_${payslipData.id}.pdf`,
       html2canvas: { scale: 2, useCORS: true },
       jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
@@ -47,7 +47,7 @@ const PayslipDocument = ({ payslipData, onClose }) => {
 
         {/* Employee, Summary, and Salary Components */}
         <div className="mt-2 border-b pb-2">
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-4 gap-2">
             <div>
               <h3 className="text-xs font-semibold text-gray-800">
                 Employee: <strong>{payslipData?.payslipEmployeeName}</strong>
@@ -55,7 +55,9 @@ const PayslipDocument = ({ payslipData, onClose }) => {
               <span className="text-xs">{`(${payslipData?.payslipEmployee?._id})`}</span>
             </div>
             <div>
-              <h3 className="text-xs font-semibold text-gray-800">Summary</h3>
+              <h3 className="text-xs font-semibold text-gray-800">
+                Days Summary
+              </h3>
               <p>
                 <strong>Total Open Days:</strong>{" "}
                 {
@@ -81,28 +83,94 @@ const PayslipDocument = ({ payslipData, onClose }) => {
             </div>
             <div>
               <h3 className="text-xs font-semibold text-gray-800">
-                Salary Components ({CurrencySymbol})
+                Gross Salary ({CurrencySymbol})
               </h3>
               <p>
                 <strong>Basic:</strong>{" "}
                 {payslipData?.payslipSalaryComponents?.basic}
               </p>
               <p>
-                <strong>Payable basic:</strong>{" "}
+                <strong>Payable Basic:</strong>{" "}
                 {payslipData?.payslipSalaryComponents?.payableBasic}
               </p>
               <p>
-                <strong>Allowance:</strong>{" "}
-                {payslipData?.payslipSalaryComponents?.allowance}
+                <strong>Total Allowances:</strong>{" "}
+                {payslipData?.payslipSalaryComponents?.allowances
+                  ?.reduce(
+                    (sum, allowance) =>
+                      sum +
+                      (Number(allowance.allowanceUnitValue) || 0) *
+                        (Number(allowance.allowanceNumber) || 0),
+                    0
+                  )
+                  ?.toFixed(2)}
               </p>
-            
+            </div>
+            <div>
+              <h3 className="text-xs font-semibold text-gray-800">
+                Net Pay ({CurrencySymbol})
+              </h3>
+
+              <p>
+                <strong>Deduction:</strong> -
+                {
+                  payslipData?.payslipSalaryComponents?.deduction
+                    ?.deductionAmount
+                }
+              </p>
+              <p>
+                <strong>Total Net Salary:</strong>{" "}
+                {payslipData?.payslipTotalAmount}
+              </p>
             </div>
           </div>
         </div>
 
+        {/* Allowances Details */}
+        <div className="mt-1">
+          <h3 className="text-xs font-semibold text-gray-800 mb-1">
+            Allowances
+          </h3>
+          <table className="w-full border-collapse border border-gray-300 text-xs">
+            <thead>
+              <tr className="bg-gray-100 text-left">
+                <th className="border border-gray-300 px-0.5 py-0.5">Label</th>
+                <th className="border border-gray-300 px-0.5 py-0.5">
+                  Unit Value
+                </th>
+                <th className="border border-gray-300 px-0.5 py-0.5">Number</th>
+                <th className="border border-gray-300 px-0.5 py-0.5">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {payslipData?.payslipSalaryComponents?.allowances?.map(
+                (allowance, index) => (
+                  <tr key={index}>
+                    <td className="border border-gray-300 px-0.5 py-0.5">
+                      {allowance?.allowanceLabel}
+                    </td>
+                    <td className="border border-gray-300 px-0.5 py-0.5">
+                      {allowance?.allowanceUnitValue}
+                    </td>
+                    <td className="border border-gray-300 px-0.5 py-0.5">
+                      {allowance?.allowanceNumber}
+                    </td>
+                    <td className="border border-gray-300 px-0.5 py-0.5">
+                      {(
+                        (Number(allowance?.allowanceUnitValue) || 0) *
+                        (Number(allowance?.allowanceNumber) || 0)
+                      ).toFixed(2)}
+                    </td>
+                  </tr>
+                )
+              )}
+            </tbody>
+          </table>
+        </div>
+
         {/* Workdays Table */}
-        <div className="mt-2">
-          <h3 className="text-xs font-semibold text-gray-800 mb-2">
+        <div className="mt-1">
+          <h3 className="text-xs font-semibold text-gray-800 mb-1">
             Daily Information
           </h3>
           <table className="w-full border-collapse border border-gray-300 text-xs">
@@ -149,23 +217,6 @@ const PayslipDocument = ({ payslipData, onClose }) => {
               ))}
             </tbody>
           </table>
-        </div>
-
-        {/* Total Section */}
-        <div className="mt-2 text-xs grid grid-cols-3 gap-2">
-          <p>
-            <strong>Total Work Days:</strong>{" "}
-            {
-              payslipData?.payslipWorkdays.filter(
-                (day) =>
-                  day?.dayType === "Work day" || day?.dayType === "Given day"
-              ).length
-            }
-          </p>{" "}
-          <p>
-            <strong>Total Salary:</strong> {CurrencySymbol}{" "}
-            {payslipData?.payslipSalaryComponents?.totalAmount}
-          </p>
         </div>
 
         {/* Footer Section */}

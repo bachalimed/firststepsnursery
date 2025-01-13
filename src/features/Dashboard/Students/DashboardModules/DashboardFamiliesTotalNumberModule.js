@@ -40,6 +40,9 @@ const DashboardFamiliesTotalNumberModule = () => {
             {familySituationCount?.Separated} separated{" "}
           </span>
           <span className="pl-2 text-sm text-red-600">
+            {familySituationCount?.Orphan} Orphan{" "}
+          </span>
+          <span className="pl-2 text-sm text-red-600">
             {familySituationCount?.Joint} Joint{" "}
           </span>
         </div>

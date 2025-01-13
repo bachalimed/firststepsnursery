@@ -45,6 +45,7 @@ const EditPayslipForm = ({ payslip }) => {
     payslipNote,
     payslipPaymentDate,
     payslipSalaryComponents,
+    payslipTotalAmount,
     payslipWorkdays,
     payslipYear,
   } = payslip;
@@ -73,7 +74,18 @@ const EditPayslipForm = ({ payslip }) => {
     payslipMonth: payslip?.payslipMonth,
     payslipNote: payslip?.payslipNote,
     payslipPaymentDate: payslip?.payslipPaymentDate?.split("T")[0],
-    payslipSalaryComponents: payslip?.payslipSalaryComponents,
+    payslipSalaryComponents: {
+      ...payslip?.payslipSalaryComponents,
+      allowances: payslip?.payslipSalaryComponents?.allowances?.map((allowance) => ({
+        ...allowance,
+        allowanceNumber: allowance.allowanceNumber || 0,
+        allowanceTotalValue:
+          (Number(allowance.allowanceUnitValue) || 0) *
+          (Number(allowance.allowanceNumber) || 0),
+      })),
+      deduction:payslip?.payslipSalaryComponents?.deduction,
+    },
+    payslipTotalAmount: payslip?.payslipTotalAmount,
     payslipWorkdays: payslip?.payslipWorkdays,
     payslipYear: payslip?.payslipYear,
     payslipOperator: userId,
@@ -88,10 +100,23 @@ const EditPayslipForm = ({ payslip }) => {
     //validPayslipPaymentDate: false,
     validPayslipLeaveDays: false,
     validPayslipSalaryComponents: false,
+    validAllowances: [],
+    validDeduction: true,
   });
 
   // Validate inputs using regex patterns
   useEffect(() => {
+    const validAllowances = formData.payslipSalaryComponents.allowances.map(
+      (allowance) => {
+        const isNumberValid =
+          Number(allowance.allowanceNumber) >= 0 &&
+          allowance.allowanceNumber !== "";
+        return isNumberValid;
+      }
+    );
+
+    const isDeductionValid =
+      Number(formData.payslipSalaryComponents.deduction.deductionAmount) >= 0;
     setValidity((prev) => ({
       ...prev,
       validPayslipYear: YEAR_REGEX.test(formData?.payslipYear),
@@ -101,8 +126,10 @@ const EditPayslipForm = ({ payslip }) => {
       //validPayslipPaymentDate: DATE_REGEX.test(formData?.payslipPaymentDate),
       validPayslipLeaveDays: formData?.payslipLeaveDays?.length > 0,
       validPayslipSalaryComponents:
-        formData?.payslipSalaryComponents?.totalAmount != 0 &&
-        FEE_REGEX.test(formData?.payslipSalaryComponents?.totalAmount),
+        formData?.payslipTotalAmount != 0 &&
+        FEE_REGEX.test(formData?.payslipTotalAmount),
+      validAllowances,
+      validDeduction: isDeductionValid,
     }));
   }, [formData]);
   // console.log(validity);
@@ -121,7 +148,66 @@ const EditPayslipForm = ({ payslip }) => {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
+  const updateAllowanceNumber = (index, updatedNumber) => {
+    setFormData((prev) => {
+      const updatedAllowances = prev.payslipSalaryComponents.allowances.map(
+        (allowance, idx) =>
+          idx === index
+            ? {
+                ...allowance,
+                allowanceNumber: updatedNumber,
+                allowanceTotalValue:
+                  (Number(allowance.allowanceUnitValue) || 0) * updatedNumber,
+              }
+            : allowance
+      );
 
+      const totalAllowances = updatedAllowances.reduce(
+        (sum, allowance) => sum + (Number(allowance.allowanceTotalValue) || 0),
+        0
+      );
+
+      const totalAmount =
+        Number(prev.payslipSalaryComponents.payableBasic || 0) +
+        totalAllowances -
+        Number(prev.payslipSalaryComponents.deduction.deductionAmount || 0);
+
+      return {
+        ...prev,
+        payslipSalaryComponents: {
+          ...prev.payslipSalaryComponents,
+          allowances: updatedAllowances,
+        },
+        payslipTotalAmount: totalAmount.toFixed(2),
+      };
+    });
+  };
+
+  const updateDeductionAmount = (updatedDeduction) => {
+    setFormData((prev) => {
+      const totalAllowances = prev.payslipSalaryComponents.allowances.reduce(
+        (sum, allowance) => sum + (Number(allowance.allowanceTotalValue) || 0),
+        0
+      );
+
+      const totalAmount =
+        Number(prev.payslipSalaryComponents.payableBasic || 0) +
+        totalAllowances -
+        updatedDeduction;
+
+      return {
+        ...prev,
+        payslipSalaryComponents: {
+          ...prev.payslipSalaryComponents,
+          deduction: {
+            ...prev.payslipSalaryComponents.deduction,
+            deductionAmount: updatedDeduction,
+          },
+        },
+        payslipTotalAmount: totalAmount.toFixed(2),
+      };
+    });
+  };
   const canSave =
     Object.values(validity).every(Boolean) &&
     // ((formData.payslipYears[0].academicYear)!=='') &&
@@ -278,7 +364,16 @@ const EditPayslipForm = ({ payslip }) => {
                         dayObj.isWeekend ? "bg-yellow-200" : "bg-white"
                       }`}
                     >
-                      <td className="px-4  text-sm">{dayObj.day}</td>
+                      <td className="px-4 text-sm">
+                        {(() => {
+                          const date = new Date(dayObj.day);
+                          if (!isNaN(date.getTime())) {
+                            return date.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+                          }
+                          return "Invalid Date"; // Fallback in case of an invalid date
+                        })()}
+                      </td>
+
                       <td className="px-4 ">
                         {!dayObj?.isWeekend && (
                           <div className="text-xs text-gray-600">
@@ -358,59 +453,135 @@ const EditPayslipForm = ({ payslip }) => {
             </div>
           </div>
           <h3 className="formSectionTitle">Salary details</h3>
-<div className="formSection">
-  {/* Payable Basic Salary */}
-  <div className="flex justify-between items-center mb-3">
-    <span className="formInputLabel">Basic Salary:</span>
-    <span className="text-gray-800">
-      {formData?.payslipSalaryComponents?.basic || 0} {CurrencySymbol}
-    </span>
-  </div>
 
-  {/* Payable Basic Salary */}
-  <div className="flex justify-between items-center mb-3">
-    <span className="formInputLabel">Payable Basic Salary:</span>
-    <span className="text-gray-800">
-      {formData?.payslipSalaryComponents?.payableBasic || 0} {CurrencySymbol}
-    </span>
-  </div>
+          {/* Allowance Input */}
+          <div className="formSection">
+            {/* Payable Basic Salary */}
+            <div className="flex justify-between items-center mb-3">
+              <span className="formInputLabel">Basic Salary:</span>
+              <span className="text-gray-800">
+                {formData?.payslipSalaryComponents?.basic || 0} {CurrencySymbol}
+              </span>
+            </div>
 
-  {/* Allowance Input */}
-  <div className="flex justify-between items-center mb-3">
-    <label htmlFor="allowance" className="formInputLabel">
-      Allowance:
-    </label>
-    <input
-      id="allowance"
-      type="number"
-      value={formData?.payslipSalaryComponents?.allowance || ""}
-      onChange={(e) => {
-        const allowanceValue = Number(e.target.value) || 0;
-        // Update formData with allowance and total salary
-        setFormData((prev) => ({
-          ...prev,
-          payslipSalaryComponents: {
-            ...prev.payslipSalaryComponents,
-            allowance: allowanceValue,
-            totalAmount:
-              Number(prev.payslipSalaryComponents?.payableBasic || 0) +
-              allowanceValue,
-          },
-        }));
-      }}
-      className="border rounded-md px-2 py-1 w-28 text-right"
-    />
-  </div>
+            {/* Payable Basic Salary */}
+            <div className="flex justify-between items-center mb-3">
+              <span className="formInputLabel ">Payable Basic Salary:</span>
+              <span className="text-green-500 font-bold">
+                {formData?.payslipSalaryComponents?.payableBasic || 0}{" "}
+                {CurrencySymbol}
+              </span>
+            </div>
 
-  {/* Total Salary */}
-  <div className="flex justify-between items-center">
-    <span className="formInputLabel">Total Salary:</span>
-    <span className="font-bold text-gray-900">
-      {formData?.payslipSalaryComponents?.totalAmount || 0} {CurrencySymbol}
-    </span>
-  </div>
-</div>
+            {/* Allowances */}
 
+            <h4 className="formSectionTitle">Allowances:</h4>
+            <div className="formSection">
+              {formData?.payslipSalaryComponents?.allowances?.map(
+                (allowance, index) => (
+                  <div key={index} className="flex flex-col mb-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="formInputLabel">
+                        {allowance?.allowanceLabel}
+                        {": "}
+                        {allowance?.allowanceUnitValue} {CurrencySymbol}
+                        {" - "}
+                        {allowance?.allowancePeriodicity}
+                      </span>
+                    </div>
+                    <div className="formLineDiv items-center">
+                      <label
+                        htmlFor={`allowance number-${index}`}
+                        className="formInputLabel mr-4"
+                      >
+                        Number:{" "}
+                        {!validity.validAllowances[index] && (
+                          <span className="text-red-600">*</span>
+                        )}
+                        <input
+                          id={`allowance number-${index}`}
+                          type="number"
+                          value={allowance?.allowanceNumber || ""}
+                          onChange={(e) => {
+                            const updatedNumber = Number(e.target.value) || 0;
+                            updateAllowanceNumber(index, updatedNumber);
+                          }}
+                          className="formInputText "
+                        />
+                      </label>
+                      <div className="text-right">
+                        <span className="text-green-500 font-bold">
+                          {allowance?.allowanceTotalValue || 0} {CurrencySymbol}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )
+              )}
+            </div>
+            {/* gross  Salary */}
+            <div className="flex justify-between items-center mb-3">
+              <span className="formInputLabel ">Gross Salary:</span>
+              <span className="text-green-500 font-bold">
+                {(
+                  Number(formData?.payslipSalaryComponents?.payableBasic || 0) +
+                  formData?.payslipSalaryComponents?.allowances?.reduce(
+                    (sum, allowance) => {
+                      const unitValue =
+                        Number(allowance?.allowanceUnitValue) || 0;
+                      const number = Number(allowance?.allowanceNumber) || 0;
+                      return sum + unitValue * number;
+                    },
+                    0
+                  )
+                ).toFixed(2)}{" "}
+                {CurrencySymbol}
+              </span>
+            </div>
+
+            {/* Deduction */}
+            <h4 className="formSectionTitle">Deductions:</h4>
+            {/* <div className="formSection"> */}
+            <div className="formLineDiv items-center">
+              <label htmlFor="deduction">
+                {formData?.payslipSalaryComponents?.deduction?.deductionLabel}{" "}
+                {" :"}
+                {!validity.validDeduction && (
+                  <span className="text-red-600">*</span>
+                )}
+                <input
+                  type="number"
+                  id="deduction"
+                  value={
+                    formData?.payslipSalaryComponents?.deduction
+                      ?.deductionAmount || 0
+                  }
+                  onChange={(e) => {
+                    const updatedDeduction = Number(e.target.value) || 0;
+                    updateDeductionAmount(updatedDeduction);
+                  }}
+                  className="formInputText w-28"
+                />
+              </label>{" "}
+              <div className="text-right">
+                <span className="text-red-500 font-bold">
+                  -{" "}
+                  {formData?.payslipSalaryComponents?.deduction
+                    ?.deductionAmount || 0}{" "}
+                  {CurrencySymbol}
+                </span>
+              </div>
+            </div>
+            {/* </div> */}
+
+            {/* Total Salary */}
+            <div className="flex justify-between items-center">
+              <span className="formInputLabel">Net Salary:</span>
+              <span className="font-bold text-gray-900">
+                {formData?.payslipTotalAmount || 0} {CurrencySymbol}
+              </span>
+            </div>
+          </div>
 
           <label htmlFor={`payslipNote`} className="formInputLabel">
             Note
