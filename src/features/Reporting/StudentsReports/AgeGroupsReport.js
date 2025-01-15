@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import html2pdf from "html2pdf.js";
 import {
   selectCurrentAcademicYearId,
@@ -11,6 +11,9 @@ import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import { useSelector } from "react-redux";
 import smallfirststeps from "../../../Data/smallfirststeps.png";
 const AgeGroupsReport = () => {
+  useEffect(() => {
+    document.title = "New Employee";
+  });
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId);
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)

@@ -25,8 +25,8 @@ const StudentsReports = () => {
       path: "/reports/studentsReports/ageGroupsReport/",
     },
     ( isDirector || isManager || isAdmin) && {
-      label: "bla",
-      path: "/reports/studentsReports/bla/",
+      label: "Enrolments",
+      path: "/reports/studentsReports/enrolmentsReport/",
     },
     ( isDirector || isManager || isAdmin) && {
       label: "blabla",

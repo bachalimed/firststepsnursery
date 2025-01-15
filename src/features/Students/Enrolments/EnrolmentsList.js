@@ -55,7 +55,7 @@ const EnrolmentsList = () => {
     const currentMonthIndex = new Date().getMonth(); // Get current month (0-11)
     return MONTHS[currentMonthIndex]; // Return the month name with the first letter capitalized
   };
-//to initialise a new query
+//to initialise a new query( so when new invoices are added, the enrolment list is updated)
   const [queryTrigger, setQueryTrigger] = useState(0);
 
 

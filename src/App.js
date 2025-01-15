@@ -15,6 +15,7 @@ import MyProfile from "./features/auth/MyProfile";
 import EditMyProfile from "./features/auth/MyProfile/EditMyProfile";
 import MyDetails from "./features/auth/MyProfile/MyDetails";
 
+import EnrolmentsReport from "./features/Reporting/StudentsReports/EnrolmentsReport"
 import AgeGroupsReport from "./features/Reporting/StudentsReports/AgeGroupsReport"
 import StudentsReports from "./features/Reporting/StudentsReports"; 
 import AcademicsReports from "./features/Reporting/AcademicsReports"; 
@@ -590,16 +591,11 @@ const App = () => {
                 <Route path="studentsReports">
                   <Route index element={<StudentsReports />} />
                   <Route path="ageGroupsReport/" element={<AgeGroupsReport />} />
-                  <Route
-                    path="newStudentDocumentsList/"
-                    element={<NewStudentDocumentsListForm />}
-                  />
-                  <Route
-                    path="studentDocumentsList/edit/:id/"
-                    element={<EditStudentDocumentsList />}
-                  />
+                  <Route path="enrolmentsReport/" element={<EnrolmentsReport/>} />
+                  
+                 
 
-                  <Route path="services/" element={<ServicesList />} />
+                 
                 </Route>{" "}
                 {/* end of studentsReports route */}
                 <Route path="academicsReports">

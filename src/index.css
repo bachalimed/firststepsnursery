@@ -577,7 +577,8 @@ header .bg-blue-600 p {
 /*//////////////standard forms style begin*/
 /* Form container styles used for all forms */
 .form-container {
-  @apply bg-white border-2 border-gray-300 rounded-lg p-4  max-w-2xl my-2 mx-auto w-full box-border md:p-6;
+  @apply bg-white border-2 border-gray-300 rounded-lg p-4 max-w-2xl my-2 mx-auto w-full box-border md:p-6 md:max-w-3xl lg:max-w-4xl;
+  /* @apply bg-white border-2 border-gray-300 rounded-lg p-4  max-w-2xl my-2 mx-auto w-full box-border md:p-6; */
 }
 
 /* Form title forms */

@@ -90,7 +90,7 @@ const NewEnrolmentForm = () => {
     admission: "",
     enrolmentYear: selectedAcademicYear?.title || "",
     enrolmentMonth: "",
-    enrolmentNote: "",
+    //enrolmentNote: "",
 
     enrolmentCreator: userId,
     enrolmentOperator: userId,
@@ -101,6 +101,7 @@ const NewEnrolmentForm = () => {
         servicePeriod: "",
         serviceAuthorisedFee: "",
         serviceFinalFee: "",
+        enrolmentNote: "",
 
         //enrolmentDuration: "",
         //enrolmentStartDate: "",
@@ -117,7 +118,7 @@ const NewEnrolmentForm = () => {
     validAdmission: false,
     validEnrolmentYear: false,
     validEnrolmentMonth: false,
-    validEnrolmentNote: false,
+    validEnrolmentNotes: false,
     validEnrolmentOperator: false,
     validEnrolmentCreator: false,
   });
@@ -156,6 +157,18 @@ const NewEnrolmentForm = () => {
   // console.log(studentServicesList, "studentServicesList");
   // Form Validation using regex
   useEffect(() => {
+    const validEnrolmentNotes = formData.enrolments.map((enrolment) => {
+      const note = enrolment.enrolmentNote?.trim() || "";
+
+      if (enrolment.serviceFinalFee < enrolment.serviceAuthorisedFee) {
+        // Condition 1: Note is mandatory
+        return note !== "" && COMMENT_REGEX.test(note);
+      } else {
+        // Condition 2: Note is optional but must comply if provided
+        return note === "" || COMMENT_REGEX.test(note);
+      }
+    });
+
     setValidity({
       validStudent: OBJECTID_REGEX.test(formData?.student),
       validService: formData.enrolments.some((enrolment) =>
@@ -167,18 +180,7 @@ const NewEnrolmentForm = () => {
       //validServiceFinalFee: formData?.serviceFinalFee !== "",
       validEnrolmentYear: formData?.enrolmentYear !== "",
       validEnrolmentMonth: formData?.enrolmentMonth !== "",
-      validEnrolmentNote :
-      COMMENT_REGEX.test(formData?.enrolmentNote) &&
-      formData.enrolments.every((enrolment) => {
-        if (enrolment?.serviceFinalFee < enrolment?.serviceAuthorisedFee) {
-          // If finalFee < authorisedFee, enrolmentNote must not be empty and must pass regex
-          return formData?.enrolmentNote.trim() !== "";
-        }
-        return true; // Otherwise, it's valid
-      }),
-      //validEnrolmentDuration: formData?.enrolmentDuration !== "",
-      //validEnrolmentStartDate: DATE_REGEX.test(formData?.enrolmentStartDate),
-      //validEnrolmentEndDate: DATE_REGEX.test(formData?.enrolmentEndDate),
+      validEnrolmentNotes,
       validEnrolmentOperator: OBJECTID_REGEX.test(formData?.enrolmentOperator),
       validEnrolmentCreator: OBJECTID_REGEX.test(formData?.enrolmentCreator),
     });
@@ -269,6 +271,16 @@ const NewEnrolmentForm = () => {
       ),
     }));
   };
+  const handleServiceNoteChange = (serviceId, enrolmentNote) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      enrolments: prevData.enrolments.map((enrolment) =>
+        enrolment.service === serviceId
+          ? { ...enrolment, enrolmentNote: enrolmentNote }
+          : enrolment
+      ),
+    }));
+  };
 
   const { triggerBanner } = useOutletContext(); // Access banner trigger
   const handleSubmit = async (e) => {
@@ -310,7 +322,8 @@ const NewEnrolmentForm = () => {
   const handleCloseModal = () => {
     setShowConfirmation(false);
   };
-  // console.log(formData, "formData");
+  console.log(validity, "validity");
+  console.log(formData, "formData");
   // console.log(noEnrolmentStudentsList[0], "noEnrolmentStudentsList[0]");
   let content;
   if (isAdmissionLoading) {
@@ -437,44 +450,20 @@ const NewEnrolmentForm = () => {
                       ))}
                   </select>
                 </label>
-
-                {/* enrolment note */}
-
-                <label htmlFor="enrolmentNote" className="formInputLabel">
-                  Note{" "}
-                  {!validity?.validEnrolmentNote && (
-                    <span className="text-red-600">*</span>
-                  )}
-                  <textarea
-                    id="enrolmentNote"
-                    name="enrolmentNote"
-                    value={formData.enrolmentNote}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        enrolmentNote: e.target.value,
-                      })
-                    }
-                    className="formInputText"
-                    rows="2" // Adjust the number of rows as needed
-                    placeholder="[1-150 characters]"
-                  />
-                </label>
               </div>
               <h3 className="formSectionTitle"> Services</h3>
 
               {/* Services Section */}
-              <div className="formSection">
-                {studentServicesList.map((service) => {
-                  const isChecked = formData.enrolments.some(
-                    (enrolment) => enrolment?.service === service?.service
-                  );
 
-                  return (
-                    <div
-                      key={service?.service}
-                      className="flex items-center justify-between border-b border-gray-300 py-2 px-4 "
-                    >
+              {studentServicesList.map((service, serviceIndex) => {
+                const isChecked = formData.enrolments.some(
+                  (enrolment) => enrolment?.service === service?.service
+                );
+                const isNoteValid =
+                  validity.validEnrolmentNotes?.[serviceIndex] ?? true; // Check specific note validity
+                return (
+                  <div key={service?.service} className="formSection">
+                    <div className="flex items-center justify-between  py-2 px-4 ">
                       <div className="flex items-center space-x-2">
                         <label
                           htmlFor={service?.service}
@@ -514,27 +503,69 @@ const NewEnrolmentForm = () => {
                             formData.enrolments.find(
                               (enrolment) =>
                                 enrolment.service === service.service
-                            )?.serviceFinalFee || ""
+                            )?.serviceFinalFee || "0"
                           }
                           onChange={(e) =>
                             handleServiceChange(service.service, e.target.value)
                           }
-                          className="ml-2 border rounded-md p-1 "
+                          className="ml-2 border-2 border-gray-800 rounded-md p-1 "
                           placeholder="Final Fee"
                         />
                       </label>
                     </div>
-                  );
-                })}
-              </div>
+                    {/* enrolment note */}
+                    <div>
+                      <label
+                        htmlFor="enrolmentNote"
+                        className="formInputLabel "
+                      >
+                        Note{" "}
+                        {!isNoteValid &&
+                          service.serviceFinalFee <
+                            service.serviceAuthorisedFee && (
+                            <span className="text-red-600">*</span>
+                          )}
+                        {!isNoteValid &&
+                          service.serviceFinalFee >=
+                            service.serviceAuthorisedFee && (
+                            <span className="text-red-600 text-sm">*</span>
+                          )}
+                        <textarea
+                          aria-label={`enrolmentNote ${service?.enrolmentNote}`}
+                          id={`enrolmentNote-${service?.service}`}
+                          name={`enrolmentNote-${service?.service}`}
+                          value={
+                            formData.enrolments.find(
+                              (enrolment) =>
+                                enrolment.service === service.service
+                            )?.enrolmentNote || ""
+                          }
+                          onChange={(e) =>
+                            handleServiceNoteChange(
+                              service.service,
+                              e.target.value
+                            )
+                          }
+                          className="formInputText"
+                          rows="1" // Adjust the number of rows as needed
+                          placeholder="[1-150 characters]"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                );
+              })}
             </>
           )}
 
-          {noEnrolmentMonthStudentsList?.length === 0 && (
-            <div>
-              {`No enrolments available to add for ${formData?.enrolmentMonth}`}
-            </div>
-          )}
+{noEnrolmentMonthStudentsList?.length === 0 && (
+  <div className="bg-gray-200 text-red-600   rounded-md p-4 text-center">
+    <span className="font-medium ">
+      No enrolments available to add for {formData?.enrolmentMonth}
+    </span>
+  </div>
+)}
+
           <div className="cancelSavebuttonsDiv">
             <button
               aria-label="cancel enrolment"

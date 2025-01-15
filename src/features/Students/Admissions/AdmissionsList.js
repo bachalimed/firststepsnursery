@@ -299,20 +299,30 @@ const AdmissionsList = () => {
     //   : null,
 
     {
-      name: "Student Name",
-      selector: (row) =>
-        row?.student?.studentName.firstName +
-        " " +
-        row?.student?.studentName?.middleName +
-        " " +
-        row?.student?.studentName?.lastName,
+      name: "Student",
+      selector: (row) => (
+        <div
+          style={{
+            whiteSpace: "normal",
+            wordWrap: "break-word",
+            textAlign: "left", // Ensures proper text alignment
+          }}
+        >
+          {row?.student?.studentName?.firstName || ""}
+          {" "}
+          {row?.student?.studentName?.middleName || ""}
+          {" "}
+          {row?.student?.studentName?.lastName || ""}
+        </div>
+      ),
       style: {
         justifyContent: "left",
-        textAlign: "left",
+        textAlign: "left", // Aligns the header and cell content properly
       },
       sortable: true,
-      width: "190px",
+      width: "120px",
     },
+    
 
     {
       name: "Date",
@@ -405,6 +415,46 @@ const AdmissionsList = () => {
       removableRows: true,
       width: "100px",
     },
+    {
+      name: "Note",
+      selector: (row) => (
+        <div>
+          {row?.agreedServices.map((feeObj, index) =>
+            feeObj?.comment ? (
+              <div
+                key={index}
+                style={{
+                  whiteSpace: "normal",
+                  wordWrap: "break-word",
+                  textAlign: "left", // Aligns the text properly
+                }}
+              >
+                {feeObj.comment}
+              </div>
+            ) : (
+              <div
+                key={`no-comment-${index}`}
+                style={{
+                  whiteSpace: "normal",
+                  wordWrap: "break-word",
+                  textAlign: "left", // Aligns the text properly
+                }}
+              >
+                --
+              </div>
+            )
+          )}
+        </div>
+      ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
+      sortable: true,
+      width: "120px",
+    },
+    
+    
     {
       name: "Flagged",
       selector: (row) => (
