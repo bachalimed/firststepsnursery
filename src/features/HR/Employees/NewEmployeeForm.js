@@ -22,7 +22,9 @@ import {
   DATE_REGEX,
   YEAR_REGEX,
   EMAIL_REGEX,
+  FEE_REGEX,
 } from "../../../config/REGEX";
+import { CurrencySymbol } from "../../../config/Currency";
 
 import { useOutletContext } from "react-router-dom";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
@@ -102,6 +104,7 @@ const NewEmployeeForm = () => {
             allowancePeriodicity: "",
           },
         ],
+        deduction: { deductionLabel: "", deductionAmount: "" },
       },
     ],
   });
@@ -129,6 +132,8 @@ const NewEmployeeForm = () => {
     validSalaryFrom: false,
     //validSalaryTo: false,
     validBasicSalary: false,
+    validAllowances: [],
+    validDeduction: false,
   });
 
   //validation for workhjistory for non empty fields
@@ -146,15 +151,58 @@ const NewEmployeeForm = () => {
   };
   // Validate inputs using regex patterns
   useEffect(() => {
+    const validAllowances = formData?.salaryPackage[0]?.allowances?.map(
+      (allowance) => {
+        const isUnitValueValid = FEE_REGEX.test(allowance.allowanceUnitValue);
+        const isPeriodValid = NAME_REGEX.test(allowance?.allowancePeriodicity);
+        const isLabelValid = NAME_REGEX.test(allowance?.allowanceLabel);
+
+        // Check if all fields are empty
+        const isEmpty =
+          !allowance.allowanceUnitValue &&
+          !allowance.allowancePeriodicity &&
+          !allowance.allowanceLabel;
+
+        // Allow empty allowances but mark as invalid if partially filled
+        const isAllowanceValid = isEmpty
+          ? true
+          : isUnitValueValid && isPeriodValid && isLabelValid;
+
+        return {
+          isUnitValueValid,
+          isPeriodValid,
+          isLabelValid,
+          isAllowanceValid,
+        };
+      }
+    );
+
+    const isDeductionValid = (() => {
+      const label = formData?.salaryPackage[0]?.deduction?.deductionLabel || "";
+      const amount =
+        formData?.salaryPackage[0]?.deduction?.deductionAmount || "";
+
+      // If both fields are empty, consider the deduction valid
+      if (label.trim() === "" && amount.trim() === "") {
+        return true;
+      }
+
+      // Otherwise, validate both fields
+      const isLabelValid = NAME_REGEX.test(label);
+      const isAmountValid = FEE_REGEX.test(amount);
+
+      return isLabelValid && isAmountValid;
+    })();
+
     setValidity((prev) => ({
       ...prev,
       validUsername: USER_REGEX.test(formData.username),
-      validFirstName: NAME_REGEX.test(formData.userFullName.userFirstName),
+      validFirstName: NAME_REGEX.test(formData.userFullName?.userFirstName),
       validMiddleName:
         formData?.userFullName?.userMiddleName !== ""
-          ? NAME_REGEX.test(formData.userFullName.userMiddleName)
+          ? NAME_REGEX.test(formData.userFullName?.userMiddleName)
           : true,
-      validLastName: NAME_REGEX.test(formData.userFullName.userLastName),
+      validLastName: NAME_REGEX.test(formData.userFullName?.userLastName),
       validDob: DATE_REGEX.test(formData.userDob),
       validUserSex: NAME_REGEX.test(formData.userSex),
       validCin: PHONE_REGEX.test(formData.cin),
@@ -184,6 +232,8 @@ const NewEmployeeForm = () => {
       validSalaryFrom: DATE_REGEX.test(
         formData.salaryPackage[0]?.salaryFrom || ""
       ),
+      validAllowances: validAllowances,
+      validDeduction: isDeductionValid,
       // validSalaryTo:
       //   formData.salaryPackage[0]?.salaryTo === "" ||
       //   DATE_REGEX.test(formData.salaryPackage[0]?.salaryTo || ""),
@@ -209,35 +259,61 @@ const NewEmployeeForm = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
-  const handleSalaryPackageChange = (field, value, allowanceIndex = null) => {
+  // Update Allowances
+  const handleAllowanceChange = (index, field, value) => {
     setFormData((prev) => {
       const updatedPackage = [...prev.salaryPackage];
-      if (allowanceIndex !== null) {
-        updatedPackage[0].allowances[allowanceIndex][field] = value;
-      } else {
-        updatedPackage[0][field] = value;
-      }
+      const updatedAllowances = [...updatedPackage[0].allowances];
+
+      updatedAllowances[index] = {
+        ...updatedAllowances[index],
+        [field]: value, // Update specific field
+      };
+
+      updatedPackage[0].allowances = updatedAllowances;
+
       return { ...prev, salaryPackage: updatedPackage };
     });
   };
 
+  // Add Allowance
   const handleAddAllowance = () => {
     setFormData((prev) => {
       const updatedPackage = [...prev.salaryPackage];
-      updatedPackage[0].allowances.push({
-        allowanceLabel: "",
-        allowanceUnitValue: "",
-        allowancePeriodicity: "",
-      });
+      if (!updatedPackage[0]?.allowances) {
+        updatedPackage[0].allowances = []; // Ensure allowances array exists
+      }
+      updatedPackage[0].allowances = [
+        ...updatedPackage[0].allowances,
+        { allowanceLabel: "", allowanceUnitValue: "", allowanceNumber: "" },
+      ];
       return { ...prev, salaryPackage: updatedPackage };
     });
   };
 
+  // Remove Allowance
   const handleRemoveAllowance = (index) => {
     setFormData((prev) => {
       const updatedPackage = [...prev.salaryPackage];
-      updatedPackage[0].allowances.splice(index, 1);
+      updatedPackage[0].allowances = updatedPackage[0].allowances.filter(
+        (_, idx) => idx !== index
+      );
+
+      return { ...prev, salaryPackage: updatedPackage };
+    });
+  };
+
+  const handleDeductionChange = (field, value) => {
+    setFormData((prev) => {
+      const updatedPackage = [...prev.salaryPackage];
+      if (!updatedPackage[0]?.deduction) {
+        updatedPackage[0].deduction = {
+          deductionLabel: "",
+          deductionAmount: "",
+        };
+      }
+      updatedPackage[0].deduction[field] = value;
+
       return { ...prev, salaryPackage: updatedPackage };
     });
   };
@@ -318,7 +394,7 @@ const NewEmployeeForm = () => {
   const handleCloseModal = () => {
     setShowConfirmation(false);
   };
-  
+  console.log(formData, "formData");
   const content = (
     <>
       <HR />
@@ -816,8 +892,7 @@ const NewEmployeeForm = () => {
                   ))}
                 </select>
               </label>
-            </div>
-            <div className="formLineDiv">
+
               <label htmlFor="joinDate" className="formInputLabel">
                 Join Date{" "}
                 {!validity.validJoinDate && (
@@ -876,29 +951,32 @@ const NewEmployeeForm = () => {
                 </select>{" "}
               </label>
             </div>
+          </div>
+          {/* Salary Package Section */}
+          <h4 className="formSectionTitle">Salary Package</h4>
 
-            {/* Salary Package Section */}
-            <h4 className="formSectionTitle">Salary Package</h4>
-
-            <div className="formSection">
-              <div className="formLineDiv">
-                <label htmlFor="salaryFrom" className="formInputLabel">
-                  Salary From:
-                  {!validity.validSalaryFrom && (
-                    <span className="text-red-600">*</span>
-                  )}
-                  <input
-                    type="date"
-                    id="salaryFrom"
-                    name="salaryFrom"
-                    value={formData.salaryPackage[0]?.salaryFrom}
-                    onChange={(e) =>
-                      handleSalaryPackageChange("salaryFrom", e.target.value)
-                    }
-                    className="formInputText"
-                  />
-                </label>
-                {/* <label htmlFor="salaryTo" className="formInputLabel">
+          <div className="formSection">
+            <div className="formLineDiv">
+              <label htmlFor="salaryFrom" className="formInputLabel">
+                Salary From:{" "}
+                {!validity.validSalaryFrom && (
+                  <span className="text-red-600">*</span>
+                )}
+                <input
+                  type="date"
+                  id="salaryFrom"
+                  value={formData.salaryPackage[0]?.salaryFrom}
+                  onChange={(e) =>
+                    setFormData((prev) => {
+                      const updatedPackage = [...prev.salaryPackage];
+                      updatedPackage[0].salaryFrom = e.target.value;
+                      return { ...prev, salaryPackage: updatedPackage };
+                    })
+                  }
+                  className="formInputText"
+                />
+              </label>
+              {/* <label htmlFor="salaryTo" className="formInputLabel">
                   Salary To:
                   <input
                     type="date"
@@ -913,43 +991,49 @@ const NewEmployeeForm = () => {
                 </label> */}
               {/* </div>
               <div className="formLineDiv"> */}
-                <label htmlFor="basicSalary" className="formInputLabel">
-                  Basic Salary:
-                  {!validity.validBasicSalary && (
-                    <span className="text-red-600">*</span>
-                  )}
-                  <input
-                    type="number"
-                    id="basicSalary"
-                    name="basicSalary"
-                    value={formData.salaryPackage[0]?.basicSalary}
-                    onChange={(e) =>
-                      handleSalaryPackageChange("basicSalary", e.target.value)
-                    }
-                    className="formInputText"
-                    placeholder="e.g., 5000"
-                  />
-                </label>
-              </div>
-              {/* Allowances Section */}
-              <h4 className="formSectionTitle">Allowances</h4>
-              {formData.salaryPackage[0].allowances.map((allowance, index) => (
+              <label htmlFor="basicSalary" className="formInputLabel">
+                Basic Salary:{" "}
+                {!validity.validBasicSalary && (
+                  <span className="text-red-600">*</span>
+                )}
+                <input
+                  type="number"
+                  id="basicSalary"
+                  value={formData.salaryPackage[0]?.basicSalary}
+                  onChange={(e) =>
+                    setFormData((prev) => {
+                      const updatedPackage = [...prev.salaryPackage];
+                      updatedPackage[0].basicSalary = e.target.value;
+                      return { ...prev, salaryPackage: updatedPackage };
+                    })
+                  }
+                  className="formInputText"
+                />
+              </label>
+            </div>
+            {/* Allowances Section */}
+            <h4 className="formSectionTitle">Allowances</h4>
+            <div className="formSection">
+              {formData.salaryPackage[0]?.allowances.map((allowance, index) => (
                 <div className="formSection">
                   <div key={index} className="formLineDiv">
                     <label
                       htmlFor={`allowanceLabel-${index}`}
                       className="formInputLabel"
                     >
-                      Allowance Label:
+                      Allowance Label:{" "}
+                      {!validity.validAllowances?.[index]?.isLabelValid && (
+                        <span className="text-red-600">*</span>
+                      )}
                       <input
-                        type="text"
                         id={`allowanceLabel-${index}`}
+                        type="text"
                         value={allowance.allowanceLabel}
                         onChange={(e) =>
-                          handleSalaryPackageChange(
+                          handleAllowanceChange(
+                            index,
                             "allowanceLabel",
-                            e.target.value,
-                            index
+                            e.target.value
                           )
                         }
                         className="formInputText"
@@ -960,15 +1044,18 @@ const NewEmployeeForm = () => {
                       className="formInputLabel"
                     >
                       Unit Value:
+                      {!validity.validAllowances?.[index]?.isUnitValueValid && (
+                        <span className="text-red-600">*</span>
+                      )}
                       <input
                         type="number"
                         id={`allowanceUnitValue-${index}`}
                         value={allowance.allowanceUnitValue}
                         onChange={(e) =>
-                          handleSalaryPackageChange(
+                          handleAllowanceChange(
+                            index,
                             "allowanceUnitValue",
-                            e.target.value,
-                            index
+                            e.target.value
                           )
                         }
                         className="formInputText"
@@ -980,19 +1067,21 @@ const NewEmployeeForm = () => {
                     className="formInputLabel"
                   >
                     Periodicity:
+                    {!validity.validAllowances?.[index]?.isPeriodValid && (
+                      <span className="text-red-600">*</span>
+                    )}
                     <input
                       type="text"
                       id={`allowancePeriodicity-${index}`}
                       value={allowance.allowancePeriodicity}
                       onChange={(e) =>
-                        handleSalaryPackageChange(
+                        handleAllowanceChange(
+                          index,
                           "allowancePeriodicity",
-                          e.target.value,
-                          index
+                          e.target.value
                         )
                       }
                       className="formInputText"
-                      placeholder="e.g., Monthly"
                     />
                   </label>
                   <button
@@ -1000,207 +1089,235 @@ const NewEmployeeForm = () => {
                     onClick={() => handleRemoveAllowance(index)}
                     className="delete-button w-full"
                   >
-                    {" "}
-                    Remove Allowance{" "}
-                  </button>{" "}
-                </div>
-              ))}{" "}
-              <button
-                type="button"
-                onClick={handleAddAllowance}
-                className="add-button w-full"
-              >
-                {" "}
-                Add Allowance{" "}
-              </button>{" "}
-            </div>
-
-            <h3 className="formSectionTitle">Employement history</h3>
-            <div className="formSection">
-              {formData.employeeWorkHistory.map((work, index) => (
-                <div key={index} className="formSection">
-                  <div className="formLineDiv">
-                    {/* Institution */}
-
-                    <label htmlFor="institution" className="formInputLabel">
-                      Institution
-                      {!NAME_REGEX.test(
-                        formData?.employeeWorkHistory?.[index]?.institution
-                      ) && <span className="text-red-600">*</span>}
-                      <input
-                        aria-label="institution"
-                        type="text"
-                        id="institution"
-                        name="institution"
-                        value={work.institution}
-                        onChange={(e) =>
-                          handleWorkHistoryChange(
-                            index,
-                            "institution",
-                            e.target.value
-                          )
-                        }
-                        className={`formInputText`}
-                        placeholder="[3-25 letters]"
-                      />{" "}
-                    </label>
-
-                    {/* From Date */}
-
-                    <label htmlFor="fromDate" className="formInputLabel">
-                      From Date{" "}
-                      {!work.fromDate && (
-                        <span className="text-red-600">*</span>
-                      )}
-                      <input
-                        aria-label="fromDate"
-                        type="date"
-                        id="fromDate"
-                        name="fromDate"
-                        value={work.fromDate}
-                        onChange={(e) =>
-                          handleWorkHistoryChange(
-                            index,
-                            "fromDate",
-                            e.target.value
-                          )
-                        }
-                        className={`formInputText`}
-                      />{" "}
-                    </label>
-
-                    {/* To Date */}
-
-                    <label htmlFor="toDate" className="formInputLabel">
-                      To Date{" "}
-                      {!work.toDate && <span className="text-red-600">*</span>}
-                      <input
-                        aria-label="toDate"
-                        type="date"
-                        id="toDate"
-                        name="toDate"
-                        value={work.toDate}
-                        onChange={(e) =>
-                          handleWorkHistoryChange(
-                            index,
-                            "toDate",
-                            e.target.value
-                          )
-                        }
-                        className={`formInputText`}
-                      />{" "}
-                    </label>
-
-                    {/* Position */}
-
-                    <label
-                      htmlFor={`position-${index}`}
-                      className="formInputLabel"
-                    >
-                      Position{" "}
-                      {!NAME_REGEX.test(
-                        formData?.employeeWorkHistory?.[index]?.position
-                      ) && <span className="text-red-600">*</span>}
-                      <input
-                        aria-label="position"
-                        type="text"
-                        id={`position-${index}`}
-                        name="position"
-                        value={work.position}
-                        onChange={(e) =>
-                          handleWorkHistoryChange(
-                            index,
-                            "position",
-                            e.target.value
-                          )
-                        }
-                        className={`formInputText`}
-                        placeholder="[3-25 letters]"
-                      />{" "}
-                    </label>
-
-                    {/* Contract Type */}
-
-                    <label
-                      htmlFor={`contractType-${index}`}
-                      className="formInputLabel"
-                    >
-                      Contract Type{" "}
-                      {!NAME_REGEX.test(
-                        formData?.employeeWorkHistory?.[index]?.contractType
-                      ) && <span className="text-red-600">*</span>}
-                      <input
-                        aria-label="contractType"
-                        aria-invalid={!validity.contractType}
-                        type="text"
-                        id={`contractType-${index}`}
-                        name="contractType"
-                        value={work.contractType}
-                        onChange={(e) =>
-                          handleWorkHistoryChange(
-                            index,
-                            "contractType",
-                            e.target.value
-                          )
-                        }
-                        className={`formInputText`}
-                        placeholder="[3-25 letters]"
-                      />
-                    </label>
-
-                    {/* Salary Package */}
-
-                    <label htmlFor="salaryPackage" className="formInputLabel">
-                      Salary Package
-                      {formData?.employeeWorkHistory?.[index]?.salaryPackage &&
-                        !NUMBER_REGEX.test(
-                          formData?.employeeWorkHistory?.[index]?.salaryPackage
-                        ) && (
-                          <span className="text-red-600">
-                            {" "}
-                            [Format: $$$$.$$$]
-                          </span>
-                        )}
-                      <input
-                        aria-label="salaryPackage"
-                        type="text"
-                        id="salaryPackage"
-                        name="salaryPackage"
-                        value={work.salaryPackage}
-                        onChange={(e) =>
-                          handleWorkHistoryChange(
-                            index,
-                            "salaryPackage",
-                            e.target.value
-                          )
-                        }
-                        className={`formInputText`}
-                        placeholder="[$$$$.$$$]"
-                      />
-                    </label>
-                  </div>
-                  {/* Remove Work History Button */}
-                  <button
-                    aria-label="remove work history"
-                    type="button"
-                    onClick={() => handleRemoveWorkHistory(index)}
-                    className="delete-button w-full"
-                  >
-                    Remove
+                    Remove Allowance
                   </button>
                 </div>
               ))}
-
-              {/* Add Work History Button */}
-              <button
-                aria-label="add work history"
-                type="button"
-                onClick={handleAddWorkHistory}
-                className="add-button w-full"
-              >
-                Add Work History
-              </button>
             </div>
+            <button
+              type="button"
+              onClick={handleAddAllowance}
+              className="add-button w-full"
+            >
+              Add Allowance
+            </button>
+            <h4>Deductions</h4>
+            <div className="formLineDiv">
+              <label htmlFor="deductionLabel" className="formInputLabel">
+                Deduction Label{" "}
+                {!validity?.validDeduction && (
+                  <span className="text-red-600 ">*</span>
+                )}
+                <input
+                  id="deductionLabel"
+                  name="deductionLabel"
+                  value={formData?.employeeSalary?.deduction?.deductionLabel}
+                  onChange={(e) =>
+                    handleDeductionChange("deductionLabel", e.target.value)
+                  }
+                  className="formInputText"
+                  required
+                />
+              </label>
+              <label htmlFor="deductionAmount" className="formInputLabel">
+                Deduction Amount{" "}
+                {!validity?.validDeduction && (
+                  <span className="text-red-600 ">*</span>
+                )}
+                <input
+                  id="deductionAmount"
+                  name="deductionAmount"
+                  type="number"
+                  value={formData?.employeeSalary?.deduction?.deductionAmount}
+                  onChange={(e) =>
+                    handleDeductionChange("deductionAmount", e.target.value)
+                  }
+                  className="formInputText"
+                  required
+                />
+              </label>
+            </div>
+          </div>
+
+          <h3 className="formSectionTitle">Employement history</h3>
+          <div className="formSection">
+            {formData.employeeWorkHistory.map((work, index) => (
+              <div key={index} className="formSection">
+                <div className="formLineDiv">
+                  {/* Institution */}
+
+                  <label htmlFor="institution" className="formInputLabel">
+                    Institution
+                    {!NAME_REGEX.test(
+                      formData?.employeeWorkHistory?.[index]?.institution
+                    ) && <span className="text-red-600">*</span>}
+                    <input
+                      aria-label="institution"
+                      type="text"
+                      id="institution"
+                      name="institution"
+                      value={work.institution}
+                      onChange={(e) =>
+                        handleWorkHistoryChange(
+                          index,
+                          "institution",
+                          e.target.value
+                        )
+                      }
+                      className={`formInputText`}
+                      placeholder="[3-25 letters]"
+                    />{" "}
+                  </label>
+
+                  {/* From Date */}
+
+                  <label htmlFor="fromDate" className="formInputLabel">
+                    From Date{" "}
+                    {!work.fromDate && <span className="text-red-600">*</span>}
+                    <input
+                      aria-label="fromDate"
+                      type="date"
+                      id="fromDate"
+                      name="fromDate"
+                      value={work.fromDate}
+                      onChange={(e) =>
+                        handleWorkHistoryChange(
+                          index,
+                          "fromDate",
+                          e.target.value
+                        )
+                      }
+                      className={`formInputText`}
+                    />{" "}
+                  </label>
+
+                  {/* To Date */}
+
+                  <label htmlFor="toDate" className="formInputLabel">
+                    To Date{" "}
+                    {!work.toDate && <span className="text-red-600">*</span>}
+                    <input
+                      aria-label="toDate"
+                      type="date"
+                      id="toDate"
+                      name="toDate"
+                      value={work.toDate}
+                      onChange={(e) =>
+                        handleWorkHistoryChange(index, "toDate", e.target.value)
+                      }
+                      className={`formInputText`}
+                    />{" "}
+                  </label>
+
+                  {/* Position */}
+
+                  <label
+                    htmlFor={`position-${index}`}
+                    className="formInputLabel"
+                  >
+                    Position{" "}
+                    {!NAME_REGEX.test(
+                      formData?.employeeWorkHistory?.[index]?.position
+                    ) && <span className="text-red-600">*</span>}
+                    <input
+                      aria-label="position"
+                      type="text"
+                      id={`position-${index}`}
+                      name="position"
+                      value={work.position}
+                      onChange={(e) =>
+                        handleWorkHistoryChange(
+                          index,
+                          "position",
+                          e.target.value
+                        )
+                      }
+                      className={`formInputText`}
+                      placeholder="[3-25 letters]"
+                    />{" "}
+                  </label>
+
+                  {/* Contract Type */}
+
+                  <label
+                    htmlFor={`contractType-${index}`}
+                    className="formInputLabel"
+                  >
+                    Contract Type{" "}
+                    {!NAME_REGEX.test(
+                      formData?.employeeWorkHistory?.[index]?.contractType
+                    ) && <span className="text-red-600">*</span>}
+                    <input
+                      aria-label="contractType"
+                      aria-invalid={!validity.contractType}
+                      type="text"
+                      id={`contractType-${index}`}
+                      name="contractType"
+                      value={work.contractType}
+                      onChange={(e) =>
+                        handleWorkHistoryChange(
+                          index,
+                          "contractType",
+                          e.target.value
+                        )
+                      }
+                      className={`formInputText`}
+                      placeholder="[3-25 letters]"
+                    />
+                  </label>
+
+                  {/* Salary Package */}
+
+                  <label htmlFor="salaryPackage" className="formInputLabel">
+                    Salary Package
+                    {formData?.employeeWorkHistory?.[index]?.salaryPackage &&
+                      !NUMBER_REGEX.test(
+                        formData?.employeeWorkHistory?.[index]?.salaryPackage
+                      ) && (
+                        <span className="text-red-600">
+                          {" "}
+                          [Format: $$$$.$$$]
+                        </span>
+                      )}
+                    <input
+                      aria-label="salaryPackage"
+                      type="text"
+                      id="salaryPackage"
+                      name="salaryPackage"
+                      value={work.salaryPackage}
+                      onChange={(e) =>
+                        handleWorkHistoryChange(
+                          index,
+                          "salaryPackage",
+                          e.target.value
+                        )
+                      }
+                      className={`formInputText`}
+                      placeholder="[$$$$.$$$]"
+                    />
+                  </label>
+                </div>
+                {/* Remove Work History Button */}
+                <button
+                  aria-label="remove work history"
+                  type="button"
+                  onClick={() => handleRemoveWorkHistory(index)}
+                  className="delete-button w-full"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+
+            {/* Add Work History Button */}
+            <button
+              aria-label="add work history"
+              type="button"
+              onClick={handleAddWorkHistory}
+              className="add-button w-full"
+            >
+              Add Work History
+            </button>
           </div>
         </div>
         {/* Submit Button */}

@@ -133,8 +133,6 @@ const EmployeesList = () => {
 
     //the serach result data
     filteredEmployees = employeesList?.filter((item) => {
-
-      
       //the nested objects need extra logic to separate them
       const firstNameMatch = item?.userFullName?.userFirstName
         .toLowerCase()
@@ -150,7 +148,9 @@ const EmployeesList = () => {
         Object.values(item).some((val) =>
           String(val).toLowerCase().includes(searchQuery.toLowerCase())
         ) ||
-        ((firstNameMatch || middleNameMatch || lastNameMatch) )
+        firstNameMatch ||
+        middleNameMatch ||
+        lastNameMatch
       );
     });
   }
@@ -325,19 +325,30 @@ const EmployeesList = () => {
     {
       name: "Package",
       selector: (row) => {
-        const today = new Date();
-        const currentPackage = row.employeeData?.salaryPackage?.find((pkg) => {
-          const salaryFrom = new Date(pkg.salaryFrom);
-          const salaryTo = pkg.salaryTo ? new Date(pkg.salaryTo) : null;
-          return salaryFrom <= today && (!salaryTo || salaryTo >= today);
-        });
-    
-        return currentPackage ? (
+        // Find the most recent package
+        const mostRecentPackage = row.employeeData?.salaryPackage
+          ?.filter((pkg) => pkg.salaryFrom) // Ensure valid packages
+          .sort((a, b) => {
+            const dateA = a.salaryTo ? new Date(a.salaryTo) : Infinity; // Open-ended packages come first
+            const dateB = b.salaryTo ? new Date(b.salaryTo) : Infinity;
+            return dateB - dateA; // Sort by descending date
+          })[0]; // Pick the most recent
+
+        return mostRecentPackage ? (
           <div>
-            <div>{`Basic: ${currentPackage.basicSalary} `}</div>
-            {currentPackage.allowances?.map((allowance, index) => (
-              <div key={index}>{`${allowance.allowanceLabel}: ${allowance.allowanceUnitValue}`}</div>
+            <div>{`Basic: ${mostRecentPackage.basicSalary || "N/A"}`}</div>
+            {mostRecentPackage.allowances?.map((allowance, index) => (
+              <div key={index}>
+                {`${allowance.allowanceLabel || "Allowance"}: ${
+                  allowance.allowanceUnitValue || "0"
+                }`}
+              </div>
             ))}
+            <div className="text-red-600">
+              {`${
+                mostRecentPackage.deduction?.deductionLabel || "Deduction"
+              }: -${mostRecentPackage.deduction?.deductionAmount || "0"}`}
+            </div>
           </div>
         ) : (
           <div>No Active Package</div>
@@ -351,7 +362,7 @@ const EmployeesList = () => {
       removableRows: true,
       width: "250px",
     },
-    
+
     {
       name: "Documents",
       selector: (row) => (

@@ -148,7 +148,8 @@ const NewPayslipForm = () => {
     );
 
     const isDeductionValid =
-      Number(formData.payslipSalaryComponents.deduction.deductionAmount) >= 0;
+      Number(formData?.payslipSalaryComponents?.deduction?.deductionAmount) >=
+      0;
     setValidity((prev) => ({
       ...prev,
       validPayslipYear: YEAR_REGEX.test(formData?.payslipYear),
