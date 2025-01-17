@@ -1,7 +1,7 @@
 import { HiOutlineSearch } from "react-icons/hi";
 import DataTable from "react-data-table-component";
 import { useEffect, useState } from "react";
-import { useNavigate ,useOutletContext} from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
@@ -14,7 +14,7 @@ import {
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import { MONTHS } from "../../../config/Months";
 import {
-  useGetExpensesQuery,
+  useGetExpensesByYearQuery,
   useDeleteExpenseMutation,
 } from "./expensesApiSlice";
 import { useSelector } from "react-redux";
@@ -36,6 +36,9 @@ const ExpensesList = () => {
     const currentMonthIndex = new Date().getMonth(); // Get current month (0-11)
     return MONTHS[currentMonthIndex]; // Return the month name with the first letter capitalized
   };
+
+  const [monthFilter, setMonthFilter] = useState(""); // Initialize with empty string (for "All Months")
+
   const {
     data: expenses, //the data is renamed schools
     isLoading: isExpensesLoading,
@@ -43,7 +46,13 @@ const ExpensesList = () => {
     isError: isExpensesError,
     error: expensesError,
     refetch,
-  } = useGetExpensesQuery({ endpointName: "ExpenseList" }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
+  } = useGetExpensesByYearQuery({
+    selectedMonth: monthFilter
+      ? monthFilter
+      : getCurrentMonth(),
+    selectedYear: selectedAcademicYear?.title,
+    endpointName: "ExpenseList",
+  }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
   const [
     deleteExpense,
     {
@@ -68,7 +77,7 @@ const ExpensesList = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idAttendedSchoolToDelete, setIdAttendedSchoolToDelete] =
     useState(null); // State to track which document to delete
-    const { triggerBanner } = useOutletContext(); // Access banner trigger
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
 
   //initialising the delete Mutation
 
@@ -85,27 +94,27 @@ const ExpensesList = () => {
   const handleConfirmDelete = async () => {
     try {
       const response = await deleteExpense({ id: idAttendedSchoolToDelete });
-    setIsDeleteModalOpen(false); // Close the modal
-    if (response?.message) {
-      // Success response
-      triggerBanner(response?.message, "success");
-    } else if (response?.data?.message) {
-      // Success response
-      triggerBanner(response?.data?.message, "success");
-    } else if (response?.error?.data?.message) {
-      // Error response
-      triggerBanner(response?.error?.data?.message, "error");
-    } else if (isDelError) {
-      // In case of unexpected response format
-      triggerBanner(delError?.data?.message, "error");
-    } else {
-      // In case of unexpected response format
-      triggerBanner("Unexpected response from server.", "error");
+      setIsDeleteModalOpen(false); // Close the modal
+      if (response?.message) {
+        // Success response
+        triggerBanner(response?.message, "success");
+      } else if (response?.data?.message) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isDelError) {
+        // In case of unexpected response format
+        triggerBanner(delError?.data?.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner(error?.data?.message, "error");
     }
-  } catch (error) {
-    triggerBanner(error?.data?.message, "error");
-  }
-};
+  };
 
   // Function to close the modal without deleting
   const handleCloseDeleteModal = () => {
@@ -123,7 +132,6 @@ const ExpensesList = () => {
     //console.log('selectedRows', selectedRows)
   };
 
-  const [monthFilter, setMonthFilter] = useState(""); // Initialize with empty string (for "All Months")
   let filteredExpenses = [];
   let expensesList = [];
   if (isExpensesSuccess) {
@@ -197,7 +205,18 @@ const ExpensesList = () => {
     },
     {
       name: "Category",
-      selector: (row) => row?.expenseCategory?.expenseCategoryLabel,
+      selector: (row) => (
+        <div
+          style={{
+            whiteSpace: "normal", // Allows text wrapping
+            wordWrap: "break-word", // Breaks long words to wrap
+            overflowWrap: "break-word", // Ensures wrapping for long words
+            textAlign: "left", // Align text to the left
+          }}
+        >
+          {row?.expenseCategory?.expenseCategoryLabel || "N/A"}
+        </div>
+      ),
       sortable: true,
       style: {
         justifyContent: "left",
@@ -205,12 +224,28 @@ const ExpensesList = () => {
       },
       width: "120px",
     },
+
     {
       name: "Items",
       selector: (row) => (
-        <div>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "5px", // Optional: Adds spacing between items
+          }}
+        >
           {row?.expenseItems?.map((item, index) => (
-            <div key={index}>{item}</div>
+            <span
+              key={index}
+              style={{
+                wordWrap: "break-word", // Ensures long words wrap within their container
+                whiteSpace: "normal", // Allows wrapping
+              }}
+            >
+              {item} {index < row.expenseItems?.length - 1 && ","}{" "}
+              {/* Add a comma except after the last item */}
+            </span>
           ))}
         </div>
       ),
@@ -349,7 +384,7 @@ const ExpensesList = () => {
           >
             {/* Default option is the current month */}
             <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
-            <option value="">All Months</option>
+            {/* <option value="">All Months</option> */}
             {/* Render the rest of the months, excluding the current month */}
             {MONTHS.map(
               (month, index) =>
@@ -403,14 +438,14 @@ const ExpensesList = () => {
           ></DataTable>
         </div>
         {/* <div className="cancelSavebuttonsDiv"> */}
-          <button
-            className="add-button"
-            onClick={() => navigate("/finances/expenses/newExpense/")}
-            disabled={selectedRows.length !== 0} // Disable if no rows are selected
-            hidden={!canCreate}
-          >
-            New Expense
-          </button>
+        <button
+          className="add-button"
+          onClick={() => navigate("/finances/expenses/newExpense/")}
+          disabled={selectedRows.length !== 0} // Disable if no rows are selected
+          hidden={!canCreate}
+        >
+          New Expense
+        </button>
         {/* </div> */}
       </div>
 

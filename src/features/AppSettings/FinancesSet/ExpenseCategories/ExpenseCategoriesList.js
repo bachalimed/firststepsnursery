@@ -199,23 +199,37 @@ const ExpenseCategoriesList = () => {
     },
     {
       name: "Items",
-
       selector: (row) => (
-        <div>
-          {(row?.expenseCategoryItems).map((itm) => (
-            <div key={itm}>{itm}</div>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "5px", // Optional: Adds spacing between items
+          }}
+        >
+          {row?.expenseCategoryItems?.map((itm, index) => (
+            <span
+              key={itm}
+              style={{
+                wordWrap: "break-word", // Ensures long words wrap within their container
+                whiteSpace: "normal", // Allows wrapping
+              }}
+            >
+              {itm}
+              {index < row.expenseCategoryItems?.length - 1 && ","} {/* Add a comma except after the last item */}
+            </span>
           ))}
         </div>
       ),
-
       sortable: true,
       removableRows: true,
       style: {
         justifyContent: "left",
         textAlign: "left",
       },
-      width: "160px",
+      width: "210px",
     },
+    
     {
       name: "Years",
 

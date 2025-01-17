@@ -40,3 +40,4 @@ academic years "1000" use as criteria to query all years data instead of only on
  30. if studetnsection is empty for all studetn, the scheduler will have no rows
  31. now only active sections, the studetn will have studetn sections, we ll see the connsequences on other functions
  32. payment month filter is the invoice month, we wil  query all the months and in hte list we filter
+ 33. when a new payslip is PAID (newpaymentdate) , an expense will be auto generated to account for that spendingn deltion od payslip not avaialble, if manual delete, account to delete the expense or update it

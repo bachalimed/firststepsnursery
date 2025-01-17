@@ -37,7 +37,7 @@ const DashboardFamiliesTotalNumberModule = () => {
             {familiesWithStudentsInYear}
           </strong>
           <span className="pl-2 text-sm text-red-600">
-            {familySituationCount?.Separated} separated{" "}
+            {familySituationCount?.Separated} Separated{" "}
           </span>
           <span className="pl-2 text-sm text-red-600">
             {familySituationCount?.Orphan} Orphan{" "}

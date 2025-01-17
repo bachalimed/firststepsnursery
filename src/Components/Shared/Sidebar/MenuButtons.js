@@ -207,7 +207,7 @@ const MenuButtons = () => {
           </Link>
         )}
         {reportsOpen && (
-          <ul className="absolute top-full left-0 bg-sky-700 text-white    shadow-md transition-all duration-300">
+          <ul className="absolute top-full left-0 bg-sky-500 text-white    shadow-md transition-all duration-300">
             {(isFinance || isDirector || isManager || isAdmin) && (
               <Link
                 to="/reports/studentsReports/ageGroupsReport/"
@@ -216,7 +216,7 @@ const MenuButtons = () => {
                 }
               >
                 <li
-                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 `}
+                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-gray-100 hover:text-black `}
                 >
                   Students
                 </li>
@@ -230,7 +230,7 @@ const MenuButtons = () => {
                 }
               >
                 <li
-                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 `}
+                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-100 hover:text-black `}
                 >
                   Academics
                 </li>
@@ -238,13 +238,13 @@ const MenuButtons = () => {
             )}
             {(isFinance || isDirector || isManager || isAdmin) && (
               <Link
-                to="/reports/financesReports/unpaidInvoices/"
+                to="/reports/financesReports/expensesReport/"
                 className={
                   location.pathname.startsWith("/reports/") ? "bg-sky-100" : ""
                 }
               >
                 <li
-                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 `}
+                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-100 hover:text-black `}
                 >
                   Finances
                 </li>
@@ -258,7 +258,7 @@ const MenuButtons = () => {
                 }
               >
                 <li
-                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 `}
+                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-100 hover:text-black `}
                 >
                   HR
                 </li>
@@ -276,7 +276,7 @@ const MenuButtons = () => {
         {(isFinance || isHR || isDirector || isManager || isAdmin) && (
           <Link to="/settings/studentsSet/">
             <li
-              className={`text-grey-300 text-sm flex    items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
+              className={`text-grey-300 text-sm flex    items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500   ${
                 location.pathname.startsWith("/settings/")
                   ? "bg-gray-300 text-black"
                   : "text-white"
@@ -288,7 +288,7 @@ const MenuButtons = () => {
           </Link>
         )}
         {settingsOpen && (
-          <ul className="absolute top-full left-0 bg-sky-700 text-white    shadow-md transition-all duration-300">
+          <ul className="absolute top-full left-0 bg-sky-500 text-white    shadow-md transition-all duration-300">
             {(isFinance || isDirector || isManager || isAdmin) && (
               <Link
                 to="/settings/studentsSet/"
@@ -297,7 +297,7 @@ const MenuButtons = () => {
                 }
               >
                 <li
-                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 `}
+                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-100 hover:text-black `}
                 >
                   Students
                 </li>
@@ -311,7 +311,7 @@ const MenuButtons = () => {
                 }
               >
                 <li
-                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 `}
+                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-100 hover:text-black `}
                 >
                   Academics
                 </li>
@@ -325,7 +325,7 @@ const MenuButtons = () => {
                 }
               >
                 <li
-                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 `}
+                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-100 hover:text-black `}
                 >
                   Finances
                 </li>
@@ -339,7 +339,7 @@ const MenuButtons = () => {
                 }
               >
                 <li
-                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 `}
+                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-100 hover:text-black `}
                 >
                   HR
                 </li>
@@ -353,7 +353,7 @@ const MenuButtons = () => {
                 }
               >
                 <li
-                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 `}
+                  className={`text-grey-300 text-sm flex  text-white  items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-100 hover:text-black `}
                 >
                   Documentation
                 </li>

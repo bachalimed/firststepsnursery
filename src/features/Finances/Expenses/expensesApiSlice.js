@@ -54,6 +54,37 @@ export const expensesApiSlice = apiSlice.injectEndpoints({
 
      
     }),
+    getExpensesByYear: builder.query({
+      query: (params) => {
+        const queryString = new URLSearchParams(params).toString();
+        return `/finances/expenses?${queryString}`;
+      },
+
+      validateStatus: (response, result) => {
+        return response.status === 200 && !result.isError;
+      },
+
+      transformResponse: (responseData) => {
+        // console.log('  in the APIslice',responseData.total)
+
+        const newLoadedExpenses = responseData.map((expense) => {
+          expense.id = expense._id; //changed the _id from mongoDB to id
+          delete expense._id; //added to delete the extra original _id from mongo but careful when planning to save to db again
+          return expense;
+        });
+        return expensesAdapter.setAll(initialState, newLoadedExpenses);
+      },
+      providesTags: ["expense"],
+
+      // providesTags: (result, error, arg) => {
+      //     if (result?.ids) {
+      //         return [
+      //             { type: 'expense', id: 'LIST' },
+      //             ...result.ids.map(id => ({ type: 'expense', id }))
+      //         ]
+      //     } else return [{ type: 'expense', id: 'LIST' }]
+      // }
+    }),
     getExpenseById: builder.query({
       query: (params) => {
         const queryString = new URLSearchParams(params).toString();
@@ -100,6 +131,7 @@ export const {
   useGetExpensesQuery, //this can be used whereven we want to fetch the data
   useGetExpenseByIdQuery,
   useGetExpensesStatsByYearQuery,
+  useGetExpensesByYearQuery,
   useAddNewExpenseMutation,
   useUpdateExpenseMutation,
   useDeleteExpenseMutation,

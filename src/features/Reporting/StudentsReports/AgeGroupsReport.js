@@ -199,14 +199,30 @@ const AgeGroupsReport = () => {
               </table>
             </div>
 
-            <div className="mt-4 flex justify-center">
-              <button
-                onClick={handleDownloadPDF}
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-              >
-                Download as PDF
-              </button>
-            </div>
+            <div className="mt-4 flex justify-center space-x-4">
+        {" "}
+        {/* Cancel Button */}
+        <button
+          onClick={handleCancelFilters} // Reset filters and table
+          className="cancel-button"
+        >
+          Cancel
+        </button>
+        {/* Download as PDF Button */}
+        <button
+          onClick={handleDownloadPDF} // Function for PDF download
+          className="add-button"
+        >
+          Download as PDF
+        </button>
+        {/* Print Button */}
+        <button
+          onClick={() => window.print()} // Print the current view
+          className="save-button"
+        >
+          Print
+        </button>
+      </div>
           </>
         )}
       </div>

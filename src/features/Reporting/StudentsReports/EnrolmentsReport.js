@@ -44,12 +44,13 @@ const EnrolmentsReport = () => {
     }
   );
   const handleGenerateReport = () => {
-    if (!selectedMonth && !selectedServiceType) return;
-
+    // Clear the previous report data
+    setFilteredEnrolments([]);
+    setIsReportGenerated(false);
+  
     if (isEnrolmentsSuccess) {
       const enrolmentsList = Object.values(enrolments.entities);
-
-      // Reset filtered enrolments before applying filters
+  
       const filtered = enrolmentsList.filter(
         (enrolment) =>
           (selectedMonth ? enrolment.enrolmentMonth === selectedMonth : true) &&
@@ -60,17 +61,13 @@ const EnrolmentsReport = () => {
             (yearObj) => yearObj.academicYear === selectedAcademicYear?.title
           )
       );
-
-      // Update the filtered enrolments and mark the report as generated
+  
       setFilteredEnrolments(filtered);
       setIsReportGenerated(true);
-    } else {
-      // Clear the table if no results match
-      setFilteredEnrolments([]);
-      setIsReportGenerated(false);
     }
   };
-
+  
+ 
   const handleDownloadPDF = () => {
     const element = document.getElementById("enrolments-report-content");
     const opt = {

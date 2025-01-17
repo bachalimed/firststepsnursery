@@ -25,7 +25,7 @@ import {
   FEE_REGEX,
 } from "../../../config/REGEX";
 import { CurrencySymbol } from "../../../config/Currency";
-
+import useAuth from "../../../hooks/useAuth";
 import { useOutletContext } from "react-router-dom";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 const NewEmployeeForm = () => {
@@ -33,7 +33,7 @@ const NewEmployeeForm = () => {
     document.title = "New Employee";
   });
   const navigate = useNavigate();
-
+  const { userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
@@ -82,7 +82,8 @@ const NewEmployeeForm = () => {
       secondaryPhone: "",
       email: "",
     },
-
+    employeeCreator: userId,
+    employeeOperator: userId,
     employeeAssessment: [],
     employeeWorkHistory: [],
     employeeIsActive: false,
@@ -974,6 +975,7 @@ const NewEmployeeForm = () => {
                     })
                   }
                   className="formInputText"
+                  min={formData.employeeCurrentEmployment?.joinDate}
                 />
               </label>
               {/* <label htmlFor="salaryTo" className="formInputLabel">

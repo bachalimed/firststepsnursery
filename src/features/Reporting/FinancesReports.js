@@ -20,13 +20,13 @@ const FinancesReports = () => {
 
   // Define the tab data with paths and labels
   const tabs = [
+    ( isDirector || isManager || isAdmin) && {
+      label: "Expenses",
+      path: "/reports/financesReports/expensesReport/",
+    },
     (  isDirector || isManager || isAdmin) && {
       label: "Unpaid Enrolments",
       path: "/reports/financesReports/unpaidInvoices/",
-    },
-    ( isDirector || isManager || isAdmin) && {
-      label: "bla",
-      path: "/reports/financesReports/bla/",
     },
     ( isDirector || isManager || isAdmin) && {
       label: "blabla",

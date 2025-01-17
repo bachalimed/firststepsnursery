@@ -35,7 +35,7 @@ const EditEmployeeForm = ({ employee }) => {
   });
   const navigate = useNavigate();
 
-  const { isAdmin, isManager, isDirector } = useAuth();
+  const { isAdmin, isManager, isDirector,userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
@@ -76,6 +76,7 @@ const EditEmployeeForm = ({ employee }) => {
       joinDate: "",
       contractType: "",
     },
+    employeeOperator:userId,
     salaryPackage: employee?.employeeId?.salaryPackage || [
       {
         salaryFrom: "",
@@ -186,11 +187,11 @@ const EditEmployeeForm = ({ employee }) => {
         ),
         deduction: {
           deductionLabel:
-            !pkg.deduction.deductionLabel ||
-            NAME_REGEX.test(pkg.deduction.deductionLabel),
+            !pkg?.deduction?.deductionLabel ||
+            NAME_REGEX.test(pkg.deduction?.deductionLabel),
           deductionAmount:
-            !pkg.deduction.deductionAmount ||
-            FEE_REGEX.test(pkg.deduction.deductionAmount),
+            !pkg?.deduction?.deductionAmount ||
+            FEE_REGEX.test(pkg?.deduction?.deductionAmount),
         },
         noConflict: !hasConflict, // Ensure no date conflict
       };
@@ -1080,6 +1081,7 @@ const EditEmployeeForm = ({ employee }) => {
                         e.target.value
                       )
                     }
+                    min={formData?.employeeCurrentEmployment?.joinDate}//////////////////
                     className="formInputText"
                   />
                 </label>
@@ -1103,6 +1105,7 @@ const EditEmployeeForm = ({ employee }) => {
                         e.target.value
                       )
                     }
+                    min= {pkg.salaryFrom}/////////////////no less than the salaryTo date
                     className="formInputText"
                   />
                 </label>

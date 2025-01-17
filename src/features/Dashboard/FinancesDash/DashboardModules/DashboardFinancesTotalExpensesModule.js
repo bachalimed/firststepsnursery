@@ -27,7 +27,7 @@ const DashboardFinancesTotalExpensesModule = () => {
         <div className="flex items-center">
           <strong className="text-xl text-gray-900 font-semi-bold">
             {" "}
-            {totalExpensesAmount}
+           { Number(totalExpensesAmount).toFixed(2)}
           </strong>
           {/* <span className="pl-2 text-sm text-sky-700">
             {totalInvoicedAmount} invoiced{" "}

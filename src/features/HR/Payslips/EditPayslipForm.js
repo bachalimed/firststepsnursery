@@ -67,13 +67,14 @@ const EditPayslipForm = ({ payslip }) => {
   // Consolidated form state
   const [formData, setFormData] = useState({
     _id: payslipId,
-    payslipEmployee: payslip?.payslipEmployee,
-    payslipEmployeeName: payslip?.payslipEmployeeName,
-    payslipIsApproved: payslip?.payslipIsApproved,
-    payslipLeaveDays: payslip?.payslipLeaveDays,
-    payslipMonth: payslip?.payslipMonth,
-    payslipNote: payslip?.payslipNote,
-    payslipPaymentDate: payslip?.payslipPaymentDate?.split("T")[0],
+    
+    payslipEmployee: payslipEmployee,
+    payslipEmployeeName:payslipEmployeeName,
+    payslipIsApproved: payslipIsApproved,
+    payslipLeaveDays: payslipLeaveDays,
+    payslipMonth: payslipMonth,
+    payslipNote: payslipNote,
+    payslipPaymentDate: payslipPaymentDate?.split("T")[0],
     payslipSalaryComponents: {
       ...payslip?.payslipSalaryComponents,
       allowances: payslip?.payslipSalaryComponents?.allowances?.map((allowance) => ({
@@ -85,9 +86,9 @@ const EditPayslipForm = ({ payslip }) => {
       })),
       deduction:payslip?.payslipSalaryComponents?.deduction,
     },
-    payslipTotalAmount: payslip?.payslipTotalAmount,
-    payslipWorkdays: payslip?.payslipWorkdays,
-    payslipYear: payslip?.payslipYear,
+    payslipTotalAmount: payslipTotalAmount,
+    payslipWorkdays: payslipWorkdays,
+    payslipYear: payslipYear,
     payslipOperator: userId,
   });
 

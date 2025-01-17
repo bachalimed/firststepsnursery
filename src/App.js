@@ -22,6 +22,7 @@ import AcademicsReports from "./features/Reporting/AcademicsReports";
 import HRReports from "./features/Reporting/HRReports"; 
 import FinancesReports from "./features/Reporting/FinancesReports";
 import UnpaidInvoices from "./features/Reporting/FinancesReports/UnpaidInvoices"
+import ExpensesReport from "./features/Reporting/FinancesReports/ExpensesReport"
 
 import Students from "./features/Students/Students"; //main tab
 import StudentsList from "./features/Students/StudentsAndParents/Students/StudentsList";
@@ -624,18 +625,11 @@ const App = () => {
                 <Route path="financesReports">
                   <Route index element={<FinancesReports />} />
                   <Route path="unpaidInvoices/" element={<UnpaidInvoices />} />
-                  <Route path="newPayee/" element={<NewPayeeForm />} />
+                  <Route path="expensesReport/" element={<ExpensesReport />} />
+                 
 
-                  <Route path="editPayee/:id/" element={<EditPayee />} />
+                
 
-                  <Route
-                    path="editExpenseCategory/:id/"
-                    element={<EditExpenseCategory />}
-                  />
-                  <Route
-                    path="expenseCategoryDetails/:id/"
-                    element={<ExpenseCategoryDetails />}
-                  />
                 </Route>{" "}
                 {/* end of financesReports route */}
                 <Route path="HRReports">

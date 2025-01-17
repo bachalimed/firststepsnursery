@@ -8,13 +8,12 @@ import { useEffect } from "react";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
-  selectAllAcademicYears,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import { useGetServicesByYearQuery } from "../../AppSettings/StudentsSet/NurseryServices/servicesApiSlice";
 import Students from "../Students";
 import DataTable from "react-data-table-component";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector  } from "react-redux";
 import { IoFlagSharp } from "react-icons/io5";
 import { useState } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
@@ -22,7 +21,6 @@ import { ImProfile } from "react-icons/im";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import useAuth from "../../../hooks/useAuth";
-import { setAdmissions } from "./admissionsSlice";
 import { useOutletContext, useNavigate } from "react-router-dom";
 import { MONTHS } from "../../../config/Months";
 // import { CurrencySymbol } from "../../../config/Constants";
@@ -32,7 +30,6 @@ const AdmissionsList = () => {
   });
   //this is for the academic year selection
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const { userId, canEdit, isAdmin, isManager, canDelete, canCreate, status2 } =
     useAuth();
@@ -41,7 +38,6 @@ const AdmissionsList = () => {
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
-  const academicYears = useSelector(selectAllAcademicYears);
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idAdmissionToDelete, setIdAdmissionToDelete] = useState(null); // State to track which document to delete
@@ -139,8 +135,7 @@ const AdmissionsList = () => {
   const servicesList = isServicesSuccess
     ? Object.values(services.entities)
     : [];
-  // State to hold selected rows
-  const [selectedRows, setSelectedRows] = useState([]);
+  
   //state to hold the search query
   const [searchQuery, setSearchQuery] = useState("");
   //const [filteredAdmissions, setFilteredAdmissions] = useState([])
@@ -214,26 +209,19 @@ const AdmissionsList = () => {
   const handleServiceTypeFilterChange = (e) =>
     setServiceTypeFilter(e.target.value);
   // Handler for selecting rows
-  const handleRowSelected = (state) => {
-    setSelectedRows(state.selectedRows);
-    //console.log('selectedRows', selectedRows)
-  };
+
 
   const [
     updateAdmission,
     {
-      isLoading: isUpdateLoading,
-      isSuccess: isUpdateSuccess,
+      //  isLoading: isUpdateLoading,
+      //  isSuccess: isUpdateSuccess,
       isError: isUpdateError,
       error: updateError,
     },
   ] = useUpdateAdmissionMutation(); //it will not execute the mutation nownow but when called
-  const [admissionObject, setAdmissionObject] = useState("");
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
 
-  //console.log(academicYears)
-  // Handler for registering selected row,
-  const [admissionYears, setAdmissionYears] = useState([]);
+
 
   const handleUpdateAdmission = (admission, index, agreedService) => {
     //console.log(admission, "admissionnnnnnnnnnn");
@@ -342,7 +330,7 @@ const AdmissionsList = () => {
 
       selector: (row) => (
         <div>
-          {row?.agreedServices.map((feeObj, index) => (
+          {row?.agreedServices?.map((feeObj, index) => (
             <div key={index}>
               {" "}
               {feeObj?.feePeriod} {feeObj?.service?.serviceType}{" "}
@@ -363,9 +351,9 @@ const AdmissionsList = () => {
 
       selector: (row) => (
         <div>
-          {row?.agreedServices.map((feeObj, index) => (
+          {row?.agreedServices?.map((feeObj, index) => (
             <div key={index}>
-              {feeObj?.service?.serviceAnchor[feeObj.feePeriod]}
+              {feeObj?.service?.serviceAnchor[feeObj?.feePeriod]}
             </div>
           ))}
         </div>
@@ -394,12 +382,12 @@ const AdmissionsList = () => {
         <div>
           {row?.agreedServices.map((feeObj, index) => {
             const anchorValue =
-              feeObj?.service?.serviceAnchor[feeObj.feePeriod];
+              feeObj?.service?.serviceAnchor[feeObj?.feePeriod];
             const feeValue = feeObj?.feeValue;
 
             // Determine the text color based on the comparison
             let textColorClass = "text-red-600"; // Default is black
-            if (feeObj.isAuthorised || feeValue >= anchorValue) {
+            if (feeObj?.isAuthorised || feeValue >= anchorValue) {
               textColorClass = "text-green-800"; // Green if greater than anchor
             }
 
@@ -783,8 +771,8 @@ const AdmissionsList = () => {
             // selectableRows
             removableRows
             pageSizeControl
-            onSelectedRowsChange={handleRowSelected}
-            selectableRowsHighlight
+           // onSelectedRowsChange={handleRowSelected}
+            //selectableRowsHighlight
             customStyles={{
               headCells: {
                 style: {
