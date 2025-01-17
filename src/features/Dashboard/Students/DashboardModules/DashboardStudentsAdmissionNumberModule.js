@@ -15,6 +15,7 @@ const DashboardStudentsAdmissionNumberModule = () => {
     studentsMatchingAcademicYear = 0,
     inactiveStudentsCount = 0,
     studentsWithAdmission = 0,
+    activeStudentsWithAdmission=0,
     registeredStudents=0,
     studentGrades = {},
   } = studentsStats;
@@ -32,15 +33,16 @@ const DashboardStudentsAdmissionNumberModule = () => {
       <div className="pl-4">
         <span className="text-sm text-gray-800 font-light">
           {" "}
-          Total Admissions
+          Active/Inactive  Students' Admissions
         </span>
         <div className="flex items-center">
           <strong className="text-xl text-gray-700 font-semi-bold">
             {" "}
-            {studentsWithAdmission}
+            {activeStudentsWithAdmission}/
+            {Number(studentsWithAdmission)-Number(activeStudentsWithAdmission)}{" "}
           </strong>
           <span className="pl-2 text-sm text-red-600">
-          +{registeredStudents} Regisered{" "}
+          +{registeredStudents} Regisered with no admission{" "}
           </span>
         </div>
       </div>

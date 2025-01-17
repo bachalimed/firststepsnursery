@@ -304,7 +304,7 @@ const AdmissionsList = () => {
           {" "}
           {row?.student?.studentName?.middleName || ""}
           {" "}
-          {row?.student?.studentName?.lastName || ""}{" "}{row?.studentIsActive? "" : "(Inactive)"}
+          {row?.student?.studentName?.lastName || ""}{" "}{row?.student?.studentIsActive? "" : "(Inactive)"}
         </div>
       ),
       style: {

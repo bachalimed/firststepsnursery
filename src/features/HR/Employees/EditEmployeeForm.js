@@ -83,11 +83,11 @@ const EditEmployeeForm = ({ employee }) => {
         salaryTo: "",
         basicSalary: "",
         allowances: [
-          {
-            allowanceLabel: "",
-            allowanceUnitValue: "",
-            allowancePeriodicity: "",
-          },
+          // {
+          //   allowanceLabel: "",
+          //   allowanceUnitValue: "",
+          //   allowancePeriodicity: "",
+          // },
         ],
         deduction: { deductionLabel: "", deductionAmount: "" },
       },
@@ -358,11 +358,29 @@ const EditEmployeeForm = ({ employee }) => {
 
   const handleRemoveAllowance = (pkgIndex, allowanceIndex) => {
     setFormData((prev) => {
-      const updatedPackages = [...prev.salaryPackage];
-      updatedPackages[pkgIndex].allowances.splice(allowanceIndex, 1);
+      // Ensure salaryPackage exists and deep copy the structure to avoid mutating the state directly
+      const updatedPackages = prev.salaryPackage.map((pkg) => ({
+        ...pkg,
+        allowances: pkg.allowances ? [...pkg.allowances] : [], // Ensure allowances is an array
+      }));
+  
+      // Ensure allowances exist at the specified package index
+      if (updatedPackages[pkgIndex]?.allowances) {
+        // Remove the specified allowance
+        updatedPackages[pkgIndex].allowances.splice(allowanceIndex, 1);
+      }
+  
       return { ...prev, salaryPackage: updatedPackages };
     });
   };
+  
+  // const handleRemoveAllowance = (pkgIndex, allowanceIndex) => {
+  //   setFormData((prev) => {
+  //     const updatedPackages = [...prev.salaryPackage];
+  //     updatedPackages[pkgIndex].allowances.splice(allowanceIndex, 1);
+  //     return { ...prev, salaryPackage: updatedPackages };
+  //   });
+  // };
 
   const onAcademicYearChanged = (e, yearTitle) => {
     setFormData((prev) => {

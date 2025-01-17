@@ -10,13 +10,13 @@ const DashboardFamiliesTotalNumberModule = () => {
   const { familiesStats } = useStudentsStats();
 
   // Destructure the required stats from studentsStats
-  const { familiesChildren,                
-    familySituationCount,            
-    familiesWithStudentsInYear
-   
+  const {
+    familiesChildren,
+    familySituationCount,
+    familiesWithStudentsInYear,
+    familiesWithActiveStudentsInYear,
   } = familiesStats;
-//console.log(familiesStats,'familiesStats')
-
+  //console.log(familiesStats,'familiesStats')
 
   return (
     <div
@@ -29,21 +29,22 @@ const DashboardFamiliesTotalNumberModule = () => {
       <div className="pl-4">
         <span className="text-sm text-gray-800 font-light">
           {" "}
-          Total Families
+          Families with active/inactive students
         </span>
         <div className="flex items-center">
           <strong className="text-xl text-gray-900 font-semi-bold">
             {" "}
-            {familiesWithStudentsInYear}
+            {familiesWithActiveStudentsInYear}/
+            {Number(familiesWithStudentsInYear)-Number(familiesWithActiveStudentsInYear)}
           </strong>
           <span className="pl-2 text-sm text-red-600">
-            {familySituationCount?.Separated} Separated{" "}
+            ({familySituationCount?.Joint} Joint,{" "}
           </span>
           <span className="pl-2 text-sm text-red-600">
-            {familySituationCount?.Orphan} Orphan{" "}
+            {familySituationCount?.Separated} Separated,{" "}
           </span>
           <span className="pl-2 text-sm text-red-600">
-            {familySituationCount?.Joint} Joint{" "}
+            {familySituationCount?.Orphan} Orphan)
           </span>
         </div>
       </div>
