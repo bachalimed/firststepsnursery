@@ -6,16 +6,15 @@ import { HiOutlineSearch } from "react-icons/hi";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
-  selectAllAcademicYears,
+  //selectAllAcademicYears,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import Finances from "../Finances";
-import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import DeletionConfirmModal from "../../../Components/Shared/Modals/DeletionConfirmModal";
-import { Link } from "react-router-dom";
+//import { Link } from "react-router-dom";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import useAuth from "../../../hooks/useAuth";
@@ -28,16 +27,14 @@ const PaymentsList = () => {
   });
   //this is for the academic year selection
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
-  const { canEdit, isAdmin, canDelete, canCreate, isManager, status2 } =
-    useAuth();
+  const { isAdmin, canDelete, canCreate, isManager } = useAuth();
 
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
-  const academicYears = useSelector(selectAllAcademicYears);
+  //const academicYears = useSelector(selectAllAcademicYears);
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for modal
   const [idPaymentToDelete, setIdPaymentToDelete] = useState(null); // State to track which document to delete
@@ -90,7 +87,7 @@ const PaymentsList = () => {
     if (isDelSuccess) {
       refetch();
     }
-  }, [isDelSuccess]);
+  }, [refetch, isDelSuccess]);
   // Function to handle the delete button click
   const onDeletePaymentClicked = (id) => {
     setIdPaymentToDelete(id); // Set the document to delete
@@ -219,14 +216,29 @@ const PaymentsList = () => {
     //   : null,
     {
       name: "Student Name",
-      selector: (row) =>
-        row?.paymentStudent?.studentName?.firstName +
-        " " +
-        row?.paymentStudent?.studentName?.middleName +
-        " " +
-        row?.paymentStudent?.studentName?.lastName,
+      selector: (row) => (
+        <div
+          style={{
+            whiteSpace: "normal",
+            wordWrap: "break-word",
+            textAlign: "left",
+          }}
+          className={
+            row?.paymentStudent?.studentIsActive ? "text-black" : "text-red-600"
+          }
+        >
+          {row?.paymentStudent?.studentName?.firstName || ""}{" "}
+          {row?.paymentStudent?.studentName?.middleName || ""}{" "}
+          {row?.paymentStudent?.studentName?.lastName || ""}{" "}
+          {row?.paymentStudent?.studentIsActive ? "" : "(Inactive)"}
+        </div>
+      ),
+      style: {
+        justifyContent: "left",
+        textAlign: "left", // Aligns the header and cell content properly
+      },
       sortable: true,
-      width: "160px",
+      width: "150px",
     },
     {
       name: "Details",
@@ -236,8 +248,7 @@ const PaymentsList = () => {
     },
     {
       name: "Invoice Month",
-      sortable: true,
-      width: "140px",
+
       cell: (row) => (
         <div>
           {row.paymentInvoices.map((invoice) => (
@@ -245,6 +256,12 @@ const PaymentsList = () => {
           ))}
         </div>
       ),
+      sortable: true,
+      width: "140px",
+      style: {
+        justifyContent: "left",
+        textAlign: "left", // Aligns the header and cell content properly
+      },
     },
 
     {
@@ -252,12 +269,20 @@ const PaymentsList = () => {
       cell: (row) => (
         <div>
           {row.paymentInvoices.map((invoice) => (
-            <div key={invoice?._id}>{invoice?.invoiceAuthorisedAmount}</div>
+            <div key={invoice?._id}>
+              {" "}
+              {invoice?.invoiceEnrolment?.serviceType}{" "}
+              {invoice?.invoiceAuthorisedAmount}
+            </div>
           ))}
         </div>
       ),
       sortable: true,
-      width: "120px",
+      style: {
+        justifyContent: "left",
+        textAlign: "left", // Aligns the header and cell content properly
+      },
+      width: "150px",
     },
     {
       name: " Discount",

@@ -4,6 +4,7 @@ import React,{useEffect} from "react";
 import DashboardFinancesTotalExpensesModule from "./DashboardModules/DashboardFinancesTotalExpensesModule";
  import DashboardFinancesMonthlyPaymentsExpensesInvoicesModule from "./DashboardModules/DashboardFinancesMonthlyPaymentsExpensesInvoicesModule";
  import DashboardFinancesMonthlyExpenseCategoriesModule from "./DashboardModules/DashboardFinancesMonthlyExpenseCategoriesModule";
+ import DashboardFinancesTotalPercentagesModule from "./DashboardModules/DashboardFinancesTotalPercentagesModule";
 
 import Dashboard from "../Dashboard";
 //a wrapper to format the stats
@@ -26,7 +27,8 @@ const DashboardStatsGrid = () => {
       <div className="flex flex-col sm:flex-row gap-4 mt-4 mb-4 ml-4 mr-4 w-full">
         <DashboardFinancesTotalPaymentsModule />
         <DashboardFinancesTotalExpensesModule />
-        {/* <DashboardFinancesMonthlyInvoicesModule /> */}
+        <DashboardFinancesTotalPercentagesModule />
+        
        
         {/* <DashboardfinancesNumberStats /> */}
 

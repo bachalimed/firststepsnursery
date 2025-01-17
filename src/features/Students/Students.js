@@ -36,7 +36,7 @@ const Students = () => {
       label: "Enrolments",
       path: "/students/enrolments/enrolments/",
     },
-    (isAcademic || isDesk || isDirector || isManager || isAdmin) && {
+    ( isManager || isAdmin) && {
       label: "Unenrolled Students",
       path: "/students/enrolments/unenrolments/",
     },

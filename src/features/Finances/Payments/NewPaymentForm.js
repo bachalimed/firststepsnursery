@@ -62,7 +62,7 @@ const NewPaymentForm = () => {
     paymentStudent: "",
     paymentInvoices: [], // can pay once for many invoices
     paymentNote: "",
-    paymentType: "",
+    paymentType: "Cash",
     paymentReference: "",
     paymentDate: "",
     paymentRecordDate: "",

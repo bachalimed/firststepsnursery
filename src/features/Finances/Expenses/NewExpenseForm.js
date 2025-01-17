@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useGetServicesByYearQuery } from "../../AppSettings/StudentsSet/NurseryServices/servicesApiSlice";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { useAddNewExpenseMutation } from "./expensesApiSlice"; // Redux API action
+import { useSelector } from "react-redux";
+import { useAddNewExpenseMutation } from "./expensesApiSlice";
 import { useGetExpenseCategoriesByYearQuery } from "../../AppSettings/FinancesSet/ExpenseCategories/expenseCategoriesApiSlice";
 import { useGetPayeesByYearQuery } from "../../AppSettings/FinancesSet/Payees/payeesApiSlice";
 import Finances from "../Finances";
@@ -10,7 +10,7 @@ import useAuth from "../../../hooks/useAuth";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
-  selectAllAcademicYears,
+  // selectAllAcademicYears,
 } from "../../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 import {
@@ -35,14 +35,14 @@ const NewExpenseForm = () => {
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
-  const academicYears = useSelector(selectAllAcademicYears);
+  //const academicYears = useSelector(selectAllAcademicYears);
 
   const {
     data: expenseCategories, //the data is renamed expenseCategories
     isLoading: isExpenseCategoriesLoading,
     isSuccess: isExpenseCategoriesSuccess,
-    isError: isExpenseCategoriesError,
-    error: expenseCategoriesError,
+    // isError: isExpenseCategoriesError,
+    // error: expenseCategoriesError,
   } = useGetExpenseCategoriesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -57,8 +57,8 @@ const NewExpenseForm = () => {
     data: payees, //the data is renamed payees
     isLoading: isPayeesLoading,
     isSuccess: isPayeesSuccess,
-    isError: isPayeesError,
-    error: payeesError,
+    // isError: isPayeesError,
+    // error: payeesError,
   } = useGetPayeesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -74,8 +74,8 @@ const NewExpenseForm = () => {
     data: services, //the data is renamed services
     isLoading: isServicesLoading,
     isSuccess: isServicesSuccess,
-    isError: isServicesError,
-    error: servicesError,
+    // isError: isServicesError,
+    // error: servicesError,
   } = useGetServicesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -118,7 +118,7 @@ const NewExpenseForm = () => {
     expenseDate: "",
     expensePaymentDate: "",
 
-    expenseMethod: "",
+    expenseMethod: "Cash",
     expenseOperator: userId,
     expenseCreator: userId,
   });
@@ -145,7 +145,6 @@ const NewExpenseForm = () => {
   });
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   //validation for date in the expense month
   const isValidExpenseDate = (expenseDate, expenseMonth) => {
     // Check if the expenseDate matches the DATE_REGEX
@@ -247,16 +246,6 @@ const NewExpenseForm = () => {
   // Close the modal without saving
   const handleCloseModal = () => {
     setShowConfirmation(false);
-  };
-  // Handle input change
-
-  // Handle input change
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
   };
 
   // Find the category that matches formData.expenseCategory
