@@ -34,7 +34,9 @@ import { setStudents } from "./studentsSlice";
 import { gradeOptions } from "../../../../config/Constants";
 
 const StudentsList = () => {
-  useEffect(()=>{document.title="Students List"})
+  useEffect(() => {
+    document.title = "Students List";
+  });
   //this is for the academic year selection
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -97,7 +99,7 @@ const StudentsList = () => {
     deleteStudent,
     {
       isLoading: isDelLoading,
-       isSuccess: isDelSuccess,
+      isSuccess: isDelSuccess,
       isError: isDelError,
       error: delError,
     },
@@ -109,18 +111,10 @@ const StudentsList = () => {
     setIsDeleteModalOpen(true);
   };
   useEffect(() => {
-    
-    if(isDelSuccess){
+    if (isDelSuccess) {
       refetch();
-
-
     }
   }, [isDelSuccess]);
-
-
-
-
-
 
   // Function to confirm deletion in the modal
   const handleConfirmDelete = async () => {
@@ -301,7 +295,6 @@ const StudentsList = () => {
     //   sortable: true,
     //   width: "210px",
     // },
-
     {
       name: "Student Name",
       selector: (row) =>
@@ -313,12 +306,16 @@ const StudentsList = () => {
       sortable: true,
       width: "190px",
       cell: (row) => (
-        <Link to={`/students/studentsParents/studentDetails/${row.id}`}>
+        <Link to={`/students/studentsParents/studentDetails/${row.id}`}  className={
+          row?.studentIsActive
+            ? "text-black" 
+            : "text-red-600"
+        }>
           {row.studentName?.firstName +
             " " +
             row.studentName?.middleName +
             " " +
-            row.studentName?.lastName}
+            row.studentName?.lastName}{" "}{row?.studentIsActive? "" : "(Inactive)"}
         </Link>
       ),
       style: {
@@ -419,21 +416,24 @@ const StudentsList = () => {
     },
 
     {
-      name: "Comment", 
+      name: "Comment",
       selector: (row) => (
         <div>
-          {row?.studentEducation?.map((educ, index) => (
-            educ?.note&&<div
-              key={`${educ?.schoolYear}-${index}`} // Ensures a unique key
-              style={{
-                whiteSpace: "normal",
-                wordWrap: "break-word",
-                textAlign: "left", // Aligns the text properly
-              }}
-            >
-              {educ?.schoolYear} - {educ?.note}
-            </div>
-          ))}
+          {row?.studentEducation?.map(
+            (educ, index) =>
+              educ?.note && (
+                <div
+                  key={`${educ?.schoolYear}-${index}`} // Ensures a unique key
+                  style={{
+                    whiteSpace: "normal",
+                    wordWrap: "break-word",
+                    textAlign: "left", // Aligns the text properly
+                  }}
+                >
+                  {educ?.schoolYear} - {educ?.note}
+                </div>
+              )
+          )}
         </div>
       ),
       style: {
@@ -507,12 +507,18 @@ const StudentsList = () => {
     },
   ].filter(Boolean); // Filter out falsy values like `false` or `undefined`
 
-
+  const inactiveStudentsCount = filteredStudents.filter(
+    (student) => student.studentIsActive === false
+  ).length;
   // Custom header to include the row count
   const tableHeader = (
     <h2>
       Students List:
-      <span> {filteredStudents.length} students</span>
+      <span>
+        {" "}
+        {Number(filteredStudents.length) - Number(inactiveStudentsCount)}{" "}
+        active & {inactiveStudentsCount} inactive{" "}
+      </span>
     </h2>
   );
 
@@ -526,158 +532,156 @@ const StudentsList = () => {
       </>
     );
   // if (isStudentsSuccess && isSchoolsSuccess)
-    content = (
-      <>
-        <Students />
-        <div className="flex space-x-2 items-center ml-3">
-          {/* Search Bar */}
-          <div className="relative h-10 mr-2">
-            <HiOutlineSearch
-              fontSize={20}
-              className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-              aria-label="search students"
-            />
-            <input
-              aria-label="search students"
-              type="text"
-              value={searchQuery}
-              onChange={handleSearch}
-              className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300 px-4 pl-11 pr-4"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => handleSearch({ target: { value: "" } })} // Clear search
-                className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
-                aria-label="clear search"
-              >
-                &times;
-              </button>
-            )}
-          </div>
-          {/* Grade Filter Dropdown */}
-          <label htmlFor="gradeFilter" className="formInputLabel">
-            <select
-              aria-label="gradeFilter"
-              id="gradeFilter"
-              value={selectedGrade}
-              onChange={handleGradeChange}
-              className="text-sm h-8 border border-gray-300  px-4"
+  content = (
+    <>
+      <Students />
+      <div className="flex space-x-2 items-center ml-3">
+        {/* Search Bar */}
+        <div className="relative h-10 mr-2">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+            aria-label="search students"
+          />
+          <input
+            aria-label="search students"
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="text-sm focus:outline-none active:outline-none mt-1 h-8 w-[12rem] border border-gray-300 px-4 pl-11 pr-4"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => handleSearch({ target: { value: "" } })} // Clear search
+              className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+              aria-label="clear search"
             >
-              <option value="">All Grades</option>
-              {gradeOptions.map((grade) => (
-                <option key={grade} value={grade}>
-                  Grade {grade}
-                </option>
-              ))}
-            </select>
-          </label>
-          {/* Attended school selection dropdown */}
-          <label htmlFor="schoolFilter" className="formInputLabel">
-            <select
-              aria-label="schoolFilter"
-              id="schoolFilter"
-              value={selectedSchoolName}
-              onChange={handleSchoolChange}
-              className="text-sm h-8 border border-gray-300  px-4"
-            >
-              <option value="">All Schools</option>
-              {attendedSchools?.map(
-                (school) =>
-                  school.schoolName !== "First Steps" && (
-                    <option key={school.id} value={school.schoolName}>
-                      {school.schoolName}
-                    </option>
-                  )
-              )}
-            </select>
-          </label>
-        </div>
-
-        <div className="dataTableContainer">
-          <div>
-            <DataTable
-              title={tableHeader}
-              columns={column}
-              data={filteredStudents}
-              pagination
-              selectableRows
-              removableRows
-              pageSizeControl
-              onSelectedRowsChange={handleRowSelected}
-              selectableRowsHighlight
-              customStyles={{
-                headCells: {
-                  style: {
-                    justifyContent: "center",
-                    textAlign: "center",
-                    color: "black",
-                    fontSize: "14px",
-                  },
-                },
-                cells: {
-                  style: {
-                    color: "black",
-                    fontSize: "14px",
-                  },
-                },
-                pagination: {
-                  style: {
-                    display: "flex",
-                    justifyContent: "center", // Center the pagination control
-                    alignItems: "center",
-                    padding: "10px 0", // Optional: Add padding for spacing
-                  },
-                },
-              }}
-            ></DataTable>
-          </div>
-          {(isAcademic || isDesk || isDirector || isManager || isAdmin) && (
-            <div className="cancelSavebuttonsDiv">
-              <button
-                className="add-button"
-                onClick={() =>
-                  navigate("/students/studentsParents/newStudent/")
-                }
-                // disabled={selectedRows.length !== 1} // Disable if no rows are selected
-                hidden={!canCreate}
-                aria-label="add student"
-              >
-                New Student
-              </button>
-              <button
-                className={`px-4 py-2 ${
-                  selectedRows?.length === 1 ? "add-button" : "bg-gray-300"
-                } text-white rounded`}
-                onClick={handleRegisterSelected}
-                disabled={selectedRows?.length !== 1} // Disable if no rows are selected
-                hidden={!canCreate}
-                aria-label="register student"
-              >
-                Register
-              </button>
-            </div>
+              &times;
+            </button>
           )}
         </div>
-        <DeletionConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
-          onConfirm={handleConfirmDelete}
-          message="Deleting a student will also delete all his attached documents, this cannor be undone. Are you sure?"
-        />
-        
-        <RegisterModal //will allow to add or remove studetnYEars
-          isOpen={isRegisterModalOpen}
-          onClose={() => setIsRegisterModalOpen(false)}
-          studentYears={studentYears}
-          studentObject={studentObject}
-          setStudentObject={setStudentObject}
-          setStudentYears={setStudentYears}
-          academicYears={academicYears}
-          onSave={onUpdateStudentClicked}
-        />
-      </>
-    );
+        {/* Grade Filter Dropdown */}
+        <label htmlFor="gradeFilter" className="formInputLabel">
+          <select
+            aria-label="gradeFilter"
+            id="gradeFilter"
+            value={selectedGrade}
+            onChange={handleGradeChange}
+            className="text-sm h-8 border border-gray-300  px-4"
+          >
+            <option value="">All Grades</option>
+            {gradeOptions.map((grade) => (
+              <option key={grade} value={grade}>
+                Grade {grade}
+              </option>
+            ))}
+          </select>
+        </label>
+        {/* Attended school selection dropdown */}
+        <label htmlFor="schoolFilter" className="formInputLabel">
+          <select
+            aria-label="schoolFilter"
+            id="schoolFilter"
+            value={selectedSchoolName}
+            onChange={handleSchoolChange}
+            className="text-sm h-8 border border-gray-300  px-4"
+          >
+            <option value="">All Schools</option>
+            {attendedSchools?.map(
+              (school) =>
+                school.schoolName !== "First Steps" && (
+                  <option key={school.id} value={school.schoolName}>
+                    {school.schoolName}
+                  </option>
+                )
+            )}
+          </select>
+        </label>
+      </div>
+
+      <div className="dataTableContainer">
+        <div>
+          <DataTable
+            title={tableHeader}
+            columns={column}
+            data={filteredStudents}
+            pagination
+            selectableRows
+            removableRows
+            pageSizeControl
+            onSelectedRowsChange={handleRowSelected}
+            selectableRowsHighlight
+            customStyles={{
+              headCells: {
+                style: {
+                  justifyContent: "center",
+                  textAlign: "center",
+                  color: "black",
+                  fontSize: "14px",
+                },
+              },
+              cells: {
+                style: {
+                  color: "black",
+                  fontSize: "14px",
+                },
+              },
+              pagination: {
+                style: {
+                  display: "flex",
+                  justifyContent: "center", // Center the pagination control
+                  alignItems: "center",
+                  padding: "10px 0", // Optional: Add padding for spacing
+                },
+              },
+            }}
+          ></DataTable>
+        </div>
+        {(isAcademic || isDesk || isDirector || isManager || isAdmin) && (
+          <div className="cancelSavebuttonsDiv">
+            <button
+              className="add-button"
+              onClick={() => navigate("/students/studentsParents/newStudent/")}
+              // disabled={selectedRows.length !== 1} // Disable if no rows are selected
+              hidden={!canCreate}
+              aria-label="add student"
+            >
+              New Student
+            </button>
+            <button
+              className={`px-4 py-2 ${
+                selectedRows?.length === 1 ? "add-button" : "bg-gray-300"
+              } text-white rounded`}
+              onClick={handleRegisterSelected}
+              disabled={selectedRows?.length !== 1} // Disable if no rows are selected
+              hidden={!canCreate}
+              aria-label="register student"
+            >
+              Register
+            </button>
+          </div>
+        )}
+      </div>
+      <DeletionConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+        message="Deleting a student will also delete all his attached documents, this cannor be undone. Are you sure?"
+      />
+
+      <RegisterModal //will allow to add or remove studetnYEars
+        isOpen={isRegisterModalOpen}
+        onClose={() => setIsRegisterModalOpen(false)}
+        studentYears={studentYears}
+        studentObject={studentObject}
+        setStudentObject={setStudentObject}
+        setStudentYears={setStudentYears}
+        academicYears={academicYears}
+        onSave={onUpdateStudentClicked}
+      />
+    </>
+  );
 
   return content;
 };

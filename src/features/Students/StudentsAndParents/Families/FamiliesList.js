@@ -256,10 +256,16 @@ const FamiliesList = () => {
               key={child?.child?._id}
               to={`/students/studentsParents/studentDetails/${child?.child?._id}`}
             >
-              <div>
+              <div
+                className={
+                  child?.child?.studentIsActive
+                    ? "text-black" // Class for active students
+                    : "text-red-600" // Class for inactive students
+                }
+              >
                 {child?.child?.studentName?.firstName}{" "}
                 {child?.child?.studentName?.middleName}{" "}
-                {child?.child?.studentName?.lastName}
+                {child?.child?.studentName?.lastName} {child?.child?.studentIsActive? "" : "(Inactive)"}
               </div>
             </Link>
           ))}

@@ -47,9 +47,7 @@ const ExpensesList = () => {
     error: expensesError,
     refetch,
   } = useGetExpensesByYearQuery({
-    selectedMonth: monthFilter
-      ? monthFilter
-      : getCurrentMonth(),
+    selectedMonth: monthFilter ? monthFilter : getCurrentMonth(),
     selectedYear: selectedAcademicYear?.title,
     endpointName: "ExpenseList",
   }) || {}; //this should match the endpoint defined in your API slice.!! what does it mean?
@@ -290,6 +288,27 @@ const ExpensesList = () => {
       sortable: true,
       width: "130px",
     },
+    {
+      name: "Comment",
+      selector: (row) => (
+        <div
+          style={{
+            wordWrap: "break-word", // Ensures long text wraps
+            whiteSpace: "normal", // Allows text to wrap normally
+            textAlign: "left", // Align text to the left
+          }}
+        >
+          {row?.expenseNote || "N/A"} {/* Show 'N/A' if expenseNote is undefined */}
+        </div>
+      ),
+      sortable: true,
+      width: "120px",
+      style: {
+        justifyContent: "left",
+        textAlign: "left",
+      },
+    },
+    
 
     {
       name: "Actions",

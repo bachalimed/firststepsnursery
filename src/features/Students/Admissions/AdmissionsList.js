@@ -293,14 +293,18 @@ const AdmissionsList = () => {
           style={{
             whiteSpace: "normal",
             wordWrap: "break-word",
-            textAlign: "left", // Ensures proper text alignment
-          }}
+            textAlign: "left",
+          }} className={
+            row?.student?.studentIsActive
+              ? "text-black" 
+              : "text-red-600" 
+          }
         >
           {row?.student?.studentName?.firstName || ""}
           {" "}
           {row?.student?.studentName?.middleName || ""}
           {" "}
-          {row?.student?.studentName?.lastName || ""}
+          {row?.student?.studentName?.lastName || ""}{" "}{row?.studentIsActive? "" : "(Inactive)"}
         </div>
       ),
       style: {

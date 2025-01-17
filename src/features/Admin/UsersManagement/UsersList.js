@@ -248,7 +248,7 @@ const UsersList = () => {
         justifyContent: "left",
         textAlign: "left",
       },
-      width: "120px",
+      width: "130px",
       // sortFunction: (rowA, rowB) => {
       //   const usernameA = rowA.username.toLowerCase();
       //   const usernameB = rowB.username.toLowerCase();

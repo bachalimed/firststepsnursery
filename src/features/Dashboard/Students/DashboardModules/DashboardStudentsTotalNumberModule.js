@@ -28,15 +28,15 @@ const DashboardStudentsTotalNumberModule = () => {
       <div className="pl-4">
         <span className="text-sm text-gray-800 font-light">
           {" "}
-          Total Students
+          Active Students
         </span>
         <div className="flex items-center">
           <strong className="text-xl text-gray-900 font-semi-bold">
             {" "}
-            {studentsMatchingAcademicYear}
+            {Number(studentsMatchingAcademicYear) - Number(inactiveStudentsCount)}
           </strong>
           <span className="pl-2 text-sm text-red-600">
-            {inactiveStudentsCount} inactive{" "}
+            (+{inactiveStudentsCount} inactive students){" "}
           </span>
         </div>
       </div>

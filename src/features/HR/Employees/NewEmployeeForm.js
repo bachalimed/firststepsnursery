@@ -100,9 +100,9 @@ const NewEmployeeForm = () => {
         basicSalary: "",
         allowances: [
           {
-            allowanceLabel: "",
-            allowanceUnitValue: "",
-            allowancePeriodicity: "",
+            allowanceLabel: "extra",
+            allowanceUnitValue: "10",
+            allowancePeriodicity: "Monthly",
           },
         ],
         deduction: { deductionLabel: "", deductionAmount: "" },
@@ -1118,7 +1118,7 @@ const NewEmployeeForm = () => {
                     handleDeductionChange("deductionLabel", e.target.value)
                   }
                   className="formInputText"
-                  required
+                
                 />
               </label>
               <label htmlFor="deductionAmount" className="formInputLabel">
@@ -1135,7 +1135,7 @@ const NewEmployeeForm = () => {
                     handleDeductionChange("deductionAmount", e.target.value)
                   }
                   className="formInputText"
-                  required
+                 
                 />
               </label>
             </div>

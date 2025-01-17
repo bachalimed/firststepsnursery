@@ -57,10 +57,16 @@ const AgeGroupsReport = () => {
     const studentsList = isStudentsSuccess
       ? Object.values(students.entities)
       : [];
-    const filtered = studentsList.filter((student) => {
-      const age = calculateAge(student.studentDob);
-      return age >= minAge && age <= maxAge;
-    });
+
+
+
+      const filtered = studentsList.filter((student) => {
+        const isActiveStudent = student.studentIsActive === true; 
+        if (!isActiveStudent) return false; // Exclude inactive students
+        const age = calculateAge(student.studentDob); 
+        return age >= minAge && age <= maxAge; 
+      });
+      
 
     setFilteredStudents(filtered);
     setIsReportGenerated(true);
