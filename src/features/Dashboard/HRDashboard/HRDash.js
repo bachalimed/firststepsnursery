@@ -14,7 +14,7 @@ import Dashboard from "../Dashboard";
 // 		{children} </div>
 // }
 
-const DashboardStatsGrid = () => {
+const HRDashboardStatsGrid = () => {
 
  useEffect(() => {
     document.title = "HR Dashboard";
@@ -32,7 +32,7 @@ const DashboardStatsGrid = () => {
         {/* <DashboardFamiliesTotalNumberModule /> */}
        
         {/* <DashboardStudentsNumberStats /> */}
-
+hello
         {/* <BoxWrapper >element of stats</BoxWrapper>
        <BoxWrapper >element of stats</BoxWrapper>
        <BoxWrapper >element of stats</BoxWrapper> */}
@@ -60,4 +60,4 @@ const DashboardStatsGrid = () => {
   );
 };
 
-export default DashboardStatsGrid;
+export default HRDashboardStatsGrid;

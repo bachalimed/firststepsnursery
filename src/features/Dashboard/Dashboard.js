@@ -33,10 +33,10 @@ const Dashboard = () => {
       label: "Finances",
       path: "/dashboard/financesDash/",
     },
-    // (isHR || isDirector || isManager || isAdmin) && {
-    //   label: "HR",
-    //   path: "/dashboard/hrDash/",
-    // },
+    (isHR || isDirector || isManager || isAdmin) && {
+      label: "HR",
+      path: "/dashboard/hrDash/",
+    },
     // (isAcademic || isDirector || isManager || isAdmin) && {
     //   label: "Admissions",
     //   path: "/dashboard/admissions/",

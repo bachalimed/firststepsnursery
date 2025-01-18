@@ -13,7 +13,7 @@ import Dashboard from "../Dashboard";
 // 		{children} </div>
 // }
 
-const DashboardStatsGrid = () => {
+const FinancesDashboardStatsGrid = () => {
  useEffect(() => {
     document.title = "Finances Dashboard";
   });
@@ -63,4 +63,4 @@ const DashboardStatsGrid = () => {
   );
 };
 
-export default DashboardStatsGrid;
+export default FinancesDashboardStatsGrid;

@@ -30,7 +30,7 @@ const FinancesReports = () => {
     },
     (  isDirector || isManager || isAdmin) && {
       label: "Unpaid Enrolments",
-      path: "/reports/financesReports/unpaidInvoices/",
+      path: "/reports/financesReports/unpaidEnrolmentsReport/",
     },
     (isDirector || isManager || isAdmin) && {
       label: "blablabla",

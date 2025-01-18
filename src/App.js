@@ -8,6 +8,7 @@ import ForgotPassword from "./features/auth/ForgotPassword";
 import Dashboard from "./features/Dashboard/Dashboard";
 import StudentsDash from "./features/Dashboard/Students/StudentsDash";
 import FinancesDash from "./features/Dashboard/FinancesDash/FinancesDash";
+import HRDash from "./features/Dashboard/HRDashboard/HRDash";
 // import HRDash from "./features/Dashboard/HRDashboard/HRDash";
 import CookiePolicy from "./Components/CookiePolicy";
 import ResetPassword from "./features/auth/MyProfile/ResetPassword";
@@ -21,7 +22,7 @@ import StudentsReports from "./features/Reporting/StudentsReports";
 import AcademicsReports from "./features/Reporting/AcademicsReports"; 
 import HRReports from "./features/Reporting/HRReports"; 
 import FinancesReports from "./features/Reporting/FinancesReports";
-import UnpaidInvoices from "./features/Reporting/FinancesReports/UnpaidInvoices"
+import UnpaidEnrolmentsReport from "./features/Reporting/FinancesReports/UnpaidEnrolmentsReport"
 import ExpensesReport from "./features/Reporting/FinancesReports/ExpensesReport"
 import PaymentsReport from "./features/Reporting/FinancesReports/PaymentsReport"
 
@@ -223,6 +224,7 @@ const App = () => {
                 {/*  index will show as a default in the dashboard layout*/}
                 <Route path="studentsDash/" element={<StudentsDash />} />
                 <Route path="financesDash/" element={<FinancesDash />} />
+                <Route path="hrDash/" element={<HRDash />} />
               </Route>{" "}
               <Route path="myProfile" element={<DashboardLayout />}>
                 {" "}
@@ -627,7 +629,7 @@ const App = () => {
                   <Route index element={<FinancesReports />} />
                   <Route path="expensesReport/" element={<ExpensesReport />} />
                   <Route path="paymentsReport/" element={<PaymentsReport />} />
-                  <Route path="unpaidInvoices/" element={<UnpaidInvoices />} />
+                  <Route path="unpaidEnrolmentsReport/" element={<UnpaidEnrolmentsReport />} />
                  
 
                 
