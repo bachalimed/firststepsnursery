@@ -176,109 +176,106 @@ const NewPayslipForm = () => {
       navigate("/hr/payslips/payslipsList");
     }
   }, [isAddSuccess, navigate]);
- //extract the current salary package
- const getActiveSalaryPackage = (
-  salaryPackage,
-  targetYear,
-  targetMonthNumber
-) => {
-  // console.log(salaryPackage,
-  //   targetYear,
-  //   targetMonthNumber,'salary package')
-  // Create a date object for the first day of the target month
-  const targetDate = new Date(targetYear, targetMonthNumber - 1, 1);
-  //console.log(targetDate,'targetDate')
-  // Find the active salary package
-  const activeSalaryPackage = salaryPackage?.find((pack) => {
-    // Normalize dates to ensure comparison is based on date only
-    const salaryFromDate = new Date(pack.salaryFrom);
-    const salaryToDate = pack.salaryTo ? new Date(pack.salaryTo) : new Date(); // If salaryTo is null, assume it's still active
-    const normalizedSalaryFromDate = new Date(
-      salaryFromDate.getFullYear(),
-      salaryFromDate.getMonth(),
-      salaryFromDate.getDate()
-    );
-    const normalizedSalaryToDate = new Date(
-      salaryToDate.getFullYear(),
-      salaryToDate.getMonth(),
-      salaryToDate.getDate()
-    );
-    const normalizedTargetDate = new Date(
-      targetDate.getFullYear(),
-      targetDate.getMonth(),
-      targetDate.getDate()
-    );
-  
-    // console.log(
-    //   normalizedTargetDate >= normalizedSalaryFromDate &&
-    //     normalizedTargetDate <= normalizedSalaryToDate,
-    //   "check if true"
-    // );
-  
-    // Check if normalizedTargetDate is within the range [normalizedSalaryFromDate, normalizedSalaryToDate]
-    return (
-      normalizedTargetDate >= normalizedSalaryFromDate &&
-      normalizedTargetDate <= normalizedSalaryToDate
-    );
-  });
-  
-  console.log(activeSalaryPackage, "activeSalaryPackage");
-  
-  return activeSalaryPackage || null; // Return null if no active package is found
-  
-};
-  useEffect(() => {
-    if (
-      formData?.payslipEmployee !== "" &&
-      formData?.payslipMonth !== "" &&
-      isEmployeesSuccess
-    ) {
-      const {
-        days: daysInMonth,
-        monthNumber: month,
-        year,
-      } = getMonthDetails(selectedAcademicYear?.title, formData?.payslipMonth);
-  
-      if (!year || !month || !daysInMonth) return;
-  
-      const employeeSelected = employeesList?.find(
-        (employee) =>
-          String(employee?.employeeId) === String(formData?.payslipEmployee)
+  //extract the current salary package
+  const getActiveSalaryPackage = (
+    salaryPackage,
+    targetYear,
+    targetMonthNumber
+  ) => {
+    // console.log(salaryPackage,
+    //   targetYear,
+    //   targetMonthNumber,'salary package')
+    // Create a date object for the first day of the target month
+    const targetDate = new Date(targetYear, targetMonthNumber - 1, 1);
+    //console.log(targetDate,'targetDate')
+    // Find the active salary package
+    const activeSalaryPackage = salaryPackage?.find((pack) => {
+      // Normalize dates to ensure comparison is based on date only
+      const salaryFromDate = new Date(pack.salaryFrom);
+      const salaryToDate = pack.salaryTo ? new Date(pack.salaryTo) : new Date(); // If salaryTo is null, assume it's still active
+      const normalizedSalaryFromDate = new Date(
+        salaryFromDate.getFullYear(),
+        salaryFromDate.getMonth(),
+        salaryFromDate.getDate()
       );
-  
-      const activeSalaryPackage = getActiveSalaryPackage(
-        employeeSelected?.employeeData?.salaryPackage,
-        year,
-        month
+      const normalizedSalaryToDate = new Date(
+        salaryToDate.getFullYear(),
+        salaryToDate.getMonth(),
+        salaryToDate.getDate()
       );
-      const basicSalary = activeSalaryPackage?.basicSalary || 0;
-      console.log(Number(basicSalary),'Number(basicSalary)')
-      console.log(Number(activeSalaryPackage?.deduction?.deductionAmount),'Number(activeSalaryPackage?.deduction?.deductionAmount')
-      console.log(Number(activeSalaryPackage),'Number(activeSalaryPackage')
-  
-      // Calculate total amount (payableBasic + total allowances) to start with and the other useeffect will use thaloowances
-      const totalAmount = (
-        Number(basicSalary) - 
-        Number(activeSalaryPackage?.deduction?.deductionAmount || 0)
-      ).toFixed(2);
-  
-      setFormData((prev) => ({
-        ...prev,
-        payslipTotalAmount: totalAmount,
-        payslipSalaryComponents: {
-          ...prev.payslipSalaryComponents,
-          basic: Number(basicSalary).toFixed(2),
-          payableBasic: Number(basicSalary).toFixed(2),
-          deduction: activeSalaryPackage?.deduction,
-        },
-      }));
-    }
-  }, [
-    formData?.payslipEmployee,
-    formData?.payslipMonth,
-    isEmployeesSuccess,
-  ]);
-  
+      const normalizedTargetDate = new Date(
+        targetDate.getFullYear(),
+        targetDate.getMonth(),
+        targetDate.getDate()
+      );
+
+      // console.log(
+      //   normalizedTargetDate >= normalizedSalaryFromDate &&
+      //     normalizedTargetDate <= normalizedSalaryToDate,
+      //   "check if true"
+      // );
+
+      // Check if normalizedTargetDate is within the range [normalizedSalaryFromDate, normalizedSalaryToDate]
+      return (
+        normalizedTargetDate >= normalizedSalaryFromDate &&
+        normalizedTargetDate <= normalizedSalaryToDate
+      );
+    });
+
+    console.log(activeSalaryPackage, "activeSalaryPackage");
+
+    return activeSalaryPackage || null; // Return null if no active package is found
+  };
+  // useEffect(() => {
+  //   if (
+  //     formData?.payslipEmployee !== "" &&
+  //     formData?.payslipMonth !== "" &&
+  //     isEmployeesSuccess
+  //   ) {
+  //     const {
+  //       days: daysInMonth,
+  //       monthNumber: month,
+  //       year,
+  //     } = getMonthDetails(selectedAcademicYear?.title, formData?.payslipMonth);
+
+  //     if (!year || !month || !daysInMonth) return;
+
+  //     const employeeSelected = employeesList?.find(
+  //       (employee) =>
+  //         String(employee?.employeeId) === String(formData?.payslipEmployee)
+  //     );
+
+  //     const activeSalaryPackage = getActiveSalaryPackage(
+  //       employeeSelected?.employeeData?.salaryPackage,
+  //       year,
+  //       month
+  //     );
+  //     const basicSalary = activeSalaryPackage?.basicSalary || 0;
+  //     console.log(Number(basicSalary), "Number(basicSalary)");
+  //     console.log(
+  //       Number(activeSalaryPackage?.deduction?.deductionAmount),
+  //       "Number(activeSalaryPackage?.deduction?.deductionAmount"
+  //     );
+  //     console.log(Number(activeSalaryPackage), "Number(activeSalaryPackage");
+
+  //     // Calculate total amount (payableBasic + total allowances) to start with and the other useeffect will use thaloowances
+  //     const totalAmount = (
+  //       Number(basicSalary) -
+  //       Number(activeSalaryPackage?.deduction?.deductionAmount || 0)
+  //     ).toFixed(2);
+
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       payslipTotalAmount: totalAmount,
+  //       payslipSalaryComponents: {
+  //         ...prev.payslipSalaryComponents,
+  //         basic: Number(basicSalary).toFixed(2),
+  //         payableBasic: Number(basicSalary).toFixed(2),
+  //         deduction: activeSalaryPackage?.deduction,
+  //       },
+  //     }));
+  //   }
+  // }, [formData?.payslipEmployee, formData?.payslipMonth, isEmployeesSuccess]);
 
   let employeesList = [];
   if (isEmployeesSuccess) {
@@ -343,7 +340,7 @@ const NewPayslipForm = () => {
     const day = String(date.getDate()).padStart(2, "0"); // Add leading zero for single-digit days
     return `${year}-${month}-${day}`;
   }
-  
+//to check if month is after join date
   useEffect(() => {
     if (formData.payslipEmployee && formData.payslipMonth) {
       const {
@@ -351,22 +348,26 @@ const NewPayslipForm = () => {
         monthNumber: selectedMonthNumber,
         year: selectedYear,
       } = getMonthDetails(selectedAcademicYear?.title, formData.payslipMonth);
-  
+
       // Get the selected employee's details
       const selectedEmployee = employeesList?.find(
         (employee) =>
           String(employee?.employeeId) === String(formData?.payslipEmployee)
       );
-  
+
       if (!selectedEmployee) return;
-  
+
       const joinDate = new Date(
         selectedEmployee?.employeeData?.employeeCurrentEmployment?.joinDate
       );
-  
-      const startOfSelectedMonth = new Date(selectedYear, selectedMonthNumber - 1, 1);
+
+      const startOfSelectedMonth = new Date(
+        selectedYear,
+        selectedMonthNumber - 1,
+        1
+      );
       const endOfSelectedMonth = new Date(selectedYear, selectedMonthNumber, 0); // Last day of the selected month
-  
+
       // Allow if joinDate is within the selected month
       if (joinDate > endOfSelectedMonth) {
         // Reset employee and show error
@@ -390,148 +391,258 @@ const NewPayslipForm = () => {
     employeesList,
     selectedAcademicYear?.title,
   ]);
-  
-  
- 
+
+  // useEffect(() => {
+  //   if (
+  //     formData?.payslipEmployee !== "" &&
+  //     formData?.payslipMonth !== "" &&
+  //     isLeavesSuccess &&
+  //     isEmployeesSuccess
+  //   ) {
+  //     const {
+  //       days: daysInMonth,
+  //       monthNumber: month,
+  //       year,
+  //     } = getMonthDetails(selectedAcademicYear?.title, formData?.payslipMonth);
+
+  //     if (!year || !month || !daysInMonth) return;
+
+  //     // Utility function to check if a date is a Sunday
+  //     function isSunday(date) {
+  //       return date.getDay() === 0; // 0 represents Sunday
+  //     }
+
+  //     // Generate an array for all days in the specified month
+  //     const payslipDays = Array.from({ length: daysInMonth }, (_, index) => {
+  //       const dayDate = new Date(year, month - 1, index + 1); // Correctly calculate the day for the given month
+  //       const formattedDay = formatDate(dayDate); // Use the utility function to format the day
+
+  //       // Check if the day is a Sunday
+  //       const isWeekend = isSunday(dayDate);
+
+  //       // Find if there's a leave for this day
+  //       const leave = leavesList?.find(
+  //         (day) =>
+  //           day?.leaveEmployee._id === formData?.payslipEmployee &&
+  //           day?.leaveMonth === formData?.payslipMonth &&
+  //           formatDate(new Date(day?.leaveStartDate)) === formattedDay // Use the same formatDate function
+  //       );
+
+  //       // Generate the object for each day
+  //       return {
+  //         day: formattedDay,
+  //         isWeekend: isWeekend, // True for weekends
+  //         isSickLeave: leave?.leaveIsSickLeave && !isWeekend, // Sick leave if it's not a weekend
+  //         isPaid: leave?.leaveIsPaidLeave !== false, // Paid leave indicator only if the value is explicitly fasle
+  //         isGiven: leave?.leaveIsGiven, //
+  //         isPartDay: leave?.leaveIsPartDay,
+  //         partdayDuration:
+  //           (new Date(leave?.leaveEndDate) - new Date(leave?.leaveStartDate)) /
+  //           (1000 * 60 * 60),
+  //         dayType: (() => {
+  //           // Determine the type of day
+  //           if (isWeekend) {
+  //             return "weekend"; // If it's a weekend (Saturday or Sunday)
+  //           }
+
+  //           if (leave?.leaveIsSickLeave) {
+  //             return "sick-leave"; // If it's sick leave and not a weekend
+  //           }
+  //           if (leave?.leaveIsGiven) {
+  //             return "Given day"; // If it's sick leave and not a weekend
+  //           }
+
+  //           if (
+  //             !leave?.leaveStartDate ||
+  //             (leave?.leaveStartDate !== "" && leave?.leaveIsPartDay)
+  //           ) {
+  //             return "Work day"; // Off-day if leaveStartDate is empty or if it's a partial day
+  //           }
+
+  //           return "off-day"; // Otherwise, it's a workday
+  //         })(),
+  //       };
+  //     });
+
+  //     // console.log(payslipDays, "payslipDays1111111111");
+
+  //     // Calculate totals
+  //     const totalOpenDays = payslipDays.filter((day) => !day.isWeekend).length;
+  //     const totalPaidDays = payslipDays.filter(
+  //       (day) => day.isPaid && !day?.isWeekend
+  //     ).length;
+  //     // const totalWorkDays = payslipDays.filter(
+  //     //   (day) => day?.dayType === "Work day" || day?.dayType === "Given day"
+  //     // ).length;
+  //     //console.log(totalPaidDays, "totalPaidDays");
+  //     //console.log(totalOpenDays, "totalOpenDays");
+  //     //console.log(totalWorkDays, "totalWorkDays");
+  //     // Fetch basic salary for the selected employee
+
+  //     const employeeSelected = employeesList?.find(
+  //       (employee) =>
+  //         String(employee?.employeeId) === String(formData?.payslipEmployee)
+  //     );
+  //     //console.log(employeeSelected, "employeeSelected");
+
+  //     // Find the active salary package
+  //     const activeSalaryPackage = getActiveSalaryPackage(
+  //       employeeSelected?.employeeData?.salaryPackage,
+  //       year,
+  //       month
+  //     );
+  //     // if (activeSalaryPackage)
+  //     //   console.log("Active Salary Package:", activeSalaryPackage);
+
+  //     const basicSalary = activeSalaryPackage?.basicSalary || 0;
+  //     const allowances = activeSalaryPackage?.allowances || [];
+  //     //to add the allowancenumber to each elelment
+  //     const updatedAllowances = allowances.map((allowance) => ({
+  //       ...allowance, // Spread existing keys and values
+  //       allowanceNumber: allowance.allowanceNumber || 0, // Add allowanceNumber with default value 0 if not already present
+  //     }));
+  //     // Calculate payable basic salary
+  //     const payableBasic =
+  //       totalOpenDays > 0 ? (basicSalary * totalPaidDays) / totalOpenDays : 0;
+  //     //console.log(allowances, "allowances");
+  //     // Calculate total allowances
+  //     const totalAllowances = allowances.reduce((sum, allowance) => {
+  //       const unitValue = Number(allowance?.allowanceUnitValue) || 0; // Ensure valid number
+  //       const number = Number(allowance?.allowanceNumber) || 0; // originally there is no number in the array (coming from salarypackage and not from formdata)
+  //       return sum + unitValue * number; // Add the product to the sum
+  //     }, 0);
+
+  //     // console.log(totalAllowances, "totalAllowances");
+  //     // Calculate total amount (payableBasic + total allowances)
+  //     const totalAmount = (
+  //       Number(payableBasic) +
+  //       totalAllowances -
+  //       Number(activeSalaryPackage?.deduction?.deductionAmount)
+  //     ).toFixed(2);
+  //     // Update formData with calculated values
+  //     // console.log(payslipDays, "payslipDays22222222222");
+  //     // console.log(totalAmount, "totalAmount");
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       payslipWorkdays: payslipDays,
+  //       payslipTotalAmount: totalAmount, // Assign the array of day objects
+  //       payslipSalaryComponents: {
+  //         ...prev.payslipSalaryComponents,
+  //         basic: Number(basicSalary).toFixed(2), // Assign the calculated payable basic
+  //         payableBasic: Number(payableBasic).toFixed(2), // Assign the calculated payable basic
+  //         allowances: updatedAllowances,
+  //         deduction: activeSalaryPackage?.deduction,
+  //       },
+  //     }));
+  //   }
+  // }, [
+  //   formData?.payslipEmployee,
+  //   formData?.payslipMonth,
+  //   isLeavesSuccess,
+  //   isEmployeesSuccess,
+  // ]);
 
   useEffect(() => {
     if (
       formData?.payslipEmployee !== "" &&
       formData?.payslipMonth !== "" &&
-      isLeavesSuccess &&
-      isEmployeesSuccess
+      isEmployeesSuccess &&
+      isLeavesSuccess
     ) {
-      const {
-        days: daysInMonth,
-        monthNumber: month,
-        year,
-      } = getMonthDetails(selectedAcademicYear?.title, formData?.payslipMonth);
-
+      const { days: daysInMonth, monthNumber: month, year } = getMonthDetails(
+        selectedAcademicYear?.title,
+        formData?.payslipMonth
+      );
+  
       if (!year || !month || !daysInMonth) return;
-
-      // Utility function to check if a date is a Sunday
-      function isSunday(date) {
-        return date.getDay() === 0; // 0 represents Sunday
-      }
-
-      // Generate an array for all days in the specified month
-      const payslipDays = Array.from({ length: daysInMonth }, (_, index) => {
-        const dayDate = new Date(year, month - 1, index + 1); // Correctly calculate the day for the given month
-        const formattedDay = formatDate(dayDate); // Use the utility function to format the day
-
-        // Check if the day is a Sunday
-        const isWeekend = isSunday(dayDate);
-
-        // Find if there's a leave for this day
-        const leave = leavesList?.find(
-          (day) =>
-            day?.leaveEmployee._id === formData?.payslipEmployee &&
-            day?.leaveMonth === formData?.payslipMonth &&
-            formatDate(new Date(day?.leaveStartDate)) === formattedDay // Use the same formatDate function
-        );
-
-        // Generate the object for each day
-        return {
-          day: formattedDay,
-          isWeekend: isWeekend, // True for weekends
-          isSickLeave: leave?.leaveIsSickLeave && !isWeekend, // Sick leave if it's not a weekend
-          isPaid: leave?.leaveIsPaidLeave !== false, // Paid leave indicator only if the value is explicitly fasle
-          isGiven: leave?.leaveIsGiven, //
-          isPartDay: leave?.leaveIsPartDay,
-          partdayDuration:
-            (new Date(leave?.leaveEndDate) - new Date(leave?.leaveStartDate)) /
-            (1000 * 60 * 60),
-          dayType: (() => {
-            // Determine the type of day
-            if (isWeekend) {
-              return "weekend"; // If it's a weekend (Saturday or Sunday)
-            }
-
-            if (leave?.leaveIsSickLeave) {
-              return "sick-leave"; // If it's sick leave and not a weekend
-            }
-            if (leave?.leaveIsGiven) {
-              return "Given day"; // If it's sick leave and not a weekend
-            }
-
-            if (
-              !leave?.leaveStartDate ||
-              (leave?.leaveStartDate !== "" && leave?.leaveIsPartDay)
-            ) {
-              return "Work day"; // Off-day if leaveStartDate is empty or if it's a partial day
-            }
-
-            return "off-day"; // Otherwise, it's a workday
-          })(),
-        };
-      });
-
-      // console.log(payslipDays, "payslipDays1111111111");
-
-      // Calculate totals
-      const totalOpenDays = payslipDays.filter((day) => !day.isWeekend).length;
-      const totalPaidDays = payslipDays.filter(
-        (day) => day.isPaid && !day?.isWeekend
-      ).length;
-      // const totalWorkDays = payslipDays.filter(
-      //   (day) => day?.dayType === "Work day" || day?.dayType === "Given day"
-      // ).length;
-      //console.log(totalPaidDays, "totalPaidDays");
-      //console.log(totalOpenDays, "totalOpenDays");
-      //console.log(totalWorkDays, "totalWorkDays");
-      // Fetch basic salary for the selected employee
-
+  
       const employeeSelected = employeesList?.find(
         (employee) =>
           String(employee?.employeeId) === String(formData?.payslipEmployee)
       );
-      //console.log(employeeSelected, "employeeSelected");
-
-      // Find the active salary package
+  
+      if (!employeeSelected) return;
+  
       const activeSalaryPackage = getActiveSalaryPackage(
         employeeSelected?.employeeData?.salaryPackage,
         year,
         month
       );
-      // if (activeSalaryPackage)
-      //   console.log("Active Salary Package:", activeSalaryPackage);
-
+  
+      if (!activeSalaryPackage) return;
+  
       const basicSalary = activeSalaryPackage?.basicSalary || 0;
       const allowances = activeSalaryPackage?.allowances || [];
-      //to add the allowancenumber to each elelment
       const updatedAllowances = allowances.map((allowance) => ({
-        ...allowance, // Spread existing keys and values
-        allowanceNumber: allowance.allowanceNumber || 0, // Add allowanceNumber with default value 0 if not already present
+        ...allowance,
+        allowanceNumber: allowance.allowanceNumber || 0,
       }));
-      // Calculate payable basic salary
+  
+      const payslipDays = Array.from({ length: daysInMonth }, (_, index) => {
+        const dayDate = new Date(year, month - 1, index + 1);
+        const formattedDay = formatDate(dayDate);
+  
+        const isWeekend = dayDate.getDay() === 0; // Sunday check
+        const leave = leavesList?.find(
+          (day) =>
+            day?.leaveEmployee._id === formData?.payslipEmployee &&
+            day?.leaveMonth === formData?.payslipMonth &&
+            formatDate(new Date(day?.leaveStartDate)) === formattedDay
+        );
+  
+        return {
+          day: formattedDay,
+          isWeekend,
+          isSickLeave: leave?.leaveIsSickLeave && !isWeekend,
+          isPaid: leave?.leaveIsPaidLeave !== false,
+          isGiven: leave?.leaveIsGiven,
+          isPartDay: leave?.leaveIsPartDay,
+          partdayDuration:
+            (new Date(leave?.leaveEndDate) - new Date(leave?.leaveStartDate)) /
+            (1000 * 60 * 60),
+          dayType: (() => {
+            if (isWeekend) return "weekend";
+            if (leave?.leaveIsSickLeave) return "sick-leave";
+            if (leave?.leaveIsGiven) return "Given day";
+            if (
+              !leave?.leaveStartDate ||
+              (leave?.leaveStartDate !== "" && leave?.leaveIsPartDay)
+            ) {
+              return "Work day";
+            }
+            return "off-day";
+          })(),
+        };
+      });
+  
+      const totalOpenDays = payslipDays.filter((day) => !day.isWeekend).length;
+      const totalPaidDays = payslipDays.filter(
+        (day) => day.isPaid && !day.isWeekend
+      ).length;
+  
       const payableBasic =
         totalOpenDays > 0 ? (basicSalary * totalPaidDays) / totalOpenDays : 0;
-      //console.log(allowances, "allowances");
-      // Calculate total allowances
-      const totalAllowances = allowances.reduce((sum, allowance) => {
-        const unitValue = Number(allowance?.allowanceUnitValue) || 0; // Ensure valid number
-        const number = Number(allowance?.allowanceNumber) || 0; // originally there is no number in the array (coming from salarypackage and not from formdata)
-        return sum + unitValue * number; // Add the product to the sum
+  
+      const totalAllowances = updatedAllowances.reduce((sum, allowance) => {
+        const unitValue = Number(allowance?.allowanceUnitValue) || 0;
+        const number = Number(allowance?.allowanceNumber) || 0;
+        return sum + unitValue * number;
       }, 0);
-
-      // console.log(totalAllowances, "totalAllowances");
-      // Calculate total amount (payableBasic + total allowances)
+  
       const totalAmount = (
         Number(payableBasic) +
         totalAllowances -
-        Number(activeSalaryPackage?.deduction?.deductionAmount)
+        Number(activeSalaryPackage?.deduction?.deductionAmount || 0)
       ).toFixed(2);
-      // Update formData with calculated values
-      // console.log(payslipDays, "payslipDays22222222222");
-      // console.log(totalAmount, "totalAmount");
+  
       setFormData((prev) => ({
         ...prev,
         payslipWorkdays: payslipDays,
-        payslipTotalAmount: totalAmount, // Assign the array of day objects
+        payslipTotalAmount: totalAmount,
         payslipSalaryComponents: {
           ...prev.payslipSalaryComponents,
-          basic: Number(basicSalary).toFixed(2), // Assign the calculated payable basic
-          payableBasic: Number(payableBasic).toFixed(2), // Assign the calculated payable basic
+          basic: Number(basicSalary).toFixed(2),
+          payableBasic: Number(payableBasic).toFixed(2),
           allowances: updatedAllowances,
           deduction: activeSalaryPackage?.deduction,
         },
@@ -540,9 +651,11 @@ const NewPayslipForm = () => {
   }, [
     formData?.payslipEmployee,
     formData?.payslipMonth,
-    isLeavesSuccess,
     isEmployeesSuccess,
+    isLeavesSuccess,
+    selectedAcademicYear?.title,
   ]);
+  
   //console.log(leavesList, "leavesList");
   const updateAllowanceNumber = (index, updatedNumber) => {
     setFormData((prev) => {

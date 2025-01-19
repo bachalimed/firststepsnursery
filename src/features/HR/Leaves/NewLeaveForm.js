@@ -47,8 +47,8 @@ const NewLeaveForm = () => {
     data: employees, //the data is renamed employees
     isLoading: isEmployeesLoading,
     isSuccess: isEmployeesSuccess,
-    isError: isEmployeesError,
-    error: employeesError,
+    // isError: isEmployeesError,
+    // error: employeesError,
   } = useGetEmployeesByYearQuery(
     {
       selectedYear: selectedAcademicYear?.title,
@@ -64,7 +64,7 @@ const NewLeaveForm = () => {
   // Consolidated form state
   const [formData, setFormData] = useState({
     leaveYear: selectedAcademicYear?.title,
-    leaveMonth: "",
+    //leaveMonth: "",will be generated in the back end
     leaveEmployee: "",
     leaveIsGiven: false,
     leaveIsPaidLeave: false,
@@ -81,13 +81,13 @@ const NewLeaveForm = () => {
 
   const [validity, setValidity] = useState({
     validLeaveYear: false,
-    validLeaveMonth: false,
+    //validLeaveMonth: false,
     validLeaveEmployee: false,
     validLeaveStartDate: false,
     validLeaveEndDate: false,
     validLeaveComment: false,
     validLeavePartDay: false,
-    validLeaveMonthMatchesDates: false,
+    //validLeaveMonthMatchesDates: false,
   });
 
   // Validate inputs using regex patterns
@@ -110,24 +110,24 @@ const NewLeaveForm = () => {
         : true;
 
       // Extract the selected month index
-      const selectedMonthIndex = MONTHS.indexOf(formData.leaveMonth);
+      //const selectedMonthIndex = MONTHS.indexOf(formData.leaveMonth);
 
       // Check if both dates are in the selected month
-      const startMonthIndex = formData.leaveStartDate
-        ? new Date(formData.leaveStartDate).getMonth()
-        : null;
-      const endMonthIndex = formData.leaveEndDate
-        ? new Date(formData.leaveEndDate).getMonth()
-        : null;
+      // const startMonthIndex = formData.leaveStartDate
+      //   ? new Date(formData.leaveStartDate).getMonth()
+      //   : null;
+      // const endMonthIndex = formData.leaveEndDate
+      //   ? new Date(formData.leaveEndDate).getMonth()
+      //   : null;
 
-      const isLeaveMonthValid =
-        startMonthIndex === selectedMonthIndex &&
-        endMonthIndex === selectedMonthIndex;
+      // const isLeaveMonthValid =
+      //   startMonthIndex === selectedMonthIndex &&
+      //   endMonthIndex === selectedMonthIndex;
 
       return {
         ...prev,
         validLeaveYear: YEAR_REGEX.test(formData.leaveYear),
-        validLeaveMonth: NAME_REGEX.test(formData.leaveMonth),
+        //validLeaveMonth: NAME_REGEX.test(formData.leaveMonth),
         validLeaveEmployee: OBJECTID_REGEX.test(formData.leaveEmployee),
         validLeaveStartDate:
           DATE_REGEX.test(formData.leaveStartDate) && isStartDateBeforeEndDate,
@@ -144,7 +144,7 @@ const NewLeaveForm = () => {
         validDateOrder: isStartDateBeforeEndDate,
         validPartDayDate: isSameDateForPartDay,
         validPartDayTime: isStartTimeBeforeEndTime,
-        validLeaveMonthMatchesDates: isLeaveMonthValid,
+        //validLeaveMonthMatchesDates: isLeaveMonthValid,
       };
     });
   }, [formData]);
@@ -153,7 +153,7 @@ const NewLeaveForm = () => {
     if (isAddSuccess) {
       setFormData({
         leaveYear: "",
-        leaveMonth: "",
+        //leaveMonth: "",
         leaveEmployee: "",
         leaveIsGiven: "",
         leaveIsPaidLeave: "",
@@ -238,7 +238,7 @@ const NewLeaveForm = () => {
   const handleCloseModal = () => {
     setShowConfirmation(false);
   };
-  // console.log(formData, "formdata");
+   console.log(formData, "formdata");
   // console.log(validity, "validity");
   let content;
   if (isEmployeesLoading) {
@@ -260,8 +260,8 @@ const NewLeaveForm = () => {
           <div className="formSectionContainer">
             <h3 className="formSectionTitle">Leave details</h3>
             <div className="formSection">
-              <div className="formLineDiv">
-                <label htmlFor="leaveMonth" className="formInputLabel">
+              
+                {/* <label htmlFor="leaveMonth" className="formInputLabel">
                   Month{" "}
                   {!validity.validLeaveMonth && (
                     <span className="text-red-600">*</span>
@@ -282,14 +282,14 @@ const NewLeaveForm = () => {
                         {month}
                       </option>
                     ))}
-                  </select>
+                  </select> */}
                   {/* Validation message for mismatched months */}
-                  {!validity.validLeaveMonthMatchesDates && (
+                  {/* {!validity.validLeaveMonthMatchesDates && (
                     <span className="text-red-600">
                       The selected month should match the dates.
                     </span>
-                  )}
-                </label>
+                  )} */}
+                {/* </label> */}
 
                 <label htmlFor="leaveEmployee" className="formInputLabel">
                   Employee{" "}
@@ -321,7 +321,7 @@ const NewLeaveForm = () => {
                       </option>
                     ))}
                   </select>{" "}
-                </label>
+                </label><div className="formLineDiv">
                 {/* Leave Is Given */}
                 <label className="formInputLabel">
                   Given leave?
