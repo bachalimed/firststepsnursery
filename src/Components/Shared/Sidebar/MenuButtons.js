@@ -252,7 +252,7 @@ const MenuButtons = () => {
             )}
             {(isHR || isDirector || isManager || isAdmin) && (
               <Link
-                to="/reports/HRReports/"
+                to="/reports/hrReports/leavesReport/"
                 className={
                   location.pathname.startsWith("/reports/") ? "bg-sky-100" : ""
                 }

@@ -36,13 +36,13 @@ const CookieConsentBanner = () => {
           onClick={handleAccept}
           className="add-button"
         >
-          Accept
+          Accept essential
         </button>
         <button
           onClick={handleDecline}
           className="delete-button"
         >
-          Decline
+          Reject all
         </button>
       </div>
     </div>

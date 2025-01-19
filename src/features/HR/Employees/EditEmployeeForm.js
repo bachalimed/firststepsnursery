@@ -35,7 +35,7 @@ const EditEmployeeForm = ({ employee }) => {
   });
   const navigate = useNavigate();
 
-  const { isAdmin, isManager, isDirector,userId } = useAuth();
+  const { isAdmin, isManager, isDirector, userId } = useAuth();
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
@@ -76,7 +76,7 @@ const EditEmployeeForm = ({ employee }) => {
       joinDate: "",
       contractType: "",
     },
-    employeeOperator:userId,
+    employeeOperator: userId,
     salaryPackage: employee?.employeeId?.salaryPackage || [
       {
         salaryFrom: "",
@@ -144,36 +144,45 @@ const EditEmployeeForm = ({ employee }) => {
     return formData.salaryPackage.map((pkg, pkgIndex) => {
       const salaryFromDate = new Date(pkg.salaryFrom);
       const salaryToDate = pkg.salaryTo ? new Date(pkg.salaryTo) : null;
-  
+
       // Check for conflicts with other packages
-      const hasConflict = formData.salaryPackage.some((otherPkg, otherIndex) => {
-        if (otherIndex !== pkgIndex) {
-          const otherSalaryFrom = new Date(otherPkg.salaryFrom);
-          const otherSalaryTo = otherPkg.salaryTo
-            ? new Date(otherPkg.salaryTo)
-            : null;
-  
-          // Conflict case: This package has no salaryTo and its salaryFrom is within another range
-          if (!salaryToDate && salaryFromDate > otherSalaryFrom && salaryFromDate <= otherSalaryTo) {
-            return true;
+      const hasConflict = formData.salaryPackage.some(
+        (otherPkg, otherIndex) => {
+          if (otherIndex !== pkgIndex) {
+            const otherSalaryFrom = new Date(otherPkg.salaryFrom);
+            const otherSalaryTo = otherPkg.salaryTo
+              ? new Date(otherPkg.salaryTo)
+              : null;
+
+            // Conflict case: This package has no salaryTo and its salaryFrom is within another range
+            if (
+              !salaryToDate &&
+              salaryFromDate > otherSalaryFrom &&
+              salaryFromDate <= otherSalaryTo
+            ) {
+              return true;
+            }
+
+            // Conflict case: This package has a salary range overlapping with another range
+            if (
+              salaryToDate &&
+              ((salaryFromDate <= otherSalaryTo &&
+                salaryToDate >= otherSalaryFrom) ||
+                (salaryFromDate >= otherSalaryFrom &&
+                  salaryFromDate <= otherSalaryTo))
+            ) {
+              return true;
+            }
           }
-  
-          // Conflict case: This package has a salary range overlapping with another range
-          if (
-            salaryToDate &&
-            ((salaryFromDate <= otherSalaryTo && salaryToDate >= otherSalaryFrom) ||
-              (salaryFromDate >= otherSalaryFrom && salaryFromDate <= otherSalaryTo))
-          ) {
-            return true;
-          }
+          return false;
         }
-        return false;
-      });
-  
+      );
+
       return {
         salaryFrom: DATE_REGEX.test(pkg.salaryFrom?.split("T")[0] || ""),
         salaryTo:
-          (!pkg.salaryTo || DATE_REGEX.test(pkg.salaryTo?.split("T")[0] || "")) &&
+          (!pkg.salaryTo ||
+            DATE_REGEX.test(pkg.salaryTo?.split("T")[0] || "")) &&
           (!salaryToDate || salaryToDate >= salaryFromDate), // Ensure salaryTo is not before salaryFrom
         basicSalary: NUMBER_REGEX.test(pkg.basicSalary),
         allowances: pkg.allowances.map((allowance) =>
@@ -197,7 +206,6 @@ const EditEmployeeForm = ({ employee }) => {
       };
     });
   };
-  
 
   //validation for workhjistory for non empty fields
   const validateWorkHistory = () => {
@@ -300,14 +308,20 @@ const EditEmployeeForm = ({ employee }) => {
       const updatedPackages = prev.salaryPackage.map((pkg, index) => ({
         ...pkg,
         allowances: pkg.allowances.map((allowance) => ({ ...allowance })),
-        deduction: { ...pkg.deduction },
+        deduction: { ...pkg.deduction }, // Ensure deep copy of the deduction object
       }));
 
       if (allowanceIndex !== null) {
+        // Update allowance fields
         updatedPackages[pkgIndex].allowances[allowanceIndex][field] = value;
-      } else if (field in updatedPackages[pkgIndex].deduction) {
-        updatedPackages[pkgIndex].deduction[field] = value;
+      } else if (field === "deductionLabel" || field === "deductionAmount") {
+        // Update deduction fields
+        updatedPackages[pkgIndex].deduction = {
+          ...updatedPackages[pkgIndex].deduction,
+          [field]: value,
+        };
       } else {
+        // Update other fields
         updatedPackages[pkgIndex][field] = value;
       }
 
@@ -363,17 +377,17 @@ const EditEmployeeForm = ({ employee }) => {
         ...pkg,
         allowances: pkg.allowances ? [...pkg.allowances] : [], // Ensure allowances is an array
       }));
-  
+
       // Ensure allowances exist at the specified package index
       if (updatedPackages[pkgIndex]?.allowances) {
         // Remove the specified allowance
         updatedPackages[pkgIndex].allowances.splice(allowanceIndex, 1);
       }
-  
+
       return { ...prev, salaryPackage: updatedPackages };
     });
   };
-  
+
   // const handleRemoveAllowance = (pkgIndex, allowanceIndex) => {
   //   setFormData((prev) => {
   //     const updatedPackages = [...prev.salaryPackage];
@@ -499,6 +513,8 @@ const EditEmployeeForm = ({ employee }) => {
   };
 
   const handleConfirmSave = async () => {
+    // Ensure the deduction object contains both label and amount
+
     // Close the confirmation modal
     setShowConfirmation(false);
 
@@ -1067,7 +1083,9 @@ const EditEmployeeForm = ({ employee }) => {
 
         <h4 className="formSectionTitle">
           Salary Package{" "}
-          {!validity.noOverlap && <span className="text-red-600"> Some dates areoverlapping</span>}
+          {!validity.noOverlap && (
+            <span className="text-red-600"> Some dates areoverlapping</span>
+          )}
         </h4>
 
         {formData.salaryPackage.map((pkg, pkgIndex) => (
@@ -1099,7 +1117,7 @@ const EditEmployeeForm = ({ employee }) => {
                         e.target.value
                       )
                     }
-                    min={formData?.employeeCurrentEmployment?.joinDate}//////////////////
+                    min={formData?.employeeCurrentEmployment?.joinDate} //////////////////
                     className="formInputText"
                   />
                 </label>
@@ -1123,7 +1141,7 @@ const EditEmployeeForm = ({ employee }) => {
                         e.target.value
                       )
                     }
-                    min= {pkg.salaryFrom}/////////////////no less than the salaryTo date
+                    min={pkg.salaryFrom} /////////////////no less than the salaryTo date
                     className="formInputText"
                   />
                 </label>
@@ -1242,9 +1260,14 @@ const EditEmployeeForm = ({ employee }) => {
               >
                 Add Allowance
               </button>
+              {/* Deduction Label Input */}
               <h5 className="formSectionTitle">Deduction</h5>
               <div className="formLineDiv">
-                <label htmlFor="deductionLabel" className="formInputLabel">
+                {/* Deduction Label Input */}
+                <label
+                  htmlFor={`deductionLabel-${pkgIndex}`}
+                  className="formInputLabel"
+                >
                   Deduction Label:
                   {!validity.salaryPackages[pkgIndex]?.deduction
                     ?.deductionLabel && (
@@ -1252,8 +1275,8 @@ const EditEmployeeForm = ({ employee }) => {
                   )}
                   <input
                     type="text"
-                    id="deductionLabel"
-                    value={pkg.deduction?.deductionLabel}
+                    id={`deductionLabel-${pkgIndex}`}
+                    value={pkg.deduction?.deductionLabel || ""}
                     onChange={(e) =>
                       handleSalaryPackageChange(
                         pkgIndex,
@@ -1265,16 +1288,20 @@ const EditEmployeeForm = ({ employee }) => {
                   />
                 </label>
 
-                <label htmlFor="deductionAmount" className="formInputLabel">
+                {/* Deduction Amount Input */}
+                <label
+                  htmlFor={`deductionAmount-${pkgIndex}`}
+                  className="formInputLabel"
+                >
                   Deduction Amount:
                   {!validity.salaryPackages[pkgIndex]?.deduction
                     ?.deductionAmount && (
                     <span className="text-red-600"> *</span>
                   )}
                   <input
-                    id="deductionAmount"
                     type="number"
-                    value={pkg.deduction?.deductionAmount}
+                    id={`deductionAmount-${pkgIndex}`}
+                    value={pkg.deduction?.deductionAmount || ""}
                     onChange={(e) =>
                       handleSalaryPackageChange(
                         pkgIndex,

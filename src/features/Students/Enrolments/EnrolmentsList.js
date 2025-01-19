@@ -366,7 +366,7 @@ const EnrolmentsList = () => {
       selector: (row) => row?.student?.studentSex, //changed from userSex
       cell: (row) => (
         <span>
-          {row?.student?.studentSex == "Female" ? (
+          {row?.student?.studentSex === "Female" ? (
             <LiaFemaleSolid className="text-red-600 text-2xl" />
           ) : (
             <LiaMaleSolid className="text-sky-700 text-2xl" />

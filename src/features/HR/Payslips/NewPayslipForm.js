@@ -130,7 +130,7 @@ const NewPayslipForm = () => {
     validPayslipNote: false,
     validPayslipEmployee: false,
     //validPayslipPaymentDate: false,
-    validPayslipLeaveDays: false,
+
     validPayslipSalaryComponents: false,
     validAllowances: [],
     validDeduction: true,
@@ -148,8 +148,14 @@ const NewPayslipForm = () => {
     );
 
     const isDeductionValid =
-      Number(formData?.payslipSalaryComponents?.deduction?.deductionAmount) >=
-      0;
+      formData.payslipSalaryComponents.deduction?.deductionAmount ===
+        undefined ||
+      formData.payslipSalaryComponents.deduction?.deductionAmount === null ||
+      Number(formData.payslipSalaryComponents.deduction.deductionAmount) >= 0;
+
+    const isSalaryComponentsValid =
+      Number(formData.payslipTotalAmount) > 0 &&
+      FEE_REGEX.test(formData.payslipTotalAmount);
     setValidity((prev) => ({
       ...prev,
       validPayslipYear: YEAR_REGEX.test(formData?.payslipYear),
@@ -157,10 +163,8 @@ const NewPayslipForm = () => {
       validPayslipNote: COMMENT_REGEX.test(formData?.payslipNote),
       validPayslipEmployee: OBJECTID_REGEX.test(formData?.payslipEmployee),
       //validPayslipPaymentDate: DATE_REGEX.test(formData?.payslipPaymentDate),
-      validPayslipLeaveDays: formData?.payslipLeaveDays?.length > 0,
-      validPayslipSalaryComponents:
-        formData?.payslipTotalAmount != 0 &&
-        FEE_REGEX.test(formData?.payslipTotalAmount),
+
+      validPayslipSalaryComponents: isSalaryComponentsValid,
       validAllowances,
       validDeduction: isDeductionValid,
     }));
@@ -172,10 +176,107 @@ const NewPayslipForm = () => {
       navigate("/hr/payslips/payslipsList");
     }
   }, [isAddSuccess, navigate]);
-
-  // const employeesList = isEmployeesSuccess
-  //   ? Object.values(employees.entities)
-  //   : [];
+ //extract the current salary package
+ const getActiveSalaryPackage = (
+  salaryPackage,
+  targetYear,
+  targetMonthNumber
+) => {
+  // console.log(salaryPackage,
+  //   targetYear,
+  //   targetMonthNumber,'salary package')
+  // Create a date object for the first day of the target month
+  const targetDate = new Date(targetYear, targetMonthNumber - 1, 1);
+  console.log(targetDate,'targetDate')
+  // Find the active salary package
+  const activeSalaryPackage = salaryPackage?.find((pack) => {
+    // Normalize dates to ensure comparison is based on date only
+    const salaryFromDate = new Date(pack.salaryFrom);
+    const salaryToDate = pack.salaryTo ? new Date(pack.salaryTo) : new Date(); // If salaryTo is null, assume it's still active
+    const normalizedSalaryFromDate = new Date(
+      salaryFromDate.getFullYear(),
+      salaryFromDate.getMonth(),
+      salaryFromDate.getDate()
+    );
+    const normalizedSalaryToDate = new Date(
+      salaryToDate.getFullYear(),
+      salaryToDate.getMonth(),
+      salaryToDate.getDate()
+    );
+    const normalizedTargetDate = new Date(
+      targetDate.getFullYear(),
+      targetDate.getMonth(),
+      targetDate.getDate()
+    );
+  
+    console.log(
+      normalizedTargetDate >= normalizedSalaryFromDate &&
+        normalizedTargetDate <= normalizedSalaryToDate,
+      "check if true"
+    );
+  
+    // Check if normalizedTargetDate is within the range [normalizedSalaryFromDate, normalizedSalaryToDate]
+    return (
+      normalizedTargetDate >= normalizedSalaryFromDate &&
+      normalizedTargetDate <= normalizedSalaryToDate
+    );
+  });
+  
+  console.log(activeSalaryPackage, "activeSalaryPackage");
+  
+  return activeSalaryPackage || null; // Return null if no active package is found
+  
+};
+  useEffect(() => {
+    if (
+      formData?.payslipEmployee !== "" &&
+      formData?.payslipMonth !== "" &&
+      isEmployeesSuccess
+    ) {
+      const {
+        days: daysInMonth,
+        monthNumber: month,
+        year,
+      } = getMonthDetails(selectedAcademicYear?.title, formData?.payslipMonth);
+  
+      if (!year || !month || !daysInMonth) return;
+  
+      const employeeSelected = employeesList?.find(
+        (employee) =>
+          String(employee?.employeeId) === String(formData?.payslipEmployee)
+      );
+  
+      const activeSalaryPackage = getActiveSalaryPackage(
+        employeeSelected?.employeeData?.salaryPackage,
+        year,
+        month
+      );
+  
+      const basicSalary = activeSalaryPackage?.basicSalary || 0;
+  
+      // Calculate total amount (payableBasic + total allowances)
+      const totalAmount = (
+        Number(basicSalary) - 
+        Number(activeSalaryPackage?.deduction?.deductionAmount || 0)
+      ).toFixed(2);
+  
+      setFormData((prev) => ({
+        ...prev,
+        payslipTotalAmount: totalAmount,
+        payslipSalaryComponents: {
+          ...prev.payslipSalaryComponents,
+          basic: Number(basicSalary).toFixed(2),
+          payableBasic: Number(basicSalary).toFixed(2),
+          deduction: activeSalaryPackage?.deduction,
+        },
+      }));
+    }
+  }, [
+    formData?.payslipEmployee,
+    formData?.payslipMonth,
+    isEmployeesSuccess,
+  ]);
+  
 
   let employeesList = [];
   if (isEmployeesSuccess) {
@@ -240,27 +341,56 @@ const NewPayslipForm = () => {
     const day = String(date.getDate()).padStart(2, "0"); // Add leading zero for single-digit days
     return `${year}-${month}-${day}`;
   }
-
-  //extract the current salary package
-  const getActiveSalaryPackage = (
-    salaryPackage,
-    targetYear,
-    targetMonthNumber
-  ) => {
-    // Create a date object for the first day of the target month
-    const targetDate = new Date(targetYear, targetMonthNumber - 1, 1);
-
-    // Find the active salary package
-    const activeSalaryPackage = salaryPackage?.find((pack) => {
-      const salaryFromDate = new Date(pack.salaryFrom);
-      const salaryToDate = pack.salaryTo ? new Date(pack.salaryTo) : new Date(); // If salaryTo is null, assume it's still active
-
-      // Check if targetDate is within the range [salaryFrom, salaryTo]
-      return targetDate >= salaryFromDate && targetDate <= salaryToDate;
-    });
-
-    return activeSalaryPackage || null; // Return null if no active package is found
-  };
+  
+  useEffect(() => {
+    if (formData.payslipEmployee && formData.payslipMonth) {
+      const {
+        days: daysInMonth,
+        monthNumber: selectedMonthNumber,
+        year: selectedYear,
+      } = getMonthDetails(selectedAcademicYear?.title, formData.payslipMonth);
+  
+      // Get the selected employee's details
+      const selectedEmployee = employeesList?.find(
+        (employee) =>
+          String(employee?.employeeId) === String(formData?.payslipEmployee)
+      );
+  
+      if (!selectedEmployee) return;
+  
+      const joinDate = new Date(
+        selectedEmployee?.employeeData?.employeeCurrentEmployment?.joinDate
+      );
+  
+      const startOfSelectedMonth = new Date(selectedYear, selectedMonthNumber - 1, 1);
+      const endOfSelectedMonth = new Date(selectedYear, selectedMonthNumber, 0); // Last day of the selected month
+  
+      // Allow if joinDate is within the selected month
+      if (joinDate > endOfSelectedMonth) {
+        // Reset employee and show error
+        setFormData((prev) => ({
+          ...prev,
+          payslipEmployee: "",
+          payslipEmployeeName: "",
+          payslipLeaveDays: [],
+          employeeJoinDate: "",
+        }));
+        triggerBanner(
+          `The selected employee joined on ${joinDate.toLocaleDateString()}. Please select a valid employee for the chosen month.`,
+          "error"
+        );
+        navigate("/hr/payslips/payslipsList");
+      }
+    }
+  }, [
+    formData.payslipEmployee,
+    formData.payslipMonth,
+    employeesList,
+    selectedAcademicYear?.title,
+  ]);
+  
+  
+ 
 
   useEffect(() => {
     if (
@@ -517,8 +647,8 @@ const NewPayslipForm = () => {
   const handleCloseModal = () => {
     setShowConfirmation(false);
   };
-  // console.log(validity, "validity");
-  //console.log(formData, "formData");
+  console.log(validity, "validity");
+  console.log(formData, "formData");
   //console.log(validity, "validity");
   let content;
   if (isEmployeesLoading || isLeavesLoading) {

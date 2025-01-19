@@ -87,6 +87,7 @@ const NewLeaveForm = () => {
     validLeaveEndDate: false,
     validLeaveComment: false,
     validLeavePartDay: false,
+    validLeaveMonthMatchesDates: false,
   });
 
   // Validate inputs using regex patterns
@@ -108,6 +109,21 @@ const NewLeaveForm = () => {
         ? formData.leaveStartTime < formData.leaveEndTime
         : true;
 
+      // Extract the selected month index
+      const selectedMonthIndex = MONTHS.indexOf(formData.leaveMonth);
+
+      // Check if both dates are in the selected month
+      const startMonthIndex = formData.leaveStartDate
+        ? new Date(formData.leaveStartDate).getMonth()
+        : null;
+      const endMonthIndex = formData.leaveEndDate
+        ? new Date(formData.leaveEndDate).getMonth()
+        : null;
+
+      const isLeaveMonthValid =
+        startMonthIndex === selectedMonthIndex &&
+        endMonthIndex === selectedMonthIndex;
+
       return {
         ...prev,
         validLeaveYear: YEAR_REGEX.test(formData.leaveYear),
@@ -128,6 +144,7 @@ const NewLeaveForm = () => {
         validDateOrder: isStartDateBeforeEndDate,
         validPartDayDate: isSameDateForPartDay,
         validPartDayTime: isStartTimeBeforeEndTime,
+        validLeaveMonthMatchesDates: isLeaveMonthValid,
       };
     });
   }, [formData]);
@@ -196,11 +213,10 @@ const NewLeaveForm = () => {
         leaveStartDate: leaveStartDateTime,
         leaveEndDate: leaveEndDateTime,
       });
-      if ( response?.message) {
+      if (response?.message) {
         // Success response
         triggerBanner(response?.message, "success");
-      }
-      else if (response?.data?.message ) {
+      } else if (response?.data?.message) {
         // Success response
         triggerBanner(response?.data?.message, "success");
       } else if (response?.error?.data?.message) {
@@ -267,7 +283,14 @@ const NewLeaveForm = () => {
                       </option>
                     ))}
                   </select>
+                  {/* Validation message for mismatched months */}
+                  {!validity.validLeaveMonthMatchesDates && (
+                    <span className="text-red-600">
+                      The selected month should match the dates.
+                    </span>
+                  )}
                 </label>
+
                 <label htmlFor="leaveEmployee" className="formInputLabel">
                   Employee{" "}
                   {!validity.validLeaveEmployee && (
@@ -395,11 +418,15 @@ const NewLeaveForm = () => {
                     value={formData.leaveStartDate}
                     onChange={handleInputChange}
                     className={`formInputText`}
-                  />  {!validity.validLeavePartDay && (
+                  />{" "}
+                  {!validity.validLeavePartDay && (
                     <span className="text-red-600">Should be same day</span>
                   )}
-                   {!validity.validDateOrder && (
-                    <span className="text-red-600"> Should be earlier date</span>
+                  {!validity.validDateOrder && (
+                    <span className="text-red-600">
+                      {" "}
+                      Should be earlier date
+                    </span>
                   )}
                 </label>
                 {/* Leave End Date */}
@@ -416,10 +443,11 @@ const NewLeaveForm = () => {
                     value={formData.leaveEndDate}
                     onChange={handleInputChange}
                     className={`formInputText`}
-                  />  {!validity.validLeavePartDay && (
+                  />{" "}
+                  {!validity.validLeavePartDay && (
                     <span className="text-red-600">should be same day</span>
                   )}
-                   {!validity.validDateOrder && (
+                  {!validity.validDateOrder && (
                     <span className="text-red-600"> Should be later date</span>
                   )}
                 </label>
@@ -438,8 +466,12 @@ const NewLeaveForm = () => {
                         onChange={handleInputChange}
                         className={`formInputText`}
                         required
-                      /> {!validity.validPartDayTime && (
-                        <span className="text-red-600"> Should be later time</span>
+                      />{" "}
+                      {!validity.validPartDayTime && (
+                        <span className="text-red-600">
+                          {" "}
+                          Should be later time
+                        </span>
                       )}
                     </label>
                     <label htmlFor="leaveEndTime" className="formInputLabel">
@@ -455,8 +487,12 @@ const NewLeaveForm = () => {
                         onChange={handleInputChange}
                         className={`formInputText`}
                         required
-                      />{!validity.validPartDayTime && (
-                        <span className="text-red-600"> Should be earlier time</span>
+                      />
+                      {!validity.validPartDayTime && (
+                        <span className="text-red-600">
+                          {" "}
+                          Should be earlier time
+                        </span>
                       )}
                     </label>
                   </>

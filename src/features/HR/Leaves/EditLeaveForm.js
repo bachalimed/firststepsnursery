@@ -15,6 +15,8 @@ import {
   YEAR_REGEX,
   COMMENT_REGEX,
 } from "../../../config/REGEX";
+import { MONTHS } from "../../../config/Months";
+
 import useAuth from "../../../hooks/useAuth";
 import ConfirmationModal from "../../../Components/Shared/Modals/ConfirmationModal";
 import { useOutletContext } from "react-router-dom";
@@ -84,6 +86,7 @@ const EditLeaveForm = ({ leave }) => {
     validLeaveEndDate: false,
     validLeaveComment: false,
     validLeavePartDay: false,
+    validLeaveMonthMatchesDates: false,
   });
 
   // Validate inputs using regex patterns
@@ -104,7 +107,20 @@ const EditLeaveForm = ({ leave }) => {
       const isStartTimeBeforeEndTime = isPartDay
         ? formData.leaveStartTime < formData.leaveEndTime
         : true;
+ // Extract the selected month index
+      const selectedMonthIndex = MONTHS.indexOf(formData.leaveMonth);
 
+      // Check if both dates are in the selected month
+      const startMonthIndex = formData.leaveStartDate
+        ? new Date(formData.leaveStartDate).getMonth()
+        : null;
+      const endMonthIndex = formData.leaveEndDate
+        ? new Date(formData.leaveEndDate).getMonth()
+        : null;
+
+      const isLeaveMonthValid =
+        startMonthIndex === selectedMonthIndex &&
+        endMonthIndex === selectedMonthIndex;
       return {
         ...prev,
         validLeaveYear: YEAR_REGEX.test(formData.leaveYear),
@@ -125,6 +141,8 @@ const EditLeaveForm = ({ leave }) => {
         validDateOrder: isStartDateBeforeEndDate,
         validPartDayDate: isSameDateForPartDay,
         validPartDayTime: isStartTimeBeforeEndTime,
+        validLeaveMonthMatchesDates: isLeaveMonthValid,
+
       };
     });
   }, [formData]);
@@ -212,6 +230,12 @@ const EditLeaveForm = ({ leave }) => {
         </h2>
         <div className="formSectionContainer">
           <h3 className="formSectionTitle">Leave details</h3>
+           {/* Validation message for mismatched months */}
+           {!validity.validLeaveMonthMatchesDates && (
+                    <span className="text-red-600">
+                      The dates should match the month.
+                    </span>
+                  )}
           <div className="formSection">
             <div className="formLineDiv">
               {/* Leave Is Given */}

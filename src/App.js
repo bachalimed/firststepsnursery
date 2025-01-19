@@ -21,6 +21,8 @@ import AgeGroupsReport from "./features/Reporting/StudentsReports/AgeGroupsRepor
 import StudentsReports from "./features/Reporting/StudentsReports"; 
 import AcademicsReports from "./features/Reporting/AcademicsReports"; 
 import HRReports from "./features/Reporting/HRReports"; 
+import LeavesReport from "./features/Reporting/HRReports/LeavesReport"; 
+import SalariesReport from "./features/Reporting/HRReports/SalariesReport"; 
 import FinancesReports from "./features/Reporting/FinancesReports";
 import UnpaidEnrolmentsReport from "./features/Reporting/FinancesReports/UnpaidEnrolmentsReport"
 import ExpensesReport from "./features/Reporting/FinancesReports/ExpensesReport"
@@ -631,25 +633,19 @@ const App = () => {
                   <Route path="paymentsReport/" element={<PaymentsReport />} />
                   <Route path="unpaidEnrolmentsReport/" element={<UnpaidEnrolmentsReport />} />
                  
-
-                
-
                 </Route>{" "}
                 {/* end of financesReports route */}
                 <Route path="HRReports">
                   <Route index element={<HRReports />} />
                   <Route
-                    path="employeeDocumentsListsList/"
-                    element={<EmployeeDocumentsListsList />}
+                    path="leavesReport/"
+                    element={<LeavesReport />}
                   />
                   <Route
-                    path="newEmployeeDocumentsList"
-                    element={<NewEmployeeDocumentsListForm />}
+                    path="salariesReport"
+                    element={<SalariesReport />}
                   />
-                  <Route
-                    path="employeeDocumentsList/edit/:id"
-                    element={<EditEmployeeDocumentsList />}
-                  />
+                 
                 </Route>{" "}
                 {/* end of HRRoutes route */}
               </Route>{" "}
