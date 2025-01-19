@@ -187,7 +187,7 @@ const NewPayslipForm = () => {
   //   targetMonthNumber,'salary package')
   // Create a date object for the first day of the target month
   const targetDate = new Date(targetYear, targetMonthNumber - 1, 1);
-  console.log(targetDate,'targetDate')
+  //console.log(targetDate,'targetDate')
   // Find the active salary package
   const activeSalaryPackage = salaryPackage?.find((pack) => {
     // Normalize dates to ensure comparison is based on date only
@@ -209,11 +209,11 @@ const NewPayslipForm = () => {
       targetDate.getDate()
     );
   
-    console.log(
-      normalizedTargetDate >= normalizedSalaryFromDate &&
-        normalizedTargetDate <= normalizedSalaryToDate,
-      "check if true"
-    );
+    // console.log(
+    //   normalizedTargetDate >= normalizedSalaryFromDate &&
+    //     normalizedTargetDate <= normalizedSalaryToDate,
+    //   "check if true"
+    // );
   
     // Check if normalizedTargetDate is within the range [normalizedSalaryFromDate, normalizedSalaryToDate]
     return (
@@ -251,10 +251,12 @@ const NewPayslipForm = () => {
         year,
         month
       );
-  
       const basicSalary = activeSalaryPackage?.basicSalary || 0;
+      console.log(Number(basicSalary),'Number(basicSalary)')
+      console.log(Number(activeSalaryPackage?.deduction?.deductionAmount),'Number(activeSalaryPackage?.deduction?.deductionAmount')
+      console.log(Number(activeSalaryPackage),'Number(activeSalaryPackage')
   
-      // Calculate total amount (payableBasic + total allowances)
+      // Calculate total amount (payableBasic + total allowances) to start with and the other useeffect will use thaloowances
       const totalAmount = (
         Number(basicSalary) - 
         Number(activeSalaryPackage?.deduction?.deductionAmount || 0)
@@ -562,9 +564,9 @@ const NewPayslipForm = () => {
       );
 
       const totalAmount =
-        Number(prev.payslipSalaryComponents.payableBasic || 0) +
+        Number(prev?.payslipSalaryComponents?.payableBasic || 0) +
         totalAllowances -
-        Number(prev.payslipSalaryComponents.deduction.deductionAmount || 0);
+        Number(prev?.payslipSalaryComponents?.deduction?.deductionAmount || 0);
 
       return {
         ...prev,
