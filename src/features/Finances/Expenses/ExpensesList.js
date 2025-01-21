@@ -178,8 +178,19 @@ const ExpensesList = () => {
     },
     {
       name: "Payee",
-      selector: (row) => row?.expensePayee?.payeeLabel,
-
+     
+      selector: (row) => (
+        <div
+          style={{
+            whiteSpace: "normal", // Allows text wrapping
+            wordWrap: "break-word", // Breaks long words to wrap
+            overflowWrap: "break-word", // Ensures wrapping for long words
+            textAlign: "left", // Align text to the left
+          }}
+        >
+          {row?.expensePayee?.payeeLabel || ""}
+        </div>
+      ),
       sortable: true,
       style: {
         justifyContent: "left",

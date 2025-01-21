@@ -27,13 +27,11 @@ const EmployeeDetails = () => {
   );
   const academicYears = useSelector(selectAllAcademicYears);
 
-  const {
-    data: employee,
-    isSuccess: isEmployeeSuccess,
-  } = useGetEmployeeByIdQuery(
-    { id, endpointName: "EmployeeDetails" },
-    { refetchOnFocus: true, refetchOnMountOrArgChange: true }
-  );
+  const { data: employee, isSuccess: isEmployeeSuccess } =
+    useGetEmployeeByIdQuery(
+      { id, endpointName: "EmployeeDetails" },
+      { refetchOnFocus: true, refetchOnMountOrArgChange: true }
+    );
 
   const [photoId, setPhotoId] = useState(null);
 
@@ -86,8 +84,8 @@ const EmployeeDetails = () => {
             <div>
               <p className="text-sm font-medium text-gray-700">Full Name</p>
               <p className="text-lg text-gray-900">
-                {employee?.userFullName?.userFirstName} {" "}
-                {employee?.userFullName?.userMiddleName} {" "}
+                {employee?.userFullName?.userFirstName}{" "}
+                {employee?.userFullName?.userMiddleName}{" "}
                 {employee?.userFullName?.userLastName || ""}
               </p>
             </div>
@@ -191,7 +189,9 @@ const EmployeeDetails = () => {
 
             {/* Academic Years */}
             <div>
-              <p className="text-sm font-medium text-gray-700">Academic Years</p>
+              <p className="text-sm font-medium text-gray-700">
+                Academic Years
+              </p>
               <ul className="list-disc list-inside text-lg text-gray-900">
                 {employee?.employeeId?.employeeYears?.length > 0 ? (
                   employee.employeeId.employeeYears.map((year, idx) => (
@@ -242,7 +242,9 @@ const EmployeeDetails = () => {
 
             {/* Salary Packages */}
             <div>
-              <p className="text-sm font-medium text-gray-700">Salary Packages</p>
+              <p className="text-sm font-medium text-gray-700">
+                Salary Packages
+              </p>
               {employee?.employeeId?.salaryPackage?.length > 0 ? (
                 employee.employeeId.salaryPackage.map((pkg, idx) => (
                   <div
@@ -267,15 +269,27 @@ const EmployeeDetails = () => {
                     <ul className="list-disc list-inside text-sm text-gray-700">
                       {pkg.allowances.map((allowance, allowanceIdx) => (
                         <li key={allowanceIdx}>
-                          {allowance.allowanceLabel}: {allowance.allowanceUnitValue} (
+                          {allowance.allowanceLabel}:{" "}
+                          {allowance.allowanceUnitValue} (
                           {allowance.allowancePeriodicity})
                         </li>
                       ))}
                     </ul>
+                    <h5 className="text-md font-medium text-gray-700 mt-2">
+                      Deduction:
+                    </h5>
+                    <ul className="list-disc list-inside text-sm text-gray-700">
+                      <li key="">
+                        {pkg?.deduction?.deductionLabel}:{" "}
+                        {pkg?.deduction?.deductionAmount}
+                      </li>
+                    </ul>
                   </div>
                 ))
               ) : (
-                <p className="text-lg text-gray-900">No Salary Packages Available</p>
+                <p className="text-lg text-gray-900">
+                  No Salary Packages Available
+                </p>
               )}
             </div>
           </div>

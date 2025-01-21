@@ -176,56 +176,100 @@ const NewPayslipForm = () => {
       navigate("/hr/payslips/payslipsList");
     }
   }, [isAddSuccess, navigate]);
-  //extract the current salary package
-  const getActiveSalaryPackage = (
-    salaryPackage,
-    targetYear,
-    targetMonthNumber
-  ) => {
-    // console.log(salaryPackage,
-    //   targetYear,
-    //   targetMonthNumber,'salary package')
+  //extract the current salary package for the payslip month
+  const getActiveSalaryPackage = (salaryPackage, targetYear, targetMonth) => {
+    console.log(salaryPackage, targetYear, targetMonth, "salary package");
+
+    // Define month mapping for conversion between names and indices
+    const MONTHS = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    // Normalize targetMonth to a 0-based index
+    let targetMonthIndex;
+    if (typeof targetMonth === "string") {
+      // If targetMonth is a string (e.g., "September"), find its index
+      targetMonthIndex = MONTHS.indexOf(targetMonth);
+      if (targetMonthIndex === -1) {
+        console.error(`Invalid month name: ${targetMonth}`);
+        throw new Error("Invalid month name provided.");
+      }
+    } else if (
+      typeof targetMonth === "number" &&
+      targetMonth >= 1 &&
+      targetMonth <= 12
+    ) {
+      // If targetMonth is a number (e.g., 9 for September), subtract 1 to make it 0-based
+      targetMonthIndex = targetMonth - 1;
+    } else {
+      console.error(`Invalid month format: ${targetMonth}`);
+      throw new Error("Invalid month format provided.");
+    }
+
+    console.log(
+      `Target Month Index: ${targetMonthIndex} (${MONTHS[targetMonthIndex]})`
+    );
+
     // Create a date object for the first day of the target month
-    const targetDate = new Date(targetYear, targetMonthNumber - 1, 1);
-    //console.log(targetDate,'targetDate')
-    // Find the active salary package
-    const activeSalaryPackage = salaryPackage?.find((pack) => {
-      // Normalize dates to ensure comparison is based on date only
+    const targetDate = new Date(targetYear, targetMonthIndex, 1);
+
+    // Filter salary packages that are valid for the given month and year
+    const validPackages = salaryPackage.filter((pack) => {
       const salaryFromDate = new Date(pack.salaryFrom);
-      const salaryToDate = pack.salaryTo ? new Date(pack.salaryTo) : new Date(); // If salaryTo is null, assume it's still active
-      const normalizedSalaryFromDate = new Date(
-        salaryFromDate.getFullYear(),
-        salaryFromDate.getMonth(),
-        salaryFromDate.getDate()
-      );
-      const normalizedSalaryToDate = new Date(
-        salaryToDate.getFullYear(),
-        salaryToDate.getMonth(),
-        salaryToDate.getDate()
-      );
-      const normalizedTargetDate = new Date(
-        targetDate.getFullYear(),
-        targetDate.getMonth(),
-        targetDate.getDate()
-      );
+      const salaryToDate = pack.salaryTo ? new Date(pack.salaryTo) : null;
 
-      // console.log(
-      //   normalizedTargetDate >= normalizedSalaryFromDate &&
-      //     normalizedTargetDate <= normalizedSalaryToDate,
-      //   "check if true"
-      // );
+      const fromYear = salaryFromDate.getFullYear();
+      const fromMonthIndex = salaryFromDate.getMonth();
+      const toYear = salaryToDate?.getFullYear() || null;
+      const toMonthIndex = salaryToDate?.getMonth() || null;
 
-      // Check if normalizedTargetDate is within the range [normalizedSalaryFromDate, normalizedSalaryToDate]
+      // A package is valid if:
+      // - `salaryFrom` is before or in the same month/year as the target
+      // - `salaryTo` is after or in the same month/year as the target (if defined)
       return (
-        normalizedTargetDate >= normalizedSalaryFromDate &&
-        normalizedTargetDate <= normalizedSalaryToDate
+        (fromYear < targetYear ||
+          (fromYear === targetYear && fromMonthIndex <= targetMonthIndex)) &&
+        (!salaryToDate ||
+          toYear > targetYear ||
+          (toYear === targetYear && toMonthIndex >= targetMonthIndex))
       );
     });
 
+    console.log(validPackages, "Valid salary packages");
+
+    if (validPackages.length === 0) {
+      console.error("No valid salary package found for the given date.");
+      throw new Error(
+        `No salary package found for ${MONTHS[targetMonthIndex]} ${targetYear}. Please check the salary package configuration.`
+      );
+    }
+
+    // Sort valid packages by salaryFrom date in descending order to prioritize the most recent package
+    const sortedPackages = validPackages.sort((a, b) => {
+      const dateA = new Date(a.salaryFrom);
+      const dateB = new Date(b.salaryFrom);
+      return dateB - dateA; // Most recent first
+    });
+
+    // Return the first (most recent) valid package
+    const activeSalaryPackage = sortedPackages[0];
+
     console.log(activeSalaryPackage, "activeSalaryPackage");
 
-    return activeSalaryPackage || null; // Return null if no active package is found
+    return activeSalaryPackage;
   };
+
   // useEffect(() => {
   //   if (
   //     formData?.payslipEmployee !== "" &&
@@ -233,7 +277,7 @@ const NewPayslipForm = () => {
   //     isEmployeesSuccess
   //   ) {
   //     const {
-  //       days: daysInMonth,
+  //        daysInMonth,
   //       monthNumber: month,
   //       year,
   //     } = getMonthDetails(selectedAcademicYear?.title, formData?.payslipMonth);
@@ -327,7 +371,7 @@ const NewPayslipForm = () => {
     const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
 
     return {
-      days: daysInMonth,
+      daysInMonth,
       monthNumber: monthIndex + 1, // Convert to 1-based index
       year,
     };
@@ -340,14 +384,14 @@ const NewPayslipForm = () => {
     const day = String(date.getDate()).padStart(2, "0"); // Add leading zero for single-digit days
     return `${year}-${month}-${day}`;
   }
-//to check if month is after join date
+  //to check if month is after join date
   useEffect(() => {
     if (formData.payslipEmployee && formData.payslipMonth) {
       const {
-        days: daysInMonth,
+        daysInMonth,
         monthNumber: selectedMonthNumber,
         year: selectedYear,
-      } = getMonthDetails(selectedAcademicYear?.title, formData.payslipMonth);
+      } = getMonthDetails(selectedAcademicYear?.title, formData.payslipMonth); //gets the month in number fromstring
 
       // Get the selected employee's details
       const selectedEmployee = employeesList?.find(
@@ -400,7 +444,7 @@ const NewPayslipForm = () => {
   //     isEmployeesSuccess
   //   ) {
   //     const {
-  //       days: daysInMonth,
+  //        daysInMonth,
   //       monthNumber: month,
   //       year,
   //     } = getMonthDetails(selectedAcademicYear?.title, formData?.payslipMonth);
@@ -549,92 +593,96 @@ const NewPayslipForm = () => {
       isEmployeesSuccess &&
       isLeavesSuccess
     ) {
-      const { days: daysInMonth, monthNumber: month, year } = getMonthDetails(
-        selectedAcademicYear?.title,
-        formData?.payslipMonth
-      );
-  
+      const {
+        daysInMonth,
+        monthNumber: month,
+        year,
+      } = getMonthDetails(selectedAcademicYear?.title, formData?.payslipMonth);
+
       if (!year || !month || !daysInMonth) return;
-  
+
       const employeeSelected = employeesList?.find(
         (employee) =>
           String(employee?.employeeId) === String(formData?.payslipEmployee)
       );
-  
+
       if (!employeeSelected) return;
-  
+
       const activeSalaryPackage = getActiveSalaryPackage(
+        //get the active salary package from the employee packages
         employeeSelected?.employeeData?.salaryPackage,
         year,
         month
       );
-  
+
       if (!activeSalaryPackage) return;
-  
+
       const basicSalary = activeSalaryPackage?.basicSalary || 0;
       const allowances = activeSalaryPackage?.allowances || [];
       const updatedAllowances = allowances.map((allowance) => ({
         ...allowance,
         allowanceNumber: allowance.allowanceNumber || 0,
       }));
-  
+      ///////the days creation starts here
       const payslipDays = Array.from({ length: daysInMonth }, (_, index) => {
-        const dayDate = new Date(year, month - 1, index + 1);
-        const formattedDay = formatDate(dayDate);
-  
-        const isWeekend = dayDate.getDay() === 0; // Sunday check
+        const dayDate = new Date(year, month - 1, index + 1); // Generate each day of the month
+        const formattedDay = formatDate(dayDate); // Format as YYYY-MM-DD without time zone interference
+      
+        const isWeekend = dayDate.getDay() === 0; // Check if it's Sunday
+      
+        // Find a leave that matches the employee and applies to the current day
         const leave = leavesList?.find(
-          (day) =>
-            day?.leaveEmployee._id === formData?.payslipEmployee &&
-            day?.leaveMonth === formData?.payslipMonth &&
-            formatDate(new Date(day?.leaveStartDate)) === formattedDay
+          (leave) =>
+            leave?.leaveEmployee._id === formData?.payslipEmployee &&
+            leave?.leaveMonth === formData?.payslipMonth &&
+            new Date(leave?.leaveStartDate) <= dayDate &&
+            dayDate <= new Date(leave?.leaveEndDate) // Check if the current day falls within the leave range
         );
-  
+      
+        // Return the processed data for the day
         return {
           day: formattedDay,
           isWeekend,
-          isSickLeave: leave?.leaveIsSickLeave && !isWeekend,
-          isPaid: leave?.leaveIsPaidLeave !== false,
+          isSickLeave: leave?.leaveIsSickLeave && !isWeekend, // Sick leave if it's not a weekend
+          isPaid: leave?.leaveIsPaidLeave !== false, // Paid leave unless explicitly marked otherwise
           isGiven: leave?.leaveIsGiven,
           isPartDay: leave?.leaveIsPartDay,
           partdayDuration:
-            (new Date(leave?.leaveEndDate) - new Date(leave?.leaveStartDate)) /
-            (1000 * 60 * 60),
+            leave?.leaveIsPartDay
+              ? (new Date(leave?.leaveEndDate) - new Date(leave?.leaveStartDate)) /
+                (1000 * 60 * 60) // Calculate part-day duration in hours
+              : null,
           dayType: (() => {
             if (isWeekend) return "weekend";
             if (leave?.leaveIsSickLeave) return "sick-leave";
             if (leave?.leaveIsGiven) return "Given day";
-            if (
-              !leave?.leaveStartDate ||
-              (leave?.leaveStartDate !== "" && leave?.leaveIsPartDay)
-            ) {
-              return "Work day";
-            }
+            if (!leave?.leaveStartDate || leave?.leaveIsPartDay) return "Work day";
             return "off-day";
           })(),
         };
       });
-  
+      
+
       const totalOpenDays = payslipDays.filter((day) => !day.isWeekend).length;
       const totalPaidDays = payslipDays.filter(
         (day) => day.isPaid && !day.isWeekend
       ).length;
-  
+
       const payableBasic =
         totalOpenDays > 0 ? (basicSalary * totalPaidDays) / totalOpenDays : 0;
-  
+
       const totalAllowances = updatedAllowances.reduce((sum, allowance) => {
         const unitValue = Number(allowance?.allowanceUnitValue) || 0;
         const number = Number(allowance?.allowanceNumber) || 0;
         return sum + unitValue * number;
       }, 0);
-  
+
       const totalAmount = (
         Number(payableBasic) +
         totalAllowances -
         Number(activeSalaryPackage?.deduction?.deductionAmount || 0)
       ).toFixed(2);
-  
+
       setFormData((prev) => ({
         ...prev,
         payslipWorkdays: payslipDays,
@@ -655,8 +703,8 @@ const NewPayslipForm = () => {
     isLeavesSuccess,
     selectedAcademicYear?.title,
   ]);
-  
-  //console.log(leavesList, "leavesList");
+
+  console.log(leavesList, "leavesList");
   const updateAllowanceNumber = (index, updatedNumber) => {
     setFormData((prev) => {
       const updatedAllowances = prev.payslipSalaryComponents.allowances.map(
@@ -762,8 +810,8 @@ const NewPayslipForm = () => {
   const handleCloseModal = () => {
     setShowConfirmation(false);
   };
-  console.log(validity, "validity");
-  console.log(formData, "formData");
+ // console.log(validity, "validity");
+  //console.log(formData, "formData");
   //console.log(validity, "validity");
   let content;
   if (isEmployeesLoading || isLeavesLoading) {
@@ -872,267 +920,280 @@ const NewPayslipForm = () => {
               </div>
             </div>
             {/* Payslip Leave Days */}
+            {formData?.payslipEmployee !== "" &&
+              formData?.payslipMonth !== "" && (
+                <>
+                  <h3 className="formSectionTitle">Summary of days</h3>
+                  <div className="formSection">
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full table-auto">
+                        <thead>
+                          <tr className="bg-gray-200">
+                            <th className="px-4 py-2 text-left">Day</th>
+                            <th className="px-4 py-2 text-left">Paid</th>
+                            <th className="px-4 py-2 text-left">Type</th>
+                            <th className="px-4 py-2 text-left">
+                              Leave Duration
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {formData?.payslipWorkdays.map((dayObj, index) => (
+                            <tr
+                              key={index}
+                              className={`border-t ${
+                                dayObj.isWeekend ? "bg-yellow-200" : "bg-white"
+                              }`}
+                            >
+                              <td className="px-4  text-sm">{dayObj.day}</td>
+                              <td className="px-4 ">
+                                {!dayObj?.isWeekend && (
+                                  <div className="text-xs text-gray-600">
+                                    {dayObj.isPaid ? "Paid" : "Unpaid"}
+                                  </div>
+                                )}
+                              </td>
+                              <td className="px-4  text-xs text-gray-600">
+                                {dayObj.dayType}
+                              </td>
+                              <td className="px-4 py-1">
+                                {dayObj?.isPartDay && (
+                                  <span className="text-xs text-red-600">
+                                    {dayObj?.partdayDuration} Hours leave
+                                  </span>
+                                )}
+                                {dayObj?.dayType === "off-day" && (
+                                  <span className="text-xs text-red-600">
+                                    1 day leave
+                                  </span>
+                                )}
+                                {dayObj?.dayType === "Given day" && (
+                                  <span className="text-xs text-red-600">
+                                    1 day leave
+                                  </span>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
 
-            <h3 className="formSectionTitle">Summary of days</h3>
-            <div className="formSection">
-              <div className="overflow-x-auto">
-                <table className="min-w-full table-auto">
-                  <thead>
-                    <tr className="bg-gray-200">
-                      <th className="px-4 py-2 text-left">Day</th>
-                      <th className="px-4 py-2 text-left">Paid</th>
-                      <th className="px-4 py-2 text-left">Type</th>
-                      <th className="px-4 py-2 text-left">Leave Duration</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {formData?.payslipWorkdays.map((dayObj, index) => (
-                      <tr
-                        key={index}
-                        className={`border-t ${
-                          dayObj.isWeekend ? "bg-yellow-200" : "bg-white"
-                        }`}
-                      >
-                        <td className="px-4  text-sm">{dayObj.day}</td>
-                        <td className="px-4 ">
-                          {!dayObj?.isWeekend && (
-                            <div className="text-xs text-gray-600">
-                              {dayObj.isPaid ? "Paid" : "Unpaid"}
-                            </div>
-                          )}
-                        </td>
-                        <td className="px-4  text-xs text-gray-600">
-                          {dayObj.dayType}
-                        </td>
-                        <td className="px-4 py-1">
-                          {dayObj?.isPartDay && (
-                            <span className="text-xs text-red-600">
-                              {dayObj?.partdayDuration} Hours leave
-                            </span>
-                          )}
-                          {dayObj?.dayType === "off-day" && (
-                            <span className="text-xs text-red-600">
-                              1 day leave
-                            </span>
-                          )}
-                          {dayObj?.dayType === "Given day" && (
-                            <span className="text-xs text-red-600">
-                              1 day leave
-                            </span>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-
-                {/* Totals Section */}
-                <div className="mt-4 p-4 bg-gray-100 rounded-md">
-                  <p className="text-lg font-semibold">Summary</p>
-                  <div className="flex justify-between text-sm mt-2">
-                    <p className="font-medium">Total Open Days:</p>
-                    <p>
-                      {
-                        formData?.payslipWorkdays.filter(
-                          (day) => !day.isWeekend
-                        ).length
-                      }
-                    </p>
-                  </div>
-                  <div className="flex justify-between text-sm mt-2">
-                    <p className="font-medium">Total Work Days:</p>
-                    <p>
-                      {
-                        formData?.payslipWorkdays.filter(
-                          (day) =>
-                            day?.dayType === "Work day" ||
-                            day?.dayType === "Given day"
-                        ).length
-                      }
-                    </p>
-                  </div>
-                  <div className="flex justify-between text-sm mt-2">
-                    <p className="font-medium">Total Paid Days:</p>
-                    <p>
-                      {
-                        formData?.payslipWorkdays.filter(
-                          (day) => day?.isPaid && !day?.isWeekend
-                        ).length
-                      }
-                    </p>
-                  </div>
-                  <div className="flex justify-between text-sm mt-2">
-                    <p className="font-medium">Total Sick Leave:</p>
-                    <p>
-                      {
-                        formData?.payslipWorkdays.filter(
-                          (day) => day.isSickLeave
-                        ).length
-                      }
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <h3 className="formSectionTitle">Salary details</h3>
-
-            {/* Allowance Input */}
-            <div className="formSection">
-              {/* Payable Basic Salary */}
-              <div className="flex justify-between items-center mb-3">
-                <span className="formInputLabel">Basic Salary:</span>
-                <span className="text-gray-800">
-                  {formData?.payslipSalaryComponents?.basic || 0}{" "}
-                  {CurrencySymbol}
-                </span>
-              </div>
-
-              {/* Payable Basic Salary */}
-              <div className="flex justify-between items-center mb-3">
-                <span className="formInputLabel ">Payable Basic Salary:</span>
-                <span className="text-green-500 font-bold">
-                  {formData?.payslipSalaryComponents?.payableBasic || 0}{" "}
-                  {CurrencySymbol}
-                </span>
-              </div>
-
-              {/* Allowances */}
-
-              <h4 className="formSectionTitle">Allowances:</h4>
-              <div className="formSection">
-                {formData?.payslipSalaryComponents?.allowances?.map(
-                  (allowance, index) => (
-                    <div key={index} className="flex flex-col mb-4">
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="formInputLabel">
-                          {allowance?.allowanceLabel}
-                          {": "}
-                          {allowance?.allowanceUnitValue} {CurrencySymbol}
-                          {" - "}
-                          {allowance?.allowancePeriodicity}
-                        </span>
-                      </div>
-                      <div className="formLineDiv items-center">
-                        <label
-                          htmlFor={`allowance number-${index}`}
-                          className="formInputLabel mr-4"
-                        >
-                          Number:{" "}
-                          {!validity.validAllowances[index] && (
-                            <span className="text-red-600">*</span>
-                          )}
-                          <input
-                            id={`allowance number-${index}`}
-                            type="number"
-                            value={allowance.allowanceNumber || ""}
-                            onChange={(e) => {
-                              const updatedNumber = Number(e.target.value) || 0;
-                              updateAllowanceNumber(index, updatedNumber);
-                            }}
-                            className="formInputText "
-                          />
-                        </label>
-                        <div className="text-right">
-                          <span className="text-green-500 font-bold">
-                            {allowance?.allowanceTotalValue || 0}{" "}
-                            {CurrencySymbol}
-                          </span>
+                      {/* Totals Section */}
+                      <div className="mt-4 p-4 bg-gray-100 rounded-md">
+                        <p className="text-lg font-semibold">Summary</p>
+                        <div className="flex justify-between text-sm mt-2">
+                          <p className="font-medium">Total Open Days:</p>
+                          <p>
+                            {
+                              formData?.payslipWorkdays.filter(
+                                (day) => !day.isWeekend
+                              ).length
+                            }
+                          </p>
+                        </div>
+                        <div className="flex justify-between text-sm mt-2">
+                          <p className="font-medium">Total Work Days:</p>
+                          <p>
+                            {
+                              formData?.payslipWorkdays.filter(
+                                (day) =>
+                                  day?.dayType === "Work day" ||
+                                  day?.dayType === "Given day"
+                              ).length
+                            }
+                          </p>
+                        </div>
+                        <div className="flex justify-between text-sm mt-2">
+                          <p className="font-medium">Total Paid Days:</p>
+                          <p>
+                            {
+                              formData?.payslipWorkdays.filter(
+                                (day) => day?.isPaid && !day?.isWeekend
+                              ).length
+                            }
+                          </p>
+                        </div>
+                        <div className="flex justify-between text-sm mt-2">
+                          <p className="font-medium">Total Sick Leave:</p>
+                          <p>
+                            {
+                              formData?.payslipWorkdays.filter(
+                                (day) => day.isSickLeave
+                              ).length
+                            }
+                          </p>
                         </div>
                       </div>
                     </div>
-                  )
-                )}
-              </div>
-              {/* gross  Salary */}
-              <div className="flex justify-between items-center mb-3">
-                <span className="formInputLabel ">Gross Salary:</span>
-                <span className="text-green-500 font-bold">
-                  {(
-                    Number(
-                      formData?.payslipSalaryComponents?.payableBasic || 0
-                    ) +
-                    formData?.payslipSalaryComponents?.allowances?.reduce(
-                      (sum, allowance) => {
-                        const unitValue =
-                          Number(allowance?.allowanceUnitValue) || 0;
-                        const number = Number(allowance?.allowanceNumber) || 0;
-                        return sum + unitValue * number;
-                      },
-                      0
-                    )
-                  ).toFixed(2)}{" "}
-                  {CurrencySymbol}
-                </span>
-              </div>
+                  </div>
+                  <h3 className="formSectionTitle">Salary details</h3>
 
-              {/* Deduction */}
-              <h4 className="formSectionTitle">Deductions:</h4>
-              {/* <div className="formSection"> */}
-              <div className="formLineDiv items-center">
-                <label htmlFor="deduction">
-                  {formData?.payslipSalaryComponents?.deduction?.deductionLabel}{" "}
-                  {" :"}
-                  {!validity.validDeduction && (
-                    <span className="text-red-600">*</span>
-                  )}
-                  <input
-                    type="number"
-                    id="deduction"
-                    value={
-                      formData?.payslipSalaryComponents?.deduction
-                        ?.deductionAmount || 0
-                    }
-                    onChange={(e) => {
-                      const updatedDeduction = Number(e.target.value) || 0;
-                      updateDeductionAmount(updatedDeduction);
-                    }}
-                    className="formInputText w-28"
-                  />
-                </label>{" "}
-                <div className="text-right">
-                  <span className="text-red-500 font-bold">
-                    -{" "}
-                    {formData?.payslipSalaryComponents?.deduction
-                      ?.deductionAmount || 0}{" "}
-                    {CurrencySymbol}
-                  </span>
-                </div>
-              </div>
-              {/* </div> */}
+                  {/* Allowance Input */}
+                  <div className="formSection">
+                    {/* Payable Basic Salary */}
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="formInputLabel">Basic Salary:</span>
+                      <span className="text-gray-800">
+                        {formData?.payslipSalaryComponents?.basic || 0}{" "}
+                        {CurrencySymbol}
+                      </span>
+                    </div>
 
-              {/* Total Salary */}
-              <div className="flex justify-between items-center">
-                <span className="formInputLabel">Net Salary:</span>
-                <span className="font-bold text-gray-900">
-                  {formData?.payslipTotalAmount || 0} {CurrencySymbol}
-                </span>
-              </div>
-            </div>
+                    {/* Payable Basic Salary */}
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="formInputLabel ">
+                        Payable Basic Salary:
+                      </span>
+                      <span className="text-green-500 font-bold">
+                        {formData?.payslipSalaryComponents?.payableBasic || 0}{" "}
+                        {CurrencySymbol}
+                      </span>
+                    </div>
 
-            <label htmlFor={`payslipNote`} className="formInputLabel">
-              Note
-              {!validity?.validPayslipNote && (
-                <span className="text-red-600"> check your input</span>
+                    {/* Allowances */}
+
+                    <h4 className="formSectionTitle">Allowances:</h4>
+                    <div className="formSection">
+                      {formData?.payslipSalaryComponents?.allowances?.map(
+                        (allowance, index) => (
+                          <div key={index} className="flex flex-col mb-4">
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="formInputLabel">
+                                {allowance?.allowanceLabel}
+                                {": "}
+                                {allowance?.allowanceUnitValue} {CurrencySymbol}
+                                {" - "}
+                                {allowance?.allowancePeriodicity}
+                              </span>
+                            </div>
+                            <div className="formLineDiv items-center">
+                              <label
+                                htmlFor={`allowance number-${index}`}
+                                className="formInputLabel mr-4"
+                              >
+                                Number:{" "}
+                                {!validity.validAllowances[index] && (
+                                  <span className="text-red-600">*</span>
+                                )}
+                                <input
+                                  id={`allowance number-${index}`}
+                                  type="number"
+                                  value={allowance.allowanceNumber || ""}
+                                  onChange={(e) => {
+                                    const updatedNumber =
+                                      Number(e.target.value) || 0;
+                                    updateAllowanceNumber(index, updatedNumber);
+                                  }}
+                                  className="formInputText "
+                                />
+                              </label>
+                              <div className="text-right">
+                                <span className="text-green-500 font-bold">
+                                  {allowance?.allowanceTotalValue || 0}{" "}
+                                  {CurrencySymbol}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      )}
+                    </div>
+                    {/* gross  Salary */}
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="formInputLabel ">Gross Salary:</span>
+                      <span className="text-green-500 font-bold">
+                        {(
+                          Number(
+                            formData?.payslipSalaryComponents?.payableBasic || 0
+                          ) +
+                          formData?.payslipSalaryComponents?.allowances?.reduce(
+                            (sum, allowance) => {
+                              const unitValue =
+                                Number(allowance?.allowanceUnitValue) || 0;
+                              const number =
+                                Number(allowance?.allowanceNumber) || 0;
+                              return sum + unitValue * number;
+                            },
+                            0
+                          )
+                        ).toFixed(2)}{" "}
+                        {CurrencySymbol}
+                      </span>
+                    </div>
+
+                    {/* Deduction */}
+                    <h4 className="formSectionTitle">Deductions:</h4>
+                    {/* <div className="formSection"> */}
+                    <div className="formLineDiv items-center">
+                      <label htmlFor="deduction">
+                        {
+                          formData?.payslipSalaryComponents?.deduction
+                            ?.deductionLabel
+                        }{" "}
+                        {" :"}
+                        {!validity.validDeduction && (
+                          <span className="text-red-600">*</span>
+                        )}
+                        <input
+                          type="number"
+                          id="deduction"
+                          value={
+                            formData?.payslipSalaryComponents?.deduction
+                              ?.deductionAmount || 0
+                          }
+                          onChange={(e) => {
+                            const updatedDeduction =
+                              Number(e.target.value) || 0;
+                            updateDeductionAmount(updatedDeduction);
+                          }}
+                          className="formInputText w-28"
+                        />
+                      </label>{" "}
+                      <div className="text-right">
+                        <span className="text-red-500 font-bold">
+                          -{" "}
+                          {formData?.payslipSalaryComponents?.deduction
+                            ?.deductionAmount || 0}{" "}
+                          {CurrencySymbol}
+                        </span>
+                      </div>
+                    </div>
+                    {/* </div> */}
+
+                    {/* Total Salary */}
+                    <div className="flex justify-between items-center">
+                      <span className="formInputLabel">Net Salary:</span>
+                      <span className="font-bold text-gray-900">
+                        {formData?.payslipTotalAmount || 0} {CurrencySymbol}
+                      </span>
+                    </div>
+                  </div>
+
+                  <label htmlFor={`payslipNote`} className="formInputLabel">
+                    Note
+                    {!validity?.validPayslipNote && (
+                      <span className="text-red-600"> check your input</span>
+                    )}
+                    <textarea
+                      aria-invalid={!validity?.validPayslipNote}
+                      type="text"
+                      id={`payslipNote`}
+                      name="comment"
+                      placeholder="[1-150 characters]"
+                      value={formData.payslipNote}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          payslipNote: e.target.value,
+                        })
+                      }
+                      className={`formInputText text-wrap`}
+                      maxLength="150"
+                    ></textarea>
+                  </label>
+                </>
               )}
-              <textarea
-                aria-invalid={!validity?.validPayslipNote}
-                type="text"
-                id={`payslipNote`}
-                name="comment"
-                placeholder="[1-150 characters]"
-                value={formData.payslipNote}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    payslipNote: e.target.value,
-                  })
-                }
-                className={`formInputText text-wrap`}
-                maxLength="150"
-              ></textarea>
-            </label>
           </div>
-          {/* Payslip Salary Components */}
 
           {/* Submit Button */}
           <div className="cancelSavebuttonsDiv">

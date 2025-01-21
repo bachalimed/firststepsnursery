@@ -1,115 +1,161 @@
-// import { createSelector, createEntityAdapter } from "@reduxjs/toolkit";
-// import { apiSlice } from "../../../app/api/apiSlice";
+import { createSelector, createEntityAdapter } from "@reduxjs/toolkit";
+import { apiSlice } from "../../app/api/apiSlice";
+const notificationsAdapter = createEntityAdapter({});
 
-// const notificationsAdapter = createEntityAdapter({});
+const initialState = notificationsAdapter.getInitialState();
 
-// const initialState = notificationsAdapter.getInitialState();
+export const notificationsApiSlice = apiSlice.injectEndpoints({
+  endpoints: (builder) => ({
+    // getNotifications: builder.query({
+    //     query: () => '/notifications/notificationsParents/notifications',//as defined in server.js
+    //     validateStatus: (response, result) => {
+    //         return response.status === 200 && !result.isError
+    //     },
 
-// export const notificationsApiSlice = apiSlice.injectEndpoints({
-//   endpoints: (builder) => ({
-//     getNotifications: builder.query({
-//       query: () => `/hr/notifications`, //as defined in server.js
-//       validateStatus: (response, result) => {
-//         return response.status === 200 && !result.isError;
-//       },
-//       //keepUnusedDataFor: 5,//default when app is deployed is 60seconds
-//       transformResponse: (responseData) => {
-//         const loadedNotifications = responseData.map((notification) => {
-//           notification.id = notification._id;
-//           return notification;
-//         });
-//         return notificationsAdapter.setAll(initialState, loadedNotifications);
-//       },
-//       providesTags: ["notification"],
-//       // providesTags: (result, error, arg) => {
-//       //     if (result?.ids) {
-//       //         return [
-//       //             { type: 'notification', id: 'LIST' },
-//       //             ...result.ids.map(id => ({ type: 'notification', id }))
-//       //         ]
-//       //     } else return [{ type: 'notification', id: 'LIST' }]
-//       // }
-//     }),
-//     getNotificationsByYear: builder.query({
-//       query: (params) => {
-//         const queryString = new URLSearchParams(params).toString();
-//         return `/hr/notifications?${queryString}`;
-//       },
+    //     keepUnusedDataFor: 60,//default when app is deployed is 60seconds
+    //     transformResponse: responseData => {
+    //         const newLoadedNotifications = responseData.map(notification => {
 
-//       validateStatus: (response, result) => {
-//         return response.status === 200 && !result.isError;
-//       },
+    //             notification.id = notification._id//changed the _id from mongoDB to id
+    //             delete notification._id//added to delete the extra original _id from mongo but careful when planning to save to db again
+    //             return notification
+    //         })
+    //         return notificationsAdapter.setAll(initialState, newLoadedNotifications)
+    //     },
+    //     providesTags:['notification']
+    //     // providesTags: (result, error, arg) => {
+    //     //     if (result?.ids) {
+    //     //         return [
+    //     //             { type: 'notification', id: 'LIST' },
+    //     //             ...result.ids.map(id => ({ type: 'notification', id }))
+    //     //         ]
+    //     //     } else return [{ type: 'notification', id: 'LIST' }]
+    //     // }
+    // }),
+    getNotificationsByYear: builder.query({
+      query: (params) => {
+        const queryString = new URLSearchParams(params).toString();
+        return `/notifications/notifications?${queryString}`;
+      },
 
-//       transformResponse: (responseData) => {
-//         //console.log('  in the APIslice',responseData.total)
+      validateStatus: (response, result) => {
+        return response.status === 200 && !result.isError;
+      },
 
-//         const newLoadedNotifications = responseData.map((notification) => {
-//           notification.id = notification._id; //changed the _id from mongoDB to id
-//           delete notification._id; //added to delete the extra original _id from mongo but careful when planning to save to db again
-//           return notification;
-//         });
-//         return notificationsAdapter.setAll(initialState, newLoadedNotifications);
-//       },
-//       providesTags: ["notification"],
-//     }),
-//     addNewNotification: builder.mutation({
-//       query: (initialNotificationData) => ({
-//         url: "/hr/notifications",
-//         method: "POST",
-//         body: {
-//           ...initialNotificationData,
-//         },
-//       }),
-//       invalidatesTags: [
-//         //forces the cache in RTK query to update
-//         { type: "notification", id: "LIST" }, //the notification list will be unvalidated and updated
-//       ],
-//     }),
-//     updateNotification: builder.mutation({
-//       query: (initialNotificationData) => ({
-//         url: "/hr/notifications",
-//         method: "PATCH",
-//         body: {
-//           ...initialNotificationData,
-//         },
-//       }),
-//       invalidatesTags: ["notification"],
-//     }),
-//     deleteNotification: builder.mutation({
-//       query: ({ id }) => ({
-//         url: "/hr/notifications",
-//         method: "DELETE",
-//         body: { id },
-//       }),
-//       invalidatesTags: ["notification"],
-//     }),
-//   }),
-// });
+      transformResponse: (responseData) => {
+        // console.log('  in the APIslice',responseData.total)
 
-// export const {
-//   useGetNotificationsQuery,
-//   useGetNotificationsByYearQuery,
-//   useAddNewNotificationMutation,
-//   useUpdateNotificationMutation,
-//   useDeleteNotificationMutation,
-// } = notificationsApiSlice;
+        const newLoadedNotifications = responseData.map((notification) => {
+          notification.id = notification._id; //changed the _id from mongoDB to id
+          delete notification._id; //added to delete the extra original _id from mongo but careful when planning to save to db again
+          return notification;
+        });
+        return notificationsAdapter.setAll(initialState, newLoadedNotifications);
+      },
+      providesTags: ["notification"],
 
-// // returns the query result object
-// export const selectNotificationsResult =
-//   notificationsApiSlice.endpoints.getNotifications.select();
+      // providesTags: (result, error, arg) => {
+      //     if (result?.ids) {
+      //         return [
+      //             { type: 'notification', id: 'LIST' },
+      //             ...result.ids.map(id => ({ type: 'notification', id }))
+      //         ]
+      //     } else return [{ type: 'notification', id: 'LIST' }]
+      // }
+    }),
+    getNotificationById: builder.query({
+      query: (params) => {
+        const queryString = new URLSearchParams(params).toString();
+        return `/notifications/notifications?${queryString}`;
+      },
 
-// // creates memoized selector
-// const selectNotificationsData = createSelector(
-//   selectNotificationsResult,
-//   (notificationsResult) => notificationsResult.data // normalized state object with ids & entities
-// );
+      validateStatus: (response, result) => {
+        return response.status === 200 && !result.isError;
+      },
 
-// //getSelectors creates these selectors and we rename them with aliases using destructuring
-// export const {
-//   selectAll: selectAllNotifications,
-//   selectById: selectNotificationById,
-//   selectIds: selectNotificationIds,
-//   // Pass in a selector that returns the notifications slice of state
-// } = notificationsAdapter.getSelectors(
-//   (state) => selectNotificationsData(state) ?? initialState
-// );
+      transformResponse: (responseData) => {
+        //const {loadedNotifications} =
+        //console.log('academicYears length  in the APIslice',responseData.total)
+        //console.log('academicYears in the APIslice', academicYears)
+        const newLoadedNotifications = responseData.map((notification) => {
+          notification.id = notification._id; //changed the _id from mongoDB to id
+          delete notification._id; //added to delete the extra original _id from mongo but careful when planning to save to db again
+          return notification;
+        });
+        return notificationsAdapter.upsertOne(initialState, newLoadedNotifications);
+      },
+      providesTags: ["notification"],
+      // providesTags: (result, error, arg) => {
+      //     if (result?.ids) {
+      //         return [
+      //             { type: 'notification', id: 'LIST' },
+      //             ...result.ids.map(id => ({ type: 'notification', id }))
+      //         ]
+      //     } else return [{ type: 'notification', id: 'LIST' }]
+      // }
+    }),
+    addNewNotification: builder.mutation({
+      query: (initialNotificationData) => ({
+        url: "/notifications/notifications",
+        method: "POST",
+        body: {
+          ...initialNotificationData,
+        },
+      }),
+      invalidatesTags: ["notification"],
+    }),
+    updateNotification: builder.mutation({
+      query: (initialNotificationData) => ({
+        url: "/notifications/notifications",
+        method: "PATCH",
+        body: {
+          ...initialNotificationData,
+        },
+      }),
+      invalidatesTags: ["notification"],
+      // invalidatesTags: (result, error, arg) => [//we re not updating all the list, butonly update the notification in the cache by using the arg.id
+      //     { type: 'notification', id: arg.id }
+      // ]
+    }),
+    deleteNotification: builder.mutation({
+      query: ({ id }) => ({
+        url: "/notifications/notifications",
+        method: "DELETE",
+        body: { id },
+      }),
+      invalidatesTags: ["notification"],
+      // invalidatesTags: (result, error, arg) => [
+      //     { type: 'notification', id: arg.id }
+      // ]
+    }),
+  }),
+});
+
+export const {
+  useGetNotificationsQuery,
+  useGetNotificationsByYearQuery,
+  useGetNotificationByIdQuery,
+  useAddNewNotificationMutation,
+  useUpdateNotificationMutation,
+  useDeleteNotificationMutation,
+} = notificationsApiSlice;
+
+// returns the query result object and not only the data we need for this reason we need the createselector!!! thsi selcetor decides which query is used??
+export const selectNotificationsResult =
+  notificationsApiSlice.endpoints.getNotificationsByYear.select();
+
+// creates memoized selector that takes the inpput function selescNotificationsREsult and gets the data from it which is ids and entities
+const selectNotificationsData = createSelector(
+  selectNotificationsResult,
+  (notificationsResult) => notificationsResult.data // normalized state object with ids & entities
+);
+
+//getSelectors creates these selectors and we rename them with aliases using destructuring
+export const {
+  selectAll: selectAllNotifications,
+  selectById: selectNotificationById,
+  selectIds: selectNotificationIds,
+  // Pass in a selector that returns the notifications slice of state
+} = notificationsAdapter.getSelectors(
+  (state) => selectNotificationsData(state) ?? initialState
+);

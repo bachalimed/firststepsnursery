@@ -120,7 +120,8 @@ const DashboardFinancesMonthlyPaymentsExpensesInvoicesModule = () => {
           <YAxis />
           <Tooltip />
           <Legend />
-
+  
+          {/* Non-stacked bars */}
           <Bar dataKey="invoices" fill={COLORS[0]} name="Invoices" barSize={20}>
             <LabelList
               dataKey="invoices"
@@ -139,7 +140,9 @@ const DashboardFinancesMonthlyPaymentsExpensesInvoicesModule = () => {
               offset={2}
             />
           </Bar>
-          <Bar dataKey="expenses" fill={COLORS[1]} name="Expenses" barSize={20}>
+  
+          {/* Stacked bars */}
+          <Bar dataKey="expenses" fill={COLORS[1]} name="Expenses" barSize={20} stackId="stack">
             <LabelList
               dataKey="expenses"
               position="top"
@@ -148,7 +151,7 @@ const DashboardFinancesMonthlyPaymentsExpensesInvoicesModule = () => {
               offset={2}
             />
           </Bar>
-          <Bar dataKey="profit" fill={COLORS[3]} name="Profit" barSize={20}>
+          <Bar dataKey="profit" fill={COLORS[3]} name="Profit" barSize={20} stackId="stack">
             <LabelList
               dataKey="profit"
               position="top"
@@ -157,7 +160,7 @@ const DashboardFinancesMonthlyPaymentsExpensesInvoicesModule = () => {
               offset={2}
             />
           </Bar>
-          <Bar dataKey="defaults" fill={COLORS[4]} name="Defaults" barSize={20}>
+          <Bar dataKey="defaults" fill={COLORS[4]} name="Defaults" barSize={20} stackId="stack">
             <LabelList
               dataKey="defaults"
               position="top"
@@ -170,6 +173,7 @@ const DashboardFinancesMonthlyPaymentsExpensesInvoicesModule = () => {
       </ResponsiveContainer>
     </div>
   );
+  
 
   return (
     <div className="bg-gray-100 rounded-sm p-3 flex-1 border border-gray-300">

@@ -50,9 +50,9 @@ const DashboardFinancesTotalPercentagesModule = () => {
             {" "}
             ({(
               (100 * Number(totalExpensesAmount)) /
-              Number(totalPaymentsAmount)
+              (Number(totalPaymentsAmount) - Number(totalExpensesAmount))
             ).toFixed(0)}
-            % Expense-Income)
+            % Expense-Profit)
           </span>
         </div>
       </div>

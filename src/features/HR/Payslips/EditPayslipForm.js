@@ -67,24 +67,27 @@ const EditPayslipForm = ({ payslip }) => {
   // Consolidated form state
   const [formData, setFormData] = useState({
     _id: payslipId,
-    
+
     payslipEmployee: payslipEmployee,
-    payslipEmployeeName:payslipEmployeeName,
+    payslipEmployeeName: payslipEmployeeName,
     payslipIsApproved: payslipIsApproved,
     payslipLeaveDays: payslipLeaveDays,
     payslipMonth: payslipMonth,
     payslipNote: payslipNote,
     payslipPaymentDate: payslipPaymentDate?.split("T")[0],
     payslipSalaryComponents: {
-      ...payslip?.payslipSalaryComponents,
-      allowances: payslip?.payslipSalaryComponents?.allowances?.map((allowance) => ({
+      ...payslipSalaryComponents,
+      allowances: payslipSalaryComponents?.allowances?.map((allowance) => ({
         ...allowance,
         allowanceNumber: allowance.allowanceNumber || 0,
         allowanceTotalValue:
           (Number(allowance.allowanceUnitValue) || 0) *
           (Number(allowance.allowanceNumber) || 0),
       })),
-      deduction:payslip?.payslipSalaryComponents?.deduction,
+      deduction: payslipSalaryComponents?.deduction || {
+        deductionLabel: "",
+        deductionAmount: 0,
+      },
     },
     payslipTotalAmount: payslipTotalAmount,
     payslipWorkdays: payslipWorkdays,
@@ -95,11 +98,10 @@ const EditPayslipForm = ({ payslip }) => {
   const [validity, setValidity] = useState({
     validPayslipYear: false,
     validPayslipMonth: false,
-
     validPayslipNote: false,
     validPayslipEmployee: false,
     //validPayslipPaymentDate: false,
-    validPayslipLeaveDays: false,
+    //validPayslipLeaveDays: false,
     validPayslipSalaryComponents: false,
     validAllowances: [],
     validDeduction: true,
@@ -117,7 +119,7 @@ const EditPayslipForm = ({ payslip }) => {
     );
 
     const isDeductionValid =
-      Number(formData.payslipSalaryComponents.deduction.deductionAmount) >= 0;
+      Number(formData.payslipSalaryComponents?.deduction?.deductionAmount) >= 0;
     setValidity((prev) => ({
       ...prev,
       validPayslipYear: YEAR_REGEX.test(formData?.payslipYear),
@@ -125,7 +127,7 @@ const EditPayslipForm = ({ payslip }) => {
       validPayslipNote: COMMENT_REGEX.test(formData?.payslipNote),
       validPayslipEmployee: OBJECTID_REGEX.test(formData?.payslipEmployee),
       //validPayslipPaymentDate: DATE_REGEX.test(formData?.payslipPaymentDate),
-      validPayslipLeaveDays: formData?.payslipLeaveDays?.length > 0,
+      //validPayslipLeaveDays: formData?.payslipLeaveDays?.length > 0,
       validPayslipSalaryComponents:
         formData?.payslipTotalAmount != 0 &&
         FEE_REGEX.test(formData?.payslipTotalAmount),
@@ -171,7 +173,7 @@ const EditPayslipForm = ({ payslip }) => {
       const totalAmount =
         Number(prev.payslipSalaryComponents.payableBasic || 0) +
         totalAllowances -
-        Number(prev.payslipSalaryComponents.deduction.deductionAmount || 0);
+        Number(prev.payslipSalaryComponents?.deduction?.deductionAmount || 0);
 
       return {
         ...prev,
@@ -253,8 +255,8 @@ const EditPayslipForm = ({ payslip }) => {
   const handleCloseModal = () => {
     setShowConfirmation(false);
   };
-  // console.log(validity, "validity");
-  // console.log(formData, "formData");
+  console.log(validity, "validity");
+  console.log(formData, "formData");
   const content = (
     <>
       <HR />

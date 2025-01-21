@@ -43,3 +43,5 @@ academic years "1000" use as criteria to query all years data instead of only on
  33. when a new payslip is PAID (newpaymentdate) , an expense will be auto generated to account for that spendingn deltion od payslip not avaialble, if manual delete, account to delete the expense or update it
  34. if a studetn leaves by end of month, we edit the admission and only select the months used, if he leaves in the middle of month, inadditin to editing the admissin, edit the enrolment of that month to mention the suspneded date
  35. payment note should be receipt number
+ 36. for new payments, if student has no outstanding , he will not show in dropdown list
+ 37. salary packages change : start date and enddate should be start and end of month, no middle of month change dates

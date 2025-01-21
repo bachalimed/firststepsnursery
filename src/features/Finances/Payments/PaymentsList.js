@@ -47,8 +47,8 @@ const PaymentsList = () => {
     const currentMonthIndex = new Date().getMonth(); // Get current month (0-11)
     return MONTHS[currentMonthIndex]; // Return the month name with the first letter capitalized
   };
-  const [selectedPaymentMonth, setSelectedPaymentMonth] = useState(
-    getCurrentMonth()
+  const [selectedPaymentMonth, setSelectedPaymentMonth] = useState(""
+   // getCurrentMonth()
   ); // payment month
   //console.log("Fetch payments for academic year:", selectedAcademicYear);
   const {
@@ -60,9 +60,9 @@ const PaymentsList = () => {
     refetch,
   } = useGetPaymentsByYearQuery(
     {
-      selectedMonth: selectedPaymentMonth
-        ? selectedPaymentMonth
-        : getCurrentMonth(),
+      // selectedMonth: selectedPaymentMonth
+      //   ? selectedPaymentMonth
+      //   : getCurrentMonth(),
       selectedYear: selectedAcademicYear?.title,
       endpointName: "PaymentsList",
     } || {},
@@ -453,7 +453,7 @@ const PaymentsList = () => {
           >
             {/* Default option is the current month */}
 
-            <option value="">{getCurrentMonth()}</option>
+            {/* <option value="">{getCurrentMonth()}</option> */}
             <option value="">All Months</option>
 
             {/* Render the rest of the months, excluding the current month */}

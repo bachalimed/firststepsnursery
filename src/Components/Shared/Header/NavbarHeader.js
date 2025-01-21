@@ -1,8 +1,9 @@
 //import { Link } from "react-router-dom"
 
 // import HeaderChat from "./HeaderChat";
-// import HeaderNotifications from "./HeaderNotifications";
-import HeaderUserProfile from "./HeaderUserProfile";
+ import HeaderNotifications from "./Navbar/HeaderNotifications";
+import HeaderUserProfile from "./Navbar/HeaderUserProfile";
+
 
 const NavbarHeader = () => {
   return (
@@ -10,10 +11,12 @@ const NavbarHeader = () => {
       {/* <div className="hidden sm:block">
         <HeaderChat className="" />
       </div> */}
-      {/* <div className="hidden sm:block">
+      <div className="hidden sm:block">
         <HeaderNotifications className="" />
-      </div> */}
-      <div className="flex items-center justify-between">
+      </div>
+      <div className="flex items-center justify-between gap-2">
+
+       
         <HeaderUserProfile className="relative z-60 " />
       </div>
     </div>

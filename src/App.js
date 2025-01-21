@@ -16,17 +16,23 @@ import MyProfile from "./features/auth/MyProfile";
 import EditMyProfile from "./features/auth/MyProfile/EditMyProfile";
 import MyDetails from "./features/auth/MyProfile/MyDetails";
 
-import EnrolmentsReport from "./features/Reporting/StudentsReports/EnrolmentsReport"
-import AgeGroupsReport from "./features/Reporting/StudentsReports/AgeGroupsReport"
-import StudentsReports from "./features/Reporting/StudentsReports"; 
-import AcademicsReports from "./features/Reporting/AcademicsReports"; 
-import HRReports from "./features/Reporting/HRReports"; 
-import LeavesReport from "./features/Reporting/HRReports/LeavesReport"; 
-import SalariesReport from "./features/Reporting/HRReports/SalariesReport"; 
+import Notifications from "./features/Notifications/Notifications";
+import NotificationsList from "./features/Notifications/NotificationsList";
+import NewNotificationForm from "./features/Notifications/NewNotificationForm";
+import EditNotification from "./features/Notifications/EditNotification";
+
+
+import EnrolmentsReport from "./features/Reporting/StudentsReports/EnrolmentsReport";
+import AgeGroupsReport from "./features/Reporting/StudentsReports/AgeGroupsReport";
+import StudentsReports from "./features/Reporting/StudentsReports";
+import AcademicsReports from "./features/Reporting/AcademicsReports";
+import HRReports from "./features/Reporting/HRReports";
+import LeavesReport from "./features/Reporting/HRReports/LeavesReport";
+import SalariesReport from "./features/Reporting/HRReports/SalariesReport";
 import FinancesReports from "./features/Reporting/FinancesReports";
-import UnpaidEnrolmentsReport from "./features/Reporting/FinancesReports/UnpaidEnrolmentsReport"
-import ExpensesReport from "./features/Reporting/FinancesReports/ExpensesReport"
-import PaymentsReport from "./features/Reporting/FinancesReports/PaymentsReport"
+import UnpaidEnrolmentsReport from "./features/Reporting/FinancesReports/UnpaidEnrolmentsReport";
+import ExpensesReport from "./features/Reporting/FinancesReports/ExpensesReport";
+import PaymentsReport from "./features/Reporting/FinancesReports/PaymentsReport";
 
 import Students from "./features/Students/Students"; //main tab
 import StudentsList from "./features/Students/StudentsAndParents/Students/StudentsList";
@@ -596,12 +602,14 @@ const App = () => {
                 <Route index element={<StudentsReports />} />
                 <Route path="studentsReports">
                   <Route index element={<StudentsReports />} />
-                  <Route path="ageGroupsReport/" element={<AgeGroupsReport />} />
-                  <Route path="enrolmentsReport/" element={<EnrolmentsReport/>} />
-                  
-                 
-
-                 
+                  <Route
+                    path="ageGroupsReport/"
+                    element={<AgeGroupsReport />}
+                  />
+                  <Route
+                    path="enrolmentsReport/"
+                    element={<EnrolmentsReport />}
+                  />
                 </Route>{" "}
                 {/* end of studentsReports route */}
                 <Route path="academicsReports">
@@ -631,25 +639,48 @@ const App = () => {
                   <Route index element={<FinancesReports />} />
                   <Route path="expensesReport/" element={<ExpensesReport />} />
                   <Route path="paymentsReport/" element={<PaymentsReport />} />
-                  <Route path="unpaidEnrolmentsReport/" element={<UnpaidEnrolmentsReport />} />
-                 
+                  <Route
+                    path="unpaidEnrolmentsReport/"
+                    element={<UnpaidEnrolmentsReport />}
+                  />
                 </Route>{" "}
                 {/* end of financesReports route */}
                 <Route path="HRReports">
                   <Route index element={<HRReports />} />
-                  <Route
-                    path="leavesReport/"
-                    element={<LeavesReport />}
-                  />
-                  <Route
-                    path="salariesReport"
-                    element={<SalariesReport />}
-                  />
-                 
+                  <Route path="leavesReport/" element={<LeavesReport />} />
+                  <Route path="salariesReport" element={<SalariesReport />} />
                 </Route>{" "}
                 {/* end of HRRoutes route */}
               </Route>{" "}
               {/* end of reports route */}
+              <Route path="notifications" element={<DashboardLayout />}>
+                <Route index element={<Notifications />} />
+                <Route path="notifications">
+                  <Route index element={<Notifications />} />
+                  <Route
+                    path="notificationsList/"
+                    element={<NotificationsList />}
+                  />
+                  <Route
+                    path="newNotification/"
+                    element={<NewNotificationForm />}
+                  />
+                  <Route
+                    path="editNotification/:id"
+                    element={<EditNotification />}
+                  />
+                </Route>{" "}
+                {/* end of notification route */}
+                {/* start of payments route */}
+                {/* <Route path="payments">
+                  <Route index element={<Finances />} />
+                  <Route path="paymentsList/" element={<PaymentsList />} />
+                  <Route path="newPayment/" element={<NewPaymentForm />} />
+                  <Route path="editPayment/:id" element={<EditPayment />} />
+                </Route>{" "} */}
+                {/* end of payments route */}
+              </Route>{" "}
+              {/* end of finances route */}
               <Route
                 element={
                   <RequireAuth allowedRoles={[ROLES.Admin, ROLES.Manager]} />

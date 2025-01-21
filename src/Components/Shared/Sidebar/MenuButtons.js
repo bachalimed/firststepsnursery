@@ -53,7 +53,7 @@ const MenuButtons = () => {
 
   return (
     // <header className="flex items-center justify-start max-sm:justify-center md:px-1 bg-sky-700">
-    <header className="flex items-center justify-start  md:px-1 bg-sky-700 sticky top-0 z-40" style={{ height: "auto" }}>
+     <header className="flex items-center justify-start  md:px-1 bg-sky-700 sticky top-0 z-40" style={{ height: "auto" }}>
       <Link to="/">
         <li
           className={`text-grey-300 text-sm flex text-white items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  `}
