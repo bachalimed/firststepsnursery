@@ -4,7 +4,7 @@ import { HiOutlineSearch } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { ImProfile } from "react-icons/im";
+import { GiReceiveMoney } from "react-icons/gi";
 
 import {
   useGetNotificationsByYearQuery,
@@ -25,13 +25,14 @@ const NotificationsList = () => {
     document.title = "Notifications List";
   });
   const navigate = useNavigate();
-  const {userId,
+  const {
+    userId,
     isAdmin,
     canDelete,
     canView,
     canCreate,
     isDirector,
-    
+
     isManager,
     isAcademic,
   } = useAuth();
@@ -49,8 +50,8 @@ const NotificationsList = () => {
   const [dateFilter, setDateFilter] = useState(
     new Date().toISOString().split("T")[0]
   );
-//   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-//   const [idToDelete, setIdToDelete] = useState(null);
+  //   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  //   const [idToDelete, setIdToDelete] = useState(null);
   // Handler for selecting rows
   const handleRowSelected = (state) => {
     setSelectedRows(state.selectedRows);
@@ -72,34 +73,34 @@ const NotificationsList = () => {
     }
   );
 
-//   const [
-//     deleteNotification,
-//     {
-//       isLoading: isDelLoading,
-//       isSuccess: isDelSuccess,
-//       isError: isDelError,
-//       error: delError,
-//     },
-//   ] = useDeleteNotificationMutation();
+  //   const [
+  //     deleteNotification,
+  //     {
+  //       isLoading: isDelLoading,
+  //       isSuccess: isDelSuccess,
+  //       isError: isDelError,
+  //       error: delError,
+  //     },
+  //   ] = useDeleteNotificationMutation();
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
- 
-//   const handleConfirmDelete = async () => {
-//     try {
-//       await deleteNotification({ id: idToDelete });
-//       setIsDeleteModalOpen(false);
-//       refetch();
-//     } catch (err) {
-//       console.error("Error deleting notification:", err);
-//     }
-//   };
 
-//   const handleCloseDeleteModal = () => {
-//     setIsDeleteModalOpen(false);
-//     setIdToDelete(null);
-//   };
+  //   const handleConfirmDelete = async () => {
+  //     try {
+  //       await deleteNotification({ id: idToDelete });
+  //       setIsDeleteModalOpen(false);
+  //       refetch();
+  //     } catch (err) {
+  //       console.error("Error deleting notification:", err);
+  //     }
+  //   };
+
+  //   const handleCloseDeleteModal = () => {
+  //     setIsDeleteModalOpen(false);
+  //     setIdToDelete(null);
+  //   };
 
   let filteredNotifications = [];
   if (isNotificationsSuccess) {
@@ -112,10 +113,10 @@ const NotificationsList = () => {
           notification.notificationContent
             .toLowerCase()
             .includes(searchQuery.toLowerCase());
-  
+
         const matchesType =
           !selectedType || notification.notificationType === selectedType;
-  
+
         // Check user roles and filter notifications accordingly
         if (isAdmin || isManager || isDirector) {
           // Admins, Managers, and Directors can see all notifications
@@ -130,13 +131,15 @@ const NotificationsList = () => {
         }
       }
     );
-  
+
     // Ensure that for non-privileged users, filteredNotifications is an empty array if no match is found
-    if (!(isAdmin || isManager || isDirector) && filteredNotifications.length === 0) {
+    if (
+      !(isAdmin || isManager || isDirector) &&
+      filteredNotifications.length === 0
+    ) {
       filteredNotifications = [];
     }
   }
-  
 
   const columns = [
     {
@@ -146,45 +149,52 @@ const NotificationsList = () => {
       width: "50px",
     },
     {
-      name: "Title",
-      selector: (row) => row.notificationTitle,
+      name: "Date",
+      selector: (row) => new Date(row.notificationDate).toLocaleDateString(),
       sortable: true,
+      width: "110px",
     },
     {
       name: "Type",
       selector: (row) => row.notificationType,
       sortable: true,
+      width: "100px",
     },
     {
-      name: "Destination",
-      selector: (row) => row.notificationDestination,
+      name: "Title",
+      selector: (row) => row.notificationTitle,
       sortable: true,
-    },
-    {
-      name: "Date",
-      selector: (row) => new Date(row.notificationDate).toLocaleDateString(),
-      sortable: true,
+      width: "150px",
     },
     {
       name: "Content",
       selector: (row) => row.notificationExcerpt,
       sortable: true,
       wrap: true,
+      width: "300px",
     },
+
+    // {
+    //   name: "Destination",//we be replaced by phone number?
+    //   selector: (row) => row.notificationTo,
+    //   sortable: true,
+    // },
+
     {
       name: "Actions",
       cell: (row) => (
         <div className="space-x-2">
           <button
-            className="text-sky-700"
-            aria-label="student Details"
+            className="text-green-700"
+            aria-label="notification Details"
             fontSize={20}
             onClick={() =>
-              navigate(`/students/studentsParents/studentDetails/${row.id}`)
+           
+              navigate(`/finances/payments/paymentsList/`)
             }
             hidden={!canView}
           >
-            <ImProfile className="text-2xl" />
+            <GiReceiveMoney className="text-2xl" />
           </button>
           {/* {!isDelLoading && (
             <button
@@ -342,7 +352,7 @@ const NotificationsList = () => {
         </div>
 
         {/* Center the Buttons */}
-        {(isAdmin || isDirector || isManager || isAcademic) && (
+        {/* {(isAdmin || isDirector || isManager || isAcademic) && (
           <button
             className="add-button "
             //   onClick={() =>
@@ -352,7 +362,7 @@ const NotificationsList = () => {
           >
             Dispatch selected
           </button>
-        )}
+        )} */}
 
         {/* <DeletionConfirmModal
           isOpen={isDeleteModalOpen}

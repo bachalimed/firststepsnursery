@@ -9,6 +9,7 @@ import {
 } from "../../../../features/AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import useAuth from "../../../../hooks/useAuth";
 import { useSelector } from "react-redux";
+import { GiReceiveMoney } from "react-icons/gi";
 
 const HeaderNotifications = () => {
   const navigate = useNavigate();
@@ -18,7 +19,6 @@ const HeaderNotifications = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   );
 
-  
   const [selectedYear, setSelectedYear] = useState(selectedAcademicYear?.title);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null); // Reference to the dropdown menu
@@ -58,16 +58,28 @@ const HeaderNotifications = () => {
   const notificationsList = isNotificationsSuccess
     ? Object.values(notifications.entities)
     : [];
+
   // Toggle the menu visibility
-  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
+  const toggleMenu = () => {
+    setIsMenuOpen((prev) => !prev);
+  };
 
-  // Close the menu
-  const closeMenu = () => setIsMenuOpen(false);
+  // Close the menu explicitly
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
 
-  // Close the menu when clicking outside or pressing the back button
+  const buttonRef = useRef(null);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
+      // Check if the click is outside both the button and the menu
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target)
+      ) {
         closeMenu();
       }
     };
@@ -89,6 +101,7 @@ const HeaderNotifications = () => {
     <div className="relative">
       {/* Notification Bell */}
       <button
+        ref={buttonRef}
         onClick={toggleMenu}
         className="relative flex items-center justify-center w-10 h-10 rounded-full bg-sky-600 text-white"
         aria-label="Manage notifications"
@@ -125,7 +138,7 @@ const HeaderNotifications = () => {
             All Notifications
           </button>
           <div className="border-t border-gray-200"></div>
-          <ul className="py-1 max-h-80 overflow-y-auto">
+          <ul className=" max-h-100 overflow-y-auto">
             {/* <li>
               <button
                 onClick={() => {
@@ -143,13 +156,21 @@ const HeaderNotifications = () => {
               notificationsList.map((notif) => (
                 <li key={notif.id}>
                   <button
-                    className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    className="flex items-center bg-green-300 border-t border-gray-200 gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     onClick={closeMenu}
                     aria-label={`Notification ${notif.id}`}
                   >
-                    {" "}
-                    <LuBellRing className="text-xl" />
-                    {notif.type} {notif.notificationExcerpt} 
+                    {/* Icon Wrapper */}
+                    <div className="flex-shrink-0">
+                      {notif?.notificationType === "Payment" && (
+                        <GiReceiveMoney className="text-2xl" />
+                      )}
+                    </div>
+                    {/* Text Content */}
+                    <div className="flex-1 text-left">
+                      <span className="font-bold block">{notif.type}</span>
+                      <span className="block">{notif.notificationExcerpt}</span>
+                    </div>
                   </button>
                 </li>
               ))

@@ -13,16 +13,31 @@ const HeaderUserProfile = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null); // Reference to the dropdown menu
 
-  // Toggle the menu visibility
-  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
+  // Logout function
+  const handleLogout = () => {
+    closeMenu();
+    navigate("/login");
+  };
+  const toggleMenu = () => {
+    setIsMenuOpen((prev) => !prev);
+  };
 
-  // Close the menu
-  const closeMenu = () => setIsMenuOpen(false);
+  // Close the menu explicitly
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
 
-  // Close the menu when clicking outside or pressing the back button
+  const buttonRef = useRef(null);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
+      // Check if the click is outside both the button and the menu
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target)
+      ) {
         closeMenu();
       }
     };
@@ -40,19 +55,14 @@ const HeaderUserProfile = () => {
     };
   }, []);
 
-  // Logout function
-  const handleLogout = () => {
-    closeMenu();
-    navigate("/login");
-  };
-
   return (
     <div className="relative">
       {/* User Icon */}
       <button
+        ref={buttonRef}
         onClick={toggleMenu}
         className="relative flex items-center justify-center w-10 h-10 rounded-full bg-sky-600 text-white"
-        aria-label="Manage profile"
+        aria-label="Manage notifications"
       >
         <LiaUserSolid className="text-4xl" />
         {/* Green Circle */}
