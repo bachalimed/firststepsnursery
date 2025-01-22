@@ -73,7 +73,7 @@ const HeaderUserProfile = () => {
       {isMenuOpen && (
         <div
           ref={menuRef} // Attach ref to the dropdown menu
-          className="absolute right-0 mt-2 w-64 bg-white border border-gray-300 rounded-md shadow-lg z-50"
+          className="absolute right-0 mt-2 w-52 bg-white border border-gray-300 rounded-md shadow-lg z-50"
         >
           <div className="px-4 py-2 text-sm font-semibold text-gray-700">
             Manage Profile

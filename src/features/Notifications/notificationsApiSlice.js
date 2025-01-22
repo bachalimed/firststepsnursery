@@ -118,10 +118,10 @@ export const notificationsApiSlice = apiSlice.injectEndpoints({
       // ]
     }),
     deleteNotification: builder.mutation({
-      query: ({ id }) => ({
+      query: ({  userId,ids,isAdmin }) => ({
         url: "/notifications/notifications",
         method: "DELETE",
-        body: { id },
+        body: {  userId,ids,isAdmin},
       }),
       invalidatesTags: ["notification"],
       // invalidatesTags: (result, error, arg) => [
@@ -132,7 +132,7 @@ export const notificationsApiSlice = apiSlice.injectEndpoints({
 });
 
 export const {
-  useGetNotificationsQuery,
+  //useGetNotificationsQuery,
   useGetNotificationsByYearQuery,
   useGetNotificationByIdQuery,
   useAddNewNotificationMutation,

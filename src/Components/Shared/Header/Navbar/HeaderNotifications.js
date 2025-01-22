@@ -9,7 +9,8 @@ import {
 } from "../../../../features/AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import useAuth from "../../../../hooks/useAuth";
 import { useSelector } from "react-redux";
-import { GiReceiveMoney } from "react-icons/gi";
+import { GiReceiveMoney, GiPayMoney } from "react-icons/gi";
+import { PiStudent } from "react-icons/pi";
 
 const HeaderNotifications = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const HeaderNotifications = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   );
 
-  const [selectedYear, setSelectedYear] = useState(selectedAcademicYear?.title);
+  // const [selectedYear, setSelectedYear] = useState(selectedAcademicYear?.title);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null); // Reference to the dropdown menu
   const {
@@ -29,7 +30,6 @@ const HeaderNotifications = () => {
     canView,
     canCreate,
     isDirector,
-
     isManager,
     isAcademic,
   } = useAuth();
@@ -65,8 +65,14 @@ const HeaderNotifications = () => {
   };
 
   // Close the menu explicitly
-  const closeMenu = () => {
+  const closeMenu = (notificationType) => {
     setIsMenuOpen(false);
+    if (notificationType === "Payment")
+      navigate(`/finances/payments/paymentsList/`);
+    if (notificationType === "Admission")
+      navigate(`/students/admissions/admissions/`);
+    if (notificationType === "Expense")
+      navigate(`/finances/expenses/expensesList/`);
   };
 
   const buttonRef = useRef(null);
@@ -123,7 +129,7 @@ const HeaderNotifications = () => {
       {isMenuOpen && (
         <div
           ref={menuRef} // Attach ref to the dropdown menu
-          className="absolute right-0 mt-2 w-64 bg-white border border-gray-300 rounded-md shadow-lg z-50"
+          className="absolute right-0 mt-2 w-72 bg-white border border-gray-300 rounded-md shadow-lg z-50"
         >
           <button
             onClick={() => {
@@ -156,14 +162,30 @@ const HeaderNotifications = () => {
               notificationsList.map((notif) => (
                 <li key={notif.id}>
                   <button
-                    className="flex items-center bg-green-300 border-t border-gray-200 gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={closeMenu}
+                    className={`flex items-center ${
+                      notif?.notificationType === "Payment"
+                        ? "bg-green-200"
+                        : ""
+                    } ${
+                      notif?.notificationType === "Expense" ? "bg-red-200" : ""
+                    } ${
+                      notif?.notificationType === "Admission"
+                        ? "bg-sky-200"
+                        : ""
+                    } border-t border-gray-100 gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100`}
+                    onClick={() => closeMenu(notif?.notificationType)}
                     aria-label={`Notification ${notif.id}`}
                   >
                     {/* Icon Wrapper */}
                     <div className="flex-shrink-0">
                       {notif?.notificationType === "Payment" && (
                         <GiReceiveMoney className="text-2xl" />
+                      )}
+                      {notif?.notificationType === "Expense" && (
+                        <GiPayMoney className="text-2xl" />
+                      )}
+                      {notif?.notificationType === "Admission" && (
+                        <PiStudent className="text-2xl" />
                       )}
                     </div>
                     {/* Text Content */}

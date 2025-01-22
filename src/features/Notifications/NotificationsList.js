@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import { HiOutlineSearch } from "react-icons/hi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { GiReceiveMoney } from "react-icons/gi";
+import { GiReceiveMoney, GiPayMoney } from "react-icons/gi";
+import { PiStudent } from "react-icons/pi";
 
 import {
   useGetNotificationsByYearQuery,
@@ -15,7 +16,7 @@ import {
   selectAcademicYearById,
 } from "../AppSettings/AcademicsSet/AcademicYears/academicYearsSlice";
 import LoadingStateIcon from "../../Components/LoadingStateIcon";
-// import DeletionConfirmModal from "../../Components/Shared/Modals/DeletionConfirmModal";
+import DeletionConfirmModal from "../../Components/Shared/Modals/DeletionConfirmModal";
 import useAuth from "../../hooks/useAuth";
 import { IoShieldOutline } from "react-icons/io5";
 import Notifications from "./Notifications";
@@ -42,6 +43,7 @@ const NotificationsList = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   );
   const [selectedRows, setSelectedRows] = useState([]);
+  const { triggerBanner } = useOutletContext(); // Access banner trigger
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState("");
@@ -50,9 +52,9 @@ const NotificationsList = () => {
   const [dateFilter, setDateFilter] = useState(
     new Date().toISOString().split("T")[0]
   );
-  //   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  //   const [idToDelete, setIdToDelete] = useState(null);
-  // Handler for selecting rows
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [idToDelete, setIdToDelete] = useState(null);
+  //Handler for selecting rows
   const handleRowSelected = (state) => {
     setSelectedRows(state.selectedRows);
     //console.log('selectedRows', selectedRows)
@@ -63,7 +65,10 @@ const NotificationsList = () => {
     isSuccess: isNotificationsSuccess,
     refetch,
   } = useGetNotificationsByYearQuery(
-    {
+    {  userId,
+      isAdmin,
+      isDirector,
+      isManager,
       selectedYear,
       selectedDate: dateFilter,
     },
@@ -73,34 +78,64 @@ const NotificationsList = () => {
     }
   );
 
-  //   const [
-  //     deleteNotification,
-  //     {
-  //       isLoading: isDelLoading,
-  //       isSuccess: isDelSuccess,
-  //       isError: isDelError,
-  //       error: delError,
-  //     },
-  //   ] = useDeleteNotificationMutation();
+  const [
+    deleteNotification,
+    {
+      isLoading: isDelLoading,
+      isSuccess: isDelSuccess,
+      isError: isDelError,
+      error: delError,
+    },
+  ] = useDeleteNotificationMutation();
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
+  const [ids, setIds] = useState([]);
+  // Function to handle the delete button click
+  const onDeleteNotificationClicked = (id) => {
+    selectedRows.length === 0
+      ? setIds([id])
+      : setIds(selectedRows.map((row) => row.id));
 
-  //   const handleConfirmDelete = async () => {
-  //     try {
-  //       await deleteNotification({ id: idToDelete });
-  //       setIsDeleteModalOpen(false);
-  //       refetch();
-  //     } catch (err) {
-  //       console.error("Error deleting notification:", err);
-  //     }
-  //   };
+    setIsDeleteModalOpen(true);
+  };
 
-  //   const handleCloseDeleteModal = () => {
-  //     setIsDeleteModalOpen(false);
-  //     setIdToDelete(null);
-  //   };
+  const handleConfirmDelete = async () => {
+    try {
+      const response = await deleteNotification({
+        userId: userId,
+        ids: ids,
+        isAdmin:isAdmin
+      });
+      setIsDeleteModalOpen(false);
+      setSelectedRows([]); // Clear selected rows
+      refetch();
+      if (response?.message) {
+        // Success response
+        triggerBanner(response?.message, "success");
+      } else if (response?.data?.message) {
+        // Success response
+        triggerBanner(response?.data?.message, "success");
+      } else if (response?.error?.data?.message) {
+        // Error response
+        triggerBanner(response?.error?.data?.message, "error");
+      } else if (isDelError) {
+        // In case of unexpected response format
+        triggerBanner(delError?.data?.message, "error");
+      } else {
+        // In case of unexpected response format
+        triggerBanner("Unexpected response from server.", "error");
+      }
+    } catch (error) {
+      triggerBanner(error?.data?.message, "error");
+    }
+  };
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setIdToDelete(null);
+  };
 
   let filteredNotifications = [];
   if (isNotificationsSuccess) {
@@ -173,6 +208,21 @@ const NotificationsList = () => {
       wrap: true,
       width: "300px",
     },
+    
+      isAdmin && {
+        name: "To Users",
+        cell: (row) => (
+          <div>
+            {row.notificationToUsers?.map((userId) => (
+              <div key={userId}>{userId}</div>
+            ))}
+          </div>
+        ),
+        sortable: true,
+        wrap: true,
+        width: "300px",
+      },
+    
 
     // {
     //   name: "Destination",//we be replaced by phone number?
@@ -181,34 +231,56 @@ const NotificationsList = () => {
     // },
 
     {
-      name: "Actions",
+      name: "Go to",
       cell: (row) => (
         <div className="space-x-2">
-          <button
-            className="text-green-700"
-            aria-label="notification Details"
-            fontSize={20}
-            onClick={() =>
-           
-              navigate(`/finances/payments/paymentsList/`)
-            }
-            hidden={!canView}
-          >
-            <GiReceiveMoney className="text-2xl" />
-          </button>
-          {/* {!isDelLoading && (
+          {row.notificationType === "Payment" && (
+            <button
+              className="text-green-600"
+              aria-label="notification Details"
+              fontSize={20}
+              onClick={() => navigate(`/finances/payments/paymentsList/`)}
+              hidden={!canView}
+            >
+              <GiReceiveMoney className="text-2xl" />
+            </button>
+          )}
+          {row.notificationType === "Admission" && (
+            <button
+              className="text-sky-600"
+              aria-label="notification Details"
+              fontSize={20}
+              onClick={() => navigate(`/students/admissions/admissions/`)}
+              hidden={!canView}
+            >
+              <PiStudent className="text-2xl" />
+            </button>
+          )}
+          {row.notificationType === "Expense" && (
+            <button
+              className="text-red-500"
+              aria-label="notification Details"
+              fontSize={20}
+              onClick={() => navigate(`/finances/expenses/expensesList/`)}
+              hidden={!canView}
+            >
+              <GiPayMoney className="text-2xl" />
+            </button>
+          )}
+          {!isDelLoading && (
             <button
               className="text-red-600"
               onClick={() => {
-                setIdToDelete(row.id);
+                onDeleteNotificationClicked(row.id);
                 setIsDeleteModalOpen(true);
               }}
-              hidden={!canDelete}
+             // hidden={!canDelete} anyone can delete his own notifiations
+              disabled={selectedRows?.length > 0}
             >
               {" "}
               <RiDeleteBin6Line className="text-2xl" />
             </button>
-          )} */}
+          )}
         </div>
       ),
       button: true,
@@ -316,7 +388,10 @@ const NotificationsList = () => {
             removableRows
             selectableRows
             selectableRowsHighlight
-            onSelectedRowsChange={handleRowSelected}
+            // onSelectedRowsChange={handleRowSelected}
+            onSelectedRowsChange={(state) =>
+              setSelectedRows(state.selectedRows)
+            }
             pageSizeControl
             customStyles={{
               table: {
@@ -352,23 +427,25 @@ const NotificationsList = () => {
         </div>
 
         {/* Center the Buttons */}
-        {/* {(isAdmin || isDirector || isManager || isAcademic) && (
+        {(isAdmin || isDirector || isManager || isAcademic) && (
           <button
-            className="add-button "
-            //   onClick={() =>
-            //     //navigate("/notifications///")
-            //   }
+            className={`delete-button  `}
+            onClick={onDeleteNotificationClicked}
             hidden={!canCreate}
+            disabled={selectedRows?.length === 0}
           >
-            Dispatch selected
+            Delete {selectedRows?.length} notifications
           </button>
-        )} */}
+        )}
 
-        {/* <DeletionConfirmModal
+        <DeletionConfirmModal
           isOpen={isDeleteModalOpen}
-          onClose={handleCloseDeleteModal}
+          onClose={() => {
+            setSelectedRows([]); // Clear selected rows
+            handleCloseDeleteModal();
+          }}
           onConfirm={handleConfirmDelete}
-        /> */}
+        />
       </div>
     </>
   );

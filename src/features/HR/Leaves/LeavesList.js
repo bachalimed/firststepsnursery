@@ -216,9 +216,9 @@ const LeavesList = () => {
       cell: (row) => (
         <span>
           {row?.leaveIsGiven ? (
-            <IoMdCheckboxOutline className="text-green-500 text-2xl" />
+            <IoMdCheckboxOutline className="text-green-600 text-2xl" />
           ) : (
-            <MdCheckBoxOutlineBlank className="text-red-400 text-2xl" />
+            <MdCheckBoxOutlineBlank className="text-red-500 text-2xl" />
           )}
         </span>
       ),
@@ -231,9 +231,9 @@ const LeavesList = () => {
       cell: (row) => (
         <span>
           {row?.leaveIsPaidLeave ? (
-            <GiMoneyStack className="text-green-500 text-2xl" />
+            <GiMoneyStack className="text-green-600 text-2xl" />
           ) : (
-            <GiMoneyStack className="text-red-400 text-2xl" />
+            <GiMoneyStack className="text-red-500 text-2xl" />
           )}
         </span>
       ),
@@ -246,9 +246,9 @@ const LeavesList = () => {
       cell: (row) => (
         <span>
           {row?.leaveIsSickLeave ? (
-            <TbMedicalCross className="text-green-500 text-2xl" />
+            <TbMedicalCross className="text-green-600 text-2xl" />
           ) : (
-            <TbMedicalCrossOff className="text-red-400 text-2xl" />
+            <TbMedicalCrossOff className="text-red-500 text-2xl" />
           )}
         </span>
       ),
