@@ -29,7 +29,7 @@ const Dashboard = () => {
       label: "Students",
       path: "/dashboard/studentsDash/",
     },
-    (isFinance || isDirector || isManager || isAdmin) && {
+    ( isManager || isAdmin) && {
       label: "Finances",
       path: "/dashboard/financesDash/",
     },
@@ -60,7 +60,7 @@ const Dashboard = () => {
         .map((tab) => (
           <Link key={tab.path} to={tab.path}>
             <li
-              className={`list-none cursor-pointer px-3 py-2 border border-gray-400  ${
+              className={`list-none cursor-pointer rounded-sm px-3 py-2 border border-gray-400  ${
                 isActive(tab.path)
                   ? "text-sky-700 border-sky-700 bg-gray-100"
                   : "text-gray-800 hover:text-fuchsia-500 hover:border-fuchsia-500"

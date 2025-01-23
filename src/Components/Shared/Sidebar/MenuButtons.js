@@ -56,7 +56,7 @@ const MenuButtons = () => {
      <header className="flex items-center justify-start  md:px-1 bg-sky-700 sticky top-0 z-40" style={{ height: "auto" }}>
       <Link to="/">
         <li
-          className={`text-grey-300 text-sm flex text-white items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  `}
+          className={`text-grey-300 text-sm flex text-white rounded-t-sm items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  `}
         >
           <BiHome className="text-2xl" aria-label="home tab" />
           <span className="flex-1 hidden md:block">Home</span>
@@ -71,7 +71,7 @@ const MenuButtons = () => {
         isHR) && (
         <Link to="/dashboard/studentsDash/">
           <li
-            className={`text-grey-300 text-sm flex text-white items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 ${
+            className={`text-grey-300 text-sm flex text-white rounded-t-sm items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500 ${
               location.pathname.startsWith("/dashboard/")
                 ? "bg-gray-300 text-red-900"
                 : ""
@@ -87,7 +87,7 @@ const MenuButtons = () => {
         <div className="relative">
           <Link to="/students/studentsParents/students/">
             <li
-              className={`text-grey-300 text-sm flex    items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
+              className={`text-grey-300 text-sm flex    items-center gap-x-1 rounded-t-sm cursor-pointer p-2 hover:bg-sky-500  ${
                 location.pathname.startsWith("/students/")
                   ? "bg-gray-300 text-black"
                   : "text-white"
@@ -103,7 +103,7 @@ const MenuButtons = () => {
         <div className="relative">
           <Link to="/academics/plannings/animatorsAssignments/">
             <li
-              className={`text-grey-300 text-sm flex    items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
+              className={`text-grey-300 text-sm flex    items-center gap-x-1 rounded-t-sm cursor-pointer p-2 hover:bg-sky-500  ${
                 location.pathname.startsWith("/academics/")
                   ? "bg-gray-300 text-black"
                   : "text-white"
@@ -122,7 +122,7 @@ const MenuButtons = () => {
         <div className="relative">
           <Link to="/finances/invoices/invoicesList/">
             <li
-              className={`text-grey-300 text-sm flex    items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
+              className={`text-grey-300 text-sm flex    items-center gap-x-1 rounded-t-sm cursor-pointer p-2 hover:bg-sky-500  ${
                 location.pathname.startsWith("/finances/")
                   ? "bg-gray-300 text-black"
                   : "text-white"
@@ -141,7 +141,7 @@ const MenuButtons = () => {
         <div className="relative">
           <Link to="/hr/employees/employeesList/">
             <li
-              className={`text-grey-300 text-sm flex    items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
+              className={`text-grey-300 text-sm flex    items-center gap-x-1 rounded-t-sm cursor-pointer p-2 hover:bg-sky-500  ${
                 location.pathname.startsWith("/hr/")
                   ? "bg-gray-300 text-black"
                   : "text-white"
@@ -173,7 +173,7 @@ const MenuButtons = () => {
         <div className="relative">
           <Link to="/admin/usersManagement/users/">
             <li
-              className={`text-grey-300 text-sm flex   items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
+              className={`text-grey-300 text-sm flex   items-center gap-x-1 rounded-t-sm cursor-pointer p-2 hover:bg-sky-500  ${
                 location.pathname.startsWith("/admin/")
                   ? "bg-gray-300 text-black"
                   : "text-white "
@@ -195,7 +195,7 @@ const MenuButtons = () => {
         {(isFinance || isHR || isDirector || isManager || isAdmin) && (
           <Link to="/reports/studentsReports/ageGroupsReport/">
             <li
-              className={`text-grey-300 text-sm flex    items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500  ${
+              className={`text-grey-300 text-sm flex    items-center gap-x-1 rounded-t-sm cursor-pointer p-2 hover:bg-sky-500  ${
                 location.pathname.startsWith("/reports/")
                   ? "bg-gray-300 text-black"
                   : "text-white"
@@ -276,7 +276,7 @@ const MenuButtons = () => {
         {(isFinance || isHR || isDirector || isManager || isAdmin) && (
           <Link to="/settings/studentsSet/">
             <li
-              className={`text-grey-300 text-sm flex    items-center gap-x-1 cursor-pointer p-2 hover:bg-sky-500   ${
+              className={`text-grey-300 text-sm flex    items-center gap-x-1 cursor-pointer rounded-t-sm p-2 hover:bg-sky-500   ${
                 location.pathname.startsWith("/settings/")
                   ? "bg-gray-300 text-black"
                   : "text-white"
