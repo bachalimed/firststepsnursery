@@ -188,7 +188,6 @@ const LeavesReport = () => {
             <th className="border px-2 py-1">End Date</th>
             <th className="border px-2 py-1">Duration</th>
             <th className="border px-2 py-1">Given</th>
-         
             <th className="border px-2 py-1">Paid</th>
             <th className="border px-2 py-1">Sickday</th>
             <th className="border px-2 py-1">Comment</th>
