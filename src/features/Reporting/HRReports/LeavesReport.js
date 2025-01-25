@@ -188,7 +188,7 @@ const LeavesReport = () => {
             <th className="border px-2 py-1">End Date</th>
             <th className="border px-2 py-1">Duration</th>
             <th className="border px-2 py-1">Given</th>
-            <th className="border px-2 py-1">Approved</th>
+         
             <th className="border px-2 py-1">Paid</th>
             <th className="border px-2 py-1">Sickday</th>
             <th className="border px-2 py-1">Comment</th>
@@ -250,14 +250,12 @@ const LeavesReport = () => {
               <td className="border px-2 py-1 text-center">
                 {leave.leaveIsGiven ? "Yes" : "No"}
               </td>
+             
               <td className="border px-2 py-1 text-center">
-                {leave.leaveIsApproved ? "Yes" : "No"}
+                {leave.leaveIsPaidLeave ? "Yes" : "No"}
               </td>
               <td className="border px-2 py-1 text-center">
-                {leave.leaveIsPaid ? "Yes" : "No"}
-              </td>
-              <td className="border px-2 py-1 text-center">
-                {leave.leaveIsSickday ? "Yes" : "No"}
+                {leave.leaveIsSickLeave ? "Yes" : "No"}
               </td>
               <td className="border px-2 py-1 text-center">
                 {leave.leaveComment || ""}
