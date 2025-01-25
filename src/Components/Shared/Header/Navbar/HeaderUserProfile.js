@@ -101,11 +101,11 @@ const HeaderUserProfile = () => {
                   navigate(`/myProfile/myDetails/${userId}`);
                   closeMenu();
                 }}
-                className="flex  items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left "
                 aria-label="My Profile"
               >
                 <FaRegUser className="text-lg" />
-                My Profile
+                <span>My Profile</span>
               </button>
             </li>
             <li>

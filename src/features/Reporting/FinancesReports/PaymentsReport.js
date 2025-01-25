@@ -18,32 +18,35 @@ const PaymentsReport = () => {
     document.title = "Payments Report";
   }, []);
 
-  const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
+  const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId);
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
-  ); // Get the full academic year object
+  );
 
+  // State for filters
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
   const [selectedServiceType, setSelectedServiceType] = useState("");
-  const [filteredPayments, setFilteredPayments] = useState([]);
+
+  // State for our final data
+  const [filteredPayments, setFilteredPayments] = useState([]); // Entire payment objects
+  const [filteredInvoices, setFilteredInvoices] = useState([]); // Individual invoice lines
   const [isReportGenerated, setIsReportGenerated] = useState(false);
+
+  // Derive the default from/to dates based on the selected academic year
   useEffect(() => {
     if (selectedAcademicYear?.title) {
-      // Extract the start and end years
       const [startYear, endYear] = selectedAcademicYear.title
         .split("/")
         .map((year) => parseInt(year, 10));
-
-      // Set the initial values
-      const initialFromDate = `${startYear}-09-01`; // 1st September of the start year
-      const initialToDate = `${endYear}-08-31`; // 31st August of the end year
-
-      setFromDate(initialFromDate);
-      setToDate(initialToDate);
+      // Example defaults: 1st Sept of the startYear, 31st Aug of the endYear
+      setFromDate(`${startYear}-09-01`);
+      setToDate(`${endYear}-08-31`);
     }
   }, [selectedAcademicYear]);
+
+  // Fetch all payments & services for this academic year
   const {
     data: payments,
     isLoading: isPaymentsLoading,
@@ -58,6 +61,7 @@ const PaymentsReport = () => {
       refetchOnMountOrArgChange: true,
     }
   );
+
   const {
     data: services,
     isLoading: isServicesLoading,
@@ -77,35 +81,78 @@ const PaymentsReport = () => {
     ? Object.values(services.entities)
     : [];
 
+  /**
+   *  Main filter logic:
+   *  1. Filter by date range (paymentDate between fromDate & toDate).
+   *  2. If no service is selected => “old” approach:
+   *     - Keep entire payments, but still filter by month if chosen.
+   *  3. If a service is selected => “new” approach:
+   *     - Flatten out matching invoice lines only.
+   */
   useEffect(() => {
-    if (isPaymentsSuccess && fromDate && toDate) {
-      const paymentsList = Object.values(payments.entities);
+    if (!isPaymentsSuccess || !fromDate || !toDate) return;
 
-      const filtered = paymentsList.filter((payment) => {
-        const paymentDate = new Date(payment.paymentDate);
-        const matchesDateRange =
-          paymentDate >= new Date(fromDate) && paymentDate <= new Date(toDate);
+    const paymentsList = Object.values(payments.entities);
+
+    // STEP 1: Filter payments by date range
+    const validPayments = paymentsList.filter((payment) => {
+      const paymentDate = new Date(payment.paymentDate);
+      return (
+        paymentDate >= new Date(fromDate) && paymentDate <= new Date(toDate)
+      );
+    });
+
+    if (!selectedServiceType) {
+      // === NO SERVICE TYPE SELECTED: keep entire payments ===
+      const filtered = validPayments.filter((payment) => {
+        // if a month is chosen, ensure at least one invoiceMonth matches
         const matchesMonth =
           selectedMonth === "" ||
           payment.paymentInvoices?.some(
             (invoice) => invoice.invoiceMonth === selectedMonth
           );
-
-        const matchesServiceType =
-          selectedServiceType === "" ||
-          payment?.paymentInvoices?.some(
-            (invoice) =>
-              invoice?.invoiceEnrolment?.serviceType === selectedServiceType
-          );
-
-        return matchesDateRange && matchesMonth && matchesServiceType;
+        return matchesMonth;
       });
 
-      setFilteredPayments(filtered); // Set the sorted array
-      setIsReportGenerated(true);
-    }
-  }, [payments, fromDate, toDate, selectedMonth, selectedServiceType]);
+      setFilteredPayments(filtered);
+      setFilteredInvoices([]); // Not used in this mode
+    } else {
+      // === SERVICE TYPE SELECTED: flatten out *only* matching invoice lines ===
+      let invoiceLines = [];
 
+      validPayments.forEach((payment) => {
+        // We still respect the "month" filter on each invoice
+        payment.paymentInvoices?.forEach((inv) => {
+          const matchesMonth =
+            selectedMonth === "" || inv.invoiceMonth === selectedMonth;
+          const matchesService =
+            inv?.invoiceEnrolment?.serviceType === selectedServiceType;
+
+          if (matchesMonth && matchesService) {
+            invoiceLines.push({
+              // We can store any data needed for the table:
+              invoiceId: inv._id,
+              paymentId: payment._id,
+              studentName: payment.paymentStudent?.studentName,
+              invoiceAmount: inv.invoiceAmount,
+              invoiceAuthorisedAmount: inv.invoiceAuthorisedAmount,
+              invoiceMonth: inv.invoiceMonth,
+              serviceType: inv.invoiceEnrolment?.serviceType,
+              paymentDate: payment.paymentDate,
+              paymentNote: payment.paymentNote,
+            });
+          }
+        });
+      });
+
+      setFilteredInvoices(invoiceLines);
+      setFilteredPayments([]); // Not used in this mode
+    }
+
+    setIsReportGenerated(true);
+  }, [payments, isPaymentsSuccess, fromDate, toDate, selectedMonth, selectedServiceType]);
+
+  // PDF download
   const handleDownloadPDF = () => {
     const element = document.getElementById("payments-report-content");
     const opt = {
@@ -118,34 +165,42 @@ const PaymentsReport = () => {
     html2pdf().from(element).set(opt).save();
   };
 
+  // Reset all filters
   const handleCancelFilters = () => {
     setFromDate("");
     setToDate("");
     setSelectedMonth("");
     setSelectedServiceType("");
     setFilteredPayments([]);
+    setFilteredInvoices([]);
     setIsReportGenerated(false);
   };
 
-  // Extract months and service types dynamically for the dropdowns
+  // For the dropdowns
   const months = MONTHS;
-  const serviceTypes = isPaymentsSuccess && [
-    ...new Set(
-      Object.values(payments.entities).map(
-        (payment) => payment.paymentService?.serviceType
-      )
-    ),
-  ];
+  // Distinct serviceTypes from the services endpoint
+  // (or you could derive from the payments too if needed)
+  const serviceTypes = servicesList.map((s) => s?.serviceType);
 
-  // Calculate the total payment amount
-  const totalAmount = filteredPayments.reduce(
-    (sum, payment) => sum + parseFloat(payment.paymentAmount || 0),
-    0
-  );
+  /**
+   * Calculate total:
+   * - If NO service filter => sum of entire payment amounts
+   * - If service filter => sum of invoiceAmount across displayed invoice lines
+   */
+  const totalAmount = selectedServiceType
+    ? // Summation of invoiceAmount in filteredInvoices
+      filteredInvoices.reduce(
+        (sum, line) => sum + parseFloat(line.invoiceAmount || 0),
+        0
+      )
+    : // Summation of paymentAmount in filteredPayments
+      filteredPayments.reduce(
+        (sum, payment) => sum + parseFloat(payment.paymentAmount || 0),
+        0
+      );
 
   return (
     <>
-      {" "}
       <FinancesReports />
       <div className="form-container">
         <h2 className="formTitle">Payments Report</h2>
@@ -202,10 +257,10 @@ const PaymentsReport = () => {
                 className="formInputText"
               >
                 <option value="">All Services</option>
-                {servicesList &&
-                  servicesList.map((service, index) => (
-                    <option key={index} value={service?.serviceType}>
-                      {service?.serviceType}
+                {serviceTypes &&
+                  [...new Set(serviceTypes)].map((type) => (
+                    <option key={type} value={type}>
+                      {type}
                     </option>
                   ))}
               </select>
@@ -250,73 +305,127 @@ const PaymentsReport = () => {
                 : ", All Services"}
             </h3>
 
-            <table className="w-full border-collapse border mt-4 text-sm">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="border px-2 py-1">#</th>
-                  <th className="border px-2 py-1">Student</th>
-                  <th className="border px-2 py-1">Service</th>
-                  <th className="border px-2 py-1">Inv/ Auth</th>
-                  <th className="border px-2 py-1">{`Paid `}</th>
-                  <th className="border px-2 py-1">Payment Date</th>
-                  <th className="border px-2 py-1">Notes</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredPayments.map((payment, index) => (
-                  <tr key={payment._id}>
-                    <td className="border px-2 py-1 text-center">
-                      {index + 1}
-                    </td>
-                    <td className="border px-2 py-1">
-                      {payment.paymentStudent?.studentName?.firstName || "N/A"}{" "}
-                      {payment.paymentStudent?.studentName?.middleName || ""}{" "}
-                      {payment.paymentStudent?.studentName?.lastName || ""}
-                    </td>
-                    <td className="border px-2 py-1">
-                      <div>
-                        {payment.paymentInvoices?.map((invoice, index) => (
-                          <div key={index}>
+            {/** =========================
+             **  IF NO SERVICE SELECTED
+             ** ========================= */}
+            {!selectedServiceType && (
+              <table className="w-full border-collapse border mt-4 text-sm">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="border px-2 py-1">#</th>
+                    <th className="border px-2 py-1">Student</th>
+                    <th className="border px-2 py-1">Service</th>
+                    <th className="border px-2 py-1">Inv/Auth</th>
+                    <th className="border px-2 py-1">Paid</th>
+                    <th className="border px-2 py-1">Payment Date</th>
+                    <th className="border px-2 py-1">Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredPayments.map((payment, index) => (
+                    <tr key={payment._id}>
+                      <td className="border px-2 py-1 text-center">
+                        {index + 1}
+                      </td>
+                      <td className="border px-2 py-1">
+                        {payment.paymentStudent?.studentName?.firstName || "N/A"}{" "}
+                        {payment.paymentStudent?.studentName?.middleName || ""}{" "}
+                        {payment.paymentStudent?.studentName?.lastName || ""}
+                      </td>
+                      <td className="border px-2 py-1">
+                        {payment.paymentInvoices?.map((invoice, idx) => (
+                          <div key={idx}>
                             {invoice.invoiceEnrolment?.serviceType || ""}{" "}
                             {invoice.invoiceMonth?.slice(0, 3) || ""}
                           </div>
                         ))}
-                      </div>
-                    </td>
-
-                    <td className="border px-2 py-1 text-center">
-                      <div>
-                        {" "}
-                        {payment?.paymentInvoices.map((invoice, index) => (
-                          <div key={index}>
+                      </td>
+                      <td className="border px-2 py-1 text-center">
+                        {payment?.paymentInvoices?.map((invoice, idx) => (
+                          <div key={idx}>
                             {invoice?.invoiceAmount || ""}/
                             {invoice?.invoiceAuthorisedAmount || ""}
                           </div>
                         ))}
-                      </div>
+                      </td>
+                      <td className="border px-2 py-1 text-center">
+                        {payment.paymentAmount}
+                      </td>
+                      <td className="border px-2 py-1 text-center">
+                        {new Date(payment.paymentDate).toLocaleDateString()}
+                      </td>
+                      <td className="border px-2 py-1">
+                        {payment.paymentNote || ""}
+                      </td>
+                    </tr>
+                  ))}
+                  <tr className="bg-gray-100 font-bold">
+                    <td colSpan="4" className="border px-2 py-1 text-right">
+                      Total:
                     </td>
                     <td className="border px-2 py-1 text-center">
-                      {`${payment.paymentAmount} `}
+                      {`${totalAmount.toFixed(2)} ${CurrencySymbol}`}
                     </td>
-                    <td className="border px-2 py-1 text-center">
-                      {new Date(payment.paymentDate).toLocaleDateString()}
-                    </td>
-                    <td className="border px-2 py-1">
-                      {payment.paymentNote || ""}
-                    </td>
+                    <td colSpan="2" className="border px-2 py-1"></td>
                   </tr>
-                ))}
-                <tr className="bg-gray-100 font-bold">
-                  <td colSpan="4" className="border px-2 py-1 text-right">
-                    Total:
-                  </td>
-                  <td className="border px-2 py-1 text-center">
-                    {`${totalAmount.toFixed(2)} ${CurrencySymbol}`}
-                  </td>
-                  <td colSpan="2" className="border px-2 py-1"></td>
-                </tr>
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            )}
+
+            {/** =========================
+             **  IF SERVICE IS SELECTED
+             ** ========================= */}
+            {selectedServiceType && (
+              <table className="w-full border-collapse border mt-4 text-sm">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="border px-2 py-1">#</th>
+                    <th className="border px-2 py-1">Student</th>
+                    <th className="border px-2 py-1">Service</th>
+                    <th className="border px-2 py-1">Month</th>
+                    <th className="border px-2 py-1">Invoiced</th>
+                    <th className="border px-2 py-1">Payment Date</th>
+                    <th className="border px-2 py-1">Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredInvoices.map((item, index) => (
+                    <tr key={item.invoiceId}>
+                      <td className="border px-2 py-1 text-center">
+                        {index + 1}
+                      </td>
+                      <td className="border px-2 py-1">
+                        {item.studentName?.firstName || "N/A"}{" "}
+                        {item.studentName?.middleName || ""}{" "}
+                        {item.studentName?.lastName || ""}
+                      </td>
+                      <td className="border px-2 py-1">{item.serviceType}</td>
+                      <td className="border px-2 py-1 text-center">
+                        {item.invoiceMonth?.slice(0, 3) || ""}
+                      </td>
+                      <td className="border px-2 py-1 text-center">
+                        {item.invoiceAmount}
+                      </td>
+                      <td className="border px-2 py-1 text-center">
+                        {new Date(item.paymentDate).toLocaleDateString()}
+                      </td>
+                      <td className="border px-2 py-1">
+                        {item.paymentNote || ""}
+                      </td>
+                    </tr>
+                  ))}
+                  <tr className="bg-gray-100 font-bold">
+                    <td colSpan="4" className="border px-2 py-1 text-right">
+                      Total:
+                    </td>
+                    <td className="border px-2 py-1 text-center">
+                      {`${totalAmount.toFixed(2)} ${CurrencySymbol}`}
+                    </td>
+                    <td colSpan="2" className="border px-2 py-1"></td>
+                  </tr>
+                </tbody>
+              </table>
+            )}
           </div>
         )}
       </div>

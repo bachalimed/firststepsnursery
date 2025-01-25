@@ -12,22 +12,27 @@ import { useSelector } from "react-redux";
 import { MONTHS } from "../../../config/Months";
 import smallfirststeps from "../../../Data/smallfirststeps.png";
 import { CurrencySymbol } from "../../../config/Currency";
+
 const EnrolmentsReport = () => {
   useEffect(() => {
     document.title = "Enrolments Report";
-  });
+  }, []);
 
-  const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Current academic year ID
+  const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId);
   const selectedAcademicYear = useSelector((state) =>
     selectAcademicYearById(state, selectedAcademicYearId)
-  ); // Current academic year object
+  );
   const academicYears = useSelector(selectAllAcademicYears);
 
-  const [selectedMonth, setSelectedMonth] = useState(""); // Selected month filter
-  const [selectedServiceType, setSelectedServiceType] = useState(""); // Selected service type filter
+  // Filters
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedServiceType, setSelectedServiceType] = useState("");
+
+  // Data for display
   const [filteredEnrolments, setFilteredEnrolments] = useState([]);
   const [isReportGenerated, setIsReportGenerated] = useState(false);
 
+  // Query
   const {
     data: enrolments,
     isLoading: isEnrolmentsLoading,
@@ -43,31 +48,38 @@ const EnrolmentsReport = () => {
       refetchOnMountOrArgChange: true,
     }
   );
+
+  // Generate / Filter
   const handleGenerateReport = () => {
-    // Clear the previous report data
     setFilteredEnrolments([]);
     setIsReportGenerated(false);
-  
+
     if (isEnrolmentsSuccess) {
       const enrolmentsList = Object.values(enrolments.entities);
-  
-      const filtered = enrolmentsList.filter(
-        (enrolment) =>
-          (selectedMonth ? enrolment.enrolmentMonth === selectedMonth : true) &&
-          (selectedServiceType
-            ? enrolment.serviceType === selectedServiceType
-            : true) &&
-          enrolment.student.studentYears.some(
-            (yearObj) => yearObj.academicYear === selectedAcademicYear?.title
-          )
-      );
-  
+
+      const filtered = enrolmentsList.filter((enrolment) => {
+        const matchesMonth = selectedMonth
+          ? enrolment.enrolmentMonth === selectedMonth
+          : true;
+
+        const matchesServiceType = selectedServiceType
+          ? enrolment.serviceType === selectedServiceType
+          : true;
+
+        // Also ensure the student was enrolled in the current academic year
+        const inSelectedYear = enrolment.student.studentYears.some(
+          (yearObj) => yearObj.academicYear === selectedAcademicYear?.title
+        );
+
+        return matchesMonth && matchesServiceType && inSelectedYear;
+      });
+
       setFilteredEnrolments(filtered);
       setIsReportGenerated(true);
     }
   };
-  
- 
+
+  // PDF
   const handleDownloadPDF = () => {
     const element = document.getElementById("enrolments-report-content");
     const opt = {
@@ -80,6 +92,7 @@ const EnrolmentsReport = () => {
     html2pdf().from(element).set(opt).save();
   };
 
+  // Reset
   const handleCancelFilters = () => {
     setSelectedMonth("");
     setSelectedServiceType("");
@@ -87,10 +100,10 @@ const EnrolmentsReport = () => {
     setIsReportGenerated(false);
   };
 
-  // Extract service types dynamically for the dropdown
-  const serviceTypes = isEnrolmentsSuccess && [
-    ...new Set(Object.values(enrolments.entities).map((e) => e.serviceType)),
-  ];
+  // Dynamic service types
+  const serviceTypes =
+    isEnrolmentsSuccess &&
+    [...new Set(Object.values(enrolments.entities).map((e) => e.serviceType))];
 
   // Group enrolments by service type for display
   const groupedEnrolments = filteredEnrolments.reduce((acc, enrolment) => {
@@ -98,6 +111,11 @@ const EnrolmentsReport = () => {
     acc[enrolment.serviceType].push(enrolment);
     return acc;
   }, {});
+
+  // Calculate total of all authorized fees
+  const totalAuthorizedFee = filteredEnrolments.reduce((sum, enrolment) => {
+    return sum + (Number(enrolment.serviceAuthorisedFee) || 0);
+  }, 0);
 
   return (
     <>
@@ -132,9 +150,9 @@ const EnrolmentsReport = () => {
                 id="serviceType"
                 value={selectedServiceType}
                 onChange={(e) => {
-                  setSelectedServiceType(e.target.value); // Update service type
-                  setFilteredEnrolments([]); // Reset table data
-                  setIsReportGenerated(false); // Ensure report is regenerated
+                  setSelectedServiceType(e.target.value);
+                  setFilteredEnrolments([]);
+                  setIsReportGenerated(false);
                 }}
                 className="formInputText"
               >
@@ -203,19 +221,20 @@ const EnrolmentsReport = () => {
                   <th className="border px-2 py-1">Student Name</th>
                   <th className="border px-2 py-1">Grade</th>
                   <th className="border px-2 py-1">Admission Services</th>
-                  <th className="border px-2 py-1">Fees (Authorized/Final)</th>
+                  <th className="border px-2 py-1">
+                    Fees (Authorized / Final)
+                  </th>
                   <th className="border px-2 py-1">Enrolment Note</th>
                   <th className="border px-2 py-1">Enrolment Date</th>
                 </tr>
               </thead>
               <tbody>
                 {
+                  // We need to accumulate rows across all groups but also keep a global row index
                   Object.entries(groupedEnrolments).reduce(
                     (acc, [serviceType, enrolments], groupIndex) => {
-                      // Extract the current global index and table rows accumulator
                       const { globalRowIndex, rows } = acc;
 
-                      // Map enrolments for the current service type
                       const serviceRows = enrolments.map(
                         (enrolment, enrolmentIndex) => {
                           const studentYears =
@@ -253,7 +272,7 @@ const EnrolmentsReport = () => {
                                   ?.serviceType || "N/A"}
                               </td>
 
-                              {/* Fees */}
+                              {/* Fees (Authorized / Final) */}
                               <td className="border px-2 py-1 text-center">
                                 {`${enrolment.serviceAuthorisedFee} / ${enrolment.serviceFinalFee}`}
                               </td>
@@ -275,41 +294,43 @@ const EnrolmentsReport = () => {
                       );
 
                       return {
-                        // Update the global index to continue counting
                         globalRowIndex: globalRowIndex + enrolments.length,
-                        // Accumulate rows for the table
                         rows: [...rows, ...serviceRows],
                       };
                     },
-                    { globalRowIndex: 0, rows: [] } // Initialize global index and rows accumulator
+                    { globalRowIndex: 0, rows: [] }
                   ).rows
                 }
+
+                {/* --- Final Row: Total Authorized Fee --- */}
+                <tr className="bg-gray-100 font-bold">
+                  {/* We have 8 columns total. 
+                      We'll span from col 1 to 5, 
+                      place the total in col 6, 
+                      then fill remaining 2 columns. */}
+                  <td colSpan="5" className="border px-2 py-1 text-right">
+                    Total Authorized Fee:
+                  </td>
+                  <td className="border px-2 py-1 text-center">
+                    {totalAuthorizedFee.toFixed(2)} {CurrencySymbol}
+                  </td>
+                  <td colSpan="2" className="border px-2 py-1" />
+                </tr>
               </tbody>
             </table>
           </div>
         )}
       </div>
+
+      {/* Bottom Buttons */}
       <div className="mt-4 flex justify-center space-x-4">
-        {" "}
-        {/* Cancel Button */}
-        <button
-          onClick={handleCancelFilters} // Reset filters and table
-          className="cancel-button"
-        >
+        <button onClick={handleCancelFilters} className="cancel-button">
           Cancel
         </button>
-        {/* Download as PDF Button */}
-        <button
-          onClick={handleDownloadPDF} // Function for PDF download
-          className="add-button"
-        >
+        <button onClick={handleDownloadPDF} className="add-button">
           Download as PDF
         </button>
-        {/* Print Button */}
-        <button
-          onClick={() => window.print()} // Print the current view
-          className="save-button"
-        >
+        <button onClick={() => window.print()} className="save-button">
           Print
         </button>
       </div>
