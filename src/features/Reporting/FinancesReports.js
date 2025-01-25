@@ -32,10 +32,10 @@ const FinancesReports = () => {
       label: "Unpaid Enrolments",
       path: "/reports/financesReports/unpaidEnrolmentsReport/",
     },
-    (isDirector || isManager || isAdmin) && {
-      label: "blablabla",
-      path: "/reports/financesReports/blalal/",
-    },
+    // (isDirector || isManager || isAdmin) && {
+    //   label: "blablabla",
+    //   path: "/reports/financesReports/blalal/",
+    // },
    
 
   ];

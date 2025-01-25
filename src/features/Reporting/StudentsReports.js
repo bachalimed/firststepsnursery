@@ -28,14 +28,14 @@ const StudentsReports = () => {
       label: "Enrolments",
       path: "/reports/studentsReports/enrolmentsReport/",
     },
-    ( isDirector || isManager || isAdmin) && {
-      label: "blabla",
-      path: "/reports/studentsReports/blablfllf/",
-    },
-    (isDirector || isManager || isAdmin) && {
-      label: "blablabla",
-      path: "/reports/studentsReports/blalal/",
-    },
+    // ( isDirector || isManager || isAdmin) && {
+    //   label: "blabla",
+    //   path: "/reports/studentsReports/blablfllf/",
+    // },
+    // (isDirector || isManager || isAdmin) && {
+    //   label: "blablabla",
+    //   path: "/reports/studentsReports/blalal/",
+    // },
    
 
   ];

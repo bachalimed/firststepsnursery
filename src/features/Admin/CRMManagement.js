@@ -3,7 +3,7 @@ import AcademicYearsSelection from "../../Components/AcademicYearsSelection";
 import useAuth from "../../hooks/useAuth";
 import firststeps from "../../Data/firststeps.png";
 
-const UsersManagement = () => {
+const CRMManagement = () => {
   const location = useLocation();
 
   const {
@@ -67,4 +67,4 @@ const UsersManagement = () => {
   );
 };
 
-export default UsersManagement;
+export default CRMManagement;

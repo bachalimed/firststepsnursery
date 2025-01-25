@@ -262,6 +262,46 @@ const AdmissionsList = () => {
     }
   };
 
+  const getMonthCheckboxes = (feeMonths) => {
+    const allMonths = [
+      "September",
+      "October",
+      "November",
+      "December",
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+    ];
+  
+    return allMonths.map((month, index) => {
+      const isPresent = feeMonths?.includes(month); // Check if the month exists in `feeMonths`
+  
+      return (
+        <div key={index} className="flex items-center gap-1">
+          {/* Circle representing the month */}
+          <div
+            className={`w-4 h-4 rounded-full ${
+              isPresent ? "bg-sky-700" : "bg-amber-200"
+            }`}
+            title={month} // Tooltip to display the month name
+          ></div>
+  
+          {/* Gray vertical line between December and January */}
+          {month === "December" && (
+            <div className="w-0.5 h-5 bg-gray-200 "></div>
+          )}
+        </div>
+      );
+    });
+  };
+  
+  
+
   const column = [
     {
       name: "#", // New column for entry number
@@ -563,15 +603,50 @@ const AdmissionsList = () => {
       sortable: true,
       width: "120px",
     },
+    // {
+    //   name: "Months",
+    //   selector: (row) => (
+    //     <div style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
+    //       {row?.agreedServices.map((feeObj, index) => (
+    //         <div key={index}>
+    //           {feeObj?.feeMonths?.length > 0
+    //             ? `${feeObj.feeMonths.length} - ${feeObj.feeMonths.join(", ")}`
+    //             : "---"}
+    //           {index < row.agreedServices.length - 1 && (
+    //             <hr className="my-2 border-gray-300" />
+    //           )}
+    //         </div>
+    //       ))}
+    //     </div>
+    //   ),
+    //   cell: (row) => (
+    //     <div style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
+    //       {row?.agreedServices.map((feeObj, index) => (
+    //         <div key={index}>
+    //           {feeObj?.feeMonths?.length > 0
+    //             ? `${feeObj.feeMonths.length} - ${feeObj.feeMonths.join(", ")}`
+    //             : "---"}
+    //           {index < row.agreedServices.length - 1 && (
+    //             <hr className="my-2 border-gray-300" />
+    //           )}
+    //         </div>
+    //       ))}
+    //     </div>
+    //   ),
+    //   style: {
+    //     justifyContent: "left",
+    //     textAlign: "left",
+    //   },
+    //   sortable: true,
+    //   width: "230px",
+    // },
     {
       name: "Months",
       selector: (row) => (
         <div style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
           {row?.agreedServices.map((feeObj, index) => (
-            <div key={index}>
-              {feeObj?.feeMonths?.length > 0
-                ? `${feeObj.feeMonths.length} - ${feeObj.feeMonths.join(", ")}`
-                : "---"}
+            <div key={index} className="flex gap-1 items-center">
+              {getMonthCheckboxes(feeObj?.feeMonths)}
               {index < row.agreedServices.length - 1 && (
                 <hr className="my-2 border-gray-300" />
               )}
@@ -582,10 +657,8 @@ const AdmissionsList = () => {
       cell: (row) => (
         <div style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
           {row?.agreedServices.map((feeObj, index) => (
-            <div key={index}>
-              {feeObj?.feeMonths?.length > 0
-                ? `${feeObj.feeMonths.length} - ${feeObj.feeMonths.join(", ")}`
-                : "---"}
+            <div key={index} className="flex gap-1 items-center">
+              {getMonthCheckboxes(feeObj?.feeMonths)}
               {index < row.agreedServices.length - 1 && (
                 <hr className="my-2 border-gray-300" />
               )}
@@ -598,9 +671,10 @@ const AdmissionsList = () => {
         textAlign: "left",
       },
       sortable: true,
-      width: "230px",
-    },
-
+      width: "300px", // Adjusted width for all checkboxes
+    }
+    ,
+    
     {
       name: "Actions",
       cell: (row) => (

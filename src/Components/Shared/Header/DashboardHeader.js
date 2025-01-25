@@ -1,5 +1,7 @@
 import NavbarHeader from "./NavbarHeader";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+
 import useAuth from "../../../hooks/useAuth";
 import { useState, useEffect } from "react";
 import firststeps from "../../../Data/firststeps.png";
@@ -10,7 +12,7 @@ const DashboardHeader = () => {
   const { username } = useAuth();
   const [currentTime, setCurrentTime] = useState(new Date());
   // const company = { label: "First Steps", type: " Nursery" };
-
+  const isLoggedIn = useSelector((state) => Boolean(state.auth.token));
   // Update the time every second
   useEffect(() => {
     const timer = setInterval(() => {

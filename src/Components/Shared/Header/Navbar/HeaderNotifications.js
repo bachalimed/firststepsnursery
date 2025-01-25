@@ -2,7 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { LuBellRing, LuBell } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 // import { HeaderNotificationSample } from "../../../lib/Consts/HeaderNotificationSample.js";
-import { useGetNotificationsByYearQuery } from "../../../../features/Notifications/notificationsApiSlice.js";
+import {
+  useGetNotificationsByYearQuery,
+  useUpdateNotificationMutation,
+} from "../../../../features/Notifications/notificationsApiSlice.js";
 import {
   selectCurrentAcademicYearId,
   selectAcademicYearById,
@@ -11,6 +14,7 @@ import useAuth from "../../../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import { GiReceiveMoney, GiPayMoney } from "react-icons/gi";
 import { PiStudent } from "react-icons/pi";
+import { BsConeStriped } from "react-icons/bs";
 
 const HeaderNotifications = () => {
   const navigate = useNavigate();
@@ -54,10 +58,26 @@ const HeaderNotifications = () => {
       refetchOnMountOrArgChange: true,
     }
   );
+  const [
+    updateNotification,
+    {
+      isLoading: isUpdateLoading,
+      isSuccess: isUpdateSuccess,
+      isError: isUpdateError,
+      error: updateError,
+    },
+  ] = useUpdateNotificationMutation();
 
   const notificationsList = isNotificationsSuccess
     ? Object.values(notifications.entities)
     : [];
+
+  useEffect(() => {
+    if (isUpdateSuccess) {
+      refetch();
+    }
+  }, [refetch, isUpdateSuccess]);
+  const [formData, setFormData] = useState({});
 
   // Toggle the menu visibility
   const toggleMenu = () => {
@@ -65,16 +85,40 @@ const HeaderNotifications = () => {
   };
 
   // Close the menu explicitly
-  const closeMenu = (notificationType) => {
+  const handleClickNotification = async (e, notification) => {
+    e.preventDefault(); // Prevent default behavior
     setIsMenuOpen(false);
-    if (notificationType === "Payment")
-      navigate(`/finances/payments/paymentsList/`);
-    if (notificationType === "Admission")
-      navigate(`/students/admissions/admissions/`);
-    if (notificationType === "Expense")
-      navigate(`/finances/expenses/expensesList/`);
+
+    if (notification && Array.isArray(notification?.notificationIsRead)) {
+      // Create an updated notification object
+      const updatedNotification = {
+        ...notification,
+        notificationIsRead: (notification?.notificationIsRead || []).includes(
+          userId
+        )
+          ? notification.notificationIsRead || [] // Keep the array as is if userId is already there
+          : [...notification.notificationIsRead, userId], // Add userId to the array if not
+      };
+
+      // Update the state with the updated notification
+      setFormData(updatedNotification);
+
+      // Navigate based on notification type
+      if (notification?.notificationType === "Payment")
+        navigate(`/finances/payments/paymentsList/`);
+      if (notification?.notificationType === "Admission")
+        navigate(`/students/admissions/admissions/`);
+      if (notification?.notificationType === "Expense")
+        navigate(`/finances/expenses/expensesList/`);
+      if (notification?.notificationType === "Leave")
+        navigate(`/hr/leaves/leavesList/`);
+
+      // Call the update query with the updated notification
+      await updateNotification(updatedNotification);
+    }
   };
 
+  // console.log(formData, "formData");
   const buttonRef = useRef(null);
 
   useEffect(() => {
@@ -86,12 +130,12 @@ const HeaderNotifications = () => {
         buttonRef.current &&
         !buttonRef.current.contains(event.target)
       ) {
-        closeMenu();
+        setIsMenuOpen(false);
       }
     };
 
     const handlePopState = () => {
-      closeMenu(); // Close menu when the back button is clicked
+      setIsMenuOpen(false); // Close menu when the back button is clicked
     };
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -103,6 +147,8 @@ const HeaderNotifications = () => {
     };
   }, []);
 
+  //console.log(notificationsList, "notificationsList");
+
   return (
     <div className="relative">
       {/* Notification Bell */}
@@ -112,8 +158,11 @@ const HeaderNotifications = () => {
         className="relative flex items-center justify-center w-10 h-10 rounded-full bg-sky-600 text-white"
         aria-label="Manage notifications"
       >
-        {notificationsList.length > 0 ? (
-          <LuBellRing className={`text-3xl`} />
+        {notificationsList.length > 0 &&
+        notificationsList.some((notif) =>
+          (notif.notificationIsRead || []).includes(userId)
+        ) ? (
+          <LuBellRing className={`text-3xl `} />
         ) : (
           <LuBell className={`text-3xl`} />
         )}
@@ -134,7 +183,7 @@ const HeaderNotifications = () => {
           <button
             onClick={() => {
               navigate(`/notifications/notifications/notificationsList/`);
-              closeMenu();
+              setIsMenuOpen(false);
             }}
             className="flex font-semibold items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
             aria-label="All notifications"
@@ -145,47 +194,74 @@ const HeaderNotifications = () => {
           </button>
           <div className="border-t border-gray-200"></div>
           <ul className=" max-h-100 overflow-y-auto">
-            {/* <li>
-              <button
-                onClick={() => {
-                  navigate(`/notifications/notifications/notificationsList/`);
-                  closeMenu();
-                }}
-                className="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                aria-label="All notifications"
-              >
-                <LuBellRing className="text-xl" />
-                All Notifications
-              </button>
-            </li> */}
-            {notificationsList?.length > 0 ? (
+            {notificationsList?.length > 0 &&
               notificationsList.map((notif) => (
-                <li key={notif.id}>
+                <li
+                  key={notif.id}
+                  hidden={(notif.notificationIsRead || []).includes(userId)}
+                >
                   <button
                     className={`flex items-center ${
+                      !(notif.notificationIsRead || []).includes(userId) &&
                       notif?.notificationType === "Payment"
-                        ? "bg-green-200"
+                        ? "bg-green-200 text-gray-700"
+                        : ""
+                    }${
+                      !(notif.notificationIsRead || []).includes(userId) &&
+                      notif?.notificationType === "Leave"
+                        ? "bg-amber-200 text-gray-700"
                         : ""
                     } ${
-                      notif?.notificationType === "Expense" ? "bg-red-200" : ""
+                      !(notif.notificationIsRead || []).includes(userId) &&
+                      notif?.notificationType === "Expense"
+                        ? "bg-red-200 text-gray-700"
+                        : ""
                     } ${
+                      !(notif.notificationIsRead || []).includes(userId) &&
                       notif?.notificationType === "Admission"
-                        ? "bg-sky-200"
+                        ? "bg-sky-200 text-gray-700"
                         : ""
-                    } border-t border-gray-100 gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100`}
-                    onClick={() => closeMenu(notif?.notificationType)}
+                    }  border-t border-gray-100 gap-2 w-full px-4 py-2   text-sm text-gray-500 hover:bg-gray-100`}
+                    onClick={(e) => handleClickNotification(e, notif)}
                     aria-label={`Notification ${notif.id}`}
                   >
                     {/* Icon Wrapper */}
                     <div className="flex-shrink-0">
                       {notif?.notificationType === "Payment" && (
-                        <GiReceiveMoney className="text-2xl" />
+                        <GiReceiveMoney
+                          className={`text-2xl text-green-600 ${
+                            (notif?.notificationIsRead || []).includes(userId)
+                              ? "text-green-400"
+                              : "text-green-600"
+                          }`}
+                        />
                       )}
                       {notif?.notificationType === "Expense" && (
-                        <GiPayMoney className="text-2xl" />
+                        <GiPayMoney
+                          className={`text-2xl  ${
+                            (notif?.notificationIsRead || []).includes(userId)
+                              ? "text-red-400"
+                              : "text-red-600"
+                          }`}
+                        />
                       )}
                       {notif?.notificationType === "Admission" && (
-                        <PiStudent className="text-2xl" />
+                        <PiStudent
+                          className={`text-2xl  ${
+                            (notif?.notificationIsRead || []).includes(userId)
+                              ? "text-sky-400"
+                              : "text-sky-600"
+                          }`}
+                        />
+                      )}
+                      {notif?.notificationType === "Leave" && (
+                        <BsConeStriped
+                          className={`text-2xl  ${
+                            (notif?.notificationIsRead || []).includes(userId)
+                              ? "text-amber-400"
+                              : "text-amber-600"
+                          }`}
+                        />
                       )}
                     </div>
                     {/* Text Content */}
@@ -195,10 +271,7 @@ const HeaderNotifications = () => {
                     </div>
                   </button>
                 </li>
-              ))
-            ) : (
-              <li>No new Notifications</li>
-            )}
+              ))}
           </ul>
         </div>
       )}

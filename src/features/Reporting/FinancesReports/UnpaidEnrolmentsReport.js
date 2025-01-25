@@ -49,16 +49,23 @@ const UnpaidEnrolmentsReport = () => {
   useEffect(() => {
     if (isEnrolmentsSuccess && selectedMonth) {
       const enrolmentsList = Object.values(enrolments.entities);
-
-      const filtered = enrolmentsList.filter((enrol) => {
-        const isUnpaid = !enrol?.enrolmentInvoice?.invoiceIsFullyPaid;
-        return isUnpaid && enrol.enrolmentMonth === selectedMonth;
-      });
-
+  
+      const filtered = enrolmentsList
+        .filter((enrol) => {
+          const isUnpaid = !enrol?.enrolmentInvoice?.invoiceIsFullyPaid;
+          return isUnpaid && enrol.enrolmentMonth === selectedMonth;
+        })
+        .sort((a, b) => {
+          const nameA = `${a?.student?.studentName?.firstName || ""} ${a?.student?.studentName?.middleName || ""} ${a?.student?.studentName?.lastName || ""}`.trim().toLowerCase();
+          const nameB = `${b?.student?.studentName?.firstName || ""} ${b?.student?.studentName?.middleName || ""} ${b?.student?.studentName?.lastName || ""}`.trim().toLowerCase();
+          return nameA.localeCompare(nameB); // Compare names alphabetically
+        });
+  
       setFilteredEnrolments(filtered);
       setIsReportGenerated(true);
     }
   }, [enrolments, selectedMonth]);
+  
 
   const handleDownloadPDF = () => {
     const element = document.getElementById("unpaid-enrolments-report-content");

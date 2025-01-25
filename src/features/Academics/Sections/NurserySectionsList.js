@@ -29,7 +29,7 @@ const NurserySectionsList = () => {
   //this is for the academic year selection
   const navigate = useNavigate();
 
-  const { canEdit, isAdmin, canDelete, canCreate, status2 } = useAuth();
+  const { canEdit, isAdmin, canDelete, canCreate, isDirector, isManager} = useAuth();
 
   const selectedAcademicYearId = useSelector(selectCurrentAcademicYearId); // Get the selected year ID
   const selectedAcademicYear = useSelector((state) =>
@@ -476,7 +476,7 @@ const NurserySectionsList = () => {
           ></DataTable>
         </div>
 
-        {isAdmin && (
+        {(isAdmin||isDirector||isManager) && (
           <button
             className="add-button"
             onClick={() => navigate("/academics/sections/newSection/")}

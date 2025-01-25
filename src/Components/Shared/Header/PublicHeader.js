@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { BiSolidSchool } from "react-icons/bi";
 import { LiaUserSolid } from "react-icons/lia";
 import { useSelector } from "react-redux";
-
+import LoadingStateSmallIcon from '../../../Components/LoadingStateIcon'
 import { TbLogout } from "react-icons/tb";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 // import logo from "../../../Data/logo.jpg";
@@ -13,7 +13,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useSendLogoutMutation } from "../../../features/auth/authApiSlice";
 import { LuKeyRound } from "react-icons/lu";
 import { Link } from "react-router-dom";
-import AnimatedColorText from "../../lib/Utils/AnimatedColorText";
+// import AnimatedColorText from "../../lib/Utils/AnimatedColorText";
 import useAuth from "../../../hooks/useAuth";
 import { RiLoginBoxLine } from "react-icons/ri";
 //import GenerateCircles from "../../lib/Utils/GenerateCircles";
@@ -33,13 +33,12 @@ const PublicHeader = () => {
     const handleLogout =()=>{/////////////////added because we stay hanget in blanc page after logiout 
       sendLogout()
       navigate("/")
-  
     }
   useEffect(() => {
     if (isSuccess) navigate("/login/");
   }, [isSuccess, navigate]);
 
-  if (isLoading) return <p>Logging Out...</p>;
+  if (isLoading) return <p><LoadingStateSmallIcon/></p>;
   if (isError) return <p>Error: {error.data?.message}</p>;
 
   const logoutButton = (

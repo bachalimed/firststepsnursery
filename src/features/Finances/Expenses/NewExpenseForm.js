@@ -36,7 +36,14 @@ const NewExpenseForm = () => {
     selectAcademicYearById(state, selectedAcademicYearId)
   ); // Get the full academic year object
   //const academicYears = useSelector(selectAllAcademicYears);
-
+  const getMonthFromDate = (dateInput) => {
+    const date = new Date(dateInput); // Convert input to a Date object
+    if (isNaN(date.getTime())) {
+      // Check if the date is invalid
+      throw new Error("Invalid date input");
+    }
+    return MONTHS[date.getMonth()]; // Get the month name
+  };
   const {
     data: expenseCategories, //the data is renamed expenseCategories
     isLoading: isExpenseCategoriesLoading,
@@ -146,20 +153,6 @@ const NewExpenseForm = () => {
 
   const navigate = useNavigate();
   //validation for date in the expense month
-  const isValidExpenseDate = (expenseDate, expenseMonth) => {
-    // Check if the expenseDate matches the DATE_REGEX
-    const isValidDate = DATE_REGEX.test(expenseDate);
-
-    // Check if the month of the expenseDate matches the expenseMonth
-    if (isValidDate) {
-      const date = new Date(expenseDate);
-      const monthName = date.toLocaleString("en-US", { month: "long" }); // Get the full month name (e.g., "January")
-      // console.log(monthName)
-      return monthName === expenseMonth;
-    }
-
-    return false; // Invalid date or mismatched month
-  };
 
   // Validate inputs using regex patterns
   useEffect(() => {
@@ -177,10 +170,7 @@ const NewExpenseForm = () => {
       validExpenseService: OBJECTID_REGEX.test(formData.expenseService),
       validExpensePayee: OBJECTID_REGEX.test(formData.expensePayee),
       validExpensePaymentDate: DATE_REGEX.test(formData.expensePaymentDate),
-      validExpenseDate: isValidExpenseDate(
-        formData.expenseDate,
-        formData.expenseMonth
-      ),
+      validExpenseDate: DATE_REGEX.test(formData.expenseDate),
       // validExpensePaymentDate:
       //   (formData?.expenseMethod === "Credit" &&
       //     formData?.expensePaymentDate !== "" &&
@@ -277,8 +267,8 @@ const NewExpenseForm = () => {
     });
   };
 
-  // console.log(formData, "formdata");
-  // console.log(validity, "validity");
+  //console.log(formData, "formdata");
+  //console.log(validity, "validity");
 
   let content;
   if (isExpenseCategoriesLoading || isPayeesLoading || isServicesLoading) {
@@ -305,7 +295,7 @@ const NewExpenseForm = () => {
           <div className="formSectionContainer">
             <h3 className="formSectionTitle">Expense details</h3>
             <div className="formSection">
-              <div className="formLineDiv">
+              <div className="">
                 {/* <div className="mb-4">
                   <label  className="formInputLabel">
                     Expense Year{" "}
@@ -331,7 +321,7 @@ const NewExpenseForm = () => {
 
                 {/* Expense Month */}
 
-                <label htmlFor="expenseMonth" className="formInputLabel">
+                {/* <label htmlFor="expenseMonth" className="formInputLabel">
                   Expense Month{" "}
                   {!validity.validExpenseMonth && (
                     <span className="text-red-600">*</span>
@@ -354,7 +344,7 @@ const NewExpenseForm = () => {
                       </option>
                     ))}
                   </select>{" "}
-                </label>
+                </label> */}
 
                 {/* Expense Service */}
 
@@ -543,6 +533,7 @@ const NewExpenseForm = () => {
                         ...formData,
                         expenseDate: e.target.value,
                         expensePaymentDate: e.target.value,
+                        expenseMonth: getMonthFromDate(e.target.value),
                       })
                     }
                     className={`formInputText`}

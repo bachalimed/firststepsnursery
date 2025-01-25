@@ -18,9 +18,7 @@ import MyDetails from "./features/auth/MyProfile/MyDetails";
 
 import Notifications from "./features/Notifications/Notifications";
 import NotificationsList from "./features/Notifications/NotificationsList";
-import NewNotificationForm from "./features/Notifications/NewNotificationForm";
-import EditNotification from "./features/Notifications/EditNotification";
-
+import NotificationDetails from "./features/Notifications/NotificationDetails";
 
 import EnrolmentsReport from "./features/Reporting/StudentsReports/EnrolmentsReport";
 import AgeGroupsReport from "./features/Reporting/StudentsReports/AgeGroupsReport";
@@ -155,6 +153,8 @@ import UsersList from "./features/Admin/UsersManagement/UsersList";
 import EditUser from "./features/Admin/UsersManagement/EditUser";
 import NewUserForm from "./features/Admin/UsersManagement/NewUserForm";
 import UserDetails from "./features/Admin/UsersManagement/UserDetails";
+// import CRMManagement from "./features/Admin/CRMManagement";
+// import TextSettings from "./features/Admin/CRMManagement/TextSettings";
 
 import Tasks from "./features/Desk/Tasks";
 import TasksList from "./features/Desk/Tasks/TasksList";
@@ -661,13 +661,10 @@ const App = () => {
                     path="notificationsList/"
                     element={<NotificationsList />}
                   />
+                  
                   <Route
-                    path="newNotification/"
-                    element={<NewNotificationForm />}
-                  />
-                  <Route
-                    path="editNotification/:id"
-                    element={<EditNotification />}
+                    path="notificationDetails/:id"
+                    element={<NotificationDetails />}
                   />
                 </Route>{" "}
                 {/* end of notification route */}
@@ -703,9 +700,12 @@ const App = () => {
                     {/*id is part of the path*/}
                   </Route>
                   {/*end of usersManagement route*/}
-                  <Route path="blabla">
-                    <Route index element={<UsersList />} />
-                  </Route>{" "}
+                  {/* <Route path="crmManagement"> */}
+                  {/* <Route index element={<CRMManagement />} /> */}
+                  {/* <Route path="textSettings/" element={<TextSettings />} /> */}
+                  {/* <Route path="crmSettings/" element={<CRMSettings />} /> */}
+
+                  {/* </Route>{" "} */}
                   {/* end of blabla route */}
                 </Route>{" "}
                 {/* end of admin route */}

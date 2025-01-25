@@ -376,13 +376,13 @@ const PaymentsList = () => {
           ) : null} */}
           {canDelete &&
             !isDelLoading &&
-            row?.paymentDate &&
-            row?.paymentDate === "" && (
+             (
               <button
                 aria-label="delete payment"
-                className="text-red-600"
+                className="text-fuchsia-600"
                 onClick={() => onDeletePaymentClicked(row.id)}
-                hidden={!isManager || !isAdmin}
+                hidden={row?.paymentDate &&
+                  row?.paymentDate === "" &&!isManager || !isAdmin}
               >
                 <RiDeleteBin6Line className="text-2xl" />
               </button>
@@ -453,19 +453,19 @@ const PaymentsList = () => {
           >
             {/* Default option is the current month */}
 
-            {/* <option value="">{getCurrentMonth()}</option> */}
+            <option value={getCurrentMonth()}>{getCurrentMonth()}</option>
             <option value="">All Months</option>
 
             {/* Render the rest of the months, excluding the current month */}
             {MONTHS.map((month, index) => {
-              if (month !== getCurrentMonth()) {
+              // if (month !== getCurrentMonth()) {
                 return (
                   <option key={index} value={month}>
                     {month}
                   </option>
                 );
-              }
-              return null; // Ensure there's no option for the current month if it's already included
+            //   }
+            //   return null; // Ensure there's no option for the current month if it's already included
             })}
           </select>
         </label>

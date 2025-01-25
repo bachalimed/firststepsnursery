@@ -29,7 +29,21 @@ const PaymentsReport = () => {
   const [selectedServiceType, setSelectedServiceType] = useState("");
   const [filteredPayments, setFilteredPayments] = useState([]);
   const [isReportGenerated, setIsReportGenerated] = useState(false);
+  useEffect(() => {
+    if (selectedAcademicYear?.title) {
+      // Extract the start and end years
+      const [startYear, endYear] = selectedAcademicYear.title
+        .split("/")
+        .map((year) => parseInt(year, 10));
 
+      // Set the initial values
+      const initialFromDate = `${startYear}-09-01`; // 1st September of the start year
+      const initialToDate = `${endYear}-08-31`; // 31st August of the end year
+
+      setFromDate(initialFromDate);
+      setToDate(initialToDate);
+    }
+  }, [selectedAcademicYear]);
   const {
     data: payments,
     isLoading: isPaymentsLoading,
@@ -71,30 +85,23 @@ const PaymentsReport = () => {
         const paymentDate = new Date(payment.paymentDate);
         const matchesDateRange =
           paymentDate >= new Date(fromDate) && paymentDate <= new Date(toDate);
-          const matchesMonth =
+        const matchesMonth =
           selectedMonth === "" ||
-          payment.paymentInvoices?.some((invoice) => invoice.invoiceMonth === selectedMonth);
-        
+          payment.paymentInvoices?.some(
+            (invoice) => invoice.invoiceMonth === selectedMonth
+          );
+
         const matchesServiceType =
           selectedServiceType === "" ||
-          payment?.paymentInvoices?.some((invoice) => invoice?.invoiceEnrolment?.serviceType === selectedServiceType)
+          payment?.paymentInvoices?.some(
+            (invoice) =>
+              invoice?.invoiceEnrolment?.serviceType === selectedServiceType
+          );
 
         return matchesDateRange && matchesMonth && matchesServiceType;
       });
 
-      // Sorting the filtered payments by student name
-      const sorted = filtered.sort((a, b) => {
-        const nameA = `${a.paymentStudent?.studentName?.firstName || ""} ${
-          a.paymentStudent?.studentName?.middleName || ""
-        } ${a.paymentStudent?.studentName?.lastName || ""}`.toLowerCase();
-        const nameB = `${b.paymentStudent?.studentName?.firstName || ""} ${
-          b.paymentStudent?.studentName?.middleName || ""
-        } ${b.paymentStudent?.studentName?.lastName || ""}`.toLowerCase();
-
-        return nameA.localeCompare(nameB);
-      });
-
-      setFilteredPayments(sorted); // Set the sorted array
+      setFilteredPayments(filtered); // Set the sorted array
       setIsReportGenerated(true);
     }
   }, [payments, fromDate, toDate, selectedMonth, selectedServiceType]);

@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { GiReceiveMoney, GiPayMoney } from "react-icons/gi";
 import { PiStudent } from "react-icons/pi";
+import { BsConeStriped } from "react-icons/bs";
 
 import {
   useGetNotificationsByYearQuery,
@@ -65,7 +66,8 @@ const NotificationsList = () => {
     isSuccess: isNotificationsSuccess,
     refetch,
   } = useGetNotificationsByYearQuery(
-    {  userId,
+    {
+      userId,
       isAdmin,
       isDirector,
       isManager,
@@ -106,7 +108,7 @@ const NotificationsList = () => {
       const response = await deleteNotification({
         userId: userId,
         ids: ids,
-        isAdmin:isAdmin
+        isAdmin: isAdmin,
       });
       setIsDeleteModalOpen(false);
       setSelectedRows([]); // Clear selected rows
@@ -152,18 +154,7 @@ const NotificationsList = () => {
         const matchesType =
           !selectedType || notification.notificationType === selectedType;
 
-        // Check user roles and filter notifications accordingly
-        if (isAdmin || isManager || isDirector) {
-          // Admins, Managers, and Directors can see all notifications
-          return matchesSearch && matchesType;
-        } else {
-          // Other users can only see notifications where they are the destination
-          return (
-            matchesSearch &&
-            matchesType &&
-            notification.notificationDestination === userId
-          );
-        }
+        return matchesSearch && matchesType;
       }
     );
 
@@ -208,21 +199,20 @@ const NotificationsList = () => {
       wrap: true,
       width: "300px",
     },
-    
-      isAdmin && {
-        name: "To Users",
-        cell: (row) => (
-          <div>
-            {row.notificationToUsers?.map((userId) => (
-              <div key={userId}>{userId}</div>
-            ))}
-          </div>
-        ),
-        sortable: true,
-        wrap: true,
-        width: "300px",
-      },
-    
+
+    isAdmin && {
+      name: "To Users",
+      cell: (row) => (
+        <div>
+          {row.notificationToUsers?.map((userId) => (
+            <div key={userId}>{userId}</div>
+          ))}
+        </div>
+      ),
+      sortable: true,
+      wrap: true,
+      width: "300px",
+    },
 
     // {
     //   name: "Destination",//we be replaced by phone number?
@@ -267,6 +257,17 @@ const NotificationsList = () => {
               <GiPayMoney className="text-2xl" />
             </button>
           )}
+          {row.notificationType === "Leave" && (
+            <button
+              className="text-amber-500"
+              aria-label="notification Details"
+              fontSize={20}
+              onClick={() => navigate(`/hr/leaves/leavesList/`)}
+              hidden={!canView}
+            >
+              <BsConeStriped className="text-2xl" />
+            </button>
+          )}
           {!isDelLoading && (
             <button
               className="text-red-600"
@@ -274,7 +275,7 @@ const NotificationsList = () => {
                 onDeleteNotificationClicked(row.id);
                 setIsDeleteModalOpen(true);
               }}
-             // hidden={!canDelete} anyone can delete his own notifiations
+              // hidden={!canDelete} anyone can delete his own notifiations
               disabled={selectedRows?.length > 0}
             >
               {" "}
@@ -335,21 +336,21 @@ const NotificationsList = () => {
         </div>
         {/* object Filter Dropdown */}
 
-        <label htmlFor="objectFilter" className="formInputLabel">
+        {/* <label htmlFor="objectFilter" className="formInputLabel">
           <select
             aria-label="objectFilter"
             id="objectFilter"
             value={selectedObject}
-            onChange={(e) => setSelectedObject(e.target.value)}
+            onChange={(e) => setSelectedType(e.target.value)}
             className="border px-3 py-2 rounded"
           >
-            <option value="">All Objects</option>
+            <option value="">All Types</option>
             <option value="Payment">Payment</option>
             <option value="Admission">Admission</option>
             <option value="Expense">Expense</option>
             <option value="Leave">Leave</option>
           </select>
-        </label>
+        </label> */}
         {/* type Filter Dropdown */}
 
         <label htmlFor="typeFilter" className="formInputLabel">
@@ -361,10 +362,10 @@ const NotificationsList = () => {
             className="border px-3 py-2 rounded"
           >
             <option value="">All Types</option>
-            <option value="Information">Information</option>
-            <option value="Alert">Alert</option>
-            <option value="Reminder">Reminder</option>
-            <option value="Receipt">Receipt</option>
+            <option value="Payment">Payment</option>
+            <option value="Admission">Admission</option>
+            <option value="Expense">Expense</option>
+            <option value="Leave">Leave</option>
           </select>
         </label>
         {/* date Filter  */}
