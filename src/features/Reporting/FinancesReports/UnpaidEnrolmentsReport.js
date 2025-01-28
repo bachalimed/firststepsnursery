@@ -24,6 +24,7 @@ const UnpaidEnrolmentsReport = () => {
   const [selectedMonth, setSelectedMonth] = useState("");
   const [filteredEnrolments, setFilteredEnrolments] = useState([]);
   const [isReportGenerated, setIsReportGenerated] = useState(false);
+  const [selectedServiceType, setSelectedServiceType] = useState("");
 
   const getCurrentMonth = () => {
     const currentMonthIndex = new Date().getMonth();
@@ -46,26 +47,58 @@ const UnpaidEnrolmentsReport = () => {
     }
   );
 
+  // useEffect(() => {
+  //   if (isEnrolmentsSuccess && selectedMonth) {
+  //     const enrolmentsList = Object.values(enrolments.entities);
+
+  //     const filtered = enrolmentsList
+  //       .filter((enrol) => {
+  //         const isUnpaid = !enrol?.enrolmentInvoice?.invoiceIsFullyPaid;
+  //         return isUnpaid && enrol.enrolmentMonth === selectedMonth;
+  //       })
+  //       .sort((a, b) => {
+  //         const nameA = `${a?.student?.studentName?.firstName || ""} ${a?.student?.studentName?.middleName || ""} ${a?.student?.studentName?.lastName || ""}`.trim().toLowerCase();
+  //         const nameB = `${b?.student?.studentName?.firstName || ""} ${b?.student?.studentName?.middleName || ""} ${b?.student?.studentName?.lastName || ""}`.trim().toLowerCase();
+  //         return nameA.localeCompare(nameB); // Compare names alphabetically
+  //       });
+
+  //     setFilteredEnrolments(filtered);
+  //     setIsReportGenerated(true);
+  //   }
+  // }, [enrolments, selectedMonth]);
   useEffect(() => {
-    if (isEnrolmentsSuccess && selectedMonth) {
+    if (isEnrolmentsSuccess && (selectedMonth || selectedServiceType)) {
       const enrolmentsList = Object.values(enrolments.entities);
-  
+
       const filtered = enrolmentsList
         .filter((enrol) => {
           const isUnpaid = !enrol?.enrolmentInvoice?.invoiceIsFullyPaid;
-          return isUnpaid && enrol.enrolmentMonth === selectedMonth;
+          const matchesMonth =
+            !selectedMonth || enrol.enrolmentMonth === selectedMonth;
+          const matchesServiceType =
+            !selectedServiceType ||
+            enrol?.service?.serviceType === selectedServiceType;
+
+          return isUnpaid && matchesMonth && matchesServiceType;
         })
         .sort((a, b) => {
-          const nameA = `${a?.student?.studentName?.firstName || ""} ${a?.student?.studentName?.middleName || ""} ${a?.student?.studentName?.lastName || ""}`.trim().toLowerCase();
-          const nameB = `${b?.student?.studentName?.firstName || ""} ${b?.student?.studentName?.middleName || ""} ${b?.student?.studentName?.lastName || ""}`.trim().toLowerCase();
+          const nameA = `${a?.student?.studentName?.firstName || ""} ${
+            a?.student?.studentName?.middleName || ""
+          } ${a?.student?.studentName?.lastName || ""}`
+            .trim()
+            .toLowerCase();
+          const nameB = `${b?.student?.studentName?.firstName || ""} ${
+            b?.student?.studentName?.middleName || ""
+          } ${b?.student?.studentName?.lastName || ""}`
+            .trim()
+            .toLowerCase();
           return nameA.localeCompare(nameB); // Compare names alphabetically
         });
-  
+
       setFilteredEnrolments(filtered);
       setIsReportGenerated(true);
     }
-  }, [enrolments, selectedMonth]);
-  
+  }, [enrolments, selectedMonth, selectedServiceType]);
 
   const handleDownloadPDF = () => {
     const element = document.getElementById("unpaid-enrolments-report-content");
@@ -81,10 +114,14 @@ const UnpaidEnrolmentsReport = () => {
 
   const handleCancelFilters = () => {
     setSelectedMonth("");
+    setSelectedServiceType("");
     setFilteredEnrolments([]);
     setIsReportGenerated(false);
   };
-
+  const totalFinalAmount = filteredEnrolments.reduce((sum, enrolment) => {
+    const finalAmount = Number(enrolment?.enrolmentInvoice?.invoiceAmount) || 0;
+    return sum + finalAmount;
+  }, 0);
   return (
     <>
       <FinancesReports />
@@ -108,6 +145,30 @@ const UnpaidEnrolmentsReport = () => {
                     {month}
                   </option>
                 ))}
+              </select>
+            </label>
+
+            <label htmlFor="serviceType" className="formInputLabel">
+              Service Type:
+              <select
+                id="serviceType"
+                value={selectedServiceType}
+                onChange={(e) => setSelectedServiceType(e.target.value)}
+                className="formInputText"
+              >
+                <option value="">All Service Types</option>
+                {enrolments &&
+                  Object.values(enrolments.entities)
+                    .map((enrol) => enrol.service?.serviceType)
+                    .filter(
+                      (type, index, self) =>
+                        type && self.indexOf(type) === index
+                    ) // Remove duplicates
+                    .map((type, index) => (
+                      <option key={index} value={type}>
+                        {type}
+                      </option>
+                    ))}
               </select>
             </label>
           </div>
@@ -138,7 +199,7 @@ const UnpaidEnrolmentsReport = () => {
             <h3 className="text-lg font-bold mb-2 text-center">
               Due Enrolments Payment Report for {selectedMonth}
               <br />
-              Academic Year: {selectedAcademicYear?.title}
+               {selectedAcademicYear?.title}
             </h3>
 
             <table className="w-full border-collapse border mt-4 text-sm">
@@ -146,6 +207,7 @@ const UnpaidEnrolmentsReport = () => {
                 <tr className="bg-gray-100">
                   <th className="border px-2 py-1">#</th>
                   <th className="border px-2 py-1">Student Name</th>
+                  <th className="border px-2 py-1">Service Type</th>
                   <th className="border px-2 py-1">Services</th>
                   <th className="border px-2 py-1">Final/Auth</th>
                   <th className="border px-2 py-1">Paid Amount</th>
@@ -155,47 +217,23 @@ const UnpaidEnrolmentsReport = () => {
               <tbody>
                 {filteredEnrolments.map((enrolment, index) => (
                   <tr key={enrolment._id}>
-                    <td
-                      className="border px-2 py-1 text-center"
-                      style={{
-                        whiteSpace: "normal",
-                        wordWrap: "break-word",
-                        overflowWrap: "break-word",
-                        width: "50px",
-                      }}
-                    >
+                    <td className="border px-2 py-1 text-center">
                       {index + 1}
                     </td>
-                    <td
-                      className="border px-2 py-1"
-                      style={{
-                        whiteSpace: "normal",
-                        wordWrap: "break-word",
-                        overflowWrap: "break-word",
-                        width: "160px",
-                      }}
-                    >
+                    <td className="border px-2 py-1">
                       {`${enrolment.student?.studentName?.firstName || ""} ${
                         enrolment.student?.studentName?.middleName || ""
                       } ${enrolment.student?.studentName?.lastName || ""}`}
                     </td>
-                    <td
-                      className="border px-2 py-1"
-                      style={{
-                        whiteSpace: "normal",
-                        wordWrap: "break-word",
-                        overflowWrap: "break-word",
-                        width: "150px",
-                      }}
-                    >
+                    <td className="border px-2 py-1">
+                      {" "}
+                      {/* New Cell */}
+                      {enrolment?.service?.serviceType || "N/A"}
+                    </td>
+                    <td className="border px-2 py-1">
                       <div>
-                        <div>
-                          {enrolment?.service?.serviceType} -{" "}
-                          {enrolment?.enrolmentInvoice?.invoiceMonth.slice(
-                            0,
-                            4
-                          )}
-                        </div>
+                        {enrolment?.service?.serviceType} -{" "}
+                        {enrolment?.enrolmentInvoice?.invoiceMonth.slice(0, 4)}
                         <div>
                           From:{" "}
                           {enrolment?.admission?.admissionDate
@@ -206,15 +244,7 @@ const UnpaidEnrolmentsReport = () => {
                         </div>
                       </div>
                     </td>
-                    <td
-                      className="border px-2 py-1"
-                      style={{
-                        whiteSpace: "normal",
-                        wordWrap: "break-word",
-                        overflowWrap: "break-word",
-                        width: "100px",
-                      }}
-                    >
+                    <td className="border px-2 py-1">
                       {`${
                         enrolment.enrolmentInvoice?.invoiceAmount || "N/A"
                       } / ${
@@ -222,31 +252,23 @@ const UnpaidEnrolmentsReport = () => {
                         "N/A"
                       }`}
                     </td>
-                    <td
-                      className="border px-2 py-1"
-                      style={{
-                        whiteSpace: "normal",
-                        wordWrap: "break-word",
-                        overflowWrap: "break-word",
-                        width: "160px",
-                      }}
-                    >
-                      {""}
-                    </td>
-                    <td
-                      className="border px-2 py-1"
-                      style={{
-                        whiteSpace: "normal",
-                        wordWrap: "break-word",
-                        overflowWrap: "break-word",
-                        width: "160px",
-                      }}
-                    >
-                      {""}
-                    </td>
+                    <td className="border px-2 py-1">{""}</td>
+                    <td className="border px-2 py-1">{""}</td>
                   </tr>
                 ))}
               </tbody>
+              <tfoot>
+                <tr className="bg-gray-200 font-bold">
+                  <td className="border px-2 py-1 text-right" colSpan="3">
+                    Total Amount:
+                  </td>
+                  <td className="border px-2 py-1 text-center">
+                    {totalFinalAmount}
+                  </td>
+                  <td className="border px-2 py-1"></td>
+                  <td className="border px-2 py-1"></td>
+                </tr>
+              </tfoot>
             </table>
           </div>
         )}

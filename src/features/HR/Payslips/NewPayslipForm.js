@@ -97,7 +97,7 @@ const NewPayslipForm = () => {
     payslipEmployeeName: "",
     payslipIsApproved: false,
     payslipPaymentDate: "",
-    payslipLeaveDays: [],
+    payslipLeaves: [],
     // payslipSalaryComponents: {
     //   basic: "",
     //   payableBasic: "",
@@ -178,23 +178,7 @@ const NewPayslipForm = () => {
   }, [isAddSuccess, navigate]);
   //extract the current salary package for the payslip month
   const getActiveSalaryPackage = (salaryPackage, targetYear, targetMonth) => {
-    console.log(salaryPackage, targetYear, targetMonth, "salary package");
-
-    // Define month mapping for conversion between names and indices
-    const MONTHS = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
+    //console.log(salaryPackage, targetYear, targetMonth, "salary package");
 
     // Normalize targetMonth to a 0-based index
     let targetMonthIndex;
@@ -246,7 +230,7 @@ const NewPayslipForm = () => {
       );
     });
 
-    console.log(validPackages, "Valid salary packages");
+    //console.log(validPackages, "Valid salary packages");
 
     if (validPackages.length === 0) {
       console.error("No valid salary package found for the given date.");
@@ -419,7 +403,7 @@ const NewPayslipForm = () => {
           ...prev,
           payslipEmployee: "",
           payslipEmployeeName: "",
-          payslipLeaveDays: [],
+          payslipLeaves: [],
           employeeJoinDate: "",
         }));
         triggerBanner(
@@ -627,18 +611,27 @@ const NewPayslipForm = () => {
       const payslipDays = Array.from({ length: daysInMonth }, (_, index) => {
         const dayDate = new Date(year, month - 1, index + 1); // Generate each day of the month
         const formattedDay = formatDate(dayDate); // Format as YYYY-MM-DD without time zone interference
-      
+
         const isWeekend = dayDate.getDay() === 0; // Check if it's Sunday
-      
+
         // Find a leave that matches the employee and applies to the current day
-        const leave = leavesList?.find(
-          (leave) =>
-            leave?.leaveEmployee._id === formData?.payslipEmployee &&
-            leave?.leaveMonth === formData?.payslipMonth &&
-            new Date(leave?.leaveStartDate) <= dayDate &&
-            dayDate <= new Date(leave?.leaveEndDate) // Check if the current day falls within the leave range
-        );
-      
+        const leave = leavesList?.find((leav) => {
+          const leaveStart = new Date(leav?.leaveStartDate);
+          const leaveEnd = new Date(leav?.leaveEndDate);
+          const day = new Date(dayDate);
+          // Normalize dates to remove time
+          leaveStart.setHours(0, 0, 0, 0);
+          leaveEnd.setHours(0, 0, 0, 0);
+          day.setHours(0, 0, 0, 0);
+          return (
+            String(leav?.leaveEmployee._id) ===
+              String(formData?.payslipEmployee) &&
+            // leav?.leaveMonth === formData?.payslipMonth && //if the date falls in the bracket, the month is already there
+            leaveStart <= day &&
+            day <= leaveEnd // Check if the current day falls within the leave range
+          );
+        });
+        console.log(leave?.leaveIsPartDay, "leave");
         // Return the processed data for the day
         return {
           day: formattedDay,
@@ -647,22 +640,22 @@ const NewPayslipForm = () => {
           isPaid: leave?.leaveIsPaidLeave !== false, // Paid leave unless explicitly marked otherwise
           isGiven: leave?.leaveIsGiven,
           isPartDay: leave?.leaveIsPartDay,
-          partdayDuration:
-            leave?.leaveIsPartDay
-              ? (new Date(leave?.leaveEndDate) - new Date(leave?.leaveStartDate)) /
-                (1000 * 60 * 60) // Calculate part-day duration in hours
-              : null,
+          partdayDuration: leave?.leaveIsPartDay
+            ? (new Date(leave?.leaveEndDate) -
+                new Date(leave?.leaveStartDate)) /
+              (1000 * 60 * 60) // Calculate part-day duration in hours
+            : null,
           dayType: (() => {
             if (isWeekend) return "weekend";
             if (leave?.leaveIsSickLeave) return "sick-leave";
             if (leave?.leaveIsGiven) return "Given day";
-            if (!leave?.leaveStartDate || leave?.leaveIsPartDay) return "Work day";
+            if (!leave?.leaveStartDate || leave?.leaveIsPartDay)
+              return "Work day";
             return "off-day";
           })(),
         };
       });
-      
-
+      console.log(payslipDays, "payslipDays");
       const totalOpenDays = payslipDays.filter((day) => !day.isWeekend).length;
       const totalPaidDays = payslipDays.filter(
         (day) => day.isPaid && !day.isWeekend
@@ -810,8 +803,8 @@ const NewPayslipForm = () => {
   const handleCloseModal = () => {
     setShowConfirmation(false);
   };
- // console.log(validity, "validity");
-  //console.log(formData, "formData");
+  // console.log(validity, "validity");
+  console.log(formData, "formData");
   //console.log(validity, "validity");
   let content;
   if (isEmployeesLoading || isLeavesLoading) {
@@ -881,7 +874,8 @@ const NewPayslipForm = () => {
                       const employeeLeaveDays = leavesList
                         .filter(
                           (leave) =>
-                            leave?.leaveEmployee?._id === selectedEmployeeId
+                            leave?.leaveEmployee?._id === selectedEmployeeId &&
+                            leave?.leaveMonth === formData?.payslipMonth
                         )
                         .map((leave) => leave?.id); // Extract only the leave IDs
                       // Extract the full name from the selected employee
@@ -896,7 +890,7 @@ const NewPayslipForm = () => {
                       setFormData({
                         ...formData,
                         payslipEmployee: selectedEmployeeId,
-                        payslipLeaveDays: employeeLeaveDays,
+                        payslipLeaves: employeeLeaveDays,
                         payslipEmployeeName: employeeFullName,
                         employeeJoinDate: employeeJointDate,
                       });
