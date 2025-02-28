@@ -58,27 +58,69 @@ const LeavesReport = () => {
   useEffect(() => {
     if (isLeavesSuccess) {
       const leavesList = Object.values(leaves.entities);
-  
+
       const filtered = leavesList.filter((leave) => {
         const matchesEmployee = selectedEmployee
           ? leave?.leaveEmployee?._id === selectedEmployee
           : true; // If no employee is selected, allow all
-  
-        const matchesMonth = selectedMonth ? leave.leaveMonth === selectedMonth : true; // If no month is selected, allow all
-  
+
+        const matchesMonth = selectedMonth
+          ? leave.leaveMonth === selectedMonth
+          : true; // If no month is selected, allow all
+
         return matchesEmployee && matchesMonth; // Match both if selected
       });
-  
+
       // Sort filtered leaves by leaveStartDate
       filtered.sort(
         (a, b) => new Date(a.leaveStartDate) - new Date(b.leaveStartDate)
       );
-  
+
       setFilteredLeaves(filtered);
       setIsReportGenerated(filtered.length > 0);
     }
   }, [leaves, selectedEmployee, selectedMonth]);
+
+  const totalLeaveDays = filteredLeaves.reduce((total, leave) => {
+    const leaveStartDate = new Date(leave.leaveStartDate);
+    const leaveEndDate = new Date(leave.leaveEndDate);
   
+    let leaveDurationInDays = 0;
+    let leaveDurationInHours = 0;
+  
+    if (leave.leaveIsPartDay) {
+      // Calculate part day duration in hours
+      leaveDurationInHours =
+        Math.abs(leaveEndDate.getTime() - leaveStartDate.getTime()) / (1000 * 60 * 60); // Convert milliseconds to hours
+  
+      // Round down to whole hours
+      leaveDurationInDays = Math.floor(leaveDurationInHours / 8); // Convert hours to full days (if needed)
+      leaveDurationInHours = leaveDurationInHours % 8; // Remaining hours after full days
+    } else {
+      // For full days, calculate the duration in days (assuming 1 day = 8 hours)
+      leaveDurationInDays = calculateLeaveDuration(leave.leaveStartDate, leave.leaveEndDate);
+    }
+  
+    // Add the calculated duration in days and hours to the total
+    return {
+      days: total.days + leaveDurationInDays,
+      hours: total.hours + leaveDurationInHours,
+    };
+  }, { days: 0, hours: 0 });
+  
+  // Convert total leave to full days and remaining hours
+  const fullDays = totalLeaveDays.days + Math.floor(totalLeaveDays.hours / 8);
+  const remainingHours = totalLeaveDays.hours % 8;
+  
+  function calculateLeaveDuration(start, end) {
+    const startDay = new Date(start).setHours(0, 0, 0, 0); // Set to start of the day
+    const endDay = new Date(end).setHours(0, 0, 0, 0); // Set to start of the day
+
+    const diffTime = endDay - startDay; // Difference in milliseconds
+    const diffDays = diffTime / (1000 * 3600 * 24); // Convert to days
+
+    return diffDays + 1; // Add 1 to include both start and end days
+  }
 
   const handleDownloadPDF = () => {
     const element = document.getElementById("leaves-report-content");
@@ -102,28 +144,6 @@ const LeavesReport = () => {
   const employeesList = isEmployeesSuccess
     ? Object.values(employees.entities)
     : [];
-
-  // Calculate total leave days
-  const totalLeaveDays = filteredLeaves.reduce((total, leave) => {
-    if (leave.leaveIsPartDay) {
-      const hours =
-        Math.abs(
-          new Date(leave.leaveEndDate).getHours() -
-            new Date(leave.leaveStartDate).getHours()
-        ) || 8; // Default to 8 hours if hours are not defined
-      return total + hours / 8; // Convert hours to days
-    } else {
-      const days = Math.max(
-        Math.ceil(
-          (new Date(leave.leaveEndDate).getTime() -
-            new Date(leave.leaveStartDate).getTime()) /
-            (1000 * 60 * 60 * 24)
-        ),
-        1 // At least 1 day
-      );
-      return total + days;
-    }
-  }, 0);
 
   return (
     <>
@@ -230,7 +250,8 @@ const LeavesReport = () => {
               <thead>
                 <tr className="bg-gray-100">
                   <th className="border px-2 py-1">#</th>
-                {!selectedEmployee && <th>Employee</th>} {/* Show Employee column if no employee is selected */}
+                  {!selectedEmployee && <th>Employee</th>}{" "}
+                  {/* Show Employee column if no employee is selected */}
                   <th className="border px-2 py-1">Start Date</th>
                   <th className="border px-2 py-1">End Date</th>
                   <th className="border px-2 py-1">Duration</th>
@@ -246,12 +267,26 @@ const LeavesReport = () => {
                     <td className="border px-2 py-1 text-center">
                       {index + 1}
                     </td>
-                     {!selectedEmployee && <td>{employeesList.find((emp) => emp.id === leave?.leaveEmployee?._id)
-                        ?.userFullName?.userFirstName}{" "}
-                        {employeesList.find((emp) => emp.id === leave?.leaveEmployee?._id)
-                        ?.userFullName?.userMiddleName}{" "}
-                        {employeesList.find((emp) => emp.id === leave?.leaveEmployee?._id)
-                        ?.userFullName?.userLastName}</td>} {/* Show Employee name when no filter is applied */}
+                    {!selectedEmployee && (
+                      <td>
+                        {
+                          employeesList.find(
+                            (emp) => emp.id === leave?.leaveEmployee?._id
+                          )?.userFullName?.userFirstName
+                        }{" "}
+                        {
+                          employeesList.find(
+                            (emp) => emp.id === leave?.leaveEmployee?._id
+                          )?.userFullName?.userMiddleName
+                        }{" "}
+                        {
+                          employeesList.find(
+                            (emp) => emp.id === leave?.leaveEmployee?._id
+                          )?.userFullName?.userLastName
+                        }
+                      </td>
+                    )}{" "}
+                    {/* Show Employee name when no filter is applied */}
                     <td className="border px-2 py-1">
                       {new Date(leave.leaveStartDate).toLocaleDateString(
                         "en-US",
@@ -300,19 +335,14 @@ const LeavesReport = () => {
                             new Date(leave.leaveEndDate).getHours() -
                               new Date(leave.leaveStartDate).getHours()
                           )} hour(s)`
-                        : `${Math.max(
-                            Math.ceil(
-                              (new Date(leave.leaveEndDate).getTime() -
-                                new Date(leave.leaveStartDate).getTime()) /
-                                (1000 * 60 * 60 * 24)
-                            ),
-                            1
+                        : `${calculateLeaveDuration(
+                            leave.leaveStartDate,
+                            leave.leaveEndDate
                           )} day(s)`}
                     </td>
                     <td className="border px-2 py-1 text-center">
                       {leave.leaveIsGiven ? "Yes" : "No"}
                     </td>
-
                     <td className="border px-2 py-1 text-center">
                       {leave.leaveIsPaidLeave ? "Yes" : "No"}
                     </td>
@@ -330,9 +360,7 @@ const LeavesReport = () => {
                     Total Leave Days:
                   </td>
                   <td colSpan="6" className="border px-2 py-1 text-center">
-                    {Math.floor(totalLeaveDays)} day(s)
-                    {totalLeaveDays % 1 !== 0 &&
-                      ` ${Math.round((totalLeaveDays % 1) * 8)} hour(s)`}
+                  {`${fullDays} day(s) and ${remainingHours} hour(s)`}
                   </td>
                 </tr>
               </tbody>

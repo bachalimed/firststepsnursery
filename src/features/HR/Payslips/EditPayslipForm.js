@@ -403,6 +403,11 @@ const EditPayslipForm = ({ payslip }) => {
                             1 day leave
                           </span>
                         )}
+                         {dayObj?.dayType === "sick-leave" && !dayObj?.isPartDay &&(
+                                  <span className="text-xs text-red-600">
+                                    1 day leave
+                                  </span>
+                                )}
                       </td>
                     </tr>
                   ))}

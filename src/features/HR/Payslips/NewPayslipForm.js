@@ -759,6 +759,46 @@ const NewPayslipForm = () => {
     });
   };
 
+  function calculateLeaveDuration(leaveStart, leaveEnd, leaveType) {
+    // Convert the leaveStart and leaveEnd to Date objects if they are strings
+    const startDate = new Date(leaveStart);
+    const endDate = new Date(leaveEnd);
+  
+    // Calculate the total duration of the leave in hours (or days, depending on the requirement)
+    const duration = (endDate - startDate) / (1000 * 60 * 60); // in hours
+  
+    // Adjust the duration calculation for full-day leaves or overlaps (if both sick and paid leave)
+    if (leaveType === 'sickLeave' && leaveType === 'paidLeave') {
+      // Handle combined sickLeave and paidLeave
+      return duration;
+    } else if (leaveType === 'sickLeave') {
+      // Handle sickLeave only
+      return duration;
+    } else if (leaveType === 'paidLeave') {
+      // Handle paidLeave only
+      return duration;
+    }
+    return duration; // Default case (if there's only one type of leave)
+  }
+  
+  function displayLeaveDuration(leaveRecord) {
+    // Assuming leaveRecord is an object that contains leaveStart, leaveEnd, and leaveType
+    
+    const { leaveStart, leaveEnd, leaveType } = leaveRecord;
+  
+    let leaveDuration = calculateLeaveDuration(leaveStart, leaveEnd, leaveType);
+  
+    // Display the leaveDuration in your table cell
+    if (leaveDuration > 0) {
+      return leaveDuration;
+    } else {
+      return 'N/A'; // Return a default value if no leave duration is calculated
+    }
+  }
+  
+
+
+
   const canSave =
     Object.values(validity).every(Boolean) &&
     // ((formData.payslipYears[0].academicYear)!=='') &&
@@ -962,6 +1002,11 @@ const NewPayslipForm = () => {
                                   </span>
                                 )}
                                 {dayObj?.dayType === "Given day" && (
+                                  <span className="text-xs text-red-600">
+                                    1 day leave
+                                  </span>
+                                )}
+                                {dayObj?.dayType === "sick-leave" && !dayObj?.isPartDay &&(
                                   <span className="text-xs text-red-600">
                                     1 day leave
                                   </span>
