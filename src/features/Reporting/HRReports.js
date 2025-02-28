@@ -28,10 +28,10 @@ const HRReports = () => {
       label: "Salaries",
       path: "/reports/hrReports/salariesReport/",
     },
-    ( isDirector || isManager || isAdmin) && {
-      label: "blabla",
-      path: "/reports/hrReports/blablfllf/",
-    },
+    // ( isDirector || isManager || isAdmin) && {
+    //   label: "blabla",
+    //   path: "/reports/hrReports/blablfllf/",
+    // },
     // (isDirector || isManager || isAdmin) && {
     //   label: "blablabla",
     //   path: "/reports/hrReports/blalal/",

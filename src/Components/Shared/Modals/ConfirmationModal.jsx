@@ -1,7 +1,34 @@
 import React from "react";
-
+import { useEffect, useState } from "react";
 // A reusable confirmation modal component
 const ConfirmationModal = ({ show, onClose, onConfirm, title, message }) => {
+  
+   const [selectedButton, setSelectedButton] = useState("cancel"); // Default selected button
+  
+    useEffect(() => {
+      const handleKeyDown = (event) => {
+        if (event.key === "Escape") {
+          onClose(); // Close modal when Escape is pressed
+        } else if (event.key === "Enter") {
+          if (selectedButton === "save") {
+            onConfirm(); // Confirm deletion when Enter is pressed on Confirm
+          } else {
+            onClose(); // Cancel when Enter is pressed on Cancel
+          }
+        } else if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+          // Toggle selection between Cancel and Confirm buttons
+          setSelectedButton((prev) => (prev === "cancel" ? "save" : "cancel"));
+        }
+      };
+  
+      if (show) {
+        document.addEventListener("keydown", handleKeyDown);
+      }
+  
+      return () => {
+        document.removeEventListener("keydown", handleKeyDown);
+      };
+    }, [show, onClose, onConfirm, selectedButton]);
   if (!show) return null;
 
   
@@ -28,7 +55,7 @@ const ConfirmationModal = ({ show, onClose, onConfirm, title, message }) => {
         <button
           aria-label="cancel"
           onClick={onClose}
-          className="cancel-button w-full"
+          className={`border border-gray-700 text-gray-800  bg-gray-200 hover:text-black  hover:bg-gray-500 active:bg-gray-700 active:border-gray-800 active:text-gray-700 w-full px-4 py-2 rounded-md ${selectedButton === "cancel" ? "border-gray-800 bg-gray-400 text-white" : "bg-gray-100"}`}
           data-testid="cancel-button"
         >
           Cancel
@@ -36,7 +63,7 @@ const ConfirmationModal = ({ show, onClose, onConfirm, title, message }) => {
         <button
           aria-label="confirm"
           onClick={onConfirm}
-          className="save-button  w-full "
+          className={`px-4 py-2 border border-sky-700 text-white rounded bg-sky-700 hover:bg-sky-500 active:bg-sky-800 active:border-sky-800 w-full ${selectedButton === "save" ? "border-sky-800 bg-sky-700 text-white" : "bg-sky-400"} `}
           data-testid="confirm-button"
         >
           Confirm

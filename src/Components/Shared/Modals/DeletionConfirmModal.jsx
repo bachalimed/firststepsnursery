@@ -1,8 +1,34 @@
 import React from "react";
-
+import { useEffect, useState } from "react";
 //Modal.setAppElement("#root");
 
 const DeleteConfirmModal = ({ isOpen, onClose, onConfirm , message}) => {
+  const [selectedButton, setSelectedButton] = useState("cancel"); // Default selected button
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        onClose(); // Close modal when Escape is pressed
+      } else if (event.key === "Enter") {
+        if (selectedButton === "confirm") {
+          onConfirm(); // Confirm deletion when Enter is pressed on Confirm
+        } else {
+          onClose(); // Cancel when Enter is pressed on Cancel
+        }
+      } else if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+        // Toggle selection between Cancel and Confirm buttons
+        setSelectedButton((prev) => (prev === "cancel" ? "confirm" : "cancel"));
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose, onConfirm, selectedButton]);
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
@@ -30,7 +56,7 @@ const DeleteConfirmModal = ({ isOpen, onClose, onConfirm , message}) => {
             <button
               aria-label="cancel"
               onClick={onClose}
-              className="cancel-button w-full"
+              className={`border border-gray-700 text-gray-800  bg-gray-200 hover:text-black  hover:bg-gray-500 active:bg-gray-700 active:border-gray-800 active:text-gray-700 w-full px-4 py-2 rounded-md ${selectedButton === "cancel" ? "border-gray-800 bg-gray-400 text-white" : "bg-gray-100"}`}
               data-testid="cancel-button"
             >
               Cancel
@@ -38,7 +64,7 @@ const DeleteConfirmModal = ({ isOpen, onClose, onConfirm , message}) => {
             <button
               aria-label="confirm"
               onClick={onConfirm}
-              className="delete-button  w-full "
+              className={` border border-red-700 text-red-700  bg-white hover:text-white hover:bg-red-600 active:bg-red-800 active:border-red-800 active:text-white w-full px-4 py-2 rounded-md ${selectedButton === "confirm" ? "bg-red-800 text-white" : "bg-gray-100"}`}
               data-testid="confirm-button"
             >
               Confirm

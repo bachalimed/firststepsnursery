@@ -23,17 +23,17 @@ import { MONTHS } from "../../../config/Months";
 import LoadingStateIcon from "../../../Components/LoadingStateIcon";
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
-  
+
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedValue(value);
     }, delay);
-    
+
     return () => {
       clearTimeout(handler);
     };
   }, [value, delay]);
-  
+
   return debouncedValue;
 };
 
@@ -234,6 +234,40 @@ const EditAdmissionForm = ({ admission }) => {
   };
 
   //Add another agreed service
+  // const addAgreedService = () => { //this works but we preferred to use useeffect that comes after this
+  //   setFormData((prevData) => {
+  //     // Compute the new service index
+  //     const newIndex = prevData.agreedServices.length;
+  
+  //     // Determine which services have been selected already
+  //     const selectedServiceIds = prevData.agreedServices
+  //       .map((service) => service.service)
+  //       .filter(Boolean);
+  
+  //     // Compute the list of available services for the new index
+  //     const availableServices = servicesList.filter(
+  //       (service) => !selectedServiceIds.includes(service.id)
+  //     );
+  
+  //     // If there's exactly one available service, preselect it
+  //     const newService = {
+  //       service: availableServices.length === 1 ? availableServices[0].id : "",
+  //       feeValue: "",
+  //       feePeriod: "",
+  //       feeStartDate: "",
+  //       feeMonths: [],
+  //       feeEndDate: "",
+  //       isFlagged: false,
+  //       comment: "",
+  //     };
+  
+  //     return {
+  //       ...prevData,
+  //       agreedServices: [...prevData.agreedServices, newService],
+  //     };
+  //   });
+  // };
+  
   const addAgreedService = () => {
     setFormData((prevData) => ({
       ...prevData,
@@ -252,7 +286,27 @@ const EditAdmissionForm = ({ admission }) => {
       ],
     }));
   };
-
+  useEffect(() => {
+    // Iterate over each agreed service
+    formData.agreedServices.forEach((service, index) => {
+      // If the service field is empty, check the available options
+      if (!service.service) {
+        const available = getAvailableServices(index);
+        if (available.length === 1) {
+          // Only one option available: update the state automatically
+          setFormData((prevData) => {
+            const updatedServices = [...prevData.agreedServices];
+            updatedServices[index] = {
+              ...updatedServices[index],
+              service: available[0].id,
+            };
+            return { ...prevData, agreedServices: updatedServices };
+          });
+        }
+      }
+    });
+  }, [formData.agreedServices, servicesList]);
+  
   useEffect(() => {
     if (isUpdateSuccess) {
       //if the add of new user using the mutation is success, empty all the individual states and navigate back to the users list
@@ -273,21 +327,21 @@ const EditAdmissionForm = ({ admission }) => {
     );
   };
 
-
   const handleMonthSelection = (index, month) => {
     // Create a deep copy of the agreedServices array
-    const updatedServices = formData.agreedServices.map((service, serviceIndex) =>
-      serviceIndex === index
-        ? {
-            ...service,
-            feeMonths: service.feeMonths ? [...service.feeMonths] : [],
-          }
-        : service
+    const updatedServices = formData.agreedServices.map(
+      (service, serviceIndex) =>
+        serviceIndex === index
+          ? {
+              ...service,
+              feeMonths: service.feeMonths ? [...service.feeMonths] : [],
+            }
+          : service
     );
-  
+
     // Get the current feeMonths for the selected index
     const currentMonths = updatedServices[index].feeMonths;
-  
+
     if (currentMonths.includes(month)) {
       // Remove month if already selected
       updatedServices[index].feeMonths = currentMonths.filter(
@@ -297,14 +351,14 @@ const EditAdmissionForm = ({ admission }) => {
       // Add month to selection
       updatedServices[index].feeMonths = [...currentMonths, month];
     }
-  
+
     // Update the formData state
     setFormData((prevData) => ({
       ...prevData,
       agreedServices: updatedServices,
     }));
   };
-  
+
   // const handleMonthSelection = (index, month) => {
   //   const updatedServices = [...formData.agreedServices];
   //   const currentMonths = updatedServices[index].feeMonths || []; ////
@@ -440,7 +494,7 @@ const EditAdmissionForm = ({ admission }) => {
   const handleCancel = () => {
     navigate("/students/admissions/admissions/");
   };
-  // console.log(formData, "formData");
+  console.log(formData, "formData");
   let content;
   if (isServicesLoading) {
     content = (
@@ -551,8 +605,8 @@ const EditAdmissionForm = ({ admission }) => {
             {/* Agreed Services Section */}
             <h3 className="formSectionTitle">Services provided</h3>
             {formData.agreedServices.map((service, index) => (
-              <div className="formSection">
-                <div key={index} className="formLineDiv">
+              <div key={index} className="formSection">
+                <div className="formLineDiv">
                   <label
                     htmlFor={`service-${index}`}
                     className="formInputLabel"
@@ -685,9 +739,9 @@ const EditAdmissionForm = ({ admission }) => {
                     {!service.feeMonths?.length > 0 && (
                       <span className="text-red-600">*</span>
                     )}
-                     {!validFirstAdmission && index === 0 && (
-                        <span className="text-red-600">one-time-off service</span>
-                      )}
+                    {!validFirstAdmission && index === 0 && (
+                      <span className="text-red-600">one-time-off service</span>
+                    )}
                     <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-2">
                       {MONTHS?.map((month) => (
                         <button
